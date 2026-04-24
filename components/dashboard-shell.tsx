@@ -62,7 +62,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       className={cn(
                         "group relative rounded-xl px-4 py-3 text-sm transition-all duration-300",
                         active
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 font-bold"
+                          ? "bg-primary !text-white shadow-lg shadow-primary/20 font-bold"
                           : "font-medium text-muted-foreground hover:bg-primary/5 hover:text-primary",
                       )}
                     >
