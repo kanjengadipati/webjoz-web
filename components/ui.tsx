@@ -154,11 +154,14 @@ export function StatusBadge({ status }: { status?: string }) {
 
 export function MetricCard({ label, value, helper }: { label: string; value: string; helper?: string }) {
   return (
-    <Card className="overflow-hidden group">
-      <CardHeader className="space-y-3 bg-gradient-to-br from-transparent via-transparent to-primary/5 p-6">
-        <CardDescription className="text-xs uppercase tracking-[0.2em] font-semibold opacity-70 group-hover:opacity-100 transition-opacity">{label}</CardDescription>
-        <CardTitle className="text-4xl lg:text-5xl font-bold tracking-tighter group-hover:text-primary transition-colors">{value}</CardTitle>
-        {helper ? <CardDescription className="text-sm opacity-80">{helper}</CardDescription> : null}
+    <Card className="relative overflow-hidden group border-border/40 hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-primary/5">
+      <div className="absolute top-0 right-0 size-32 bg-primary/5 blur-[60px] -z-10 group-hover:bg-primary/15 transition-colors duration-700" />
+      <CardHeader className="space-y-4 p-6">
+        <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground/60 group-hover:text-primary/80 transition-colors">{label}</div>
+        <div className="text-5xl font-bold tracking-tighter lg:text-6xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
+        {helper && (
+          <div className="text-xs font-medium text-muted-foreground/60 leading-relaxed">{helper}</div>
+        )}
       </CardHeader>
     </Card>
   );

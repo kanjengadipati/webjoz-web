@@ -60,106 +60,123 @@ export default function DashboardOverviewPage() {
   }, [logs]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="text-sm uppercase tracking-[0.24em] text-muted-foreground">Security Overview</div>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">Operational snapshot</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-            A more productized overview for quick demos, triage, and backend health storytelling.
+    <div className="space-y-8 animate-in fade-in duration-1000">
+      <div className="flex flex-wrap items-center justify-between gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="size-1.5 rounded-full bg-primary animate-pulse" />
+            <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">System Intelligence</div>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tighter lg:text-5xl">Operational Snapshot</h1>
+          <p className="max-w-2xl text-sm font-medium text-muted-foreground/80 leading-relaxed">
+            Real-time security telemetry and operator activity tracking powered by your Go backend.
           </p>
         </div>
-        <Button onClick={() => void refresh()}>
-          Refresh Metrics
+        <Button 
+          size="lg" 
+          className="rounded-full px-8 shadow-lg shadow-primary/20"
+          onClick={() => void refresh()}
+          disabled={state === "loading"}
+        >
+          {state === "loading" ? "Refreshing..." : "Refresh Dashboard"}
         </Button>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
         <MetricCard label="Login Attempts Today" value={String(metrics.todayAttempts)} helper="Auth activity recorded today" />
-        <MetricCard label="Failed Logins" value={String(metrics.failedLogins)} helper="Useful for brute-force spotting" />
-        <MetricCard label="Active Sessions" value={String(metrics.activeSessions)} helper="Current refresh-token-backed sessions" />
-        <MetricCard label="Top IP Footprint" value={String(metrics.uniqueIPs)} helper="Distinct IPs in recent auth logs" />
+        <MetricCard label="Failed Logins" value={String(metrics.failedLogins)} helper="Critical brute-force signal" />
+        <MetricCard label="Active Sessions" value={String(metrics.activeSessions)} helper="Live refresh-token sessions" />
+        <MetricCard label="Top IP Footprint" value={String(metrics.uniqueIPs)} helper="Distinct source IP addresses" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <Card>
-          <CardHeader className="border-b border-border/60">
-            <SectionTitle eyebrow={state} title="Failed Login Trend" />
+      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
+        <Card className="relative overflow-hidden group">
+          <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
+          <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
+            <SectionTitle eyebrow={state === "loading" ? "synchronizing..." : "telemetry"} title="Failed Login Trend" />
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-8">
             {state === "loading" ? (
               <SkeletonBlock className="h-72" />
             ) : barData.length === 0 ? (
-              <EmptyState text="Refresh metrics to populate the trend chart." />
+              <EmptyState text="Sync metrics to populate the behavioral trend chart." />
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div
-                  className="grid h-64 items-end gap-3"
+                  className="grid h-64 items-end gap-4"
                   style={{ gridTemplateColumns: `repeat(${Math.max(barData.length, 1)}, minmax(0, 1fr))` }}
                 >
                   {barData.map(([label, value], index) => (
-                    <div key={`${label}-${index}`} className="flex flex-col items-center gap-3">
-                      <div className="text-xs font-medium text-muted-foreground">{value}</div>
+                    <div key={`${label}-${index}`} className="group/bar flex flex-col items-center gap-3">
+                      <div className="text-[10px] font-bold text-muted-foreground/60 opacity-0 group-hover/bar:opacity-100 transition-opacity translate-y-2 group-hover/bar:translate-y-0 duration-300">{value}</div>
                       <div
                         className={cn(
-                          "w-full rounded-t-2xl bg-gradient-to-t from-primary via-sky-500 to-cyan-300 shadow-[0_10px_30px_-20px_rgba(59,130,246,0.9)]",
+                          "w-full rounded-t-xl bg-gradient-to-t from-primary/80 via-primary to-sky-400 transition-all duration-500",
+                          "shadow-[0_4px_12px_rgba(var(--primary),0.1)] group-hover/bar:shadow-[0_12px_40px_rgba(var(--primary),0.4)] group-hover/bar:scale-x-105",
                           barData.length === 1 ? "mx-auto max-w-28" : "",
-                          index === barData.length - 1 ? "ring-2 ring-primary/25 ring-offset-2 ring-offset-background" : "",
+                          index === barData.length - 1 ? "ring-2 ring-primary/30 ring-offset-4 ring-offset-background" : "",
                         )}
                         style={{
                           height: `${Math.max(
-                            24,
-                            (value / Math.max(...barData.map(([, count]) => count), 1)) * 210,
+                            12,
+                            (value / Math.max(...barData.map(([, count]) => count), 1)) * 220,
                           )}px`,
                         }}
                       />
-                      <div className="text-xs text-muted-foreground">{label}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">{label}</div>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  This quick chart is derived directly from recent audit log timestamps to make auth spikes visible in one screenshot.
+                <p className="text-xs font-medium leading-relaxed text-muted-foreground/60 italic border-t border-border/40 pt-4">
+                  Visualizing auth spikes over the last 7 activity buckets for rapid incident triage.
                 </p>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="border-b border-border/60">
-            <SectionTitle eyebrow={profile ? "profile loaded" : state} title="Current Operator" />
+        <Card className="relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 size-48 bg-primary/5 blur-[80px] -z-10" />
+          <CardHeader className="border-b border-border/40">
+            <SectionTitle eyebrow={profile ? "verified" : "operator"} title="Active Operator" />
           </CardHeader>
           <CardContent className="pt-6">
             {profile ? (
-              <div className="space-y-4">
-                <div className="rounded-3xl bg-gradient-to-br from-primary/12 via-background to-background p-5">
-                  <div className="text-sm text-muted-foreground">Signed in as</div>
-                  <div className="mt-2 text-2xl font-semibold">{profile.name}</div>
-                  <div className="mt-2 text-sm text-muted-foreground">{profile.email}</div>
+              <div className="space-y-6 animate-in fade-in duration-700">
+                <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-6 border border-primary/10 shadow-inner">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Profile Summary</div>
+                    <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+                  <div className="text-3xl font-bold tracking-tighter">{profile.name}</div>
+                  <div className="mt-1 text-sm font-medium text-muted-foreground/80">{profile.email}</div>
                 </div>
+                
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <MiniMetric label="Role" value={profile.role || "-"} />
-                  <MiniMetric label="Verified" value={String(profile.is_verified ?? false)} />
+                  <MiniMetric label="Role Authority" value={profile.role || "-"} />
+                  <MiniMetric label="Trust Status" value={profile.is_verified ? "Verified" : "Unverified"} />
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <SubtleStat label="Active Sessions" value={String(metrics.activeSessions)} helper="Refresh-token backed devices currently open." />
-                  <SubtleStat label="Distinct IPs" value={String(metrics.uniqueIPs)} helper="Useful for spotting distributed auth activity." />
-                </div>
-                <div className="space-y-3">
-                  <div className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">Recent Events</div>
-                  {logs.slice(0, 3).map((log, index) => (
-                    <div key={log.id ?? `${log.action}-${log.created_at ?? "unknown"}-${index}`} className="rounded-2xl border border-border bg-muted/35 px-4 py-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="text-sm font-medium">{log.action} on {log.resource}</div>
-                        <StatusBadge status={log.status} />
+                
+                <div className="space-y-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/80 mb-2">Recent Security Events</div>
+                  <div className="space-y-2">
+                    {logs.slice(0, 3).map((log, index) => (
+                      <div 
+                        key={log.id ?? `${log.action}-${index}`} 
+                        className="group/log rounded-2xl border border-border/40 bg-background/40 hover:bg-background/60 px-4 py-3 transition-all duration-300 hover:border-primary/30"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-sm font-bold tracking-tight group-hover/log:text-primary transition-colors">{log.action}</div>
+                          <StatusBadge status={log.status} />
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground font-medium">{log.resource} &bull; {log.description || "No metadata"}</div>
                       </div>
-                      <div className="mt-2 text-sm text-muted-foreground">{log.description || "No description"}</div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
-              <EmptyState text="Load metrics to see the authenticated operator profile and recent events." />
+              <EmptyState text="Authenticate to synchronize operator profile and audit recency." />
             )}
           </CardContent>
         </Card>
@@ -170,9 +187,10 @@ export default function DashboardOverviewPage() {
 
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-border bg-muted/35 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
-      <div className="mt-2 text-base font-medium">{value}</div>
+    <div className="rounded-2xl border border-border/40 bg-background/50 px-4 py-4 transition-all hover:bg-background/80 hover:border-primary/20 shadow-sm">
+      <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">{label}</div>
+      <div className="text-lg font-bold tracking-tight">{value}</div>
     </div>
   );
 }
+
