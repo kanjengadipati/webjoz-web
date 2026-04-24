@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
+import { API_DOCS_URL } from "@/lib/config";
 
 const features = [
   {
@@ -43,7 +44,7 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <Link href="/login"><Button size="lg">Open Demo Dashboard</Button></Link>
-                <a href="http://localhost:8080/docs" target="_blank" rel="noreferrer"><Button variant="outline" size="lg">View API Docs</Button></a>
+                <a href={API_DOCS_URL} target="_blank" rel="noreferrer"><Button variant="outline" size="lg">View API Docs</Button></a>
               </div>
               <div className="grid gap-3 rounded-3xl border border-border/70 bg-background/55 p-4 lg:grid-cols-[1.15fr_0.85fr]">
                 <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-primary/12 via-background to-background p-5">

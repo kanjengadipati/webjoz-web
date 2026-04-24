@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { clearAuthSession, setThemePreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
+import { API_DOCS_URL } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -102,7 +103,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Link href="/login"><Button variant="outline" size="sm">{isAuthenticated ? "Switch Account" : "Login"}</Button></Link>
-                <a href="http://localhost:8080/docs" target="_blank" rel="noreferrer">
+                <a href={API_DOCS_URL} target="_blank" rel="noreferrer">
                   <Button variant="outline" size="sm">API Docs</Button>
                 </a>
               </div>
