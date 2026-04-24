@@ -186,6 +186,13 @@ export async function socialLogin(provider: string, token: string) {
   });
 }
 
+export async function updateUser(token: string, id: number, data: { name: string; email: string; role: string; is_verified: boolean }) {
+  return request<User>(`/auth/admin/users/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }, token);
+}
+
 export async function fetchRoles(token: string) {
   return request<{ id: number; name: string }[]>("/auth/admin/roles", { method: "GET" }, token);
 }

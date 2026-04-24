@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { fetchUsers } from "@/lib/api";
+import { fetchUsers, updateUser } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import type { SectionState, User } from "@/lib/types";
 
@@ -43,6 +43,23 @@ export default function UsersPage() {
     return () => window.clearTimeout(timeout);
   }, [loadUsers, token]);
 
+  async function handleToggleRole(user: User) {
+    if (!token) return;
+    const newRole = user.role === "admin" ? "user" : "admin";
+    try {
+      await updateUser(token, user.id, {
+        name: user.name,
+        email: user.email,
+        role: newRole,
+        is_verified: user.is_verified
+      });
+      pushToast(`User updated to ${newRole}`, "success");
+      void loadUsers();
+    } catch (error) {
+      pushToast("Failed to update user role", "error");
+    }
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -76,9 +93,21 @@ export default function UsersPage() {
                     <div className="text-lg font-semibold">{user.name}</div>
                     <div className="mt-1 text-sm text-muted-foreground">{user.email}</div>
                   </div>
-                  <div className="flex gap-2">
-                    <StatusBadge status={user.role} />
-                    <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-2 mr-2">
+                      <StatusBadge status={user.role} />
+                      <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
+                    </div>
+                    {user.role !== "superadmin" && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="rounded-xl h-9"
+                        onClick={() => void handleToggleRole(user)}
+                      >
+                        {user.role === "admin" ? "Demote" : "Make Admin"}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
