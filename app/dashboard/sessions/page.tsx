@@ -5,6 +5,7 @@ import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, Skelet
 import { useToast } from "@/components/toast-provider";
 import { fetchSessions, revokeOtherSessions, revokeSession } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
+import { Can } from "@/components/can";
 import type { Session, SectionState } from "@/lib/types";
 
 export default function SessionsPage() {
@@ -64,7 +65,7 @@ export default function SessionsPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={state} title="Session Manager" action={<div className="flex gap-2"><Button variant="outline" onClick={() => void loadSessions()}>Refresh</Button><Button onClick={() => void handleRevokeOthers()}>Revoke All Others</Button></div>} />
+          <SectionTitle eyebrow={state} title="Session Manager" action={<div className="flex gap-2"><Button variant="outline" onClick={() => void loadSessions()}>Refresh</Button><Can permission="session.delete"><Button onClick={() => void handleRevokeOthers()}>Revoke All Others</Button></Can></div>} />
         </CardHeader>
         <CardContent className="pt-6">
         {state === "loading" ? (
@@ -91,9 +92,11 @@ export default function SessionsPage() {
                   <div className="flex items-center gap-3">
                     <StatusBadge status={session.is_current ? "current" : "active"} />
                     {!session.is_current ? (
-                      <Button variant="destructive" onClick={() => void handleRevoke(session.id)}>
-                        Revoke
-                      </Button>
+                      <Can permission="session.delete">
+                        <Button variant="destructive" onClick={() => void handleRevoke(session.id)}>
+                          Revoke
+                        </Button>
+                      </Can>
                     ) : null}
                   </div>
                 </div>

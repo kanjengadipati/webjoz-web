@@ -2,47 +2,69 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { clearAuthSession, setThemePreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
 import { API_DOCS_URL } from "@/lib/config";
-import { fetchProfile } from "@/lib/api";
-import { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const navItems = [
-  { href: "/dashboard", label: "Overview", adminOnly: false },
-  { href: "/dashboard/logs", label: "Logs", adminOnly: true },
-  { href: "/dashboard/investigate", label: "Investigate", adminOnly: true },
-  { href: "/dashboard/sessions", label: "Sessions", adminOnly: false },
-  { href: "/dashboard/users", label: "Users", adminOnly: true },
-  { href: "/dashboard/settings", label: "Settings", adminOnly: false },
+  { href: "/dashboard", label: "Overview", permission: "dashboard.view" },
+  { href: "/dashboard/logs", label: "Logs", permission: "role.read" },
+  { href: "/dashboard/investigate", label: "Investigate", permission: "role.read" },
+  { href: "/dashboard/sessions", label: "Sessions", permission: "dashboard.view" },
+  { href: "/dashboard/users", label: "Users", permission: "permission.read" },
+  { href: "/dashboard/permissions", label: "Permissions", permission: "role.update_permissions" },
+  { href: "/dashboard/settings", label: "Settings", permission: "dashboard.view" },
 ];
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const token = useAuthToken();
   const theme = useThemePreference();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { hasPermission, role: userRole, loading } = usePermissions();
   const isAuthenticated = Boolean(token);
 
-  useEffect(() => {
-    if (token) {
-      fetchProfile(token)
-        .then((res) => setProfile(res.data || null))
-        .catch(() => setProfile(null));
-    } else {
-      setProfile(null);
-    }
-  }, [token]);
-
-  const userRole = profile?.role || "user";
-  const filteredNavItems = navItems.filter((item) => !item.adminOnly || userRole === "admin");
+  const filteredNavItems = navItems.filter((item) => hasPermission(item.permission) || !item.permission);
   const activeLabel = navItems.find((item) => item.href === pathname)?.label || "Dashboard";
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-8">
+    <div className="min-h-screen bg-background">
+      {/* Mobile Bottom Navigation */}
+      <nav className="fixed bottom-6 left-6 right-6 z-50 lg:hidden">
+        <div className="flex items-center justify-around rounded-3xl border border-border/40 bg-background/80 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-primary/10">
+          {filteredNavItems.slice(0, 5).map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex flex-col items-center gap-1 p-2 transition-all duration-300",
+                  active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                )}
+              >
+                <div className={cn(
+                  "size-1.5 rounded-full mb-1 transition-all duration-300",
+                  active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
+                )} />
+                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label.slice(0, 3)}</span>
+              </Link>
+            );
+          })}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-primary/5"
+            onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </Button>
+        </div>
+      </nav>
+
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 pb-28 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-8 lg:pb-6">
         <aside className="hidden lg:block">
           <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
             <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
@@ -128,7 +150,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     {isAuthenticated ? "Switch" : "Login"}
                   </Button>
                 </Link>
-                <a href={API_DOCS_URL} target="_blank" rel="noreferrer">
+                <a href={API_DOCS_URL} target="_blank" rel="noreferrer" className="hidden sm:inline-block">
                   <Button variant="default" size="sm" className="rounded-full h-9 px-5">API Docs</Button>
                 </a>
               </div>
@@ -136,13 +158,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </header>
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {!isAuthenticated ? (
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              </div>
+            ) : !isAuthenticated ? (
               <Card className="border-primary/20 bg-primary/5 p-8 text-center space-y-6">
                 <div className="mx-auto size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div className="space-y-2">
-                  <CardTitle className="text-3xl font-bold tracking-tighter">Access Locked</CardTitle>
+                  <CardTitle className="text-3xl font-bold tracking-tighter text-balance">Access Locked</CardTitle>
                   <CardDescription className="text-base max-w-md mx-auto">
                     This workspace requires a valid admin token. Please sign in to unlock the security telemetry and AI tools.
                   </CardDescription>

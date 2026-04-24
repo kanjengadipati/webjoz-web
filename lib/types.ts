@@ -17,6 +17,7 @@ export type Profile = {
   email?: string;
   role?: string;
   is_verified?: boolean;
+  permissions?: string[];
 };
 
 export type AuditLog = {

@@ -185,3 +185,22 @@ export async function socialLogin(provider: string, token: string) {
     body: JSON.stringify({ provider, token }),
   });
 }
+
+export async function fetchRoles(token: string) {
+  return request<{ id: number; name: string }[]>("/auth/admin/roles", { method: "GET" }, token);
+}
+
+export async function fetchAllPermissions(token: string) {
+  return request<{ id: number; name: string }[]>("/auth/admin/permissions", { method: "GET" }, token);
+}
+
+export async function fetchRolePermissions(token: string, roleID: number) {
+  return request<{ id: number; name: string; permissions: string[] }>(`/auth/admin/roles/${roleID}/permissions`, { method: "GET" }, token);
+}
+
+export async function updateRolePermissions(token: string, roleID: number, permissions: string[]) {
+  return request<null>(`/auth/admin/roles/${roleID}/permissions`, {
+    method: "PUT",
+    body: JSON.stringify({ permissions }),
+  }, token);
+}
