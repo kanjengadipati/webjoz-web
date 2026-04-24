@@ -2,26 +2,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { clearAuthSession, setThemePreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
 import { API_DOCS_URL } from "@/lib/config";
+import { fetchProfile } from "@/lib/api";
+import { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/logs", label: "Logs" },
-  { href: "/dashboard/investigate", label: "Investigate" },
-  { href: "/dashboard/sessions", label: "Sessions" },
-  { href: "/dashboard/users", label: "Users" },
-  { href: "/dashboard/settings", label: "Settings" },
+  { href: "/dashboard", label: "Overview", adminOnly: false },
+  { href: "/dashboard/logs", label: "Logs", adminOnly: true },
+  { href: "/dashboard/investigate", label: "Investigate", adminOnly: true },
+  { href: "/dashboard/sessions", label: "Sessions", adminOnly: false },
+  { href: "/dashboard/users", label: "Users", adminOnly: true },
+  { href: "/dashboard/settings", label: "Settings", adminOnly: false },
 ];
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const token = useAuthToken();
   const theme = useThemePreference();
+  const [profile, setProfile] = useState<Profile | null>(null);
   const isAuthenticated = Boolean(token);
+
+  useEffect(() => {
+    if (token) {
+      fetchProfile(token)
+        .then((res) => setProfile(res.data || null))
+        .catch(() => setProfile(null));
+    } else {
+      setProfile(null);
+    }
+  }, [token]);
+
+  const userRole = profile?.role || "user";
+  const filteredNavItems = navItems.filter((item) => !item.adminOnly || userRole === "admin");
   const activeLabel = navItems.find((item) => item.href === pathname)?.label || "Dashboard";
 
   return (
@@ -48,12 +64,19 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )} />
                 </div>
                 <div className="text-sm font-bold tracking-tight">
-                  {isAuthenticated ? "Authenticated" : "Locked"}
+                  {isAuthenticated ? (
+                    <div className="flex items-center justify-between gap-2">
+                      <span>Authenticated</span>
+                      <Badge variant="secondary" className="capitalize text-[9px] px-2 py-0 h-4 bg-primary/10 text-primary border-none font-bold">
+                        {userRole}
+                      </Badge>
+                    </div>
+                  ) : "Locked"}
                 </div>
               </div>
 
               <nav className="grid gap-1">
-                {navItems.map((item) => {
+                {filteredNavItems.map((item) => {
                   const active = pathname === item.href;
                   return (
                     <Link

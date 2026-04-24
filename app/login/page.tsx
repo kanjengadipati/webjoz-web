@@ -11,9 +11,6 @@ import { GOOGLE_CLIENT_ID } from "@/lib/config";
 import { login, socialLogin } from "@/lib/api";
 import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
 
-// Global flag to prevent double-initialization across hot-reloads
-let isGoogleInitialized = false;
-
 export default function LoginPage() {
   const router = useRouter();
   const { pushToast } = useToast();
@@ -23,16 +20,18 @@ export default function LoginPage() {
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const googleInitialized = useRef(false);
+
   const initializeGoogle = useCallback(() => {
-    if (!GOOGLE_CLIENT_ID || typeof window === "undefined" || isGoogleInitialized) return;
+    if (!GOOGLE_CLIENT_ID || typeof window === "undefined" || googleInitialized.current) return;
 
     const google = (window as any).google;
     if (google && google.accounts && google.accounts.id) {
-      isGoogleInitialized = true;
+      googleInitialized.current = true;
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         itp_support: true,
-        use_fedcm_for_prompt: false,
+        use_fedcm_for_prompt: false, // Fix: Disable FedCM to avoid AbortError on localhost
         callback: async (response: any) => {
           setState("loading");
           try {
@@ -46,8 +45,10 @@ export default function LoginPage() {
             router.push("/dashboard");
           } catch (error: any) {
             setState("error");
-            const msg = error?.response?.data?.message || (error instanceof Error ? error.message : "Social login failed");
-            setErrorMessage(msg);
+            const msg =
+              error?.response?.data?.message ||
+              (error instanceof Error ? error.message : "Social login failed");
+            setErrorMessage(msg); // Fix: set the error message so it displays
             pushToast(msg, "error");
           }
         },
@@ -57,10 +58,16 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      console.log("Configured Google Client ID:", GOOGLE_CLIENT_ID);
       const params = new URLSearchParams(window.location.search);
-      if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
-      if (params.get("expired") === "true") pushToast("Your session has expired. Please sign in again.", "error");
+      if (params.get("reset") === "success") {
+        pushToast("Password updated. You can sign in now.", "success");
+      }
+      if (params.get("expired") === "true") {
+        pushToast("Your session has expired. Please sign in again.", "error");
+      }
 
+      // Try to initialize if already loaded
       if ((window as any).google) {
         initializeGoogle();
       }
@@ -74,9 +81,7 @@ export default function LoginPage() {
     }
     const google = (window as any).google;
     if (google && google.accounts && google.accounts.id) {
-      setTimeout(() => {
-        google.accounts.id.prompt();
-      }, 100);
+      google.accounts.id.prompt();
     } else {
       pushToast("Google login is initializing. Please wait.", "info");
       initializeGoogle();
