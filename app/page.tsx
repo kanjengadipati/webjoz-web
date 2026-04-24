@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, SectionTitle } from "@/components/ui";
+import { AIPreview } from "@/components/ai-preview";
 import { API_DOCS_URL } from "@/lib/config";
 
 const categories = [
@@ -156,15 +156,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="bg-primary/5 border-l border-border/30 relative group overflow-hidden min-h-[400px] lg:min-h-full">
-              <Image 
-                src="/ai-preview.png" 
-                alt="AI Security Investigator" 
-                fill 
-                className="object-cover transition-transform duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent z-10" />
-            </div>
+            <AIPreview />
           </div>
         </Card>
       </section>
