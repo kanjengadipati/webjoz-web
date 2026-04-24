@@ -177,3 +177,11 @@ export async function changePassword(token: string, currentPassword: string, new
     body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
   }, token);
 }
+
+export async function socialLogin(provider: string, token: string) {
+  return request<LoginResponse>("/auth/social-login", {
+    method: "POST",
+    headers: { "X-Device-ID": DEFAULT_DEVICE_ID },
+    body: JSON.stringify({ provider, token }),
+  });
+}

@@ -9,3 +9,4 @@ export const TOKEN_STORAGE_KEY = "go_api_starterkit_access_token";
 export const REFRESH_STORAGE_KEY = "go_api_starterkit_refresh_token";
 export const EMAIL_STORAGE_KEY = "go_api_starterkit_email";
 export const THEME_STORAGE_KEY = "go_api_starterkit_theme";
+export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
