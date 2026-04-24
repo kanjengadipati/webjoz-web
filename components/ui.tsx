@@ -120,7 +120,7 @@ export function SectionTitle({ eyebrow, title, action }: { eyebrow?: string; tit
     <div className="mb-8 flex items-end justify-between gap-4">
       <div>
         {eyebrow ? <div className="text-xs uppercase tracking-[0.3em] font-bold text-primary/80 mb-1">{eyebrow}</div> : null}
-        <h2 className="text-3xl font-bold tracking-tight lg:text-4xl">{title}</h2>
+        <h2 className="text-2xl font-bold tracking-tight lg:text-3xl">{title}</h2>
       </div>
       {action}
     </div>
@@ -158,7 +158,7 @@ export function MetricCard({ label, value, helper }: { label: string; value: str
       <div className="absolute top-0 right-0 size-32 bg-primary/5 blur-[60px] -z-10 group-hover:bg-primary/15 transition-colors duration-700" />
       <CardHeader className="space-y-4 p-6">
         <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground/60 group-hover:text-primary/80 transition-colors">{label}</div>
-        <div className="text-5xl font-bold tracking-tighter lg:text-6xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
+        <div className="text-4xl font-bold tracking-tighter lg:text-5xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
         {helper && (
           <div className="text-xs font-medium text-muted-foreground/60 leading-relaxed">{helper}</div>
         )}

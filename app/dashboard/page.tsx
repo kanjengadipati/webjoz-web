@@ -67,7 +67,7 @@ export default function DashboardOverviewPage() {
             <div className="size-1.5 rounded-full bg-primary animate-pulse" />
             <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">System Intelligence</div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tighter lg:text-5xl">Operational Snapshot</h1>
+          <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Operational Snapshot</h1>
           <p className="max-w-2xl text-sm font-medium text-muted-foreground/80 leading-relaxed">
             Real-time security telemetry and operator activity tracking powered by your Go backend.
           </p>
