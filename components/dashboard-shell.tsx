@@ -126,7 +126,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </div>
                 <div className="pt-4">
                   <Link href="/login">
-                    <Button size="lg" className="rounded-full px-8">Sign in to GoKit</Button>
+                    <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">Unlock Workspace</Button>
                   </Link>
                 </div>
               </Card>
