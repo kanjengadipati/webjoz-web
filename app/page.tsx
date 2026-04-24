@@ -1,140 +1,183 @@
 import Link from "next/link";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
+import Image from "next/image";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, SectionTitle } from "@/components/ui";
 import { API_DOCS_URL } from "@/lib/config";
 
-const features = [
+const categories = [
   {
-    title: "Security telemetry",
-    body: "Auth spikes, failed logins, active sessions, and suspicious IP activity in one view.",
+    title: "Identity & Access",
+    description: "Robust authentication foundation with modern standards.",
+    features: [
+      "JWT Auth with Access & Refresh token rotation",
+      "Social Login (Google, Facebook, Apple)",
+      "Advanced Session Management & Revocation",
+      "Email Verification & Password Recovery flows",
+      "Secure Profile & Password Management"
+    ]
   },
   {
-    title: "Audit exploration",
-    body: "Filter and inspect audit rows so backend behavior reads like a product feed.",
+    title: "Security & Governance",
+    description: "Enterprise-grade control and transparency.",
+    features: [
+      "Granular RBAC with Permission-based checks",
+      "Detailed Audit Trail for all sensitive actions",
+      "Built-in Rate Limiting & Security Headers",
+      "Admin Dashboard for User & Role management",
+      "Request-scoped Structured Logging"
+    ]
   },
   {
-    title: "AI investigation flow",
-    body: "Turn recent incidents into a summary, suspicious signals, and recommendations.",
+    title: "AI Intelligence",
+    description: "Next-gen security analysis powered by LLMs.",
+    features: [
+      "AI-powered Audit Log Investigator",
+      "Anomaly Detection & Pattern Recognition",
+      "Multi-provider support (Gemini, OpenAI, Ollama)",
+      "Saved Investigation & Incident History",
+      "Context-aware Security Recommendations"
+    ]
   },
   {
-    title: "Operator controls",
-    body: "Manage users, revoke sessions, and adjust settings from the same workspace.",
-  },
+    title: "Cloud Native Flow",
+    description: "Developer-first infrastructure and DX.",
+    features: [
+      "Modular Go backend with Gin & GORM",
+      "Docker-compose setup (Postgres, Redis, Nginx)",
+      "OpenAPI 3.0 (Swagger) interactive documentation",
+      "Automated DB Migrations & Seed data",
+      "Ready for K8s, Render, or Vercel deployment"
+    ]
+  }
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen px-6 py-8 lg:px-10 lg:py-10">
-      <div className="mx-auto grid max-w-7xl gap-8">
-        <section className="grid items-start gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <Card className="overflow-hidden border-border/70 bg-card/90">
-            <CardHeader className="space-y-8 bg-gradient-to-br from-primary/12 via-background to-background p-8 lg:p-10">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <Badge variant="secondary" className="w-fit">Go API Starterkit Demo</Badge>
-                <div className="rounded-full border border-border/70 bg-background/70 px-4 py-2 text-sm text-muted-foreground">
-                  Next.js + Tailwind + shadcn/ui patterns
-                </div>
-              </div>
-              <div className="space-y-4">
-                <CardTitle className="max-w-4xl text-5xl leading-tight lg:text-6xl xl:text-7xl">
-                  A security workspace that makes your Go backend feel launch-ready.
-                </CardTitle>
-                <CardDescription className="max-w-3xl text-base leading-8 lg:text-lg">
-                  This landing page frames the product story clearly, while the dashboard turns auth, sessions, logs, and AI investigation into a cohesive admin experience instead of a loose API demo.
-                </CardDescription>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Link href="/login"><Button size="lg">Open Demo Dashboard</Button></Link>
-                <a href={API_DOCS_URL} target="_blank" rel="noreferrer"><Button variant="outline" size="lg">View API Docs</Button></a>
-              </div>
-              <div className="grid gap-3 rounded-3xl border border-border/70 bg-background/55 p-4 lg:grid-cols-[1.15fr_0.85fr]">
-                <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-primary/12 via-background to-background p-5">
-                  <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Live Admin Preview</div>
-                  <div className="mt-4 space-y-3">
-                    <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-                      <div>
-                        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Failed Logins</div>
-                        <div className="mt-1 text-2xl font-semibold">18</div>
-                      </div>
-                      <Badge className="border-rose-500/20 bg-rose-500/15 text-rose-700 dark:text-rose-300">High</Badge>
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-                        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sessions</div>
-                        <div className="mt-1 text-xl font-semibold">42 active</div>
-                      </div>
-                      <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
-                        <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Investigations</div>
-                        <div className="mt-1 text-xl font-semibold">6 saved</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid gap-3">
-                  <SubtleStat label="Use Case" value="Demo-ready" helper="A better first impression for clients, founders, and recruiters." />
-                  <SubtleStat label="Admin Story" value="End-to-end" helper="Landing, auth, metrics, logs, sessions, and investigation in one flow." />
-                </div>
-              </div>
-              <div className="grid gap-3 md:grid-cols-3">
-                <SubtleStat label="Auth modules" value="6+" helper="Login, profile, sessions, users, settings, and AI investigation." />
-                <SubtleStat label="Operator focus" value="Live" helper="Designed for quick product demos and internal admin workflows." />
-                <SubtleStat label="Backend feel" value="Productized" helper="Polished cards, clearer hierarchy, and action-oriented surfaces." />
-              </div>
-            </CardHeader>
-          </Card>
-
-          <div className="grid content-start gap-4 self-start md:grid-cols-2 lg:grid-cols-1">
-            {features.map((item, index) => (
-              <Card key={item.title} className="bg-card/85">
-                <CardContent className="flex min-h-40 items-center gap-4 p-5">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-sm font-semibold text-primary">
-                    0{index + 1}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-lg font-semibold leading-tight">{item.title}</div>
-                    <div className="mt-2 text-sm leading-7 text-muted-foreground">{item.body}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+    <main className="min-h-screen pb-20">
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 px-6 lg:px-10 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
+        
+        <div className="mx-auto max-w-7xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="flex justify-center mb-6">
+            <Badge variant="outline" className="px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse">
+              Go API Starterkit v2.0
+            </Badge>
           </div>
-        </section>
+          
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent leading-[1.1]">
+            Build Secure Apps.<br />Faster than ever.
+          </h1>
+          
+          <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed">
+            A production-ready foundation with JWT, Social Login, RBAC, Audit Trails, and an AI-powered Investigator. 
+            Designed for Go backends and polished Next.js dashboards.
+          </p>
+          
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <Link href="/login">
+              <Button size="lg" className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20">
+                Explore Dashboard
+              </Button>
+            </Link>
+            <a href={API_DOCS_URL} target="_blank" rel="noreferrer">
+              <Button variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold">
+                View API Docs
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
 
-        <section className="grid items-start gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <Card className="overflow-hidden">
-            <CardHeader className="border-b border-border/60">
-              <CardDescription>Why it lands better</CardDescription>
-              <CardTitle className="text-3xl">Built for demos, not just screenshots</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4 pt-6">
-              <div className="rounded-2xl border border-border/70 bg-muted/40 p-4">
-                <div className="text-sm font-semibold">Clear product story</div>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  A stronger landing view gives context before users authenticate, then hands them into an interface that feels intentionally designed.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-muted/40 p-4">
-                <div className="text-sm font-semibold">Consistent interaction patterns</div>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  Shared buttons, inputs, badges, and cards make every route feel like part of the same admin suite.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Feature Categories */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
+        <div className="grid gap-8 md:grid-cols-2">
+          {categories.map((cat, idx) => (
+            <Card key={idx} className="group overflow-hidden border-border/40 hover:border-primary/30">
+              <CardHeader className="bg-gradient-to-br from-primary/5 via-transparent to-transparent">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    0{idx + 1}
+                  </div>
+                  <CardTitle className="text-2xl font-bold">{cat.title}</CardTitle>
+                </div>
+                <CardDescription className="text-base">{cat.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <ul className="space-y-3">
+                  {cat.features.map((feat, fIdx) => (
+                    <li key={fIdx} className="flex items-start gap-3 group/item">
+                      <div className="mt-2 size-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors" />
+                      <span className="text-sm text-muted-foreground/90 group-hover/item:text-foreground transition-colors">{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
 
-          <Card className="overflow-hidden">
-            <CardHeader className="border-b border-border/60 bg-gradient-to-br from-accent/40 via-background to-background">
-              <CardDescription>Preview</CardDescription>
-              <CardTitle className="text-3xl">What the dashboard emphasizes</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-              <SubtleStat label="Overview" value="Metrics + profile" helper="Hero stats, operator summary, and event recency." />
-              <SubtleStat label="Logs" value="Live filters" helper="Fast scanning with expandable details." />
-              <SubtleStat label="Sessions" value="Revoke controls" helper="Clear current-vs-other session handling." />
-              <SubtleStat label="Investigate" value="AI summary" helper="Risk framing, timelines, and recommendations." />
-            </CardContent>
-          </Card>
-        </section>
-      </div>
+      {/* Stats / Quick Summary */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <SubtleStat label="Auth Endpoints" value="15+" helper="Register, Login, Social, Sessions, Recovery" />
+          <SubtleStat label="Admin Modules" value="6" helper="Users, Roles, Permissions, Audit, AI" />
+          <SubtleStat label="Security" value="Hardened" helper="Rate-limited, CSP, HSTS, Secure Headers" />
+          <SubtleStat label="Stack" value="Modern" helper="Go 1.25, Next.js 16, Tailwind 4, Postgres" />
+        </div>
+      </section>
+
+      {/* Preview Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
+        <Card className="bg-gradient-to-br from-card/80 via-card/50 to-primary/5 border-primary/20 overflow-hidden shadow-2xl shadow-primary/5">
+          <div className="grid lg:grid-cols-2 gap-0">
+            <div className="p-8 lg:p-12 space-y-6">
+              <SectionTitle 
+                eyebrow="Admin Intelligence" 
+                title="AI Audit Investigator" 
+              />
+              <p className="text-muted-foreground leading-relaxed">
+                The investigator turns thousands of audit rows into a readable summary. 
+                Identify suspicious login clusters, brute-force patterns, or unauthorized access attempts in seconds.
+              </p>
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-background/50 border border-border/50">
+                  <Badge className="bg-rose-500/10 text-rose-500 border-rose-500/20">Detected</Badge>
+                  <div className="text-sm font-medium">Multiple failed logins from 192.168.1.1</div>
+                </div>
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-background/50 border border-border/50">
+                  <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Resolved</Badge>
+                  <div className="text-sm font-medium">IP address blocked automatically by rate limiter</div>
+                </div>
+              </div>
+              <div className="pt-6">
+                <Link href="/dashboard/investigate">
+                  <Button variant="outline" className="rounded-full">Try AI Investigation</Button>
+                </Link>
+              </div>
+            </div>
+            <div className="bg-primary/5 border-l border-border/30 relative group overflow-hidden min-h-[400px] lg:min-h-full">
+              <Image 
+                src="/ai-preview.png" 
+                alt="AI Security Investigator" 
+                fill 
+                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent z-10" />
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      {/* Tech Stack Callout */}
+      <section className="mx-auto max-w-3xl px-6 py-12 text-center">
+        <h2 className="text-2xl font-bold mb-8">Modern Stack. Modular Design.</h2>
+        <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+           {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
+             <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
+           ))}
+        </div>
+      </section>
     </main>
   );
 }

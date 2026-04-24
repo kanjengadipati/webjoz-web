@@ -25,39 +25,34 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const activeLabel = navItems.find((item) => item.href === pathname)?.label || "Dashboard";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen">
       <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-8">
         <aside className="hidden lg:block">
-          <Card className="sticky top-6 overflow-hidden">
-            <CardHeader className="space-y-4 border-b border-border/70 bg-gradient-to-br from-primary/14 via-background to-background p-6">
-              <Badge variant="secondary" className="w-fit">Go API Starterkit</Badge>
-              <div className="space-y-2">
-                <CardTitle className="text-2xl">GoKit Dashboard</CardTitle>
-                <CardDescription className="text-sm leading-7">
-                Auth, sessions, audit logs, and AI-assisted investigation in one admin workspace.
+          <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
+            <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
+              <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px]">GoKit Dashboard</Badge>
+              <div className="space-y-1">
+                <CardTitle className="text-3xl font-bold tracking-tighter">SecureKit</CardTitle>
+                <CardDescription className="text-xs font-medium opacity-80">
+                  Unified Admin Workspace
                 </CardDescription>
               </div>
             </CardHeader>
-            <CardContent className="space-y-5 p-4">
-              <div className="rounded-2xl border border-border/70 bg-background/70 px-4 py-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Mode</div>
-                    <div className="mt-1 text-base font-semibold">
-                      {isAuthenticated ? "Authenticated" : "Locked"}
-                    </div>
-                  </div>
+            <CardContent className="space-y-6 p-4">
+              <div className="rounded-2xl border border-border/30 bg-background/50 p-4 shadow-inner">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <div className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted-foreground/70">Mode</div>
                   <div className={cn(
-                    "size-2.5 rounded-full",
-                    isAuthenticated ? "bg-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.55)]" : "bg-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.45)]",
+                    "size-2 rounded-full",
+                    isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
                   )} />
                 </div>
-                <div className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {isAuthenticated ? "API-backed pages are ready." : "Sign in to unlock live data."}
+                <div className="text-sm font-bold tracking-tight">
+                  {isAuthenticated ? "Authenticated" : "Locked"}
                 </div>
               </div>
 
-              <nav className="grid gap-1.5">
+              <nav className="grid gap-1">
                 {navItems.map((item) => {
                   const active = pathname === item.href;
                   return (
@@ -65,13 +60,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "rounded-2xl px-3 py-3 text-sm transition-colors",
+                        "group relative rounded-xl px-4 py-3 text-sm transition-all duration-300",
                         active
-                          ? "bg-primary !text-white shadow-sm font-semibold"
-                          : "font-medium text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground",
+                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 font-bold"
+                          : "font-medium text-muted-foreground hover:bg-primary/5 hover:text-primary",
                       )}
                     >
                       {item.label}
+                      {active && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                      )}
                     </Link>
                   );
                 })}
@@ -80,10 +78,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <Separator />
 
               <div className="grid gap-2">
-                <Button variant="outline" onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}>
-                  {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+                <Button variant="outline" className="rounded-xl border-border/40 hover:bg-primary/5" onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}>
+                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
                 </Button>
-                <Button variant="secondary" onClick={clearAuthSession} disabled={!isAuthenticated}>
+                <Button variant="secondary" className="rounded-xl" onClick={clearAuthSession} disabled={!isAuthenticated}>
                   Logout
                 </Button>
               </div>
@@ -92,41 +90,50 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="flex min-w-0 flex-col gap-6">
-          <header className="sticky top-0 z-10 rounded-3xl border border-border/80 bg-background/80 px-5 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+          <header className="sticky top-0 z-20 rounded-3xl border border-border/40 bg-background/60 px-6 py-4 backdrop-blur-xl shadow-lg shadow-black/5">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Live Demo</div>
-                <div className="mt-1 text-2xl font-semibold tracking-tight">{activeLabel}</div>
-                <div className="mt-1 text-sm text-muted-foreground">
-                  Product-style admin views powered by your Go auth backend.
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <div className="size-1.5 rounded-full bg-primary animate-pulse" />
+                  <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">Live Workspace</div>
                 </div>
+                <div className="text-2xl font-bold tracking-tighter">{activeLabel}</div>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link href="/login"><Button variant="outline" size="sm">{isAuthenticated ? "Switch Account" : "Login"}</Button></Link>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="rounded-full h-9 px-5">
+                    {isAuthenticated ? "Switch" : "Login"}
+                  </Button>
+                </Link>
                 <a href={API_DOCS_URL} target="_blank" rel="noreferrer">
-                  <Button variant="outline" size="sm">API Docs</Button>
+                  <Button variant="default" size="sm" className="rounded-full h-9 px-5">API Docs</Button>
                 </a>
               </div>
             </div>
           </header>
 
-          {!isAuthenticated ? (
-            <Card className="border-primary/30 bg-primary/5">
-              <CardHeader>
-                <CardTitle>Admin access required</CardTitle>
-                <CardDescription>
-                  Login first to unlock the live dashboard. The pages are wired to your Go backend and expect a valid access token in local storage.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href="/login">
-                  <Button>Go to Login</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ) : (
-            children
-          )}
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {!isAuthenticated ? (
+              <Card className="border-primary/20 bg-primary/5 p-8 text-center space-y-6">
+                <div className="mx-auto size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div className="space-y-2">
+                  <CardTitle className="text-3xl font-bold tracking-tighter">Access Locked</CardTitle>
+                  <CardDescription className="text-base max-w-md mx-auto">
+                    This workspace requires a valid admin token. Please sign in to unlock the security telemetry and AI tools.
+                  </CardDescription>
+                </div>
+                <div className="pt-4">
+                  <Link href="/login">
+                    <Button size="lg" className="rounded-full px-8">Sign in to GoKit</Button>
+                  </Link>
+                </div>
+              </Card>
+            ) : (
+              children
+            )}
+          </div>
         </div>
       </div>
     </div>

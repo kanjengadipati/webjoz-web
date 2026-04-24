@@ -40,6 +40,31 @@ export async function login(email: string, password: string) {
   });
 }
 
+export async function register(name: string, email: string, password: string) {
+  return request<null>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
+export async function verifyEmail(token: string) {
+  return request<null>(`/auth/verify?token=${encodeURIComponent(token)}`, { method: "GET" });
+}
+
+export async function forgotPassword(email: string) {
+  return request<null>("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  return request<null>("/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, new_password: newPassword }),
+  });
+}
+
 export async function fetchProfile(token: string) {
   return request<Profile>("/auth/profile", { method: "GET" }, token);
 }
