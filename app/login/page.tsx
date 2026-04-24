@@ -23,6 +23,9 @@ export default function LoginPage() {
     if (params.get("reset") === "success") {
       pushToast("Password updated. You can sign in now.", "success");
     }
+    if (params.get("expired") === "true") {
+      pushToast("Your session has expired. Please sign in again.", "error");
+    }
   }, [pushToast]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

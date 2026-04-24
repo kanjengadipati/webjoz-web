@@ -1,4 +1,5 @@
-import { API_BASE_URL, DEFAULT_DEVICE_ID } from "@/lib/config";
+import { API_BASE_URL, DEFAULT_DEVICE_ID, REFRESH_STORAGE_KEY, TOKEN_STORAGE_KEY } from "@/lib/config";
+import { readStorageValue, setStoredValue } from "@/lib/storage";
 import type {
   ApiEnvelope,
   AuditLog,
@@ -10,7 +11,7 @@ import type {
   User,
 } from "@/lib/types";
 
-async function request<T>(path: string, init?: RequestInit, token?: string) {
+async function request<T>(path: string, init?: RequestInit, token?: string, canRetry = true): Promise<ApiEnvelope<T>> {
   const headers = new Headers(init?.headers || {});
   if (!(init?.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
@@ -24,6 +25,44 @@ async function request<T>(path: string, init?: RequestInit, token?: string) {
     headers,
     cache: "no-store",
   });
+
+  // Handle 401 Unauthorized and try to refresh
+  if (response.status === 401 && canRetry && token) {
+    const refreshTokenValue = readStorageValue(REFRESH_STORAGE_KEY, "");
+    if (refreshTokenValue) {
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "X-Device-ID": DEFAULT_DEVICE_ID 
+          },
+          body: JSON.stringify({ refresh_token: refreshTokenValue }),
+        });
+
+        if (refreshResponse.ok) {
+          const body = (await refreshResponse.json()) as ApiEnvelope<LoginResponse>;
+          if (body.status === "success" && body.data) {
+            // Store new tokens
+            setStoredValue(TOKEN_STORAGE_KEY, body.data.access_token);
+            setStoredValue(REFRESH_STORAGE_KEY, body.data.refresh_token);
+
+            // Retry original request with NEW token
+            return request<T>(path, init, body.data.access_token, false);
+          }
+        }
+      } catch (err) {
+        console.error("Token refresh failed:", err);
+      }
+    }
+    
+    // If refresh failed or no refresh token, clear session and force login
+    setStoredValue(TOKEN_STORAGE_KEY, "");
+    setStoredValue(REFRESH_STORAGE_KEY, "");
+    if (typeof window !== "undefined") {
+      window.location.href = "/login?expired=true";
+    }
+  }
 
   const body = (await response.json()) as ApiEnvelope<T>;
   if (!response.ok || body.status !== "success") {
