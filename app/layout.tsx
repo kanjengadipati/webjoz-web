@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GoKit Dashboard",
+  title: "GoKit Console",
   description:
     "A polished Next.js live demo for the Go API Starterkit backend, including auth, audit logs, sessions, and AI investigation.",
 };

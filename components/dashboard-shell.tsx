@@ -71,7 +71,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
               <div className="flex items-start justify-between gap-3">
                 <Link href="/dashboard" aria-label="Go to dashboard overview">
-                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">GoKit Dashboard</Badge>
+                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">GoKit Console</Badge>
                 </Link>
                 <Button
                   variant="ghost"
@@ -84,7 +84,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </Button>
               </div>
               <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold tracking-tighter">SecureKit</CardTitle>
+                <CardTitle className="text-2xl font-bold tracking-tighter">GoKit Console</CardTitle>
                 <CardDescription className="text-xs font-medium opacity-80">
                   Unified Admin Workspace
                 </CardDescription>
