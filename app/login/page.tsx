@@ -7,9 +7,16 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import Script from "next/script";
-import { GOOGLE_CLIENT_ID } from "@/lib/config";
+import { FACEBOOK_APP_ID, GOOGLE_CLIENT_ID } from "@/lib/config";
 import { login, socialLogin } from "@/lib/api";
 import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
+
+// Module-level promise so HMR re-mounts don't recreate it.
+// Resolves once FB.init() has been called inside fbAsyncInit.
+let fbReadyResolve: (() => void) | null = null;
+const fbReadyPromise: Promise<void> = new Promise((res) => {
+  fbReadyResolve = res;
+});
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,56 +29,59 @@ export default function LoginPage() {
 
   const googleInitialized = useRef(false);
 
+  // Register window.fbAsyncInit BEFORE the <Script> renders.
+  // The Facebook SDK calls this callback automatically once it loads.
+  useEffect(() => {
+    if (!FACEBOOK_APP_ID || typeof window === "undefined") return;
+    if ((window as any).__fbAsyncInitSet) return; // idempotent across HMR
+    (window as any).__fbAsyncInitSet = true;
+
+    (window as any).fbAsyncInit = () => {
+      (window as any).FB.init({
+        appId: FACEBOOK_APP_ID,
+        status: false,
+        xfbml: false,
+        version: "v18.0",
+      });
+      fbReadyResolve?.();
+    };
+  }, []);
+
   const initializeGoogle = useCallback(() => {
     if (!GOOGLE_CLIENT_ID || typeof window === "undefined" || googleInitialized.current) return;
 
     const google = (window as any).google;
-    if (google && google.accounts && google.accounts.id) {
+    if (google?.accounts?.id) {
       googleInitialized.current = true;
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         itp_support: true,
-        use_fedcm_for_prompt: false, // Fix: Disable FedCM to avoid AbortError on localhost
-        callback: async (response: any) => {
+        use_fedcm_for_prompt: false,
+        callback: (response: any) => {
           setState("loading");
-          try {
-            const apiResponse = await socialLogin("google", response.credential);
-            persistAuthSession(
-              "",
-              apiResponse.data?.access_token || "",
-              apiResponse.data?.refresh_token || ""
-            );
-            pushToast("Welcome! Google login successful.", "success");
-            router.push("/dashboard");
-          } catch (error: any) {
-            setState("error");
-            const msg =
-              error?.response?.data?.message ||
-              (error instanceof Error ? error.message : "Social login failed");
-            setErrorMessage(msg); // Fix: set the error message so it displays
-            pushToast(msg, "error");
-          }
+          socialLogin("google", response.credential)
+            .then((apiResponse) => {
+              persistAuthSession("", apiResponse.data?.access_token || "", apiResponse.data?.refresh_token || "");
+              pushToast("Welcome! Google login successful.", "success");
+              router.push("/dashboard");
+            })
+            .catch((error: any) => {
+              setState("error");
+              const msg = error?.response?.data?.message || (error instanceof Error ? error.message : "Social login failed");
+              setErrorMessage(msg);
+              pushToast(msg, "error");
+            });
         },
       });
     }
   }, [pushToast, router]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log("Configured Google Client ID:", GOOGLE_CLIENT_ID);
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("reset") === "success") {
-        pushToast("Password updated. You can sign in now.", "success");
-      }
-      if (params.get("expired") === "true") {
-        pushToast("Your session has expired. Please sign in again.", "error");
-      }
-
-      // Try to initialize if already loaded
-      if ((window as any).google) {
-        initializeGoogle();
-      }
-    }
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
+    if (params.get("expired") === "true") pushToast("Your session has expired. Please sign in again.", "error");
+    if ((window as any).google) initializeGoogle();
   }, [pushToast, initializeGoogle]);
 
   const handleGoogleClick = () => {
@@ -80,7 +90,7 @@ export default function LoginPage() {
       return;
     }
     const google = (window as any).google;
-    if (google && google.accounts && google.accounts.id) {
+    if (google?.accounts?.id) {
       google.accounts.id.prompt();
     } else {
       pushToast("Google login is initializing. Please wait.", "info");
@@ -88,24 +98,66 @@ export default function LoginPage() {
     }
   };
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleFacebookClick = () => {
+    if (!FACEBOOK_APP_ID) {
+      pushToast("Facebook App ID is missing. Please check your .env file.", "error");
+      return;
+    }
+
+    setState("loading");
+    setErrorMessage("");
+
+    // fbReadyPromise only resolves after FB.init() completes inside fbAsyncInit
+    fbReadyPromise.then(() => {
+      const fb = (window as any).FB;
+      if (!fb) {
+        setState("error");
+        pushToast("Facebook SDK failed to load.", "error");
+        return;
+      }
+
+      fb.login(
+        (response: any) => {
+          if (response?.authResponse?.accessToken) {
+            socialLogin("facebook", response.authResponse.accessToken)
+              .then((apiResponse) => {
+                persistAuthSession("", apiResponse.data?.access_token || "", apiResponse.data?.refresh_token || "");
+                pushToast("Welcome! Facebook login successful.", "success");
+                router.push("/dashboard");
+              })
+              .catch((error: any) => {
+                setState("error");
+                const msg = error?.response?.data?.message || (error instanceof Error ? error.message : "Facebook login failed");
+                setErrorMessage(msg);
+                pushToast(msg, "error");
+              });
+          } else {
+            setState("idle");
+            pushToast("Facebook login was cancelled.", "info");
+          }
+        },
+        { scope: "public_profile,email" }
+      );
+    });
+  };
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setState("loading");
     setErrorMessage("");
 
-    try {
-      const response = await login(email, password);
-      persistAuthSession(email, response.data?.access_token || "", response.data?.refresh_token || "");
-      pushToast("Login successful. Welcome to the live demo.", "success");
-      router.push("/dashboard");
-    } catch (error: any) {
-      setState("error");
-      const message =
-        error?.response?.data?.message ||
-        (error instanceof Error ? error.message : "Login failed");
-      setErrorMessage(message);
-      pushToast(message, "error");
-    }
+    login(email, password)
+      .then((response) => {
+        persistAuthSession(email, response.data?.access_token || "", response.data?.refresh_token || "");
+        pushToast("Login successful. Welcome to the live demo.", "success");
+        router.push("/dashboard");
+      })
+      .catch((error: any) => {
+        setState("error");
+        const message = error?.response?.data?.message || (error instanceof Error ? error.message : "Login failed");
+        setErrorMessage(message);
+        pushToast(message, "error");
+      });
   }
 
   return (
@@ -132,11 +184,11 @@ export default function LoginPage() {
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@mail.com" />
+          <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@mail.com" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
           {state === "loading" ? "Signing in..." : "Enter Dashboard"}
@@ -153,11 +205,7 @@ export default function LoginPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <Button
-          variant="outline"
-          onClick={handleGoogleClick}
-          className="w-full rounded-xl py-6 hover:bg-primary/5 transition-all duration-300 group"
-        >
+        <Button variant="outline" onClick={handleGoogleClick} className="w-full rounded-xl py-6 hover:bg-primary/5 transition-all duration-300 group">
           <svg className="size-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -165,8 +213,8 @@ export default function LoginPage() {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
           </svg>
         </Button>
-        <Button variant="outline" disabled className="w-full rounded-xl py-6 opacity-30 cursor-not-allowed grayscale">
-          <svg className="size-5" fill="currentColor" viewBox="0 0 24 24">
+        <Button variant="outline" onClick={handleFacebookClick} className="w-full rounded-xl py-6 hover:bg-[#1877F2]/5 transition-all duration-300 group">
+          <svg className="size-5 group-hover:scale-110 transition-transform" fill="#1877F2" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
         </Button>
@@ -176,16 +224,17 @@ export default function LoginPage() {
           </svg>
         </Button>
       </div>
+
       {errorMessage ? (
         <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">
           {errorMessage}
         </div>
       ) : null}
-      <Script
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-        onLoad={initializeGoogle}
-      />
+
+      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" onLoad={initializeGoogle} />
+      {FACEBOOK_APP_ID && (
+        <Script src="https://connect.facebook.net/en_US/sdk.js" strategy="afterInteractive" />
+      )}
     </AuthShell>
   );
 }

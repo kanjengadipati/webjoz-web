@@ -72,8 +72,8 @@ export default function DashboardOverviewPage() {
             Real-time security telemetry and operator activity tracking powered by your Go backend.
           </p>
         </div>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           className="rounded-full px-8 shadow-lg shadow-primary/20"
           onClick={() => void refresh()}
           disabled={state === "loading"}
@@ -151,18 +151,18 @@ export default function DashboardOverviewPage() {
                   <div className="text-3xl font-bold tracking-tighter">{profile.name}</div>
                   <div className="mt-1 text-sm font-medium text-muted-foreground/80">{profile.email}</div>
                 </div>
-                
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <MiniMetric label="Role Authority" value={profile.role || "-"} />
                   <MiniMetric label="Trust Status" value={profile.is_verified ? "Verified" : "Unverified"} />
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/80 mb-2">Recent Security Events</div>
                   <div className="space-y-2">
                     {logs.slice(0, 3).map((log, index) => (
-                      <div 
-                        key={log.id ?? `${log.action}-${index}`} 
+                      <div
+                        key={log.id ?? `${log.action}-${index}`}
                         className="group/log rounded-2xl border border-border/40 bg-background/40 hover:bg-background/60 px-4 py-3 transition-all duration-300 hover:border-primary/30"
                       >
                         <div className="flex items-center justify-between gap-3">
