@@ -17,7 +17,7 @@ export function AIPreview() {
     <div className="bg-primary/5 border-l border-border/30 relative group overflow-hidden min-h-[400px] lg:min-h-full flex items-center justify-center p-8">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[grid-white/5] [mask-image:linear-gradient(to_bottom,transparent,black,transparent)] z-0 pointer-events-none" />
-      
+
       {/* Processing State */}
       {isProcessing ? (
         <div className="z-20 flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-700">
@@ -45,7 +45,7 @@ export function AIPreview() {
             <div className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary">Investigation Result</div>
             <div className="rounded-full bg-rose-500/10 px-3 py-1 text-[10px] font-bold text-rose-500 border border-rose-500/20">High Risk</div>
           </div>
-          
+
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="text-[11px] font-bold uppercase text-muted-foreground/60 tracking-wider">Summary</div>
@@ -53,7 +53,7 @@ export function AIPreview() {
                 Detected a cluster of <span className="text-primary font-bold">18 failed login attempts</span> originating from a suspicious IP (Singapore) targeting the admin endpoint within 2 minutes.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <div className="text-[11px] font-bold uppercase text-muted-foreground/60 tracking-wider">Signals</div>
               <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-left-4 duration-700 delay-500 fill-mode-both">
@@ -70,7 +70,7 @@ export function AIPreview() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 pt-2 animate-in fade-in duration-1000 delay-1000 fill-mode-both">
             <div className="size-2 rounded-full bg-emerald-500" />
             <div className="text-[10px] font-bold text-muted-foreground tracking-widest uppercase">Investigation Saved</div>

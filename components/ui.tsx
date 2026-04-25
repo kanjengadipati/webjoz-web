@@ -156,7 +156,11 @@ export function EmptyState({
 }
 
 export function SkeletonBlock({ className = "h-24" }: { className?: string }) {
-  return <div className={cn("animate-pulse rounded-2xl bg-muted/50", className)} />;
+  return (
+    <div className={cn("relative overflow-hidden rounded-2xl bg-muted/30", className)}>
+      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-muted/40 to-transparent" />
+    </div>
+  );
 }
 
 export function StatusBadge({ status }: { status?: string }) {

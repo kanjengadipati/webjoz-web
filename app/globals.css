@@ -8,21 +8,21 @@
   --card-foreground: oklch(0.15 0.02 260);
   --popover: oklch(1 0 260 / 0.95);
   --popover-foreground: oklch(0.15 0.02 260);
-  
+
   /* Primary Accent: Vibrant Indigo */
   --primary: oklch(0.55 0.22 260);
   --primary-foreground: oklch(0.98 0.01 260);
-  
+
   --secondary: oklch(0.94 0.02 260);
   --secondary-foreground: oklch(0.2 0.05 260);
   --muted: oklch(0.96 0.01 260);
   --muted-foreground: oklch(0.5 0.05 260);
   --accent: oklch(0.92 0.03 260);
   --accent-foreground: oklch(0.2 0.05 260);
-  
+
   /* Status Colors */
   --destructive: oklch(0.6 0.2 25);
-  
+
   --border: oklch(0.9 0.02 260);
   --input: oklch(0.9 0.02 260);
   --ring: oklch(0.55 0.22 260 / 0.4);
@@ -37,19 +37,19 @@
   --card-foreground: oklch(0.98 0.01 260);
   --popover: oklch(0.14 0.01 260 / 0.95);
   --popover-foreground: oklch(0.98 0.01 260);
-  
+
   --primary: oklch(0.65 0.22 260);
   --primary-foreground: oklch(0.98 0.01 260);
-  
+
   --secondary: oklch(0.22 0.02 260);
   --secondary-foreground: oklch(0.95 0.01 260);
   --muted: oklch(0.2 0.02 260);
   --muted-foreground: oklch(0.7 0.03 260);
   --accent: oklch(0.25 0.04 260);
   --accent-foreground: oklch(0.98 0.01 260);
-  
+
   --destructive: oklch(0.65 0.2 25);
-  
+
   --border: oklch(0.25 0.02 260);
   --input: oklch(0.25 0.02 260);
   --ring: oklch(0.65 0.22 260 / 0.4);
@@ -80,26 +80,52 @@
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   /* Custom Animations for Tailwind v4 */
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-slide-up: slide-up 0.5s ease-out forwards;
   --animate-pulse-slow: pulse-glow 15s ease-in-out infinite alternate;
+  --animate-shimmer: shimmer 1.5s infinite;
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse-glow {
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(1.1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 * {
@@ -125,14 +151,14 @@ body::before {
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  background: 
+  background:
     radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.08), transparent 25%);
   animation: var(--animate-pulse-slow);
 }
 
 .dark body::before {
-  background: 
+  background:
     radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 30%),
     radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 30%);
 }
