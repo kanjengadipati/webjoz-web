@@ -14,7 +14,7 @@ const navItems = [
   { href: "/dashboard/logs", label: "Logs", permission: "role.read" },
   { href: "/dashboard/investigate", label: "Investigate", permission: "role.read" },
   { href: "/dashboard/sessions", label: "Sessions", permission: "dashboard.view" },
-  { href: "/dashboard/users", label: "Users", permission: "permission.read" },
+  { href: "/dashboard/users", label: "Users", permission: "permission.read", groupStart: true },
   { href: "/dashboard/permissions", label: "Permissions", permission: "role.update_permissions" },
   { href: "/dashboard/settings", label: "Settings", permission: "dashboard.view" },
 ];
@@ -57,9 +57,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             variant="ghost" 
             size="icon" 
             className="rounded-full hover:bg-primary/5"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            <ThemeIcon mode={theme} />
           </Button>
         </div>
       </nav>
@@ -68,7 +69,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <aside className="hidden lg:block">
           <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
             <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
-              <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px]">GoKit Dashboard</Badge>
+              <div className="flex items-start justify-between gap-3">
+                <Link href="/dashboard" aria-label="Go to dashboard overview">
+                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">GoKit Dashboard</Badge>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                  aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                  onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+                >
+                  <ThemeIcon mode={theme} />
+                </Button>
+              </div>
               <div className="space-y-1">
                 <CardTitle className="text-2xl font-bold tracking-tighter">SecureKit</CardTitle>
                 <CardDescription className="text-xs font-medium opacity-80">
@@ -101,21 +115,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 {filteredNavItems.map((item) => {
                   const active = pathname === item.href;
                   return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "group relative rounded-xl px-4 py-3 text-sm transition-all duration-300",
-                        active
-                          ? "bg-primary !text-white shadow-lg shadow-primary/20 font-bold"
-                          : "font-medium text-muted-foreground hover:bg-primary/5 hover:text-primary",
-                      )}
-                    >
-                      {item.label}
-                      {active && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                      )}
-                    </Link>
+                    <div key={item.href} className={cn(item.groupStart ? "mt-3 border-t border-border/40 pt-3" : "")}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "group relative flex items-center rounded-xl border-l-2 px-4 py-3 text-sm transition-all duration-300",
+                          active
+                            ? "border-primary bg-primary/12 text-primary shadow-inner font-bold"
+                            : "border-transparent font-medium text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-primary",
+                        )}
+                      >
+                        <span className={cn("transition-transform duration-300", active ? "translate-x-1" : "group-hover:translate-x-1")}>{item.label}</span>
+                        {active && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" />
+                        )}
+                      </Link>
+                    </div>
                   );
                 })}
               </nav>
@@ -123,9 +138,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <Separator />
 
               <div className="grid gap-2">
-                <Button variant="outline" className="rounded-xl border-border/40 hover:bg-primary/5" onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}>
-                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                </Button>
                 <Button variant="secondary" className="rounded-xl" onClick={clearAuthSession} disabled={!isAuthenticated}>
                   Logout
                 </Button>
@@ -186,5 +198,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ThemeIcon({ mode }: { mode: string }) {
+  if (mode === "dark") {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

@@ -127,8 +127,32 @@ export function SectionTitle({ eyebrow, title, action }: { eyebrow?: string; tit
   );
 }
 
-export function EmptyState({ text }: { text: string }) {
-  return <div className="rounded-2xl border border-dashed border-border/80 bg-muted/30 px-4 py-8 text-center text-sm leading-7 text-muted-foreground">{text}</div>;
+export function EmptyState({
+  text,
+  title = "No data yet",
+  action,
+  icon,
+  className = "",
+}: {
+  text: string;
+  title?: string;
+  action?: ReactNode;
+  icon?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn(
+      "flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 bg-muted/20 px-6 py-10 text-center",
+      className,
+    )}>
+      <div className="mb-4 flex size-12 items-center justify-center rounded-2xl border border-border/60 bg-background/70 text-primary shadow-inner">
+        {icon || <EmptyStateIcon />}
+      </div>
+      <div className="text-sm font-bold tracking-tight text-foreground">{title}</div>
+      <div className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">{text}</div>
+      {action ? <div className="mt-5">{action}</div> : null}
+    </div>
+  );
 }
 
 export function SkeletonBlock({ className = "h-24" }: { className?: string }) {
@@ -152,18 +176,80 @@ export function StatusBadge({ status }: { status?: string }) {
   return <Badge variant="outline" className="opacity-70">{status || "unknown"}</Badge>;
 }
 
-export function MetricCard({ label, value, helper }: { label: string; value: string; helper?: string }) {
+export function MetricCard({
+  label,
+  value,
+  helper,
+  tone = "neutral",
+  signal,
+}: {
+  label: string;
+  value: string;
+  helper?: string;
+  tone?: "neutral" | "good" | "warning" | "danger" | "info";
+  signal?: string;
+}) {
+  const tones = {
+    neutral: {
+      accent: "bg-muted-foreground/60",
+      panel: "from-muted/30",
+      text: "text-muted-foreground",
+      ring: "border-border/40 hover:border-primary/30",
+    },
+    good: {
+      accent: "bg-emerald-500",
+      panel: "from-emerald-500/10",
+      text: "text-emerald-700 dark:text-emerald-400",
+      ring: "border-emerald-500/20 hover:border-emerald-500/40",
+    },
+    warning: {
+      accent: "bg-amber-500",
+      panel: "from-amber-500/10",
+      text: "text-amber-700 dark:text-amber-400",
+      ring: "border-amber-500/20 hover:border-amber-500/40",
+    },
+    danger: {
+      accent: "bg-rose-500",
+      panel: "from-rose-500/10",
+      text: "text-rose-700 dark:text-rose-400",
+      ring: "border-rose-500/20 hover:border-rose-500/40",
+    },
+    info: {
+      accent: "bg-sky-500",
+      panel: "from-sky-500/10",
+      text: "text-sky-700 dark:text-sky-400",
+      ring: "border-sky-500/20 hover:border-sky-500/40",
+    },
+  };
+  const style = tones[tone];
+
   return (
-    <Card className="relative overflow-hidden group border-border/40 hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-primary/5">
-      <div className="absolute top-0 right-0 size-32 bg-primary/5 blur-[60px] -z-10 group-hover:bg-primary/15 transition-colors duration-700" />
+    <Card className={cn("relative overflow-hidden group transition-all duration-500 shadow-sm hover:shadow-primary/5", style.ring)}>
+      <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r via-transparent to-transparent", style.accent)} />
+      <div className={cn("absolute top-0 right-0 size-32 bg-gradient-to-br to-transparent blur-[60px] -z-10 transition-colors duration-700", style.panel)} />
       <CardHeader className="space-y-4 p-6">
-        <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground/60 group-hover:text-primary/80 transition-colors">{label}</div>
-        <div className="text-4xl font-bold tracking-tighter lg:text-5xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground/60 group-hover:text-primary/80 transition-colors">{label}</div>
+          <div className={cn("size-2 rounded-full shadow-[0_0_12px_currentColor]", style.text)} />
+        </div>
+        <div className="flex items-end justify-between gap-4">
+          <div className="text-4xl font-bold tracking-tighter lg:text-5xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
+          {signal ? <div className={cn("mb-1 rounded-full border border-current/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider", style.text)}>{signal}</div> : null}
+        </div>
         {helper && (
           <div className="text-xs font-medium text-muted-foreground/60 leading-relaxed">{helper}</div>
         )}
       </CardHeader>
     </Card>
+  );
+}
+
+function EmptyStateIcon() {
+  return (
+    <svg className="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 17.5 9 12l4 3 7-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 19h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 

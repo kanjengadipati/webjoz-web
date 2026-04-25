@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Button, Card, CardContent, CardHeader, EmptyState, MetricCard, SectionTitle, SkeletonBlock, StatusBadge, SubtleStat } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, EmptyState, MetricCard, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { fetchAuditLogs, fetchProfile, fetchSessions } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
@@ -15,6 +15,7 @@ export default function DashboardOverviewPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [state, setState] = useState<SectionState>("idle");
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
   const refresh = useCallback(async () => {
     if (!token) return;
@@ -30,6 +31,7 @@ export default function DashboardOverviewPage() {
       setLogs(logsResponse.data || []);
       setSessions(sessionsResponse.data || []);
       setState("success");
+      setLastSyncedAt(new Date());
       pushToast("Dashboard metrics refreshed.", "success");
     } catch (error) {
       setState("error");
@@ -59,6 +61,12 @@ export default function DashboardOverviewPage() {
     return Array.from(buckets.entries()).slice(-7);
   }, [logs]);
 
+  const syncLabel = lastSyncedAt
+    ? `Last synced ${lastSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+    : token
+      ? "Not synced yet"
+      : "Connect API to sync";
+
   return (
     <div className="space-y-8 animate-in fade-in duration-1000">
       <div className="flex flex-wrap items-center justify-between gap-6">
@@ -72,21 +80,26 @@ export default function DashboardOverviewPage() {
             Real-time security telemetry and operator activity tracking powered by your Go backend.
           </p>
         </div>
-        <Button
-          size="lg"
-          className="rounded-full px-8 shadow-lg shadow-primary/20"
-          onClick={() => void refresh()}
-          disabled={state === "loading"}
-        >
-          {state === "loading" ? "Refreshing..." : "Refresh Dashboard"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-bold text-muted-foreground">
+            {syncLabel}
+          </div>
+          <Button
+            size="lg"
+            className="rounded-full px-8 shadow-lg shadow-primary/20"
+            onClick={() => void refresh()}
+            disabled={state === "loading" || !token}
+          >
+            {state === "loading" ? "Refreshing..." : state === "error" ? "Retry Sync" : "Refresh Dashboard"}
+          </Button>
+        </div>
       </div>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
-        <MetricCard label="Login Attempts Today" value={String(metrics.todayAttempts)} helper="Auth activity recorded today" />
-        <MetricCard label="Failed Logins" value={String(metrics.failedLogins)} helper="Critical brute-force signal" />
-        <MetricCard label="Active Sessions" value={String(metrics.activeSessions)} helper="Live refresh-token sessions" />
-        <MetricCard label="Top IP Footprint" value={String(metrics.uniqueIPs)} helper="Distinct source IP addresses" />
+        <MetricCard label="Login Attempts Today" value={String(metrics.todayAttempts)} helper="Auth activity recorded today" tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
+        <MetricCard label="Failed Logins" value={String(metrics.failedLogins)} helper="Critical brute-force signal" tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
+        <MetricCard label="Active Sessions" value={String(metrics.activeSessions)} helper="Live refresh-token sessions" tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "None"} />
+        <MetricCard label="Unique Source IPs" value={String(metrics.uniqueIPs)} helper="Distinct IPs seen in recent auth logs" tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Empty"} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
@@ -99,7 +112,15 @@ export default function DashboardOverviewPage() {
             {state === "loading" ? (
               <SkeletonBlock className="h-72" />
             ) : barData.length === 0 ? (
-              <EmptyState text="Sync metrics to populate the behavioral trend chart." />
+              <EmptyState
+                title="Trend chart waiting"
+                text="Sync audit metrics to populate the behavioral trend chart and expose failed-login spikes."
+                action={(
+                  <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
+                    {token ? "Sync Metrics" : "Connect API"}
+                  </Button>
+                )}
+              />
             ) : (
               <div className="space-y-6">
                 <div
@@ -176,7 +197,15 @@ export default function DashboardOverviewPage() {
                 </div>
               </div>
             ) : (
-              <EmptyState text="Authenticate to synchronize operator profile and audit recency." />
+              <EmptyState
+                title="Operator profile offline"
+                text="Authenticate or refresh the dashboard to synchronize operator profile and audit recency."
+                action={(
+                  <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
+                    {token ? "Retry Sync" : "Connect API"}
+                  </Button>
+                )}
+              />
             )}
           </CardContent>
         </Card>
@@ -193,4 +222,3 @@ function MiniMetric({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
