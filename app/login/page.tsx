@@ -23,7 +23,7 @@ export default function LoginPage() {
   const { pushToast } = useToast();
   const storedEmail = useStoredEmail();
   const [email, setEmail] = useState(storedEmail);
-  const [password, setPassword] = useState("admin123");
+  const [password, setPassword] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -188,7 +188,7 @@ export default function LoginPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
           {state === "loading" ? "Signing in..." : "Enter Dashboard"}

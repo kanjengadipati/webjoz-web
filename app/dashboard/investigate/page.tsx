@@ -91,7 +91,7 @@ export default function InvestigatePage() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow="Killer Feature" title="Investigate with AI" action={<Button onClick={() => void handleInvestigate()}>Run Investigation</Button>} />
+          <SectionTitle eyebrow="AI Powered" title="Investigate with AI" action={<Button onClick={() => void handleInvestigate()}>Run Investigation</Button>} />
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

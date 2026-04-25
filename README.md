@@ -31,3 +31,7 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Security Considerations
+
+**Note**: This dashboard uses `localStorage` for JWT token persistence to keep the demonstration simple and stateless without a complex proxy server. In a production environment, this is a known trade-off that exposes the application to XSS attacks. For production use, it is highly recommended to migrate the authentication flow to use `httpOnly` cookies.
