@@ -59,9 +59,11 @@ export default function Home() {
         
         <div className="mx-auto max-w-7xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="flex justify-center mb-6">
-            <Badge variant="outline" className="px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse">
-              Go API Starterkit v2.0
-            </Badge>
+            <a href="https://github.com/kanjengadipati/go-api-starterkit" target="_blank" rel="noopener noreferrer" className="inline-block">
+              <Badge variant="outline" className="px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse hover:bg-primary/10 transition-colors cursor-pointer">
+                Go API Starterkit v1.0
+              </Badge>
+            </a>
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent leading-[1.1]">
