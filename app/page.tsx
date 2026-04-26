@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, SectionTitle } from "@/components/ui";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
 import { AIPreview } from "@/components/ai-preview";
 import { API_DOCS_URL } from "@/lib/config";
 
@@ -12,8 +12,6 @@ const categories = [
       "JWT Auth with Access & Refresh token rotation",
       "Social Login (Google, Facebook, Apple)",
       "Advanced Session Management & Revocation",
-      "Email Verification & Password Recovery flows",
-      "Secure Profile & Password Management"
     ]
   },
   {
@@ -23,8 +21,6 @@ const categories = [
       "Granular RBAC with Permission-based checks",
       "Detailed Audit Trail for all sensitive actions",
       "Built-in Rate Limiting & Security Headers",
-      "Admin Dashboard for User & Role management",
-      "Request-scoped Structured Logging"
     ]
   },
   {
@@ -34,8 +30,6 @@ const categories = [
       "AI-powered Audit Log Investigator",
       "Anomaly Detection & Pattern Recognition",
       "Multi-provider support (Gemini, OpenAI, Ollama)",
-      "Saved Investigation & Incident History",
-      "Context-aware Security Recommendations"
     ]
   },
   {
@@ -45,8 +39,6 @@ const categories = [
       "Modular Go backend with Gin & GORM",
       "Docker-compose setup (Postgres, Redis, Nginx)",
       "OpenAPI 3.0 (Swagger) interactive documentation",
-      "Automated DB Migrations & Seed data",
-      "Ready for K8s, Render, or Vercel deployment"
     ]
   }
 ];
@@ -83,18 +75,17 @@ export default function Home() {
           </h1>
 
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed">
-            A production-ready foundation with JWT, Social Login, RBAC, Audit Trails, and an AI-powered Investigator.
-            Designed for Pleco Go backends and polished Next.js dashboards.
+            Production-ready auth with audit visibility, AI-powered investigation, and an operator dashboard your team can use on day one.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-5 pt-4">
             <Link href="/login">
-              <Button size="lg" className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20">
+              <Button size="lg" className="rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20">
                 Explore Dashboard
               </Button>
             </Link>
             <a href={API_DOCS_URL} target="_blank" rel="noreferrer">
-              <Button variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold">
+              <Button variant="ghost" size="sm" className="rounded-full px-5 text-sm font-semibold text-muted-foreground hover:text-primary">
                 View API Docs
               </Button>
             </a>
@@ -102,8 +93,53 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Spotlight */}
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+        <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+          <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="p-8 lg:p-12 xl:p-14">
+              <div className="max-w-2xl space-y-7">
+                <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+                  Key Feature
+                </Badge>
+                <div className="space-y-4">
+                  <h2 className="text-4xl font-bold tracking-tighter text-balance lg:text-5xl">
+                    AI Investigator turns raw audit trails into an answer.
+                  </h2>
+                  <p className="text-base leading-8 text-muted-foreground lg:text-lg">
+                    Instead of handing operators a wall of logs, Pleco Console clusters suspicious activity, drafts a readable timeline,
+                    and surfaces next actions in seconds.
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <SpotlightStat title="Readable summary" text="Condenses noisy auth events into a narrative your team can act on." />
+                  <SpotlightStat featured title="Signal detection" text="Flags brute-force bursts, odd session changes, and unusual patterns before they disappear into the feed." />
+                  <SpotlightStat title="Saved cases" text="Keeps investigation history available for follow-up and audit review." />
+                </div>
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
+                    <Badge className="border-rose-500/20 bg-rose-500/10 text-rose-500">Detected</Badge>
+                    <div className="text-sm font-medium">Multiple failed logins clustered from one IP across several accounts.</div>
+                  </div>
+                  <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
+                    <Badge className="border-emerald-500/20 bg-emerald-500/10 text-emerald-500">Recommended</Badge>
+                    <div className="text-sm font-medium">Review active sessions, revoke risky refresh tokens, and confirm operator activity.</div>
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <Link href="/dashboard/investigate">
+                    <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">Try AI Investigation</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <AIPreview />
+          </div>
+        </Card>
+      </section>
+
       {/* Feature Categories */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
         <div className="grid gap-8 md:grid-cols-2">
           {categories.map((cat, idx) => (
             <Card key={idx} className="group overflow-hidden border-border/40 hover:border-primary/30">
@@ -125,6 +161,11 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-6">
+                  <a href={API_DOCS_URL} target="_blank" rel="noreferrer" className="text-sm font-semibold text-primary transition-opacity hover:opacity-80">
+                    See more
+                  </a>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -132,58 +173,60 @@ export default function Home() {
       </section>
 
       {/* Stats / Quick Summary */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <SubtleStat label="Auth Endpoints" value="15+" helper="Register, Login, Social, Sessions, Recovery" />
-          <SubtleStat label="Admin Modules" value="6" helper="Users, Roles, Permissions, Audit, AI" />
-          <SubtleStat label="Security" value="Hardened" helper="Rate-limited, CSP, HSTS, Secure Headers" />
-          <SubtleStat label="Stack" value="Modern" helper="Go 1.23, Next.js 16, Tailwind 4, Postgres" />
-        </div>
-      </section>
-
-      {/* Preview Section */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-12">
-        <Card className="bg-gradient-to-br from-card/80 via-card/50 to-primary/5 border-primary/20 overflow-hidden shadow-2xl shadow-primary/5">
-          <div className="grid lg:grid-cols-2 gap-0">
-            <div className="p-8 lg:p-12 space-y-6">
-              <SectionTitle
-                eyebrow="Admin Intelligence"
-                title="AI Audit Investigator"
-              />
-              <p className="text-muted-foreground leading-relaxed">
-                The investigator turns thousands of audit rows into a readable summary.
-                Identify suspicious login clusters, brute-force patterns, or unauthorized access attempts in seconds.
-              </p>
-              <div className="space-y-4 pt-4">
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-background/50 border border-border/50">
-                  <Badge className="bg-rose-500/10 text-rose-500 border-rose-500/20">Detected</Badge>
-                  <div className="text-sm font-medium">Multiple failed logins from 192.168.1.1</div>
-                </div>
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-background/50 border border-border/50">
-                  <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Resolved</Badge>
-                  <div className="text-sm font-medium">IP address blocked automatically by rate limiter</div>
-                </div>
-              </div>
-              <div className="pt-6">
-                <Link href="/dashboard/investigate">
-                  <Button variant="outline" className="rounded-full">Try AI Investigation</Button>
-                </Link>
-              </div>
-            </div>
-            <AIPreview />
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+        <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <SubtleStat label="Auth Endpoints" value="15+" helper="Register, login, sessions, recovery" />
+            <SubtleStat label="Admin Modules" value="6" helper="Users, roles, permissions, audit, AI" />
+            <SubtleStat label="Security" value="Hardened" helper="Rate-limited with secure headers" />
+            <SubtleStat label="Stack" value="Modern" helper="Go, Next.js, Postgres, Docker" />
           </div>
         </Card>
       </section>
 
       {/* Tech Stack Callout */}
-      <section className="mx-auto max-w-3xl px-6 py-12 text-center">
-        <h2 className="text-2xl font-bold mb-8">Modern Stack. Modular Design.</h2>
-        <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-          {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
-            <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
-          ))}
+      <section className="mx-auto max-w-4xl px-6 py-16 text-center">
+        <div className="space-y-8 rounded-[28px] border border-border/40 bg-gradient-to-br from-background via-card/70 to-primary/5 px-8 py-12 shadow-xl shadow-primary/5">
+          <div className="space-y-3">
+            <h2 className="text-3xl font-bold tracking-tighter">Start building in minutes.</h2>
+            <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground">
+              Plug Pleco Console into your backend, open the operator dashboard, and give your team an auth layer that already knows how to explain itself.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 transition-all duration-500 hover:grayscale-0 hover:opacity-100">
+            {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
+              <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
+            ))}
+          </div>
+          <div className="flex justify-center">
+            <Link href="/login">
+              <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">
+                Start Building
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function SpotlightStat({ title, text, featured = false }: { title: string; text: string; featured?: boolean }) {
+  return (
+    <div
+      className={[
+        "rounded-2xl border p-4 text-left transition-colors",
+        featured
+          ? "border-primary/30 bg-primary/10 shadow-lg shadow-primary/10"
+          : "border-border/40 bg-background/55",
+      ].join(" ")}
+    >
+      <div className={featured ? "text-sm font-semibold tracking-tight text-foreground" : "text-sm font-semibold tracking-tight"}>
+        {title}
+      </div>
+      <div className={featured ? "mt-2 text-sm leading-6 text-foreground/80" : "mt-2 text-sm leading-6 text-muted-foreground"}>
+        {text}
+      </div>
+    </div>
   );
 }
