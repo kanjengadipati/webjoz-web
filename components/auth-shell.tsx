@@ -29,7 +29,7 @@ export function AuthShell({
   footer,
 }: AuthShellProps) {
   return (
-    <main className="relative min-h-screen px-6 py-10 lg:px-10 overflow-hidden">
+    <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
       {/* Radial top glow — matches the home hero */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 
@@ -54,11 +54,11 @@ export function AuthShell({
           </div>
 
           {/* Title — gradient clip-text, heavy weight, tight tracking, original sizes */}
-          <h1 className="max-w-3xl text-5xl font-bold tracking-tighter lg:text-6xl bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent leading-[1.1]">
+          <h1 className="max-w-3xl text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl lg:text-6xl">
             {title}
           </h1>
 
-          <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
             {description}
           </p>
 

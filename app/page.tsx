@@ -47,13 +47,13 @@ export default function Home() {
   return (
     <main className="min-h-screen pb-20">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 px-6 lg:px-10 overflow-hidden">
+      <section className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-6 lg:px-10 lg:pt-20">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
 
         <div className="mx-auto max-w-7xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="flex justify-center mb-6">
             <a href="https://github.com/kanjengadipati/go-api-starterkit" target="_blank" rel="noopener noreferrer" className="inline-block">
-              <div className="flex items-center gap-3 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur transition-colors hover:bg-primary/10">
+              <div className="flex flex-wrap items-center justify-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur transition-colors hover:bg-primary/10 sm:flex-nowrap sm:gap-3">
                 <Image
                   src="/logo.png"
                   alt="Pleco logo"
@@ -70,11 +70,11 @@ export default function Home() {
             </a>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent leading-[1.1]">
+          <h1 className="text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl md:text-7xl lg:text-8xl">
             Ship auth.<br />Focus on your product.
           </h1>
 
-          <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed">
+          <p className="mx-auto max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
             Production-ready auth with audit visibility, AI-powered investigation, and an operator dashboard your team can use on day one.
           </p>
 
@@ -94,7 +94,7 @@ export default function Home() {
       </section>
 
       {/* AI Spotlight */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10">
         <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-8 lg:p-12 xl:p-14">
@@ -111,7 +111,7 @@ export default function Home() {
                     and surfaces next actions in seconds.
                   </p>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-3 md:grid-cols-3">
                   <SpotlightStat title="Readable summary" text="Condenses noisy auth events into a narrative your team can act on." />
                   <SpotlightStat featured title="Signal detection" text="Flags brute-force bursts, odd session changes, and unusual patterns before they disappear into the feed." />
                   <SpotlightStat title="Saved cases" text="Keeps investigation history available for follow-up and audit review." />
@@ -139,7 +139,7 @@ export default function Home() {
       </section>
 
       {/* Feature Categories */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10">
         <div className="grid gap-8 md:grid-cols-2">
           {categories.map((cat, idx) => (
             <Card key={idx} className="group overflow-hidden border-border/40 hover:border-primary/30">
@@ -173,7 +173,7 @@ export default function Home() {
       </section>
 
       {/* Stats / Quick Summary */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10">
         <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <SubtleStat label="Auth Endpoints" value="15+" helper="Register, login, sessions, recovery" />
@@ -185,7 +185,7 @@ export default function Home() {
       </section>
 
       {/* Tech Stack Callout */}
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center">
+      <section className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6">
         <div className="space-y-8 rounded-[28px] border border-border/40 bg-gradient-to-br from-background via-card/70 to-primary/5 px-8 py-12 shadow-xl shadow-primary/5">
           <div className="space-y-3">
             <h2 className="text-3xl font-bold tracking-tighter">Start building in minutes.</h2>
