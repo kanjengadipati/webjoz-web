@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const googleInitialized = useRef(false);
+
 
   // Register window.fbAsyncInit BEFORE the <Script> renders.
   // The Facebook SDK calls this callback automatically once it loads.
@@ -48,11 +48,11 @@ export default function LoginPage() {
   }, []);
 
   const initializeGoogle = useCallback(() => {
-    if (!GOOGLE_CLIENT_ID || typeof window === "undefined" || googleInitialized.current) return;
+    if (!GOOGLE_CLIENT_ID || typeof window === "undefined" || (window as any).__googleInitialized) return;
 
     const google = (window as any).google;
     if (google?.accounts?.id) {
-      googleInitialized.current = true;
+      (window as any).__googleInitialized = true;
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         itp_support: true,
@@ -160,24 +160,39 @@ export default function LoginPage() {
       });
   }
 
+  const handleQuickFill = () => {
+    setEmail("admin@mail.com");
+    setPassword("admin123");
+    pushToast("Demo credentials filled.", "info");
+  };
+
   return (
     <AuthShell
-      badge="Admin Login"
-      title="Sign into the polished demo layer sitting on top of your auth API."
+      badge="Pleco Console"
+      title="The auth backend built for startup teams."
       description="Sign in with the seeded admin account to explore the logs feed, AI investigation workflow, active sessions, and user management endpoints through a polished dashboard."
       stats={[
-        { label: "Default Email", value: "admin@mail.com" },
-        { label: "Default Password", value: "admin123" },
+        { label: "Demo Email", value: "admin@mail.com" },
+        { label: "Demo Password", value: "admin123" },
       ]}
       cardEyebrow="Live Auth"
       cardTitle="Sign In"
       cardDescription="Use the seeded account to unlock the dashboard and test the backend in a realistic flow."
       footer={
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link href="/" className="font-medium text-primary hover:opacity-80">Back to overview</Link>
-          <Link href="/register" className="font-medium text-primary hover:opacity-80">Create account</Link>
-          <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">Forgot password</Link>
-          <Link href="/auth/verify" className="font-medium text-primary hover:opacity-80">Verify email</Link>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <Link href="/" className="font-medium text-primary hover:opacity-80">Back to overview</Link>
+            <Link href="/register" className="font-medium text-primary hover:opacity-80">Create account</Link>
+            <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">Forgot password</Link>
+            <Link href="/auth/verify" className="font-medium text-primary hover:opacity-80">Verify email</Link>
+          </div>
+          <button
+            type="button"
+            onClick={handleQuickFill}
+            className="text-left text-xs font-bold uppercase tracking-widest text-muted-foreground/60 hover:text-primary transition-colors"
+          >
+            + Quick Fill Demo Credentials
+          </button>
         </div>
       }
     >
@@ -188,7 +203,7 @@ export default function LoginPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
           {state === "loading" ? "Signing in..." : "Enter Dashboard"}

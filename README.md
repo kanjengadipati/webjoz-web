@@ -1,14 +1,15 @@
-# Go API Starterkit Dashboard
+# Pleco Console
 
-This is a simple Next.js demo dashboard for the `go-api-starterkit` backend.
+The official companion dashboard for the [Pleco](https://github.com/kanjengadipati/go-auth-app) auth foundation.
 
 ## Features
 
-- Admin login against the Go API
+- Admin login against the Pleco Go API
 - Authenticated profile view
 - Failed auth audit log feed
 - AI-powered audit investigation trigger
 - Saved investigation history viewer
+
 
 ## Environment
 

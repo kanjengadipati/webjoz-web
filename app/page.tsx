@@ -56,25 +56,25 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 px-6 lg:px-10 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
-        
+
         <div className="mx-auto max-w-7xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="flex justify-center mb-6">
             <a href="https://github.com/kanjengadipati/go-api-starterkit" target="_blank" rel="noopener noreferrer" className="inline-block">
               <Badge variant="outline" className="px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse hover:bg-primary/10 transition-colors cursor-pointer">
-                Go API Starterkit v1.0
+                Pleco Console v1.0
               </Badge>
             </a>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent leading-[1.1]">
-            Build Secure Apps.<br />Faster than ever.
+            Ship auth.<br />Focus on your product.
           </h1>
-          
+
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed">
-            A production-ready foundation with JWT, Social Login, RBAC, Audit Trails, and an AI-powered Investigator. 
-            Designed for Go backends and polished Next.js dashboards.
+            A production-ready foundation with JWT, Social Login, RBAC, Audit Trails, and an AI-powered Investigator.
+            Designed for Pleco Go backends and polished Next.js dashboards.
           </p>
-          
+
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <Link href="/login">
               <Button size="lg" className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20">
@@ -125,7 +125,7 @@ export default function Home() {
           <SubtleStat label="Auth Endpoints" value="15+" helper="Register, Login, Social, Sessions, Recovery" />
           <SubtleStat label="Admin Modules" value="6" helper="Users, Roles, Permissions, Audit, AI" />
           <SubtleStat label="Security" value="Hardened" helper="Rate-limited, CSP, HSTS, Secure Headers" />
-          <SubtleStat label="Stack" value="Modern" helper="Go 1.25, Next.js 16, Tailwind 4, Postgres" />
+          <SubtleStat label="Stack" value="Modern" helper="Go 1.23, Next.js 16, Tailwind 4, Postgres" />
         </div>
       </section>
 
@@ -134,12 +134,12 @@ export default function Home() {
         <Card className="bg-gradient-to-br from-card/80 via-card/50 to-primary/5 border-primary/20 overflow-hidden shadow-2xl shadow-primary/5">
           <div className="grid lg:grid-cols-2 gap-0">
             <div className="p-8 lg:p-12 space-y-6">
-              <SectionTitle 
-                eyebrow="Admin Intelligence" 
-                title="AI Audit Investigator" 
+              <SectionTitle
+                eyebrow="Admin Intelligence"
+                title="AI Audit Investigator"
               />
               <p className="text-muted-foreground leading-relaxed">
-                The investigator turns thousands of audit rows into a readable summary. 
+                The investigator turns thousands of audit rows into a readable summary.
                 Identify suspicious login clusters, brute-force patterns, or unauthorized access attempts in seconds.
               </p>
               <div className="space-y-4 pt-4">
@@ -167,9 +167,9 @@ export default function Home() {
       <section className="mx-auto max-w-3xl px-6 py-12 text-center">
         <h2 className="text-2xl font-bold mb-8">Modern Stack. Modular Design.</h2>
         <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-           {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
-             <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
-           ))}
+          {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
+            <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
+          ))}
         </div>
       </section>
     </main>

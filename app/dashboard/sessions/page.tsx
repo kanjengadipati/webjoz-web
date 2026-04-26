@@ -6,6 +6,7 @@ import { useToast } from "@/components/toast-provider";
 import { fetchSessions, revokeOtherSessions, revokeSession } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { Can } from "@/components/can";
+import { cn } from "@/lib/utils";
 import type { Session, SectionState } from "@/lib/types";
 
 export default function SessionsPage() {
@@ -65,7 +66,24 @@ export default function SessionsPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={state} title="Session Manager" action={<div className="flex gap-2"><Button variant="outline" onClick={() => void loadSessions()}>Refresh</Button><Can permission="session.delete"><Button onClick={() => void handleRevokeOthers()}>Revoke All Others</Button></Can></div>} />
+          <SectionTitle
+            eyebrow={state}
+            title="Session Manager"
+            action={
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" className="rounded-full px-4 h-9" onClick={() => void loadSessions()} disabled={state === "loading"}>
+                  <svg className={cn("mr-2 size-3.5", state === "loading" && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
+                  Refresh
+                </Button>
+                <Can permission="session.delete">
+                  <Button variant="secondary" size="sm" className="rounded-full px-4 h-9 font-bold" onClick={() => void handleRevokeOthers()} disabled={sessions.filter(s => !s.is_current).length === 0}>
+                    <svg className="mr-2 size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /><path d="M2 12h7" /><path d="M2 12V6" /><path d="M2 12v6" /></svg>
+                    Revoke All Others
+                  </Button>
+                </Can>
+              </div>
+            }
+          />
         </CardHeader>
         <CardContent className="pt-6">
         {state === "loading" ? (

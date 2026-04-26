@@ -5,6 +5,7 @@ import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, Sectio
 import { useToast } from "@/components/toast-provider";
 import { fetchInvestigationDetail, fetchInvestigationHistory, investigateLogs } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
+import { cn } from "@/lib/utils";
 import type { InvestigationHistory, InvestigationResult } from "@/lib/types";
 
 const loadingMessages = [
@@ -25,6 +26,16 @@ export default function InvestigatePage() {
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    if (token) {
+      void loadHistory(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
   useEffect(() => {
     if (!isLoading) return;
     const id = window.setInterval(() => {
@@ -33,11 +44,14 @@ export default function InvestigatePage() {
     return () => window.clearInterval(id);
   }, [isLoading]);
 
-  async function loadHistory() {
+  async function loadHistory(currentPage = page) {
     if (!token) return;
     try {
-      const response = await fetchInvestigationHistory(token);
+      const response = await fetchInvestigationHistory(token, currentPage, 10);
       setHistory(response.data || []);
+      if (response.meta?.total) {
+        setTotalPages(Math.ceil((response.meta.total as number) / 10));
+      }
     } catch (error) {
       pushToast(error instanceof Error ? error.message : "Failed to load history", "error");
     }
@@ -91,7 +105,16 @@ export default function InvestigatePage() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow="AI Powered" title="Investigate with AI" action={<Button onClick={() => void handleInvestigate()}>Run Investigation</Button>} />
+          <SectionTitle
+            eyebrow="AI Powered"
+            title="Investigate with AI"
+            action={
+              <Button variant="secondary" onClick={() => void handleInvestigate()} disabled={isLoading} className="rounded-full px-6 font-bold">
+                <svg className={cn("mr-2 size-3.5", isLoading && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" /></svg>
+                {isLoading ? "Analyzing..." : "Run Investigation"}
+              </Button>
+            }
+          />
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -112,12 +135,15 @@ export default function InvestigatePage() {
           </CardHeader>
           <CardContent className="pt-6">
           {isLoading ? (
-            <div className="space-y-4">
-              <div className="rounded-3xl bg-slate-950 px-5 py-6 text-white dark:bg-slate-900">
-                <div className="text-xs uppercase tracking-[0.24em] text-slate-400">Thinking</div>
-                <div className="mt-3 text-2xl font-semibold">{loadingMessages[loadingIndex]}</div>
-                <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full w-1/3 animate-pulse rounded-full bg-orange-400" />
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="rounded-3xl bg-slate-950 px-6 py-8 text-white dark:bg-slate-900 shadow-2xl shadow-primary/10">
+                <div className="flex items-center gap-2">
+                  <div className="size-2 rounded-full bg-muted-foreground animate-ping" />
+                  <div className="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">AI Processing</div>
+                </div>
+                <div className="mt-4 text-2xl font-semibold tracking-tight leading-tight">{loadingMessages[loadingIndex]}</div>
+                <div className="mt-6 h-1.5 overflow-hidden rounded-full bg-white/5">
+                  <div className="h-full w-full bg-gradient-to-r from-muted via-primary to-muted bg-[length:200%_100%] animate-shimmer rounded-full" />
                 </div>
               </div>
               <div className="grid gap-3">
@@ -131,7 +157,10 @@ export default function InvestigatePage() {
               <div className="rounded-3xl border border-border/70 bg-muted/35 p-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Risk Level</div>
-                  <StatusBadge status={riskLevel} />
+                  <div className="flex flex-col items-end">
+                    <StatusBadge status={riskLevel} />
+                    <span className="mt-1 text-[10px] text-muted-foreground/60">*Beta: Calculated solely from signal count</span>
+                  </div>
                 </div>
                 <p className="mt-4 text-base leading-8 text-foreground">{result.summary}</p>
               </div>
@@ -150,7 +179,7 @@ export default function InvestigatePage() {
           <CardHeader className="border-b border-border/60">
             <SectionTitle eyebrow={String(history.length)} title="Saved Investigations" action={<Button variant="outline" onClick={() => void loadHistory()}>Refresh</Button>} />
           </CardHeader>
-          <CardContent className="space-y-3 pt-6">
+          <CardContent className="space-y-3 pt-6 pb-2">
             {history.length === 0 ? (
               <EmptyState text="No saved investigations loaded yet." />
             ) : (
@@ -159,7 +188,7 @@ export default function InvestigatePage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="font-medium">Investigation #{item.id}</div>
-                      <div className="mt-1 text-sm text-muted-foreground">{item.summary}</div>
+                      <div className="mt-1 text-sm text-muted-foreground line-clamp-2">{item.summary}</div>
                     </div>
                     <StatusBadge status={item.status} />
                   </div>
@@ -167,15 +196,38 @@ export default function InvestigatePage() {
               ))
             )}
           </CardContent>
-          {selected ? (
-            <div className="mx-6 mb-6 rounded-2xl border border-border/70 bg-background/70 p-4">
-              <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Selected Investigation</div>
-              <div className="mt-2 text-lg font-semibold">#{selected.id}</div>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">{selected.summary}</p>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-6 pb-6">
+              <Button variant="outline" disabled={page === 1} onClick={() => { setPage(p => p - 1); void loadHistory(page - 1); }}>Previous</Button>
+              <div className="text-sm font-medium text-muted-foreground">Page {page} of {totalPages}</div>
+              <Button variant="outline" disabled={page === totalPages} onClick={() => { setPage(p => p + 1); void loadHistory(page + 1); }}>Next</Button>
             </div>
-          ) : null}
+          )}
         </Card>
       </section>
+
+      {selected ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setSelected(null)} />
+          <Card className="relative z-50 w-full max-w-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <CardHeader className="border-b border-border/60 flex flex-row items-center justify-between">
+              <SectionTitle eyebrow="Investigation Details" title={`#${selected.id}`} />
+              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors">
+                <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </CardHeader>
+            <CardContent className="p-6 max-h-[70vh] overflow-y-auto">
+              <div className="mb-6 flex items-center justify-between">
+                 <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">Status</div>
+                 <StatusBadge status={selected.status} />
+              </div>
+              <div className="text-sm leading-8 text-foreground whitespace-pre-wrap">
+                {selected.summary}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ) : null}
     </div>
   );
 }

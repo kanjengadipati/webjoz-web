@@ -73,24 +73,26 @@ export default function DashboardOverviewPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <div className="size-1.5 rounded-full bg-primary animate-pulse" />
-            <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">System Intelligence</div>
+            <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">Overview</div>
           </div>
-          <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Operational Snapshot</h1>
+          <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Dashboard</h1>
           <p className="max-w-2xl text-sm font-medium text-muted-foreground/80 leading-relaxed">
             Real-time security telemetry and operator activity tracking powered by your Go backend.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-bold text-muted-foreground">
+          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/70">
             {syncLabel}
           </div>
           <Button
-            size="lg"
-            className="rounded-full px-8 shadow-lg shadow-primary/20"
+            variant="secondary"
+            size="sm"
+            className="rounded-full h-9 px-5 font-bold transition-all duration-300 active:scale-95"
             onClick={() => void refresh()}
             disabled={state === "loading" || !token}
           >
-            {state === "loading" ? "Refreshing..." : state === "error" ? "Retry Sync" : "Refresh Dashboard"}
+            <svg className={cn("mr-2 size-3.5", state === "loading" && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
+            {state === "loading" ? "Syncing..." : "Sync Dashboard"}
           </Button>
         </div>
       </div>

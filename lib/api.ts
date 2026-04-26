@@ -123,9 +123,9 @@ export async function investigateLogs(token: string, payload: Record<string, unk
   );
 }
 
-export async function fetchInvestigationHistory(token: string) {
+export async function fetchInvestigationHistory(token: string, page: number = 1, limit: number = 10) {
   return request<InvestigationHistory[]>(
-    "/auth/admin/audit-logs/investigations?page=1&limit=10",
+    `/auth/admin/audit-logs/investigations?page=${page}&limit=${limit}`,
     { method: "GET" },
     token,
   );

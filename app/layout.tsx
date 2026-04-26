@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GoKit Console",
+  title: "Pleco Console",
   description:
     "A polished Next.js live demo for the Go API Starterkit backend, including auth, audit logs, sessions, and AI investigation.",
 };
@@ -25,18 +25,25 @@ export const metadata: Metadata = {
 const themeScript = `
 (function() {
   try {
-    var theme = localStorage.getItem('go_api_starterkit_theme');
-    // Default to dark if no preference is stored
+    var theme = localStorage.getItem('pleco_theme');
+    var accent = localStorage.getItem('pleco_accent');
+
+    // Handle Light/Dark Mode
     if (!theme || theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.dataset.theme = 'dark';
     } else {
       document.documentElement.classList.remove('dark');
-      document.documentElement.dataset.theme = 'light';
+    }
+
+    // Handle Accent Mode (Monochrome vs Blue)
+    if (!accent || accent === 'monochrome') {
+      document.documentElement.classList.add('theme-monochrome');
+    } else {
+      document.documentElement.classList.remove('theme-monochrome');
     }
   } catch (e) {
-    // localStorage unavailable (SSR / private browsing): default to dark
     document.documentElement.classList.add('dark');
+    document.documentElement.classList.add('theme-monochrome');
   }
 })();
 `;

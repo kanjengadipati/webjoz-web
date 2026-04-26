@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
-import { clearAuthSession, setThemePreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
-import { API_DOCS_URL } from "@/lib/config";
+import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
+import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
 
@@ -23,6 +23,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const token = useAuthToken();
   const theme = useThemePreference();
+  const accent = useAccentPreference();
   const { hasPermission, role: userRole, loading } = usePermissions();
   const isAuthenticated = Boolean(token);
 
@@ -53,9 +54,21 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </Link>
             );
           })}
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full hover:bg-primary/5"
+            aria-label="Switch to monochrome theme"
+            onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
+          >
+            <div className={cn(
+              "size-3.5 rounded-full border-2 transition-all duration-500",
+              accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300"
+            )} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             className="rounded-full hover:bg-primary/5"
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
@@ -71,22 +84,36 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
               <div className="flex items-start justify-between gap-3">
                 <Link href="/dashboard" aria-label="Go to dashboard overview">
-                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">GoKit Console</Badge>
+                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">Pleco Console</Badge>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
-                  aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                  onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
-                >
-                  <ThemeIcon mode={theme} />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5 transition-all duration-300"
+                    aria-label="Switch to monochrome theme"
+                    onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
+                  >
+                    <div className={cn(
+                      "size-4 rounded-full border-2 transition-all duration-500",
+                      accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                    )} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+                  >
+                    <ThemeIcon mode={theme} />
+                  </Button>
+                </div>
               </div>
               <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold tracking-tighter">GoKit Console</CardTitle>
+                <CardTitle className="text-2xl font-bold tracking-tighter">Pleco Console</CardTitle>
                 <CardDescription className="text-xs font-medium opacity-80">
-                  Unified Admin Workspace
+                  {ENV_NAME} Admin Workspace
                 </CardDescription>
               </div>
             </CardHeader>
@@ -163,7 +190,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   </Button>
                 </Link>
                 <a href={API_DOCS_URL} target="_blank" rel="noreferrer" className="hidden sm:inline-block">
-                  <Button variant="default" size="sm" className="rounded-full h-9 px-5">API Docs</Button>
+                  <Button variant="ghost" size="sm" className="rounded-full h-9 px-5 text-muted-foreground hover:text-primary transition-colors">
+                    <svg className="mr-2 size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a4 4 0 0 0-4-4H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a4 4 0 0 1 4-4h6z" /></svg>
+                    API Docs
+                  </Button>
                 </a>
               </div>
             </div>
@@ -177,7 +207,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             ) : !isAuthenticated ? (
               <Card className="border-primary/20 bg-primary/5 p-8 text-center space-y-6">
                 <div className="mx-auto size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                 </div>
                 <div className="space-y-2">
                   <CardTitle className="text-3xl font-bold tracking-tighter text-balance">Access Locked</CardTitle>

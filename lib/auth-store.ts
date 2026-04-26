@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import {
+  ACCENT_STORAGE_KEY,
   EMAIL_STORAGE_KEY,
   REFRESH_STORAGE_KEY,
   THEME_STORAGE_KEY,
@@ -33,6 +34,14 @@ export function useThemePreference() {
   );
 }
 
+export function useAccentPreference() {
+  return useSyncExternalStore(
+    (callback) => subscribeToKeys([ACCENT_STORAGE_KEY], callback),
+    () => readStorageValue(ACCENT_STORAGE_KEY, "monochrome"),
+    () => "monochrome",
+  );
+}
+
 export function persistAuthSession(email: string, accessToken: string, refreshToken: string) {
   setStoredValue(EMAIL_STORAGE_KEY, email);
   setStoredValue(TOKEN_STORAGE_KEY, accessToken);
@@ -46,4 +55,8 @@ export function clearAuthSession() {
 
 export function setThemePreference(theme: "dark" | "light") {
   setStoredValue(THEME_STORAGE_KEY, theme);
+}
+
+export function setAccentPreference(accent: "blue" | "monochrome") {
+  setStoredValue(ACCENT_STORAGE_KEY, accent);
 }
