@@ -17,7 +17,7 @@ export default function DashboardOverviewPage() {
   const [state, setState] = useState<SectionState>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (showToast = true) => {
     if (!token) return;
     setState("loading");
     try {
@@ -32,7 +32,9 @@ export default function DashboardOverviewPage() {
       setSessions(sessionsResponse.data || []);
       setState("success");
       setLastSyncedAt(new Date());
-      pushToast("Dashboard metrics refreshed.", "success");
+      if (showToast) {
+        pushToast("Dashboard metrics refreshed.", "success");
+      }
     } catch (error) {
       setState("error");
       pushToast(error instanceof Error ? error.message : "Failed to load dashboard", "error");
@@ -42,7 +44,7 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     if (!token || state !== "idle") return;
     const timeout = window.setTimeout(() => {
-      void refresh();
+      void refresh(false);
     }, 0);
     return () => window.clearTimeout(timeout);
   }, [refresh, state, token]);
@@ -93,11 +95,11 @@ export default function DashboardOverviewPage() {
           <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-medium text-muted-foreground/80">
             {syncLabel}
           </div>
-          <Button
+            <Button
             variant="secondary"
             size="sm"
             className="rounded-full h-9 px-5 font-bold transition-all duration-300 active:scale-95"
-            onClick={() => void refresh()}
+            onClick={() => void refresh(true)}
             disabled={state === "loading" || !token}
           >
             <svg className={cn("mr-2 size-3.5", state === "loading" && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
@@ -230,8 +232,8 @@ export default function DashboardOverviewPage() {
                   title="Operator profile waiting"
                   text="Once profile and auth activity sync, this panel will show the current operator and recent security events."
                   action={(
-                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
-                      {token ? "Retry sync" : "Connect API"}
+                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh(true)} disabled={!token}>
+                      {token ? "Refresh data" : "Connect API"}
                     </Button>
                   )}
                 />
