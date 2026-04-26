@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Pleco Console",
   description:
-    "A polished Next.js live demo for the Go API Starterkit backend, including auth, audit logs, sessions, and AI investigation.",
+    "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
 };
 
 // Inline script injected synchronously into <head> — runs before first paint

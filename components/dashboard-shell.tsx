@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
@@ -82,36 +83,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <aside className="hidden lg:block">
           <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
             <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
-              <div className="flex items-start justify-between gap-3">
-                <Link href="/dashboard" aria-label="Go to dashboard overview">
-                  <Badge variant="outline" className="w-fit border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] hover:bg-primary/10">Pleco Console</Badge>
-                </Link>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5 transition-all duration-300"
-                    aria-label="Switch to monochrome theme"
-                    onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
-                  >
-                    <div className={cn(
-                      "size-4 rounded-full border-2 transition-all duration-500",
-                      accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
-                    )} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
-                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                    onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
-                  >
-                    <ThemeIcon mode={theme} />
-                  </Button>
-                </div>
-              </div>
               <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold tracking-tighter">Pleco Console</CardTitle>
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/logo.png"
+                    alt="Pleco logo"
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 object-contain"
+                    priority
+                  />
+                  <CardTitle className="text-2xl font-bold tracking-tighter">Pleco Console</CardTitle>
+                </div>
                 <CardDescription className="text-xs font-medium opacity-80">
                   {ENV_NAME} Admin Workspace
                 </CardDescription>
@@ -120,7 +103,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <CardContent className="space-y-6 p-4">
               <div className="rounded-2xl border border-border/30 bg-background/50 p-4 shadow-inner">
                 <div className="flex items-center justify-between gap-3 mb-2">
-                  <div className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted-foreground/70">Mode</div>
+                  <div className="text-xs font-medium text-muted-foreground/70">Mode</div>
                   <div className={cn(
                     "size-2 rounded-full",
                     isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
@@ -164,7 +147,33 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
               <Separator />
 
-              <div className="grid gap-2">
+              <div className="grid gap-3">
+                <div className="rounded-2xl border border-border/40 bg-background/40 p-3">
+                  <div className="mb-3 text-xs font-medium text-muted-foreground/70">Appearance</div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5 transition-all duration-300"
+                      aria-label="Switch accent color"
+                      onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
+                    >
+                      <div className={cn(
+                        "size-4 rounded-full border-2 transition-all duration-500",
+                        accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                      )} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                      onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+                    >
+                      <ThemeIcon mode={theme} />
+                    </Button>
+                  </div>
+                </div>
                 <Button variant="secondary" className="rounded-xl" onClick={clearAuthSession} disabled={!isAuthenticated}>
                   Logout
                 </Button>
@@ -179,7 +188,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <div className="size-1.5 rounded-full bg-primary animate-pulse" />
-                  <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">Live Workspace</div>
+                  <div className="text-xs font-medium text-primary/80">Workspace</div>
                 </div>
                 <div className="text-2xl font-bold tracking-tighter">{activeLabel}</div>
               </div>

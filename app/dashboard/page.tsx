@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, MetricCard, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { fetchAuditLogs, fetchProfile, fetchSessions } from "@/lib/api";
@@ -39,6 +39,14 @@ export default function DashboardOverviewPage() {
     }
   }, [pushToast, token]);
 
+  useEffect(() => {
+    if (!token || state !== "idle") return;
+    const timeout = window.setTimeout(() => {
+      void refresh();
+    }, 0);
+    return () => window.clearTimeout(timeout);
+  }, [refresh, state, token]);
+
   const metrics = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     const todayLogs = logs.filter((log) => (log.created_at || "").startsWith(today));
@@ -61,27 +69,28 @@ export default function DashboardOverviewPage() {
     return Array.from(buckets.entries()).slice(-7);
   }, [logs]);
 
+  const showMetricSkeletons = state === "idle" || state === "loading";
+  const hasLoadedActivity = logs.length > 0 || sessions.length > 0;
+
   const syncLabel = lastSyncedAt
     ? `Last synced ${lastSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
     : token
-      ? "Not synced yet"
+      ? state === "loading"
+        ? "Syncing data..."
+        : "Waiting for first sync"
       : "Connect API to sync";
 
   return (
     <div className="space-y-8 animate-in fade-in duration-1000">
       <div className="flex flex-wrap items-center justify-between gap-6">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="size-1.5 rounded-full bg-primary animate-pulse" />
-            <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary/80">Overview</div>
-          </div>
           <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Dashboard</h1>
           <p className="max-w-2xl text-sm font-medium text-muted-foreground/80 leading-relaxed">
-            Real-time security telemetry and operator activity tracking powered by your Go backend.
+            Live overview of auth activity and sessions.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/70">
+          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-medium text-muted-foreground/80">
             {syncLabel}
           </div>
           <Button
@@ -98,31 +107,46 @@ export default function DashboardOverviewPage() {
       </div>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
-        <MetricCard label="Login Attempts Today" value={String(metrics.todayAttempts)} helper="Auth activity recorded today" tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
-        <MetricCard label="Failed Logins" value={String(metrics.failedLogins)} helper="Critical brute-force signal" tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
-        <MetricCard label="Active Sessions" value={String(metrics.activeSessions)} helper="Live refresh-token sessions" tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "None"} />
-        <MetricCard label="Unique Source IPs" value={String(metrics.uniqueIPs)} helper="Distinct IPs seen in recent auth logs" tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Empty"} />
+        {showMetricSkeletons ? (
+          <>
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+          </>
+        ) : (
+          <>
+            <MetricCard label="Login attempts today" value={String(metrics.todayAttempts)} helper="Waiting for activity" tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
+            <MetricCard label="Failed logins" value={String(metrics.failedLogins)} helper="Watch for repeated failures" tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
+            <MetricCard label="Active sessions" value={String(metrics.activeSessions)} helper="Current signed-in devices" tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "Idle"} />
+            <MetricCard label="Unique source IPs" value={String(metrics.uniqueIPs)} helper="Distinct IPs in recent logs" tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Waiting"} />
+          </>
+        )}
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
         <Card className="relative overflow-hidden group">
           <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
           <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-            <SectionTitle eyebrow={state === "loading" ? "synchronizing..." : "telemetry"} title="Failed Login Trend" />
+            <SectionTitle eyebrow={state === "loading" ? "Syncing" : undefined} title="Failed Login Trend" />
           </CardHeader>
           <CardContent className="pt-8">
             {state === "loading" ? (
-              <SkeletonBlock className="h-72" />
+              <GhostChart loading />
             ) : barData.length === 0 ? (
-              <EmptyState
-                title="Trend chart waiting"
-                text="Sync audit metrics to populate the behavioral trend chart and expose failed-login spikes."
-                action={(
-                  <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
-                    {token ? "Sync Metrics" : "Connect API"}
-                  </Button>
-                )}
-              />
+              <div className="space-y-6">
+                <GhostChart />
+                <EmptyState
+                  className="min-h-0 border-none bg-transparent px-2 py-0"
+                  title={hasLoadedActivity ? "No trend yet" : "Waiting for activity"}
+                  text={hasLoadedActivity ? "Recent auth events have not formed a visible trend window yet." : "The chart will wake up as soon as login events start flowing in."}
+                  action={(
+                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
+                      {token ? "Refresh data" : "Connect API"}
+                    </Button>
+                  )}
+                />
+              </div>
             ) : (
               <div className="space-y-6">
                 <div
@@ -161,14 +185,14 @@ export default function DashboardOverviewPage() {
         <Card className="relative overflow-hidden">
           <div className="absolute bottom-0 left-0 size-48 bg-primary/5 blur-[80px] -z-10" />
           <CardHeader className="border-b border-border/40">
-            <SectionTitle eyebrow={profile ? "verified" : "operator"} title="Active Operator" />
+            <SectionTitle eyebrow={profile ? "Verified" : undefined} title="Active Operator" />
           </CardHeader>
           <CardContent className="pt-6">
             {profile ? (
               <div className="space-y-6 animate-in fade-in duration-700">
                 <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-6 border border-primary/10 shadow-inner">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Profile Summary</div>
+                    <div className="text-xs font-semibold text-primary/80">Profile summary</div>
                     <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
                   <div className="text-3xl font-bold tracking-tighter">{profile.name}</div>
@@ -181,7 +205,7 @@ export default function DashboardOverviewPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/80 mb-2">Recent Security Events</div>
+                  <div className="text-xs font-semibold text-muted-foreground/80">Recent security events</div>
                   <div className="space-y-2">
                     {logs.slice(0, 3).map((log, index) => (
                       <div
@@ -199,15 +223,19 @@ export default function DashboardOverviewPage() {
                 </div>
               </div>
             ) : (
-              <EmptyState
-                title="Operator profile offline"
-                text="Authenticate or refresh the dashboard to synchronize operator profile and audit recency."
-                action={(
-                  <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
-                    {token ? "Retry Sync" : "Connect API"}
-                  </Button>
-                )}
-              />
+              <div className="space-y-6">
+                <ProfileGhost />
+                <EmptyState
+                  className="min-h-0 border-none bg-transparent px-2 py-0"
+                  title="Operator profile waiting"
+                  text="Once profile and auth activity sync, this panel will show the current operator and recent security events."
+                  action={(
+                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
+                      {token ? "Retry sync" : "Connect API"}
+                    </Button>
+                  )}
+                />
+              </div>
             )}
           </CardContent>
         </Card>
@@ -219,8 +247,68 @@ export default function DashboardOverviewPage() {
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-border/40 bg-background/50 px-4 py-4 transition-all hover:bg-background/80 hover:border-primary/20 shadow-sm">
-      <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">{label}</div>
+      <div className="mb-2 text-[11px] font-medium text-muted-foreground/70">{label}</div>
       <div className="text-lg font-bold tracking-tight">{value}</div>
+    </div>
+  );
+}
+
+function MetricSkeleton() {
+  return (
+    <Card className="relative overflow-hidden border-border/40 shadow-sm">
+      <CardHeader className="space-y-4 p-6">
+        <div className="flex items-center justify-between gap-3">
+          <SkeletonBlock className="h-3 w-28 rounded-full" />
+          <div className="size-2 rounded-full bg-muted-foreground/20" />
+        </div>
+        <SkeletonBlock className="h-12 w-24 rounded-2xl" />
+        <div className="space-y-2">
+          <SkeletonBlock className="h-3 w-full rounded-full" />
+          <SkeletonBlock className="h-3 w-24 rounded-full" />
+        </div>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function GhostChart({ loading = false }: { loading?: boolean }) {
+  return (
+    <div className="rounded-3xl border border-dashed border-border/70 bg-muted/15 p-6">
+      <div className="grid h-64 items-end gap-4" style={{ gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
+        {[28, 44, 34, 58, 42, 64, 36].map((height, index) => (
+          <div key={index} className="flex flex-col items-center gap-3">
+            <div
+              className={cn(
+                "w-full rounded-t-xl bg-gradient-to-t from-muted/40 via-muted/25 to-transparent",
+                loading && "animate-pulse",
+              )}
+              style={{ height: `${height}%` }}
+            />
+            <div className="h-2 w-8 rounded-full bg-muted/50" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProfileGhost() {
+  return (
+    <div className="space-y-5 rounded-3xl border border-dashed border-border/70 bg-muted/15 p-6">
+      <div className="rounded-3xl border border-border/40 bg-background/50 p-6">
+        <SkeletonBlock className="h-3 w-24 rounded-full" />
+        <SkeletonBlock className="mt-4 h-9 w-40 rounded-2xl" />
+        <SkeletonBlock className="mt-3 h-4 w-56 rounded-full" />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <SkeletonBlock className="h-20 rounded-2xl" />
+        <SkeletonBlock className="h-20 rounded-2xl" />
+      </div>
+      <div className="space-y-3">
+        <SkeletonBlock className="h-4 w-32 rounded-full" />
+        <SkeletonBlock className="h-16 rounded-2xl" />
+        <SkeletonBlock className="h-16 rounded-2xl" />
+      </div>
     </div>
   );
 }

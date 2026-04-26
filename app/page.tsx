@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, SectionTitle } from "@/components/ui";
 import { AIPreview } from "@/components/ai-preview";
 import { API_DOCS_URL } from "@/lib/config";
@@ -60,9 +61,20 @@ export default function Home() {
         <div className="mx-auto max-w-7xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="flex justify-center mb-6">
             <a href="https://github.com/kanjengadipati/go-api-starterkit" target="_blank" rel="noopener noreferrer" className="inline-block">
-              <Badge variant="outline" className="px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse hover:bg-primary/10 transition-colors cursor-pointer">
-                Pleco Console v1.0
-              </Badge>
+              <div className="flex items-center gap-3 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur transition-colors hover:bg-primary/10">
+                <Image
+                  src="/logo.png"
+                  alt="Pleco logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                  priority
+                />
+                <div className="text-sm font-semibold tracking-[0.2em] text-foreground/90 uppercase">Pleco Console</div>
+                <Badge variant="outline" className="border-primary/20 bg-background/60 text-primary tracking-widest">
+                  v1.0
+                </Badge>
+              </div>
             </a>
           </div>
 

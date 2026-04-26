@@ -119,7 +119,7 @@ export function SectionTitle({ eyebrow, title, action }: { eyebrow?: string; tit
   return (
     <div className="mb-8 flex items-end justify-between gap-4">
       <div>
-        {eyebrow ? <div className="text-xs uppercase tracking-[0.3em] font-bold text-primary/80 mb-1">{eyebrow}</div> : null}
+        {eyebrow ? <div className="mb-1 text-xs font-medium text-primary/80">{eyebrow}</div> : null}
         <h2 className="text-2xl font-bold tracking-tight lg:text-3xl">{title}</h2>
       </div>
       {action}
@@ -233,15 +233,15 @@ export function MetricCard({
       <div className={cn("absolute top-0 right-0 size-32 bg-gradient-to-br to-transparent blur-[60px] -z-10 transition-colors duration-700", style.panel)} />
       <CardHeader className="space-y-4 p-6">
         <div className="flex items-center justify-between gap-3">
-          <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground/60 group-hover:text-primary/80 transition-colors">{label}</div>
+          <div className="text-xs font-medium text-muted-foreground/70 group-hover:text-primary/80 transition-colors">{label}</div>
           <div className={cn("size-2 rounded-full shadow-[0_0_12px_currentColor]", style.text)} />
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className="text-4xl font-bold tracking-tighter lg:text-5xl group-hover:scale-[1.02] transition-transform duration-500">{value}</div>
-          {signal ? <div className={cn("mb-1 rounded-full border border-current/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider", style.text)}>{signal}</div> : null}
+          {signal ? <div className={cn("mb-1 rounded-full border border-current/20 px-2.5 py-1 text-[10px] font-medium", style.text)}>{signal}</div> : null}
         </div>
         {helper && (
-          <div className="text-xs font-medium text-muted-foreground/60 leading-relaxed">{helper}</div>
+          <div className="line-clamp-2 text-xs font-medium leading-relaxed text-muted-foreground/60">{helper}</div>
         )}
       </CardHeader>
     </Card>
