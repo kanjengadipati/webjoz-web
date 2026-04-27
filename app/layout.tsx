@@ -15,12 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://pleco-console.vercel.app"),
   title: "Pleco Console",
   description:
     "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
   openGraph: {
     title: "Pleco Console",
     description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+    url: "https://pleco-console.vercel.app",
+    siteName: "Pleco Console",
     images: [
       {
         url: "/og.png",
@@ -29,6 +32,7 @@ export const metadata: Metadata = {
         alt: "Pleco Console - Auth Infrastructure Admin Workspace",
       },
     ],
+    locale: "en_US",
     type: "website",
   },
   twitter: {
