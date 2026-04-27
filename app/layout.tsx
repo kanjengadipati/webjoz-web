@@ -41,6 +41,19 @@ export const metadata: Metadata = {
     description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
     images: ["/og.png"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 // Inline script injected synchronously into <head> — runs before first paint

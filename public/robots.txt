@@ -1,6 +1,0 @@
-User-agent: facebookexternalhit
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: *
-Allow: /
