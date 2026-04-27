@@ -80,6 +80,7 @@ export default function LoginPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
+    if (params.get("passwordChanged") === "true") pushToast("Password changed. Please sign in again.", "success");
     if (params.get("expired") === "true") pushToast("Your session has expired. Please sign in again.", "error");
     if ((window as any).google) initializeGoogle();
   }, [pushToast, initializeGoogle]);

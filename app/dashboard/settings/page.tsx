@@ -1,13 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
-import { useAuthToken } from "@/lib/auth-store";
+import { clearAuthSession, useAuthToken } from "@/lib/auth-store";
 import type { Profile } from "@/lib/types";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -51,9 +53,11 @@ export default function SettingsPage() {
     if (!token) return;
     try {
       await changePassword(token, currentPassword, newPassword);
+      clearAuthSession();
       setCurrentPassword("");
       setNewPassword("");
-      pushToast("Password changed successfully.", "success");
+      pushToast("Password changed. Please sign in again.", "success");
+      router.push("/login?passwordChanged=true");
     } catch (error) {
       pushToast(error instanceof Error ? error.message : "Failed to change password", "error");
     }

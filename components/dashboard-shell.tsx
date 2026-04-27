@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
 import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useToast } from "@/components/toast-provider";
+import { logoutCurrentSession } from "@/lib/api";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", permission: "dashboard.view" },
@@ -22,11 +24,30 @@ const navItems = [
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const token = useAuthToken();
   const theme = useThemePreference();
   const accent = useAccentPreference();
+  const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
   const isAuthenticated = Boolean(token);
+
+  async function handleLogout() {
+    if (!token) {
+      clearAuthSession();
+      router.push("/login");
+      return;
+    }
+
+    try {
+      await logoutCurrentSession(token);
+    } catch {
+      pushToast("Signed out locally. The server session may still need review.", "info");
+    } finally {
+      clearAuthSession();
+      router.push("/login");
+    }
+  }
 
   const filteredNavItems = navItems.filter((item) => hasPermission(item.permission) || !item.permission);
   const activeLabel = navItems.find((item) => item.href === pathname)?.label || "Dashboard";
@@ -174,7 +195,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </Button>
                   </div>
                 </div>
-                <Button variant="secondary" className="rounded-xl" onClick={clearAuthSession} disabled={!isAuthenticated}>
+                <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()} disabled={!isAuthenticated}>
                   Logout
                 </Button>
               </div>

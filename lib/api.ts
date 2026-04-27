@@ -160,6 +160,13 @@ export async function revokeOtherSessions(token: string) {
   }, token);
 }
 
+export async function logoutCurrentSession(token: string) {
+  return request<null>("/auth/logout", {
+    method: "POST",
+    headers: { "X-Device-ID": DEFAULT_DEVICE_ID },
+  }, token);
+}
+
 export async function fetchUsers(token: string, query: URLSearchParams) {
   return request<User[]>(`/auth/admin/users?${query.toString()}`, { method: "GET" }, token);
 }
