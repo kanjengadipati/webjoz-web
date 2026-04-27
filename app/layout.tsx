@@ -18,6 +18,25 @@ export const metadata: Metadata = {
   title: "Pleco Console",
   description:
     "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+  openGraph: {
+    title: "Pleco Console",
+    description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Pleco Console - Auth Infrastructure Admin Workspace",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pleco Console",
+    description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+    images: ["/og.png"],
+  },
 };
 
 // Inline script injected synchronously into <head> — runs before first paint
