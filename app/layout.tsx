@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://pleco-console.vercel.app"),
+  metadataBase: new URL("https://pleco-console.vercel.app"),
   title: "Pleco Console",
   description:
     "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
@@ -24,14 +24,6 @@ export const metadata: Metadata = {
     description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
     url: "https://pleco-console.vercel.app",
     siteName: "Pleco Console",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Pleco Console - Auth Infrastructure Admin Workspace",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -39,20 +31,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pleco Console",
     description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
-    images: ["/og.png"],
   },
   robots: {
     index: true,
     follow: true,
-    nocache: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 };
 
@@ -90,6 +72,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         {/* eslint-disable-next-line react/no-danger */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="robots" content="index, follow" />
       </head>
       <body className="min-h-full font-sans">
         <Providers>{children}</Providers>
