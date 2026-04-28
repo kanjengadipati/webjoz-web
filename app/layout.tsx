@@ -67,6 +67,8 @@ const themeScript = `
 `;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const currentYear = new Date().getFullYear();
+
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
@@ -75,7 +77,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="robots" content="index, follow" />
       </head>
       <body className="min-h-full font-sans">
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="flex min-h-screen flex-col">
+            <div className="flex-1">{children}</div>
+            <footer className="border-t border-border/40 px-4 py-4 text-center text-xs text-muted-foreground sm:px-6">
+              Copyright {currentYear} Pleco. All rights reserved.
+            </footer>
+          </div>
+        </Providers>
         <Analytics />
       </body>
     </html>
