@@ -154,10 +154,17 @@ export async function revokeSession(token: string, id: number) {
 }
 
 export async function revokeOtherSessions(token: string) {
-  return request<null>("/auth/logout-others", {
+  const response = await request<LoginResponse>("/auth/logout-others", {
     method: "POST",
     headers: { "X-Device-ID": DEFAULT_DEVICE_ID },
   }, token);
+
+  if (response.data) {
+    setStoredValue(TOKEN_STORAGE_KEY, response.data.access_token);
+    setStoredValue(REFRESH_STORAGE_KEY, response.data.refresh_token);
+  }
+
+  return response;
 }
 
 export async function logoutCurrentSession(token: string) {

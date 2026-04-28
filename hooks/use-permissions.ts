@@ -22,8 +22,6 @@ export function usePermissions() {
 
   const hasPermission = useCallback((permission: string) => {
     if (!profile) return false;
-    // Superadmin always has permission
-    if (profile.role === "superadmin") return true;
     return profile.permissions?.includes(permission) || false;
   }, [profile]);
 

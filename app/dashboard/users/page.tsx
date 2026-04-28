@@ -68,7 +68,7 @@ export default function UsersPage() {
         </CardHeader>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" />
-          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (admin/user/superadmin)" />
+          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (admin/user)" />
         </CardContent>
       </Card>
 
@@ -98,16 +98,14 @@ export default function UsersPage() {
                       <StatusBadge status={user.role} />
                       <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                     </div>
-                    {user.role !== "superadmin" && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="rounded-xl h-9"
-                        onClick={() => void handleToggleRole(user)}
-                      >
-                        {user.role === "admin" ? "Demote" : "Make Admin"}
-                      </Button>
-                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl h-9"
+                      onClick={() => void handleToggleRole(user)}
+                    >
+                      {user.role === "admin" ? "Demote" : "Make Admin"}
+                    </Button>
                   </div>
                 </div>
               </div>
