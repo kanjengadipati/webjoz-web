@@ -94,12 +94,47 @@ export default function InvestigatePage() {
     }
   }
 
-  const riskLevel = useMemo(() => {
-    const signals = result?.suspicious_signals.length || 0;
-    if (signals >= 3) return "high";
-    if (signals >= 1) return "medium";
-    return "low";
-  }, [result?.suspicious_signals.length]);
+  const riskAssessment = useMemo(() => {
+    if (!result) {
+      return {
+        level: "low",
+        score: 0,
+        note: "No investigation result loaded yet.",
+      };
+    }
+
+    const signals = result.suspicious_signals.length;
+    const recommendations = result.recommendations.length;
+    const summary = result.summary.toLowerCase();
+    const metaStatus = String(meta?.status || "").toLowerCase();
+    const logCount = Number(meta?.log_count || 0);
+
+    let score = 0;
+
+    score += Math.min(signals * 18, 54);
+    score += Math.min(recommendations * 6, 18);
+
+    if (logCount >= 100) score += 15;
+    else if (logCount >= 50) score += 10;
+    else if (logCount >= 20) score += 5;
+
+    if (metaStatus === "failed" || metaStatus === "denied") score += 12;
+
+    const urgentKeywords = ["critical", "immediate", "urgent", "breach", "compromise", "blocked", "escalate"];
+    if (urgentKeywords.some((keyword) => summary.includes(keyword))) {
+      score += 16;
+    }
+
+    const level = score >= 60 ? "high" : score >= 28 ? "medium" : "low";
+    const note =
+      level === "high"
+        ? "Escalate quickly. Multiple strong signals point to elevated account or access risk."
+        : level === "medium"
+          ? "Needs review. There are enough suspicious patterns to warrant operator follow-up."
+          : "Monitor only. The current evidence suggests a lower-confidence incident.";
+
+    return { level, score, note };
+  }, [meta, result]);
 
   return (
     <div className="space-y-6">
@@ -158,9 +193,15 @@ export default function InvestigatePage() {
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Risk Level</div>
                   <div className="flex flex-col items-end">
-                    <StatusBadge status={riskLevel} />
-                    <span className="mt-1 text-[10px] text-muted-foreground/60">*Beta: Calculated solely from signal count</span>
+                    <StatusBadge status={riskAssessment.level} />
+                    <span className="mt-1 text-[10px] text-muted-foreground/60">Weighted by signals, urgency, log volume, and incident status</span>
                   </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between gap-3 text-sm">
+                  <span className="text-muted-foreground">{riskAssessment.note}</span>
+                  <span className="rounded-full border border-border/60 px-2.5 py-1 font-medium text-foreground/80">
+                    Score {riskAssessment.score}
+                  </span>
                 </div>
                 <p className="mt-4 text-base leading-8 text-foreground">{result.summary}</p>
               </div>
