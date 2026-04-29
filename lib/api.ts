@@ -114,7 +114,7 @@ export async function fetchAuditLogs(token: string, query: URLSearchParams) {
 
 export async function investigateLogs(token: string, payload: Record<string, unknown>) {
   return request<InvestigationResult>(
-    "/auth/admin/audit-logs/investigate",
+    "/auth/admin/audit-logs/investigations",
     {
       method: "POST",
       body: JSON.stringify(payload),
