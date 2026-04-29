@@ -76,7 +76,7 @@ export default function VerifyEmailPage() {
             </div>
             <Link
               href="/login?verified=true"
-              className="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-8 text-sm font-medium text-black transition-colors hover:bg-primary/90"
             >
               Go to Login
             </Link>
