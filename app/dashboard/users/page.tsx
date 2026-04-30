@@ -81,6 +81,8 @@ export default function UsersPage() {
     return false;
   };
 
+  const filteredUsers = users.filter((u) => u.id !== profile?.id);
+
   return (
     <div className="space-y-6">
       <Card>
@@ -95,7 +97,7 @@ export default function UsersPage() {
 
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={String(users.length)} title="Admin-visible users" />
+          <SectionTitle eyebrow={String(filteredUsers.length)} title="Admin-visible users" />
         </CardHeader>
         <CardContent className="pt-6">
         {state === "loading" ? (
@@ -103,11 +105,11 @@ export default function UsersPage() {
             <SkeletonBlock className="h-20" />
             <SkeletonBlock className="h-20" />
           </div>
-        ) : users.length === 0 ? (
+        ) : filteredUsers.length === 0 ? (
           <EmptyState text="No users matched the current query." />
         ) : (
           <div className="grid gap-3">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div key={user.id} className="rounded-3xl border border-border/70 bg-muted/35 px-5 py-4">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
