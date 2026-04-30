@@ -195,9 +195,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </Button>
                   </div>
                 </div>
-                <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()} disabled={!isAuthenticated}>
-                  Logout
-                </Button>
+                {isAuthenticated && (
+                  <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()}>
+                    Logout
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
