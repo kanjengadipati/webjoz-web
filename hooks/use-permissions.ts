@@ -26,6 +26,7 @@ export function usePermissions() {
   }, [profile]);
 
   return {
+    profile,
     hasPermission,
     permissions: profile?.permissions || [],
     role: profile?.role || "user",

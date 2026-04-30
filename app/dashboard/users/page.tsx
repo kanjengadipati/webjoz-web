@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { fetchUsers, updateUser } from "@/lib/api";
+import { usePermissions } from "@/hooks/use-permissions";
+import { deleteUser, fetchUsers, updateUser } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import type { SectionState, User } from "@/lib/types";
 
@@ -14,6 +15,7 @@ export default function UsersPage() {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
   const [state, setState] = useState<SectionState>("idle");
+  const { role: currentRole, profile } = usePermissions();
 
   const query = useMemo(() => {
     const params = new URLSearchParams({ page: "1", limit: "20" });
@@ -59,6 +61,25 @@ export default function UsersPage() {
       pushToast("Failed to update user role", "error");
     }
   }
+
+  async function handleDeleteUser(user: User) {
+    if (!token) return;
+    if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+    try {
+      await deleteUser(token, user.id);
+      pushToast(`User ${user.name} deleted successfully`, "success");
+      void loadUsers();
+    } catch (error) {
+      pushToast(error instanceof Error ? error.message : "Failed to delete user", "error");
+    }
+  }
+
+  const canDelete = (user: User) => {
+    if (user.id === profile?.id) return false;
+    if (currentRole === "superadmin") return user.role !== "superadmin";
+    if (currentRole === "admin") return user.role === "user";
+    return false;
+  };
 
   return (
     <div className="space-y-6">
@@ -106,6 +127,16 @@ export default function UsersPage() {
                     >
                       {user.role === "admin" ? "Demote" : "Make Admin"}
                     </Button>
+                    {canDelete(user) && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="rounded-xl h-9"
+                        onClick={() => void handleDeleteUser(user)}
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

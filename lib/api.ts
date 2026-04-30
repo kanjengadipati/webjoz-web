@@ -207,6 +207,12 @@ export async function updateUser(token: string, id: number, data: { name: string
   }, token);
 }
 
+export async function deleteUser(token: string, id: number) {
+  return request<null>(`/auth/admin/users/${id}`, {
+    method: "DELETE",
+  }, token);
+}
+
 export async function fetchRoles(token: string) {
   return request<{ id: number; name: string }[]>("/auth/admin/roles", { method: "GET" }, token);
 }
