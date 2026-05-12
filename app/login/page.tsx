@@ -61,7 +61,7 @@ export default function LoginPage() {
           setState("loading");
           socialLogin("google", response.credential)
             .then((apiResponse) => {
-              persistAuthSession("", apiResponse.data?.access_token || "", apiResponse.data?.refresh_token || "");
+              persistAuthSession("", apiResponse.data?.access_token || "");
               pushToast("Welcome! Google login successful.", "success");
               router.push("/dashboard");
             })
@@ -122,7 +122,7 @@ export default function LoginPage() {
           if (response?.authResponse?.accessToken) {
             socialLogin("facebook", response.authResponse.accessToken)
               .then((apiResponse) => {
-                persistAuthSession("", apiResponse.data?.access_token || "", apiResponse.data?.refresh_token || "");
+                persistAuthSession("", apiResponse.data?.access_token || "");
                 pushToast("Welcome! Facebook login successful.", "success");
                 router.push("/dashboard");
               })
@@ -149,7 +149,7 @@ export default function LoginPage() {
 
     login(email, password)
       .then((response) => {
-        persistAuthSession(email, response.data?.access_token || "", response.data?.refresh_token || "");
+        persistAuthSession(email, response.data?.access_token || "");
         pushToast("Login successful. Welcome to the live demo.", "success");
         router.push("/dashboard");
       })

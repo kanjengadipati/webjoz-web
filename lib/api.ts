@@ -1,5 +1,5 @@
-import { API_BASE_URL, DEFAULT_DEVICE_ID, REFRESH_STORAGE_KEY, TOKEN_STORAGE_KEY } from "@/lib/config";
-import { readStorageValue, setStoredValue } from "@/lib/storage";
+import { API_BASE_URL, DEFAULT_DEVICE_ID, TOKEN_STORAGE_KEY } from "@/lib/config";
+import { setStoredValue } from "@/lib/storage";
 import type {
   ApiEnvelope,
   AuditLog,
@@ -24,41 +24,21 @@ async function request<T>(path: string, init?: RequestInit, token?: string, canR
     ...init,
     headers,
     cache: "no-store",
+    credentials: "include",
   });
 
   // Handle 401 Unauthorized and try to refresh
   if (response.status === 401 && canRetry && token) {
-    const refreshTokenValue = readStorageValue(REFRESH_STORAGE_KEY, "");
-    if (refreshTokenValue) {
-      try {
-        const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "X-Device-ID": DEFAULT_DEVICE_ID 
-          },
-          body: JSON.stringify({ refresh_token: refreshTokenValue }),
-        });
-
-        if (refreshResponse.ok) {
-          const body = (await refreshResponse.json()) as ApiEnvelope<LoginResponse>;
-          if (body.status === "success" && body.data) {
-            // Store new tokens
-            setStoredValue(TOKEN_STORAGE_KEY, body.data.access_token);
-            setStoredValue(REFRESH_STORAGE_KEY, body.data.refresh_token);
-
-            // Retry original request with NEW token
-            return request<T>(path, init, body.data.access_token, false);
-          }
-        }
-      } catch (err) {
-        console.error("Token refresh failed:", err);
+    try {
+      const body = await refreshAccessToken();
+      if (body.data?.access_token) {
+        return request<T>(path, init, body.data.access_token, false);
       }
+    } catch (err) {
+      console.error("Token refresh failed:", err);
     }
     
-    // If refresh failed or no refresh token, clear session and force login
     setStoredValue(TOKEN_STORAGE_KEY, "");
-    setStoredValue(REFRESH_STORAGE_KEY, "");
     if (typeof window !== "undefined") {
       window.location.href = "/login?expired=true";
     }
@@ -68,6 +48,29 @@ async function request<T>(path: string, init?: RequestInit, token?: string, canR
   if (!response.ok || body.status !== "success") {
     throw new Error(body.message || "Request failed");
   }
+  return body;
+}
+
+export async function refreshAccessToken() {
+  const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Device-ID": DEFAULT_DEVICE_ID,
+    },
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  const body = (await refreshResponse.json()) as ApiEnvelope<LoginResponse>;
+  if (!refreshResponse.ok || body.status !== "success") {
+    throw new Error(body.message || "Session refresh failed");
+  }
+
+  if (body.data?.access_token) {
+    setStoredValue(TOKEN_STORAGE_KEY, body.data.access_token);
+  }
+
   return body;
 }
 
@@ -161,7 +164,6 @@ export async function revokeOtherSessions(token: string) {
 
   if (response.data) {
     setStoredValue(TOKEN_STORAGE_KEY, response.data.access_token);
-    setStoredValue(REFRESH_STORAGE_KEY, response.data.refresh_token);
   }
 
   return response;

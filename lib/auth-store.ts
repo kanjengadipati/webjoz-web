@@ -42,10 +42,12 @@ export function useAccentPreference() {
   );
 }
 
-export function persistAuthSession(email: string, accessToken: string, refreshToken: string) {
-  setStoredValue(EMAIL_STORAGE_KEY, email);
+export function persistAuthSession(email: string, accessToken: string) {
+  if (email) {
+    setStoredValue(EMAIL_STORAGE_KEY, email);
+  }
   setStoredValue(TOKEN_STORAGE_KEY, accessToken);
-  setStoredValue(REFRESH_STORAGE_KEY, refreshToken);
+  setStoredValue(REFRESH_STORAGE_KEY, "");
 }
 
 export function clearAuthSession() {

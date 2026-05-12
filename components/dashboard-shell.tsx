@@ -3,14 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
 import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useToast } from "@/components/toast-provider";
-import { logoutCurrentSession } from "@/lib/api";
+import { logoutCurrentSession, refreshAccessToken } from "@/lib/api";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", permission: "dashboard.view" },
@@ -30,7 +30,32 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const accent = useAccentPreference();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
+  const [restoringSession, setRestoringSession] = useState(false);
+  const triedCookieRefresh = useRef(false);
   const isAuthenticated = Boolean(token);
+
+  useEffect(() => {
+    if (token || restoringSession || triedCookieRefresh.current) return;
+
+    let cancelled = false;
+    triedCookieRefresh.current = true;
+    setRestoringSession(true);
+    refreshAccessToken()
+      .catch(() => {
+        if (!cancelled) {
+          clearAuthSession();
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setRestoringSession(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [restoringSession, token]);
 
   async function handleLogout() {
     if (!token) {
@@ -232,7 +257,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </header>
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {loading ? (
+            {loading || restoringSession ? (
               <div className="flex items-center justify-center h-64">
                 <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>

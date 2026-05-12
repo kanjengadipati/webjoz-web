@@ -8,7 +8,6 @@ export type ApiEnvelope<T> = {
 
 export type LoginResponse = {
   access_token: string;
-  refresh_token: string;
 };
 
 export type Profile = {
