@@ -18,6 +18,14 @@ export function useAuthToken() {
   );
 }
 
+export function useAuthReady() {
+  return useSyncExternalStore(
+    (callback) => subscribeToKeys([TOKEN_STORAGE_KEY], callback),
+    () => true,
+    () => false,
+  );
+}
+
 export function useStoredEmail() {
   return useSyncExternalStore(
     (callback) => subscribeToKeys([EMAIL_STORAGE_KEY], callback),

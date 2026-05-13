@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
-import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthToken, useThemePreference } from "@/lib/auth-store";
+import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthReady, useAuthToken, useThemePreference } from "@/lib/auth-store";
 import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -25,6 +25,7 @@ const navItems = [
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const authReady = useAuthReady();
   const token = useAuthToken();
   const theme = useThemePreference();
   const accent = useAccentPreference();
@@ -35,7 +36,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const isAuthenticated = Boolean(token);
 
   useEffect(() => {
-    if (token || restoringSession || triedCookieRefresh.current) return;
+    if (!authReady || token || restoringSession || triedCookieRefresh.current) return;
 
     let cancelled = false;
     triedCookieRefresh.current = true;
@@ -55,7 +56,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [restoringSession, token]);
+  }, [authReady, restoringSession, token]);
 
   async function handleLogout() {
     if (!token) {
@@ -257,7 +258,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </header>
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {loading || restoringSession ? (
+            {!authReady || loading || restoringSession ? (
               <div className="flex items-center justify-center h-64">
                 <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>

@@ -1,3 +1,5 @@
+const STORAGE_CHANGE_EVENT = "pleco-storage-change";
+
 export function readStorageValue(key: string, fallback: string) {
   if (typeof window === "undefined") {
     return fallback;
@@ -17,7 +19,11 @@ export function subscribeToKeys(keys: string[], callback: () => void) {
   };
 
   window.addEventListener("storage", listener);
-  return () => window.removeEventListener("storage", listener);
+  window.addEventListener(STORAGE_CHANGE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", listener);
+    window.removeEventListener(STORAGE_CHANGE_EVENT, callback);
+  };
 }
 
 export function setStoredValue(key: string, value: string) {
@@ -30,5 +36,5 @@ export function setStoredValue(key: string, value: string) {
   } else {
     window.localStorage.removeItem(key);
   }
-  window.dispatchEvent(new StorageEvent("storage", { key }));
+  window.dispatchEvent(new Event(STORAGE_CHANGE_EVENT));
 }
