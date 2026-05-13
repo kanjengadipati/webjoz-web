@@ -2,6 +2,9 @@
 
 The official companion dashboard for the [Pleco](https://github.com/kanjengadipati/go-auth-app) auth foundation.
 
+- Setup guide: [INSTALLATION.md](./INSTALLATION.md)
+- Common issues: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
 ## Features
 
 - Admin login against the Pleco Go API
@@ -36,8 +39,12 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Releases
+
+Tagged releases publish a standalone production bundle through GitHub Actions. The archive includes the traced Next.js server, static assets, and the docs needed to run the dashboard without reinstalling dependencies on the target host.
+
 ## Security Considerations
 
-The refresh token is not readable by JavaScript. It is issued by the Go API as the `pleco_refresh_token` HttpOnly cookie and sent with credentialed requests. Next.js `proxy.ts` checks for that cookie before rendering dashboard routes, and the client refreshes short-lived access tokens through `/auth/refresh`.
+The refresh token is not readable by JavaScript. It is issued by the Go API as the `pleco_refresh_token` HttpOnly cookie and sent with credentialed requests. The client refreshes short-lived access tokens through `/auth/refresh`.
 
 For non-local deployments, serve the dashboard and API over HTTPS. The refresh cookie is marked `Secure` and `SameSite=None`.

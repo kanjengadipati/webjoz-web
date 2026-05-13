@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Prepare standalone bundle
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          APP_DIR="release/pleco-console-${TAG_NAME}"
+          mkdir -p "${APP_DIR}/.next"
+          cp -R .next/standalone/. "${APP_DIR}/"
+          cp -R .next/static "${APP_DIR}/.next/static"
+          cp -R public "${APP_DIR}/public"
+          cp README.md INSTALLATION.md TROUBLESHOOTING.md CHANGELOG.md package.json .env.example "${APP_DIR}/"
+          tar -C release -czf "release/pleco-console-${TAG_NAME}-standalone.tar.gz" "pleco-console-${TAG_NAME}"
+          sha256sum "release/pleco-console-${TAG_NAME}-standalone.tar.gz" > "release/pleco-console-${TAG_NAME}-standalone.tar.gz.sha256"
+
+      - name: Publish GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "release/pleco-console-${GITHUB_REF_NAME}-standalone.tar.gz" \
+            "release/pleco-console-${GITHUB_REF_NAME}-standalone.tar.gz.sha256" \
+            --generate-notes \
+            --title "Pleco Console ${GITHUB_REF_NAME}"
