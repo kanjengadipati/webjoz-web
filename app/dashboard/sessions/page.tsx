@@ -73,12 +73,12 @@ export default function SessionsPage() {
             action={
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" className="rounded-full px-4 h-9" onClick={() => void loadSessions()} disabled={state === SectionState.LOADING} aria-label="Refresh sessions">
-                  <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
+                  <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "motion-safe:animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
                   Refresh
                 </Button>
                 <Can permission="session.delete">
                   <Button variant="secondary" size="sm" className="rounded-full px-4 h-9 font-bold" onClick={() => void handleRevokeOthers()} disabled={sessions.filter(s => !s.is_current).length === 0}>
-                    <svg className="mr-2 size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /><path d="M2 12h7" /><path d="M2 12V6" /><path d="M2 12v6" /></svg>
+                    <svg className="mr-2 size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /><path d="M2 12h7" /><path d="M2 12V6" /><path d="M2 12v6" /></svg>
                     Revoke All Others
                   </Button>
                 </Can>

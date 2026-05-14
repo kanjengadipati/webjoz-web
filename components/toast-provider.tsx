@@ -10,6 +10,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { AlertIcon, CheckIcon, CloseIcon, InfoIcon } from "@/components/icons";
+import { Button } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 type ToastTone = "success" | "error" | "info";
 
@@ -25,10 +28,32 @@ type ToastContextValue = {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
+const TOAST_STYLES: Record<ToastTone, string> = {
+  success: "border-emerald-400/30 bg-emerald-950/90 text-white",
+  error: "border-rose-400/30 bg-rose-950/90 text-white",
+  info: "border-white/10 bg-slate-950/90 text-white",
+};
+
+let toastCounter = 0;
+
+function generateToastId() {
+  toastCounter = toastCounter > 1_000_000 ? 1 : toastCounter + 1;
+  return toastCounter;
+}
+
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timersRef = useRef<Map<number, number>>(new Map());
   const recentRef = useRef<Map<string, number>>(new Map());
+
+  const dismissToast = useCallback((id: number) => {
+    const timer = timersRef.current.get(id);
+    if (timer) {
+      window.clearTimeout(timer);
+      timersRef.current.delete(id);
+    }
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }, []);
 
   const pushToast = useCallback((title: string, tone: ToastTone = "info") => {
     const now = Date.now();
@@ -40,7 +65,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     }
 
     recentRef.current.set(key, now);
-    const id = Date.now() + Math.floor(Math.random() * 1000);
+    const id = generateToastId();
     setToasts((current) => [...current.slice(-2), { id, title, tone }]);
 
     const timer = window.setTimeout(() => {
@@ -67,14 +92,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex w-full items-start gap-3 rounded-2xl border px-4 py-3 text-sm shadow-2xl backdrop-blur-xl ${toastClass(
-              toast.tone,
-            )}`}
+            className={cn("pointer-events-auto flex w-full items-start gap-3 rounded-2xl border px-4 py-3 text-sm shadow-2xl backdrop-blur-xl", TOAST_STYLES[toast.tone])}
+            role="status"
+            aria-live={toast.tone === "error" ? "assertive" : "polite"}
           >
             <div className="mt-0.5">{toastIcon(toast.tone)}</div>
             <div className="min-w-0 flex-1">
               <div className="font-medium leading-6 text-white/95">{toast.title}</div>
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 shrink-0 rounded-full text-white/50 hover:bg-white/10 hover:text-white"
+              onClick={() => dismissToast(toast.id)}
+              aria-label="Dismiss notification"
+            >
+              <CloseIcon size="sm" />
+            </Button>
           </div>
         ))}
       </div>
@@ -82,24 +117,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function toastClass(tone: ToastTone) {
-  switch (tone) {
-    case "success":
-      return "border-emerald-400/25 bg-emerald-500/15 text-white";
-    case "error":
-      return "border-rose-400/25 bg-rose-500/15 text-white";
-    default:
-      return "border-white/10 bg-slate-900/80 text-white";
-  }
-}
-
 function toastIcon(tone: ToastTone) {
   if (tone === "success") {
     return (
       <div className="flex size-6 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-200">
-        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="m5 13 4 4L19 7" />
-        </svg>
+        <CheckIcon className="size-3.5" />
       </div>
     );
   }
@@ -107,22 +129,14 @@ function toastIcon(tone: ToastTone) {
   if (tone === "error") {
     return (
       <div className="flex size-6 items-center justify-center rounded-full bg-rose-400/20 text-rose-200">
-        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M12 8v5" />
-          <path d="M12 16h.01" />
-          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-        </svg>
+        <AlertIcon className="size-3.5" />
       </div>
     );
   }
 
   return (
     <div className="flex size-6 items-center justify-center rounded-full bg-white/10 text-white/80">
-      <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 16v-4" />
-        <path d="M12 8h.01" />
-      </svg>
+      <InfoIcon className="size-3.5" />
     </div>
   );
 }

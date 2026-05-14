@@ -145,7 +145,7 @@ export default function InvestigatePage() {
             title="Investigate with AI"
             action={
               <Button variant="secondary" onClick={() => void handleInvestigate()} disabled={isLoading} className="rounded-full px-6 font-bold">
-                <svg className={cn("mr-2 size-3.5", isLoading && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" /></svg>
+                <svg className={cn("mr-2 size-3.5", isLoading && "motion-safe:animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" /></svg>
                 {isLoading ? "Analyzing..." : "Run Investigation"}
               </Button>
             }
@@ -253,8 +253,8 @@ export default function InvestigatePage() {
           <Card className="relative z-50 w-full max-w-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <CardHeader className="border-b border-border/60 flex flex-row items-center justify-between">
               <SectionTitle eyebrow="Investigation Details" title={`#${selected.id}`} />
-              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors">
-                <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Close investigation details">
+                <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </CardHeader>
             <CardContent className="p-6 max-h-[70vh] overflow-y-auto">

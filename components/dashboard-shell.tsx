@@ -5,30 +5,23 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
-import { clearAuthSession, setAccentPreference, setThemePreference, useAccentPreference, useAuthReady, useAuthToken, useThemePreference } from "@/lib/auth-store";
+import { BookOpenIcon, LockIcon, MoonIcon, SunIcon } from "@/components/icons";
+import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
 import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
+import { DASHBOARD_NAVIGATION } from "@/lib/navigation";
+import { MOTION } from "@/lib/ui-tokens";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/components/toast-provider";
 import { logoutCurrentSession, refreshAccessToken } from "@/lib/api";
-
-const navItems = [
-  { href: "/dashboard", label: "Overview", permission: "dashboard.view" },
-  { href: "/dashboard/logs", label: "Logs", permission: "role.read" },
-  { href: "/dashboard/investigate", label: "Investigate", permission: "role.read" },
-  { href: "/dashboard/sessions", label: "Sessions", permission: "dashboard.view" },
-  { href: "/dashboard/users", label: "Users", permission: "permission.read", groupStart: true },
-  { href: "/dashboard/permissions", label: "Permissions", permission: "role.update_permissions" },
-  { href: "/dashboard/settings", label: "Settings", permission: "dashboard.view" },
-];
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const authReady = useAuthReady();
   const token = useAuthToken();
-  const theme = useThemePreference();
-  const accent = useAccentPreference();
+  const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
   const [restoringSession, setRestoringSession] = useState(false);
@@ -75,8 +68,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     }
   }
 
-  const filteredNavItems = navItems.filter((item) => hasPermission(item.permission) || !item.permission);
-  const activeLabel = navItems.find((item) => item.href === pathname)?.label || "Dashboard";
+  const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => hasPermission(item.permission) || !item.permission);
+  const activeLabel = DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard";
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,16 +82,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-label={item.label}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 p-2 transition-all duration-300",
+                  "flex flex-col items-center gap-1 p-2",
+                  MOTION.standard,
                   active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
                 )}
               >
                 <div className={cn(
-                  "size-1.5 rounded-full mb-1 transition-all duration-300",
+                  "size-1.5 rounded-full mb-1",
+                  MOTION.standard,
                   active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
                 )} />
-                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label.slice(0, 3)}</span>
+                <span className="text-[9px] font-bold leading-none">{item.label}</span>
               </Link>
             );
           })}
@@ -106,20 +103,23 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             variant="ghost"
             size="icon"
             className="rounded-full hover:bg-primary/5"
-            aria-label="Switch to monochrome theme"
-            onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
+            aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
+            aria-pressed={!isMonochrome}
+            onClick={toggleAccent}
           >
             <div className={cn(
-              "size-3.5 rounded-full border-2 transition-all duration-500",
+              "size-3.5 rounded-full border-2",
+              MOTION.slow,
               accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300"
-            )} />
+            )} aria-hidden="true" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             className="rounded-full hover:bg-primary/5"
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+            aria-pressed={theme === "dark"}
+            onClick={toggleTheme}
           >
             <ThemeIcon mode={theme} />
           </Button>
@@ -181,8 +181,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                             ? "border-primary bg-primary/12 text-primary shadow-inner font-bold"
                             : "border-transparent font-medium text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-primary",
                         )}
+                        aria-current={active ? "page" : undefined}
                       >
-                        <span className={cn("transition-transform duration-300", active ? "translate-x-1" : "group-hover:translate-x-1")}>{item.label}</span>
+                        <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>{item.label}</span>
                         {active && (
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" />
                         )}
@@ -201,21 +202,24 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5 transition-all duration-300"
-                      aria-label="Switch accent color"
-                      onClick={() => setAccentPreference(accent === "monochrome" ? "blue" : "monochrome")}
+                      className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                      aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
+                      aria-pressed={!isMonochrome}
+                      onClick={toggleAccent}
                     >
                       <div className={cn(
-                        "size-4 rounded-full border-2 transition-all duration-500",
+                        "size-4 rounded-full border-2",
+                        MOTION.slow,
                         accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
-                      )} />
+                      )} aria-hidden="true" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
                       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                      onClick={() => setThemePreference(theme === "dark" ? "light" : "dark")}
+                      aria-pressed={theme === "dark"}
+                      onClick={toggleTheme}
                     >
                       <ThemeIcon mode={theme} />
                     </Button>
@@ -249,7 +253,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </Link>
                 <a href={API_DOCS_URL} target="_blank" rel="noreferrer" className="hidden sm:inline-block">
                   <Button variant="ghost" size="sm" className="rounded-full h-9 px-5 text-muted-foreground hover:text-primary transition-colors">
-                    <svg className="mr-2 size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a4 4 0 0 0-4-4H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a4 4 0 0 1 4-4h6z" /></svg>
+                    <BookOpenIcon size="sm" className="mr-2 size-3.5" />
                     API Docs
                   </Button>
                 </a>
@@ -265,7 +269,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             ) : !isAuthenticated ? (
               <Card className="border-primary/20 bg-primary/5 p-8 text-center space-y-6">
                 <div className="mx-auto size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                  <LockIcon size="lg" />
                 </div>
                 <div className="space-y-2">
                   <CardTitle className="text-3xl font-bold tracking-tighter text-balance">Access Locked</CardTitle>
@@ -291,17 +295,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
 function ThemeIcon({ mode }: { mode: string }) {
   if (mode === "dark") {
-    return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
+    return <SunIcon size="sm" />;
   }
 
-  return (
-    <svg className="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <MoonIcon size="sm" />;
 }
