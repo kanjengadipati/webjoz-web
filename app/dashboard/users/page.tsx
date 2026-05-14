@@ -6,7 +6,8 @@ import { useToast } from "@/components/toast-provider";
 import { usePermissions } from "@/hooks/use-permissions";
 import { deleteUser, fetchUsers, updateUser } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
-import type { SectionState, User } from "@/lib/types";
+import { SectionState } from "@/lib/types";
+import type { User } from "@/lib/types";
 
 export default function UsersPage() {
   const token = useAuthToken();
@@ -14,7 +15,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
-  const [state, setState] = useState<SectionState>("idle");
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
   const { role: currentRole, profile } = usePermissions();
 
   const query = useMemo(() => {
@@ -26,13 +27,13 @@ export default function UsersPage() {
 
   const loadUsers = useCallback(async () => {
     if (!token) return;
-    setState("loading");
+    setState(SectionState.LOADING);
     try {
       const response = await fetchUsers(token, query);
-      setUsers(response.data || []);
-      setState("success");
+      setUsers(response.data);
+      setState(SectionState.SUCCESS);
     } catch (error) {
-      setState("error");
+      setState(SectionState.ERROR);
       pushToast(error instanceof Error ? error.message : "Failed to load users", "error");
     }
   }, [pushToast, query, token]);
@@ -57,7 +58,7 @@ export default function UsersPage() {
       });
       pushToast(`User updated to ${newRole}`, "success");
       void loadUsers();
-    } catch (error) {
+    } catch {
       pushToast("Failed to update user role", "error");
     }
   }
@@ -100,7 +101,7 @@ export default function UsersPage() {
           <SectionTitle eyebrow={String(filteredUsers.length)} title="Admin-visible users" />
         </CardHeader>
         <CardContent className="pt-6">
-        {state === "loading" ? (
+        {state === SectionState.LOADING ? (
           <div className="grid gap-3">
             <SkeletonBlock className="h-20" />
             <SkeletonBlock className="h-20" />

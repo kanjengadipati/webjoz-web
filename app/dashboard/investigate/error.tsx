@@ -5,10 +5,10 @@ import { Button, Card, CardContent, CardHeader, SectionTitle } from "@/component
 
 export default function InvestigateError({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   useEffect(() => {
     // Log the error to an error reporting service if available
@@ -37,7 +37,7 @@ export default function InvestigateError({
             We encountered an unexpected error while trying to load the investigation module. This could be a network issue or a temporary backend failure.
           </p>
           <Button 
-            onClick={() => reset()} 
+            onClick={() => unstable_retry()}
             className="w-full bg-rose-600 text-white hover:bg-rose-700"
           >
             Try Again

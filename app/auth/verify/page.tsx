@@ -14,20 +14,23 @@ export default function VerifyEmailPage() {
   const [message, setMessage] = useState("Open this page from your verification email so the token is included in the URL.");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const nextToken = params.get("token") || "";
-    const nextEmail = params.get("email") || "";
-    setToken(nextToken);
+    const timeout = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const nextToken = params.get("token") || "";
+      const nextEmail = params.get("email") || "";
+      setToken(nextToken);
 
-    if (nextToken) {
-      setState("loading");
-      setMessage("Verifying your email with the backend...");
-      return;
-    }
+      if (nextToken) {
+        setState("loading");
+        setMessage("Verifying your email with the backend...");
+        return;
+      }
 
-    if (nextEmail) {
-      setMessage(`A verification email was sent to ${nextEmail}. Open the link in that email to complete verification.`);
-    }
+      if (nextEmail) {
+        setMessage(`A verification email was sent to ${nextEmail}. Open the link in that email to complete verification.`);
+      }
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   useEffect(() => {

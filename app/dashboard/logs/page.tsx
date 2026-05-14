@@ -5,7 +5,8 @@ import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, Sectio
 import { useToast } from "@/components/toast-provider";
 import { fetchAuditLogs } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
-import type { AuditLog, SectionState } from "@/lib/types";
+import { SectionState } from "@/lib/types";
+import type { AuditLog } from "@/lib/types";
 
 export default function LogsPage() {
   const token = useAuthToken();
@@ -13,7 +14,7 @@ export default function LogsPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
-  const [state, setState] = useState<SectionState>("idle");
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
   const [filters, setFilters] = useState({ action: "", resource: "auth", status: "", search: "", dateFrom: "", dateTo: "" });
 
   const query = useMemo(() => {
@@ -29,14 +30,14 @@ export default function LogsPage() {
 
   const loadLogs = useCallback(async (showToast = false) => {
     if (!token) return;
-    setState("loading");
+    setState(SectionState.LOADING);
     try {
       const response = await fetchAuditLogs(token, query);
-      setLogs(response.data || []);
-      setState("success");
+      setLogs(response.data);
+      setState(SectionState.SUCCESS);
       if (showToast) pushToast("Audit feed refreshed.", "success");
     } catch (error) {
-      setState("error");
+      setState(SectionState.ERROR);
       pushToast(error instanceof Error ? error.message : "Failed to load logs", "error");
     }
   }, [pushToast, query, token]);
@@ -93,7 +94,7 @@ export default function LogsPage() {
           <SectionTitle eyebrow={String(logs.length)} title="Event Table" />
         </CardHeader>
         <CardContent className="pt-6">
-        {state === "loading" ? (
+        {state === SectionState.LOADING ? (
           <div className="grid gap-3">
             <SkeletonBlock className="h-20" />
             <SkeletonBlock className="h-20" />

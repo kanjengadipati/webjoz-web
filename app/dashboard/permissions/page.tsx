@@ -7,12 +7,31 @@ import { fetchRoles, fetchAllPermissions, fetchRolePermissions, updateRolePermis
 import { useAuthToken } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
+type NamedItem = {
+  id?: number;
+  name?: string;
+  ID?: number;
+  Name?: string;
+};
+
+type RoleOption = {
+  id: number;
+  name: string;
+};
+
+function normalizeNamedItem(item: NamedItem): RoleOption | null {
+  const id = item.id ?? item.ID;
+  const name = item.name ?? item.Name;
+  if (typeof id !== "number" || !name) return null;
+  return { id, name };
+}
+
 export default function PermissionsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
   
-  const [roles, setRoles] = useState<{ id: number; name: string }[]>([]);
-  const [allPermissions, setAllPermissions] = useState<{ id: number; name: string }[]>([]);
+  const [roles, setRoles] = useState<RoleOption[]>([]);
+  const [allPermissions, setAllPermissions] = useState<RoleOption[]>([]);
   const [selectedRole, setSelectedRole] = useState<number | null>(null);
   const [rolePermissions, setRolePermissions] = useState<string[]>([]);
   
@@ -26,16 +45,20 @@ export default function PermissionsPage() {
         fetchRoles(token),
         fetchAllPermissions(token)
       ]);
-      const filteredRoles = (rolesRes.data || []).filter(r => 
-        ((r as any).name || (r as any).Name).toLowerCase() !== "superadmin"
-      );
+      const filteredRoles = rolesRes.data
+        .map(normalizeNamedItem)
+        .filter((role): role is RoleOption => Boolean(role))
+        .filter((role) => role.name.toLowerCase() !== "superadmin");
+      const permissions = permsRes.data
+        .map(normalizeNamedItem)
+        .filter((permission): permission is RoleOption => Boolean(permission));
       setRoles(filteredRoles);
-      setAllPermissions(permsRes.data || []);
+      setAllPermissions(permissions);
       if (filteredRoles.length) {
         const firstRole = filteredRoles[0];
-        setSelectedRole((firstRole as any).id || (firstRole as any).ID);
+        setSelectedRole(firstRole.id);
       }
-    } catch (error) {
+    } catch {
       pushToast("Failed to load initial data", "error");
     } finally {
       setLoading(false);
@@ -46,19 +69,25 @@ export default function PermissionsPage() {
     if (!token) return;
     try {
       const res = await fetchRolePermissions(token, roleID);
-      setRolePermissions(res.data?.permissions || []);
-    } catch (error) {
+      setRolePermissions(res.data.permissions);
+    } catch {
       pushToast("Failed to load role permissions", "error");
     }
   }, [token, pushToast]);
 
   useEffect(() => {
-    void loadInitialData();
+    const timeout = window.setTimeout(() => {
+      void loadInitialData();
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, [loadInitialData]);
 
   useEffect(() => {
     if (selectedRole) {
-      void loadRolePermissions(selectedRole);
+      const timeout = window.setTimeout(() => {
+        void loadRolePermissions(selectedRole);
+      }, 0);
+      return () => window.clearTimeout(timeout);
     }
   }, [selectedRole, loadRolePermissions]);
 
@@ -76,7 +105,7 @@ export default function PermissionsPage() {
     try {
       await updateRolePermissions(token, selectedRole, rolePermissions);
       pushToast("Permissions updated successfully", "success");
-    } catch (error) {
+    } catch {
       pushToast("Failed to update permissions", "error");
     } finally {
       setSaving(false);
@@ -109,16 +138,14 @@ export default function PermissionsPage() {
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-2">
             {roles.map((role) => {
-              const rId = (role as any).id || (role as any).ID;
-              const rName = (role as any).name || (role as any).Name;
               return (
                 <Button
-                  key={rId}
-                  variant={selectedRole === rId ? "default" : "outline"}
-                  className={cn("rounded-xl h-12 px-6", selectedRole === rId && "shadow-lg shadow-primary/20")}
-                  onClick={() => setSelectedRole(rId)}
+                  key={role.id}
+                  variant={selectedRole === role.id ? "default" : "outline"}
+                  className={cn("rounded-xl h-12 px-6", selectedRole === role.id && "shadow-lg shadow-primary/20")}
+                  onClick={() => setSelectedRole(role.id)}
                 >
-                  {rName}
+                  {role.name}
                 </Button>
               );
             })}
@@ -141,15 +168,14 @@ export default function PermissionsPage() {
         <CardContent className="pt-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {allPermissions.map((perm) => {
-              const pId = (perm as any).id || (perm as any).ID;
-              const pName = (perm as any).name || (perm as any).Name || "unknown";
-              const isActive = rolePermissions.includes(pName);
+              const isActive = rolePermissions.includes(perm.name);
               return (
-                <div 
-                  key={pId}
-                  onClick={() => togglePermission(pName)}
+                <button
+                  type="button"
+                  key={perm.id}
+                  onClick={() => togglePermission(perm.name)}
                   className={cn(
-                    "flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none group",
+                    "flex items-center justify-between p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer select-none group",
                     isActive 
                       ? "border-primary bg-primary/5 shadow-sm" 
                       : "border-border/60 hover:border-primary/40 hover:bg-muted/50"
@@ -157,10 +183,10 @@ export default function PermissionsPage() {
                 >
                   <div className="space-y-0.5">
                     <div className={cn("text-sm font-bold tracking-tight", isActive ? "text-primary" : "text-foreground")}>
-                      {pName}
+                      {perm.name}
                     </div>
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                      {pName.split('.')[0]} Resource
+                      {perm.name.split(".")[0]} Resource
                     </div>
                   </div>
                   <div className={cn(
@@ -175,7 +201,7 @@ export default function PermissionsPage() {
                       </svg>
                     )}
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

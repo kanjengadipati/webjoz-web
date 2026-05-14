@@ -1,6 +1,6 @@
 import { useAuthToken } from "@/lib/auth-store";
 import { fetchProfile } from "@/lib/api";
-import { Profile } from "@/lib/types";
+import type { Profile } from "@/lib/types";
 import { useEffect, useState, useCallback } from "react";
 
 export function usePermissions() {
@@ -9,14 +9,33 @@ export function usePermissions() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let active = true;
     if (token) {
-      setLoading(true);
-      fetchProfile(token)
-        .then((res) => setProfile(res.data || null))
-        .catch(() => setProfile(null))
-        .finally(() => setLoading(false));
+      const timeout = window.setTimeout(() => {
+        setLoading(true);
+        fetchProfile(token)
+          .then((res) => {
+            if (active) setProfile(res.data);
+          })
+          .catch(() => {
+            if (active) setProfile(null);
+          })
+          .finally(() => {
+            if (active) setLoading(false);
+          });
+      }, 0);
+      return () => {
+        active = false;
+        window.clearTimeout(timeout);
+      };
     } else {
-      setProfile(null);
+      const timeout = window.setTimeout(() => {
+        setProfile(null);
+      }, 0);
+      return () => {
+        active = false;
+        window.clearTimeout(timeout);
+      };
     }
   }, [token]);
 

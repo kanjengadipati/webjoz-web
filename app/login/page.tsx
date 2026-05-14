@@ -11,12 +11,63 @@ import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@
 import { login, socialLogin } from "@/lib/api";
 import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
 
+type GoogleCredentialResponse = {
+  credential?: string;
+};
+
+type GoogleIdClient = {
+  initialize: (options: {
+    client_id: string;
+    itp_support: boolean;
+    use_fedcm_for_prompt: boolean;
+    callback: (response: GoogleCredentialResponse) => void;
+  }) => void;
+  prompt: () => void;
+};
+
+type FacebookLoginResponse = {
+  authResponse?: {
+    accessToken?: string;
+  };
+};
+
+type FacebookSdk = {
+  init: (options: {
+    appId: string;
+    status: boolean;
+    xfbml: boolean;
+    version: string;
+  }) => void;
+  login: (
+    callback: (response: FacebookLoginResponse) => void,
+    options: { scope: string },
+  ) => void;
+};
+
+declare global {
+  interface Window {
+    __fbAsyncInitSet?: boolean;
+    __googleInitialized?: boolean;
+    fbAsyncInit?: () => void;
+    FB?: FacebookSdk;
+    google?: {
+      accounts?: {
+        id?: GoogleIdClient;
+      };
+    };
+  }
+}
+
 // Module-level promise so HMR re-mounts don't recreate it.
 // Resolves once FB.init() has been called inside fbAsyncInit.
 let fbReadyResolve: (() => void) | null = null;
 const fbReadyPromise: Promise<void> = new Promise((res) => {
   fbReadyResolve = res;
 });
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,11 +84,11 @@ export default function LoginPage() {
   // The Facebook SDK calls this callback automatically once it loads.
   useEffect(() => {
     if (!FACEBOOK_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("facebook") || typeof window === "undefined") return;
-    if ((window as any).__fbAsyncInitSet) return; // idempotent across HMR
-    (window as any).__fbAsyncInitSet = true;
+    if (window.__fbAsyncInitSet) return; // idempotent across HMR
+    window.__fbAsyncInitSet = true;
 
-    (window as any).fbAsyncInit = () => {
-      (window as any).FB.init({
+    window.fbAsyncInit = () => {
+      window.FB?.init({
         appId: FACEBOOK_CLIENT_ID,
         status: false,
         xfbml: false,
@@ -48,26 +99,30 @@ export default function LoginPage() {
   }, []);
 
   const initializeGoogle = useCallback(() => {
-    if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined" || (window as any).__googleInitialized) return;
+    if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined" || window.__googleInitialized) return;
 
-    const google = (window as any).google;
+    const google = window.google;
     if (google?.accounts?.id) {
-      (window as any).__googleInitialized = true;
+      window.__googleInitialized = true;
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         itp_support: true,
         use_fedcm_for_prompt: false,
-        callback: (response: any) => {
+        callback: (response) => {
+          if (!response.credential) {
+            pushToast("Google did not return a credential.", "error");
+            return;
+          }
           setState("loading");
           socialLogin("google", response.credential)
             .then((apiResponse) => {
-              persistAuthSession("", apiResponse.data?.access_token || "");
+              persistAuthSession("", apiResponse.data.access_token);
               pushToast("Welcome! Google login successful.", "success");
               router.push("/dashboard");
             })
-            .catch((error: any) => {
+            .catch((error: unknown) => {
               setState("error");
-              const msg = error?.response?.data?.message || (error instanceof Error ? error.message : "Social login failed");
+              const msg = getErrorMessage(error, "Social login failed");
               setErrorMessage(msg);
               pushToast(msg, "error");
             });
@@ -82,7 +137,7 @@ export default function LoginPage() {
     if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
     if (params.get("passwordChanged") === "true") pushToast("Password changed. Please sign in again.", "success");
     if (params.get("expired") === "true") pushToast("Your session has expired. Please sign in again.", "error");
-    if ((window as any).google) initializeGoogle();
+    if (window.google) initializeGoogle();
   }, [pushToast, initializeGoogle]);
 
   const handleGoogleClick = () => {
@@ -90,7 +145,7 @@ export default function LoginPage() {
       pushToast("Google Client ID is missing. Please check your .env file.", "error");
       return;
     }
-    const google = (window as any).google;
+    const google = window.google;
     if (google?.accounts?.id) {
       google.accounts.id.prompt();
     } else {
@@ -110,7 +165,7 @@ export default function LoginPage() {
 
     // fbReadyPromise only resolves after FB.init() completes inside fbAsyncInit
     fbReadyPromise.then(() => {
-      const fb = (window as any).FB;
+      const fb = window.FB;
       if (!fb) {
         setState("error");
         pushToast("Facebook SDK failed to load.", "error");
@@ -118,17 +173,17 @@ export default function LoginPage() {
       }
 
       fb.login(
-        (response: any) => {
+        (response) => {
           if (response?.authResponse?.accessToken) {
             socialLogin("facebook", response.authResponse.accessToken)
               .then((apiResponse) => {
-                persistAuthSession("", apiResponse.data?.access_token || "");
+                persistAuthSession("", apiResponse.data.access_token);
                 pushToast("Welcome! Facebook login successful.", "success");
                 router.push("/dashboard");
               })
-              .catch((error: any) => {
+              .catch((error: unknown) => {
                 setState("error");
-                const msg = error?.response?.data?.message || (error instanceof Error ? error.message : "Facebook login failed");
+                const msg = getErrorMessage(error, "Facebook login failed");
                 setErrorMessage(msg);
                 pushToast(msg, "error");
               });
@@ -149,13 +204,13 @@ export default function LoginPage() {
 
     login(email, password)
       .then((response) => {
-        persistAuthSession(email, response.data?.access_token || "");
+        persistAuthSession(email, response.data.access_token);
         pushToast("Login successful. Welcome to the live demo.", "success");
         router.push("/dashboard");
       })
-      .catch((error: any) => {
+      .catch((error: unknown) => {
         setState("error");
-        const message = error?.response?.data?.message || (error instanceof Error ? error.message : "Login failed");
+        const message = getErrorMessage(error, "Login failed");
         setErrorMessage(message);
         pushToast(message, "error");
       });

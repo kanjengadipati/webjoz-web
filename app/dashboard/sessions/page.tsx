@@ -7,23 +7,24 @@ import { fetchSessions, revokeOtherSessions, revokeSession } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { Can } from "@/components/can";
 import { cn } from "@/lib/utils";
-import type { Session, SectionState } from "@/lib/types";
+import { SectionState } from "@/lib/types";
+import type { Session } from "@/lib/types";
 
 export default function SessionsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [state, setState] = useState<SectionState>("idle");
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
   const loadSessions = useCallback(async () => {
     if (!token) return;
-    setState("loading");
+    setState(SectionState.LOADING);
     try {
       const response = await fetchSessions(token);
-      setSessions(response.data || []);
-      setState("success");
+      setSessions(response.data);
+      setState(SectionState.SUCCESS);
     } catch (error) {
-      setState("error");
+      setState(SectionState.ERROR);
       pushToast(error instanceof Error ? error.message : "Failed to load sessions", "error");
     }
   }, [pushToast, token]);
@@ -71,8 +72,8 @@ export default function SessionsPage() {
             title="Session Manager"
             action={
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="rounded-full px-4 h-9" onClick={() => void loadSessions()} disabled={state === "loading"}>
-                  <svg className={cn("mr-2 size-3.5", state === "loading" && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
+                <Button variant="ghost" size="sm" className="rounded-full px-4 h-9" onClick={() => void loadSessions()} disabled={state === SectionState.LOADING} aria-label="Refresh sessions">
+                  <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
                   Refresh
                 </Button>
                 <Can permission="session.delete">
@@ -86,7 +87,7 @@ export default function SessionsPage() {
           />
         </CardHeader>
         <CardContent className="pt-6">
-        {state === "loading" ? (
+        {state === SectionState.LOADING ? (
           <div className="grid gap-3">
             <SkeletonBlock className="h-20" />
             <SkeletonBlock className="h-20" />

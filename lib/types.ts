@@ -1,23 +1,33 @@
-export type ApiEnvelope<T> = {
-  status: string;
+export type ApiSuccessResponse<T> = {
+  status: "success";
   message: string;
-  data?: T;
+  data: T;
   meta?: Record<string, unknown>;
-  errors?: unknown;
 };
+
+export type ApiErrorResponse = {
+  status: "error" | "failed";
+  message: string;
+  errors?: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type ApiEnvelope<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export type LoginResponse = {
   access_token: string;
 };
 
 export type Profile = {
-  id?: number;
-  name?: string;
-  email?: string;
-  role?: string;
-  is_verified?: boolean;
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  is_verified: boolean;
   permissions?: string[];
 };
+
+export type ProfileUpdate = Partial<Profile>;
 
 export type AuditLog = {
   id: number;
@@ -72,4 +82,9 @@ export type User = {
   is_verified: boolean;
 };
 
-export type SectionState = "idle" | "loading" | "error" | "success";
+export enum SectionState {
+  IDLE = "idle",
+  LOADING = "loading",
+  ERROR = "error",
+  SUCCESS = "success",
+}

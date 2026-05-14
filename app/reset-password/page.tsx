@@ -18,8 +18,11 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setToken(params.get("token") || "");
+    const timeout = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      setToken(params.get("token") || "");
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

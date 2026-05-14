@@ -5,8 +5,16 @@ import { Button, Card, CardContent, CardHeader, EmptyState, MetricCard, SectionT
 import { useToast } from "@/components/toast-provider";
 import { fetchAuditLogs, fetchProfile, fetchSessions } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
+import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import type { AuditLog, Profile, SectionState, Session } from "@/lib/types";
+import type { AuditLog, Profile, Session } from "@/lib/types";
+
+const DASHBOARD_CONFIG = {
+  INITIAL_PAGE: 1,
+  ITEMS_PER_PAGE: 24,
+  RESOURCE_TYPE: "auth",
+  TREND_WINDOW_BUCKETS: 7,
+} as const;
 
 export default function DashboardOverviewPage() {
   const token = useAuthToken();
@@ -14,43 +22,50 @@ export default function DashboardOverviewPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [state, setState] = useState<SectionState>("idle");
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
   const refresh = useCallback(async (showToast = true) => {
     if (!token) return;
-    setState("loading");
+    setState(SectionState.LOADING);
     try {
-      const query = new URLSearchParams({ page: "1", limit: "24", resource: "auth" });
+      const query = new URLSearchParams({
+        page: String(DASHBOARD_CONFIG.INITIAL_PAGE),
+        limit: String(DASHBOARD_CONFIG.ITEMS_PER_PAGE),
+        resource: DASHBOARD_CONFIG.RESOURCE_TYPE,
+      });
       const [profileResponse, logsResponse, sessionsResponse] = await Promise.all([
         fetchProfile(token),
         fetchAuditLogs(token, query),
         fetchSessions(token),
       ]);
-      setProfile(profileResponse.data || null);
-      setLogs(logsResponse.data || []);
-      setSessions(sessionsResponse.data || []);
-      setState("success");
+      setProfile(profileResponse.data);
+      setLogs(logsResponse.data);
+      setSessions(sessionsResponse.data);
+      setState(SectionState.SUCCESS);
       setLastSyncedAt(new Date());
       if (showToast) {
         pushToast("Dashboard metrics refreshed.", "success");
       }
     } catch (error) {
-      setState("error");
+      setState(SectionState.ERROR);
       pushToast(error instanceof Error ? error.message : "Failed to load dashboard", "error");
     }
   }, [pushToast, token]);
 
   useEffect(() => {
-    if (!token || state !== "idle") return;
+    if (!token || state !== SectionState.IDLE) return;
     const timeout = window.setTimeout(() => {
-      void refresh(false);
+      refresh(false).catch((error) => {
+        setState(SectionState.ERROR);
+        pushToast(error instanceof Error ? error.message : "Failed to load dashboard", "error");
+      });
     }, 0);
     return () => window.clearTimeout(timeout);
-  }, [refresh, state, token]);
+  }, [pushToast, refresh, state, token]);
 
   const metrics = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toISOString().split("T")[0];
     const todayLogs = logs.filter((log) => (log.created_at || "").startsWith(today));
     const failed = logs.filter((log) => log.status?.toLowerCase() === "failed");
     const uniqueIPs = new Set(logs.map((log) => log.ip_address).filter(Boolean));
@@ -68,16 +83,16 @@ export default function DashboardOverviewPage() {
       const key = (log.created_at || "").slice(5, 10) || "unknown";
       buckets.set(key, (buckets.get(key) || 0) + 1);
     });
-    return Array.from(buckets.entries()).slice(-7);
+    return Array.from(buckets.entries()).slice(-DASHBOARD_CONFIG.TREND_WINDOW_BUCKETS);
   }, [logs]);
 
-  const showMetricSkeletons = state === "idle" || state === "loading";
+  const showMetricSkeletons = state === SectionState.IDLE || state === SectionState.LOADING;
   const hasLoadedActivity = logs.length > 0 || sessions.length > 0;
 
   const syncLabel = lastSyncedAt
     ? `Last synced ${lastSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
     : token
-      ? state === "loading"
+      ? state === SectionState.LOADING
         ? "Syncing data..."
         : "Waiting for first sync"
       : "Connect API to sync";
@@ -100,10 +115,12 @@ export default function DashboardOverviewPage() {
             size="sm"
             className="rounded-full h-9 px-5 font-bold transition-all duration-300 active:scale-95"
             onClick={() => void refresh(true)}
-            disabled={state === "loading" || !token}
+            disabled={state === SectionState.LOADING || !token}
+            aria-label="Sync dashboard data"
+            aria-busy={state === SectionState.LOADING}
           >
-            <svg className={cn("mr-2 size-3.5", state === "loading" && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
-            {state === "loading" ? "Syncing..." : "Sync Dashboard"}
+            <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
+            {state === SectionState.LOADING ? "Syncing..." : "Sync Dashboard"}
           </Button>
         </div>
       </div>
@@ -130,10 +147,10 @@ export default function DashboardOverviewPage() {
         <Card className="relative overflow-hidden group">
           <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
           <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-            <SectionTitle eyebrow={state === "loading" ? "Syncing" : undefined} title="Failed Login Trend" />
+            <SectionTitle eyebrow={state === SectionState.LOADING ? "Syncing" : undefined} title="Failed Login Trend" />
           </CardHeader>
           <CardContent className="pt-8">
-            {state === "loading" ? (
+            {state === SectionState.LOADING ? (
               <GhostChart loading />
             ) : barData.length === 0 ? (
               <div className="space-y-6">
@@ -143,7 +160,14 @@ export default function DashboardOverviewPage() {
                   title={hasLoadedActivity ? "No trend yet" : "Waiting for activity"}
                   text={hasLoadedActivity ? "Recent auth events have not formed a visible trend window yet." : "The chart will wake up as soon as login events start flowing in."}
                   action={(
-                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh()} disabled={!token}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-full px-4"
+                      onClick={() => void refresh()}
+                      disabled={!token}
+                      aria-label="Refresh dashboard trend data"
+                    >
                       {token ? "Refresh data" : "Connect API"}
                     </Button>
                   )}
@@ -232,7 +256,14 @@ export default function DashboardOverviewPage() {
                   title="Operator profile waiting"
                   text="Once profile and auth activity sync, this panel will show the current operator and recent security events."
                   action={(
-                    <Button size="sm" variant="outline" className="rounded-full px-4" onClick={() => void refresh(true)} disabled={!token}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-full px-4"
+                      onClick={() => void refresh(true)}
+                      disabled={!token}
+                      aria-label="Refresh operator profile data"
+                    >
                       {token ? "Refresh data" : "Connect API"}
                     </Button>
                   )}

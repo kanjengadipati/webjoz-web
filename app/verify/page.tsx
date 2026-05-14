@@ -14,27 +14,31 @@ export default function VerifyEmailPage() {
     // Prevent double verification in StrictMode
     if (verifiedRef.current) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    const timeout = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
 
-    if (!token) {
-      setState("error");
-      setMessage("Verification token is missing from the URL.");
-      return;
-    }
-
-    verifiedRef.current = true;
-    setState("loading");
-
-    verifyEmail(token)
-      .then(() => {
-        setState("success");
-        setMessage("Your email has been successfully verified! You can now log in.");
-      })
-      .catch((error) => {
+      if (!token) {
         setState("error");
-        setMessage(error instanceof Error ? error.message : "Failed to verify email. The link might be expired or invalid.");
-      });
+        setMessage("Verification token is missing from the URL.");
+        return;
+      }
+
+      verifiedRef.current = true;
+      setState("loading");
+
+      verifyEmail(token)
+        .then(() => {
+          setState("success");
+          setMessage("Your email has been successfully verified! You can now log in.");
+        })
+        .catch((error) => {
+          setState("error");
+          setMessage(error instanceof Error ? error.message : "Failed to verify email. The link might be expired or invalid.");
+        });
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   return (

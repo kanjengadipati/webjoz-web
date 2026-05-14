@@ -29,8 +29,8 @@ export function useAuthReady() {
 export function useStoredEmail() {
   return useSyncExternalStore(
     (callback) => subscribeToKeys([EMAIL_STORAGE_KEY], callback),
-    () => readStorageValue(EMAIL_STORAGE_KEY, "admin@mail.com"),
-    () => "admin@mail.com",
+    () => readStorageValue(EMAIL_STORAGE_KEY, ""),
+    () => "",
   );
 }
 

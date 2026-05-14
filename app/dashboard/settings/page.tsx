@@ -21,8 +21,8 @@ export default function SettingsPage() {
     if (!token) return;
     try {
       const response = await fetchProfile(token);
-      setProfile(response.data || null);
-      setName(response.data?.name || "");
+      setProfile(response.data);
+      setName(response.data.name);
     } catch (error) {
       pushToast(error instanceof Error ? error.message : "Failed to load profile", "error");
     }
@@ -74,7 +74,7 @@ export default function SettingsPage() {
           <form className="space-y-4" onSubmit={handleProfileUpdate}>
             <div className="space-y-2">
               <Label>Email</Label>
-              <Input value={profile.email || ""} readOnly className="bg-muted/60 text-muted-foreground" />
+              <Input value={profile.email} readOnly className="bg-muted/60 text-muted-foreground" />
             </div>
             <div className="space-y-2">
               <Label>Name</Label>
