@@ -226,8 +226,8 @@ export default function InvestigatePage() {
             ) : (
               history.map((item) => (
                 <button key={item.id} type="button" onClick={() => void openHistory(item.id)} className="w-full rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-left transition hover:border-primary/40 hover:bg-primary/5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
+                  <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+                    <div className="min-w-0 flex-1">
                       <div className="font-medium">Investigation #{item.id}</div>
                       <div className="mt-1 text-sm text-muted-foreground line-clamp-2">{item.summary}</div>
                     </div>

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export function StatusBadge({ status }: { status?: string }) {
   const tone = statusTone(status);
   return (
-    <Badge className={cn(UI_TONES[tone].badge, tone === "danger" && "font-bold")}>
+    <Badge className={cn("shrink-0 whitespace-nowrap", UI_TONES[tone].badge, tone === "danger" && "font-bold")}>
       {status || "unknown"}
     </Badge>
   );

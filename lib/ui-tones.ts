@@ -23,9 +23,9 @@ export const UI_TONES = {
   danger: {
     accent: "bg-rose-500",
     panel: "from-rose-500/10",
-    text: "text-rose-800 dark:text-rose-300",
+    text: "text-rose-700 dark:text-rose-300",
     ring: "border-rose-600/30 hover:border-rose-500/50",
-    badge: "border-rose-600/40 bg-rose-500/20 text-rose-950 dark:text-rose-300",
+    badge: "border-rose-500/35 bg-rose-500/10 text-rose-700 dark:text-rose-300",
   },
   info: {
     accent: "bg-sky-500",

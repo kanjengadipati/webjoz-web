@@ -20,7 +20,7 @@ export function Badge({ children, className, variant = "default", ...props }: Ba
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wider uppercase",
+        "inline-flex max-w-full items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wider uppercase leading-none",
         MOTION.standard,
         BADGE_VARIANTS[variant],
         className,
