@@ -41,9 +41,9 @@ type ToastContextValue = {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const TOAST_STYLES: Record<ToastTone, string> = {
-  success: "border-emerald-300/15 bg-emerald-500/8 text-white",
-  error: "border-red-200/45 bg-red-950/95 text-white shadow-red-950/35",
-  info: "border-white/8 bg-slate-900/60 text-white",
+  success: "border-emerald-200 bg-emerald-50/95 text-emerald-950 shadow-emerald-900/10 dark:border-emerald-300/15 dark:bg-emerald-500/8 dark:text-white dark:shadow-black/10",
+  error: "border-red-200 bg-red-50/95 text-red-950 shadow-red-900/10 dark:border-red-200/45 dark:bg-red-950/95 dark:text-white dark:shadow-red-950/35",
+  info: "border-slate-200 bg-white/95 text-slate-950 shadow-slate-900/10 dark:border-white/8 dark:bg-slate-900/60 dark:text-white dark:shadow-black/10",
 };
 
 let toastCounter = 0;
@@ -145,14 +145,14 @@ function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id:
     >
       <div className="mt-0.5">{toastIcon(toast.tone)}</div>
       <div className="min-w-0 flex-1">
-        <div className="font-semibold leading-6 text-white">{toast.title}</div>
-        {toast.message ? <div className="mt-0.5 leading-5 text-white/85">{toast.message}</div> : null}
+        <div className="font-semibold leading-6 text-current">{toast.title}</div>
+        {toast.message ? <div className="mt-0.5 leading-5 text-current opacity-80">{toast.message}</div> : null}
         {toast.actionLabel ? (
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="mt-3 h-8 border border-white/20 bg-white/10 px-3 text-white hover:bg-white/18 hover:text-white"
+            className="mt-3 h-8 border border-current/20 bg-current/8 px-3 text-current hover:bg-current/12 hover:text-current"
             onClick={() => dismissToast(toast.id)}
           >
             {toast.actionLabel}
@@ -163,7 +163,7 @@ function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id:
         type="button"
         variant="ghost"
         size="icon"
-        className="size-8 shrink-0 rounded-full text-white/70 hover:bg-white/14 hover:text-white"
+        className="size-8 shrink-0 rounded-full text-current opacity-65 hover:bg-current/12 hover:text-current hover:opacity-100"
         onClick={() => dismissToast(toast.id)}
         aria-label="Dismiss notification"
       >
@@ -176,7 +176,7 @@ function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id:
 function toastIcon(tone: ToastTone) {
   if (tone === "success") {
     return (
-      <div className="flex size-6 items-center justify-center rounded-full bg-emerald-300/10 text-emerald-200/80">
+      <div className="flex size-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-300/10 dark:text-emerald-200/80">
         <CheckIcon className="size-3.5" />
       </div>
     );
@@ -184,14 +184,14 @@ function toastIcon(tone: ToastTone) {
 
   if (tone === "error") {
     return (
-      <div className="flex size-7 items-center justify-center rounded-full bg-red-100/95 text-red-800">
+      <div className="flex size-7 items-center justify-center rounded-full bg-red-100 text-red-800 dark:bg-red-100/95 dark:text-red-800">
         <AlertIcon className="size-4" />
       </div>
     );
   }
 
   return (
-    <div className="flex size-6 items-center justify-center rounded-full bg-white/8 text-white/65">
+    <div className="flex size-6 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-white/8 dark:text-white/65">
       <InfoIcon className="size-3.5" />
     </div>
   );

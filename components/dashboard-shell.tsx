@@ -75,7 +75,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-6 left-6 right-6 z-50 lg:hidden">
-        <div className="flex items-center justify-around rounded-3xl border border-border/40 bg-background/80 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-primary/10">
+        <div className="flex items-center justify-around rounded-3xl border border-border/70 bg-card/95 px-4 py-3 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:bg-background/80 dark:shadow-primary/10">
           {filteredNavItems.slice(0, 5).map((item) => {
             const active = pathname === item.href;
             return (
@@ -236,7 +236,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="flex min-w-0 flex-col gap-6">
-          <header className="sticky top-0 z-20 rounded-3xl border border-border/40 bg-background/60 px-6 py-4 backdrop-blur-xl shadow-lg shadow-black/5">
+          <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">

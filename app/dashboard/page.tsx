@@ -16,6 +16,13 @@ const DASHBOARD_CONFIG = {
   TREND_WINDOW_BUCKETS: 7,
 } as const;
 
+function isFailedLoginEvent(log: AuditLog) {
+  const action = log.action?.toLowerCase() || "";
+  const description = log.description?.toLowerCase() || "";
+  const status = log.status?.toLowerCase() || "";
+  return status === "failed" && (action.includes("login") || action.includes("sign in") || description.includes("login") || description.includes("sign in"));
+}
+
 export default function DashboardOverviewPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
@@ -67,7 +74,7 @@ export default function DashboardOverviewPage() {
   const metrics = useMemo(() => {
     const today = new Date().toISOString().split("T")[0];
     const todayLogs = logs.filter((log) => (log.created_at || "").startsWith(today));
-    const failed = logs.filter((log) => log.status?.toLowerCase() === "failed");
+    const failed = logs.filter(isFailedLoginEvent);
     const uniqueIPs = new Set(logs.map((log) => log.ip_address).filter(Boolean));
     return {
       todayAttempts: todayLogs.length,
@@ -79,7 +86,7 @@ export default function DashboardOverviewPage() {
 
   const barData = useMemo(() => {
     const buckets = new Map<string, number>();
-    logs.forEach((log) => {
+    logs.filter(isFailedLoginEvent).forEach((log) => {
       const key = (log.created_at || "").slice(5, 10) || "unknown";
       buckets.set(key, (buckets.get(key) || 0) + 1);
     });
@@ -98,7 +105,7 @@ export default function DashboardOverviewPage() {
       : "Connect API to sync";
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-1000">
+    <div className="space-y-10 animate-in fade-in duration-1000 lg:space-y-12">
       <div className="flex flex-wrap items-center justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Dashboard</h1>
@@ -110,7 +117,7 @@ export default function DashboardOverviewPage() {
           <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-medium text-muted-foreground/80">
             {syncLabel}
           </div>
-            <Button
+          <Button
             variant="secondary"
             size="sm"
             className="rounded-full h-9 px-5 font-bold transition-all duration-300 active:scale-95"
@@ -125,7 +132,7 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
         {showMetricSkeletons ? (
           <>
             <MetricSkeleton />
@@ -136,29 +143,28 @@ export default function DashboardOverviewPage() {
         ) : (
           <>
             <MetricCard label="Login attempts today" value={String(metrics.todayAttempts)} helper="Waiting for activity" tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
-            <MetricCard label="Failed logins" value={String(metrics.failedLogins)} helper="Watch for repeated failures" tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
+            <MetricCard label="Failed logins" value={String(metrics.failedLogins)} helper={metrics.failedLogins > 0 ? "Watch for repeated failures" : "No failed sign-ins detected"} tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
             <MetricCard label="Active sessions" value={String(metrics.activeSessions)} helper="Current signed-in devices" tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "Idle"} />
             <MetricCard label="Unique source IPs" value={String(metrics.uniqueIPs)} helper="Distinct IPs in recent logs" tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Waiting"} />
           </>
         )}
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
-        <Card className="relative overflow-hidden group">
+      <section className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
+        <Card className="relative overflow-hidden group bg-card/95">
           <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
           <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
             <SectionTitle eyebrow={state === SectionState.LOADING ? "Syncing" : undefined} title="Failed Login Trend" />
           </CardHeader>
-          <CardContent className="pt-8">
+          <CardContent className="px-7 pb-7 pt-8">
             {state === SectionState.LOADING ? (
               <GhostChart loading />
             ) : barData.length === 0 ? (
               <div className="space-y-6">
-                <GhostChart />
                 <EmptyState
-                  className="min-h-0 border-none bg-transparent px-2 py-0"
-                  title={hasLoadedActivity ? "No trend yet" : "Waiting for activity"}
-                  text={hasLoadedActivity ? "Recent auth events have not formed a visible trend window yet." : "The chart will wake up as soon as login events start flowing in."}
+                  className="min-h-64 border-dashed bg-muted/15 px-6 py-10"
+                  title={hasLoadedActivity ? "No failed logins in this window" : "Waiting for login activity"}
+                  text={hasLoadedActivity ? "Recent auth logs are clear of failed login attempts, so there is no failure trend to chart." : "Failed login bars will appear here once the audit feed includes unsuccessful sign-in events."}
                   action={(
                     <Button
                       size="sm"
@@ -184,8 +190,8 @@ export default function DashboardOverviewPage() {
                       <div className="text-[10px] font-bold text-muted-foreground/60 opacity-0 group-hover/bar:opacity-100 transition-opacity translate-y-2 group-hover/bar:translate-y-0 duration-300">{value}</div>
                       <div
                         className={cn(
-                          "w-full rounded-t-xl bg-gradient-to-t from-primary/80 via-primary to-sky-400 transition-all duration-500",
-                          "shadow-[0_4px_12px_rgba(var(--primary),0.1)] group-hover/bar:shadow-[0_12px_40px_rgba(var(--primary),0.4)] group-hover/bar:scale-x-105",
+                          "w-full rounded-t-xl bg-gradient-to-t from-sky-300 via-sky-500 to-cyan-300 transition-all duration-500 dark:from-primary/80 dark:via-primary dark:to-sky-400",
+                          "shadow-[0_8px_24px_rgba(14,165,233,0.22)] group-hover/bar:shadow-[0_14px_40px_rgba(14,165,233,0.32)] group-hover/bar:scale-x-105 dark:shadow-[0_4px_12px_rgba(var(--primary),0.1)] dark:group-hover/bar:shadow-[0_12px_40px_rgba(var(--primary),0.4)]",
                           barData.length === 1 ? "mx-auto max-w-28" : "",
                           index === barData.length - 1 ? "ring-2 ring-primary/30 ring-offset-4 ring-offset-background" : "",
                         )}
@@ -196,12 +202,12 @@ export default function DashboardOverviewPage() {
                           )}px`,
                         }}
                       />
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">{label}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</div>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs font-medium leading-relaxed text-muted-foreground/60 italic border-t border-border/40 pt-4">
-                  Visualizing auth spikes over the last 7 activity buckets for rapid incident triage.
+                <p className="text-xs font-medium leading-relaxed text-muted-foreground italic border-t border-border/70 pt-4 dark:border-border/40 dark:text-muted-foreground/60">
+                  Visualizing failed sign-in spikes over the last 7 activity buckets for rapid incident triage.
                 </p>
               </div>
             )}
@@ -213,7 +219,7 @@ export default function DashboardOverviewPage() {
           <CardHeader className="border-b border-border/40">
             <SectionTitle eyebrow={profile ? "Verified" : undefined} title="Active Operator" />
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="px-7 pb-7 pt-7">
             {profile ? (
               <div className="space-y-6 animate-in fade-in duration-700">
                 <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-6 border border-primary/10 shadow-inner">

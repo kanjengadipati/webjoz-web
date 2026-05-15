@@ -10,9 +10,9 @@ interface CardProps extends HTMLAttributes<HTMLElement> {
 }
 
 const CARD_VARIANTS: Record<CardVariant, string> = {
-  default: "border-border/70 bg-card/60 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.1)]",
-  elevated: "border-border/60 bg-card/80 shadow-xl shadow-primary/5",
-  outlined: "border-border/80 bg-background/40 shadow-none",
+  default: "border-border/80 bg-card/90 shadow-[0_12px_34px_-18px_rgba(15,23,42,0.28)] dark:border-border/70 dark:bg-card/60 dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.1)]",
+  elevated: "border-border/80 bg-card/95 shadow-xl shadow-slate-900/10 dark:border-border/60 dark:bg-card/80 dark:shadow-primary/5",
+  outlined: "border-border/80 bg-background/70 shadow-none dark:bg-background/40",
 };
 
 export function Card({ children, className, variant = "default", ...props }: CardProps) {
