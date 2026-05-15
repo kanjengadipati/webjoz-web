@@ -16,6 +16,8 @@ const DASHBOARD_CONFIG = {
   TREND_WINDOW_BUCKETS: 7,
 } as const;
 
+const DASHBOARD_ACTION_BUTTON = "h-9 rounded-full px-5 font-bold";
+
 function isFailedLoginEvent(log: AuditLog) {
   const action = log.action?.toLowerCase() || "";
   const description = log.description?.toLowerCase() || "";
@@ -94,6 +96,7 @@ export default function DashboardOverviewPage() {
   }, [logs]);
 
   const showMetricSkeletons = state === SectionState.IDLE || state === SectionState.LOADING;
+  const showOperatorSkeleton = state === SectionState.LOADING;
   const hasLoadedActivity = logs.length > 0 || sessions.length > 0;
 
   const syncLabel = lastSyncedAt
@@ -120,7 +123,7 @@ export default function DashboardOverviewPage() {
           <Button
             variant="secondary"
             size="sm"
-            className="rounded-full h-9 px-5 font-bold transition-all duration-300 active:scale-95"
+            className={cn(DASHBOARD_ACTION_BUTTON, "transition-all duration-300 active:scale-95")}
             onClick={() => void refresh(true)}
             disabled={state === SectionState.LOADING || !token}
             aria-label="Sync dashboard data"
@@ -132,7 +135,7 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both" aria-busy={state === SectionState.LOADING}>
         {showMetricSkeletons ? (
           <>
             <MetricSkeleton />
@@ -142,15 +145,15 @@ export default function DashboardOverviewPage() {
           </>
         ) : (
           <>
-            <MetricCard label="Login attempts today" value={String(metrics.todayAttempts)} helper="Waiting for activity" tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
+            <MetricCard label="Login attempts today" value={String(metrics.todayAttempts)} helper={metrics.todayAttempts > 0 ? "Auth activity recorded today" : "No activity yet"} tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
             <MetricCard label="Failed logins" value={String(metrics.failedLogins)} helper={metrics.failedLogins > 0 ? "Watch for repeated failures" : "No failed sign-ins detected"} tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
-            <MetricCard label="Active sessions" value={String(metrics.activeSessions)} helper="Current signed-in devices" tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "Idle"} />
-            <MetricCard label="Unique source IPs" value={String(metrics.uniqueIPs)} helper="Distinct IPs in recent logs" tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Waiting"} />
+            <MetricCard label="Active sessions" value={String(metrics.activeSessions)} helper={metrics.activeSessions > 0 ? "Current signed-in devices" : "No active sessions right now"} tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "Idle"} />
+            <MetricCard label="Unique source IPs" value={String(metrics.uniqueIPs)} helper={metrics.uniqueIPs > 0 ? "Distinct IPs in recent logs" : "Waiting for data"} tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Waiting"} />
           </>
         )}
       </section>
 
-      <section className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
+      <section className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both" aria-busy={state === SectionState.LOADING}>
         <Card className="relative overflow-hidden group bg-card/95">
           <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
           <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
@@ -169,7 +172,7 @@ export default function DashboardOverviewPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-full px-4"
+                      className={DASHBOARD_ACTION_BUTTON}
                       onClick={() => void refresh()}
                       disabled={!token}
                       aria-label="Refresh dashboard trend data"
@@ -220,12 +223,17 @@ export default function DashboardOverviewPage() {
             <SectionTitle eyebrow={profile ? "Verified" : undefined} title="Active Operator" />
           </CardHeader>
           <CardContent className="px-7 pb-7 pt-7">
-            {profile ? (
+            {showOperatorSkeleton ? (
+              <ProfileGhost />
+            ) : profile ? (
               <div className="space-y-6 animate-in fade-in duration-700">
                 <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-6 border border-primary/10 shadow-inner">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-xs font-semibold text-primary/80">Profile summary</div>
-                    <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                      <span className="size-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+                      <span>Online</span>
+                    </div>
                   </div>
                   <div className="text-3xl font-bold tracking-tighter">{profile.name}</div>
                   <div className="mt-1 text-sm font-medium text-muted-foreground/80">{profile.email}</div>
@@ -265,7 +273,7 @@ export default function DashboardOverviewPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-full px-4"
+                      className={DASHBOARD_ACTION_BUTTON}
                       onClick={() => void refresh(true)}
                       disabled={!token}
                       aria-label="Refresh operator profile data"

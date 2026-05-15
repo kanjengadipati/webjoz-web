@@ -25,7 +25,7 @@ export function MetricCard({
       <CardHeader className="space-y-4 p-6">
         <div className="flex items-center justify-between gap-3">
           <div className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors dark:group-hover:text-primary/80">{label}</div>
-          <div className={cn("size-2 rounded-full shadow-[0_0_12px_currentColor]", style.text)} />
+          <div className={cn("size-2 rounded-full shadow-[0_0_12px_currentColor]", style.text)} aria-hidden="true" />
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className={cn("text-4xl font-bold tracking-tighter lg:text-5xl group-hover:scale-[1.02]", MOTION.transform)}>{value}</div>

@@ -94,7 +94,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   "size-1.5 rounded-full mb-1",
                   MOTION.standard,
                   active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
-                )} />
+                )} aria-hidden="true" />
                 <span className="text-[9px] font-bold leading-none">{item.label}</span>
               </Link>
             );
@@ -154,7 +154,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className={cn(
                     "size-2 rounded-full",
                     isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
-                  )} />
+                  )} aria-hidden="true" />
                 </div>
                 <div className="text-sm font-bold tracking-tight">
                   {isAuthenticated ? (
@@ -185,7 +185,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       >
                         <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>{item.label}</span>
                         {active && (
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" />
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" aria-hidden="true" />
                         )}
                       </Link>
                     </div>
@@ -240,7 +240,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <div className="size-1.5 rounded-full bg-primary animate-pulse" />
+                  <div className="size-1.5 rounded-full bg-primary animate-pulse" aria-hidden="true" />
                   <div className="text-xs font-medium text-primary/80">Workspace</div>
                 </div>
                 <div className="text-2xl font-bold tracking-tighter">{activeLabel}</div>

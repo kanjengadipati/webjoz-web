@@ -1,4 +1,4 @@
-export { Button } from "./button";
+export { Button, buttonClassName } from "./button";
 export { Badge } from "./badge";
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 export { Checkbox, FormField, Input, Label, Select, Textarea } from "./input";

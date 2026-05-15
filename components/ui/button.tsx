@@ -26,18 +26,22 @@ const BUTTON_SIZES: Record<ButtonSize, string> = {
   icon: "size-10",
 };
 
+export function buttonClassName({ className, variant = "default", size = "default" }: Pick<ButtonProps, "className" | "variant" | "size"> = {}) {
+  return cn(
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background hover:scale-[1.02] active:scale-[0.98]",
+    FOCUS_VISIBLE,
+    DISABLED_STYLES,
+    MOTION.standard,
+    BUTTON_VARIANTS[variant],
+    BUTTON_SIZES[size],
+    className,
+  );
+}
+
 export function Button({ children, className, variant = "default", size = "default", ...props }: ButtonProps) {
   return (
     <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background hover:scale-[1.02] active:scale-[0.98]",
-        FOCUS_VISIBLE,
-        DISABLED_STYLES,
-        MOTION.standard,
-        BUTTON_VARIANTS[variant],
-        BUTTON_SIZES[size],
-        className,
-      )}
+      className={buttonClassName({ className, variant, size })}
       {...props}
     >
       {children}

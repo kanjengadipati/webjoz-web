@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { AuthShell } from "@/components/auth-shell";
+import { buttonClassName } from "@/components/ui";
 import { verifyEmail } from "@/lib/api";
 
 export default function VerifyEmailPage() {
@@ -80,7 +81,7 @@ export default function VerifyEmailPage() {
             </div>
             <Link
               href="/login?verified=true"
-              className="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-8 text-sm font-medium text-black transition-colors hover:bg-primary/90"
+              className={buttonClassName({ className: "mt-4 px-8", size: "default" })}
             >
               Go to Login
             </Link>
