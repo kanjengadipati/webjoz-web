@@ -5,6 +5,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
+import { AlertIcon } from "@/components/icons";
 import { DISABLED_STYLES, FOCUS_VISIBLE, MOTION } from "@/lib/ui-tokens";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +57,7 @@ export function inputClassName({
     MOTION.standard,
     variants[variant],
     sizes[size],
-    error && "border-destructive focus-visible:ring-destructive",
+    error && "border-destructive pr-10 focus-visible:ring-destructive",
     className,
   );
 }
@@ -66,13 +67,16 @@ export function Input({ className, variant, inputSize, error, helperText, name, 
 
   return (
     <div className={cn((error || helperText) && "space-y-1")}>
-      <input
-        {...props}
-        name={name}
-        aria-invalid={Boolean(error)}
-        aria-describedby={describedBy}
-        className={inputClassName({ className, variant, size: inputSize, error: Boolean(error) })}
-      />
+      <div className="relative">
+        <input
+          {...props}
+          name={name}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
+          className={inputClassName({ className, variant, size: inputSize, error: Boolean(error) })}
+        />
+        {error ? <AlertIcon size="sm" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-destructive" /> : null}
+      </div>
       {error ? <p id={`${name || props.id}-error`} className="text-xs font-medium text-destructive">{error}</p> : null}
       {helperText ? <p id={`${name || props.id}-helper`} className="text-xs text-muted-foreground">{helperText}</p> : null}
     </div>

@@ -8,6 +8,39 @@ import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { register } from "@/lib/api";
 import { SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
+import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
+
+const REGISTER_API_FIELDS = ["name", "email", "password"] as const;
+type RegisterField = "name" | "email" | "password" | "confirmPassword";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateRegisterForm(name: string, email: string, password: string, confirmPassword: string): FieldErrors<RegisterField> {
+  const errors: FieldErrors<RegisterField> = {};
+
+  if (!name.trim()) {
+    errors.name = "Enter your name.";
+  }
+
+  if (!email.trim()) {
+    errors.email = "Enter your email address.";
+  } else if (!EMAIL_PATTERN.test(email)) {
+    errors.email = "Enter a valid email address, like jane@mail.com.";
+  }
+
+  if (!password) {
+    errors.password = "Enter a password.";
+  } else if (password.length < 8) {
+    errors.password = "Password must be at least 8 characters.";
+  }
+
+  if (!confirmPassword) {
+    errors.confirmPassword = "Confirm your password.";
+  } else if (password && password !== confirmPassword) {
+    errors.confirmPassword = "Passwords do not match.";
+  }
+
+  return errors;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,17 +51,22 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<RegisterField>>({});
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
-      pushToast("Passwords do not match", "error");
+    const nextFieldErrors = validateRegisterForm(name, email, password, confirmPassword);
+    if (hasFieldErrors(nextFieldErrors)) {
+      setState("error");
+      setFieldErrors(nextFieldErrors);
+      setErrorMessage("Please fix the highlighted fields.");
+      pushToast("Please fix the highlighted fields.", "error");
       return;
     }
 
     setState("loading");
     setErrorMessage("");
+    setFieldErrors({});
 
     try {
       await register(name, email, password);
@@ -36,7 +74,9 @@ export default function RegisterPage() {
       router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
     } catch (error) {
       setState("error");
-      const message = error instanceof Error ? error.message : "Registration failed";
+      const nextErrors = getApiFieldErrors(error, REGISTER_API_FIELDS);
+      setFieldErrors(nextErrors);
+      const message = getFormErrorMessage(error, "Registration failed", nextErrors);
       setErrorMessage(message);
       pushToast(message, "error");
     }
@@ -68,19 +108,57 @@ export default function RegisterPage() {
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" value={name} onChange={(event) => setName(event.target.value)} placeholder="Jane Admin" />
+          <Input
+            id="name"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+              setFieldErrors((current) => ({ ...current, name: undefined }));
+            }}
+            placeholder="Jane Admin"
+            error={fieldErrors.name}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="jane@mail.com" />
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setFieldErrors((current) => ({ ...current, email: undefined }));
+            }}
+            placeholder="jane@mail.com"
+            error={fieldErrors.email}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Minimum 8 characters" />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              setFieldErrors((current) => ({ ...current, password: undefined, confirmPassword: undefined }));
+            }}
+            placeholder="Minimum 8 characters"
+            error={fieldErrors.password}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirm-password">Confirm Password</Label>
-          <Input id="confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+          <Input
+            id="confirm-password"
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => {
+              setConfirmPassword(event.target.value);
+              setFieldErrors((current) => ({ ...current, confirmPassword: undefined }));
+            }}
+            error={fieldErrors.confirmPassword}
+          />
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
           {state === "loading" ? "Creating account..." : "Create Account"}

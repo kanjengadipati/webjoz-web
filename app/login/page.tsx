@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState, useCallback } from "react";
+import { FormEvent, useEffect, useRef, useState, useCallback } from "react";
 import { AuthShell } from "@/components/auth-shell";
 import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -10,6 +10,7 @@ import Script from "next/script";
 import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
 import { login, socialLogin } from "@/lib/api";
 import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
+import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 
 type GoogleCredentialResponse = {
   credential?: string;
@@ -65,8 +66,28 @@ const fbReadyPromise: Promise<void> = new Promise((res) => {
   fbReadyResolve = res;
 });
 
+const LOGIN_FIELDS = ["email", "password"] as const;
+type LoginField = (typeof LOGIN_FIELDS)[number];
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
+}
+
+function validateLoginForm(email: string, password: string): FieldErrors<LoginField> {
+  const errors: FieldErrors<LoginField> = {};
+
+  if (!email.trim()) {
+    errors.email = "Enter your email address.";
+  } else if (!EMAIL_PATTERN.test(email)) {
+    errors.email = "Enter a valid email address, like admin@mail.com.";
+  }
+
+  if (!password) {
+    errors.password = "Enter your password.";
+  }
+
+  return errors;
 }
 
 export default function LoginPage() {
@@ -77,8 +98,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-
-
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<LoginField>>({});
+  const handledExpiredToastRef = useRef(false);
 
   // Register window.fbAsyncInit BEFORE the <Script> renders.
   // The Facebook SDK calls this callback automatically once it loads.
@@ -136,7 +157,18 @@ export default function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
     if (params.get("passwordChanged") === "true") pushToast("Password changed. Please sign in again.", "success");
-    if (params.get("expired") === "true") pushToast("Your session has expired. Please sign in again.", "error");
+    if (params.get("expired") === "true" && !handledExpiredToastRef.current) {
+      handledExpiredToastRef.current = true;
+      pushToast("Session Expired", "error", {
+        message: "Your session has expired. Please sign in again to continue.",
+        actionLabel: "Dismiss",
+        autoClose: false,
+        position: "top-center",
+      });
+      params.delete("expired");
+      const nextSearch = params.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`);
+    }
     if (window.google) initializeGoogle();
   }, [pushToast, initializeGoogle]);
 
@@ -162,6 +194,7 @@ export default function LoginPage() {
 
     setState("loading");
     setErrorMessage("");
+    setFieldErrors({});
 
     // fbReadyPromise only resolves after FB.init() completes inside fbAsyncInit
     fbReadyPromise.then(() => {
@@ -183,6 +216,7 @@ export default function LoginPage() {
               })
               .catch((error: unknown) => {
                 setState("error");
+                setFieldErrors({});
                 const msg = getErrorMessage(error, "Facebook login failed");
                 setErrorMessage(msg);
                 pushToast(msg, "error");
@@ -199,8 +233,18 @@ export default function LoginPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const nextFieldErrors = validateLoginForm(email, password);
+    if (hasFieldErrors(nextFieldErrors)) {
+      setState("error");
+      setFieldErrors(nextFieldErrors);
+      setErrorMessage("Please fix the highlighted fields.");
+      pushToast("Please fix the highlighted fields.", "error");
+      return;
+    }
+
     setState("loading");
     setErrorMessage("");
+    setFieldErrors({});
 
     login(email, password)
       .then((response) => {
@@ -210,7 +254,9 @@ export default function LoginPage() {
       })
       .catch((error: unknown) => {
         setState("error");
-        const message = getErrorMessage(error, "Login failed");
+        const nextErrors = getApiFieldErrors(error, LOGIN_FIELDS);
+        setFieldErrors(nextErrors);
+        const message = getFormErrorMessage(error, "Login failed", nextErrors);
         setErrorMessage(message);
         pushToast(message, "error");
       });
@@ -243,11 +289,31 @@ export default function LoginPage() {
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@mail.com" />
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setFieldErrors((current) => ({ ...current, email: undefined }));
+            }}
+            placeholder="admin@mail.com"
+            error={fieldErrors.email}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setFieldErrors((current) => ({ ...current, password: undefined }));
+            }}
+            placeholder="Enter your password"
+            error={fieldErrors.password}
+          />
           <div className="text-xs font-medium text-muted-foreground/70">
             Demo password: <span className="font-semibold text-foreground/80">admin123</span>
           </div>
