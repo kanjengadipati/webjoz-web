@@ -13,6 +13,7 @@ import {
 import { AlertIcon, CheckIcon, CloseIcon, InfoIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type ToastTone = "success" | "error" | "info";
 type ToastPosition = "top-right" | "top-center";
@@ -20,8 +21,11 @@ type ToastPosition = "top-right" | "top-center";
 type ToastOptions = {
   message?: string;
   actionLabel?: string;
+  actionHref?: string;
   autoClose?: boolean;
   position?: ToastPosition;
+  aiDetails?: string;
+  suggestions?: import("@/lib/types").Suggestion[];
 };
 
 type Toast = {
@@ -30,8 +34,11 @@ type Toast = {
   message?: string;
   tone: ToastTone;
   actionLabel?: string;
+  actionHref?: string;
   autoClose: boolean;
   position: ToastPosition;
+  aiDetails?: string;
+  suggestions?: import("@/lib/types").Suggestion[];
 };
 
 type ToastContextValue = {
@@ -86,8 +93,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         message: options.message,
         tone,
         actionLabel: options.actionLabel,
+        actionHref: options.actionHref,
         autoClose,
         position: options.position ?? "top-right",
+        aiDetails: options.aiDetails,
+        suggestions: options.suggestions,
       };
 
       if (current.some((toast) => toast.tone === nextToast.tone && toast.title === nextToast.title && toast.message === nextToast.message)) {
@@ -147,13 +157,44 @@ function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id:
       <div className="min-w-0 flex-1">
         <div className="font-semibold leading-6 text-current">{toast.title}</div>
         {toast.message ? <div className="mt-0.5 leading-5 text-current opacity-80">{toast.message}</div> : null}
-        {toast.actionLabel ? (
+        {toast.aiDetails ? <div className="mt-1.5 rounded bg-current/5 px-2 py-1 text-xs leading-4 text-current opacity-70">{toast.aiDetails}</div> : null}
+        
+        {toast.suggestions && toast.suggestions.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {toast.suggestions.map((suggestion, idx) => {
+              const isPrimary = suggestion.priority === "primary";
+              const btnClass = cn(
+                "h-8 border px-3 text-current transition-colors text-xs font-medium rounded-md flex items-center",
+                isPrimary 
+                  ? "border-current/30 bg-current/10 hover:bg-current/15" 
+                  : "border-transparent bg-transparent hover:bg-current/5"
+              );
+              
+              if (suggestion.url) {
+                return (
+                  <Link key={idx} href={suggestion.url} className={btnClass} onClick={() => dismissToast(toast.id)}>
+                    {suggestion.title}
+                  </Link>
+                );
+              }
+              
+              return (
+                <button key={idx} type="button" className={btnClass} onClick={() => dismissToast(toast.id)}>
+                  {suggestion.title}
+                </button>
+              );
+            })}
+          </div>
+        ) : toast.actionLabel ? (
           <Button
             type="button"
             variant="ghost"
             size="sm"
             className="mt-3 h-8 border border-current/20 bg-current/8 px-3 text-current hover:bg-current/12 hover:text-current"
-            onClick={() => dismissToast(toast.id)}
+            onClick={() => {
+              if (toast.actionHref) window.location.href = toast.actionHref;
+              dismissToast(toast.id);
+            }}
           >
             {toast.actionLabel}
           </Button>

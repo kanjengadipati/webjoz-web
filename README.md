@@ -13,6 +13,7 @@ The official companion dashboard for the [Pleco](https://github.com/kanjengadipa
 - Failed auth audit log feed
 - AI-powered audit investigation trigger
 - Saved investigation history viewer
+- AI-powered error optimization suggestions in toast notifications
 
 
 ## Environment

@@ -11,6 +11,12 @@ import type { ApiEnvelope, ApiSuccessResponse, LoginResponse } from "@/lib/types
 const MAX_AUTH_RETRIES = 1;
 
 export class ApiError extends Error {
+  public code?: string;
+  public aiDetails?: string;
+  public suggestions?: import("@/lib/types").Suggestion[];
+  public docsUrl?: string;
+  public supportUrl?: string;
+
   constructor(
     public statusCode: number,
     message: string,
@@ -38,17 +44,31 @@ async function parseApiEnvelope<T>(response: Response): Promise<ApiEnvelope<T>> 
 
 function toApiError<T>(response: Response, body: ApiEnvelope<T>) {
   if (response.status === 429) {
-    return new ApiError(429, "Too many requests. Please try again later.", {
+    const err = new ApiError(429, "Too many requests. Please try again later.", {
       retryAfter: response.headers.get("Retry-After"),
       ...(isApiSuccess(body) ? {} : { errors: body.errors }),
     });
+    if (!isApiSuccess(body)) {
+      err.code = body.code;
+      err.aiDetails = body.details;
+      err.suggestions = body.suggestions;
+      err.docsUrl = body.docs_url;
+      err.supportUrl = body.support_url;
+    }
+    return err;
   }
 
   if (isApiSuccess(body)) {
     return new ApiError(response.status, body.message || `HTTP ${response.status}`);
   }
 
-  return new ApiError(response.status, body.message || `HTTP ${response.status}`, body.errors);
+  const err = new ApiError(response.status, body.message || `HTTP ${response.status}`, body.errors);
+  err.code = body.code;
+  err.aiDetails = body.details;
+  err.suggestions = body.suggestions;
+  err.docsUrl = body.docs_url;
+  err.supportUrl = body.support_url;
+  return err;
 }
 
 async function fetchWithTimeout(path: string, init: RequestInit) {

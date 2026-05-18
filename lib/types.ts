@@ -5,9 +5,22 @@ export type ApiSuccessResponse<T> = {
   meta?: Record<string, unknown>;
 };
 
+export type Suggestion = {
+  title: string;
+  description?: string;
+  action: string;
+  url?: string;
+  priority: "primary" | "secondary" | "tertiary" | string;
+};
+
 export type ApiErrorResponse = {
   status: "error" | "failed";
   message: string;
+  code?: string;
+  details?: string;
+  suggestions?: Suggestion[];
+  docs_url?: string;
+  support_url?: string;
   errors?: unknown;
   meta?: Record<string, unknown>;
 };

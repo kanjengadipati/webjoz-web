@@ -258,7 +258,12 @@ export default function LoginPage() {
         setFieldErrors(nextErrors);
         const message = getFormErrorMessage(error, "Login failed", nextErrors);
         setErrorMessage(message);
-        pushToast(message, "error");
+        
+        const apiError = error as import("@/lib/api").ApiError;
+        pushToast(message, "error", {
+          aiDetails: apiError?.aiDetails,
+          suggestions: apiError?.suggestions,
+        });
       });
   }
 

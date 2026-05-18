@@ -78,7 +78,12 @@ export default function RegisterPage() {
       setFieldErrors(nextErrors);
       const message = getFormErrorMessage(error, "Registration failed", nextErrors);
       setErrorMessage(message);
-      pushToast(message, "error");
+      
+      const apiError = error as import("@/lib/api").ApiError;
+      pushToast(message, "error", {
+        aiDetails: apiError?.aiDetails,
+        suggestions: apiError?.suggestions,
+      });
     }
   }
 
