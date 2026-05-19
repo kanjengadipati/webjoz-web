@@ -4,6 +4,8 @@ import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitl
 import { AIPreview } from "@/components/ai-preview";
 import { API_DOCS_URL } from "@/lib/config";
 
+import { HealthPing } from "@/components/health-ping";
+
 const categories = [
   {
     title: "Identity & Access",
@@ -46,6 +48,7 @@ const categories = [
 export default function Home() {
   return (
     <main className="min-h-screen pb-20">
+      <HealthPing />
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-6 lg:px-10 lg:pt-20">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
