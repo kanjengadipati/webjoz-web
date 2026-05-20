@@ -91,7 +91,7 @@ export default function VerifyEmailPage() {
 
         <div className="flex flex-wrap gap-3">
           <Link href="/login">
-            <Button variant={state === "success" ? "default" : "outline"}>Go to Login</Button>
+            <Button variant={state === "success" ? "default" : "outline"} className={state === "success" ? "bg-white text-zinc-950 hover:bg-white/90 dark:text-zinc-950" : undefined}>Go to Login</Button>
           </Link>
           <Link href="/forgot-password">
             <Button variant="outline">Forgot Password</Button>

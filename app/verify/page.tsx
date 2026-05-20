@@ -81,7 +81,7 @@ export default function VerifyEmailPage() {
             </div>
             <Link
               href="/login?verified=true"
-              className={buttonClassName({ className: "mt-4 px-8", size: "default" })}
+              className={buttonClassName({ className: "mt-4 px-8 bg-white text-zinc-950 hover:bg-white/90 dark:text-zinc-950", size: "default" })}
             >
               Go to Login
             </Link>
