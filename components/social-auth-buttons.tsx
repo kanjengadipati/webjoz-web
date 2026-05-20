@@ -98,6 +98,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
   const router = useRouter();
   const { pushToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [googleReady, setGoogleReady] = useState(false);
   const reactId = useId();
   const googleContainerId = useMemo(() => `google-signin-${mode}-${reactId.replace(/[:]/g, "")}`, [mode, reactId]);
 
@@ -206,6 +207,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
       width: "250",
       text: mode === "login" ? "continue_with" : "signup_with",
     });
+    setGoogleReady(true);
   }, [googleContainerId, mode]);
 
   const initializeGoogle = useCallback(() => {
@@ -245,9 +247,23 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
     }
   }, [pushToast, router, mode, onErrorMessageChange, setLocalLoading, renderGoogleButton]);
 
+  // If the GIS script loads after a route transition, initialize/render once.
+  useEffect(() => {
+    if (googleReady) return;
+    if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined") return;
+    if (window.google?.accounts?.id) {
+      initializeGoogle();
+    }
+  }, [googleReady, initializeGoogle]);
+
   const handleGoogleClick = () => {
     if (!GOOGLE_CLIENT_ID) {
       pushToast("Google Client ID is missing. Please check your .env file.", "error");
+      return;
+    }
+    if (!googleReady) {
+      pushToast("Google login is still loading. Please wait a moment.", "info");
+      initializeGoogle();
       return;
     }
     const google = window.google;
@@ -334,10 +350,13 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
               variant="outline"
               type="button"
               onClick={handleGoogleClick}
-              disabled={loading}
+              disabled={loading || !googleReady}
               aria-label={`Continue with Google for ${mode}`}
               className="w-full rounded-xl border-border/60 bg-background/50 py-5 sm:py-6 hover:bg-primary/5 transition-all duration-300 group"
             >
+              {!googleReady ? (
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-current/25 border-t-current/70" aria-hidden="true" />
+              ) : null}
               <svg className="size-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
