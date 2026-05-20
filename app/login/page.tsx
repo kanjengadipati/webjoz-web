@@ -32,14 +32,29 @@ function validateLoginForm(email: string, password: string): FieldErrors<LoginFi
 }
 
 function LoginLoadingIndicator() {
+  const [dotCount, setDotCount] = useState(1);
+
+  useEffect(() => {
+    const sequence = [1, 2, 3, 2];
+    let index = 0;
+    const timer = window.setInterval(() => {
+      index = (index + 1) % sequence.length;
+      setDotCount(sequence[index]);
+    }, 350);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
-    <span className="inline-flex items-center gap-2" aria-label="Signing in">
-      <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground/50 border-t-primary-foreground" aria-hidden="true" />
+    <span className="inline-flex min-w-[112px] items-center justify-center gap-1.5" aria-live="polite">
       <span>Signing in</span>
-      <span className="inline-flex items-center gap-1" aria-hidden="true">
-        <span className="size-1 animate-bounce rounded-full bg-primary-foreground [animation-delay:-240ms]" />
-        <span className="size-1 animate-bounce rounded-full bg-primary-foreground [animation-delay:-120ms]" />
-        <span className="size-1 animate-bounce rounded-full bg-primary-foreground" />
+      <span className="inline-flex translate-y-0.5 gap-1" aria-hidden="true">
+        {[0, 1, 2].map((dot) => (
+          <span
+            key={dot}
+            className={dot < dotCount ? "size-1 rounded-full bg-primary-foreground transition-opacity duration-150 opacity-100" : "size-1 rounded-full bg-primary-foreground transition-opacity duration-150 opacity-20"}
+          />
+        ))}
       </span>
     </span>
   );
