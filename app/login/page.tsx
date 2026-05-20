@@ -31,6 +31,20 @@ function validateLoginForm(email: string, password: string): FieldErrors<LoginFi
   return errors;
 }
 
+function LoginLoadingIndicator() {
+  return (
+    <span className="inline-flex items-center gap-2" aria-label="Signing in">
+      <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground/50 border-t-primary-foreground" aria-hidden="true" />
+      <span>Signing in</span>
+      <span className="inline-flex items-center gap-1" aria-hidden="true">
+        <span className="size-1 animate-bounce rounded-full bg-primary-foreground [animation-delay:-240ms]" />
+        <span className="size-1 animate-bounce rounded-full bg-primary-foreground [animation-delay:-120ms]" />
+        <span className="size-1 animate-bounce rounded-full bg-primary-foreground" />
+      </span>
+    </span>
+  );
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { pushToast } = useToast();
@@ -155,7 +169,7 @@ export default function LoginPage() {
           </Link>
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
-          {state === "loading" ? "Signing in..." : "Enter Dashboard"}
+          {state === "loading" ? <LoginLoadingIndicator /> : "Enter Dashboard"}
         </Button>
       </form>
 
