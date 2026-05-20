@@ -35,6 +35,10 @@ export const API_TIMEOUT_MS = parsePositiveInteger(
 );
 export const API_DEBUG = process.env.NEXT_PUBLIC_API_DEBUG === "true";
 
+/** When false, skips the dashboard GET /health probe on the landing page (useful when the API is not running locally). */
+export const HEALTH_CHECK_ENABLED =
+  process.env.NEXT_PUBLIC_ENABLE_HEALTH_CHECK !== "false";
+
 export const API_DOCS_URL = `${API_BASE_URL}/docs`;
 
 export const DEFAULT_DEVICE_ID = "nextjs-dashboard";
