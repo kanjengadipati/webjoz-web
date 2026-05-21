@@ -6,11 +6,11 @@ import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Subtl
 export const metadata: Metadata = {
   title: "Heriyadi - Senior Frontend Engineer",
   description:
-    "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, and scalable frontend architecture.",
+    "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, Golang, Flutter, and scalable frontend architecture.",
   openGraph: {
     title: "Heriyadi - Senior Frontend Engineer",
     description:
-      "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, and scalable frontend architecture.",
+      "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, Golang, Flutter, and scalable frontend architecture.",
     siteName: "Heriyadi Portfolio",
     type: "website",
   },
@@ -18,20 +18,20 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Heriyadi - Senior Frontend Engineer",
     description:
-      "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, and scalable frontend architecture.",
+      "Portfolio and CV landing page for Heriyadi, Senior Frontend Engineer specializing in React, TypeScript, Golang, Flutter, and scalable frontend architecture.",
   },
 };
 
 const experience = [
   {
-    role: "Senior Frontend Engineer",
+    role: "Senior Fullstack and Frontend Engineer",
     company: "Grab",
     period: "2018 - 2025",
     tone: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     points: [
-      "Built merchant management and onboarding platforms serving millions of merchants across Southeast Asia.",
-      "Architected scalable React and TypeScript systems that allowed 4+ teams to ship in parallel.",
-      "Reduced page load time by 40% with code splitting, lazy loading, and bundle optimization.",
+      "Delivered production features for merchant management and onboarding systems used by millions of merchants.",
+      "Designed merchant onboarding web-mobile platforms enabling merchants to register and manage business accounts.",
+      "Reduced page load time by up to 40% and improved platform stability through continuous refactoring.",
     ],
   },
   {
@@ -49,8 +49,9 @@ const experience = [
     period: "2016 - 2017",
     tone: "bg-amber-500/10 text-amber-500 border-amber-500/20",
     points: [
-      "Developed Kudo Finance Portal for reconciliation and internal operations.",
-      "Automated operational workflows to reduce manual reconciliation work.",
+      "Developed the Kudo Finance Portal for financial reconciliation and internal finance operations.",
+      "Improved financial reporting workflows and operational efficiency.",
+      "Automated operational processes reducing manual reconciliation tasks.",
     ],
   },
   {
@@ -79,8 +80,6 @@ const skills = [
   { label: "Frontend", value: "React.js, TypeScript, JavaScript, HTML5, CSS3, Webpack, Redux, Next.js" },
   { label: "Backend", value: "Golang, Node.js, PHP, Laravel" },
   { label: "Mobile", value: "Flutter" },
-  { label: "Tools & DevOps", value: "Docker, Git, CI/CD, REST APIs" },
-  { label: "Databases", value: "SQL, PostgreSQL, MySQL" },
 ];
 
 const highlights = [
@@ -115,23 +114,30 @@ export default function PortoPage() {
                 Senior frontend engineer building products that scale.
               </h1>
               <p className="mx-auto max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg md:text-xl lg:mx-0">
-                I build scalable web and mobile applications with React, TypeScript, and modern frontend architecture. At Grab,
-                I helped create merchant platforms used by millions of businesses across Southeast Asia.
+                I build scalable web and mobile applications across fintech, e-commerce, and merchant platforms. I work with
+                React, TypeScript, Golang, and Flutter, with a focus on architecture, performance, and product delivery.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2 lg:justify-start">
-              <a href="mailto:heriyadisst@gmail.com" className={buttonClassName({ size: "lg", className: "rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20" })}>
+              <a
+                href="mailto:heriyadisst@gmail.com"
+                className={buttonClassName({
+                  size: "lg",
+                  className: "rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20 hover:opacity-90",
+                })}
+                style={{ backgroundColor: "var(--foreground)", color: "var(--background)" }}
+              >
                 Contact Me
               </a>
-              <a href="/heriyadi-cv.pdf" download className={buttonClassName({ variant: "outline", size: "lg", className: "rounded-full px-8 py-6 text-base font-bold" })}>
+              <a href="/heriyadi-cv-latest.pdf" download className={buttonClassName({ variant: "outline", size: "lg", className: "rounded-full px-8 py-6 text-base font-bold" })}>
                 Download CV
               </a>
               <a
-                href="https://linkedin.com/in/heriheriyad"
+                href="https://linkedin.com/in/heriheriyadi"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+                className={buttonClassName({ variant: "outline", size: "lg", className: "rounded-full px-8 py-6 text-base font-bold" })}
               >
                 LinkedIn
               </a>
@@ -159,7 +165,7 @@ export default function PortoPage() {
             <div className="p-4">
               <div className="overflow-hidden rounded-2xl border border-border/60 bg-background/70 shadow-2xl shadow-black/10">
                 <Image
-                  src="/heriyadi-cv-preview.png"
+                  src="/heriyadi-cv-preview-latest.png"
                   alt="Preview of Heriyadi CV"
                   width={612}
                   height={792}
@@ -256,7 +262,7 @@ export default function PortoPage() {
             </Badge>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Modern product engineering toolkit.</h2>
             <p className="text-base leading-8 text-muted-foreground">
-              Strongest in frontend systems, with enough backend, mobile, database, and DevOps fluency to move products forward end to end.
+              Strongest in frontend systems, with backend and mobile fluency to move product work forward end to end.
             </p>
           </div>
 
@@ -284,7 +290,14 @@ export default function PortoPage() {
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="mailto:heriyadisst@gmail.com" className={buttonClassName({ size: "lg", className: "rounded-full px-8 shadow-lg shadow-primary/20" })}>
+            <a
+              href="mailto:heriyadisst@gmail.com"
+              className={buttonClassName({
+                size: "lg",
+                className: "rounded-full px-8 shadow-lg shadow-primary/20 hover:opacity-90",
+              })}
+              style={{ backgroundColor: "var(--foreground)", color: "var(--background)" }}
+            >
               Email Heriyadi
             </a>
             <Link href="/login" className={buttonClassName({ variant: "ghost", size: "lg", className: "rounded-full px-8 text-muted-foreground hover:text-primary" })}>
