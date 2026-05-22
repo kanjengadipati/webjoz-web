@@ -34,6 +34,8 @@ If you run the dashboard without the Pleco API, set `NEXT_PUBLIC_ENABLE_HEALTH_C
 
 The API must include the dashboard origin in `CORS_ALLOWED_ORIGINS` so browser requests can send credentials. The dashboard stores the short-lived access token for API calls, while the backend owns the `pleco_refresh_token` HttpOnly cookie for refresh rotation.
 
+Pleco Console does not connect to the database directly. Configure `DB_DRIVER` and `DATABASE_URL` in `pleco-api`; the dashboard only needs `NEXT_PUBLIC_API_BASE_URL` pointed at the running API, whether that API uses PostgreSQL or MySQL.
+
 ## Run
 
 ```bash

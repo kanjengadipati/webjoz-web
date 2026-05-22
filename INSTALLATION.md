@@ -12,6 +12,7 @@ This guide covers the two supported ways to run `pleco-console`:
 - A running Pleco API instance
 
 The dashboard talks directly to the Pleco API, so you need the API base URL before starting.
+The database is configured only in `pleco-api`; this dashboard works the same whether the API is running PostgreSQL or MySQL.
 
 ## 1. Clone and install
 
@@ -54,6 +55,12 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 If you use a different dashboard port or hostname, add that exact origin instead.
+
+If you are testing the new Pleco API database selector, set `DB_DRIVER=postgres` or `DB_DRIVER=mysql` in the API project and keep the dashboard pointed at the same API URL:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+```
 
 ## 4. Run locally
 

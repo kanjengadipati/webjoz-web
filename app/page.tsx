@@ -39,7 +39,7 @@ const categories = [
     description: "Developer-first infrastructure and DX.",
     features: [
       "Modular Go backend with Gin & GORM",
-      "Docker-compose setup (Postgres, Redis, Nginx)",
+      "Docker-compose setup (PostgreSQL/MySQL, Redis, Nginx)",
       "OpenAPI 3.0 (Swagger) interactive documentation",
     ]
   }
@@ -182,7 +182,7 @@ export default function Home() {
             <SubtleStat label="Auth Endpoints" value="15+" helper="Register, login, sessions, recovery" />
             <SubtleStat label="Admin Modules" value="6" helper="Users, roles, permissions, audit, AI" />
             <SubtleStat label="Security" value="Hardened" helper="Rate-limited with secure headers" />
-            <SubtleStat label="Stack" value="Modern" helper="Go, Next.js, Postgres, Docker" />
+            <SubtleStat label="Stack" value="Modern" helper="Go, Next.js, SQL, Docker" />
           </div>
         </Card>
       </section>
@@ -197,7 +197,7 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 transition-all duration-500 hover:grayscale-0 hover:opacity-100">
-            {["Go", "Gin", "GORM", "PostgreSQL", "Next.js", "Tailwind", "Docker"].map(t => (
+            {["Go", "Gin", "GORM", "PostgreSQL/MySQL", "Next.js", "Tailwind", "Docker"].map(t => (
               <span key={t} className="text-xl font-bold tracking-tighter">{t}</span>
             ))}
           </div>

@@ -1,6 +1,7 @@
 # Architecture Overview
 
 Pleco Console is a Next.js App Router dashboard for operating the Pleco authentication API.
+It does not connect to PostgreSQL or MySQL directly; database-driver selection belongs to the API service.
 
 ## Project Structure
 

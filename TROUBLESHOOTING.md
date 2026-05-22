@@ -54,6 +54,19 @@ Why this happens:
 
 This app defaults to `http://localhost:8080` when `NEXT_PUBLIC_API_BASE_URL` is not set.
 
+## I switched the API between PostgreSQL and MySQL
+
+Checks:
+
+- Restart the Pleco API after changing `DB_DRIVER` or `DATABASE_URL`
+- Run API migrations and seed data for the selected database
+- Keep `NEXT_PUBLIC_API_BASE_URL` pointed at the API host, not the database host
+- Restart the dashboard only if `NEXT_PUBLIC_API_BASE_URL` changed
+
+Why this happens:
+
+Pleco Console is database-agnostic. It only talks to the API, so most database-driver issues need to be fixed in `pleco-api`.
+
 ## Social login buttons are missing
 
 Checks:

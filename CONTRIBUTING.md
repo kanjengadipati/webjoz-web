@@ -9,6 +9,8 @@ Thanks for helping improve Pleco Console.
 3. Run `npm install`.
 4. Start the app with `npm run dev`.
 
+Pleco Console is database-agnostic. If your change depends on PostgreSQL/MySQL behavior, configure and test that in `pleco-api`; this project should continue to use `NEXT_PUBLIC_API_BASE_URL` as its integration boundary.
+
 ## Code Style
 
 - Use strict TypeScript and existing local component patterns.
