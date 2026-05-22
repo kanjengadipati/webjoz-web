@@ -45,6 +45,8 @@ const categories = [
   }
 ];
 
+const INSTALLATION_URL = "https://github.com/pleco-dev/pleco-api/blob/master/INSTALLATION.md";
+
 export default function Home() {
   return (
     <main className="min-h-screen pb-20">
@@ -193,7 +195,7 @@ export default function Home() {
           <div className="space-y-3">
             <h2 className="text-3xl font-bold tracking-tighter">Start building in minutes.</h2>
             <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground">
-              Plug Pleco Console into your backend, open the operator dashboard, and give your team an auth layer that already knows how to explain itself.
+              Plug Pleco API into your backend, open the operator dashboard, and give your team an auth layer that already knows how to explain itself.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 transition-all duration-500 hover:grayscale-0 hover:opacity-100">
@@ -202,11 +204,11 @@ export default function Home() {
             ))}
           </div>
           <div className="flex justify-center">
-            <Link href="/login">
+            <a href={INSTALLATION_URL} target="_blank" rel="noreferrer">
               <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">
                 Start Building
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
