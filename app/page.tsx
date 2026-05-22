@@ -195,7 +195,7 @@ export default function Home() {
           <div className="space-y-3">
             <h2 className="text-3xl font-bold tracking-tighter">Start building in minutes.</h2>
             <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground">
-              Plug Pleco API into your backend, open the operator dashboard, and give your team an auth layer that already knows how to explain itself.
+              Install Pleco API, connect it to your backend, and give your team a production-ready auth layer with audit visibility from day one.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-8 grayscale opacity-50 transition-all duration-500 hover:grayscale-0 hover:opacity-100">
