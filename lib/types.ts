@@ -35,8 +35,11 @@ export type Profile = {
   id: number;
   name: string;
   email: string;
+  phone_number?: string;
   role: string;
   is_verified: boolean;
+  phone_verified?: boolean;
+  email_verified?: boolean;
   permissions?: string[];
 };
 
@@ -91,8 +94,11 @@ export type User = {
   id: number;
   name: string;
   email: string;
+  phone_number?: string;
   role: string;
   is_verified: boolean;
+  phone_verified?: boolean;
+  email_verified?: boolean;
 };
 
 export enum SectionState {

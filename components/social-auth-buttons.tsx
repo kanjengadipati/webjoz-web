@@ -252,7 +252,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
     if (googleReady) return;
     if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined") return;
     if (window.google?.accounts?.id) {
-      initializeGoogle();
+      window.setTimeout(initializeGoogle, 0);
     }
   }, [googleReady, initializeGoogle]);
 

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { AuthShell } from "@/components/auth-shell";
+import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
@@ -11,10 +12,10 @@ import { register } from "@/lib/api";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 
 const REGISTER_API_FIELDS = ["name", "email", "password"] as const;
-type RegisterField = "name" | "email" | "password" | "confirmPassword";
+type RegisterField = "name" | "email" | "phoneNumber" | "password" | "confirmPassword";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function validateRegisterForm(name: string, email: string, password: string, confirmPassword: string): FieldErrors<RegisterField> {
+function validateRegisterForm(name: string, email: string, phoneNumber: string, password: string, confirmPassword: string): FieldErrors<RegisterField> {
   const errors: FieldErrors<RegisterField> = {};
 
   if (!name.trim()) {
@@ -25,6 +26,10 @@ function validateRegisterForm(name: string, email: string, password: string, con
     errors.email = "Enter your email address.";
   } else if (!EMAIL_PATTERN.test(email)) {
     errors.email = "Enter a valid email address, like jane@mail.com.";
+  }
+
+  if (phoneNumber.trim() && !isValidPhoneNumber(phoneNumber.trim())) {
+    errors.phoneNumber = "Use international format, like +628123456789.";
   }
 
   if (!password) {
@@ -47,6 +52,7 @@ export default function RegisterPage() {
   const { pushToast } = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
@@ -55,7 +61,7 @@ export default function RegisterPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const nextFieldErrors = validateRegisterForm(name, email, password, confirmPassword);
+    const nextFieldErrors = validateRegisterForm(name, email, phoneNumber, password, confirmPassword);
     if (hasFieldErrors(nextFieldErrors)) {
       setState("error");
       setFieldErrors(nextFieldErrors);
@@ -69,9 +75,9 @@ export default function RegisterPage() {
     setFieldErrors({});
 
     try {
-      await register(name, email, password);
+      await register(name, email, phoneNumber, password);
       pushToast("Account created. Check your email to verify it.", "success");
-      router.push(`/auth/verify?email=${encodeURIComponent(email)}`);
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
     } catch (error) {
       setState("error");
       const nextErrors = getApiFieldErrors(error, REGISTER_API_FIELDS);
@@ -102,7 +108,7 @@ export default function RegisterPage() {
       footer={
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-x-4">
           <Link href="/login" className="font-medium text-primary hover:opacity-80">Back to login</Link>
-          <Link href="/auth/verify" className="font-medium text-primary hover:opacity-80">Verify email</Link>
+          <Link href="/verify" className="font-medium text-primary hover:opacity-80">Verify email</Link>
         </div>
       }
     >
@@ -134,6 +140,16 @@ export default function RegisterPage() {
             error={fieldErrors.email}
           />
         </div>
+        <PhoneNumberInput
+          id="phone-number"
+          optional
+          value={phoneNumber}
+          onChange={(value) => {
+            setPhoneNumber(value);
+            setFieldErrors((current) => ({ ...current, phoneNumber: undefined }));
+          }}
+          error={fieldErrors.phoneNumber}
+        />
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input

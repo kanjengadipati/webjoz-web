@@ -18,10 +18,15 @@ export default function VerifyEmailPage() {
     const timeout = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
+      const email = params.get("email");
 
       if (!token) {
-        setState("error");
-        setMessage("Verification token is missing from the URL.");
+        setState("idle");
+        setMessage(
+          email
+            ? `A verification email was sent to ${email}. Open the link in that email to complete verification.`
+            : "Open this page from your verification email so the token is included in the URL.",
+        );
         return;
       }
 
@@ -53,7 +58,7 @@ export default function VerifyEmailPage() {
       ]}
       cardEyebrow="Verification"
       cardTitle="Email Verification"
-      cardDescription="Validating your unique secure token..."
+      cardDescription={state === "idle" ? "Check your inbox for the verification link." : "Validating your unique secure token..."}
       footer={
         <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4">
           <Link href="/login" className="font-medium text-primary hover:opacity-80">Proceed to login</Link>
@@ -62,12 +67,24 @@ export default function VerifyEmailPage() {
       }
     >
       <div className="flex flex-col items-center justify-center space-y-6 py-8">
-        {state === "loading" || state === "idle" ? (
+        {state === "loading" ? (
           <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-500">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-16 text-primary motion-safe:animate-spin" aria-hidden="true">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
             <p className="text-sm font-medium text-muted-foreground animate-pulse">Verifying your token...</p>
+          </div>
+        ) : state === "idle" ? (
+          <div className="flex flex-col items-center gap-4 text-center animate-in fade-in zoom-in duration-500">
+            <div className="rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-sm font-medium leading-7 text-muted-foreground">
+              {message}
+            </div>
+            <Link
+              href="/login"
+              className={buttonClassName({ className: "mt-2 px-8", variant: "outline", size: "default" })}
+            >
+              Back to Login
+            </Link>
           </div>
         ) : state === "success" ? (
           <div className="flex flex-col items-center gap-4 text-center animate-in fade-in zoom-in duration-500">
@@ -81,7 +98,7 @@ export default function VerifyEmailPage() {
             </div>
             <Link
               href="/login?verified=true"
-              className={buttonClassName({ className: "mt-4 px-8 bg-white text-zinc-950 hover:bg-white/90 dark:text-zinc-950", size: "default" })}
+              className={buttonClassName({ className: "mt-4 px-8 bg-white !text-zinc-950 hover:bg-white/90 dark:!text-zinc-950", size: "default" })}
             >
               Go to Login
             </Link>

@@ -33,6 +33,42 @@ Successful response:
 }
 ```
 
+### Passwordless OTP
+
+The login page can request and verify OTP codes through the Pleco API. The backend owns provider selection, cooldowns, OTP hashing, trusted-device persistence, and the refresh cookie.
+
+Request:
+
+```http
+POST /auth/request-otp
+Content-Type: application/json
+```
+
+```json
+{
+  "channel": "whatsapp",
+  "target": "+628123456789"
+}
+```
+
+Verify:
+
+```http
+POST /auth/verify-otp
+X-Device-ID: nextjs-dashboard
+Content-Type: application/json
+```
+
+```json
+{
+  "channel": "whatsapp",
+  "target": "+628123456789",
+  "otp": "123456",
+  "device_name": "Chrome macOS",
+  "trusted_device": true
+}
+```
+
 ### Refresh Token
 
 The dashboard automatically calls `POST /auth/refresh` after a `401` response. The refresh token should be stored by the API as an HttpOnly cookie.

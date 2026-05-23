@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
@@ -14,6 +15,8 @@ export default function SettingsPage() {
   const { pushToast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
@@ -23,6 +26,7 @@ export default function SettingsPage() {
       const response = await fetchProfile(token);
       setProfile(response.data);
       setName(response.data.name);
+      setPhoneNumber(response.data.phone_number || "");
     } catch (error) {
       pushToast(error instanceof Error ? error.message : "Failed to load profile", "error");
     }
@@ -39,8 +43,13 @@ export default function SettingsPage() {
   async function handleProfileUpdate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!token) return;
+    if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
+      setPhoneError("Use international format, like +628123456789.");
+      return;
+    }
+    setPhoneError("");
     try {
-      await updateProfile(token, name);
+      await updateProfile(token, name, phoneNumber);
       pushToast("Profile updated.", "success");
       await loadProfile();
     } catch (error) {
@@ -80,6 +89,16 @@ export default function SettingsPage() {
               <Label>Name</Label>
               <Input value={name} onChange={(event) => setName(event.target.value)} />
             </div>
+            <PhoneNumberInput
+              id="settings-phone-number"
+              optional
+              value={phoneNumber}
+              onChange={(value) => {
+                setPhoneNumber(value);
+                setPhoneError("");
+              }}
+              error={phoneError}
+            />
             <Button type="submit">Save Profile</Button>
           </form>
         ) : (

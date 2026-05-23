@@ -10,10 +10,44 @@ export async function login(email: string, password: string) {
   });
 }
 
-export async function register(name: string, email: string, password: string) {
+export async function requestOtp(channel: "whatsapp" | "email", target: string) {
+  return request<null>("/auth/request-otp", {
+    method: "POST",
+    body: JSON.stringify({ channel, target }),
+  });
+}
+
+export async function verifyOtp(input: {
+  channel: "whatsapp" | "email";
+  target: string;
+  otp: string;
+  deviceName?: string;
+  trustedDevice?: boolean;
+}) {
+  return request<LoginResponse>("/auth/verify-otp", {
+    method: "POST",
+    headers: { "X-Device-ID": DEFAULT_DEVICE_ID },
+    body: JSON.stringify({
+      channel: input.channel,
+      target: input.target,
+      otp: input.otp,
+      device_name: input.deviceName,
+      trusted_device: input.trustedDevice,
+    }),
+  });
+}
+
+export async function register(name: string, email: string, phoneNumber: string, password: string) {
+  const payload = {
+    name,
+    email,
+    password,
+    ...(phoneNumber ? { phone_number: phoneNumber } : {}),
+  };
+
   return request<null>("/auth/register", {
     method: "POST",
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -39,10 +73,10 @@ export async function fetchProfile(token: string) {
   return request<Profile>("/auth/profile", { method: "GET" }, token);
 }
 
-export async function updateProfile(token: string, name: string) {
+export async function updateProfile(token: string, name: string, phoneNumber: string) {
   return request<Profile>("/auth/profile", {
     method: "PATCH",
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, phone_number: phoneNumber }),
   }, token);
 }
 

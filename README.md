@@ -8,6 +8,7 @@ The official companion dashboard for the [Pleco](https://github.com/kanjengadipa
 ## Features
 
 - Admin login against the Pleco Go API
+- Passwordless OTP login via WhatsApp or email when enabled in the API
 - HttpOnly refresh-cookie session handling with access-token refresh
 - Authenticated profile view
 - Failed auth audit log feed
@@ -21,13 +22,19 @@ The official companion dashboard for the [Pleco](https://github.com/kanjengadipa
 Create a local env file:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 Then set:
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+NEXT_PUBLIC_API_TIMEOUT_MS=30000
+NEXT_PUBLIC_API_DEBUG=false
+NEXT_PUBLIC_ENABLE_HEALTH_CHECK=true
+NEXT_PUBLIC_SOCIAL_ACTIVE_PROVIDERS=google,facebook
+NEXT_PUBLIC_SOCIAL_GOOGLE_CLIENT_ID=
+NEXT_PUBLIC_SOCIAL_FACEBOOK_CLIENT_ID=
 ```
 
 If you run the dashboard without the Pleco API, set `NEXT_PUBLIC_ENABLE_HEALTH_CHECK=false` so the landing page does not probe `GET /health` (restart the dev server after changing env vars).
