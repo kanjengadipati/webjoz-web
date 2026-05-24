@@ -10,7 +10,6 @@ The dashboard is database-agnostic. PostgreSQL/MySQL selection is handled by `pl
 
 ```http
 POST /auth/login
-X-Device-ID: nextjs-dashboard
 Content-Type: application/json
 ```
 
@@ -33,14 +32,14 @@ Successful response:
 }
 ```
 
-### Passwordless OTP
+### Passwordless Login
 
-The login page can request and verify OTP codes through the Pleco API. The backend owns provider selection, cooldowns, OTP hashing, trusted-device persistence, and the refresh cookie.
+The login page first checks the email or WhatsApp number without sending anything. On the second step, the backend decides whether to send a magic link for a trusted device or an OTP for normal verification. The UI does not expose trusted-device state.
 
-Request:
+Check identity:
 
 ```http
-POST /auth/request-otp
+POST /auth/passwordless/check
 Content-Type: application/json
 ```
 
@@ -51,11 +50,24 @@ Content-Type: application/json
 }
 ```
 
-Verify:
+Start passwordless delivery:
+
+```http
+POST /auth/passwordless/start
+Content-Type: application/json
+```
+
+```json
+{
+  "channel": "whatsapp",
+  "target": "+628123456789"
+}
+```
+
+If the response data has `next_step=otp`, verify the code:
 
 ```http
 POST /auth/verify-otp
-X-Device-ID: nextjs-dashboard
 Content-Type: application/json
 ```
 
@@ -69,9 +81,13 @@ Content-Type: application/json
 }
 ```
 
+If a magic link is sent, the link opens `/login?magic_token=...`; the dashboard verifies it through `POST /auth/magic-link/verify`. Magic links are single-use, DB-backed tokens and reused links are rejected.
+
+The dashboard does not create a device id in JavaScript. The API owns device identity through the `pleco_device_id` HttpOnly cookie, and also sets the `pleco_refresh_token` HttpOnly cookie for refresh rotation.
+
 ### Refresh Token
 
-The dashboard automatically calls `POST /auth/refresh` after a `401` response. The refresh token should be stored by the API as an HttpOnly cookie.
+The dashboard automatically calls `POST /auth/refresh` after a `401` response. The refresh token should be stored by the API as the `pleco_refresh_token` HttpOnly cookie.
 
 ## Error Format
 

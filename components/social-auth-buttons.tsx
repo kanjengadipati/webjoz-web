@@ -8,6 +8,7 @@ import { useToast } from "@/components/toast-provider";
 import { socialLogin } from "@/lib/api";
 import { persistAuthSession } from "@/lib/auth-store";
 import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
 type GoogleCredentialResponse = {
   credential?: string;
@@ -92,9 +93,10 @@ type SocialAuthButtonsProps = {
   mode: "login" | "signup";
   onLoadingStateChange?: (loading: boolean) => void;
   onErrorMessageChange?: (message: string) => void;
+  compact?: boolean;
 };
 
-export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageChange }: SocialAuthButtonsProps) {
+export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageChange, compact }: SocialAuthButtonsProps) {
   const router = useRouter();
   const { pushToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -332,7 +334,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
 
   return (
     <>
-      <div className="relative my-8">
+      <div className={cn("relative", compact ? "mb-4 mt-3" : "my-8")}>
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-border/50" />
         </div>

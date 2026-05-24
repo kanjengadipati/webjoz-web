@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
-import { BookOpenIcon, LockIcon, MoonIcon, SunIcon } from "@/components/icons";
+import { BookOpenIcon, MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
 import { API_DOCS_URL, ENV_NAME } from "@/lib/config";
 import { DASHBOARD_NAVIGATION } from "@/lib/navigation";
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/components/toast-provider";
-import { logoutCurrentSession, refreshAccessToken } from "@/lib/api";
+import { logoutCurrentSession } from "@/lib/api";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -24,32 +24,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
-  const [restoringSession, setRestoringSession] = useState(false);
-  const triedCookieRefresh = useRef(false);
   const isAuthenticated = Boolean(token);
 
   useEffect(() => {
-    if (!authReady || token || restoringSession || triedCookieRefresh.current) return;
-
-    let cancelled = false;
-    triedCookieRefresh.current = true;
-    setRestoringSession(true);
-    refreshAccessToken()
-      .catch(() => {
-        if (!cancelled) {
-          clearAuthSession();
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setRestoringSession(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [authReady, restoringSession, token]);
+    if (!authReady || token) return;
+    clearAuthSession();
+    window.location.replace("/login");
+  }, [authReady, token]);
 
   async function handleLogout() {
     if (!token) {
@@ -66,6 +47,14 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       clearAuthSession();
       router.push("/login");
     }
+  }
+
+  if (!authReady || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
   }
 
   const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => hasPermission(item.permission) || !item.permission);
@@ -262,27 +251,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </header>
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {!authReady || loading || restoringSession ? (
+            {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>
-            ) : !isAuthenticated ? (
-              <Card className="border-primary/20 bg-primary/5 p-8 text-center space-y-6">
-                <div className="mx-auto size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <LockIcon size="lg" />
-                </div>
-                <div className="space-y-2">
-                  <CardTitle className="text-3xl font-bold tracking-tighter text-balance">Access Locked</CardTitle>
-                  <CardDescription className="text-base max-w-md mx-auto">
-                    This workspace requires a valid admin token. Please sign in to unlock the security telemetry and AI tools.
-                  </CardDescription>
-                </div>
-                <div className="pt-4">
-                  <Link href="/login">
-                    <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20">Unlock Workspace</Button>
-                  </Link>
-                </div>
-              </Card>
             ) : (
               children
             )}

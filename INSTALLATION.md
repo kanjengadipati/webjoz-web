@@ -115,5 +115,5 @@ The release bundle already includes the traced production dependencies, `public/
 ## Notes
 
 - The dashboard stores the access token client-side for API requests.
-- The refresh token stays in the backend-managed `pleco_refresh_token` HttpOnly cookie.
+- The refresh token and device id stay in backend-managed HttpOnly cookies: `pleco_refresh_token` and `pleco_device_id`.
 - For non-local deployments, serve both the API and dashboard over HTTPS so secure cookies can work correctly.

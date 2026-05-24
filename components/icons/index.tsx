@@ -94,6 +94,24 @@ export function InfoIcon(props: IconProps) {
   );
 }
 
+export function MailIcon(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-10 6L2 7" />
+    </IconShell>
+  );
+}
+
+export function WhatsAppIcon(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <path d="M4.8 19.2 6 15.8a8 8 0 1 1 3 2.6z" />
+      <path d="M9.4 8.7c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.7 1.2 1.6 2 2.8 2.6l.5-.5c.2-.2.5-.3.8-.1l1.5.7c.3.1.4.3.4.6v.4c0 .4-.2.7-.6.9-.6.3-1.3.4-2.2.2-2.8-.6-5.4-3.1-6.1-5.8-.2-.8-.1-1.4.2-1.8Z" />
+    </IconShell>
+  );
+}
+
 export function CloseIcon(props: IconProps) {
   return (
     <IconShell {...props}>

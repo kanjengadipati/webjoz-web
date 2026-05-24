@@ -4,18 +4,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth-shell";
+import { MailIcon, WhatsAppIcon } from "@/components/icons";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Button, Checkbox, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
-import { login, requestOtp, verifyOtp } from "@/lib/api";
+import { checkPasswordlessIdentity, login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
 import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 
 const LOGIN_FIELDS = ["email", "password"] as const;
+const PASSWORDLESS_FIELDS = ["email", "phone", "otp"] as const;
 type LoginField = (typeof LOGIN_FIELDS)[number];
-type AuthMode = "password" | "otp";
+type PasswordlessField = (typeof PASSWORDLESS_FIELDS)[number];
+type AuthMode = "password" | "passwordless";
 type OTPChannel = "whatsapp" | "email";
+type PasswordlessStep = "delivery" | "confirm" | "code" | "link";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateLoginForm(email: string, password: string): FieldErrors<LoginField> {
@@ -34,7 +38,7 @@ function validateLoginForm(email: string, password: string): FieldErrors<LoginFi
   return errors;
 }
 
-function LoginLoadingIndicator() {
+function LoginLoadingIndicator({ label = "Signing in" }: { label?: string }) {
   const [dotCount, setDotCount] = useState(1);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ function LoginLoadingIndicator() {
 
   return (
     <span className="inline-flex min-w-[112px] items-center justify-center gap-1.5" aria-live="polite">
-      <span>Signing in</span>
+      <span>{label}</span>
       <span className="inline-flex translate-y-0.5 gap-1" aria-hidden="true">
         {[0, 1, 2].map((dot) => (
           <span
@@ -71,20 +75,51 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [authMode, setAuthMode] = useState<AuthMode>("password");
   const [otpChannel, setOtpChannel] = useState<OTPChannel>("whatsapp");
-  const [otpTarget, setOtpTarget] = useState("");
+  const [passwordlessEmail, setPasswordlessEmail] = useState(storedEmail);
+  const [passwordlessPhone, setPasswordlessPhone] = useState("");
+  const [passwordlessStep, setPasswordlessStep] = useState<PasswordlessStep>("delivery");
   const [otp, setOtp] = useState("");
-  const [otpRequested, setOtpRequested] = useState(false);
   const [trustedDevice, setTrustedDevice] = useState(true);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<LoginField>>({});
+  const [passwordlessFieldErrors, setPasswordlessFieldErrors] = useState<FieldErrors<PasswordlessField>>({});
   const handledExpiredToastRef = useRef(false);
+
+  const passwordlessTarget = otpChannel === "email" ? passwordlessEmail.trim().toLowerCase() : passwordlessPhone.trim();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
     if (params.get("passwordChanged") === "true") pushToast("Password changed. Please sign in again.", "success");
+    const magicToken = params.get("magic_token");
+    if (magicToken) {
+      verifyMagicLink({
+        token: magicToken,
+        deviceName: navigator.userAgent.slice(0, 80),
+        trustedDevice: true,
+      })
+        .then((response) => {
+          persistAuthSession("", response.data.access_token);
+          pushToast("Login successful. Welcome back.", "success");
+          router.push("/dashboard");
+        })
+        .catch((error: unknown) => {
+          setState("error");
+          const message = getFormErrorMessage(error, "Invalid or expired magic link", {});
+          setErrorMessage(message);
+
+          const apiError = error as import("@/lib/api").ApiError;
+          pushToast(message, "error", {
+            aiDetails: apiError?.aiDetails,
+            suggestions: apiError?.suggestions,
+          });
+        });
+      params.delete("magic_token");
+      const nextSearch = params.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`);
+    }
     if (params.get("expired") === "true" && !handledExpiredToastRef.current) {
       handledExpiredToastRef.current = true;
       pushToast("Session Expired", "error", {
@@ -97,7 +132,7 @@ export default function LoginPage() {
       const nextSearch = params.toString();
       window.history.replaceState(null, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`);
     }
-  }, [pushToast]);
+  }, [pushToast, router]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -135,42 +170,94 @@ export default function LoginPage() {
       });
   }
 
-  function handleOTPRequest(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const target = otpTarget.trim();
-    if (!target || (otpChannel === "email" && !EMAIL_PATTERN.test(target)) || (otpChannel === "whatsapp" && !isValidPhoneNumber(target))) {
+  function validatePasswordlessTarget() {
+    const target = passwordlessTarget;
+    if (otpChannel === "email" && (!target || !EMAIL_PATTERN.test(target))) {
+      const nextErrors = { email: "Enter a valid email address." };
+      setPasswordlessStep("delivery");
       setState("error");
-      setErrorMessage(otpChannel === "email" ? "Enter a valid email address." : "Enter a WhatsApp number in international format, like +628123456789.");
-      return;
+      setPasswordlessFieldErrors(nextErrors);
+      setErrorMessage("Please fix the highlighted fields.");
+      pushToast("Please fix the highlighted fields.", "error");
+      return "";
     }
+    if (otpChannel === "whatsapp" && !isValidPhoneNumber(target)) {
+      const nextErrors = { phone: "Enter a valid WhatsApp number." };
+      setPasswordlessStep("delivery");
+      setState("error");
+      setPasswordlessFieldErrors(nextErrors);
+      setErrorMessage("Please fix the highlighted fields.");
+      pushToast("Please fix the highlighted fields.", "error");
+      return "";
+    }
+    return target;
+  }
+
+  function handlePasswordlessError(error: unknown, fallback: string) {
+    setState("error");
+    const nextErrors = getApiFieldErrors(error, PASSWORDLESS_FIELDS);
+    setPasswordlessFieldErrors(nextErrors);
+    const message = getFormErrorMessage(error, fallback, nextErrors);
+    setErrorMessage(message);
+
+    const apiError = error as import("@/lib/api").ApiError;
+    pushToast(message, "error", {
+      aiDetails: apiError?.aiDetails,
+      suggestions: apiError?.suggestions,
+    });
+  }
+
+  function handlePasswordlessCheck(event: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    const target = validatePasswordlessTarget();
+    if (!target) return;
+
+    if (otpChannel === "email") setPasswordlessEmail(target);
+    if (otpChannel === "whatsapp") setPasswordlessPhone(target);
+    setState("loading");
+    setErrorMessage("");
+    setPasswordlessFieldErrors({});
+    checkPasswordlessIdentity(otpChannel, target)
+      .then(() => {
+        setPasswordlessStep("confirm");
+      })
+      .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
+      .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
+  }
+
+  function handlePasswordlessStart(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    const target = validatePasswordlessTarget();
+    if (!target) return;
 
     setState("loading");
     setErrorMessage("");
-    requestOtp(otpChannel, target)
-      .then(() => {
-        setOtpRequested(true);
-        pushToast("OTP sent successfully.", "success");
+    setPasswordlessFieldErrors({});
+    startPasswordless(otpChannel, target)
+      .then((response) => {
+        const nextStep = response.data.next_step;
+        setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
+        pushToast("Check your messages.", "success");
       })
-      .catch((error: unknown) => {
-        setState("error");
-        const message = error instanceof Error ? error.message : "Unable to send OTP";
-        setErrorMessage(message);
-        pushToast(message, "error");
-      })
+      .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
       .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
   }
 
   function handleOTPVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!/^\d{6}$/.test(otp)) {
+      const nextErrors = { otp: "Enter the 6-digit OTP code." };
       setState("error");
-      setErrorMessage("Enter the 6-digit OTP code.");
+      setPasswordlessFieldErrors(nextErrors);
+      setErrorMessage("Please fix the highlighted fields.");
+      pushToast("Please fix the highlighted fields.", "error");
       return;
     }
 
     setState("loading");
     setErrorMessage("");
-    const target = otpTarget.trim();
+    setPasswordlessFieldErrors({});
+    const target = passwordlessTarget;
     verifyOtp({
       channel: otpChannel,
       target,
@@ -183,12 +270,7 @@ export default function LoginPage() {
         pushToast("OTP verified. Welcome back.", "success");
         router.push("/dashboard");
       })
-      .catch((error: unknown) => {
-        setState("error");
-        const message = error instanceof Error ? error.message : "Invalid or expired OTP";
-        setErrorMessage(message);
-        pushToast(message, "error");
-      });
+      .catch((error: unknown) => handlePasswordlessError(error, "Invalid or expired OTP"));
   }
 
   return (
@@ -212,7 +294,7 @@ export default function LoginPage() {
       }
     >
       <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-muted/20 p-1">
-        {(["password", "otp"] as const).map((mode) => {
+        {(["password", "passwordless"] as const).map((mode) => {
           const isActive = authMode === mode;
           return (
           <button
@@ -220,112 +302,153 @@ export default function LoginPage() {
             type="button"
             onClick={() => {
               setAuthMode(mode);
+              if (mode === "passwordless") setPasswordlessStep("delivery");
               setState("idle");
               setErrorMessage("");
             }}
             className={isActive ? "rounded-md bg-white/[0.12] px-3 py-2 text-sm font-semibold text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70" : "rounded-md px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"}
           >
-            {mode === "password" ? "Password" : "OTP"}
+            {mode === "password" ? "Password" : "Passwordless"}
           </button>
           );
         })}
       </div>
 
-      {authMode === "password" ? (
-        <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setFieldErrors((current) => ({ ...current, email: undefined }));
-            }}
-            placeholder="admin@mail.com"
-            error={fieldErrors.email}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setFieldErrors((current) => ({ ...current, password: undefined }));
-            }}
-            placeholder="Enter your password"
-            error={fieldErrors.password}
-          />
-          <div className="text-xs font-medium text-muted-foreground/70">
-            Demo password: <span className="font-semibold text-foreground/80">admin123</span>
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <Link href="/forgot-password" className="text-sm font-medium text-primary hover:opacity-80">
-            Forgot password?
-          </Link>
-        </div>
-        <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
-          {state === "loading" ? <LoginLoadingIndicator /> : "Enter Dashboard"}
-        </Button>
-        </form>
-      ) : (
-        <form className="mt-4 space-y-4" onSubmit={otpRequested ? handleOTPVerify : handleOTPRequest}>
+      <div className="mt-4 min-h-[18rem]">
+        {authMode === "password" ? (
+          <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label>Delivery channel</Label>
-            <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-background/30 p-1">
-              {(["whatsapp", "email"] as const).map((channel) => {
-                const isActive = otpChannel === channel;
-                return (
-                  <button
-                    key={channel}
-                    type="button"
-                    onClick={() => {
-                      setOtpChannel(channel);
-                      setOtpTarget("");
-                      setOtpRequested(false);
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setFieldErrors((current) => ({ ...current, email: undefined }));
+              }}
+              placeholder="admin@mail.com"
+              error={fieldErrors.email}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setFieldErrors((current) => ({ ...current, password: undefined }));
+              }}
+              placeholder="Enter your password"
+              error={fieldErrors.password}
+            />
+            <div className="text-xs font-medium text-muted-foreground/70">
+              Demo password: <span className="font-semibold text-foreground/80">admin123</span>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Link href="/forgot-password" className="text-sm font-medium text-primary hover:opacity-80">
+              Forgot password?
+            </Link>
+          </div>
+          <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
+            {state === "loading" ? <LoginLoadingIndicator /> : "Enter Dashboard"}
+          </Button>
+          </form>
+        ) : (
+          <div className="space-y-4">
+          {passwordlessStep === "delivery" ? (
+            <form className="space-y-4" onSubmit={handlePasswordlessCheck}>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {(["whatsapp", "email"] as const).map((channel) => {
+                  const isActive = otpChannel === channel;
+                  const Icon = channel === "whatsapp" ? WhatsAppIcon : MailIcon;
+                  return (
+                    <button
+                      key={channel}
+                      type="button"
+                      aria-label={channel === "whatsapp" ? "Use WhatsApp" : "Use email"}
+                      onClick={() => {
+                        setOtpChannel(channel);
+                        setOtp("");
+                        setErrorMessage("");
+                        setState("idle");
+                      }}
+                      className={isActive ? "flex h-20 items-center justify-center rounded-lg border border-primary/70 bg-primary/10 text-foreground shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70" : "flex h-20 items-center justify-center rounded-lg border border-border/60 bg-background/30 text-muted-foreground transition hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"}
+                    >
+                      <Icon size="lg" />
+                    </button>
+                  );
+                })}
+              </div>
+              {otpChannel === "email" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="passwordless-email">Email</Label>
+                  <Input
+                    id="passwordless-email"
+                    type="email"
+                    value={passwordlessEmail}
+                    onChange={(event) => {
+                      setPasswordlessEmail(event.target.value);
+                      setPasswordlessFieldErrors((current) => ({ ...current, email: undefined }));
                       setOtp("");
                       setErrorMessage("");
-                      setState("idle");
                     }}
-                    className={isActive ? "rounded-md bg-white/[0.09] px-3 py-2 text-sm font-semibold text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70" : "rounded-md px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"}
-                  >
-                    {channel === "whatsapp" ? "WhatsApp" : "Email"}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          {otpChannel === "email" ? (
-            <div className="space-y-2">
-              <Label htmlFor="otp-target">Email</Label>
-              <Input
-                id="otp-target"
-                type="email"
-                value={otpTarget}
-                onChange={(event) => {
-                  setOtpTarget(event.target.value);
-                  setOtpRequested(false);
-                }}
-                placeholder="name@example.com"
-              />
-            </div>
-          ) : (
-            <PhoneNumberInput
-              id="otp-target"
-              value={otpTarget}
-              onChange={(value) => {
-                setOtpTarget(value);
-                setOtpRequested(false);
-              }}
-            />
-          )}
-          {otpRequested ? (
-            <>
+                    placeholder="name@example.com"
+                    error={passwordlessFieldErrors.email}
+                  />
+                </div>
+              ) : (
+                <PhoneNumberInput
+                  id="passwordless-phone"
+                  label="WhatsApp number"
+                  value={passwordlessPhone}
+                  onChange={(value) => {
+                    setPasswordlessPhone(value);
+                    setPasswordlessFieldErrors((current) => ({ ...current, phone: undefined }));
+                    setOtp("");
+                    setErrorMessage("");
+                  }}
+                  error={passwordlessFieldErrors.phone}
+                />
+              )}
+              <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
+                {state === "loading" ? <LoginLoadingIndicator label="Checking" /> : "Continue"}
+              </Button>
+            </form>
+          ) : null}
+
+          {passwordlessStep === "confirm" ? (
+            <form className="space-y-4" onSubmit={handlePasswordlessStart}>
+              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
+                We will send a secure sign-in step for <span className="break-all font-semibold">{passwordlessTarget}</span>.
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setPasswordlessStep("delivery");
+                    setErrorMessage("");
+                    setState("idle");
+                  }}
+                >
+                  Back
+                </Button>
+                <Button type="submit" disabled={state === "loading"} className="shadow-lg shadow-primary/20">
+                  {state === "loading" ? <LoginLoadingIndicator label="Sending" /> : "Continue"}
+                </Button>
+              </div>
+            </form>
+          ) : null}
+
+          {passwordlessStep === "code" ? (
+            <form className="space-y-4" onSubmit={handleOTPVerify}>
+              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
+                Code sent through {otpChannel === "whatsapp" ? "WhatsApp" : "email"} for <span className="break-all font-semibold">{otpChannel === "whatsapp" ? passwordlessPhone : passwordlessEmail}</span>. It expires in 5 minutes.
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="otp-code">OTP code</Label>
                 <Input
@@ -333,36 +456,83 @@ export default function LoginPage() {
                   inputMode="numeric"
                   maxLength={6}
                   value={otp}
-                  onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
-                  placeholder="123456"
+                  onChange={(event) => {
+                    setOtp(event.target.value.replace(/\D/g, "").slice(0, 6));
+                    setPasswordlessFieldErrors((current) => ({ ...current, otp: undefined }));
+                  }}
+                  placeholder="000000"
+                  className="h-14 text-center text-2xl tracking-[0.4em]"
+                  error={passwordlessFieldErrors.otp}
                 />
               </div>
               <label className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Checkbox checked={trustedDevice} onChange={(event) => setTrustedDevice(event.target.checked)} />
                 Trust this device
               </label>
-            </>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setPasswordlessStep("delivery");
+                    setOtp("");
+                    setErrorMessage("");
+                    setState("idle");
+                  }}
+                >
+                  Back
+                </Button>
+                <Button type="submit" disabled={state === "loading"} className="shadow-lg shadow-primary/20">
+                  {state === "loading" ? <LoginLoadingIndicator label="Verifying" /> : "Verify OTP"}
+                </Button>
+              </div>
+              <button
+                type="button"
+                className="w-full text-center text-sm font-medium text-primary hover:opacity-80"
+                disabled={state === "loading"}
+                onClick={() => handlePasswordlessStart()}
+              >
+                Did not receive it? Send again
+              </button>
+            </form>
           ) : null}
-          <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
-            {state === "loading" ? <LoginLoadingIndicator /> : otpRequested ? "Verify OTP" : "Send OTP"}
-          </Button>
-        </form>
-      )}
 
-      {authMode === "password" ? (
-        <SocialAuthButtons
-          mode="login"
-          onLoadingStateChange={(loading) => {
-            setState(loading ? "loading" : "idle");
-          }}
-          onErrorMessageChange={(message) => {
-            if (message) {
-              setState("error");
-            }
-            setErrorMessage(message);
-          }}
-        />
-      ) : null}
+          {passwordlessStep === "link" ? (
+            <div className="space-y-4">
+              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
+                A secure sign-in link has been sent. Open it on this device to continue.
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setPasswordlessStep("delivery");
+                  setErrorMessage("");
+                  setState("idle");
+                }}
+              >
+                Back
+              </Button>
+            </div>
+          ) : null}
+          </div>
+        )}
+      </div>
+
+      <SocialAuthButtons
+        mode="login"
+        compact
+        onLoadingStateChange={(loading) => {
+          setState(loading ? "loading" : "idle");
+        }}
+        onErrorMessageChange={(message) => {
+          if (message) {
+            setState("error");
+          }
+          setErrorMessage(message);
+        }}
+      />
 
       {errorMessage ? (
         <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">

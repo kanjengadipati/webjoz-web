@@ -30,7 +30,7 @@ Symptoms:
 
 Checks:
 
-- Verify the API is setting the `pleco_refresh_token` cookie
+- Verify the API is setting the `pleco_refresh_token` and `pleco_device_id` cookies
 - For local development, confirm the API is configured to allow credentialed requests from the dashboard origin
 - For non-local environments, make sure both apps are served over HTTPS
 

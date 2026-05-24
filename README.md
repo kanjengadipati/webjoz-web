@@ -39,7 +39,7 @@ NEXT_PUBLIC_SOCIAL_FACEBOOK_CLIENT_ID=
 
 If you run the dashboard without the Pleco API, set `NEXT_PUBLIC_ENABLE_HEALTH_CHECK=false` so the landing page does not probe `GET /health` (restart the dev server after changing env vars).
 
-The API must include the dashboard origin in `CORS_ALLOWED_ORIGINS` so browser requests can send credentials. The dashboard stores the short-lived access token for API calls, while the backend owns the `pleco_refresh_token` HttpOnly cookie for refresh rotation.
+The API must include the dashboard origin in `CORS_ALLOWED_ORIGINS` so browser requests can send credentials. The dashboard stores the short-lived access token for API calls, while the backend owns the `pleco_refresh_token` and `pleco_device_id` HttpOnly cookies.
 
 Pleco Console does not connect to the database directly. Configure `DB_DRIVER` and `DATABASE_URL` in `pleco-api`; the dashboard only needs `NEXT_PUBLIC_API_BASE_URL` pointed at the running API, whether that API uses PostgreSQL or MySQL.
 
@@ -57,6 +57,6 @@ Tagged releases publish a standalone production bundle through GitHub Actions. T
 
 ## Security Considerations
 
-The refresh token is not readable by JavaScript. It is issued by the Go API as the `pleco_refresh_token` HttpOnly cookie and sent with credentialed requests. The client refreshes short-lived access tokens through `/auth/refresh`.
+The refresh token and device id are not readable by JavaScript. They are issued by the Go API as HttpOnly cookies and sent with credentialed requests. The client refreshes short-lived access tokens through `/auth/refresh`.
 
 For non-local deployments, serve the dashboard and API over HTTPS. The refresh cookie is marked `Secure` and `SameSite=None`.

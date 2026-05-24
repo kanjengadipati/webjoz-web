@@ -807,7 +807,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
         return
     }
     
-    deviceID := c.GetHeader("X-Device-ID")
+    deviceID := ensureDeviceID(c)
     userAgent := c.GetHeader("User-Agent")
     ipAddress := c.ClientIP()
     language := c.GetHeader("Accept-Language")
@@ -1361,4 +1361,3 @@ Quality Metrics
 ### Break-even
 - Most teams see ROI within 3-4 weeks
 - Larger improvements if previously had generic errors
-

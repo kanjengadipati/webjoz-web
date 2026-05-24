@@ -82,12 +82,17 @@ export type InvestigationHistory = {
 export type Session = {
   id: number;
   device_id: string;
+  device_name?: string;
+  trusted_device_id?: string;
   user_agent: string;
   ip_address: string;
   created_at: string;
   updated_at: string;
   expired_at: string;
   is_current: boolean;
+  is_trusted?: boolean;
+  trusted_at?: string;
+  last_trusted_at?: string;
 };
 
 export type User = {

@@ -41,7 +41,6 @@ export const HEALTH_CHECK_ENABLED =
 
 export const API_DOCS_URL = `${API_BASE_URL}/docs`;
 
-export const DEFAULT_DEVICE_ID = "nextjs-dashboard";
 /**
  * WARNING: The access token is stored in localStorage and is readable by JavaScript.
  * Keep access tokens short-lived; long-lived refresh tokens must stay in HttpOnly cookies.

@@ -2,7 +2,6 @@ import {
   API_BASE_URL,
   API_DEBUG,
   API_TIMEOUT_MS,
-  DEFAULT_DEVICE_ID,
   TOKEN_STORAGE_KEY,
 } from "@/lib/config";
 import { setStoredValue } from "@/lib/storage";
@@ -149,7 +148,6 @@ export async function refreshAccessToken() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Device-ID": DEFAULT_DEVICE_ID,
     },
     credentials: "include",
     cache: "no-store",
