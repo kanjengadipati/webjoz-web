@@ -345,7 +345,7 @@ export default function LoginPage() {
               error={fieldErrors.password}
             />
             <div className="text-xs font-medium text-muted-foreground/70">
-              Demo password: <span className="font-semibold text-foreground/80">admin123</span>
+              Demo password: <span className="font-semibold text-foreground/80">Admin123!</span>
             </div>
           </div>
           <div className="flex justify-end">
