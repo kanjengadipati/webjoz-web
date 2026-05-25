@@ -22,9 +22,11 @@ const categories = [
     title: "Security & Governance",
     description: "Enterprise-grade control and transparency.",
     features: [
-      "Granular RBAC with Permission-based checks",
-      "Detailed Audit Trail for all sensitive actions",
-      "Built-in Rate Limiting & Security Headers",
+      "Granular RBAC with real-time permission toggles",
+      "Detailed Audit Logs with IP and User Agent metadata",
+      "Device-level Session Control with instant revocation",
+      "Automated Rate Limiting and brute-force safeguards",
+      "Comprehensive Security Headers and CORS controls",
     ]
   },
   {
