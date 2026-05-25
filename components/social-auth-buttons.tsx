@@ -206,7 +206,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
 
     container.innerHTML = "";
     google.accounts.id.renderButton(container, {
-      theme: "filled_black",
+      theme: "filled_blue",
       size: "large",
       type: "icon",
       shape: "circle",
