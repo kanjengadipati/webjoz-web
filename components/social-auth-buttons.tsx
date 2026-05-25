@@ -377,7 +377,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
             {/* Invisible Google-rendered button overlay to handle the click reliably */}
             <div
               id={googleContainerId}
-              className={cn("absolute inset-0 z-10 overflow-hidden opacity-0", !(loading || !googleReady) && "cursor-pointer")}
+              className={cn("absolute inset-0 z-10 overflow-hidden opacity-0", (loading || !googleReady) ? "pointer-events-none" : "cursor-pointer")}
               style={{
                 transform: "scale(2.5)",
                 transformOrigin: "center",
