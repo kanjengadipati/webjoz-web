@@ -118,6 +118,13 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
 
     console.error = (...args: unknown[]) => {
       const firstArg = args[0];
+
+      if (typeof firstArg === "string" && firstArg.includes("The method FB.login can no longer be called from http pages")) {
+        setLocalLoading(false);
+        pushToast("Facebook login requires HTTPS. Please run your dev server with 'next dev --experimental-https'.", "error");
+        return;
+      }
+
       if (
         typeof firstArg === "string" &&
         (firstArg.includes("[GSI_LOGGER]") || firstArg.includes("GSI_LOGGER")) &&
@@ -171,7 +178,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
       console.warn = originalConsoleWarn;
       window.removeEventListener("unhandledrejection", handleUnhandledRejection);
     };
-  }, []);
+  }, [pushToast, setLocalLoading]);
 
   // Register window.fbAsyncInit BEFORE the <Script> renders.
   useEffect(() => {
@@ -347,14 +354,14 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {hasGoogle && (
-          <div className="relative">
+          <div className={cn("relative overflow-hidden rounded-xl", !(loading || !googleReady) && "group cursor-pointer")}>
             <Button
               variant="outline"
               type="button"
               onClick={handleGoogleClick}
               disabled={loading || !googleReady}
               aria-label={`Continue with Google for ${mode}`}
-              className="w-full rounded-xl border-border/60 bg-background/50 py-5 sm:py-6 hover:bg-primary/5 transition-all duration-300 group"
+              className="w-full rounded-xl border-border/60 bg-background/50 py-5 sm:py-6 group-hover:bg-[#4285F4]/5 hover:bg-[#4285F4]/5 transition-all duration-300 cursor-pointer"
             >
               {!googleReady ? (
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-current/25 border-t-current/70" aria-hidden="true" />
@@ -370,7 +377,7 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
             {/* Invisible Google-rendered button overlay to handle the click reliably */}
             <div
               id={googleContainerId}
-              className="absolute inset-0 z-10 overflow-hidden opacity-0"
+              className={cn("absolute inset-0 z-10 overflow-hidden opacity-0", !(loading || !googleReady) && "cursor-pointer")}
               style={{
                 transform: "scale(2.5)",
                 transformOrigin: "center",
@@ -379,18 +386,20 @@ export function SocialAuthButtons({ mode, onLoadingStateChange, onErrorMessageCh
           </div>
         )}
         {hasFacebook && (
-          <Button
-            variant="outline"
-            type="button"
-            onClick={handleFacebookClick}
-            disabled={loading}
-            aria-label={`Continue with Facebook for ${mode}`}
-            className="w-full rounded-xl border-border/60 bg-background/50 py-5 sm:py-6 hover:bg-[#1877F2]/5 transition-all duration-300 group"
-          >
-            <svg className="size-5 group-hover:scale-110 transition-transform" fill="#1877F2" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-          </Button>
+          <div className={cn("relative overflow-hidden rounded-xl", !loading && "group cursor-pointer")}>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={handleFacebookClick}
+              disabled={loading}
+              aria-label={`Continue with Facebook for ${mode}`}
+              className="w-full rounded-xl border-border/60 bg-background/50 py-5 sm:py-6 group-hover:bg-[#1877F2]/5 hover:bg-[#1877F2]/5 transition-all duration-300 cursor-pointer"
+            >
+              <svg className="size-5 group-hover:scale-110 transition-transform" fill="#1877F2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            </Button>
+          </div>
         )}
       </div>
 
