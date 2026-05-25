@@ -51,8 +51,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   if (!authReady || !isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background gap-4 animate-in fade-in duration-500">
+        <div className="relative size-12">
+          {/* Outer glowing halo */}
+          <div className="absolute inset-0 rounded-full border border-primary/30 animate-pulse" />
+          {/* Ring track */}
+          <div className="absolute inset-1 rounded-full border-3 border-primary/10" />
+          {/* Spinner */}
+          <div className="absolute inset-1 rounded-full border-3 border-transparent border-t-primary animate-spin" />
+        </div>
+        <div className="text-center">
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse">
+            Authenticating...
+          </p>
+        </div>
       </div>
     );
   }
@@ -252,8 +264,23 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              <div className="flex flex-col items-center justify-center h-80 gap-4">
+                <div className="relative size-12 animate-in zoom-in duration-300">
+                  {/* Outer glowing halo */}
+                  <div className="absolute inset-0 rounded-full border border-primary/30 animate-pulse" />
+                  {/* Ring track */}
+                  <div className="absolute inset-1 rounded-full border-3 border-primary/10" />
+                  {/* Spinner */}
+                  <div className="absolute inset-1 rounded-full border-3 border-transparent border-t-primary animate-spin" />
+                </div>
+                <div className="text-center animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150 fill-mode-both">
+                  <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse">
+                    Loading Console...
+                  </p>
+                  <p className="mt-1 text-[10px] text-muted-foreground/60 tracking-wider">
+                    Preparing secure workspace
+                  </p>
+                </div>
               </div>
             ) : (
               children
