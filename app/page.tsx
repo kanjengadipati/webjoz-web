@@ -11,9 +11,11 @@ const categories = [
     title: "Identity & Access",
     description: "Robust authentication foundation with modern standards.",
     features: [
+      "Passwordless Sign-In (WhatsApp & Email OTP codes)",
+      "Frictionless Magic Links for instant onboarding",
+      "Social Login (Google, Facebook, Apple) out-of-the-box",
       "JWT Auth with Access & Refresh token rotation",
-      "Social Login (Google, Facebook, Apple)",
-      "Advanced Session Management & Revocation",
+      "Advanced Session Control & Revocation",
     ]
   },
   {
@@ -75,12 +77,21 @@ export default function Home() {
             </a>
           </div>
 
+          <div className="flex justify-center">
+            <Link href="/login">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-400 shadow-md backdrop-blur transition-all hover:bg-emerald-500/25 cursor-pointer">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>New Feature: Passwordless OTP & Magic Links Live</span>
+              </div>
+            </Link>
+          </div>
+
           <h1 className="text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl md:text-7xl lg:text-8xl">
             Ship auth.<br />Focus on your product.
           </h1>
 
           <p className="mx-auto max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
-            Production-ready auth with audit visibility, AI-powered investigation, and an operator dashboard your team can use on day one.
+            Production-ready auth featuring passwordless sign-ins, audit visibility, AI-powered investigation, and an operator dashboard your team can use on day one.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5 pt-4">
