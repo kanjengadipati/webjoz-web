@@ -45,7 +45,7 @@ const categories = [
     description: "Developer-first infrastructure and DX.",
     features: [
       "Ultra-fast Go backend architecture built with Gin & GORM",
-      "Multi-database compatibility (PostgreSQL, MySQL, SQLite)",
+      "Multi-database compatibility (PostgreSQL & MySQL engines)",
       "Redis integration for high-speed caching & rate-limit state",
       "Multi-container Docker Compose config with Nginx proxy setup",
       "Live interactive OpenAPI 3.0 (Swagger) endpoint testing docs",
