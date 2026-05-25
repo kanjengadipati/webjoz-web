@@ -34,7 +34,7 @@ Successful response:
 
 ### Passwordless Login
 
-The login page first checks the email or WhatsApp number without sending anything. On the second step, the backend decides whether to send a magic link for a trusted device or an OTP for normal verification. The UI does not expose trusted-device state.
+The login page first checks that the email or WhatsApp number belongs to an existing user without sending anything. On the second step, the backend decides whether to send a magic link for a trusted device or an OTP for normal verification. The UI does not expose trusted-device state.
 
 Check identity:
 
@@ -82,6 +82,8 @@ Content-Type: application/json
 ```
 
 If a magic link is sent, the link opens `/login?magic_token=...`; the dashboard verifies it through `POST /auth/magic-link/verify`. Magic links are single-use, DB-backed tokens and reused links are rejected.
+
+Passwordless OTP never creates a new account. Unknown email addresses or WhatsApp numbers should show the API error message and stop the flow.
 
 The dashboard does not create a device id in JavaScript. The API owns device identity through the `pleco_device_id` HttpOnly cookie, and also sets the `pleco_refresh_token` HttpOnly cookie for refresh rotation.
 
