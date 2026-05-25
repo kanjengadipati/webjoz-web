@@ -33,18 +33,22 @@ const categories = [
     title: "AI Intelligence",
     description: "Next-gen security analysis powered by LLMs.",
     features: [
-      "AI-powered Audit Log Investigator",
-      "Anomaly Detection & Pattern Recognition",
-      "Multi-provider support (Gemini, OpenAI, Ollama)",
+      "AI-powered Audit Log Investigator for narrative summaries",
+      "Deep anomaly clustering and brute-force pattern recognition",
+      "Seamless multi-provider support (Gemini, OpenAI, Ollama)",
+      "Interactive dashboard for manual and auto review options",
+      "Persistent case history archive for compliance & security audits",
     ]
   },
   {
     title: "Cloud Native Flow",
     description: "Developer-first infrastructure and DX.",
     features: [
-      "Modular Go backend with Gin & GORM",
-      "Docker-compose setup (PostgreSQL/MySQL, Redis, Nginx)",
-      "OpenAPI 3.0 (Swagger) interactive documentation",
+      "Ultra-fast Go backend architecture built with Gin & GORM",
+      "Multi-database compatibility (PostgreSQL, MySQL, SQLite)",
+      "Redis integration for high-speed caching & rate-limit state",
+      "Multi-container Docker Compose config with Nginx proxy setup",
+      "Live interactive OpenAPI 3.0 (Swagger) endpoint testing docs",
     ]
   }
 ];
