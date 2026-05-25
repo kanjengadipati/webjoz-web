@@ -37,38 +37,49 @@ export default function DashboardOverviewPage() {
   const refresh = useCallback(async (showToast = true) => {
     if (!token) return;
     setState(SectionState.LOADING);
-    try {
-      const query = new URLSearchParams({
-        page: String(DASHBOARD_CONFIG.INITIAL_PAGE),
-        limit: String(DASHBOARD_CONFIG.ITEMS_PER_PAGE),
-        resource: DASHBOARD_CONFIG.RESOURCE_TYPE,
-      });
-      const [profileResponse, logsResponse, sessionsResponse] = await Promise.all([
-        fetchProfile(token),
-        fetchAuditLogs(token, query),
-        fetchSessions(token),
-      ]);
-      setProfile(profileResponse.data);
-      setLogs(logsResponse.data);
-      setSessions(sessionsResponse.data);
+    const query = new URLSearchParams({
+      page: String(DASHBOARD_CONFIG.INITIAL_PAGE),
+      limit: String(DASHBOARD_CONFIG.ITEMS_PER_PAGE),
+      resource: DASHBOARD_CONFIG.RESOURCE_TYPE,
+    });
+    const [profileResult, logsResult, sessionsResult] = await Promise.allSettled([
+      fetchProfile(token),
+      fetchAuditLogs(token, query),
+      fetchSessions(token),
+    ]);
+
+    if (profileResult.status === "fulfilled") {
+      setProfile(profileResult.value.data);
+    }
+    if (logsResult.status === "fulfilled") {
+      setLogs(logsResult.value.data);
+    }
+    if (sessionsResult.status === "fulfilled") {
+      setSessions(sessionsResult.value.data);
+    }
+
+    const allFailed =
+      profileResult.status === "rejected" &&
+      logsResult.status === "rejected" &&
+      sessionsResult.status === "rejected";
+
+    if (allFailed) {
+      setState(SectionState.ERROR);
+      const firstError = profileResult.reason;
+      pushToast(firstError instanceof Error ? firstError.message : "Failed to load dashboard", "error");
+    } else {
       setState(SectionState.SUCCESS);
       setLastSyncedAt(new Date());
       if (showToast) {
         pushToast("Dashboard metrics refreshed.", "success");
       }
-    } catch (error) {
-      setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load dashboard", "error");
     }
   }, [pushToast, token]);
 
   useEffect(() => {
     if (!token || state !== SectionState.IDLE) return;
     const timeout = window.setTimeout(() => {
-      refresh(false).catch((error) => {
-        setState(SectionState.ERROR);
-        pushToast(error instanceof Error ? error.message : "Failed to load dashboard", "error");
-      });
+      void refresh(false);
     }, 0);
     return () => window.clearTimeout(timeout);
   }, [pushToast, refresh, state, token]);
