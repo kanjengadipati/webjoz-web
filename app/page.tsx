@@ -199,7 +199,7 @@ export default function Home() {
         <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <SubtleStat label="Auth Endpoints" value="15+" helper="Register, login, sessions, recovery" />
-            <SubtleStat label="Admin Modules" value="6" helper="Users, roles, permissions, audit, AI" />
+            <SubtleStat label="Admin Modules" value="5" helper="Users, roles, permissions, audit, AI" />
             <SubtleStat label="Security" value="Hardened" helper="Rate-limited with secure headers" />
             <SubtleStat label="Stack" value="Modern" helper="Go, Next.js, SQL, Docker" />
           </div>
