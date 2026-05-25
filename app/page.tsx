@@ -12,7 +12,7 @@ const categories = [
     description: "Robust authentication foundation with modern standards.",
     features: [
       "Passwordless Sign-In (WhatsApp & Email OTP codes)",
-      "Frictionless Magic Links for instant onboarding",
+      "Secure Magic Links for seamless trusted device logins",
       "Social Login (Google, Facebook, Apple) out-of-the-box",
       "JWT Auth with Access & Refresh token rotation",
       "Advanced Session Control & Revocation",
@@ -22,9 +22,9 @@ const categories = [
     title: "Security & Governance",
     description: "Enterprise-grade control and transparency.",
     features: [
-      "Granular RBAC with real-time permission toggles",
+      "Granular Role-Based Access Control (RBAC) with real-time syncing",
       "Detailed Audit Logs with IP and User Agent metadata",
-      "Device-level Session Control with instant revocation",
+      "Trusted Device identification and profiling",
       "Automated Rate Limiting and brute-force safeguards",
       "Comprehensive Security Headers and CORS controls",
     ]
@@ -35,7 +35,7 @@ const categories = [
     features: [
       "AI-powered Audit Log Investigator for narrative summaries",
       "Deep anomaly clustering and brute-force pattern recognition",
-      "Seamless multi-provider support (Gemini, OpenAI, Ollama)",
+      "Seamless multi-provider support (Anthropic, Gemini, OpenAI, Ollama)",
       "Interactive dashboard for manual and auto review options",
       "Persistent case history archive for compliance & security audits",
     ]
