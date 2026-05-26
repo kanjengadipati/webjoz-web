@@ -169,26 +169,41 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </div>
               </div>
 
-              <nav className="grid gap-1">
-                {filteredNavItems.map((item) => {
-                  const active = pathname === item.href;
+              <nav className="space-y-5">
+                {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
+                  const sectionItems = filteredNavItems.filter(item => item.section === sectionName);
+                  if (sectionItems.length === 0) return null;
+
                   return (
-                    <div key={item.href} className={cn(item.groupStart ? "mt-3 border-t border-border/40 pt-3" : "")}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "group relative flex items-center rounded-xl border-l-2 px-4 py-3 text-sm transition-all duration-300",
-                          active
-                            ? "border-primary bg-primary/12 text-primary shadow-inner font-bold"
-                            : "border-transparent font-medium text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-primary",
-                        )}
-                        aria-current={active ? "page" : undefined}
-                      >
-                        <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>{item.label}</span>
-                        {active && (
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" aria-hidden="true" />
-                        )}
-                      </Link>
+                    <div key={sectionName} className="space-y-2">
+                      <h3 className="px-4 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/40">
+                        {sectionName}
+                      </h3>
+                      <div className="grid gap-1">
+                        {sectionItems.map((item) => {
+                          const active = pathname === item.href;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className={cn(
+                                "group relative flex items-center rounded-xl border-l-2 px-4 py-2.5 text-sm transition-all duration-300",
+                                active
+                                  ? "border-primary bg-primary/12 text-primary shadow-inner font-bold"
+                                  : "border-transparent font-medium text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-primary",
+                              )}
+                              aria-current={active ? "page" : undefined}
+                            >
+                              <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
+                                {item.label}
+                              </span>
+                              {active && (
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" aria-hidden="true" />
+                              )}
+                            </Link>
+                          );
+                        })}
+                      </div>
                     </div>
                   );
                 })}
