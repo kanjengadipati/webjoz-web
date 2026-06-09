@@ -4,39 +4,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth-shell";
-import { MailIcon, WhatsAppIcon } from "@/components/icons";
+import { MailIcon, WhatsAppIcon, InfoIcon } from "@/components/icons";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Button, Checkbox, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
-import { checkPasswordlessIdentity, login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
-import { persistAuthSession, useStoredEmail } from "@/lib/auth-store";
+import { checkPasswordlessIdentity, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
+import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 
-const LOGIN_FIELDS = ["email", "password"] as const;
 const PASSWORDLESS_FIELDS = ["email", "phone", "otp"] as const;
-type LoginField = (typeof LOGIN_FIELDS)[number];
 type PasswordlessField = (typeof PASSWORDLESS_FIELDS)[number];
-type AuthMode = "password" | "passwordless";
 type OTPChannel = "whatsapp" | "email";
 type PasswordlessStep = "delivery" | "confirm" | "code" | "link";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function validateLoginForm(email: string, password: string): FieldErrors<LoginField> {
-  const errors: FieldErrors<LoginField> = {};
-
-  if (!email.trim()) {
-    errors.email = "Enter your email address.";
-  } else if (!EMAIL_PATTERN.test(email)) {
-    errors.email = "Enter a valid email address, like admin@mail.com.";
-  }
-
-  if (!password) {
-    errors.password = "Enter your password.";
-  }
-
-  return errors;
-}
 
 function LoginLoadingIndicator({ label = "Signing in" }: { label?: string }) {
   const [dotCount, setDotCount] = useState(1);
@@ -71,9 +52,8 @@ export default function LoginPage() {
   const router = useRouter();
   const { pushToast } = useToast();
   const storedEmail = useStoredEmail();
-  const [email, setEmail] = useState(storedEmail);
-  const [password, setPassword] = useState("");
-  const [authMode, setAuthMode] = useState<AuthMode>("password");
+  const authReady = useAuthReady();
+  const token = useAuthToken();
   const [otpChannel, setOtpChannel] = useState<OTPChannel>("whatsapp");
   const [passwordlessEmail, setPasswordlessEmail] = useState(storedEmail);
   const [passwordlessPhone, setPasswordlessPhone] = useState("");
@@ -82,9 +62,30 @@ export default function LoginPage() {
   const [trustedDevice, setTrustedDevice] = useState(true);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors<LoginField>>({});
   const [passwordlessFieldErrors, setPasswordlessFieldErrors] = useState<FieldErrors<PasswordlessField>>({});
   const handledExpiredToastRef = useRef(false);
+  const [isDeviceTrusted, setIsDeviceTrusted] = useState(false);
+
+  // If already authenticated, skip the login page and go straight to the dashboard or resume wizard
+  useEffect(() => {
+    if (!authReady) return;
+    if (!token) return;
+
+    const params = new URLSearchParams(window.location.search);
+    // Do not auto-redirect if we are in the middle of verifying a magic token
+    if (params.get("magic_token")) return;
+
+    const redirectParam = params.get("redirect");
+    const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+
+    if (redirectParam) {
+      router.replace(redirectParam);
+    } else if (pendingWizard) {
+      router.replace("/create");
+    } else {
+      router.replace("/dashboard/sites");
+    }
+  }, [authReady, token, router]);
 
   const passwordlessTarget = otpChannel === "email" ? passwordlessEmail.trim().toLowerCase() : passwordlessPhone.trim();
 
@@ -103,7 +104,16 @@ export default function LoginPage() {
         .then((response) => {
           persistAuthSession("", response.data.access_token);
           pushToast("Login successful. Welcome back.", "success");
-          router.push("/dashboard");
+          
+          const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+          const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+          if (redirectParam) {
+            router.push(redirectParam);
+          } else if (pendingWizard) {
+            router.push("/create");
+          } else {
+            router.push("/dashboard/sites");
+          }
         })
         .catch((error: unknown) => {
           setState("error");
@@ -133,42 +143,6 @@ export default function LoginPage() {
       window.history.replaceState(null, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`);
     }
   }, [pushToast, router]);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const nextFieldErrors = validateLoginForm(email, password);
-    if (hasFieldErrors(nextFieldErrors)) {
-      setState("error");
-      setFieldErrors(nextFieldErrors);
-      setErrorMessage("Please fix the highlighted fields.");
-      pushToast("Please fix the highlighted fields.", "error");
-      return;
-    }
-
-    setState("loading");
-    setErrorMessage("");
-    setFieldErrors({});
-
-    login(email, password)
-      .then((response) => {
-        persistAuthSession(email, response.data.access_token);
-        pushToast("Login successful. Welcome to the live demo.", "success");
-        router.push("/dashboard");
-      })
-      .catch((error: unknown) => {
-        setState("error");
-        const nextErrors = getApiFieldErrors(error, LOGIN_FIELDS);
-        setFieldErrors(nextErrors);
-        const message = getFormErrorMessage(error, "Login failed", nextErrors);
-        setErrorMessage(message);
-        
-        const apiError = error as import("@/lib/api").ApiError;
-        pushToast(message, "error", {
-          aiDetails: apiError?.aiDetails,
-          suggestions: apiError?.suggestions,
-        });
-      });
-  }
 
   function validatePasswordlessTarget() {
     const target = passwordlessTarget;
@@ -218,7 +192,8 @@ export default function LoginPage() {
     setErrorMessage("");
     setPasswordlessFieldErrors({});
     checkPasswordlessIdentity(otpChannel, target)
-      .then(() => {
+      .then((response) => {
+        setIsDeviceTrusted(!!response.data?.is_trusted_device);
         setPasswordlessStep("confirm");
       })
       .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
@@ -233,12 +208,17 @@ export default function LoginPage() {
     setState("loading");
     setErrorMessage("");
     setPasswordlessFieldErrors({});
-    startPasswordless(otpChannel, target)
-      .then((response) => {
-        const nextStep = response.data.next_step;
-        setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
-        pushToast("Check your messages.", "success");
-      })
+      startPasswordless(otpChannel, target)
+        .then((response) => {
+          const nextStep = response.data.next_step;
+          // If backend provides a direct magic link URL, navigate to it immediately
+          if (nextStep === "magic_link" && response.data.magic_link_url) {
+            window.location.href = response.data.magic_link_url;
+            return;
+          }
+          setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
+          pushToast("Check your messages.", "success");
+        })
       .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
       .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
   }
@@ -268,164 +248,203 @@ export default function LoginPage() {
       .then((response) => {
         persistAuthSession(otpChannel === "email" ? target : "", response.data.access_token);
         pushToast("OTP verified. Welcome back.", "success");
-        router.push("/dashboard");
+        
+        const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+        const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+        if (redirectParam) {
+          router.push(redirectParam);
+        } else if (pendingWizard) {
+          router.push("/create");
+        } else {
+          router.push("/dashboard/sites");
+        }
       })
       .catch((error: unknown) => handlePasswordlessError(error, "Invalid or expired OTP"));
   }
 
-  return (
-    <AuthShell
-      badge="Pleco Console"
-      title="The auth backend built for startup teams."
-      description="Sign in with the seeded admin account to explore the logs feed, AI investigation workflow, active sessions, and user management endpoints through a polished dashboard."
-      stats={[
-        { label: "Session Control", value: "Live Tokens", helper: "Inspect active sessions, refresh rotation, and revocation flows." },
-        { label: "Audit Visibility", value: "Real Signals", helper: "See auth logs, investigation output, and user management in one place." },
-      ]}
-      cardEyebrow="Sign in to continue"
-      cardTitle="Sign In"
-      cardDescription="Use the seeded account to unlock the dashboard and test the backend in a realistic flow."
-      footer={
-        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-x-5">
-          <Link href="/" className="font-medium text-primary hover:opacity-80">Back to overview</Link>
-          <Link href="/register" className="font-medium text-primary hover:opacity-80">Create account</Link>
-          <Link href="/verify" className="font-medium text-primary hover:opacity-80">Verify email</Link>
-        </div>
+  const handleWhatsAppButtonClick = () => {
+    if (!passwordlessPhone.trim()) {
+      const inputEl = document.getElementById("passwordless-phone");
+      if (inputEl) {
+        inputEl.focus();
       }
-    >
-      <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-muted/20 p-1">
-        {(["password", "passwordless"] as const).map((mode) => {
-          const isActive = authMode === mode;
-          return (
-          <button
-            key={mode}
-            type="button"
-            onClick={() => {
-              setAuthMode(mode);
-              if (mode === "passwordless") setPasswordlessStep("delivery");
-              setState("idle");
-              setErrorMessage("");
-            }}
-            className={isActive ? "rounded-md bg-white/[0.12] px-3 py-2 text-sm font-semibold text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70" : "rounded-md px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"}
-          >
-            {mode === "password" ? "Password" : "Passwordless"}
-          </button>
-          );
-        })}
-      </div>
+      pushToast("Silakan masukkan nomor WhatsApp Anda di bawah.", "info");
+    } else {
+      handlePasswordlessStart();
+    }
+  };
 
-      <div className="mt-4 min-h-[18rem]">
-        {authMode === "password" ? (
-          <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setFieldErrors((current) => ({ ...current, email: undefined }));
-              }}
-              placeholder="admin@mail.com"
-              error={fieldErrors.email}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setFieldErrors((current) => ({ ...current, password: undefined }));
-              }}
-              placeholder="Enter your password"
-              error={fieldErrors.password}
-            />
-            <div className="text-xs font-medium text-muted-foreground/70">
-              Demo password: <span className="font-semibold text-foreground/80">Admin123!</span>
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Link href="/forgot-password" className="text-sm font-medium text-primary hover:opacity-80">
-              Forgot password?
-            </Link>
-          </div>
-          <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
-            {state === "loading" ? <LoginLoadingIndicator /> : "Enter Dashboard"}
-          </Button>
-          </form>
-        ) : (
-          <div className="space-y-4">
+  return (
+    <main className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-background">
+      {/* Radial top glow */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
+
+      <div className="w-full max-w-[420px] space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div className="space-y-2 text-left">
+          <p className="text-sm font-medium text-muted-foreground/85">
+            Simpan website kamu — masuk dulu sebentar
+          </p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+            Masuk
+          </h1>
+        </div>
+
+        <div className="bg-card border border-border/60 rounded-2xl p-6 sm:p-8 shadow-xl backdrop-blur-sm relative">
           {passwordlessStep === "delivery" ? (
-            <form className="space-y-4" onSubmit={handlePasswordlessCheck}>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {(["whatsapp", "email"] as const).map((channel) => {
-                  const isActive = otpChannel === channel;
-                  const Icon = channel === "whatsapp" ? WhatsAppIcon : MailIcon;
-                  return (
-                    <button
-                      key={channel}
-                      type="button"
-                      aria-label={channel === "whatsapp" ? "Use WhatsApp" : "Use email"}
-                      onClick={() => {
-                        setOtpChannel(channel);
+            <div className="space-y-5">
+              {otpChannel === "whatsapp" ? (
+                <>
+                  {/* WhatsApp Big Green Button */}
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppButtonClick}
+                    disabled={state === "loading"}
+                    className="w-full h-11 flex items-center justify-center gap-2.5 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-sm font-semibold transition cursor-pointer shadow-sm shadow-[#25D366]/20 disabled:opacity-50"
+                  >
+                    <WhatsAppIcon size="md" className="fill-current text-white" />
+                    Masuk dengan WhatsApp
+                  </button>
+
+                  {/* Social Buttons */}
+                  <SocialAuthButtons
+                    mode="login"
+                    layout="grid"
+                    showSeparator={false}
+                    onLoadingStateChange={(loading) => {
+                      setState(loading ? "loading" : "idle");
+                    }}
+                    onErrorMessageChange={(message) => {
+                      if (message) setState("error");
+                      setErrorMessage(message);
+                    }}
+                  />
+
+                  {/* Separator */}
+                  <div className="relative flex items-center my-5">
+                    <div className="flex-grow border-t border-border/80"></div>
+                    <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau masuk dengan nomor</span>
+                    <div className="flex-grow border-t border-border/80"></div>
+                  </div>
+
+                  {/* WhatsApp Form */}
+                  <form className="space-y-4" onSubmit={handlePasswordlessStart}>
+                    <PhoneNumberInput
+                      id="passwordless-phone"
+                      value={passwordlessPhone}
+                      onChange={(value) => {
+                        setPasswordlessPhone(value);
+                        setPasswordlessFieldErrors((current) => ({ ...current, phone: undefined }));
                         setOtp("");
                         setErrorMessage("");
-                        setState("idle");
                       }}
-                      className={isActive ? "flex h-20 items-center justify-center rounded-lg border border-primary/70 bg-primary/10 text-foreground shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70" : "flex h-20 items-center justify-center rounded-lg border border-border/60 bg-background/30 text-muted-foreground transition hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"}
+                      error={passwordlessFieldErrors.phone}
+                    />
+
+                    <div className="flex items-start gap-2.5 text-xs text-muted-foreground/80 leading-relaxed px-0.5">
+                      <InfoIcon className="size-4 shrink-0 mt-0.5 text-muted-foreground/60" />
+                      <span>Link atau kode OTP dikirim via WhatsApp. Nomor baru? Akun otomatis dibuat.</span>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={state === "loading"}
+                      className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
                     >
-                      <Icon size="lg" />
+                      {state === "loading" ? (
+                        <LoginLoadingIndicator label="Memeriksa" />
+                      ) : (
+                        <>
+                          Lanjutkan
+                          <span className="text-base" aria-hidden="true">&rarr;</span>
+                        </>
+                      )}
                     </button>
-                  );
-                })}
-              </div>
-              {otpChannel === "email" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="passwordless-email">Email</Label>
-                  <Input
-                    id="passwordless-email"
-                    type="email"
-                    value={passwordlessEmail}
-                    onChange={(event) => {
-                      setPasswordlessEmail(event.target.value);
-                      setPasswordlessFieldErrors((current) => ({ ...current, email: undefined }));
-                      setOtp("");
-                      setErrorMessage("");
-                    }}
-                    placeholder="name@example.com"
-                    error={passwordlessFieldErrors.email}
-                  />
-                </div>
+                  </form>
+                </>
               ) : (
-                <PhoneNumberInput
-                  id="passwordless-phone"
-                  label="WhatsApp number"
-                  value={passwordlessPhone}
-                  onChange={(value) => {
-                    setPasswordlessPhone(value);
-                    setPasswordlessFieldErrors((current) => ({ ...current, phone: undefined }));
-                    setOtp("");
-                    setErrorMessage("");
-                  }}
-                  error={passwordlessFieldErrors.phone}
-                />
+                <>
+                  {/* Social Buttons */}
+                  <SocialAuthButtons
+                    mode="login"
+                    layout="grid"
+                    showSeparator={false}
+                    onLoadingStateChange={(loading) => {
+                      setState(loading ? "loading" : "idle");
+                    }}
+                    onErrorMessageChange={(message) => {
+                      if (message) setState("error");
+                      setErrorMessage(message);
+                    }}
+                  />
+
+                  {/* Separator */}
+                  <div className="relative flex items-center my-5">
+                    <div className="flex-grow border-t border-border/80"></div>
+                    <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau masuk dengan email</span>
+                    <div className="flex-grow border-t border-border/80"></div>
+                  </div>
+
+                  {/* Email Form */}
+                  <form className="space-y-4" onSubmit={handlePasswordlessStart}>
+                    <div className="space-y-2">
+                      <Label htmlFor="passwordless-email" className="sr-only">Alamat email</Label>
+                      <Input
+                        id="passwordless-email"
+                        type="email"
+                        value={passwordlessEmail}
+                        onChange={(event) => {
+                          setPasswordlessEmail(event.target.value);
+                          setPasswordlessFieldErrors((current) => ({ ...current, email: undefined }));
+                          setOtp("");
+                          setErrorMessage("");
+                        }}
+                        placeholder="Alamat email kamu"
+                        className="h-11 text-base placeholder:text-muted-foreground/60 bg-background"
+                        error={passwordlessFieldErrors.email}
+                      />
+                    </div>
+
+                    <div className="flex items-start gap-2.5 text-xs text-muted-foreground/80 leading-relaxed px-0.5">
+                      <InfoIcon className="size-4 shrink-0 mt-0.5 text-muted-foreground/60" />
+                      <span>Link atau kode OTP dikirim via email. Email baru? Akun otomatis dibuat.</span>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={state === "loading"}
+                      className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
+                    >
+                      {state === "loading" ? (
+                        <LoginLoadingIndicator label="Memeriksa" />
+                      ) : (
+                        <>
+                          Lanjutkan
+                          <span className="text-base" aria-hidden="true">&rarr;</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </>
               )}
-              <Button type="submit" disabled={state === "loading"} className="w-full shadow-lg shadow-primary/20">
-                {state === "loading" ? <LoginLoadingIndicator label="Checking" /> : "Continue"}
-              </Button>
-            </form>
+            </div>
           ) : null}
 
           {passwordlessStep === "confirm" ? (
             <form className="space-y-4" onSubmit={handlePasswordlessStart}>
-              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
-                We will send a secure sign-in step for <span className="break-all font-semibold">{passwordlessTarget}</span>.
+              <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
+                {isDeviceTrusted ? (
+                  <>
+                    Kami akan mengirimkan link masuk ke{" "}
+                    <span className="break-all font-semibold">{passwordlessTarget}</span>.
+                  </>
+                ) : (
+                  <>
+                    Kami akan mengirim kode masuk ke{" "}
+                    <span className="break-all font-semibold">{passwordlessTarget}</span>.
+                  </>
+                )}
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 grid-cols-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -433,12 +452,19 @@ export default function LoginPage() {
                     setPasswordlessStep("delivery");
                     setErrorMessage("");
                     setState("idle");
+                    setIsDeviceTrusted(false);
                   }}
                 >
-                  Back
+                  Kembali
                 </Button>
-                <Button type="submit" disabled={state === "loading"} className="shadow-lg shadow-primary/20">
-                  {state === "loading" ? <LoginLoadingIndicator label="Sending" /> : "Continue"}
+                <Button type="submit" disabled={state === "loading"}>
+                  {state === "loading" ? (
+                    <LoginLoadingIndicator label="Mengirim" />
+                  ) : isDeviceTrusted ? (
+                    "Kirim link"
+                  ) : (
+                    "Kirim kode"
+                  )}
                 </Button>
               </div>
             </form>
@@ -446,11 +472,15 @@ export default function LoginPage() {
 
           {passwordlessStep === "code" ? (
             <form className="space-y-4" onSubmit={handleOTPVerify}>
-              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
-                Code sent through {otpChannel === "whatsapp" ? "WhatsApp" : "email"} for <span className="break-all font-semibold">{otpChannel === "whatsapp" ? passwordlessPhone : passwordlessEmail}</span>. It expires in 5 minutes.
+              <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
+                Kode dikirim via {otpChannel === "whatsapp" ? "WhatsApp" : "email"} ke{" "}
+                <span className="break-all font-semibold">
+                  {otpChannel === "whatsapp" ? passwordlessPhone : passwordlessEmail}
+                </span>
+                . Berlaku 5 menit.
               </div>
               <div className="space-y-2">
-                <Label htmlFor="otp-code">OTP code</Label>
+                <Label htmlFor="otp-code">Kode OTP</Label>
                 <Input
                   id="otp-code"
                   inputMode="numeric"
@@ -461,15 +491,15 @@ export default function LoginPage() {
                     setPasswordlessFieldErrors((current) => ({ ...current, otp: undefined }));
                   }}
                   placeholder="000000"
-                  className="h-14 text-center text-2xl tracking-[0.4em]"
+                  className="h-14 text-center text-2xl tracking-[0.4em] font-bold"
                   error={passwordlessFieldErrors.otp}
                 />
               </div>
-              <label className="flex items-center gap-3 text-sm text-muted-foreground">
+              <label className="flex items-center gap-3 text-sm text-muted-foreground select-none cursor-pointer">
                 <Checkbox checked={trustedDevice} onChange={(event) => setTrustedDevice(event.target.checked)} />
-                Trust this device
+                Percayai perangkat ini
               </label>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 grid-cols-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -480,27 +510,27 @@ export default function LoginPage() {
                     setState("idle");
                   }}
                 >
-                  Back
+                  Kembali
                 </Button>
-                <Button type="submit" disabled={state === "loading"} className="shadow-lg shadow-primary/20">
-                  {state === "loading" ? <LoginLoadingIndicator label="Verifying" /> : "Verify OTP"}
+                <Button type="submit" disabled={state === "loading"} className="w-full">
+                  {state === "loading" ? <LoginLoadingIndicator label="Memverifikasi" /> : "Verifikasi OTP"}
                 </Button>
               </div>
               <button
                 type="button"
-                className="w-full text-center text-sm font-medium text-primary hover:opacity-80"
+                className="w-full text-center text-sm font-medium text-primary hover:opacity-80 transition pt-2"
                 disabled={state === "loading"}
                 onClick={() => handlePasswordlessStart()}
               >
-                Did not receive it? Send again
+                Tidak menerima kode? Kirim ulang
               </button>
             </form>
           ) : null}
 
           {passwordlessStep === "link" ? (
             <div className="space-y-4">
-              <div className="rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-foreground">
-                A secure sign-in link has been sent. Open it on this device to continue.
+              <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground leading-relaxed">
+                Link masuk telah dikirim. Buka link tersebut di perangkat ini untuk melanjutkan.
               </div>
               <Button
                 type="button"
@@ -512,33 +542,79 @@ export default function LoginPage() {
                   setState("idle");
                 }}
               >
-                Back
+                Kembali
               </Button>
             </div>
           ) : null}
-          </div>
-        )}
-      </div>
 
-      <SocialAuthButtons
-        mode="login"
-        compact
-        onLoadingStateChange={(loading) => {
-          setState(loading ? "loading" : "idle");
-        }}
-        onErrorMessageChange={(message) => {
-          if (message) {
-            setState("error");
-          }
-          setErrorMessage(message);
-        }}
-      />
-
-      {errorMessage ? (
-        <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">
-          {errorMessage}
+          {errorMessage ? (
+            <div className="mt-4 rounded-lg border border-rose-500/20 bg-rose-500/5 px-4 py-3 text-sm text-rose-600 dark:text-rose-400">
+              {errorMessage}
+            </div>
+          ) : null}
         </div>
-      ) : null}
-    </AuthShell>
+
+        {/* Footer links: Opsi lain & Kembali */}
+        <div className="space-y-4 text-left px-2">
+          {passwordlessStep === "delivery" && (
+            <div className="text-sm text-muted-foreground">
+              {otpChannel === "whatsapp" ? (
+                <p>
+                  &bull;&bull;&bull; Opsi lain (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpChannel("email");
+                      setOtp("");
+                      setErrorMessage("");
+                      setState("idle");
+                    }}
+                    className="text-foreground font-semibold hover:underline cursor-pointer"
+                  >
+                    email
+                  </button>
+                  ,{" "}
+                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">Apple</span>
+                  ,{" "}
+                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">GitHub</span>
+                  )
+                </p>
+              ) : (
+                <p>
+                  &bull;&bull;&bull; Opsi lain (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpChannel("whatsapp");
+                      setOtp("");
+                      setErrorMessage("");
+                      setState("idle");
+                    }}
+                    className="text-foreground font-semibold hover:underline cursor-pointer"
+                  >
+                    WhatsApp
+                  </button>
+                  ,{" "}
+                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">Apple</span>
+                  ,{" "}
+                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">GitHub</span>
+                  )
+                </p>
+              )}
+            </div>
+          )}
+
+          <div>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition"
+            >
+              <span aria-hidden="true">&larr;</span>
+              Kembali ke beranda
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

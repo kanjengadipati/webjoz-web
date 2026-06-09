@@ -15,22 +15,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pleco-console.vercel.app"),
-  title: "Pleco Console",
+  metadataBase: new URL("https://app.giwanganstudio.com"),
+  title: "Giwangan Studio — AI Website Builder untuk Bisnis",
   description:
-    "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+    "Buat website bisnis profesional dalam 5 menit dengan AI. Isi profil bisnis, pilih template, dan website Anda langsung aktif — tanpa coding, tanpa tunggu tim.",
   openGraph: {
-    title: "Pleco Console",
-    description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
-    url: "https://pleco-console.vercel.app",
-    siteName: "Pleco Console",
-    locale: "en_US",
+    title: "Giwangan Studio — AI Website Builder untuk Bisnis",
+    description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
+    url: "https://app.giwanganstudio.com",
+    siteName: "Giwangan Studio",
+    locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pleco Console",
-    description: "Auth infrastructure admin workspace for Pleco — JWT, RBAC, audit trail, AI investigation.",
+    title: "Giwangan Studio — AI Website Builder untuk Bisnis",
+    description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
   },
   robots: {
     index: true,
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
 const themeScript = `
 (function() {
   try {
-    var theme = localStorage.getItem('pleco_theme');
-    var accent = localStorage.getItem('pleco_accent');
+    var theme = localStorage.getItem('giwangan_theme');
+    var accent = localStorage.getItem('giwangan_accent');
 
     // Handle Light/Dark Mode
     if (!theme || theme === 'dark') {
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <div className="flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>
             <footer className="border-t border-border/40 px-4 py-4 text-center text-xs text-muted-foreground sm:px-6">
-              Copyright {currentYear} Pleco. All rights reserved.
+              &copy; {currentYear} Giwangan Studio. All rights reserved.
             </footer>
           </div>
         </Providers>

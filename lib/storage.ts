@@ -1,4 +1,4 @@
-const STORAGE_CHANGE_EVENT = "pleco-storage-change";
+const STORAGE_CHANGE_EVENT = "giwangan-storage-change";
 
 export function readStorageValue(key: string, fallback: string) {
   if (typeof window === "undefined") {

@@ -4,3 +4,4 @@ export * from "./audit-logs";
 export * from "./sessions";
 export * from "./users";
 export * from "./permissions";
+export * from "./ai";

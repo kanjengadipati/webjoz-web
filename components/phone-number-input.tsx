@@ -50,42 +50,41 @@ type PhoneNumberInputProps = {
   error?: string;
 };
 
-export function PhoneNumberInput({ id, label = "WhatsApp number", optional, value, onChange, error }: PhoneNumberInputProps) {
+export function PhoneNumberInput({ id, label, optional, value, onChange, error }: PhoneNumberInputProps) {
   const phone = splitPhoneNumber(value);
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>
-        {label} {optional ? <span className="text-muted-foreground">(optional)</span> : null}
-      </Label>
-      <div className="grid grid-cols-[9.5rem_minmax(0,1fr)] gap-2">
-        <div className="min-w-0">
-          <Select
-            aria-label="Country code"
-            value={phone.countryCode}
-            onChange={(event) => onChange(buildPhoneNumber(event.target.value, phone.localNumber))}
-            className="h-12 w-full text-base"
-          >
-            {COUNTRY_CODES.map((country) => (
-              <option key={country.code} value={country.dialCode}>
-                {country.flag} {country.dialCode}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div className="min-w-0">
-          <Input
-            id={id}
-            type="tel"
-            inputMode="tel"
-            value={phone.localNumber}
-            onChange={(event) => onChange(buildPhoneNumber(phone.countryCode, event.target.value))}
-            placeholder="8123456789"
-            error={error}
-            className="h-12 text-base"
-          />
-        </div>
+      {label && (
+        <Label htmlFor={id}>
+          {label} {optional ? <span className="text-muted-foreground">(optional)</span> : null}
+        </Label>
+      )}
+      <div className={`flex items-center rounded-lg border bg-background px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary/80 transition ${error ? "border-rose-500" : "border-border"}`}>
+        <select
+          aria-label="Country code"
+          value={phone.countryCode}
+          onChange={(event) => onChange(buildPhoneNumber(event.target.value, phone.localNumber))}
+          className="bg-transparent border-none outline-none focus:ring-0 pr-2 py-1 text-base cursor-pointer font-medium"
+        >
+          {COUNTRY_CODES.map((country) => (
+            <option key={country.code} value={country.dialCode}>
+              {country.flag} {country.dialCode}
+            </option>
+          ))}
+        </select>
+        <div className="h-6 w-px bg-border/80 mx-2" />
+        <input
+          id={id}
+          type="tel"
+          inputMode="tel"
+          value={phone.localNumber}
+          onChange={(event) => onChange(buildPhoneNumber(phone.countryCode, event.target.value))}
+          placeholder="Nomor WhatsApp kamu"
+          className="flex-1 bg-transparent border-none outline-none focus:ring-0 py-1 text-base placeholder:text-muted-foreground/60"
+        />
       </div>
+      {error && <p className="text-xs text-rose-500 mt-1">{error}</p>}
     </div>
   );
 }

@@ -56,11 +56,19 @@ export function persistAuthSession(email: string, accessToken: string) {
   }
   setStoredValue(TOKEN_STORAGE_KEY, accessToken);
   setStoredValue(REFRESH_STORAGE_KEY, "");
+  setStoredValue("giwangan_active_tenant_id", "");
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("storage_tenant_changed"));
+  }
 }
 
 export function clearAuthSession() {
   setStoredValue(TOKEN_STORAGE_KEY, "");
   setStoredValue(REFRESH_STORAGE_KEY, "");
+  setStoredValue("giwangan_active_tenant_id", "");
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("storage_tenant_changed"));
+  }
 }
 
 export function setThemePreference(theme: "dark" | "light") {

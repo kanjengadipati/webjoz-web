@@ -45,11 +45,11 @@ export const API_DOCS_URL = `${API_BASE_URL}/docs`;
  * WARNING: The access token is stored in localStorage and is readable by JavaScript.
  * Keep access tokens short-lived; long-lived refresh tokens must stay in HttpOnly cookies.
  */
-export const TOKEN_STORAGE_KEY = "pleco_access_token";
-export const REFRESH_STORAGE_KEY = "pleco_refresh_token";
-export const EMAIL_STORAGE_KEY = "pleco_email";
-export const THEME_STORAGE_KEY = "pleco_theme";
-export const ACCENT_STORAGE_KEY = "pleco_accent";
+export const TOKEN_STORAGE_KEY = "giwangan_access_token";
+export const REFRESH_STORAGE_KEY = "giwangan_refresh_token";
+export const EMAIL_STORAGE_KEY = "giwangan_email";
+export const THEME_STORAGE_KEY = "giwangan_theme";
+export const ACCENT_STORAGE_KEY = "giwangan_accent";
 export const SOCIAL_ACTIVE_PROVIDERS = (process.env.NEXT_PUBLIC_SOCIAL_ACTIVE_PROVIDERS || "")
   .split(",")
   .map((provider) => provider.trim().toLowerCase())

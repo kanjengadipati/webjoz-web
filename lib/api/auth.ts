@@ -19,14 +19,19 @@ export async function requestOtp(channel: "whatsapp" | "email", target: string) 
 }
 
 export async function checkPasswordlessIdentity(channel: "whatsapp" | "email", target: string) {
-  return request<null>("/auth/passwordless/check", {
+  return request<{
+    is_trusted_device: boolean;
+  }>("/auth/passwordless/check", {
     method: "POST",
     body: JSON.stringify({ channel, target }),
   });
 }
 
 export async function startPasswordless(channel: "whatsapp" | "email", target: string) {
-  return request<{ next_step: "magic_link" | "otp" }>("/auth/passwordless/start", {
+  return request<{
+    next_step: "magic_link" | "otp",
+    magic_link_url?: string
+  }>("/auth/passwordless/start", {
     method: "POST",
     body: JSON.stringify({ channel, target }),
   });

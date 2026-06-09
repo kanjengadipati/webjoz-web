@@ -39,7 +39,7 @@ export function AuthShell({
           <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
-              alt="Pleco logo"
+              alt="Giwangan logo"
               width={40}
               height={40}
               className="h-10 w-10 object-contain"
