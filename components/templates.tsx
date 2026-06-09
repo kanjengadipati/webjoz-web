@@ -12,6 +12,8 @@ interface BenefitItem {
   title: string;
   description: string;
   icon?: string;
+  stat?: string;
+  stat_label?: string;
 }
 
 interface FaqItem {
@@ -19,7 +21,7 @@ interface FaqItem {
   answer: string;
 }
 
-interface TemplateProps {
+export interface TemplateProps {
   content: {
     header: {
       brand_name: string;
@@ -33,6 +35,9 @@ interface TemplateProps {
       cta_text: string;
       cta_url: string;
       image_url?: string;
+      badge_text?: string;
+      opening_hours?: string;
+      launch_label?: string;
     };
     about: {
       title: string;
@@ -325,7 +330,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <div className="max-w-4xl relative z-10 space-y-6">
             <span className="px-4 py-1.5 bg-amber-100/80 text-amber-800 rounded-full text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm border border-amber-200/50">
               <Sparkles className="w-3.5 h-3.5" />
-              Cita Rasa Autentik
+              {hero.badge_text || "Cita Rasa Autentik"}
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold font-serif text-amber-950 leading-tight">
               {hero.headline}
@@ -333,6 +338,12 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <p className="text-lg md:text-xl text-[#6D5D50] max-w-2xl mx-auto leading-relaxed">
               {hero.subheadline}
             </p>
+            {hero.opening_hours && (
+              <p className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-white/70 px-4 py-2 text-sm font-semibold text-amber-900 shadow-sm">
+                <Clock className="w-4 h-4 text-amber-700" />
+                {hero.opening_hours}
+              </p>
+            )}
             <div className="pt-4">
               <a 
                 href={hero.cta_url} 
@@ -604,9 +615,16 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {benefits.items?.map((item, idx) => (
                 <div key={idx} className="bg-indigo-900/30 border border-indigo-900/50 hover:border-indigo-400 p-8 rounded-2xl transition-all duration-300 group">
-                  <div className="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 transition-all">
-                    <DynamicIcon name={item.icon} defaultIcon={Zap} className="w-5 h-5" />
-                  </div>
+                  {item.stat ? (
+                    <div className="mb-6">
+                      <p className="text-3xl font-black tracking-tight text-white">{item.stat}</p>
+                      {item.stat_label && <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">{item.stat_label}</p>}
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 transition-all">
+                      <DynamicIcon name={item.icon} defaultIcon={Zap} className="w-5 h-5" />
+                    </div>
+                  )}
                   <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
                   <p className="text-indigo-200/70 text-sm leading-relaxed">{item.description}</p>
                 </div>
@@ -761,7 +779,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <div className="max-w-4xl text-center space-y-8 relative z-10">
             <span className="px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-semibold inline-flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              Produk Unggulan Baru
+              {hero.launch_label || "Produk Unggulan Baru"}
             </span>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
               {hero.headline}

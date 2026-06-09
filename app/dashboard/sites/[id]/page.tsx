@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { TemplateKuliner, TemplateJasa, TemplateProduk } from "@/components/templates";
 import FileUpload from "@/components/file-upload";
+import { getTemplate } from "@/lib/template-registry";
 
 const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -302,6 +302,7 @@ export default function SiteEditorPage() {
     { key: "footer", label: "Footer", icon: BookOpen, num: 8 },
     { key: "seo", label: "SEO", icon: Globe, num: 9 },
   ];
+  const TemplateComponent = getTemplate(siteDetails.template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-6 overflow-hidden bg-[#05070b] text-slate-100">
@@ -637,42 +638,13 @@ export default function SiteEditorPage() {
                 device === "mobile" ? "max-w-[375px]" : "max-w-[1228px]"
               }`}
             >
-              {siteDetails.template_id === "TEMPLATE_KULINER01" && (
-                <TemplateKuliner
-                  content={content}
-                  isEditorMode={true}
-                  activeSection={activeTab}
-                  onSelectSection={(section) => selectSection(section, false)}
-                  onRegenSection={handleAiRegenerateForSection}
-                />
-              )}
-              {siteDetails.template_id === "TEMPLATE_JASA02" && (
-                <TemplateJasa
-                  content={content}
-                  isEditorMode={true}
-                  activeSection={activeTab}
-                  onSelectSection={(section) => selectSection(section, false)}
-                  onRegenSection={handleAiRegenerateForSection}
-                />
-              )}
-              {siteDetails.template_id === "TEMPLATE_PRODUK03" && (
-                <TemplateProduk
-                  content={content}
-                  isEditorMode={true}
-                  activeSection={activeTab}
-                  onSelectSection={(section) => selectSection(section, false)}
-                  onRegenSection={handleAiRegenerateForSection}
-                />
-              )}
-              {siteDetails.template_id !== "TEMPLATE_KULINER01" && siteDetails.template_id !== "TEMPLATE_JASA02" && siteDetails.template_id !== "TEMPLATE_PRODUK03" && (
-                <TemplateJasa
-                  content={content}
-                  isEditorMode={true}
-                  activeSection={activeTab}
-                  onSelectSection={(section) => selectSection(section, false)}
-                  onRegenSection={handleAiRegenerateForSection}
-                />
-              )}
+              <TemplateComponent
+                content={content}
+                isEditorMode={true}
+                activeSection={activeTab}
+                onSelectSection={(section: string) => selectSection(section, false)}
+                onRegenSection={handleAiRegenerateForSection}
+              />
             </div>
           </div>
         </div>

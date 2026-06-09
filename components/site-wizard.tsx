@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { suggestTemplate } from "@/lib/template-registry";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -226,15 +227,8 @@ export function SiteWizard({
       const type = p.get("type");
       if (type) {
         setBusinessType(type);
-        // Auto-select template from type
-        const t = type.toLowerCase();
         if (!p.get("template")) {
-          if (t.includes("kuliner") || t.includes("makanan") || t.includes("cafe"))
-            setTemplateId("TEMPLATE_KULINER01");
-          else if (t.includes("toko") || t.includes("produk") || t.includes("umkm"))
-            setTemplateId("TEMPLATE_PRODUK03");
-          else
-            setTemplateId("TEMPLATE_JASA02");
+          setTemplateId(suggestTemplate(type).id);
         }
       }
       if (p.get("template")) setTemplateId(p.get("template")!);
@@ -481,10 +475,7 @@ export function SiteWizard({
   };
   const chooseBusinessType = (value: string) => {
     setBusinessType(value);
-    const t = value.toLowerCase();
-    if (t.includes("kuliner")) setTemplateId("TEMPLATE_KULINER01");
-    else if (t.includes("toko") || t.includes("produk") || t.includes("online")) setTemplateId("TEMPLATE_PRODUK03");
-    else setTemplateId("TEMPLATE_JASA02");
+    setTemplateId(suggestTemplate(value).id);
   };
 
   // ── Derived style helpers ────────────────────────────────────────────────

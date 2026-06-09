@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/config";
-import { TemplateKuliner, TemplateJasa, TemplateProduk } from "./templates";
 import { Loader2, AlertCircle } from "lucide-react";
+import { getTemplate } from "@/lib/template-registry";
 
 interface PublicSiteProps {
   subdomain?: string;
@@ -180,47 +180,15 @@ export default function PublicSite({ subdomain, host }: PublicSiteProps) {
 
   const { content, template_id } = siteData;
 
-  // Render correct template component
-  switch (template_id) {
-    case "TEMPLATE_KULINER01":
-      return (
-        <TemplateKuliner 
-          content={content} 
-          onSubmitLead={handleSubmitLead} 
-          leadSubmitting={leadSubmitting}
-          leadSuccess={leadSuccess}
-          leadError={leadError}
-        />
-      );
-    case "TEMPLATE_JASA02":
-      return (
-        <TemplateJasa 
-          content={content} 
-          onSubmitLead={handleSubmitLead} 
-          leadSubmitting={leadSubmitting}
-          leadSuccess={leadSuccess}
-          leadError={leadError}
-        />
-      );
-    case "TEMPLATE_PRODUK03":
-      return (
-        <TemplateProduk 
-          content={content} 
-          onSubmitLead={handleSubmitLead} 
-          leadSubmitting={leadSubmitting}
-          leadSuccess={leadSuccess}
-          leadError={leadError}
-        />
-      );
-    default:
-      return (
-        <TemplateJasa 
-          content={content} 
-          onSubmitLead={handleSubmitLead} 
-          leadSubmitting={leadSubmitting}
-          leadSuccess={leadSuccess}
-          leadError={leadError}
-        />
-      );
-  }
+  const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
+
+  return (
+    <TemplateComponent
+      content={content}
+      onSubmitLead={handleSubmitLead}
+      leadSubmitting={leadSubmitting}
+      leadSuccess={leadSuccess}
+      leadError={leadError}
+    />
+  );
 }
