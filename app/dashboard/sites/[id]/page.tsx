@@ -652,48 +652,57 @@ export default function SiteEditorPage() {
                     <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
                       Riwayat Desain AI
                     </p>
-                    {customTemplates.map((template) => {
-                      const active = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
-                        designToken && template.design_token &&
-                        designToken.palette?.primary === template.design_token.palette?.primary &&
-                        designToken.mood === template.design_token.mood;
-                      return (
-                        <button
-                          key={template.id}
-                          type="button"
-                          onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
-                          disabled={templateSaving}
-                          className={`group w-full rounded-xl border p-2 text-left transition ${
-                            active
-                              ? "border-violet-400 bg-violet-500/15"
-                              : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                          }`}
-                          role="option"
-                          aria-selected={active}
-                        >
-                          <TemplateThumbnail 
-                            previewType="dynamic" 
-                            accent={template.design_token?.palette?.primary || "#7C3AED"} 
-                            active={active} 
-                            palette={template.design_token?.palette}
-                          />
-                          <div className="mt-2 flex items-start gap-2">
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-1.5">
-                                <p className="truncate text-[12px] font-bold text-slate-100">
-                                  AI: {template.business_type}
+                    {(() => {
+                      let hasMatchedActive = false;
+                      return customTemplates.map((template) => {
+                        const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
+                          designToken && template.design_token &&
+                          designToken.palette?.primary === template.design_token.palette?.primary &&
+                          designToken.mood === template.design_token.mood;
+                        
+                        const active = isMatch && !hasMatchedActive;
+                        if (active) {
+                          hasMatchedActive = true;
+                        }
+
+                        return (
+                          <button
+                            key={template.id}
+                            type="button"
+                            onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
+                            disabled={templateSaving}
+                            className={`group w-full rounded-xl border p-2 text-left transition ${
+                              active
+                                ? "border-violet-400 bg-violet-500/15"
+                                : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                            }`}
+                            role="option"
+                            aria-selected={active}
+                          >
+                            <TemplateThumbnail 
+                              previewType="dynamic" 
+                              accent={template.design_token?.palette?.primary || "#7C3AED"} 
+                              active={active} 
+                              palette={template.design_token?.palette}
+                            />
+                            <div className="mt-2 flex items-start gap-2">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <p className="truncate text-[12px] font-bold text-slate-100">
+                                    AI: {template.business_type}
+                                  </p>
+                                  <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
+                                </div>
+                                <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                                  Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
                                 </p>
-                                <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
                               </div>
-                              <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
-                                Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
-                              </p>
+                              {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
                             </div>
-                            {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
-                          </div>
-                        </button>
-                      );
-                    })}
+                          </button>
+                        );
+                      });
+                    })()}
 
                     {customTemplates.length < customTemplatesTotal && (
                       <div className="pt-2 px-1">
