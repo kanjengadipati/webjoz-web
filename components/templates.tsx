@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { 
   Utensils, Calendar, Clock, MapPin, Phone, Mail, Check, 
   ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown, 
@@ -136,7 +136,7 @@ export const PreviewSectionWrapper: React.FC<{
           e.stopPropagation();
           onRegenSection?.(section);
         }}
-        className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 ${
+        className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white ${
           isSelected ? "opacity-100 visible" : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"
         }`}
       >
@@ -294,7 +294,7 @@ const LeadForm: React.FC<{
       <button 
         type="submit" 
         disabled={submitting}
-        className={`${buttonClass} w-full py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50`}
+        className={`${buttonClass} w-full min-h-11 py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2`}
       >
         {submitting ? "Mengirim..." : (
           <>
@@ -320,8 +320,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold font-serif text-amber-900 tracking-wide flex items-center gap-2">
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-900 tracking-wide flex items-center gap-2">
             <LogoImage
               url={header?.logo_url}
               icon={header?.icon}
@@ -329,9 +329,9 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               iconClass="w-5 h-5 text-amber-700"
               imgClass="h-8 w-auto object-contain"
             />
-            {header?.brand_name || "Brand Kami"}
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
           </span>
-          <a href="#contact" className="px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm">
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
@@ -339,7 +339,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 
       {/* Hero Section */}
       <PreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <section className="relative min-h-[85vh] flex items-center justify-center text-center px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
+        <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" alt="Hero" />}
           <div className="absolute inset-0 bg-[radial-gradient(#E5D5BC_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
           <div className="max-w-4xl relative z-10 space-y-6">
@@ -347,7 +347,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               {hero.badge_text || "Cita Rasa Autentik"}
             </span>
-            <h1 className="text-4xl md:text-6xl font-extrabold font-serif text-amber-950 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-950 leading-tight">
               {hero.headline}
             </h1>
             <p className="text-lg md:text-xl text-[#6D5D50] max-w-2xl mx-auto leading-relaxed">
@@ -362,7 +362,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="pt-4">
               <a 
                 href={hero.cta_url} 
-                className="px-8 py-4 bg-amber-850 hover:bg-amber-900 text-white rounded-full font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2"
+                className="min-h-11 px-8 py-4 bg-amber-800 hover:bg-amber-900 text-white rounded-full font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]"
               >
                 {hero.cta_text}
                 <ArrowRight className="w-5 h-5" />
@@ -374,15 +374,15 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 
       {/* About Section */}
       <PreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <section className="px-6 py-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
+        <section className="px-5 sm:px-6 py-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
           <div className="space-y-6">
             <span className="text-amber-800 font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
             <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{about.title}</h2>
-            <p className="text-[#6D5D50] leading-relaxed whitespace-pre-line text-justify">{about.body}</p>
+            <p className="text-[#6D5D50] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
           </div>
           <div className="relative">
             <div className="absolute -inset-2 bg-gradient-to-tr from-amber-200 to-amber-100 rounded-3xl -rotate-2 opacity-50 shadow-inner"></div>
-            <div className="w-full h-80 md:h-[400px] bg-amber-100/80 border-2 border-amber-200/50 rounded-3xl shadow-lg relative z-10 overflow-hidden">
+            <div className="w-full h-80 md:h-[400px] bg-amber-100/80 border-2 border-amber-200/50 rounded-3xl shadow-lg relative z-10 overflow-hidden backdrop-blur-sm">
               {about.image_url ? (
                 <img src={about.image_url} className="w-full h-full object-cover" alt="About" />
               ) : (
@@ -401,7 +401,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 
       {/* Benefits Section */}
       <PreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <section className="bg-amber-900/5 px-6 py-20 border-y border-[#EADFCB]">
+        <section className="bg-amber-900/5 px-5 sm:px-6 py-20 border-y border-[#EADFCB]">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-3">
               <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Keunggulan</span>
@@ -410,8 +410,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {benefits.items?.map((item, idx) => (
                 <div key={idx} className="bg-white border border-[#EADFCB] hover:border-amber-400 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group">
-                  <div className="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5 fill-amber-500 stroke-amber-600" />
+                  <div className="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
+                    <DynamicIcon name={item.icon} defaultIcon={Star} className="w-6 h-6 fill-amber-500 stroke-amber-600" />
                   </div>
                   <h3 className="text-xl font-bold text-amber-950 mb-3">{item.title}</h3>
                   <p className="text-[#6D5D50] text-sm leading-relaxed">{item.description}</p>
@@ -447,7 +447,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <div className="pt-4">
                 <a 
                   href={cta.button_url} 
-                  className="px-8 py-4 bg-amber-800 hover:bg-amber-900 text-white rounded-full font-bold shadow-md transition-all inline-flex items-center gap-2"
+                  className="min-h-11 px-8 py-4 bg-amber-800 hover:bg-amber-900 text-white rounded-full font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]"
                 >
                   {cta.button_text}
                   <ArrowRight className="w-4 h-4" />
@@ -538,8 +538,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-6 py-4 flex items-center justify-between">
-          <span className="text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
             <LogoImage
               url={header?.logo_url}
               icon={header?.icon}
@@ -547,9 +547,9 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               iconClass="w-5 h-5 text-indigo-600"
               imgClass="h-8 w-auto object-contain"
             />
-            {header?.brand_name || "Brand Kami"}
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
           </span>
-          <a href="#contact" className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm">
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
@@ -573,7 +573,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="pt-4">
               <a 
                 href={hero.cta_url} 
-                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2"
+                className="min-h-11 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50"
               >
                 {hero.cta_text}
                 <ArrowRight className="w-4 h-4" />
@@ -626,13 +626,13 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               {benefits.items?.map((item, idx) => (
                 <div key={idx} className="bg-indigo-900/30 border border-indigo-900/50 hover:border-indigo-400 p-8 rounded-2xl transition-all duration-300 group">
                   {item.stat ? (
-                    <div className="mb-6">
+                    <div className="mb-4 sm:mb-6">
                       <p className="text-3xl font-black tracking-tight text-white">{item.stat}</p>
                       {item.stat_label && <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">{item.stat_label}</p>}
                     </div>
                   ) : (
-                    <div className="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 transition-all">
-                      <DynamicIcon name={item.icon} defaultIcon={Zap} className="w-5 h-5" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-indigo-500/20 transition-all">
+                      <DynamicIcon name={item.icon} defaultIcon={Zap} className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                   )}
                   <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
@@ -668,7 +668,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <div className="pt-4">
                 <a 
                   href={cta.button_url} 
-                  className="px-8 py-4 bg-white hover:bg-slate-50 text-indigo-800 rounded-xl font-bold shadow-md transition-all inline-flex items-center gap-2"
+                  className="min-h-11 px-8 py-4 bg-white hover:bg-slate-50 text-indigo-800 rounded-xl font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-700"
                 >
                   {cta.button_text}
                   <ArrowRight className="w-4 h-4" />
@@ -758,8 +758,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     <div className="bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-          <span className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
             <LogoImage
               url={header?.logo_url}
               icon={header?.icon}
@@ -767,9 +767,9 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               iconClass="w-5 h-5 text-cyan-400 fill-cyan-400/20"
               imgClass="h-8 w-auto object-contain"
             />
-            {header?.brand_name || "Brand Kami"}
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
           </span>
-          <a href="#contact" className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)]">
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
@@ -777,8 +777,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 
       {/* Hero Section */}
       <PreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <section className="relative min-h-[90vh] flex items-center justify-center px-6 py-20 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[120px] opacity-70"></div>
+        <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
           {hero.image_url && <div className="absolute inset-0 bg-slate-950/80 z-0" />}
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0" alt="Hero" />}
           <div className="max-w-4xl text-center space-y-8 relative z-10">
@@ -786,16 +786,16 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               {hero.launch_label || "Produk Unggulan Baru"}
             </span>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
+            <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
               {hero.headline}
             </h1>
-            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
               {hero.subheadline}
             </p>
             <div className="pt-4">
               <a 
                 href={hero.cta_url} 
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-950 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2"
+                className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-950 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950"
               >
                 {hero.cta_text}
                 <ArrowRight className="w-4 h-4 text-slate-950" />
@@ -811,7 +811,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <div className="space-y-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 font-extrabold tracking-wider uppercase text-xs">Misi Kami</span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">{about.title}</h2>
-            <p className="text-slate-400 leading-relaxed text-justify whitespace-pre-line">{about.body}</p>
+            <p className="text-slate-300 leading-relaxed sm:text-justify whitespace-pre-line">{about.body}</p>
           </div>
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500 to-teal-500 rounded-3xl opacity-10 filter blur-xl"></div>
@@ -825,7 +825,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                       <DynamicIcon name={about.icon} defaultIcon={Globe} className="w-8 h-8" />
                     </div>
                     <p className="font-bold text-white text-xl">Inovasi Global</p>
-                    <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
+                    <p className="text-slate-300 text-sm max-w-xs leading-relaxed">
                       Kami membangun produk berkualitas tinggi dengan riset mendalam demi memberikan pengalaman terbaik.
                     </p>
                   </div>
@@ -851,7 +851,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                     <DynamicIcon name={item.icon} defaultIcon={Check} className="w-5 h-5" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">{item.description}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -878,13 +878,13 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       <PreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="relative bg-slate-900 border border-slate-800 p-8 md:p-16 rounded-3xl text-center overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-[200px] bg-cyan-500/5 rounded-full filter blur-[100px]"></div>
+            <div className="absolute top-0 right-0 w-[400px] h-[200px] bg-cyan-500/5 rounded-full filter blur-[50px] md:blur-[100px]"></div>
             <div className="relative z-10 max-w-2xl mx-auto space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">{cta.headline}</h2>
               <div className="pt-4">
                 <a 
                   href={cta.button_url} 
-                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-950 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2"
+                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-950 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                 >
                   {cta.button_text}
                   <ArrowRight className="w-4 h-4 text-slate-950" />
@@ -901,7 +901,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="space-y-6">
               <h2 className="text-3xl font-extrabold tracking-tight">{contact.title}</h2>
-              <div className="space-y-4 text-slate-400">
+              <div className="space-y-4 text-slate-300">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
                   <p>{contact.address}</p>
@@ -968,6 +968,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 // ==========================================
 const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isDark = false }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const reactId = useId();
+  const answerId = `faq-answer-${reactId}`;
 
   return (
     <div 
@@ -978,8 +980,11 @@ const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isD
       }`}
     >
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 flex items-center justify-between font-bold text-left cursor-pointer select-none"
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        className="w-full px-6 py-4 flex items-center justify-between gap-4 font-bold text-left cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-current"
       >
         <span className={isDark ? "text-white text-sm md:text-base" : "text-amber-950 text-sm md:text-base"}>
           {item.question}
@@ -991,9 +996,9 @@ const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isD
         )}
       </button>
       {isOpen && (
-        <div className={`px-6 pb-5 pt-1 text-sm leading-relaxed border-t ${
+        <div id={answerId} className={`px-6 pb-5 pt-1 text-sm leading-relaxed border-t ${
           isDark 
-            ? "text-slate-400 border-slate-800 bg-slate-950/20" 
+            ? "text-slate-300 border-slate-800 bg-slate-950/20" 
             : "text-[#6D5D50] border-[#EADFCB]/50 bg-amber-50/10"
         }`}>
           {item.answer}
