@@ -125,6 +125,7 @@ export default function SiteEditorPage() {
   const [siteDetails, setSiteDetails] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
   const [designToken, setDesignToken] = useState<any>(null);
+  const [customTemplates, setCustomTemplates] = useState<any[]>([]);
 
   // AI instructions state
   const [aiInstructions, setAiInstructions] = useState("");
@@ -175,6 +176,18 @@ export default function SiteEditorPage() {
       // Load design token if available
       if (contentRes.data?.design_token) {
         setDesignToken(contentRes.data.design_token);
+      }
+
+      // Fetch custom templates library
+      try {
+        const templatesRes = await request<any>("/ai/templates", {
+          headers: { "X-Tenant-ID": activeTenantId.toString() }
+        }, token);
+        if (templatesRes.status === "success" && Array.isArray(templatesRes.data)) {
+          setCustomTemplates(templatesRes.data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch template library:", err);
       }
 
     } catch (err: any) {
@@ -305,13 +318,21 @@ export default function SiteEditorPage() {
     }
   };
 
-  const handleTemplateChange = async (templateId: string) => {
-    if (!token || !activeTenantId || !siteId || !siteDetails || templateId === siteDetails.template_id) return;
+  const handleTemplateChange = async (templateId: string, customDesignToken?: any) => {
+    if (!token || !activeTenantId || !siteId || !siteDetails) return;
 
     const previousTemplateId = siteDetails.template_id;
+    const previousDesignToken = designToken;
+
+    // Skip if template_id is matching and no new design token is provided
+    if (templateId === siteDetails.template_id && !customDesignToken) return;
+
     setTemplatePickerOpen(false);
     setTemplateSaving(true);
     setSiteDetails({ ...siteDetails, template_id: templateId });
+    if (customDesignToken) {
+      setDesignToken(customDesignToken);
+    }
 
     try {
       const res = await request<any>(`/sites/${siteId}`, {
@@ -327,9 +348,19 @@ export default function SiteEditorPage() {
       if (res.data) {
         setSiteDetails(res.data);
       }
+
+      if (customDesignToken) {
+        await request(`/sites/${siteId}/content`, {
+          method: "PUT",
+          headers: { "X-Tenant-ID": activeTenantId.toString() },
+          body: JSON.stringify({ content, design_token: customDesignToken }),
+        }, token);
+      }
+
       pushToast("Gaya tampilan berhasil diganti.", "success");
     } catch (err: any) {
       setSiteDetails({ ...siteDetails, template_id: previousTemplateId });
+      setDesignToken(previousDesignToken);
       pushToast(err.message || "Gagal mengganti gaya tampilan", "error");
     } finally {
       setTemplateSaving(false);
@@ -426,6 +457,31 @@ export default function SiteEditorPage() {
   ];
   const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
   const TemplateComponent = currentTemplate.component;
+  const dynamicTemplate = TEMPLATE_REGISTRY.find(t => t.id === "TEMPLATE_DYNAMIC");
+
+  // Find if active template is one of the custom ones from the library
+  const activeCustomTemplate = siteDetails.template_id === "TEMPLATE_DYNAMIC" && customTemplates.find(ct => 
+    designToken && ct.design_token &&
+    designToken.palette?.primary === ct.design_token.palette?.primary &&
+    designToken.mood === ct.design_token.mood
+  );
+
+  let activeTemplateName = currentTemplate.name;
+  let activeTemplateCategory = currentTemplate.category;
+  let activeTemplateAccent = currentTemplate.accent;
+  let activeTemplatePreviewType = currentTemplate.previewType;
+
+  if (activeCustomTemplate) {
+    activeTemplateName = `AI: ${activeCustomTemplate.business_type}`;
+    activeTemplateCategory = `Hasil AI (${activeCustomTemplate.mood})`;
+    activeTemplateAccent = activeCustomTemplate.design_token?.palette?.primary || "#7C3AED";
+    activeTemplatePreviewType = "dynamic";
+  } else if (siteDetails.template_id === "TEMPLATE_DYNAMIC") {
+    activeTemplateName = "AI Design Engine";
+    activeTemplateCategory = "Latest AI Generated";
+    activeTemplateAccent = designToken?.palette?.primary || "#7C3AED";
+    activeTemplatePreviewType = "dynamic";
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-6 overflow-hidden bg-[#05070b] text-slate-100">
@@ -465,18 +521,57 @@ export default function SiteEditorPage() {
               aria-expanded={templatePickerOpen}
             >
               <div className="w-12 flex-shrink-0">
-                <TemplateThumbnail previewType={currentTemplate.previewType} accent={currentTemplate.accent} active compact />
+                <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[12px] font-bold text-slate-100">{currentTemplate.name}</p>
-                <p className="truncate text-[10px] text-slate-500">{currentTemplate.category}</p>
+                <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
+                <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
               </div>
               <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
             </button>
 
             {templatePickerOpen && (
-              <div className="mt-2 space-y-2" role="listbox" aria-label="Pilihan gaya website">
-                {TEMPLATE_REGISTRY.map((template) => {
+              <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label="Pilihan gaya website">
+                {/* 1. LATEST AI GENERATED (TEMPLATE_DYNAMIC) AT THE VERY TOP */}
+                {dynamicTemplate && (() => {
+                  const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
+                  return (
+                    <button
+                      key="top-dynamic-template"
+                      type="button"
+                      onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC")}
+                      disabled={templateSaving}
+                      className={`group w-full rounded-xl border p-2 text-left transition ${
+                        isTopActive
+                          ? "border-violet-400 bg-violet-500/15"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                      }`}
+                      role="option"
+                      aria-selected={isTopActive}
+                    >
+                      <TemplateThumbnail 
+                        previewType="dynamic" 
+                        accent={designToken?.palette?.primary || dynamicTemplate.accent} 
+                        active={isTopActive} 
+                      />
+                      <div className="mt-2 flex items-start gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
+                            <span className="bg-violet-500/25 text-violet-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
+                          </div>
+                          <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                            Gaya visual unik buatan AI terbaru untuk website Anda.
+                          </p>
+                        </div>
+                        {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                      </div>
+                    </button>
+                  );
+                })()}
+
+                {/* 2. STATIC PRESETS */}
+                {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
                   const active = template.id === siteDetails.template_id;
                   return (
                     <button
@@ -503,6 +598,57 @@ export default function SiteEditorPage() {
                     </button>
                   );
                 })}
+
+                {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
+                {customTemplates.length > 0 && (
+                  <>
+                    <div className="border-t border-white/10 my-2.5 pt-2" />
+                    <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                      Riwayat Desain AI
+                    </p>
+                    {customTemplates.map((template) => {
+                      const active = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
+                        designToken && template.design_token &&
+                        designToken.palette?.primary === template.design_token.palette?.primary &&
+                        designToken.mood === template.design_token.mood;
+                      return (
+                        <button
+                          key={template.id}
+                          type="button"
+                          onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
+                          disabled={templateSaving}
+                          className={`group w-full rounded-xl border p-2 text-left transition ${
+                            active
+                              ? "border-violet-400 bg-violet-500/15"
+                              : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          }`}
+                          role="option"
+                          aria-selected={active}
+                        >
+                          <TemplateThumbnail 
+                            previewType="dynamic" 
+                            accent={template.design_token?.palette?.primary || "#7C3AED"} 
+                            active={active} 
+                          />
+                          <div className="mt-2 flex items-start gap-2">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <p className="truncate text-[12px] font-bold text-slate-100">
+                                  AI: {template.business_type}
+                                </p>
+                                <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
+                              </div>
+                              <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                                Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
+                              </p>
+                            </div>
+                            {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
               </div>
             )}
           </div>
