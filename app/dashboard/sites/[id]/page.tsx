@@ -128,6 +128,21 @@ function TemplateThumbnail({
   );
 }
 
+const isDesignTokenEqual = (a: any, b: any) => {
+  if (!a || !b) return false;
+  return (
+    a.mood === b.mood &&
+    a.palette?.primary === b.palette?.primary &&
+    a.palette?.accent === b.palette?.accent &&
+    a.palette?.background === b.palette?.background &&
+    a.palette?.surface === b.palette?.surface &&
+    a.palette?.text === b.palette?.text &&
+    a.typography?.heading_font === b.typography?.heading_font &&
+    a.typography?.body_font === b.typography?.body_font &&
+    JSON.stringify(a.layout?.section_order) === JSON.stringify(b.layout?.section_order)
+  );
+};
+
 export default function SiteEditorPage() {
   const params = useParams();
   const router = useRouter();
@@ -141,12 +156,14 @@ export default function SiteEditorPage() {
   const [saving, setSaving] = useState(false);
   const [templateSaving, setTemplateSaving] = useState(false);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
+  const [sectionDropdownOpen, setSectionDropdownOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("header");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
+  const sectionDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Site details & content
   const [siteDetails, setSiteDetails] = useState<any>(null);
@@ -263,6 +280,19 @@ export default function SiteEditorPage() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [templatePickerOpen]);
 
+  useEffect(() => {
+    if (!sectionDropdownOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!sectionDropdownRef.current?.contains(event.target as Node)) {
+        setSectionDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [sectionDropdownOpen]);
+
   const selectSection = (section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
     activeTabRef.current = section;
@@ -345,68 +375,52 @@ export default function SiteEditorPage() {
   }, [content, device]);
 
   const handleSaveContent = async () => {
-    if (!token || !activeTenantId || !siteId || !content) return;
+    if (!token || !activeTenantId || !siteId || !content || !siteDetails) return;
     try {
       setSaving(true);
-      await request(`/sites/${siteId}/content`, {
+
+      // Save template ID changes
+      const patchPromise = request<any>(`/sites/${siteId}`, {
+        method: "PATCH",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({
+          name: siteDetails.name,
+          template_id: siteDetails.template_id,
+          subdomain: siteDetails.subdomain,
+        }),
+      }, token);
+
+      // Save content and design token changes
+      const putPromise = request(`/sites/${siteId}/content`, {
         method: "PUT",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
         body: JSON.stringify({ content, design_token: designToken ?? undefined })
       }, token);
-      pushToast("Konten berhasil disimpan!", "success");
+
+      const [patchRes] = await Promise.all([patchPromise, putPromise]);
+
+      if (patchRes.data) {
+        setSiteDetails(patchRes.data);
+      }
+
+      pushToast("Perubahan berhasil disimpan!", "success");
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan konten", "error");
+      pushToast(err.message || "Gagal menyimpan perubahan", "error");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleTemplateChange = async (templateId: string, customDesignToken?: any) => {
-    if (!token || !activeTenantId || !siteId || !siteDetails) return;
-
-    const previousTemplateId = siteDetails.template_id;
-    const previousDesignToken = designToken;
+  const handleTemplateChange = (templateId: string, customDesignToken?: any) => {
+    if (!siteDetails) return;
 
     // Skip if template_id is matching and no new design token is provided
     if (templateId === siteDetails.template_id && !customDesignToken) return;
 
     setTemplatePickerOpen(false);
-    setTemplateSaving(true);
     setSiteDetails({ ...siteDetails, template_id: templateId });
     if (customDesignToken) {
       setDesignToken(customDesignToken);
-    }
-
-    try {
-      const res = await request<any>(`/sites/${siteId}`, {
-        method: "PATCH",
-        headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({
-          name: siteDetails.name,
-          template_id: templateId,
-          subdomain: siteDetails.subdomain,
-        }),
-      }, token);
-
-      if (res.data) {
-        setSiteDetails(res.data);
-      }
-
-      if (customDesignToken) {
-        await request(`/sites/${siteId}/content`, {
-          method: "PUT",
-          headers: { "X-Tenant-ID": activeTenantId.toString() },
-          body: JSON.stringify({ content, design_token: customDesignToken }),
-        }, token);
-      }
-
-      pushToast("Gaya tampilan berhasil diganti.", "success");
-    } catch (err: any) {
-      setSiteDetails({ ...siteDetails, template_id: previousTemplateId });
-      setDesignToken(previousDesignToken);
-      pushToast(err.message || "Gagal mengganti gaya tampilan", "error");
-    } finally {
-      setTemplateSaving(false);
     }
   };
 
@@ -504,9 +518,7 @@ export default function SiteEditorPage() {
 
   // Find if active template is one of the custom ones from the library
   const activeCustomTemplate = siteDetails.template_id === "TEMPLATE_DYNAMIC" && customTemplates.find(ct => 
-    designToken && ct.design_token &&
-    designToken.palette?.primary === ct.design_token.palette?.primary &&
-    designToken.mood === ct.design_token.mood
+    isDesignTokenEqual(designToken, ct.design_token)
   );
 
   const activeDesignToken = activeCustomTemplate ? activeCustomTemplate.design_token : (siteDetails.template_id === "TEMPLATE_DYNAMIC" ? designToken : null);
@@ -656,9 +668,7 @@ export default function SiteEditorPage() {
                       let hasMatchedActive = false;
                       return customTemplates.map((template) => {
                         const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
-                          designToken && template.design_token &&
-                          designToken.palette?.primary === template.design_token.palette?.primary &&
-                          designToken.mood === template.design_token.mood;
+                          isDesignTokenEqual(designToken, template.design_token);
                         
                         const active = isMatch && !hasMatchedActive;
                         if (active) {
@@ -734,37 +744,71 @@ export default function SiteEditorPage() {
             )}
           </div>
 
-          {/* Sidebar header */}
-          <div className="px-3.5 py-2.5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
-            <span className="text-[13px] font-medium text-slate-200">Sections</span>
-          </div>
-
-          {/* Section list */}
-          <div className="max-h-[46%] flex-shrink-0 overflow-y-auto p-2 space-y-0.5">
-            {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+          {/* Visual section selector dropdown */}
+          <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
+            <div className="mb-1.5 flex items-center justify-between">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
+            </div>
+            <div className="relative">
               <button
-                key={key}
-                onClick={() => selectSection(key, true)}
-                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-colors ${
-                  activeTab === key
-                    ? "bg-white text-slate-900 font-semibold border border-slate-200 shadow-sm"
-                    : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
-                }`}
+                type="button"
+                onClick={() => setSectionDropdownOpen((open) => !open)}
+                className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07]"
+                aria-haspopup="listbox"
+                aria-expanded={sectionDropdownOpen}
               >
                 <div className="flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${activeTab === key ? "text-slate-900" : "text-slate-400"}`} />
-                  <span className="text-[13px]">{label}</span>
+                  {(() => {
+                    const activeSec = SECTIONS.find(s => s.key === activeTab);
+                    if (activeSec) {
+                      const Icon = activeSec.icon;
+                      return (
+                        <>
+                          <Icon className="w-4 h-4 text-violet-400" />
+                          <span className="text-[13px] font-medium text-slate-200">{activeSec.label}</span>
+                        </>
+                      );
+                    }
+                    return <span className="text-[13px] font-medium text-slate-200">{activeTab}</span>;
+                  })()}
                 </div>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                  activeTab === key ? "bg-slate-100 text-slate-800" : "bg-white/5 text-slate-400"
-                }`}>{num}</span>
+                <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${sectionDropdownOpen ? "rotate-180" : ""}`} />
               </button>
-            ))}
+
+              {sectionDropdownOpen && (
+                <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#0c0f17] p-1 shadow-lg space-y-0.5" role="listbox">
+                  {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        selectSection(key, true);
+                        setSectionDropdownOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
+                        activeTab === key
+                          ? "bg-violet-600 text-white font-semibold shadow-sm"
+                          : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                      }`}
+                      role="option"
+                      aria-selected={activeTab === key}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className={`w-4 h-4 ${activeTab === key ? "text-white" : "text-slate-400"}`} />
+                        <span className="text-[13px]">{label}</span>
+                      </div>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                        activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-400"
+                      }`}>{num}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ── Field Panel (scrollable) ── */}
           <div
-            className="border-t border-white/10 flex flex-col overflow-hidden [&_input]:!border-white/10 [&_textarea]:!border-white/10 [&_select]:!border-white/10 [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
+            className="flex-1 border-t border-white/10 flex flex-col overflow-hidden [&_input]:!border-white/10 [&_textarea]:!border-white/10 [&_select]:!border-white/10 [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
             style={{ minHeight: 0 }}
           >
             <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">

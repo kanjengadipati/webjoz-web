@@ -50,7 +50,7 @@ export default function PublicSite({ subdomain, host }: PublicSiteProps) {
           return currentHost;
         }
       }
-      return `${subdomain}.giwanganstudio.com`;
+      return `${subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`;
     }
     if (typeof window !== "undefined") {
       return window.location.host;

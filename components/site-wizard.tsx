@@ -382,7 +382,6 @@ export function SiteWizard({
         ...(data.proof ? [`Bukti sosial: ${data.proof}`] : []),
       ];
 
-      // 1. Generate site with AI
       const genRes = await request<any>("/ai/generate-site", {
         method: "POST",
         body: JSON.stringify({
@@ -399,6 +398,13 @@ export function SiteWizard({
           language: "id",
           tenant_id: tenantId,
           mood: data.mood,
+          age_group: data.ageGroup,
+          tone: data.tone,
+          motives: data.motives,
+          layout_style: data.layoutStyle,
+          tagline: data.tagline,
+          story: data.story,
+          proof: data.proof,
         }),
       }, authToken);
 
