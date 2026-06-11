@@ -63,8 +63,8 @@ export interface SiteWizardProps {
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-const DRAFT_KEY    = "giwangan_wizard_draft";
-const PENDING_KEY  = "giwangan_pending_wizard_data";
+const DRAFT_KEY = "webjoz_wizard_draft";
+const PENDING_KEY = "webjoz_pending_wizard_data";
 
 const AI_LOADING_STEPS = [
   "Menganalisis profil bisnis Anda...",
@@ -77,13 +77,13 @@ const AI_LOADING_STEPS = [
 ];
 
 const BUSINESS_TYPES = [
-  { value: "Kuliner",      label: "Kuliner" },
-  { value: "Toko/UMKM",   label: "Toko/UMKM" },
-  { value: "Online Shop",  label: "Online shop" },
-  { value: "Jasa",         label: "Jasa" },
-  { value: "Industri",     label: "Industri" },
-  { value: "Organisasi",   label: "Organisasi" },
-  { value: "Lainnya",      label: "Lainnya" },
+  { value: "Kuliner", label: "Kuliner" },
+  { value: "Toko/UMKM", label: "Toko/UMKM" },
+  { value: "Online Shop", label: "Online shop" },
+  { value: "Jasa", label: "Jasa" },
+  { value: "Industri", label: "Industri" },
+  { value: "Organisasi", label: "Organisasi" },
+  { value: "Lainnya", label: "Lainnya" },
 ];
 
 const AGE_OPTIONS = ["Remaja (15-24)", "Dewasa muda (25-35)", "Dewasa (35-50)", "Semua usia"];
@@ -150,25 +150,25 @@ export function SiteWizard({
   const [error, setError] = useState("");
 
   // Form fields
-  const [businessName, setBusinessName]   = useState("");
-  const [businessType, setBusinessType]   = useState("Kuliner");
-  const [description, setDescription]     = useState("");
-  const [location, setLocation]           = useState("");
-  const [phone, setPhone]                 = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [businessType, setBusinessType] = useState("Kuliner");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [phone, setPhone] = useState("");
   const [sellingPoints, setSellingPoints] = useState<string[]>([]);
-  const [ageGroup, setAgeGroup]           = useState("");
-  const [tone, setTone]                   = useState("");
-  const [motives, setMotives]             = useState<string[]>([]);
-  const [mood, setMood]                   = useState("");
-  const [layoutStyle, setLayoutStyle]     = useState("");
-  const [story, setStory]                 = useState("");
-  const [tagline, setTagline]             = useState("");
-  const [proof, setProof]                 = useState("");
+  const [ageGroup, setAgeGroup] = useState("");
+  const [tone, setTone] = useState("");
+  const [motives, setMotives] = useState<string[]>([]);
+  const [mood, setMood] = useState("");
+  const [layoutStyle, setLayoutStyle] = useState("");
+  const [story, setStory] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [proof, setProof] = useState("");
 
   // Address
-  const [addressType, setAddressType]                     = useState<"subdomain" | "custom">("subdomain");
-  const [subdomain, setSubdomain]                         = useState("");
-  const [customDomain, setCustomDomain]                   = useState("");
+  const [addressType, setAddressType] = useState<"subdomain" | "custom">("subdomain");
+  const [subdomain, setSubdomain] = useState("");
+  const [customDomain, setCustomDomain] = useState("");
   const [isSubdomainManuallyEdited, setIsSubdomainManuallyEdited] = useState(false);
 
   // Template
@@ -195,35 +195,35 @@ export function SiteWizard({
       if (raw) {
         try {
           const d: Partial<WizardDraftState> = JSON.parse(raw);
-          if (d.businessName)  setBusinessName(d.businessName);
-          if (d.businessType)  setBusinessType(d.businessType);
-          if (d.description)   setDescription(d.description);
-          if (d.location)      setLocation(d.location);
-          if (d.phone)         setPhone(d.phone);
+          if (d.businessName) setBusinessName(d.businessName);
+          if (d.businessType) setBusinessType(d.businessType);
+          if (d.description) setDescription(d.description);
+          if (d.location) setLocation(d.location);
+          if (d.phone) setPhone(d.phone);
           if (d.sellingPoints) setSellingPoints(d.sellingPoints);
-          if (d.addressType)   setAddressType(d.addressType);
-          if (d.subdomain)     { setSubdomain(d.subdomain); setIsSubdomainManuallyEdited(true); }
-          if (d.customDomain)  setCustomDomain(d.customDomain);
-          if (d.templateId)    setTemplateId(d.templateId);
-          if (d.ageGroup)      setAgeGroup(d.ageGroup);
-          if (d.tone)          setTone(d.tone);
-          if (d.motives)       setMotives(d.motives);
-          if (d.mood)          setMood(d.mood);
-          if (d.layoutStyle)   setLayoutStyle(d.layoutStyle);
-          if (d.story)         setStory(d.story);
-          if (d.tagline)       setTagline(d.tagline);
-          if (d.proof)         setProof(d.proof);
-        } catch {}
+          if (d.addressType) setAddressType(d.addressType);
+          if (d.subdomain) { setSubdomain(d.subdomain); setIsSubdomainManuallyEdited(true); }
+          if (d.customDomain) setCustomDomain(d.customDomain);
+          if (d.templateId) setTemplateId(d.templateId);
+          if (d.ageGroup) setAgeGroup(d.ageGroup);
+          if (d.tone) setTone(d.tone);
+          if (d.motives) setMotives(d.motives);
+          if (d.mood) setMood(d.mood);
+          if (d.layoutStyle) setLayoutStyle(d.layoutStyle);
+          if (d.story) setStory(d.story);
+          if (d.tagline) setTagline(d.tagline);
+          if (d.proof) setProof(d.proof);
+        } catch { }
       }
     }
 
     if (mode === "dashboard") {
       // Pre-fill from query params
       const p = new URLSearchParams(window.location.search);
-      if (p.get("name"))     setBusinessName(p.get("name")!);
-      if (p.get("product"))  setDescription(p.get("product")!);
-      if (p.get("phone"))    setPhone(p.get("phone")!);
-      if (p.get("city"))     setLocation(p.get("city")!);
+      if (p.get("name")) setBusinessName(p.get("name")!);
+      if (p.get("product")) setDescription(p.get("product")!);
+      if (p.get("phone")) setPhone(p.get("phone")!);
+      if (p.get("city")) setLocation(p.get("city")!);
       const type = p.get("type");
       if (type) {
         setBusinessType(type);
@@ -233,12 +233,12 @@ export function SiteWizard({
       }
       if (p.get("template")) setTemplateId(p.get("template")!);
       const points: string[] = [];
-      if (p.get("market"))     points.push(`Target pasar: ${p.get("market")}`);
-      if (p.get("problem"))    points.push(`Masalah customer: ${p.get("problem")}`);
+      if (p.get("market")) points.push(`Target pasar: ${p.get("market")}`);
+      if (p.get("problem")) points.push(`Masalah customer: ${p.get("problem")}`);
       if (p.get("advantages")) points.push(`Keunggulan: ${p.get("advantages")}`);
-      if (points.length > 0)   setSellingPoints(points);
-      if (p.get("market"))     setAgeGroup(p.get("market")!);
-      if (p.get("tone"))       setTone(p.get("tone")!);
+      if (points.length > 0) setSellingPoints(points);
+      if (p.get("market")) setAgeGroup(p.get("market")!);
+      if (p.get("tone")) setTone(p.get("tone")!);
     }
 
     // Both modes: ?template= param jumps to step 2
@@ -247,7 +247,7 @@ export function SiteWizard({
       setTemplateId(templateParam);
       setStep(4);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   // ── Save draft to localStorage (public mode) ─────────────────────────────
@@ -259,8 +259,8 @@ export function SiteWizard({
       ageGroup, tone, motives, mood, layoutStyle, story, tagline, proof,
     }));
   }, [mode, businessName, businessType, description, location, phone, sellingPoints,
-      addressType, subdomain, customDomain, templateId,
-      ageGroup, tone, motives, mood, layoutStyle, story, tagline, proof]);
+    addressType, subdomain, customDomain, templateId,
+    ageGroup, tone, motives, mood, layoutStyle, story, tagline, proof]);
 
   // ── Pending-resume after login (public mode) ─────────────────────────────
   useEffect(() => {
@@ -293,8 +293,8 @@ export function SiteWizard({
       if (token) {
         pushToast("Autentikasi berhasil! Draf website Anda telah dipulihkan.", "success");
       }
-    } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    } catch { }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authReady, token, mode, tenantLoading]);
 
   // ── Auto-fill subdomain from business name ───────────────────────────────
@@ -407,7 +407,7 @@ export function SiteWizard({
 
       const siteId: string = genRes.data.id;
 
-      // 2. Patch subdomain
+      // 2. Patch subdomain + auto-suggested template
       await request(`/sites/${siteId}`, {
         method: "PATCH",
         headers: { "X-Tenant-ID": tenantId.toString() },
@@ -448,7 +448,7 @@ export function SiteWizard({
     } finally {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTenantId, memberships, createTenant, mode]);
 
   const handleLaunch = async () => {
@@ -487,7 +487,7 @@ export function SiteWizard({
   const labelClass = isDark
     ? "text-xs font-bold uppercase tracking-wider text-slate-400"
     : "text-xs font-semibold text-slate-500";
-  const mutedClass  = isDark ? "text-slate-400" : "text-muted-foreground";
+  const mutedClass = isDark ? "text-slate-400" : "text-muted-foreground";
   const dividerClass = isDark ? "border-white/5" : "border-border/30";
   const cardShell = isDark
     ? "bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-md rounded-[2rem] p-6 sm:p-8"
@@ -500,20 +500,20 @@ export function SiteWizard({
     selected
       ? "border-[#1D9E75] bg-[#E1F5EE] text-[#085041]"
       : isDark
-      ? "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.07]"
-      : "border-border bg-background text-muted-foreground hover:bg-muted";
+        ? "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.07]"
+        : "border-border bg-background text-muted-foreground hover:bg-muted";
   const moodCardClass = (selected: boolean) =>
     selected
       ? "border-[#534AB7] bg-[#EEEDFE] text-slate-950"
       : isDark
-      ? "border-white/10 bg-white/[0.03] text-slate-200 hover:bg-white/[0.07]"
-      : "border-border bg-background text-foreground hover:bg-muted";
+        ? "border-white/10 bg-white/[0.03] text-slate-200 hover:bg-white/[0.07]"
+        : "border-border bg-background text-foreground hover:bg-muted";
   const successSubdomain =
     generatedSite?.subdomain ||
     subdomain ||
     businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") ||
     "website-kamu";
-  const successUrl = `${successSubdomain}.giwanganstudio.com`;
+  const successUrl = `${successSubdomain}.webjoz.com`;
 
   // Convenience: card section header for dashboard mode
   const DashboardCardHeader = ({ step: s, title, desc }: { step: number; title: string; desc: string }) =>
@@ -531,11 +531,10 @@ export function SiteWizard({
 
   // ── Stepper HUD ──────────────────────────────────────────────────────────
   const StepperHUD = () => (
-    <div className={`flex items-center justify-between ${
-      isDark
+    <div className={`flex items-center justify-between ${isDark
         ? "bg-white/[0.02] border border-white/5 rounded-3xl p-5 backdrop-blur-sm"
         : "px-6 py-4 border rounded-2xl bg-card"
-    }`}>
+      }`}>
       <div className="flex flex-wrap items-center gap-2">
         {["Bisnis", "Persona", "Nuansa", "Keunggulan"].map((label, idx) => {
           const s = idx + 1;
@@ -544,13 +543,12 @@ export function SiteWizard({
           return (
             <React.Fragment key={label}>
               <div className="flex items-center gap-2">
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
-                  done
+                <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${done
                     ? "bg-[#1D9E75] text-[#E1F5EE]"
                     : active
-                    ? isDark ? "bg-white text-slate-950" : "bg-slate-950 text-white"
-                    : isDark ? "border border-white/10 bg-white/[0.03] text-slate-500" : "border bg-muted text-muted-foreground"
-                }`}>
+                      ? isDark ? "bg-white text-slate-950" : "bg-slate-950 text-white"
+                      : isDark ? "border border-white/10 bg-white/[0.03] text-slate-500" : "border bg-muted text-muted-foreground"
+                  }`}>
                   {done ? <Check className="w-3.5 h-3.5" /> : s}
                 </span>
                 <span className={`text-[13px] ${active ? isDark ? "text-white font-semibold" : "text-foreground font-semibold" : mutedClass}`}>
@@ -859,7 +857,7 @@ export function SiteWizard({
                         className={`flex-1 px-4 py-3 rounded-l-xl text-sm focus:outline-none transition ${isDark ? "bg-white/[0.05] border border-white/10 text-white placeholder-white/25 focus:border-indigo-500/70" : "border rounded-none rounded-l-xl focus:border-primary/70 bg-background"}`}
                       />
                       <span className={`px-4 py-3 border-y border-r rounded-r-xl text-xs font-semibold ${isDark ? "border-white/10 bg-white/[0.02] text-slate-400" : "border-border bg-muted text-muted-foreground"}`}>
-                        .giwanganstudio.com
+                        .webjoz.com
                       </span>
                     </div>
                     {businessName && (
@@ -886,9 +884,8 @@ export function SiteWizard({
               </div>
 
               {error && (
-                <div className={`rounded-xl border p-4 flex items-start gap-3 ${
-                  isDark ? "border-red-500/20 bg-red-500/[0.08] text-red-400" : "border-red-200 bg-red-50 text-red-600"
-                }`}>
+                <div className={`rounded-xl border p-4 flex items-start gap-3 ${isDark ? "border-red-500/20 bg-red-500/[0.08] text-red-400" : "border-red-200 bg-red-50 text-red-600"
+                  }`}>
                   <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span className="text-xs leading-relaxed">{error}</span>
                 </div>
@@ -954,9 +951,8 @@ export function SiteWizard({
             ? "bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-md rounded-[2.5rem] p-8 sm:p-12 text-center space-y-6"
             : "border border-border/40 shadow-xl rounded-2xl p-8 sm:p-12 text-center space-y-6"
           }>
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto shadow-inner border ${
-              isDark ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-green-100 text-green-600 border-green-200"
-            }`}>
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto shadow-inner border ${isDark ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-green-100 text-green-600 border-green-200"
+              }`}>
               <CheckCircle2 className="w-8 h-8 animate-bounce" />
             </div>
             <div className="space-y-2">
@@ -979,15 +975,14 @@ export function SiteWizard({
             </div>
 
             {generatedSite?.customDomain && (
-              <div className={`p-4 rounded-2xl text-left space-y-2 ${
-                isDark ? "bg-orange-500/[0.03] border border-orange-500/15" : "bg-orange-50 border border-orange-200"
-              }`}>
+              <div className={`p-4 rounded-2xl text-left space-y-2 ${isDark ? "bg-orange-500/[0.03] border border-orange-500/15" : "bg-orange-50 border border-orange-200"
+                }`}>
                 <h4 className={`text-xs font-bold flex items-center gap-1.5 ${isDark ? "text-orange-400" : "text-orange-700"}`}>
                   <Settings className="w-3.5 h-3.5" /> Pending Pengaturan CNAME DNS
                 </h4>
                 <p className={`text-[10px] leading-relaxed ${isDark ? "text-slate-400" : "text-orange-700"}`}>
                   Situs Anda akan terhubung ke <strong>{generatedSite.customDomain}</strong>.
-                  Arahkan CNAME ke <strong>sites.giwanganstudio.com</strong>.
+                  Arahkan CNAME ke <strong>sites.webjoz.com</strong>.
                 </p>
               </div>
             )}
@@ -1004,6 +999,9 @@ export function SiteWizard({
                 Masuk ke Editor Website
                 <ArrowRight className="w-4 h-4" />
               </Button>
+              <p className={`text-[11px] text-center ${mutedClass}`}>
+                Tampilan dipilihkan otomatis oleh AI. Tidak cocok? Klik <strong>Ganti Tampilan</strong> di editor kapan saja.
+              </p>
               <Button
                 onClick={() => router.push("/dashboard/sites")}
                 variant="outline"

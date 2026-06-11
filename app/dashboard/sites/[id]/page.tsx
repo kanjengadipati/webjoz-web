@@ -13,7 +13,7 @@ import {
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import FileUpload from "@/components/file-upload";
-import { getTemplate } from "@/lib/template-registry";
+import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 
 const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -43,6 +43,7 @@ export default function SiteEditorPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [templateSaving, setTemplateSaving] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("header");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
@@ -214,6 +215,36 @@ export default function SiteEditorPage() {
     }
   };
 
+  const handleTemplateChange = async (templateId: string) => {
+    if (!token || !activeTenantId || !siteId || !siteDetails || templateId === siteDetails.template_id) return;
+
+    const previousTemplateId = siteDetails.template_id;
+    setTemplateSaving(true);
+    setSiteDetails({ ...siteDetails, template_id: templateId });
+
+    try {
+      const res = await request<any>(`/sites/${siteId}`, {
+        method: "PATCH",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({
+          name: siteDetails.name,
+          template_id: templateId,
+          subdomain: siteDetails.subdomain,
+        }),
+      }, token);
+
+      if (res.data) {
+        setSiteDetails(res.data);
+      }
+      pushToast("Template berhasil diganti.", "success");
+    } catch (err: any) {
+      setSiteDetails({ ...siteDetails, template_id: previousTemplateId });
+      pushToast(err.message || "Gagal mengganti template", "error");
+    } finally {
+      setTemplateSaving(false);
+    }
+  };
+
   const handleAiRegenerateForSection = async (section: string, customInstructions?: string) => {
     if (!token || !activeTenantId || !siteId || !content) return;
     
@@ -302,7 +333,8 @@ export default function SiteEditorPage() {
     { key: "footer", label: "Footer", icon: BookOpen, num: 8 },
     { key: "seo", label: "SEO", icon: Globe, num: 9 },
   ];
-  const TemplateComponent = getTemplate(siteDetails.template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
+  const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
+  const TemplateComponent = currentTemplate.component;
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-6 overflow-hidden bg-[#05070b] text-slate-100">
@@ -621,6 +653,33 @@ export default function SiteEditorPage() {
             <span className="text-[12px] text-slate-500 ml-1 truncate">
               {siteDetails.subdomain}.webjoz.com
             </span>
+
+            {/* Template switcher */}
+            <div className="ml-2 flex min-w-[220px] items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-2 py-1">
+              <Layout className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
+              <select
+                value={siteDetails.template_id}
+                onChange={(event) => void handleTemplateChange(event.target.value)}
+                disabled={templateSaving}
+                className="min-w-0 flex-1 bg-transparent text-[12px] font-medium text-slate-200 outline-none disabled:opacity-60"
+                aria-label="Pilih template website"
+              >
+                {TEMPLATE_REGISTRY.map((template) => (
+                  <option key={template.id} value={template.id} className="bg-slate-950 text-slate-100">
+                    {template.name} - {template.category}
+                  </option>
+                ))}
+              </select>
+              {templateSaving ? (
+                <Loader2 className="h-3.5 w-3.5 flex-shrink-0 animate-spin text-violet-300" />
+              ) : (
+                <span
+                  className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                  style={{ backgroundColor: currentTemplate.accent }}
+                  aria-hidden="true"
+                />
+              )}
+            </div>
 
             {/* Spacer */}
             <div className="flex-1" />
