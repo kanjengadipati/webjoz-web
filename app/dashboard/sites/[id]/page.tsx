@@ -547,6 +547,12 @@ export default function SiteEditorPage() {
               {/* SEO FORM */}
               {activeTab === "seo" && (
                 <div className="space-y-3">
+                  <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/10 px-3 py-2.5 text-[12px] leading-relaxed text-cyan-100">
+                    <p className="font-semibold text-cyan-50">SEO tidak tampil sebagai section di halaman publik.</p>
+                    <p className="mt-1 text-cyan-100/80">
+                      Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.
+                    </p>
+                  </div>
                   <div className="space-y-1">
                     <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Meta Title</label>
                     <input type="text" value={content.seo?.title || ""} onChange={(e) => updateField("seo", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />

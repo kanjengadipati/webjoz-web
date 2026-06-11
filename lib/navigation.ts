@@ -12,7 +12,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "users", href: "/dashboard/users", label: "User Accounts", permission: "permission.read", icon: "users", section: "Access & Identity", groupStart: false },
   { id: "permissions", href: "/dashboard/permissions", label: "Role Permissions", permission: "role.update_permissions", icon: "key", section: "Access & Identity", groupStart: false },
   
-  { id: "settings", href: "/dashboard/settings", label: "Workspace Settings", permission: "dashboard.view", icon: "settings", section: "System", groupStart: false },
+  { id: "settings", href: "/dashboard/settings", label: "Settings", permission: "", icon: "settings", section: "System", groupStart: false },
 ] as const;
 
 export type NavigationItemId = typeof DASHBOARD_NAVIGATION[number]["id"];

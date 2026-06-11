@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { AuthShell } from "@/components/auth-shell";
-import { MailIcon, WhatsAppIcon, InfoIcon } from "@/components/icons";
+import { MailIcon, WhatsAppIcon, InfoIcon, LockIcon } from "@/components/icons";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Button, Checkbox, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
-import { checkPasswordlessIdentity, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
+import { checkPasswordlessIdentity, login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
 import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 
@@ -17,6 +16,7 @@ const PASSWORDLESS_FIELDS = ["email", "phone", "otp"] as const;
 type PasswordlessField = (typeof PASSWORDLESS_FIELDS)[number];
 type OTPChannel = "whatsapp" | "email";
 type PasswordlessStep = "delivery" | "confirm" | "code" | "link";
+type AuthMethod = "whatsapp" | "email" | "password";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function LoginLoadingIndicator({ label = "Signing in" }: { label?: string }) {
@@ -54,9 +54,12 @@ export default function LoginPage() {
   const storedEmail = useStoredEmail();
   const authReady = useAuthReady();
   const token = useAuthToken();
+  const [authMethod, setAuthMethod] = useState<AuthMethod>("whatsapp");
   const [otpChannel, setOtpChannel] = useState<OTPChannel>("whatsapp");
   const [passwordlessEmail, setPasswordlessEmail] = useState(storedEmail);
   const [passwordlessPhone, setPasswordlessPhone] = useState("");
+  const [passwordEmail, setPasswordEmail] = useState(storedEmail);
+  const [password, setPassword] = useState("");
   const [passwordlessStep, setPasswordlessStep] = useState<PasswordlessStep>("delivery");
   const [otp, setOtp] = useState("");
   const [trustedDevice, setTrustedDevice] = useState(true);
@@ -89,6 +92,19 @@ export default function LoginPage() {
 
   const passwordlessTarget = otpChannel === "email" ? passwordlessEmail.trim().toLowerCase() : passwordlessPhone.trim();
 
+  function finishLogin(email: string, accessToken: string) {
+    persistAuthSession(email, accessToken);
+    const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+    const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+    if (redirectParam) {
+      router.push(redirectParam);
+    } else if (pendingWizard) {
+      router.push("/create");
+    } else {
+      router.push("/dashboard/sites");
+    }
+  }
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -102,18 +118,8 @@ export default function LoginPage() {
         trustedDevice: true,
       })
         .then((response) => {
-          persistAuthSession("", response.data.access_token);
+          finishLogin("", response.data.access_token);
           pushToast("Login successful. Welcome back.", "success");
-          
-          const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-          const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
-          if (redirectParam) {
-            router.push(redirectParam);
-          } else if (pendingWizard) {
-            router.push("/create");
-          } else {
-            router.push("/dashboard/sites");
-          }
         })
         .catch((error: unknown) => {
           setState("error");
@@ -246,20 +252,46 @@ export default function LoginPage() {
       trustedDevice,
     })
       .then((response) => {
-        persistAuthSession(otpChannel === "email" ? target : "", response.data.access_token);
+        finishLogin(otpChannel === "email" ? target : "", response.data.access_token);
         pushToast("OTP verified. Welcome back.", "success");
-        
-        const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-        const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
-        if (redirectParam) {
-          router.push(redirectParam);
-        } else if (pendingWizard) {
-          router.push("/create");
-        } else {
-          router.push("/dashboard/sites");
-        }
       })
       .catch((error: unknown) => handlePasswordlessError(error, "Invalid or expired OTP"));
+  }
+
+  function handlePasswordLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const email = passwordEmail.trim().toLowerCase();
+    if (!EMAIL_PATTERN.test(email) || password.length < 1) {
+      setState("error");
+      setErrorMessage("Masukkan email dan password yang valid.");
+      pushToast("Masukkan email dan password yang valid.", "error");
+      return;
+    }
+
+    setState("loading");
+    setErrorMessage("");
+    login(email, password)
+      .then((response) => {
+        finishLogin(email, response.data.access_token);
+        pushToast("Login berhasil. Selamat datang kembali.", "success");
+      })
+      .catch((error: unknown) => {
+        setState("error");
+        const message = getFormErrorMessage(error, "Email atau password salah.", {});
+        setErrorMessage(message);
+        pushToast(message, "error");
+      })
+      .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
+  }
+
+  function switchAuthMethod(method: AuthMethod) {
+    setAuthMethod(method);
+    if (method === "whatsapp" || method === "email") setOtpChannel(method);
+    setPasswordlessStep("delivery");
+    setOtp("");
+    setErrorMessage("");
+    setPasswordlessFieldErrors({});
+    setState("idle");
   }
 
   const handleWhatsAppButtonClick = () => {
@@ -292,7 +324,7 @@ export default function LoginPage() {
         <div className="bg-card border border-border/60 rounded-2xl p-6 sm:p-8 shadow-xl backdrop-blur-sm relative">
           {passwordlessStep === "delivery" ? (
             <div className="space-y-5">
-              {otpChannel === "whatsapp" ? (
+              {authMethod === "whatsapp" ? (
                 <>
                   {/* WhatsApp Big Green Button */}
                   <button
@@ -361,7 +393,7 @@ export default function LoginPage() {
                     </button>
                   </form>
                 </>
-              ) : (
+              ) : authMethod === "email" ? (
                 <>
                   {/* Social Buttons */}
                   <SocialAuthButtons
@@ -423,6 +455,59 @@ export default function LoginPage() {
                         </>
                       )}
                     </button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <div className="rounded-xl border border-border/70 bg-background/50 p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <LockIcon className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-foreground">Masuk dengan password</p>
+                        <p className="text-xs text-muted-foreground">Gunakan email dan password akun kamu.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <form className="space-y-4" onSubmit={handlePasswordLogin}>
+                    <div className="space-y-2">
+                      <Label htmlFor="login-email">Email</Label>
+                      <Input
+                        id="login-email"
+                        type="email"
+                        value={passwordEmail}
+                        onChange={(event) => {
+                          setPasswordEmail(event.target.value);
+                          setErrorMessage("");
+                        }}
+                        placeholder="nama@email.com"
+                        className="h-11 text-base bg-background"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <Label htmlFor="login-password">Password</Label>
+                        <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:opacity-80">
+                          Lupa password?
+                        </Link>
+                      </div>
+                      <Input
+                        id="login-password"
+                        type="password"
+                        value={password}
+                        onChange={(event) => {
+                          setPassword(event.target.value);
+                          setErrorMessage("");
+                        }}
+                        placeholder="Password akun"
+                        className="h-11 text-base bg-background"
+                      />
+                    </div>
+                    <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg">
+                      {state === "loading" ? <LoginLoadingIndicator label="Masuk" /> : "Masuk dengan password"}
+                    </Button>
                   </form>
                 </>
               )}
@@ -557,50 +642,40 @@ export default function LoginPage() {
         {/* Footer links: Opsi lain & Kembali */}
         <div className="space-y-4 text-left px-2">
           {passwordlessStep === "delivery" && (
-            <div className="text-sm text-muted-foreground">
-              {otpChannel === "whatsapp" ? (
-                <p>
-                  &bull;&bull;&bull; Opsi lain (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">Opsi lain</p>
+              <div className="grid grid-cols-3 gap-2">
+                {authMethod !== "whatsapp" && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setOtpChannel("email");
-                      setOtp("");
-                      setErrorMessage("");
-                      setState("idle");
-                    }}
-                    className="text-foreground font-semibold hover:underline cursor-pointer"
+                    onClick={() => switchAuthMethod("whatsapp")}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
                   >
-                    email
-                  </button>
-                  ,{" "}
-                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">Apple</span>
-                  ,{" "}
-                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">GitHub</span>
-                  )
-                </p>
-              ) : (
-                <p>
-                  &bull;&bull;&bull; Opsi lain (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpChannel("whatsapp");
-                      setOtp("");
-                      setErrorMessage("");
-                      setState("idle");
-                    }}
-                    className="text-foreground font-semibold hover:underline cursor-pointer"
-                  >
+                    <WhatsAppIcon size="sm" className="text-[#25D366]" />
                     WhatsApp
                   </button>
-                  ,{" "}
-                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">Apple</span>
-                  ,{" "}
-                  <span className="opacity-60 cursor-not-allowed" title="Segera hadir">GitHub</span>
-                  )
-                </p>
-              )}
+                )}
+                {authMethod !== "email" && (
+                  <button
+                    type="button"
+                    onClick={() => switchAuthMethod("email")}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
+                  >
+                    <MailIcon size="sm" />
+                    Email OTP
+                  </button>
+                )}
+                {authMethod !== "password" && (
+                  <button
+                    type="button"
+                    onClick={() => switchAuthMethod("password")}
+                    className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
+                  >
+                    <LockIcon size="sm" />
+                    Password
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

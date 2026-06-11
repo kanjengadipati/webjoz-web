@@ -361,7 +361,9 @@ export function SiteWizard({
       const cleanSubdomain =
         (data.subdomain || data.businessName).toLowerCase().replace(/[^a-z0-9-]/g, "") || "situs";
       const enrichedDescription = [
-        data.description,
+        `Nama usaha / brand: ${data.businessName}.`,
+        `Produk atau layanan utama: ${data.description}.`,
+        `Kategori bisnis: ${data.businessType}.`,
         data.story ? `Cerita bisnis: ${data.story}.` : "",
         data.ageGroup ? `Target pelanggan: ${data.ageGroup}.` : "",
         data.tone ? `Tone komunikasi: ${data.tone}.` : "",

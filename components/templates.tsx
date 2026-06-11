@@ -125,7 +125,7 @@ export const PreviewSectionWrapper: React.FC<{
       }`}
     >
       {/* Label Badge */}
-      <div className="absolute top-5 left-5 z-20 bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none">
+      <div className="absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none">
         {label}
       </div>
 
@@ -136,7 +136,7 @@ export const PreviewSectionWrapper: React.FC<{
           e.stopPropagation();
           onRegenSection?.(section);
         }}
-        className={`absolute top-5 right-5 z-20 bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 ${
+        className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 ${
           isSelected ? "opacity-100 visible" : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"
         }`}
       >
@@ -163,6 +163,21 @@ export const DynamicIcon = ({ name, defaultIcon, className }: { name?: string; d
   const Default = defaultIcon;
   return <Default className={className} />;
 };
+
+const SeoEditorPreview = ({ seo }: { seo?: TemplateProps["content"]["seo"] }) => (
+  <section className="bg-white text-slate-700 px-6 py-10 border-t border-slate-200">
+    <div className="max-w-5xl mx-auto space-y-3 text-xs leading-relaxed">
+      <div className="rounded-lg border border-cyan-200 bg-cyan-50 px-4 py-3 text-cyan-950">
+        <p className="font-bold">SEO tidak muncul sebagai section di website publik.</p>
+        <p className="mt-1 text-cyan-900/80">
+          Ini adalah metadata untuk mesin pencari dan preview saat link dibagikan, bukan konten visual halaman.
+        </p>
+      </div>
+      <p><span className="font-semibold text-slate-950">Title:</span> {seo?.title || "Belum ada SEO title"}</p>
+      <p><span className="font-semibold text-slate-950">Desc:</span> {seo?.description || "Belum ada meta description"}</p>
+    </div>
+  </section>
+);
 
 // ==========================================
 // Logo Image with Fallback
@@ -504,12 +519,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       </PreviewSectionWrapper>
       {isEditorMode && (
         <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <section className="bg-white text-slate-700 px-6 py-10 border-t border-slate-200">
-            <div className="max-w-5xl mx-auto space-y-2 text-xs leading-relaxed">
-              <p><span className="font-semibold text-slate-950">Title:</span> {seo?.title || "Belum ada SEO title"}</p>
-              <p><span className="font-semibold text-slate-950">Desc:</span> {seo?.description || "Belum ada meta description"}</p>
-            </div>
-          </section>
+          <SeoEditorPreview seo={seo} />
         </PreviewSectionWrapper>
       )}
     </div>
@@ -730,12 +740,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       </PreviewSectionWrapper>
       {isEditorMode && (
         <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <section className="bg-white text-slate-700 px-6 py-10 border-t border-slate-200">
-            <div className="max-w-5xl mx-auto space-y-2 text-xs leading-relaxed">
-              <p><span className="font-semibold text-slate-950">Title:</span> {seo?.title || "Belum ada SEO title"}</p>
-              <p><span className="font-semibold text-slate-950">Desc:</span> {seo?.description || "Belum ada meta description"}</p>
-            </div>
-          </section>
+          <SeoEditorPreview seo={seo} />
         </PreviewSectionWrapper>
       )}
     </div>
@@ -951,12 +956,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       </PreviewSectionWrapper>
       {isEditorMode && (
         <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <section className="bg-white text-slate-700 px-6 py-10 border-t border-slate-200">
-            <div className="max-w-5xl mx-auto space-y-2 text-xs leading-relaxed">
-              <p><span className="font-semibold text-slate-950">Title:</span> {seo?.title || "Belum ada SEO title"}</p>
-              <p><span className="font-semibold text-slate-950">Desc:</span> {seo?.description || "Belum ada meta description"}</p>
-            </div>
-          </section>
+          <SeoEditorPreview seo={seo} />
         </PreviewSectionWrapper>
       )}
     </div>
