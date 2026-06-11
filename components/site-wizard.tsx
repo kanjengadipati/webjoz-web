@@ -46,7 +46,7 @@ export interface WizardDraftState {
 }
 
 export interface SiteWizardProps {
-  /** Visual/context mode. "public" = dark standalone; "dashboard" = light within DashboardShell */
+  /** Runtime mode. "public" can resume after auth; "dashboard" uses the active workspace directly. */
   mode: "public" | "dashboard";
   token: string | null;
   /** Whether auth store has finished loading (needed for public pending-resume logic) */
@@ -142,7 +142,7 @@ export function SiteWizard({
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
-  const isDark = mode === "public";
+  const isDark = true;
 
   // ── Wizard state ────────────────────────────────────────────────────────
   const [step, setStep] = useState(1);
@@ -398,6 +398,7 @@ export function SiteWizard({
           template_id: data.templateId,
           language: "id",
           tenant_id: tenantId,
+          mood: data.mood,
         }),
       }, authToken);
 
@@ -489,12 +490,8 @@ export function SiteWizard({
     : "text-xs font-semibold text-slate-500";
   const mutedClass = isDark ? "text-slate-400" : "text-muted-foreground";
   const dividerClass = isDark ? "border-white/5" : "border-border/30";
-  const cardShell = isDark
-    ? "bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-md rounded-[2rem] p-6 sm:p-8"
-    : "border border-border/40 shadow-xl rounded-2xl overflow-hidden";
-  const primaryBtn = isDark
-    ? "rounded-full bg-indigo-600 hover:bg-indigo-500 px-8 py-5 text-sm font-bold shadow-lg shadow-indigo-600/20 flex items-center gap-1.5"
-    : "rounded-xl gap-1.5";
+  const cardShell = "bg-white/5 dark:bg-black/5 backdrop-blur-lg border border-white/10 dark:border-white/5 rounded-2xl p-6 sm:p-8";
+  const primaryBtn = "rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-8 py-5 text-sm font-bold shadow-lg transition";
   const chipBase = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-[13px] transition-colors";
   const chipClass = (selected: boolean) =>
     selected
@@ -517,7 +514,7 @@ export function SiteWizard({
 
   // Convenience: card section header for dashboard mode
   const DashboardCardHeader = ({ step: s, title, desc }: { step: number; title: string; desc: string }) =>
-    isDark ? null : (
+    mode === "public" && !isDark ? (
       <div className="px-6 py-5 border-b border-border/30">
         <h2 className="text-xl font-bold flex items-center gap-2">
           <span className="text-primary font-extrabold">{s}</span>
@@ -525,18 +522,15 @@ export function SiteWizard({
         </h2>
         <p className="text-xs text-muted-foreground mt-1">{desc}</p>
       </div>
-    );
+    ) : null;
 
   const cardInner = isDark ? "" : "px-6 py-5 space-y-5";
 
   // ── Stepper HUD ──────────────────────────────────────────────────────────
   const StepperHUD = () => (
-    <div className={`flex items-center justify-between ${isDark
-        ? "bg-white/[0.02] border border-white/5 rounded-3xl p-5 backdrop-blur-sm"
-        : "px-6 py-4 border rounded-2xl bg-card"
-      }`}>
+    <div className="bg-white/5 dark:bg-black/5 backdrop-blur-lg border border-white/10 dark:border-white/5 rounded-xl p-4 flex items-center justify-between">
       <div className="flex flex-wrap items-center gap-2">
-        {["Bisnis", "Persona", "Nuansa", "Keunggulan"].map((label, idx) => {
+        {['Bisnis', 'Persona', 'Nuansa', 'Keunggulan'].map((label, idx) => {
           const s = idx + 1;
           const done = s < step;
           const active = s === step;
@@ -544,14 +538,16 @@ export function SiteWizard({
             <React.Fragment key={label}>
               <div className="flex items-center gap-2">
                 <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-colors ${done
-                    ? "bg-[#1D9E75] text-[#E1F5EE]"
-                    : active
-                      ? isDark ? "bg-white text-slate-950" : "bg-slate-950 text-white"
-                      : isDark ? "border border-white/10 bg-white/[0.03] text-slate-500" : "border bg-muted text-muted-foreground"
-                  }`}>
+                  ? "bg-[#1D9E75] text-[#E1F5EE]"
+                  : active
+                    ? isDark ? "bg-white text-slate-950" : "bg-slate-950 text-white"
+                    : isDark ? "border border-white/10 bg-white/[0.03] text-slate-500" : "border bg-muted text-muted-foreground"}
+                  }`}
+                >
                   {done ? <Check className="w-3.5 h-3.5" /> : s}
                 </span>
-                <span className={`text-[13px] ${active ? isDark ? "text-white font-semibold" : "text-foreground font-semibold" : mutedClass}`}>
+                <span className={`text-[13px] ${active ? isDark ? "text-white font-semibold" : "text-foreground font-semibold" : mutedClass}`}
+                >
                   {label}
                 </span>
               </div>
@@ -567,9 +563,7 @@ export function SiteWizard({
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className={`space-y-6 ${isDark ? "max-w-3xl mx-auto px-6" : "max-w-4xl mx-auto"}`}>
-
-      {/* ── Stepper (steps 1-4 only) ───────────────────────────────────── */}
+    <div className={"max-w-4xl mx-auto p-6 sm:p-8 bg-white/5 dark:bg-black/5 backdrop-blur-lg border border-white/10 dark:border-white/5 rounded-3xl shadow-xl animate-fade-in"}>
       {step < 5 && <StepperHUD />}
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -662,7 +656,20 @@ export function SiteWizard({
                 />
               </div>
 
-              <div className={`pt-4 flex justify-end border-t ${dividerClass}`}>
+              <div className={`pt-4 flex justify-between items-center border-t ${dividerClass}`}>
+                {mode === "dashboard" ? (
+                  <Button
+                    type="button"
+                    onClick={() => router.push("/dashboard/sites")}
+                    variant="ghost"
+                    className="rounded-full px-6 text-slate-400 hover:text-white"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-1.5" />
+                    Batal
+                  </Button>
+                ) : (
+                  <div />
+                )}
                 <Button
                   onClick={() => setStep(2)}
                   disabled={!businessName.trim() || !description.trim() || !location.trim() || !phone.trim()}

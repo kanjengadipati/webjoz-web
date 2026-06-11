@@ -178,13 +178,14 @@ export default function PublicSite({ subdomain, host }: PublicSiteProps) {
     );
   }
 
-  const { content, template_id } = siteData;
+  const { content, template_id, design_token } = siteData;
 
   const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
 
   return (
     <TemplateComponent
       content={content}
+      design_token={design_token ?? null}
       onSubmitLead={handleSubmitLead}
       leadSubmitting={leadSubmitting}
       leadSuccess={leadSuccess}

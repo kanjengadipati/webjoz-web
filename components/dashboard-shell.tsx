@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
+import { ChevronLeft } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -88,9 +89,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   }
 
   const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => hasPermission(item.permission) || !item.permission);
-  const activeLabel = DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard";
+  const activeLabel = pathname === "/dashboard/sites/new"
+    ? "Create Website"
+    : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
 
   const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new";
+  const isFullscreenWorkspace = isEditPage;
 
   return (
     <div className="min-h-screen bg-background">
@@ -149,11 +153,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
       <div className={cn(
         "mx-auto grid min-h-screen gap-6 px-4 py-6 pb-28 lg:px-8 lg:pb-6",
-        isEditPage 
+        isFullscreenWorkspace 
           ? "max-w-none w-full grid-cols-1" 
           : "max-w-7xl lg:grid-cols-[290px_minmax(0,1fr)]"
       )}>
-        {!isEditPage && (
+        {!isFullscreenWorkspace && (
           <aside className="hidden lg:block">
             <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
               <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
@@ -279,11 +283,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         )}
 
         <div className="flex min-w-0 flex-col gap-6">
-          {!isEditPage && (
+          {!isFullscreenWorkspace && (
             <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="text-2xl font-bold tracking-tighter">{activeLabel}</div>
+                  <div className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
+                    {pathname === "/dashboard/sites/new" && (
+                      <Link
+                        href="/dashboard/sites"
+                        className="inline-flex items-center justify-center p-1.5 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
+                        aria-label="Back to websites list"
+                      >
+                        <ChevronLeft className="size-6" />
+                      </Link>
+                    )}
+                    <span>{activeLabel}</span>
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                 </div>

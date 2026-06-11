@@ -1,10 +1,14 @@
 import type React from "react";
 import {
   type TemplateProps,
+  type DesignToken,
   TemplateJasa,
   TemplateKuliner,
   TemplateProduk,
+  TemplateDynamic,
 } from "@/components/templates";
+
+export type { DesignToken };
 
 export interface TemplateDefinition {
   id: string;
@@ -13,8 +17,9 @@ export interface TemplateDefinition {
   description: string;
   accent: string;
   component: React.ComponentType<TemplateProps>;
-  previewType: "brand" | "service" | "catalog";
+  previewType: "brand" | "service" | "catalog" | "dynamic";
   tags: string[];
+  isDynamic?: boolean;
 }
 
 export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
@@ -47,6 +52,17 @@ export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
     component: TemplateProduk,
     previewType: "catalog",
     tags: ["produk", "retail", "toko", "fashion", "elektronik", "umkm", "online"],
+  },
+  {
+    id: "TEMPLATE_DYNAMIC",
+    name: "AI Design Engine",
+    category: "AI-Generated",
+    description: "Tampilan unik yang dibuat khusus oleh AI untuk bisnis Anda. Warna, font, dan layout disesuaikan otomatis.",
+    accent: "#7C3AED",
+    component: TemplateDynamic,
+    previewType: "dynamic",
+    tags: [],
+    isDynamic: true,
   },
 ];
 

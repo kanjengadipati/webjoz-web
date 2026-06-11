@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { 
   Save, Loader2, Sparkles,
   HelpCircle, Plus,
-  Monitor, Smartphone, User, Layout, Award, Globe, Mail, BookOpen, ChevronLeft
+  Monitor, Smartphone, User, Layout, Award, Globe, Mail, BookOpen, ChevronLeft, ChevronDown, Check
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -32,6 +32,75 @@ const stripRegeneratedMarkers = (value: any): any => {
 
 const EDITOR_SECTION_KEYS = ["header", "hero", "about", "benefits", "faq", "cta", "contact", "footer", "seo"];
 
+function TemplateThumbnail({
+  previewType,
+  accent,
+  active,
+  compact,
+}: {
+  previewType: "brand" | "service" | "catalog" | "dynamic";
+  accent: string;
+  active?: boolean;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-white/10"} bg-slate-950`}>
+      {previewType === "service" && (
+        <>
+          <div className="absolute inset-0 bg-slate-100" />
+          <div className="absolute left-2 top-2 h-1.5 w-10 rounded-full" style={{ backgroundColor: accent }} />
+          <div className="absolute left-2 top-5 h-2 w-20 rounded-full bg-slate-900" />
+          <div className="absolute left-2 top-8 h-1.5 w-16 rounded-full bg-slate-400" />
+          <div className="absolute bottom-2 left-2 h-3 w-12 rounded-sm" style={{ backgroundColor: accent }} />
+          <div className="absolute bottom-2 right-2 grid w-12 grid-cols-2 gap-1">
+            <div className="h-3 rounded-sm bg-slate-200" />
+            <div className="h-3 rounded-sm bg-slate-200" />
+          </div>
+        </>
+      )}
+      {previewType === "catalog" && (
+        <>
+          <div className="absolute inset-0 bg-slate-950" />
+          <div className="absolute -left-4 top-0 h-full w-16 rotate-6" style={{ backgroundColor: accent }} />
+          <div className="absolute right-2 top-3 h-2 w-16 rounded-full bg-white" />
+          <div className="absolute right-2 top-7 h-1.5 w-12 rounded-full bg-slate-400" />
+          <div className="absolute bottom-2 right-2 grid w-16 grid-cols-3 gap-1">
+            <div className="h-4 rounded-sm bg-slate-800" />
+            <div className="h-4 rounded-sm bg-slate-800" />
+            <div className="h-4 rounded-sm bg-slate-800" />
+          </div>
+        </>
+      )}
+      {previewType === "brand" && (
+        <>
+          <div className="absolute inset-0 bg-[#FAF7F2]" />
+          <div className="absolute inset-x-2 top-2 h-2 rounded-full bg-white" />
+          <div className="absolute left-2 top-6 h-2 w-16 rounded-full" style={{ backgroundColor: accent }} />
+          <div className="absolute left-2 top-10 h-1.5 w-20 rounded-full bg-amber-900/30" />
+          <div className="absolute bottom-2 left-2 right-2 grid grid-cols-2 gap-1">
+            <div className="h-4 rounded-sm bg-white" />
+            <div className="h-4 rounded-sm bg-white" />
+          </div>
+        </>
+      )}
+      {previewType === "dynamic" && (
+        <>
+          <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${accent}33, #7C3AED33, #0891B233)` }} />
+          <div className="absolute inset-x-2 top-2 h-1.5 rounded-full" style={{ background: `linear-gradient(90deg, ${accent}, #7C3AED)` }} />
+          <div className="absolute left-2 top-5 h-2 w-14 rounded-full bg-white/30" />
+          <div className="absolute left-2 top-8 h-1.5 w-10 rounded-full bg-white/20" />
+          <div className="absolute bottom-2 right-2 flex gap-1">
+            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: accent }} />
+            <div className="h-3 w-3 rounded-full bg-purple-500" />
+            <div className="h-3 w-3 rounded-full bg-cyan-500" />
+          </div>
+          <div className="absolute bottom-2 left-2 text-[6px] font-bold text-white/60 uppercase tracking-wider">AI</div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function SiteEditorPage() {
   const params = useParams();
   const router = useRouter();
@@ -44,15 +113,18 @@ export default function SiteEditorPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [templateSaving, setTemplateSaving] = useState(false);
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("header");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
+  const templatePickerRef = useRef<HTMLDivElement | null>(null);
 
   // Site details & content
   const [siteDetails, setSiteDetails] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
+  const [designToken, setDesignToken] = useState<any>(null);
 
   // AI instructions state
   const [aiInstructions, setAiInstructions] = useState("");
@@ -100,6 +172,11 @@ export default function SiteEditorPage() {
         seo: { ...fallback.seo, ...data.seo }
       });
 
+      // Load design token if available
+      if (contentRes.data?.design_token) {
+        setDesignToken(contentRes.data.design_token);
+      }
+
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat situs", "error");
     } finally {
@@ -116,6 +193,19 @@ export default function SiteEditorPage() {
   useEffect(() => {
     activeTabRef.current = activeTab;
   }, [activeTab]);
+
+  useEffect(() => {
+    if (!templatePickerOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!templatePickerRef.current?.contains(event.target as Node)) {
+        setTemplatePickerOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [templatePickerOpen]);
 
   const selectSection = (section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
@@ -205,7 +295,7 @@ export default function SiteEditorPage() {
       await request(`/sites/${siteId}/content`, {
         method: "PUT",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({ content })
+        body: JSON.stringify({ content, design_token: designToken ?? undefined })
       }, token);
       pushToast("Konten berhasil disimpan!", "success");
     } catch (err: any) {
@@ -219,6 +309,7 @@ export default function SiteEditorPage() {
     if (!token || !activeTenantId || !siteId || !siteDetails || templateId === siteDetails.template_id) return;
 
     const previousTemplateId = siteDetails.template_id;
+    setTemplatePickerOpen(false);
     setTemplateSaving(true);
     setSiteDetails({ ...siteDetails, template_id: templateId });
 
@@ -236,10 +327,10 @@ export default function SiteEditorPage() {
       if (res.data) {
         setSiteDetails(res.data);
       }
-      pushToast("Template berhasil diganti.", "success");
+      pushToast("Gaya tampilan berhasil diganti.", "success");
     } catch (err: any) {
       setSiteDetails({ ...siteDetails, template_id: previousTemplateId });
-      pushToast(err.message || "Gagal mengganti template", "error");
+      pushToast(err.message || "Gagal mengganti gaya tampilan", "error");
     } finally {
       setTemplateSaving(false);
     }
@@ -338,31 +429,83 @@ export default function SiteEditorPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-6 overflow-hidden bg-[#05070b] text-slate-100">
-      {/* ── Top Bar ── */}
-      <div className="flex items-center gap-3 px-5 py-3 border-b border-white/10 bg-[#05070b] flex-shrink-0">
-        <button
-          onClick={() => router.push("/dashboard/sites")}
-          className="p-1.5 rounded-lg text-slate-500 hover:bg-white/5 hover:text-slate-200 transition-colors"
-          aria-label="Kembali ke daftar situs"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-sm font-bold tracking-tight truncate text-slate-100">{siteDetails.name}</h1>
-          <p className="text-[10px] text-slate-500">{siteDetails.subdomain}.webjoz.com</p>
-        </div>
-        {/* AI badge */}
-        <span className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-200">
-          <Sparkles className="w-3 h-3" />
-          AI aktif
-        </span>
-      </div>
-
       {/* ── Main editor split ── */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* ════ LEFT SIDEBAR ════ */}
         <div className="w-[260px] flex-shrink-0 border-r border-white/10 flex flex-col overflow-hidden bg-[#05070b]">
+
+          {/* Site identity */}
+          <div className="flex h-11 flex-shrink-0 items-center gap-2 border-b border-white/10 px-3">
+            <button
+              onClick={() => router.push("/dashboard/sites")}
+              className="rounded-md p-1 text-slate-500 transition-colors hover:bg-white/5 hover:text-slate-200"
+              aria-label="Kembali ke daftar situs"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
+              <p className="truncate text-[10px] text-slate-500">{siteDetails.subdomain}.webjoz.com</p>
+            </div>
+          </div>
+
+          {/* Visual style selector */}
+          <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
+            <div className="mb-1.5 flex items-center justify-between">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
+              {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-300" />}
+            </div>
+            <button
+              type="button"
+              onClick={() => setTemplatePickerOpen((open) => !open)}
+              disabled={templateSaving}
+              className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-60"
+              aria-haspopup="listbox"
+              aria-expanded={templatePickerOpen}
+            >
+              <div className="w-12 flex-shrink-0">
+                <TemplateThumbnail previewType={currentTemplate.previewType} accent={currentTemplate.accent} active compact />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[12px] font-bold text-slate-100">{currentTemplate.name}</p>
+                <p className="truncate text-[10px] text-slate-500">{currentTemplate.category}</p>
+              </div>
+              <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {templatePickerOpen && (
+              <div className="mt-2 space-y-2" role="listbox" aria-label="Pilihan gaya website">
+                {TEMPLATE_REGISTRY.map((template) => {
+                  const active = template.id === siteDetails.template_id;
+                  return (
+                    <button
+                      key={template.id}
+                      type="button"
+                      onClick={() => void handleTemplateChange(template.id)}
+                      disabled={templateSaving}
+                      className={`group w-full rounded-xl border p-2 text-left transition ${
+                        active
+                          ? "border-violet-400 bg-violet-500/15"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                      }`}
+                      role="option"
+                      aria-selected={active}
+                    >
+                      <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} />
+                      <div className="mt-2 flex items-start gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
+                          <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">{template.description}</p>
+                        </div>
+                        {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Sidebar header */}
           <div className="px-3.5 py-2.5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
@@ -630,56 +773,32 @@ export default function SiteEditorPage() {
         <div className="flex-1 min-h-0 flex flex-col overflow-hidden min-w-0">
 
           {/* Canvas topbar */}
-          <div className="flex items-center gap-2 px-3.5 py-2 border-b border-white/10 flex-shrink-0 bg-[#05070b]">
+          <div className="flex h-9 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#05070b] px-2.5">
             {/* Device switcher */}
             <button
               onClick={() => setDevice("desktop")}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[12px] border transition-colors ${
+              className={`flex h-6 w-7 items-center justify-center rounded-md border text-[12px] transition-colors ${
                 device === "desktop" ? "bg-white text-slate-950 border-slate-200" : "border-white/10 hover:bg-white/5 text-slate-500"
               }`}
+              aria-label="Preview desktop"
             >
               <Monitor className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setDevice("mobile")}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[12px] border transition-colors ${
+              className={`flex h-6 w-7 items-center justify-center rounded-md border text-[12px] transition-colors ${
                 device === "mobile" ? "bg-white text-slate-950 border-slate-200" : "border-white/10 hover:bg-white/5 text-slate-500"
               }`}
+              aria-label="Preview mobile"
             >
               <Smartphone className="w-3.5 h-3.5" />
             </button>
 
-            {/* Preview URL */}
-            <span className="text-[12px] text-slate-500 ml-1 truncate">
-              {siteDetails.subdomain}.webjoz.com
+            {/* AI badge */}
+            <span className="ml-1 flex items-center gap-1 rounded-full border border-violet-500/20 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-200">
+              <Sparkles className="h-3 w-3" />
+              AI aktif
             </span>
-
-            {/* Template switcher */}
-            <div className="ml-2 flex min-w-[220px] items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-2 py-1">
-              <Layout className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
-              <select
-                value={siteDetails.template_id}
-                onChange={(event) => void handleTemplateChange(event.target.value)}
-                disabled={templateSaving}
-                className="min-w-0 flex-1 bg-transparent text-[12px] font-medium text-slate-200 outline-none disabled:opacity-60"
-                aria-label="Pilih template website"
-              >
-                {TEMPLATE_REGISTRY.map((template) => (
-                  <option key={template.id} value={template.id} className="bg-slate-950 text-slate-100">
-                    {template.name} - {template.category}
-                  </option>
-                ))}
-              </select>
-              {templateSaving ? (
-                <Loader2 className="h-3.5 w-3.5 flex-shrink-0 animate-spin text-violet-300" />
-              ) : (
-                <span
-                  className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                  style={{ backgroundColor: currentTemplate.accent }}
-                  aria-hidden="true"
-                />
-              )}
-            </div>
 
             {/* Spacer */}
             <div className="flex-1" />
@@ -688,7 +807,7 @@ export default function SiteEditorPage() {
             <button
               onClick={handleSaveContent}
               disabled={saving}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-medium text-white transition-colors"
+              className="flex h-6 items-center gap-1.5 rounded-md px-2.5 text-[11px] font-medium text-white transition-colors"
               style={{ background: "#1D9E75" }}
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
@@ -697,7 +816,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Canvas body */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-4">
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-2">
             <div
               className={`bg-white shadow-lg rounded-md overflow-hidden transition-all duration-300 w-full ${
                 device === "mobile" ? "max-w-[375px]" : "max-w-[1228px]"
@@ -705,6 +824,7 @@ export default function SiteEditorPage() {
             >
               <TemplateComponent
                 content={content}
+                design_token={designToken ?? null}
                 isEditorMode={true}
                 activeSection={activeTab}
                 onSelectSection={(section: string) => selectSection(section, false)}

@@ -37,7 +37,7 @@ export default function NewSiteWizardPage() {
   }
 
   return (
-    <div className="pb-12">
+    <div className="py-4 text-white">
       <SiteWizard
         mode="dashboard"
         token={token}

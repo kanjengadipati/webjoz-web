@@ -21,6 +21,29 @@ interface FaqItem {
   answer: string;
 }
 
+export interface DesignToken {
+  palette?: {
+    primary?: string;
+    accent?: string;
+    background?: string;
+    surface?: string;
+    text?: string;
+  };
+  typography?: {
+    heading_font?: string;
+    body_font?: string;
+    heading_weight?: string;
+    heading_size_hero?: string;
+  };
+  layout?: {
+    hero_style?: "full-bleed" | "split" | "centered" | "minimal";
+    section_spacing?: "compact" | "normal" | "relaxed";
+    corner_radius?: "sharp" | "soft" | "rounded";
+    section_order?: string[];
+  };
+  mood?: string;
+}
+
 export interface TemplateProps {
   content: {
     header: {
@@ -78,6 +101,7 @@ export interface TemplateProps {
       og_image_url?: string;
     };
   };
+  design_token?: DesignToken | null;
   onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
   leadSubmitting?: boolean;
   leadSuccess?: boolean;
@@ -1003,6 +1027,370 @@ const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isD
         }`}>
           {item.answer}
         </div>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
+// 4. TEMPLATE_DYNAMIC - CSS Variable Engine
+// ==========================================
+
+// Helper: build CSS variables string from a design token
+function buildCssVars(dt: DesignToken | null | undefined): Record<string, string> {
+  const p = dt?.palette;
+  const ty = dt?.typography;
+  const la = dt?.layout;
+
+  const spacingMap: Record<string, string> = {
+    compact: "4rem",
+    normal: "5rem",
+    relaxed: "7rem",
+  };
+  const radiusMap: Record<string, string> = {
+    sharp: "0px",
+    soft: "8px",
+    rounded: "20px",
+  };
+
+  return {
+    "--dt-primary": p?.primary ?? "#4F46E5",
+    "--dt-accent": p?.accent ?? "#7C3AED",
+    "--dt-bg": p?.background ?? "#F8F9FF",
+    "--dt-surface": p?.surface ?? "#FFFFFF",
+    "--dt-text": p?.text ?? "#1e293b",
+    "--dt-text-muted": p?.text ? p.text + "99" : "#64748b",
+    "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
+    "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
+    "--dt-heading-weight": ty?.heading_weight ?? "700",
+    "--dt-hero-size": ty?.heading_size_hero ?? "3rem",
+    "--dt-spacing": spacingMap[la?.section_spacing ?? "normal"] ?? "5rem",
+    "--dt-radius": radiusMap[la?.corner_radius ?? "soft"] ?? "8px",
+    "--dt-radius-lg": la?.corner_radius === "sharp" ? "0px" : la?.corner_radius === "rounded" ? "32px" : "16px",
+  };
+}
+
+function loadGoogleFont(headingFont?: string, bodyFont?: string) {
+  if (typeof document === "undefined") return;
+  const fonts = [headingFont, bodyFont].filter(Boolean);
+  if (!fonts.length) return;
+  const famStr = fonts.map((f) => f!.replace(/ /g, "+")).join("&family=");
+  const id = `dt-font-${famStr}`;
+  if (document.getElementById(id)) return;
+  const link = document.createElement("link");
+  link.id = id;
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?family=${famStr}:wght@400;500;600;700;800&display=swap`;
+  document.head.appendChild(link);
+}
+
+const DynamicFaqAccordion: React.FC<{ item: FaqItem }> = ({ item }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const reactId = useId();
+  const answerId = `dtfaq-answer-${reactId}`;
+  return (
+    <div className="dt-faq-item" style={{ border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", borderRadius: "var(--dt-radius)", overflow: "hidden" }}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        style={{ width: "100%", padding: "1rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: "transparent", cursor: "pointer", fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, textAlign: "left", gap: "1rem" }}
+      >
+        <span style={{ fontSize: "0.9rem" }}>{item.question}</span>
+        {isOpen ? <ChevronUp style={{ width: 18, height: 18, flexShrink: 0, color: "var(--dt-primary)" }} /> : <ChevronDown style={{ width: 18, height: 18, flexShrink: 0, opacity: 0.4 }} />}
+      </button>
+      {isOpen && (
+        <div id={answerId} style={{ padding: "0 1.5rem 1.25rem", fontSize: "0.875rem", lineHeight: 1.7, color: "var(--dt-text-muted)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", background: "color-mix(in srgb, var(--dt-primary) 3%, transparent)" }}>
+          {item.answer}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DynamicLeadForm: React.FC<{
+  onSubmit: NonNullable<TemplateProps["onSubmitLead"]>;
+  submitting: boolean;
+  success: boolean;
+  error: string | null;
+}> = ({ onSubmit, submitting, success, error }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%", padding: "0.625rem 1rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, #e2e8f0)",
+    borderRadius: "var(--dt-radius)", outline: "none", fontSize: "0.875rem",
+    background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-surface))",
+    color: "var(--dt-text)", fontFamily: "var(--dt-body-font)"
+  };
+
+  if (success) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem", textAlign: "center", background: "color-mix(in srgb, var(--dt-primary) 5%, var(--dt-surface))", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)" }}>
+        <div style={{ width: 48, height: 48, background: "color-mix(in srgb, var(--dt-primary) 15%, transparent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
+          <Check style={{ width: 24, height: 24, color: "var(--dt-primary)" }} />
+        </div>
+        <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, color: "var(--dt-text)", marginBottom: "0.5rem" }}>Pesan Terkirim!</h3>
+        <p style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)" }}>Terima kasih. Tim kami akan segera merespons.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ name, email, phone, message }); }} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {error && <div style={{ padding: "0.75rem 1rem", background: "#fee2e2", borderRadius: "var(--dt-radius)", color: "#991b1b", fontSize: "0.875rem" }}>{error}</div>}
+      <div>
+        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Nama Lengkap</label>
+        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} placeholder="cth. Budi Santoso" />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+        <div>
+          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Email</label>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="email@domain.com" />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Nomor WA</label>
+          <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} placeholder="08xx" />
+        </div>
+      </div>
+      <div>
+        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Pesan</label>
+        <textarea required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} style={{ ...inputStyle, resize: "none" }} placeholder="Tulis pesan atau pertanyaan Anda..." />
+      </div>
+      <button
+        type="submit"
+        disabled={submitting}
+        style={{ padding: "0.75rem 1.5rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 700, fontFamily: "var(--dt-body-font)", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "opacity 0.2s", border: "none" }}
+      >
+        {submitting ? "Mengirim..." : <><Send style={{ width: 16, height: 16 }} /> Kirim Pesan</>}
+      </button>
+    </form>
+  );
+};
+
+export const TemplateDynamic: React.FC<TemplateProps> = ({
+  content, design_token,
+  onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
+}) => {
+  const dt = design_token ?? null;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const cssVars = buildCssVars(dt);
+  const heroStyle = dt?.layout?.hero_style ?? "centered";
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "cta", "faq", "contact"];
+
+  // Load Google Fonts
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
+
+  // Style injection as inline CSS custom properties
+  const rootStyle: React.CSSProperties = {
+    ...cssVars as any,
+    fontFamily: "var(--dt-body-font)",
+    background: "var(--dt-bg)",
+    color: "var(--dt-text)",
+    minHeight: "100vh",
+    overflowX: "hidden",
+  };
+
+  const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" };
+
+  // Section renderers
+  const renderSection = (key: string) => {
+    switch (key) {
+      case "hero": return <PreviewSectionWrapper key="hero" section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section style={{ position: "relative", minHeight: heroStyle === "minimal" ? "60vh" : "85vh", display: "flex", alignItems: "center", justifyContent: heroStyle === "split" ? "flex-start" : "center", padding: "5rem 1.5rem", background: heroStyle === "full-bleed" ? `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg)), var(--dt-bg))` : "var(--dt-bg)", overflow: "hidden" }}>
+          {/* Decorative blob */}
+          <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
+          {hero.image_url && <img src={hero.image_url} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply" }} alt="Hero" />}
+          <div style={{ maxWidth: heroStyle === "split" ? "560px" : "800px", textAlign: heroStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: heroStyle === "split" ? "flex-start" : "center" }}>
+            {(hero.badge_text || hero.launch_label) && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", padding: "0.35rem 0.9rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "9999px", fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
+                <Sparkles style={{ width: 12, height: 12 }} />
+                {hero.badge_text || hero.launch_label}
+              </span>
+            )}
+            <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(2rem, 5vw, var(--dt-hero-size))", lineHeight: 1.1, color: "var(--dt-text)", margin: 0 }}>
+              {hero.headline}
+            </h1>
+            <p style={{ fontSize: "1.125rem", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}>
+              {hero.subheadline}
+            </p>
+            {hero.opening_hours && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.4rem 1rem", background: "var(--dt-surface)", borderRadius: "9999px", fontSize: "0.875rem", fontWeight: 600, color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+                <Clock style={{ width: 14, height: 14 }} />
+                {hero.opening_hours}
+              </span>
+            )}
+            <a href={hero.cta_url} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.875rem 2rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 700, textDecoration: "none", fontSize: "1rem", transition: "opacity 0.2s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              {hero.cta_text} <ArrowRight style={{ width: 18, height: 18 }} />
+            </a>
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      case "about": return <PreviewSectionWrapper key="about" section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Mengenal Kami</span>
+            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", margin: 0 }}>{about.title}</h2>
+            <p style={{ color: "var(--dt-text-muted)", lineHeight: 1.7, margin: 0, whiteSpace: "pre-line" }}>{about.body}</p>
+          </div>
+          <div style={{ position: "relative" }}>
+            <div style={{ position: "absolute", inset: "-1rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 20%, transparent), color-mix(in srgb, var(--dt-accent) 10%, transparent))`, borderRadius: "var(--dt-radius-lg)", transform: "rotate(-2deg)", opacity: 0.5 }} />
+            <div style={{ position: "relative", width: "100%", height: "320px", background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))`, border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden" }}>
+              {about.image_url ? (
+                <img src={about.image_url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="About" />
+              ) : (
+                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "0.75rem", padding: "2rem", textAlign: "center" }}>
+                  <span style={{ color: "var(--dt-primary)", display: "block" }}><DynamicIcon name={about.icon} defaultIcon={Sparkles} className="w-10 h-10 mx-auto" /></span>
+                  <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 600, color: "var(--dt-text)", fontSize: "1.1rem" }}>{about.title}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      case "benefits": return <PreviewSectionWrapper key="benefits" section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
+          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Keunggulan</span>
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{benefits.title}</h2>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
+              {benefits.items?.map((item, idx) => (
+                <div key={idx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)`, borderRadius: "var(--dt-radius-lg)", padding: "2rem", display: "flex", flexDirection: "column", gap: "0.875rem", transition: "box-shadow 0.2s, transform 0.2s" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px color-mix(in srgb, var(--dt-primary) 15%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                >
+                  {item.stat ? (
+                    <div>
+                      <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2rem", color: "var(--dt-primary)", margin: 0 }}>{item.stat}</p>
+                      {item.stat_label && <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)" }}>{item.stat_label}</p>}
+                    </div>
+                  ) : (
+                    <div style={{ width: 44, height: 44, background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, borderRadius: "var(--dt-radius)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ color: "var(--dt-primary)", display: "contents" }}><DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" /></span>
+                    </div>
+                  )}
+                  <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.05rem", margin: 0 }}>{item.title}</h3>
+                  <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}>{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      case "faq": return <PreviewSectionWrapper key="faq" section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
+            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{faq.title}</h2>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {faq.items?.map((item, idx) => <DynamicFaqAccordion key={idx} item={item} />)}
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      case "cta": return <PreviewSectionWrapper key="cta" section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
+          <div style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", padding: "4rem 2rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: "-30%", right: "-10%", width: "50%", height: "150%", background: "rgba(255,255,255,0.06)", borderRadius: "50%", pointerEvents: "none" }} />
+            <div style={{ position: "relative", zIndex: 1, maxWidth: "36rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: "center" }}>
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "#fff", margin: 0 }}>{cta.headline}</h2>
+              <a href={cta.button_url} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.875rem 2.5rem", background: "#fff", color: "var(--dt-primary)", borderRadius: "var(--dt-radius)", fontWeight: 700, textDecoration: "none", fontSize: "1rem", transition: "opacity 0.2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                {cta.button_text} <ArrowRight style={{ width: 16, height: 16 }} />
+              </a>
+            </div>
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      case "contact": return <PreviewSectionWrapper key="contact" section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <section id="contact" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
+          <div style={{ maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2rem)", color: "var(--dt-text)", margin: 0 }}>{contact.title}</h2>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+                {[
+                  { icon: MapPin, text: contact.address },
+                  { icon: Phone, text: contact.phone },
+                  { icon: Mail, text: contact.email },
+                ].map(({ icon: Icon, text }) => text && (
+                  <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                    <Icon style={{ width: 18, height: 18, color: "var(--dt-primary)", marginTop: 2, flexShrink: 0 }} />
+                    <span style={{ color: "var(--dt-text-muted)", fontSize: "0.9rem" }}>{text}</span>
+                  </div>
+                ))}
+              </div>
+              {contact.maps_url && (
+                <a href={contact.maps_url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem" }}>
+                  <Globe style={{ width: 15, height: 15 }} /> Buka Google Maps
+                </a>
+              )}
+            </div>
+            {contact.show_lead_form && onSubmitLead && (
+              <div style={{ background: "var(--dt-surface)", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)`, boxShadow: "0 4px 16px rgba(0,0,0,0.05)" }}>
+                <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", marginBottom: "1.5rem", marginTop: 0 }}>Hubungi Kami</h3>
+                <DynamicLeadForm onSubmit={onSubmitLead} submitting={leadSubmitting} success={leadSuccess} error={leadError} />
+              </div>
+            )}
+          </div>
+        </section>
+      </PreviewSectionWrapper>;
+
+      default: return null;
+    }
+  };
+
+  return (
+    <div style={rootStyle}>
+      {/* Header */}
+      <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <header style={{ position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(12px)", background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)`, padding: "1rem 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "var(--dt-heading-font)", fontWeight: 700, fontSize: "1.125rem", color: "var(--dt-text)", minWidth: 0 }}>
+            <LogoImage url={header?.logo_url} icon={header?.icon} defaultIcon={Sparkles} iconClass="" imgClass="h-8 w-auto object-contain" />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{header?.brand_name || "Brand Kami"}</span>
+          </span>
+          <a href="#contact" style={{ padding: "0.5rem 1.25rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 600, fontSize: "0.875rem", textDecoration: "none", flexShrink: 0, transition: "opacity 0.2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            {header?.nav_cta_text || "Hubungi Kami"}
+          </a>
+        </header>
+      </PreviewSectionWrapper>
+
+      {/* Dynamic Section Order */}
+      {sectionOrder.map((key) => renderSection(key))}
+
+      {/* Footer */}
+      <PreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <footer style={{ background: "color-mix(in srgb, var(--dt-text) 90%, transparent)", color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "2.5rem 1.5rem", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+          {footer?.brand_name && <p style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: 0 }}>{footer.brand_name}</p>}
+          {footer?.tagline && <p style={{ color: "rgba(255,255,255,0.4)", margin: 0 }}>{footer.tagline}</p>}
+          <p style={{ margin: 0 }}>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || "Bisnis Kami"}. All rights reserved.`}</p>
+        </footer>
+      </PreviewSectionWrapper>
+
+      {isEditorMode && (
+        <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <SeoEditorPreview seo={seo} />
+        </PreviewSectionWrapper>
       )}
     </div>
   );
