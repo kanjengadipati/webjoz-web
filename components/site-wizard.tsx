@@ -172,7 +172,7 @@ export function SiteWizard({
   const [isSubdomainManuallyEdited, setIsSubdomainManuallyEdited] = useState(false);
 
   // Template
-  const [templateId, setTemplateId] = useState("TEMPLATE_KULINER01");
+  const [templateId, setTemplateId] = useState(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : "TEMPLATE_KULINER01");
 
   // Result
   const [generatedSite, setGeneratedSite] = useState<{ id: string; subdomain: string; customDomain: string } | null>(null);
@@ -228,7 +228,7 @@ export function SiteWizard({
       if (type) {
         setBusinessType(type);
         if (!p.get("template")) {
-          setTemplateId(suggestTemplate(type).id);
+          setTemplateId(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : suggestTemplate(type).id);
         }
       }
       if (p.get("template")) setTemplateId(p.get("template")!);
@@ -478,7 +478,7 @@ export function SiteWizard({
   };
   const chooseBusinessType = (value: string) => {
     setBusinessType(value);
-    setTemplateId(suggestTemplate(value).id);
+    setTemplateId(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : suggestTemplate(value).id);
   };
 
   // ── Derived style helpers ────────────────────────────────────────────────
