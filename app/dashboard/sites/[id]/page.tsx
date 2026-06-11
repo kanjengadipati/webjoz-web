@@ -37,11 +37,19 @@ function TemplateThumbnail({
   accent,
   active,
   compact,
+  palette,
 }: {
   previewType: "brand" | "service" | "catalog" | "dynamic";
   accent: string;
   active?: boolean;
   compact?: boolean;
+  palette?: {
+    primary?: string;
+    accent?: string;
+    background?: string;
+    surface?: string;
+    text?: string;
+  };
 }) {
   return (
     <div className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-white/10"} bg-slate-950`}>
@@ -83,20 +91,39 @@ function TemplateThumbnail({
           </div>
         </>
       )}
-      {previewType === "dynamic" && (
-        <>
-          <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${accent}33, #7C3AED33, #0891B233)` }} />
-          <div className="absolute inset-x-2 top-2 h-1.5 rounded-full" style={{ background: `linear-gradient(90deg, ${accent}, #7C3AED)` }} />
-          <div className="absolute left-2 top-5 h-2 w-14 rounded-full bg-white/30" />
-          <div className="absolute left-2 top-8 h-1.5 w-10 rounded-full bg-white/20" />
-          <div className="absolute bottom-2 right-2 flex gap-1">
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: accent }} />
-            <div className="h-3 w-3 rounded-full bg-purple-500" />
-            <div className="h-3 w-3 rounded-full bg-cyan-500" />
+      {previewType === "dynamic" && (() => {
+        const primaryColor = palette?.primary || accent || "#7C3AED";
+        const accentColor = palette?.accent || "#BA7517";
+        const bgColor = palette?.background || "#FAF7F2";
+        const surfaceColor = palette?.surface || "#FFFFFF";
+        const textColor = palette?.text || "#2C2C2A";
+
+        return (
+          <div className="absolute inset-0 transition-colors" style={{ backgroundColor: bgColor }}>
+            {/* Header bar */}
+            <div className="absolute top-0 left-0 right-0 h-3 border-b transition-colors" style={{ backgroundColor: surfaceColor, borderColor: `${primaryColor}20` }}>
+              <div className="absolute left-1.5 top-1 h-1 w-6 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+              <div className="absolute right-1.5 top-1 h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
+            </div>
+            
+            {/* Dummy hero title lines */}
+            <div className="absolute left-2 top-4.5 h-1 w-14 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.3 }} />
+            <div className="absolute left-2 top-6.5 h-1 w-10 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.15 }} />
+
+            {/* Dummy CTA button */}
+            <div className="absolute left-2 bottom-1.5 h-2 w-7 rounded-sm transition-colors" style={{ backgroundColor: primaryColor }} />
+
+            {/* Accent dots */}
+            <div className="absolute bottom-1.5 right-1.5 flex gap-0.5">
+              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
+              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: textColor }} />
+            </div>
+
+            <div className="absolute bottom-1 left-2 text-[5px] font-black uppercase tracking-wider" style={{ color: textColor, opacity: 0.4 }}>AI</div>
           </div>
-          <div className="absolute bottom-2 left-2 text-[6px] font-bold text-white/60 uppercase tracking-wider">AI</div>
-        </>
-      )}
+        );
+      })()}
     </div>
   );
 }
@@ -482,6 +509,8 @@ export default function SiteEditorPage() {
     designToken.mood === ct.design_token.mood
   );
 
+  const activeDesignToken = activeCustomTemplate ? activeCustomTemplate.design_token : (siteDetails.template_id === "TEMPLATE_DYNAMIC" ? designToken : null);
+
   let activeTemplateName = currentTemplate.name;
   let activeTemplateCategory = currentTemplate.category;
   let activeTemplateAccent = currentTemplate.accent;
@@ -537,7 +566,7 @@ export default function SiteEditorPage() {
               aria-expanded={templatePickerOpen}
             >
               <div className="w-12 flex-shrink-0">
-                <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact />
+                <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
@@ -569,6 +598,7 @@ export default function SiteEditorPage() {
                         previewType="dynamic" 
                         accent={designToken?.palette?.primary || dynamicTemplate.accent} 
                         active={isTopActive} 
+                        palette={designToken?.palette}
                       />
                       <div className="mt-2 flex items-start gap-2">
                         <div className="min-w-0 flex-1">
@@ -645,6 +675,7 @@ export default function SiteEditorPage() {
                             previewType="dynamic" 
                             accent={template.design_token?.palette?.primary || "#7C3AED"} 
                             active={active} 
+                            palette={template.design_token?.palette}
                           />
                           <div className="mt-2 flex items-start gap-2">
                             <div className="min-w-0 flex-1">
