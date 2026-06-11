@@ -125,7 +125,32 @@ export default function SiteEditorPage() {
   const [siteDetails, setSiteDetails] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
   const [designToken, setDesignToken] = useState<any>(null);
+  
   const [customTemplates, setCustomTemplates] = useState<any[]>([]);
+  const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+
+  const fetchCustomTemplates = async (reset = false) => {
+    if (!token || !activeTenantId || !siteId) return;
+    try {
+      setLoadingTemplates(true);
+      const currentOffset = reset ? 0 : customTemplates.length;
+      const templatesRes = await request<any>(`/ai/templates?limit=10&offset=${currentOffset}`, {
+        headers: { "X-Tenant-ID": activeTenantId.toString() }
+      }, token);
+
+      if (templatesRes.status === "success" && templatesRes.data) {
+        const items = templatesRes.data.items || [];
+        const total = templatesRes.data.total || 0;
+        setCustomTemplates(prev => reset ? items : [...prev, ...items]);
+        setCustomTemplatesTotal(total);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch template library:", err);
+    } finally {
+      setLoadingTemplates(false);
+    }
+  };
 
   // AI instructions state
   const [aiInstructions, setAiInstructions] = useState("");
@@ -179,16 +204,7 @@ export default function SiteEditorPage() {
       }
 
       // Fetch custom templates library
-      try {
-        const templatesRes = await request<any>("/ai/templates", {
-          headers: { "X-Tenant-ID": activeTenantId.toString() }
-        }, token);
-        if (templatesRes.status === "success" && Array.isArray(templatesRes.data)) {
-          setCustomTemplates(templatesRes.data);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch template library:", err);
-      }
+      void fetchCustomTemplates(true);
 
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat situs", "error");
@@ -647,6 +663,31 @@ export default function SiteEditorPage() {
                         </button>
                       );
                     })}
+
+                    {customTemplates.length < customTemplatesTotal && (
+                      <div className="pt-2 px-1">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void fetchCustomTemplates(false);
+                          }}
+                          disabled={loadingTemplates}
+                          className="w-full py-2.5 text-center text-[11px] font-bold text-violet-400 hover:text-violet-300 transition-colors border border-dashed border-white/10 hover:border-violet-500/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
+                        >
+                          {loadingTemplates ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              Memuat...
+                            </>
+                          ) : (
+                            <>
+                              Muat Lebih Banyak ({customTemplatesTotal - customTemplates.length} tersisa)
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
