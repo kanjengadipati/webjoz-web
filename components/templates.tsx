@@ -1187,14 +1187,15 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
-  // Style injection as inline CSS custom properties
-  const rootStyle: React.CSSProperties = {
-    ...cssVars as any,
+  // Style injection as inline CSS custom properties with Container Query support
+  const rootStyle: any = {
+    ...cssVars,
     fontFamily: "var(--dt-body-font)",
     background: "var(--dt-bg)",
     color: "var(--dt-text)",
     minHeight: "100vh",
     overflowX: "hidden",
+    containerType: "inline-size",
   };
 
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" };
@@ -1207,26 +1208,26 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           {/* Decorative blob */}
           <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
           {hero.image_url && <img src={hero.image_url} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply" }} alt="Hero" />}
-          <div style={{ maxWidth: heroStyle === "split" ? "560px" : "800px", textAlign: heroStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: heroStyle === "split" ? "flex-start" : "center" }}>
+          <div style={{ maxWidth: heroStyle === "split" ? "560px" : "800px", textAlign: heroStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: heroStyle === "split" ? "flex-start" : "center" }}>
             {(hero.badge_text || hero.launch_label) && (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", padding: "0.35rem 0.9rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "9999px", fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
+              <span className="px-2.5 py-1 md:px-3.5 md:py-1.5 text-[10px] md:text-xs font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "9999px", color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
                 <Sparkles style={{ width: 12, height: 12 }} />
                 {hero.badge_text || hero.launch_label}
               </span>
             )}
-            <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(2rem, 5vw, var(--dt-hero-size))", lineHeight: 1.1, color: "var(--dt-text)", margin: 0 }}>
+            <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 6cqw, var(--dt-hero-size))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}>
               {hero.headline}
             </h1>
-            <p style={{ fontSize: "1.125rem", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "clamp(0.95rem, 3.5cqw, 1.125rem)", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}>
               {hero.subheadline}
             </p>
             {hero.opening_hours && (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.4rem 1rem", background: "var(--dt-surface)", borderRadius: "9999px", fontSize: "0.875rem", fontWeight: 600, color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+              <span className="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-semibold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-surface)", borderRadius: "9999px", color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
                 <Clock style={{ width: 14, height: 14 }} />
                 {hero.opening_hours}
               </span>
             )}
-            <a href={hero.cta_url} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.875rem 2rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 700, textDecoration: "none", fontSize: "1rem", transition: "opacity 0.2s" }}
+            <a href={hero.cta_url} className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
@@ -1237,10 +1238,10 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       </PreviewSectionWrapper>;
 
       case "about": return <PreviewSectionWrapper key="about" section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "center" }}>
+        <section id="about" className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Mengenal Kami</span>
-            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", margin: 0 }}>{about.title}</h2>
+            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", margin: 0 }}>{about.title}</h2>
             <p style={{ color: "var(--dt-text-muted)", lineHeight: 1.7, margin: 0, whiteSpace: "pre-line" }}>{about.body}</p>
           </div>
           <div style={{ position: "relative" }}>
@@ -1264,7 +1265,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
               <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Keunggulan</span>
-              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{benefits.title}</h2>
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{benefits.title}</h2>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
               {benefits.items?.map((item, idx) => (
@@ -1295,7 +1296,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
             <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
-            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{faq.title}</h2>
+            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{faq.title}</h2>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {faq.items?.map((item, idx) => <DynamicFaqAccordion key={idx} item={item} />)}
@@ -1305,11 +1306,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 
       case "cta": return <PreviewSectionWrapper key="cta" section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
-          <div style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", padding: "4rem 2rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
+          <div className="px-4 py-8 md:px-8 md:py-16" style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", textAlign: "center", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: "-30%", right: "-10%", width: "50%", height: "150%", background: "rgba(255,255,255,0.06)", borderRadius: "50%", pointerEvents: "none" }} />
             <div style={{ position: "relative", zIndex: 1, maxWidth: "36rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: "center" }}>
-              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "#fff", margin: 0 }}>{cta.headline}</h2>
-              <a href={cta.button_url} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.875rem 2.5rem", background: "#fff", color: "var(--dt-primary)", borderRadius: "var(--dt-radius)", fontWeight: 700, textDecoration: "none", fontSize: "1rem", transition: "opacity 0.2s" }}
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "#fff", margin: 0 }}>{cta.headline}</h2>
+              <a href={cta.button_url} className="px-6 py-2.5 md:px-10 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#fff", color: "var(--dt-primary)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
@@ -1322,9 +1323,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 
       case "contact": return <PreviewSectionWrapper key="contact" section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section id="contact" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
-          <div style={{ maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12" style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 3vw, 2rem)", color: "var(--dt-text)", margin: 0 }}>{contact.title}</h2>
+              <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: 0 }}>{contact.title}</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
                 {[
                   { icon: MapPin, text: contact.address },
@@ -1361,12 +1362,12 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     <div style={rootStyle}>
       {/* Header */}
       <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header style={{ position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(12px)", background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)`, padding: "1rem 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "var(--dt-heading-font)", fontWeight: 700, fontSize: "1.125rem", color: "var(--dt-text)", minWidth: 0 }}>
+        <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
+          <span className="flex items-center gap-1.5 md:gap-2 min-w-0 text-sm md:text-lg font-bold" style={{ display: "flex", alignItems: "center", fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>
             <LogoImage url={header?.logo_url} icon={header?.icon} defaultIcon={Sparkles} iconClass="" imgClass="h-8 w-auto object-contain" />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{header?.brand_name || "Brand Kami"}</span>
           </span>
-          <a href="#contact" style={{ padding: "0.5rem 1.25rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 600, fontSize: "0.875rem", textDecoration: "none", flexShrink: 0, transition: "opacity 0.2s" }}
+          <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >

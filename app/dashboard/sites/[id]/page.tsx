@@ -7,7 +7,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { 
   Save, Loader2, Sparkles,
-  HelpCircle, Plus,
+  HelpCircle, Plus, AlertCircle,
   Monitor, Smartphone, User, Layout, Award, Globe, Mail, BookOpen, ChevronLeft, ChevronDown, Check
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
@@ -169,6 +169,12 @@ export default function SiteEditorPage() {
   const [siteDetails, setSiteDetails] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
   const [designToken, setDesignToken] = useState<any>(null);
+
+  // Autosave states & refs
+  const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const autosaveTimerRef = useRef<any>(null);
+  const lastSavedRef = useRef<{ content: any; designToken: any; siteDetails: any } | null>(null);
+  const initialLoadedRef = useRef(false);
   
   const [customTemplates, setCustomTemplates] = useState<any[]>([]);
   const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
@@ -201,6 +207,7 @@ export default function SiteEditorPage() {
 
   const fetchData = async () => {
     if (!token || !activeTenantId || !siteId) return;
+    initialLoadedRef.current = false;
     try {
       setLoading(true);
       // Fetch site details
@@ -228,7 +235,7 @@ export default function SiteEditorPage() {
         seo: { title: "", description: "", favicon_url: "", og_image_url: "" }
       };
 
-      setContent({
+      const finalContent = {
         ...fallback,
         ...data,
         header: { ...fallback.header, ...data.header },
@@ -240,12 +247,22 @@ export default function SiteEditorPage() {
         contact: { ...fallback.contact, ...data.contact },
         footer: { ...fallback.footer, ...data.footer },
         seo: { ...fallback.seo, ...data.seo }
-      });
+      };
 
+      setContent(finalContent);
+
+      const fetchedDesignToken = contentRes.data?.design_token || null;
       // Load design token if available
-      if (contentRes.data?.design_token) {
-        setDesignToken(contentRes.data.design_token);
+      if (fetchedDesignToken) {
+        setDesignToken(fetchedDesignToken);
       }
+
+      // Save initial loaded state for comparison
+      lastSavedRef.current = {
+        content: finalContent,
+        designToken: fetchedDesignToken,
+        siteDetails: siteRes.data
+      };
 
       // Fetch custom templates library
       void fetchCustomTemplates(true);
@@ -374,10 +391,94 @@ export default function SiteEditorPage() {
     };
   }, [content, device]);
 
+  const performAutosave = async (currentContent: any, currentDesignToken: any, currentSiteDetails: any) => {
+    if (!token || !activeTenantId || !siteId || !currentContent || !currentSiteDetails) return;
+    try {
+      setAutosaveStatus("saving");
+
+      // Save template ID changes
+      const patchPromise = request<any>(`/sites/${siteId}`, {
+        method: "PATCH",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({
+          name: currentSiteDetails.name,
+          template_id: currentSiteDetails.template_id,
+          subdomain: currentSiteDetails.subdomain,
+        }),
+      }, token);
+
+      // Save content and design token changes
+      const putPromise = request(`/sites/${siteId}/content`, {
+        method: "PUT",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ content: currentContent, design_token: currentDesignToken ?? undefined })
+      }, token);
+
+      const [patchRes] = await Promise.all([patchPromise, putPromise]);
+
+      const updatedSiteDetails = patchRes.data || currentSiteDetails;
+      if (patchRes.data) {
+        setSiteDetails(patchRes.data);
+      }
+
+      lastSavedRef.current = {
+        content: currentContent,
+        designToken: currentDesignToken,
+        siteDetails: updatedSiteDetails
+      };
+      setAutosaveStatus("saved");
+    } catch (err: any) {
+      console.error("Autosave error:", err);
+      setAutosaveStatus("error");
+    }
+  };
+
+  useEffect(() => {
+    if (loading || !content || !siteDetails) return;
+
+    if (!initialLoadedRef.current) {
+      initialLoadedRef.current = true;
+      return;
+    }
+
+    // Compare with the last saved state to check if there are actual modifications
+    const currentStr = JSON.stringify({ content, designToken, siteDetails });
+    const lastSavedStr = JSON.stringify(lastSavedRef.current);
+    if (currentStr === lastSavedStr) {
+      return;
+    }
+
+    // Status goes to pending/idle to indicate unsaved changes exist
+    setAutosaveStatus("idle");
+
+    // Clear previous timer
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+    }
+
+    // Set 2-second debounce timer
+    autosaveTimerRef.current = setTimeout(() => {
+      void performAutosave(content, designToken, siteDetails);
+    }, 2000);
+
+    return () => {
+      if (autosaveTimerRef.current) {
+        clearTimeout(autosaveTimerRef.current);
+      }
+    };
+  }, [content, designToken, siteDetails, loading]);
+
   const handleSaveContent = async () => {
     if (!token || !activeTenantId || !siteId || !content || !siteDetails) return;
+
+    // Clear any active autosave timer
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+    }
+
     try {
       setSaving(true);
+      setAutosaveStatus("saving");
 
       // Save template ID changes
       const patchPromise = request<any>(`/sites/${siteId}`, {
@@ -399,12 +500,16 @@ export default function SiteEditorPage() {
 
       const [patchRes] = await Promise.all([patchPromise, putPromise]);
 
+      const updatedSiteDetails = patchRes.data || siteDetails;
       if (patchRes.data) {
         setSiteDetails(patchRes.data);
       }
 
+      lastSavedRef.current = { content, designToken, siteDetails: updatedSiteDetails };
+      setAutosaveStatus("saved");
       pushToast("Perubahan berhasil disimpan!", "success");
     } catch (err: any) {
+      setAutosaveStatus("error");
       pushToast(err.message || "Gagal menyimpan perubahan", "error");
     } finally {
       setSaving(false);
@@ -549,14 +654,16 @@ export default function SiteEditorPage() {
         <div className="w-[260px] flex-shrink-0 border-r border-white/10 flex flex-col overflow-hidden bg-[#05070b]">
 
           {/* Site identity */}
-          <div className="flex h-11 flex-shrink-0 items-center gap-2 border-b border-white/10 px-3">
+          <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
             <button
               onClick={() => router.push("/dashboard/sites")}
-              className="rounded-md p-1 text-slate-500 transition-colors hover:bg-white/5 hover:text-slate-200"
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
               aria-label="Kembali ke daftar situs"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5 flex-shrink-0" />
+              <span className="text-[11px] font-semibold">Kembali</span>
             </button>
+            <div className="h-5 w-px bg-white/10 flex-shrink-0" />
             <div className="min-w-0 flex-1">
               <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
               <p className="truncate text-[10px] text-slate-500">{siteDetails.subdomain}.webjoz.com</p>
@@ -1073,6 +1180,22 @@ export default function SiteEditorPage() {
 
             {/* Spacer */}
             <div className="flex-1" />
+
+            {/* Autosave status indicator */}
+            {autosaveStatus !== "idle" && (
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${
+                autosaveStatus === "saving" ? "bg-amber-500/10 text-amber-300 border border-amber-500/20" :
+                autosaveStatus === "saved" ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20" :
+                "bg-red-500/10 text-red-300 border border-red-500/20"
+              }`}>
+                {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
+                {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
+                {autosaveStatus === "saving" ? "Menyimpan..." :
+                 autosaveStatus === "saved" ? "Tersimpan otomatis" :
+                 "Gagal menyimpan"}
+              </span>
+            )}
 
             {/* Save button */}
             <button
