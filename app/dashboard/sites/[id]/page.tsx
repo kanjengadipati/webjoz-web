@@ -76,6 +76,7 @@ const isPlaceholderValue = (value: any, key = "") => {
     "placeholder",
     "lorem",
     "loremflickr.com",
+    "picsum.photos",
     "contoh",
     "cth.",
     "email@domain.com",
@@ -169,79 +170,69 @@ function TemplateThumbnail({
     text?: string;
   };
 }) {
+  const primaryColor = palette?.primary || accent || "#7C3AED";
+  const accentColor = palette?.accent || accent || "#BA7517";
+  const bgColor = palette?.background || (previewType === "brand" ? "#FAF7F2" : previewType === "catalog" ? "#0b0f19" : "#F3F4F6");
+  const surfaceColor = palette?.surface || "#FFFFFF";
+  const textColor = palette?.text || (previewType === "catalog" ? "#FFFFFF" : "#1E293B");
+
   return (
-    <div className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-white/10"} bg-slate-950`}>
+    <div 
+      className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-white/10"}`}
+      style={{ backgroundColor: bgColor }}
+    >
       {previewType === "service" && (
         <>
-          <div className="absolute inset-0 bg-slate-100" />
-          <div className="absolute left-2 top-2 h-1.5 w-10 rounded-full" style={{ backgroundColor: accent }} />
-          <div className="absolute left-2 top-5 h-2 w-20 rounded-full bg-slate-900" />
-          <div className="absolute left-2 top-8 h-1.5 w-16 rounded-full bg-slate-400" />
-          <div className="absolute bottom-2 left-2 h-3 w-12 rounded-sm" style={{ backgroundColor: accent }} />
+          <div className="absolute left-2 top-2 h-1.5 w-10 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+          <div className="absolute left-2 top-5 h-2 w-20 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.8 }} />
+          <div className="absolute left-2 top-8 h-1.5 w-16 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.4 }} />
+          <div className="absolute bottom-2 left-2 h-3 w-12 rounded-sm transition-colors" style={{ backgroundColor: accentColor }} />
           <div className="absolute bottom-2 right-2 grid w-12 grid-cols-2 gap-1">
-            <div className="h-3 rounded-sm bg-slate-200" />
-            <div className="h-3 rounded-sm bg-slate-200" />
+            <div className="h-3 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor, border: `1px solid ${textColor}15` }} />
+            <div className="h-3 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor, border: `1px solid ${textColor}15` }} />
           </div>
         </>
       )}
       {previewType === "catalog" && (
         <>
-          <div className="absolute inset-0 bg-slate-950" />
-          <div className="absolute -left-4 top-0 h-full w-16 rotate-6" style={{ backgroundColor: accent }} />
-          <div className="absolute right-2 top-3 h-2 w-16 rounded-full bg-white" />
-          <div className="absolute right-2 top-7 h-1.5 w-12 rounded-full bg-slate-400" />
+          <div className="absolute -left-4 top-0 h-full w-16 rotate-6 transition-colors" style={{ backgroundColor: primaryColor }} />
+          <div className="absolute right-2 top-3 h-2 w-16 rounded-full transition-colors" style={{ backgroundColor: textColor }} />
+          <div className="absolute right-2 top-7 h-1.5 w-12 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.4 }} />
           <div className="absolute bottom-2 right-2 grid w-16 grid-cols-3 gap-1">
-            <div className="h-4 rounded-sm bg-slate-800" />
-            <div className="h-4 rounded-sm bg-slate-800" />
-            <div className="h-4 rounded-sm bg-slate-800" />
+            <div className="h-4 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor, opacity: 0.8 }} />
+            <div className="h-4 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor, opacity: 0.8 }} />
+            <div className="h-4 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor, opacity: 0.8 }} />
           </div>
         </>
       )}
       {previewType === "brand" && (
         <>
-          <div className="absolute inset-0 bg-[#FAF7F2]" />
-          <div className="absolute inset-x-2 top-2 h-2 rounded-full bg-white" />
-          <div className="absolute left-2 top-6 h-2 w-16 rounded-full" style={{ backgroundColor: accent }} />
-          <div className="absolute left-2 top-10 h-1.5 w-20 rounded-full bg-amber-900/30" />
+          <div className="absolute inset-x-2 top-2 h-2 rounded-full transition-colors" style={{ backgroundColor: surfaceColor }} />
+          <div className="absolute left-2 top-6 h-2 w-16 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+          <div className="absolute left-2 top-10 h-1.5 w-20 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.4 }} />
           <div className="absolute bottom-2 left-2 right-2 grid grid-cols-2 gap-1">
-            <div className="h-4 rounded-sm bg-white" />
-            <div className="h-4 rounded-sm bg-white" />
+            <div className="h-4 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor }} />
+            <div className="h-4 rounded-sm transition-colors" style={{ backgroundColor: surfaceColor }} />
           </div>
         </>
       )}
-      {previewType === "dynamic" && (() => {
-        const primaryColor = palette?.primary || accent || "#7C3AED";
-        const accentColor = palette?.accent || "#BA7517";
-        const bgColor = palette?.background || "#FAF7F2";
-        const surfaceColor = palette?.surface || "#FFFFFF";
-        const textColor = palette?.text || "#2C2C2A";
-
-        return (
-          <div className="absolute inset-0 transition-colors" style={{ backgroundColor: bgColor }}>
-            {/* Header bar */}
-            <div className="absolute top-0 left-0 right-0 h-3 border-b transition-colors" style={{ backgroundColor: surfaceColor, borderColor: `${primaryColor}20` }}>
-              <div className="absolute left-1.5 top-1 h-1 w-6 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
-              <div className="absolute right-1.5 top-1 h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
-            </div>
-            
-            {/* Dummy hero title lines */}
-            <div className="absolute left-2 top-4.5 h-1 w-14 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.3 }} />
-            <div className="absolute left-2 top-6.5 h-1 w-10 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.15 }} />
-
-            {/* Dummy CTA button */}
-            <div className="absolute left-2 bottom-1.5 h-2 w-7 rounded-sm transition-colors" style={{ backgroundColor: primaryColor }} />
-
-            {/* Accent dots */}
-            <div className="absolute bottom-1.5 right-1.5 flex gap-0.5">
-              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
-              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
-              <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: textColor }} />
-            </div>
-
-            <div className="absolute bottom-1 left-2 text-[5px] font-black uppercase tracking-wider" style={{ color: textColor, opacity: 0.4 }}>AI</div>
+      {previewType === "dynamic" && (
+        <>
+          <div className="absolute top-0 left-0 right-0 h-3 border-b transition-colors" style={{ backgroundColor: surfaceColor, borderColor: `${primaryColor}20` }}>
+            <div className="absolute left-1.5 top-1 h-1 w-6 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+            <div className="absolute right-1.5 top-1 h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
           </div>
-        );
-      })()}
+          <div className="absolute left-2 top-4.5 h-1 w-14 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.3 }} />
+          <div className="absolute left-2 top-6.5 h-1 w-10 rounded-full transition-colors" style={{ backgroundColor: textColor, opacity: 0.15 }} />
+          <div className="absolute left-2 bottom-1.5 h-2 w-7 rounded-sm transition-colors" style={{ backgroundColor: primaryColor }} />
+          <div className="absolute bottom-1.5 right-1.5 flex gap-0.5">
+            <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: primaryColor }} />
+            <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: accentColor }} />
+            <div className="h-1.5 w-1.5 rounded-full transition-colors" style={{ backgroundColor: textColor }} />
+          </div>
+          <div className="absolute bottom-1 left-2 text-[5px] font-black uppercase tracking-wider" style={{ color: textColor, opacity: 0.4 }}>AI</div>
+        </>
+      )}
     </div>
   );
 }
@@ -479,6 +470,7 @@ export default function SiteEditorPage() {
 
   // Keep the sidebar section in sync while the user scrolls the preview.
   useEffect(() => {
+    if (pendingDiff) return; // Disable scrollspy sync when review is active
     const containerEl = document.getElementById("preview-scroll-container");
     if (!containerEl) return;
 
@@ -529,9 +521,25 @@ export default function SiteEditorPage() {
     syncActiveSection();
     return () => {
       if (frame) cancelAnimationFrame(frame);
-      containerEl.removeEventListener("scroll", handleScroll);
     };
-  }, [device]);
+  }, [device, pendingDiff]);
+
+  // Scroll preview to pending diff section when it changes
+  useEffect(() => {
+    if (!pendingDiff?.section) return;
+    
+    const sectionEl = document.getElementById(`section-preview-${pendingDiff.section}`);
+    const containerEl = document.getElementById("preview-scroll-container");
+    
+    if (sectionEl && containerEl) {
+      requestAnimationFrame(() => {
+        sectionEl.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      });
+    }
+  }, [pendingDiff?.section]);
 
   const performAutosave = async (currentContent: any, currentDesignToken: any, currentSiteDetails: any) => {
     if (!token || !activeTenantId || !siteId || !currentContent || !currentSiteDetails) return;
@@ -907,9 +915,9 @@ export default function SiteEditorPage() {
             </div>
             <button
               type="button"
-              onClick={() => setTemplatePickerOpen((open) => !open)}
-              disabled={templateSaving}
-              className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-60"
+              onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
+              disabled={templateSaving || !!pendingDiff}
+              className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
               aria-haspopup="listbox"
               aria-expanded={templatePickerOpen}
             >
@@ -1089,8 +1097,9 @@ export default function SiteEditorPage() {
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setSectionDropdownOpen((open) => !open)}
-                className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07]"
+                onClick={() => !pendingDiff && setSectionDropdownOpen((open) => !open)}
+                disabled={!!pendingDiff}
+                className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
                 aria-expanded={sectionDropdownOpen}
               >
@@ -1176,7 +1185,38 @@ export default function SiteEditorPage() {
                 Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
               </p>
             </div>
-            <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3">
+            <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
+              {pendingDiff ? (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400">
+                    <Sparkles className="h-6 w-6 animate-pulse" />
+                  </div>
+                  <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
+                  <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
+                    Silakan gunakan atau kembalikan perubahan AI pada seksi{" "}
+                    <span className="font-bold text-violet-300">
+                      {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
+                    </span>{" "}
+                    di bagian atas halaman preview terlebih dahulu.
+                  </p>
+                  <div className="mt-4 flex gap-2 w-full max-w-[200px]">
+                    <button
+                      type="button"
+                      onClick={applyRegeneratedSection}
+                      className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
+                    >
+                      Gunakan
+                    </button>
+                    <button
+                      type="button"
+                      onClick={restorePendingDiff}
+                      className="flex-1 rounded-md border border-white/15 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
+                    >
+                      Kembalikan
+                    </button>
+                  </div>
+                </div>
+              ) : null}
               {quality.issues.length > 0 && (
                 <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] leading-relaxed text-amber-100">
                   <div className="flex items-center justify-between gap-2">
@@ -1409,7 +1449,8 @@ export default function SiteEditorPage() {
                     key={suggestion}
                     type="button"
                     onClick={() => setAiInstructions(suggestion)}
-                    className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20"
+                    disabled={!!pendingDiff}
+                    className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
                   >
                     {suggestion}
                   </button>
@@ -1422,7 +1463,8 @@ export default function SiteEditorPage() {
                       key={instruction}
                       type="button"
                       onClick={() => setAiInstructions(instruction)}
-                      className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200"
+                      disabled={!!pendingDiff}
+                      className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
                       title={instruction}
                     >
                       {instruction}
@@ -1434,13 +1476,14 @@ export default function SiteEditorPage() {
                 type="text"
                 value={aiInstructions}
                 onChange={(e) => setAiInstructions(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleAiRegenerateSection(); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
                 placeholder={aiPlaceholder}
-                className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                disabled={aiLoading || !!pendingDiff}
+                className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
               />
               <button
                 onClick={handleAiRegenerateSection}
-                disabled={aiLoading}
+                disabled={aiLoading || !!pendingDiff}
                 className="w-full h-9 px-3 flex items-center justify-center gap-1.5 rounded-md bg-violet-50 text-violet-700 text-[12px] font-medium hover:bg-violet-100 transition-colors disabled:opacity-50 whitespace-nowrap"
               >
                 {aiLoading ? (
@@ -1588,21 +1631,72 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-2">
-            <div
-              className={`bg-white shadow-lg rounded-md overflow-hidden transition-all duration-300 w-full ${
-                device === "mobile" ? "max-w-[375px]" : "max-w-[1228px]"
-              }`}
-            >
-              <TemplateComponent
-                content={content}
-                design_token={designToken ?? null}
-                isEditorMode={true}
-                activeSection={activeTab}
-                onSelectSection={handlePreviewSelectSection}
-                onRegenSection={handleAiRegenerateForSection}
-              />
-            </div>
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-4">
+            {pendingDiff && (
+              <style dangerouslySetInnerHTML={{ __html: `
+                #preview-scroll-container div[id^="section-preview-"] {
+                  transition: all 0.3s ease-in-out;
+                }
+                #preview-scroll-container div[id^="section-preview-"]:not(#section-preview-${pendingDiff.section}) {
+                  opacity: 0.35;
+                  filter: grayscale(40%) blur(0.5px);
+                  pointer-events: none !important;
+                  cursor: not-allowed;
+                }
+                #preview-scroll-container div[id="section-preview-${pendingDiff.section}"] {
+                  position: relative;
+                  outline: 3px solid #7c3aed;
+                  outline-offset: -3px;
+                  box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+                  z-index: 10;
+                }
+              `}} />
+            )}
+
+            {device === "mobile" ? (
+              /* Premium Mobile Phone Frame Wrapper */
+              <div className="relative mx-auto my-4 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
+                {/* Speaker/Notch */}
+                <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
+                {/* Screen container */}
+                <div className="h-full w-full overflow-hidden rounded-[28px] bg-white">
+                  {/* Scaled viewport trick to trigger Tailwind responsive styles */}
+                  <div 
+                    style={{ 
+                      width: "680px", 
+                      height: "181.81%", 
+                      transform: "scale(0.55)", 
+                      transformOrigin: "top left" 
+                    }}
+                    className="overflow-y-auto h-full"
+                  >
+                    <TemplateComponent
+                      content={content}
+                      design_token={designToken ?? null}
+                      isEditorMode={true}
+                      activeSection={activeTab}
+                      onSelectSection={handlePreviewSelectSection}
+                      onRegenSection={handleAiRegenerateForSection}
+                    />
+                  </div>
+                </div>
+                {/* Home Indicator line */}
+                <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
+              </div>
+            ) : (
+              <div
+                className="bg-white shadow-lg rounded-md overflow-hidden transition-all duration-300 w-full max-w-[1228px]"
+              >
+                <TemplateComponent
+                  content={content}
+                  design_token={designToken ?? null}
+                  isEditorMode={true}
+                  activeSection={activeTab}
+                  onSelectSection={handlePreviewSelectSection}
+                  onRegenSection={handleAiRegenerateForSection}
+                />
+              </div>
+            )}
           </div>
         </div>
 

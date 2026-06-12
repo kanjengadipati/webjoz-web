@@ -350,7 +350,14 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
-          {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" alt="Hero" />}
+          {hero.image_url && (
+            <img 
+              src={hero.image_url} 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+              className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" 
+              alt="Hero" 
+            />
+          )}
           <div className="absolute inset-0 bg-[radial-gradient(#E5D5BC_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
           <div className="max-w-4xl relative z-10 space-y-6">
             <span className="px-4 py-1.5 bg-amber-100/80 text-amber-800 rounded-full text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm border border-amber-200/50">
@@ -393,16 +400,20 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <div className="relative">
             <div className="absolute -inset-2 bg-gradient-to-tr from-amber-200 to-amber-100 rounded-3xl -rotate-2 opacity-50 shadow-inner"></div>
             <div className="w-full h-80 md:h-[400px] bg-amber-100/80 border-2 border-amber-200/50 rounded-3xl shadow-lg relative z-10 overflow-hidden backdrop-blur-sm">
-              {about.image_url ? (
-                <img src={about.image_url} className="w-full h-full object-cover" alt="About" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center p-6 text-center">
-                  <div className="space-y-2">
-                    <DynamicIcon name={about.icon} defaultIcon={Utensils} className="w-12 h-12 text-amber-700 mx-auto" />
-                    <p className="font-serif italic text-amber-900 font-semibold text-lg">Indonesian Gastronomy</p>
-                    <p className="text-amber-700/85 text-sm max-w-xs">Menyajikan makanan dengan sentuhan rasa tradisional yang disiapkan sepenuh hati.</p>
-                  </div>
+              <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                <div className="space-y-2">
+                  <DynamicIcon name={about.icon} defaultIcon={Utensils} className="w-12 h-12 text-amber-700 mx-auto" />
+                  <p className="font-serif italic text-amber-900 font-semibold text-lg">Indonesian Gastronomy</p>
+                  <p className="text-amber-700/85 text-sm max-w-xs">Menyajikan makanan dengan sentuhan rasa tradisional yang disiapkan sepenuh hati.</p>
                 </div>
+              </div>
+              {about.image_url && (
+                <img 
+                  src={about.image_url} 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                  alt="About" 
+                />
               )}
             </div>
           </div>
@@ -577,7 +588,14 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-slate-50 via-slate-100/50 to-indigo-50/30 overflow-hidden">
-          {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity" alt="Hero" />}
+          {hero.image_url && (
+            <img 
+              src={hero.image_url} 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+              className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity" 
+              alt="Hero" 
+            />
+          )}
           <div className="max-w-4xl text-center space-y-6 relative z-10">
             <span className="px-4 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm">
               <Award className="w-3.5 h-3.5 text-indigo-600" />
@@ -608,20 +626,24 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <div className="relative">
             <div className="absolute -inset-4 bg-indigo-100 rounded-2xl opacity-40 shadow-inner"></div>
             <div className="w-full h-80 md:h-[400px] bg-white border border-slate-200 rounded-2xl shadow-md relative z-10 overflow-hidden">
-              {about.image_url ? (
-                <img src={about.image_url} className="w-full h-full object-cover" alt="About" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center p-8 text-center">
-                  <div className="space-y-4">
-                    <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm border border-indigo-100">
-                      <DynamicIcon name={about.icon} defaultIcon={Shield} className="w-8 h-8" />
-                    </div>
-                    <p className="font-bold text-slate-900 text-xl">Solusi Terpercaya</p>
-                    <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
-                      Kami siap memberikan panduan dan eksekusi profesional untuk mendorong kesuksesan bisnis Anda.
-                    </p>
+              <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm border border-indigo-100">
+                    <DynamicIcon name={about.icon} defaultIcon={Shield} className="w-8 h-8" />
                   </div>
+                  <p className="font-bold text-slate-900 text-xl">Solusi Terpercaya</p>
+                  <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
+                    Kami siap memberikan panduan dan eksekusi profesional untuk mendorong kesuksesan bisnis Anda.
+                  </p>
                 </div>
+              </div>
+              {about.image_url && (
+                <img 
+                  src={about.image_url} 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                  alt="About" 
+                />
               )}
             </div>
           </div>
@@ -808,7 +830,14 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden">
           <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
           {hero.image_url && <div className="absolute inset-0 bg-slate-950/80 z-0" />}
-          {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0" alt="Hero" />}
+          {hero.image_url && (
+            <img 
+              src={hero.image_url} 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0" 
+              alt="Hero" 
+            />
+          )}
           <div className="max-w-4xl text-center space-y-8 relative z-10">
             <span className="px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-semibold inline-flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
@@ -844,20 +873,24 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500 to-teal-500 rounded-3xl opacity-10 filter blur-xl"></div>
             <div className="w-full h-80 md:h-[400px] bg-slate-900/50 border border-slate-800 rounded-3xl shadow-xl relative z-10 overflow-hidden backdrop-blur-sm">
-              {about.image_url ? (
-                <img src={about.image_url} className="w-full h-full object-cover" alt="About" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center p-8 text-center">
-                  <div className="space-y-4">
-                    <div className="w-16 h-16 bg-cyan-950 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto border border-cyan-800/50 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
-                      <DynamicIcon name={about.icon} defaultIcon={Globe} className="w-8 h-8" />
-                    </div>
-                    <p className="font-bold text-white text-xl">Inovasi Global</p>
-                    <p className="text-slate-300 text-sm max-w-xs leading-relaxed">
-                      Kami membangun produk berkualitas tinggi dengan riset mendalam demi memberikan pengalaman terbaik.
-                    </p>
+              <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-cyan-950 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto border border-cyan-800/50 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                    <DynamicIcon name={about.icon} defaultIcon={Globe} className="w-8 h-8" />
                   </div>
+                  <p className="font-bold text-white text-xl">Inovasi Global</p>
+                  <p className="text-slate-300 text-sm max-w-xs leading-relaxed">
+                    Kami membangun produk berkualitas tinggi dengan riset mendalam demi memberikan pengalaman terbaik.
+                  </p>
                 </div>
+              </div>
+              {about.image_url && (
+                <img 
+                  src={about.image_url} 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                  alt="About" 
+                />
               )}
             </div>
           </div>
@@ -1237,10 +1270,14 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         <section style={{ position: "relative", minHeight: heroStyle === "minimal" ? "60vh" : "85vh", display: "flex", alignItems: "center", justifyContent: heroStyle === "split" ? "flex-start" : "center", padding: "5rem 1.5rem", background: heroStyle === "full-bleed" ? `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg)), var(--dt-bg))` : "var(--dt-bg)", overflow: "hidden" }}>
           {/* Decorative blob */}
           <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
-          {hero.image_url ? (
-            <img src={hero.image_url} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply" }} alt="Hero" />
-          ) : (
-            <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08, backgroundImage: `linear-gradient(var(--dt-primary) 1px, transparent 1px), linear-gradient(90deg, var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
+          <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08, backgroundImage: `linear-gradient(var(--dt-primary) 1px, transparent 1px), linear-gradient(90deg, var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
+          {hero.image_url && (
+            <img 
+              src={hero.image_url} 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", zIndex: 1 }} 
+              alt="Hero" 
+            />
           )}
           <div style={{ maxWidth: heroStyle === "split" ? "560px" : "800px", textAlign: heroStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: heroStyle === "split" ? "flex-start" : "center" }}>
             {(hero.badge_text || hero.launch_label) && (
@@ -1281,18 +1318,22 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <div style={{ position: "relative" }}>
             <div style={{ position: "absolute", inset: "-1rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 20%, transparent), color-mix(in srgb, var(--dt-accent) 10%, transparent))`, borderRadius: "var(--dt-radius-lg)", transform: "rotate(-2deg)", opacity: 0.5 }} />
             <div style={{ position: "relative", width: "100%", height: "320px", background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))`, border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden" }}>
-              {about.image_url ? (
-                <img src={about.image_url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="About" />
-              ) : (
-                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1rem", padding: "2rem", textAlign: "center", background: "linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, transparent), color-mix(in srgb, var(--dt-accent) 25%, transparent))", position: "relative" }}>
-                  <div style={{ position: "absolute", inset: 0, opacity: 0.1, backgroundImage: `radial-gradient(var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "16px 16px" }} />
-                  <div style={{ background: "var(--dt-surface)", width: "5rem", height: "5rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px color-mix(in srgb, var(--dt-primary) 20%, transparent)", position: "relative", zIndex: 1 }}>
-                    <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={about.icon} defaultIcon={Sparkles} className="w-8 h-8" /></span>
-                  </div>
-                  <div style={{ position: "relative", zIndex: 1, background: "color-mix(in srgb, var(--dt-surface) 50%, transparent)", backdropFilter: "blur(4px)", padding: "0.5rem 1rem", borderRadius: "2rem" }}>
-                    <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{about.title}</p>
-                  </div>
+              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1rem", padding: "2rem", textAlign: "center", background: "linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, transparent), color-mix(in srgb, var(--dt-accent) 25%, transparent))", position: "absolute", inset: 0 }}>
+                <div style={{ position: "absolute", inset: 0, opacity: 0.1, backgroundImage: `radial-gradient(var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "16px 16px" }} />
+                <div style={{ background: "var(--dt-surface)", width: "5rem", height: "5rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px color-mix(in srgb, var(--dt-primary) 20%, transparent)", position: "relative", zIndex: 1 }}>
+                  <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={about.icon} defaultIcon={Sparkles} className="w-8 h-8" /></span>
                 </div>
+                <div style={{ position: "relative", zIndex: 1, background: "color-mix(in srgb, var(--dt-surface) 50%, transparent)", backdropFilter: "blur(4px)", padding: "0.5rem 1rem", borderRadius: "2rem" }}>
+                  <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{about.title}</p>
+                </div>
+              </div>
+              {about.image_url && (
+                <img 
+                  src={about.image_url} 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }} 
+                  alt="About" 
+                />
               )}
             </div>
           </div>
