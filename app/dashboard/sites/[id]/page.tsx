@@ -1515,6 +1515,17 @@ export default function SiteEditorPage() {
               </span>
             )}
 
+            {/* Buka preview link */}
+            <a
+              href={`/s/${siteDetails.subdomain}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-6 items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <Globe className="h-3.5 w-3.5" />
+              Buka preview
+            </a>
+
             {/* Save button */}
             <button
               onClick={handleSaveContent}

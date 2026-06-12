@@ -149,7 +149,9 @@ export const PreviewSectionWrapper: React.FC<{
       }`}
     >
       {/* Label Badge */}
-      <div className="absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none">
+      <div className={`absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none transition-opacity duration-200 ${
+        isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+      }`}>
         {label}
       </div>
 
@@ -337,33 +339,15 @@ const LeadForm: React.FC<{
 // 1. TEMPLATE_KULINER01 (Cafe / Restaurant)
 // ==========================================
 export const TemplateKuliner: React.FC<TemplateProps> = ({ 
-  content, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
 
-  return (
-    <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
-      {/* Navbar mock */}
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-900 tracking-wide flex items-center gap-2">
-            <LogoImage
-              url={header?.logo_url}
-              icon={header?.icon}
-              defaultIcon={Utensils}
-              iconClass="w-5 h-5 text-amber-700"
-              imgClass="h-8 w-auto object-contain"
-            />
-            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
-          </span>
-          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
-            {header?.nav_cta_text || "Hubungi Kami"}
-          </a>
-        </header>
-      </MemoPreviewSectionWrapper>
-
-      {/* Hero Section */}
+  const sectionNodes = {
+    hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" alt="Hero" />}
@@ -397,13 +381,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* About Section */}
+    ),
+    about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-5 sm:px-6 py-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
           <div className="space-y-6">
             <span className="text-amber-800 font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
-            <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{about.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{about.title}</h2>
             <p className="text-[#6D5D50] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
           </div>
           <div className="relative">
@@ -424,14 +408,14 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Benefits Section */}
+    ),
+    benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-amber-900/5 px-5 sm:px-6 py-20 border-y border-[#EADFCB]">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-3">
               <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Keunggulan</span>
-              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{benefits.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{benefits.title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {benefits.items?.map((item, idx) => (
@@ -439,7 +423,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                   <div className="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
                     <DynamicIcon name={item.icon} defaultIcon={Star} className="w-6 h-6 fill-amber-500 stroke-amber-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-amber-950 mb-3">{item.title}</h3>
+                  <h3 className="text-xl font-bold text-amber-955 mb-3">{item.title}</h3>
                   <p className="text-[#6D5D50] text-sm leading-relaxed">{item.description}</p>
                 </div>
               ))}
@@ -447,13 +431,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* FAQ Section */}
+    ),
+    faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-20 max-w-4xl mx-auto space-y-12">
           <div className="text-center space-y-2">
             <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
-            <h2 className="text-3xl font-bold font-serif text-amber-950">{faq.title}</h2>
+            <h2 className="text-3xl font-bold font-serif text-amber-955">{faq.title}</h2>
           </div>
           <div className="space-y-4">
             {faq.items?.map((item, idx) => (
@@ -462,14 +446,14 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* CTA Section */}
+    ),
+    cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="bg-[#FAF7F2] border border-[#EADFCB] p-8 md:p-16 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-sm">
             <div className="absolute inset-0 bg-gradient-to-tr from-amber-50 to-orange-50 opacity-40"></div>
             <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{cta.headline}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{cta.headline}</h2>
               <div className="pt-4">
                 <a 
                   href={cta.button_url} 
@@ -483,13 +467,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Contact Section */}
+    ),
+    contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-20 bg-[#F4EEE0] border-t border-[#EADFCB]" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold font-serif text-amber-950">{contact.title}</h2>
+              <h2 className="text-3xl font-bold font-serif text-amber-955">{contact.title}</h2>
               <div className="space-y-4 text-amber-900">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-amber-700 mt-0.5 flex-shrink-0" />
@@ -510,7 +494,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                     href={contact.maps_url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-amber-800 underline hover:text-amber-950 inline-flex items-center gap-1.5 font-medium"
+                    className="text-amber-800 underline hover:text-amber-955 inline-flex items-center gap-1.5 font-medium"
                   >
                     <Globe className="w-4 h-4" />
                     Buka Google Maps
@@ -520,7 +504,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
             {contact.show_lead_form && onSubmitLead && (
               <div className="bg-white p-8 rounded-3xl border border-[#EADFCB] shadow-sm">
-                <h3 className="text-lg font-bold font-serif text-amber-950 mb-6">Hubungi Kami / Reservasi</h3>
+                <h3 className="text-lg font-bold font-serif text-amber-955 mb-6">Hubungi Kami / Reservasi</h3>
                 <LeadForm 
                   onSubmit={onSubmitLead}
                   submitting={leadSubmitting}
@@ -534,6 +518,32 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
+    ),
+  } as Record<string, React.ReactNode>;
+
+  return (
+    <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
+      {/* Navbar mock */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-955 tracking-wide flex items-center gap-2">
+            <LogoImage
+              url={header?.logo_url}
+              icon={header?.icon}
+              defaultIcon={Utensils}
+              iconClass="w-5 h-5 text-amber-700"
+              imgClass="h-8 w-auto object-contain"
+            />
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
+          </span>
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
+            {header?.nav_cta_text || "Hubungi Kami"}
+          </a>
+        </header>
+      </MemoPreviewSectionWrapper>
+
+      {/* Dynamic Section Order */}
+      {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -551,37 +561,20 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     </div>
   );
 };
+
 // ==========================================
 // 2. TEMPLATE_JASA02 (Agency / Consultant)
 // ==========================================
 export const TemplateJasa: React.FC<TemplateProps> = ({ 
-  content, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
 
-  return (
-    <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
-      {/* Navbar mock */}
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
-            <LogoImage
-              url={header?.logo_url}
-              icon={header?.icon}
-              defaultIcon={Sparkles}
-              iconClass="w-5 h-5 text-indigo-600"
-              imgClass="h-8 w-auto object-contain"
-            />
-            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
-          </span>
-          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
-            {header?.nav_cta_text || "Hubungi Kami"}
-          </a>
-        </header>
-      </MemoPreviewSectionWrapper>
-
-      {/* Hero Section */}
+  const sectionNodes = {
+    hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-slate-50 via-slate-100/50 to-indigo-50/30 overflow-hidden">
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity" alt="Hero" />}
@@ -608,8 +601,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* About Section */}
+    ),
+    about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
           <div className="relative">
@@ -639,8 +632,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Benefits Section */}
+    ),
+    benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-indigo-950 text-indigo-100 px-6 py-24">
           <div className="max-w-6xl mx-auto space-y-16">
@@ -669,8 +662,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* FAQ Section */}
+    ),
+    faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 max-w-4xl mx-auto space-y-16">
           <div className="text-center space-y-2">
@@ -684,8 +677,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* CTA Section */}
+    ),
+    cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-8 md:p-16 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-lg">
@@ -704,8 +697,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Contact Section */}
+    ),
+    contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 bg-slate-100 border-t border-slate-200" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -755,6 +748,32 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
+    ),
+  } as Record<string, React.ReactNode>;
+
+  return (
+    <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
+      {/* Navbar mock */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-955 tracking-wider flex items-center gap-2">
+            <LogoImage
+              url={header?.logo_url}
+              icon={header?.icon}
+              defaultIcon={Sparkles}
+              iconClass="w-5 h-5 text-indigo-600"
+              imgClass="h-8 w-auto object-contain"
+            />
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
+          </span>
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
+            {header?.nav_cta_text || "Hubungi Kami"}
+          </a>
+        </header>
+      </MemoPreviewSectionWrapper>
+
+      {/* Dynamic Section Order */}
+      {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -772,36 +791,19 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     </div>
   );
 };
+
 // 3. TEMPLATE_PRODUK03 (Brand / Product)
 // ==========================================
 export const TemplateProduk: React.FC<TemplateProps> = ({ 
-  content, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
 
-  return (
-    <div className="bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
-      {/* Navbar mock */}
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
-            <LogoImage
-              url={header?.logo_url}
-              icon={header?.icon}
-              defaultIcon={Zap}
-              iconClass="w-5 h-5 text-cyan-400 fill-cyan-400/20"
-              imgClass="h-8 w-auto object-contain"
-            />
-            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
-          </span>
-          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
-            {header?.nav_cta_text || "Hubungi Kami"}
-          </a>
-        </header>
-      </MemoPreviewSectionWrapper>
-
-      {/* Hero Section */}
+  const sectionNodes = {
+    hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden">
           <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
@@ -821,17 +823,17 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             <div className="pt-4">
               <a 
                 href={hero.cta_url} 
-                className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-950 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+                className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-955 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-955"
               >
                 {hero.cta_text}
-                <ArrowRight className="w-4 h-4 text-slate-950" />
+                <ArrowRight className="w-4 h-4 text-slate-955" />
               </a>
             </div>
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* About Section */}
+    ),
+    about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
           <div className="space-y-6">
@@ -861,8 +863,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Benefits Section */}
+    ),
+    benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-slate-900/30 border-y border-slate-900 px-6 py-28">
           <div className="max-w-6xl mx-auto space-y-16">
@@ -884,8 +886,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* FAQ Section */}
+    ),
+    faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 max-w-4xl mx-auto space-y-16">
           <div className="text-center space-y-2">
@@ -899,8 +901,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* CTA Section */}
+    ),
+    cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="relative bg-slate-900 border border-slate-800 p-8 md:p-16 rounded-3xl text-center overflow-hidden">
@@ -910,18 +912,18 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <div className="pt-4">
                 <a 
                   href={cta.button_url} 
-                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-950 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-955 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                 >
                   {cta.button_text}
-                  <ArrowRight className="w-4 h-4 text-slate-950" />
+                  <ArrowRight className="w-4 h-4 text-slate-955" />
                 </a>
               </div>
             </div>
           </div>
         </section>
       </MemoPreviewSectionWrapper>
-
-      {/* Contact Section */}
+    ),
+    contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 bg-slate-955 border-t border-slate-900" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -971,10 +973,36 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           </div>
         </section>
       </MemoPreviewSectionWrapper>
+    ),
+  } as Record<string, React.ReactNode>;
+
+  return (
+    <div className="bg-slate-955 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
+      {/* Navbar mock */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-955/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
+            <LogoImage
+              url={header?.logo_url}
+              icon={header?.icon}
+              defaultIcon={Zap}
+              iconClass="w-5 h-5 text-cyan-400 fill-cyan-400/20"
+              imgClass="h-8 w-auto object-contain"
+            />
+            <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
+          </span>
+          <a href="#contact" aria-label={`Hubungi ${header?.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+            {header?.nav_cta_text || "Hubungi Kami"}
+          </a>
+        </header>
+      </MemoPreviewSectionWrapper>
+
+      {/* Dynamic Section Order */}
+      {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <footer className="bg-slate-950 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
+        <footer className="bg-slate-955 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
           {footer?.brand_name && <p className="text-sm font-bold text-slate-400">{footer.brand_name}</p>}
           {footer?.tagline && <p className="text-slate-650">{footer.tagline}</p>}
           <p>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || 'Bisnis Kami'}. All rights reserved.`}</p>
@@ -989,7 +1017,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   );
 };
 
-// ==========================================
+// ==========================================================
 // FAQ Accordion Helper Component
 // ==========================================
 const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isDark = false }) => {
