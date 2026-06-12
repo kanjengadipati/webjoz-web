@@ -161,7 +161,7 @@ export const PreviewSectionWrapper: React.FC<{
           onRegenSection?.(section);
         }}
         className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white ${
-          isSelected ? "opacity-100 visible" : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"
+          isSelected ? "flex opacity-100 visible" : "hidden group-hover:flex"
         }`}
       >
         <Sparkles className="w-3 h-3 text-white" />
@@ -174,6 +174,8 @@ export const PreviewSectionWrapper: React.FC<{
     </div>
   );
 };
+
+const MemoPreviewSectionWrapper = React.memo(PreviewSectionWrapper);
 
 
 // ==========================================
@@ -343,7 +345,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   return (
     <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
-      <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-900 tracking-wide flex items-center gap-2">
             <LogoImage
@@ -359,10 +361,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Hero Section */}
-      <PreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" alt="Hero" />}
           <div className="absolute inset-0 bg-[radial-gradient(#E5D5BC_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
@@ -394,10 +396,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* About Section */}
-      <PreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-5 sm:px-6 py-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
           <div className="space-y-6">
             <span className="text-amber-800 font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
@@ -421,10 +423,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Benefits Section */}
-      <PreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-amber-900/5 px-5 sm:px-6 py-20 border-y border-[#EADFCB]">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-3">
@@ -444,10 +446,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* FAQ Section */}
-      <PreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-20 max-w-4xl mx-auto space-y-12">
           <div className="text-center space-y-2">
             <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
@@ -459,10 +461,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             ))}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* CTA Section */}
-      <PreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="bg-[#FAF7F2] border border-[#EADFCB] p-8 md:p-16 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-sm">
             <div className="absolute inset-0 bg-gradient-to-tr from-amber-50 to-orange-50 opacity-40"></div>
@@ -480,10 +482,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Contact Section */}
-      <PreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-20 bg-[#F4EEE0] border-t border-[#EADFCB]" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-6">
@@ -531,20 +533,20 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             )}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Footer */}
-      <PreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
           {footer?.brand_name && <p className="text-sm font-bold text-amber-100">{footer.brand_name}</p>}
           {footer?.tagline && <p className="text-amber-100/50">{footer.tagline}</p>}
           <p>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || 'Bisnis Kami'}. All rights reserved.`}</p>
         </footer>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
       {isEditorMode && (
-        <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <SeoEditorPreview seo={seo} />
-        </PreviewSectionWrapper>
+        </MemoPreviewSectionWrapper>
       )}
     </div>
   );
@@ -561,7 +563,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   return (
     <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
-      <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
             <LogoImage
@@ -577,10 +579,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Hero Section */}
-      <PreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-slate-50 via-slate-100/50 to-indigo-50/30 overflow-hidden">
           {hero.image_url && <img src={hero.image_url} className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity" alt="Hero" />}
           <div className="max-w-4xl text-center space-y-6 relative z-10">
@@ -605,10 +607,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* About Section */}
-      <PreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
           <div className="relative">
             <div className="absolute -inset-4 bg-indigo-100 rounded-2xl opacity-40 shadow-inner"></div>
@@ -636,10 +638,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <p className="text-slate-600 leading-relaxed text-justify whitespace-pre-line">{about.body}</p>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Benefits Section */}
-      <PreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-indigo-950 text-indigo-100 px-6 py-24">
           <div className="max-w-6xl mx-auto space-y-16">
             <div className="text-center space-y-3">
@@ -666,10 +668,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* FAQ Section */}
-      <PreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 max-w-4xl mx-auto space-y-16">
           <div className="text-center space-y-2">
             <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">Solusi Pertanyaan</span>
@@ -681,10 +683,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             ))}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* CTA Section */}
-      <PreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-8 md:p-16 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-lg">
             <div className="relative z-10 max-w-2xl mx-auto space-y-4">
@@ -701,10 +703,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Contact Section */}
-      <PreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-24 bg-slate-100 border-t border-slate-200" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="space-y-6">
@@ -752,20 +754,20 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             )}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Footer */}
-      <PreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <footer className="bg-slate-900 text-slate-400 text-center py-10 text-xs border-t border-slate-200 space-y-1">
           {footer?.brand_name && <p className="text-sm font-bold text-slate-200">{footer.brand_name}</p>}
           {footer?.tagline && <p className="text-slate-500">{footer.tagline}</p>}
           <p>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || 'Bisnis Kami'}. All rights reserved.`}</p>
         </footer>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
       {isEditorMode && (
-        <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <SeoEditorPreview seo={seo} />
-        </PreviewSectionWrapper>
+        </MemoPreviewSectionWrapper>
       )}
     </div>
   );
@@ -781,7 +783,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   return (
     <div className="bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
-      <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
             <LogoImage
@@ -797,10 +799,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Hero Section */}
-      <PreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden">
           <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
           {hero.image_url && <div className="absolute inset-0 bg-slate-950/80 z-0" />}
@@ -827,10 +829,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* About Section */}
-      <PreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
           <div className="space-y-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 font-extrabold tracking-wider uppercase text-xs">Misi Kami</span>
@@ -858,10 +860,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Benefits Section */}
-      <PreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="bg-slate-900/30 border-y border-slate-900 px-6 py-28">
           <div className="max-w-6xl mx-auto space-y-16">
             <div className="text-center space-y-3">
@@ -881,10 +883,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* FAQ Section */}
-      <PreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 max-w-4xl mx-auto space-y-16">
           <div className="text-center space-y-2">
             <span className="text-cyan-400 font-extrabold tracking-wider uppercase text-xs">Pusat Bantuan</span>
@@ -896,10 +898,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             ))}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* CTA Section */}
-      <PreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-16 max-w-6xl mx-auto">
           <div className="relative bg-slate-900 border border-slate-800 p-8 md:p-16 rounded-3xl text-center overflow-hidden">
             <div className="absolute top-0 right-0 w-[400px] h-[200px] bg-cyan-500/5 rounded-full filter blur-[50px] md:blur-[100px]"></div>
@@ -917,10 +919,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Contact Section */}
-      <PreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section className="px-6 py-28 bg-slate-955 border-t border-slate-900" id="contact">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="space-y-6">
@@ -968,20 +970,20 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             )}
           </div>
         </section>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Footer */}
-      <PreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <footer className="bg-slate-950 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
           {footer?.brand_name && <p className="text-sm font-bold text-slate-400">{footer.brand_name}</p>}
           {footer?.tagline && <p className="text-slate-650">{footer.tagline}</p>}
           <p>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || 'Bisnis Kami'}. All rights reserved.`}</p>
         </footer>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
       {isEditorMode && (
-        <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <SeoEditorPreview seo={seo} />
-        </PreviewSectionWrapper>
+        </MemoPreviewSectionWrapper>
       )}
     </div>
   );
@@ -1203,11 +1205,15 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   // Section renderers
   const renderSection = (key: string) => {
     switch (key) {
-      case "hero": return <PreviewSectionWrapper key="hero" section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "hero": return <MemoPreviewSectionWrapper key="hero" section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section style={{ position: "relative", minHeight: heroStyle === "minimal" ? "60vh" : "85vh", display: "flex", alignItems: "center", justifyContent: heroStyle === "split" ? "flex-start" : "center", padding: "5rem 1.5rem", background: heroStyle === "full-bleed" ? `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg)), var(--dt-bg))` : "var(--dt-bg)", overflow: "hidden" }}>
           {/* Decorative blob */}
           <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
-          {hero.image_url && <img src={hero.image_url} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply" }} alt="Hero" />}
+          {hero.image_url ? (
+            <img src={hero.image_url} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply" }} alt="Hero" />
+          ) : (
+            <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08, backgroundImage: `linear-gradient(var(--dt-primary) 1px, transparent 1px), linear-gradient(90deg, var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
+          )}
           <div style={{ maxWidth: heroStyle === "split" ? "560px" : "800px", textAlign: heroStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: heroStyle === "split" ? "flex-start" : "center" }}>
             {(hero.badge_text || hero.launch_label) && (
               <span className="px-2.5 py-1 md:px-3.5 md:py-1.5 text-[10px] md:text-xs font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "9999px", color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
@@ -1235,9 +1241,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             </a>
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
-      case "about": return <PreviewSectionWrapper key="about" section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "about": return <MemoPreviewSectionWrapper key="about" section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section id="about" className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Mengenal Kami</span>
@@ -1250,17 +1256,22 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
               {about.image_url ? (
                 <img src={about.image_url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="About" />
               ) : (
-                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "0.75rem", padding: "2rem", textAlign: "center" }}>
-                  <span style={{ color: "var(--dt-primary)", display: "block" }}><DynamicIcon name={about.icon} defaultIcon={Sparkles} className="w-10 h-10 mx-auto" /></span>
-                  <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 600, color: "var(--dt-text)", fontSize: "1.1rem" }}>{about.title}</p>
+                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1rem", padding: "2rem", textAlign: "center", background: "linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, transparent), color-mix(in srgb, var(--dt-accent) 25%, transparent))", position: "relative" }}>
+                  <div style={{ position: "absolute", inset: 0, opacity: 0.1, backgroundImage: `radial-gradient(var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "16px 16px" }} />
+                  <div style={{ background: "var(--dt-surface)", width: "5rem", height: "5rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px color-mix(in srgb, var(--dt-primary) 20%, transparent)", position: "relative", zIndex: 1 }}>
+                    <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={about.icon} defaultIcon={Sparkles} className="w-8 h-8" /></span>
+                  </div>
+                  <div style={{ position: "relative", zIndex: 1, background: "color-mix(in srgb, var(--dt-surface) 50%, transparent)", backdropFilter: "blur(4px)", padding: "0.5rem 1rem", borderRadius: "2rem" }}>
+                    <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{about.title}</p>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
-      case "benefits": return <PreviewSectionWrapper key="benefits" section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "benefits": return <MemoPreviewSectionWrapper key="benefits" section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
           <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -1290,9 +1301,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
-      case "faq": return <PreviewSectionWrapper key="faq" section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "faq": return <MemoPreviewSectionWrapper key="faq" section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
             <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
@@ -1302,9 +1313,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             {faq.items?.map((item, idx) => <DynamicFaqAccordion key={idx} item={item} />)}
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
-      case "cta": return <PreviewSectionWrapper key="cta" section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "cta": return <MemoPreviewSectionWrapper key="cta" section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
           <div className="px-4 py-8 md:px-8 md:py-16" style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", textAlign: "center", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: "-30%", right: "-10%", width: "50%", height: "150%", background: "rgba(255,255,255,0.06)", borderRadius: "50%", pointerEvents: "none" }} />
@@ -1319,9 +1330,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             </div>
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
-      case "contact": return <PreviewSectionWrapper key="contact" section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      case "contact": return <MemoPreviewSectionWrapper key="contact" section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <section id="contact" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12" style={{ maxWidth: "72rem", margin: "0 auto" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -1352,16 +1363,31 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             )}
           </div>
         </section>
-      </PreviewSectionWrapper>;
+      </MemoPreviewSectionWrapper>;
 
       default: return null;
     }
   };
 
+  const sectionNodes = {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    hero: React.useMemo(() => renderSection("hero"), [hero, heroStyle, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    about: React.useMemo(() => renderSection("about"), [about, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    benefits: React.useMemo(() => renderSection("benefits"), [benefits, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    faq: React.useMemo(() => renderSection("faq"), [faq, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    cta: React.useMemo(() => renderSection("cta"), [cta, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    contact: React.useMemo(() => renderSection("contact"), [contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, activeSection, onSelectSection, onRegenSection, isEditorMode]),
+  } as Record<string, React.ReactNode>;
+
   return (
     <div style={rootStyle}>
       {/* Header */}
-      <PreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
           <span className="flex items-center gap-1.5 md:gap-2 min-w-0 text-sm md:text-lg font-bold" style={{ display: "flex", alignItems: "center", fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>
             <LogoImage url={header?.logo_url} icon={header?.icon} defaultIcon={Sparkles} iconClass="" imgClass="h-8 w-auto object-contain" />
@@ -1374,24 +1400,24 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             {header?.nav_cta_text || "Hubungi Kami"}
           </a>
         </header>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {/* Dynamic Section Order */}
-      {sectionOrder.map((key) => renderSection(key))}
+      {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
       {/* Footer */}
-      <PreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <footer style={{ background: "color-mix(in srgb, var(--dt-text) 90%, transparent)", color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "2.5rem 1.5rem", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
           {footer?.brand_name && <p style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: 0 }}>{footer.brand_name}</p>}
           {footer?.tagline && <p style={{ color: "rgba(255,255,255,0.4)", margin: 0 }}>{footer.tagline}</p>}
           <p style={{ margin: 0 }}>{footer?.copyright_text || `© ${new Date().getFullYear()} ${header?.brand_name || "Bisnis Kami"}. All rights reserved.`}</p>
         </footer>
-      </PreviewSectionWrapper>
+      </MemoPreviewSectionWrapper>
 
       {isEditorMode && (
-        <PreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <SeoEditorPreview seo={seo} />
-        </PreviewSectionWrapper>
+        </MemoPreviewSectionWrapper>
       )}
     </div>
   );

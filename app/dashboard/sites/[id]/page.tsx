@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { 
   Save, Loader2, Sparkles,
   HelpCircle, Plus, AlertCircle,
-  Monitor, Smartphone, User, Layout, Award, Globe, Mail, BookOpen, ChevronLeft, ChevronDown, Check
+  Monitor, Smartphone, User, Layout, Award, Globe, Mail, BookOpen, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -30,7 +30,125 @@ const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-const EDITOR_SECTION_KEYS = ["header", "hero", "about", "benefits", "faq", "cta", "contact", "footer", "seo"];
+const BODY_SECTION_KEYS = ["hero", "about", "benefits", "cta", "faq", "contact"];
+const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo"];
+
+const SECTION_META: Record<string, { label: string; icon: any }> = {
+  header: { label: "Header", icon: Layout },
+  hero: { label: "Hero", icon: Layout },
+  about: { label: "Tentang", icon: User },
+  benefits: { label: "Keunggulan", icon: Award },
+  faq: { label: "FAQ", icon: HelpCircle },
+  cta: { label: "CTA", icon: Sparkles },
+  contact: { label: "Kontak", icon: Mail },
+  footer: { label: "Footer", icon: BookOpen },
+  seo: { label: "SEO", icon: Globe },
+};
+
+const AI_SUGGESTIONS: Record<string, string[]> = {
+  header: ["Buat brand terasa lebih premium", "CTA nav lebih jelas untuk WhatsApp", "Ringkas nama brand agar mudah diingat"],
+  hero: ["Buat hero lebih emosional dan menggugah", "Tekankan masalah utama pelanggan", "Buat CTA lebih spesifik dan mendesak"],
+  about: ["Jadikan cerita bisnis lebih hangat", "Tambahkan alasan kenapa pelanggan percaya", "Buat narasi lebih lokal dan manusiawi"],
+  benefits: ["Ubah benefit menjadi hasil nyata", "Tambahkan bukti angka jika memungkinkan", "Buat tiap poin lebih singkat dan tajam"],
+  faq: ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
+  cta: ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Arahkan ke aksi WhatsApp yang jelas"],
+  contact: ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
+  footer: ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
+  seo: ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy"],
+};
+
+const getOrderedSections = (designToken: any) => {
+  const tokenOrder = Array.isArray(designToken?.layout?.section_order)
+    ? designToken.layout.section_order.filter((key: string) => BODY_SECTION_KEYS.includes(key))
+    : [];
+  const bodyOrder = [...tokenOrder, ...BODY_SECTION_KEYS.filter((key) => !tokenOrder.includes(key))];
+  return ["header", ...bodyOrder, "footer", "seo"];
+};
+
+const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
+
+const isPlaceholderValue = (value: any, key = "") => {
+  if (typeof value !== "string") return false;
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return true;
+  if (["cta_url", "button_url"].includes(key) && !/^https?:\/\/|^#|^mailto:|^tel:|^whatsapp:/i.test(value.trim())) return true;
+  return [
+    "placeholder",
+    "lorem",
+    "loremflickr.com",
+    "contoh",
+    "cth.",
+    "email@domain.com",
+    "you@mail.com",
+    "08xx",
+    "08123456789",
+    "alamat",
+    "https://...",
+  ].some((needle) => normalized.includes(needle));
+};
+
+const collectQualityIssues = (content: any) => {
+  const fields: Array<{ path: string; label: string; value: any; required?: boolean }> = [
+    { path: "header.brand_name", label: "Nama brand", value: content?.header?.brand_name, required: true },
+    { path: "header.nav_cta_text", label: "CTA navigasi", value: content?.header?.nav_cta_text, required: true },
+    { path: "hero.headline", label: "Headline hero", value: content?.hero?.headline, required: true },
+    { path: "hero.subheadline", label: "Subheadline hero", value: content?.hero?.subheadline, required: true },
+    { path: "hero.cta_text", label: "Teks CTA hero", value: content?.hero?.cta_text, required: true },
+    { path: "hero.cta_url", label: "URL CTA hero", value: content?.hero?.cta_url, required: true },
+    { path: "about.title", label: "Judul tentang", value: content?.about?.title, required: true },
+    { path: "about.body", label: "Deskripsi tentang", value: content?.about?.body, required: true },
+    { path: "benefits.title", label: "Judul benefit", value: content?.benefits?.title, required: true },
+    { path: "cta.headline", label: "Headline CTA", value: content?.cta?.headline, required: true },
+    { path: "cta.button_text", label: "Teks tombol CTA", value: content?.cta?.button_text, required: true },
+    { path: "cta.button_url", label: "URL tombol CTA", value: content?.cta?.button_url, required: true },
+    { path: "contact.title", label: "Judul kontak", value: content?.contact?.title, required: true },
+    { path: "contact.address", label: "Alamat", value: content?.contact?.address, required: true },
+    { path: "contact.phone", label: "Nomor WhatsApp", value: content?.contact?.phone, required: true },
+    { path: "contact.email", label: "Email", value: content?.contact?.email },
+    { path: "seo.title", label: "SEO title", value: content?.seo?.title },
+    { path: "seo.description", label: "SEO description", value: content?.seo?.description },
+  ];
+
+  (content?.benefits?.items || []).forEach((item: any, idx: number) => {
+    fields.push({ path: `benefits.items.${idx}.title`, label: `Benefit #${idx + 1}`, value: item?.title, required: true });
+    fields.push({ path: `benefits.items.${idx}.description`, label: `Deskripsi benefit #${idx + 1}`, value: item?.description, required: true });
+  });
+  (content?.faq?.items || []).forEach((item: any, idx: number) => {
+    fields.push({ path: `faq.items.${idx}.question`, label: `Pertanyaan FAQ #${idx + 1}`, value: item?.question, required: true });
+    fields.push({ path: `faq.items.${idx}.answer`, label: `Jawaban FAQ #${idx + 1}`, value: item?.answer, required: true });
+  });
+
+  const issues = fields.filter((field) => field.required || typeof field.value === "string").filter((field) => {
+    const parts = field.path.split(".");
+    return isPlaceholderValue(field.value, parts[parts.length - 1]);
+  });
+  const score = fields.length ? Math.max(0, Math.round(((fields.length - issues.length) / fields.length) * 100)) : 100;
+  return { score, issues };
+};
+
+const summarizeDiff = (before: any, after: any) => {
+  const rows: Array<{ label: string; before: string; after: string }> = [];
+  const walk = (oldVal: any, newVal: any, path: string[] = []) => {
+    if (rows.length >= 8) return;
+    if (typeof oldVal === "string" || typeof newVal === "string") {
+      if ((oldVal || "") !== (newVal || "")) {
+        rows.push({ label: path.join(" > "), before: oldVal || "", after: newVal || "" });
+      }
+      return;
+    }
+    if (Array.isArray(oldVal) || Array.isArray(newVal)) {
+      const max = Math.max(oldVal?.length || 0, newVal?.length || 0);
+      for (let i = 0; i < max; i += 1) walk(oldVal?.[i], newVal?.[i], [...path, `#${i + 1}`]);
+      return;
+    }
+    if (oldVal && newVal && typeof oldVal === "object" && typeof newVal === "object") {
+      const keys = Array.from(new Set([...Object.keys(oldVal), ...Object.keys(newVal)]));
+      keys.forEach((key) => walk(oldVal[key], newVal[key], [...path, key]));
+    }
+  };
+  walk(before, after);
+  return rows;
+};
 
 function TemplateThumbnail({
   previewType,
@@ -159,6 +277,7 @@ export default function SiteEditorPage() {
   const [sectionDropdownOpen, setSectionDropdownOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("header");
+  const [draggingSection, setDraggingSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
@@ -169,6 +288,18 @@ export default function SiteEditorPage() {
   const [siteDetails, setSiteDetails] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
   const [designToken, setDesignToken] = useState<any>(null);
+  const contentRef = useRef<any>(null);
+  const designTokenRef = useRef<any>(null);
+  const [latestAiDesignToken, setLatestAiDesignToken] = useState<any>(null);
+  const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
+  const [pendingDiff, setPendingDiff] = useState<{
+    section: string;
+    before: any;
+    after: any;
+    previousDesignToken: any;
+    nextDesignToken: any;
+    rows: Array<{ label: string; before: string; after: string }>;
+  } | null>(null);
 
   // Autosave states & refs
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -204,6 +335,7 @@ export default function SiteEditorPage() {
 
   // AI instructions state
   const [aiInstructions, setAiInstructions] = useState("");
+  const [recentInstructions, setRecentInstructions] = useState<string[]>([]);
 
   const fetchData = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -255,6 +387,7 @@ export default function SiteEditorPage() {
       // Load design token if available
       if (fetchedDesignToken) {
         setDesignToken(fetchedDesignToken);
+        setLatestAiDesignToken(fetchedDesignToken);
       }
 
       // Save initial loaded state for comparison
@@ -285,6 +418,14 @@ export default function SiteEditorPage() {
   }, [activeTab]);
 
   useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  useEffect(() => {
+    designTokenRef.current = designToken;
+  }, [designToken]);
+
+  useEffect(() => {
     if (!templatePickerOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -310,11 +451,11 @@ export default function SiteEditorPage() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [sectionDropdownOpen]);
 
-  const selectSection = (section: string, scrollToPreview = true) => {
+  const selectSection = useCallback((section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
     activeTabRef.current = section;
     setActiveTab(section);
-  };
+  }, []);
 
   // Scroll preview to active section
   useEffect(() => {
@@ -352,7 +493,7 @@ export default function SiteEditorPage() {
         const sectionEl = document.getElementById(`section-preview-${section}`);
         if (!sectionEl) continue;
         const top = sectionEl.getBoundingClientRect().top - containerRect.top;
-        if (top <= 140 && top > bestTop) {
+        if (top <= 60 && top > bestTop) {
           bestTop = top;
           nextSection = section;
         }
@@ -384,12 +525,13 @@ export default function SiteEditorPage() {
     };
 
     containerEl.addEventListener("scroll", handleScroll, { passive: true });
+    // Run once on mount or device change
     syncActiveSection();
     return () => {
       if (frame) cancelAnimationFrame(frame);
       containerEl.removeEventListener("scroll", handleScroll);
     };
-  }, [content, device]);
+  }, [device]);
 
   const performAutosave = async (currentContent: any, currentDesignToken: any, currentSiteDetails: any) => {
     if (!token || !activeTenantId || !siteId || !currentContent || !currentSiteDetails) return;
@@ -529,8 +671,74 @@ export default function SiteEditorPage() {
     }
   };
 
-  const handleAiRegenerateForSection = async (section: string, customInstructions?: string) => {
-    if (!token || !activeTenantId || !siteId || !content) return;
+  const rememberInstruction = (instruction: string) => {
+    const clean = instruction.trim();
+    if (!clean) return;
+    setRecentInstructions((current) => [clean, ...current.filter((item) => item !== clean)].slice(0, 5));
+  };
+
+  const applyRegeneratedSection = () => {
+    if (!pendingDiff || !content) return;
+    setUndoStack((current) => [
+      {
+        section: pendingDiff.section,
+        previousContent: cloneData(content),
+        previousDesignToken: cloneData(designToken),
+      },
+      ...current,
+    ].slice(0, 3));
+    setContent({
+      ...content,
+      [pendingDiff.section]: pendingDiff.after,
+    });
+    if (pendingDiff.nextDesignToken) {
+      setDesignToken(pendingDiff.nextDesignToken);
+      setLatestAiDesignToken(pendingDiff.nextDesignToken);
+    }
+    setPendingDiff(null);
+    pushToast(`Hasil AI untuk ${pendingDiff.section} dipakai.`, "success");
+  };
+
+  const restorePendingDiff = () => {
+    if (!pendingDiff) return;
+    if (pendingDiff.previousDesignToken) {
+      setDesignToken(pendingDiff.previousDesignToken);
+    }
+    setPendingDiff(null);
+    pushToast("Hasil AI dibatalkan.", "info");
+  };
+
+  const undoLastRegen = () => {
+    const latest = undoStack[0];
+    if (!latest) return;
+    setContent(latest.previousContent);
+    setDesignToken(latest.previousDesignToken);
+    setUndoStack((current) => current.slice(1));
+    selectSection(latest.section, true);
+    pushToast(`Perubahan AI pada ${latest.section} dikembalikan.`, "success");
+  };
+
+  const handleReorderSection = (source: string, target: string) => {
+    if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
+    const currentOrder = getOrderedSections(designToken).filter((key) => BODY_SECTION_KEYS.includes(key));
+    const nextOrder = [...currentOrder];
+    const from = nextOrder.indexOf(source);
+    const to = nextOrder.indexOf(target);
+    if (from < 0 || to < 0) return;
+    nextOrder.splice(from, 1);
+    nextOrder.splice(to, 0, source);
+    setDesignToken({
+      ...(designToken || {}),
+      layout: {
+        ...(designToken?.layout || {}),
+        section_order: nextOrder,
+      },
+    });
+  };
+
+  const handleAiRegenerateForSection = useCallback(async (section: string, customInstructions?: string) => {
+    const currentContent = contentRef.current;
+    if (!token || !activeTenantId || !siteId || !currentContent) return;
     
     let instructions = customInstructions || aiInstructions;
     if (!instructions.trim()) {
@@ -552,11 +760,25 @@ export default function SiteEditorPage() {
       }, token);
 
       if (res.status === "success" && res.data) {
-        setContent({
-          ...content,
-          [section]: stripRegeneratedMarkers(res.data)
+        const sectionData = stripRegeneratedMarkers(res.data.section !== undefined ? res.data.section : res.data);
+        const newDesignToken = res.data.design_token;
+        const diffRows = summarizeDiff(currentContent[section], sectionData);
+        if (diffRows.length === 0) {
+          pushToast("AI belum menghasilkan perubahan nyata.", "info", {
+            message: "Coba instruksi yang lebih spesifik, misalnya: ubah jadi headline emosional, maksimal 8 kata, dan hilangkan teks input mentah.",
+          });
+          return;
+        }
+        rememberInstruction(instructions);
+        setPendingDiff({
+          section,
+          before: cloneData(currentContent[section]),
+          after: sectionData,
+          previousDesignToken: cloneData(designTokenRef.current),
+          nextDesignToken: newDesignToken || null,
+          rows: diffRows,
         });
-        pushToast(`Bagian ${section} berhasil diperbarui oleh AI!`, "success");
+        pushToast(`AI selesai menulis ${section}. Cek diff sebelum dipakai.`, "success");
         setAiInstructions("");
       } else {
         throw new Error(res.message || "AI gagal memproses.");
@@ -566,7 +788,9 @@ export default function SiteEditorPage() {
     } finally {
       setAiLoading(false);
     }
-  };
+  }, [activeTenantId, aiInstructions, pushToast, siteId, token]);
+
+  const handlePreviewSelectSection = useCallback((section: string) => selectSection(section, false), [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
 
@@ -605,18 +829,23 @@ export default function SiteEditorPage() {
     );
   }
 
-  // Section definitions for sidebar
-  const SECTIONS = [
-    { key: "header", label: "Header", icon: Layout, num: 1 },
-    { key: "hero", label: "Hero", icon: Layout, num: 2 },
-    { key: "about", label: "Tentang", icon: User, num: 3 },
-    { key: "benefits", label: "Keunggulan", icon: Award, num: 4 },
-    { key: "faq", label: "FAQ", icon: HelpCircle, num: 5 },
-    { key: "cta", label: "CTA", icon: Sparkles, num: 6 },
-    { key: "contact", label: "Kontak", icon: Mail, num: 7 },
-    { key: "footer", label: "Footer", icon: BookOpen, num: 8 },
-    { key: "seo", label: "SEO", icon: Globe, num: 9 },
-  ];
+  const orderedSectionKeys = getOrderedSections(designToken);
+  const SECTIONS = orderedSectionKeys.map((key, idx) => ({
+    key,
+    label: SECTION_META[key]?.label ?? key,
+    icon: SECTION_META[key]?.icon ?? Layout,
+    num: idx + 1,
+  }));
+  const quality = collectQualityIssues(content);
+  const issuePaths = new Set(quality.issues.map((issue) => issue.path));
+  const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
+  const aiPlaceholder = activeSuggestions[0] || "Buat copy lebih jelas dan meyakinkan...";
+  const fieldClass = (path: string, base: string) => `${base} ${
+    issuePaths.has(path)
+      ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
+      : ""
+  }`;
+  const needsAttention = (path: string) => issuePaths.has(path);
   const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
   const TemplateComponent = currentTemplate.component;
   const dynamicTemplate = TEMPLATE_REGISTRY.find(t => t.id === "TEMPLATE_DYNAMIC");
@@ -703,7 +932,7 @@ export default function SiteEditorPage() {
                     <button
                       key="top-dynamic-template"
                       type="button"
-                      onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC")}
+                      onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                       disabled={templateSaving}
                       className={`group w-full rounded-xl border p-2 text-left transition ${
                         isTopActive
@@ -715,9 +944,9 @@ export default function SiteEditorPage() {
                     >
                       <TemplateThumbnail 
                         previewType="dynamic" 
-                        accent={designToken?.palette?.primary || dynamicTemplate.accent} 
+                        accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} 
                         active={isTopActive} 
-                        palette={designToken?.palette}
+                        palette={latestAiDesignToken?.palette}
                       />
                       <div className="mt-2 flex items-start gap-2">
                         <div className="min-w-0 flex-1">
@@ -855,6 +1084,7 @@ export default function SiteEditorPage() {
           <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
             <div className="mb-1.5 flex items-center justify-between">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
+              <span className="text-[9px] font-semibold text-slate-600">Drag untuk urutan</span>
             </div>
             <div className="relative">
               <button
@@ -887,6 +1117,26 @@ export default function SiteEditorPage() {
                   {SECTIONS.map(({ key, label, icon: Icon, num }) => (
                     <button
                       key={key}
+                      type="button"
+                      draggable={BODY_SECTION_KEYS.includes(key)}
+                      onDragStart={(event) => {
+                        if (!BODY_SECTION_KEYS.includes(key)) return;
+                        setDraggingSection(key);
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", key);
+                      }}
+                      onDragOver={(event) => {
+                        if (!draggingSection || !BODY_SECTION_KEYS.includes(key)) return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        const source = event.dataTransfer.getData("text/plain") || draggingSection;
+                        if (source) handleReorderSection(source, key);
+                        setDraggingSection(null);
+                      }}
+                      onDragEnd={() => setDraggingSection(null)}
                       onClick={() => {
                         selectSection(key, true);
                         setSectionDropdownOpen(false);
@@ -894,12 +1144,15 @@ export default function SiteEditorPage() {
                       className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
                         activeTab === key
                           ? "bg-violet-600 text-white font-semibold shadow-sm"
+                          : draggingSection === key
+                          ? "bg-violet-500/20 text-violet-100"
                           : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
                       }`}
                       role="option"
                       aria-selected={activeTab === key}
                     >
                       <div className="flex items-center gap-2">
+                        <GripVertical className={`h-3.5 w-3.5 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
                         <Icon className={`w-4 h-4 ${activeTab === key ? "text-white" : "text-slate-400"}`} />
                         <span className="text-[13px]">{label}</span>
                       </div>
@@ -924,17 +1177,29 @@ export default function SiteEditorPage() {
               </p>
             </div>
             <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3">
+              {quality.issues.length > 0 && (
+                <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] leading-relaxed text-amber-100">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold">⚠️ {quality.issues.length} field perlu dicek</span>
+                    <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
+                  </div>
+                  <p className="mt-1 truncate text-amber-100/75">
+                    {quality.issues.slice(0, 3).map((issue) => issue.label).join(", ")}
+                    {quality.issues.length > 3 ? ` +${quality.issues.length - 3} lainnya` : ""}
+                  </p>
+                </div>
+              )}
 
               {/* HEADER FORM */}
               {activeTab === "header" && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Brand</label>
-                    <input type="text" value={content.header?.brand_name || ""} onChange={(e) => updateField("header", "brand_name", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.header?.brand_name || ""} onChange={(e) => updateField("header", "brand_name", e.target.value)} className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol Nav</label>
-                    <input type="text" value={content.header?.nav_cta_text || ""} onChange={(e) => updateField("header", "nav_cta_text", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.header?.nav_cta_text || ""} onChange={(e) => updateField("header", "nav_cta_text", e.target.value)} className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Logo URL</label>
@@ -956,20 +1221,20 @@ export default function SiteEditorPage() {
                 <div className="space-y-3">
                   <FileUpload label="Gambar Hero" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Headline</label>
-                    <input type="text" value={content.hero.headline} onChange={(e) => updateField("hero", "headline", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.hero.headline} onChange={(e) => updateField("hero", "headline", e.target.value)} className={fieldClass("hero.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subheadline</label>
-                    <textarea rows={2} value={content.hero.subheadline} onChange={(e) => updateField("hero", "subheadline", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}</label>
+                    <textarea rows={2} value={content.hero.subheadline} onChange={(e) => updateField("hero", "subheadline", e.target.value)} className={fieldClass("hero.subheadline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol CTA</label>
-                    <input type="text" value={content.hero.cta_text} onChange={(e) => updateField("hero", "cta_text", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.hero.cta_text} onChange={(e) => updateField("hero", "cta_text", e.target.value)} className={fieldClass("hero.cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Tombol CTA</label>
-                    <input type="text" value={content.hero.cta_url} onChange={(e) => updateField("hero", "cta_url", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Tombol CTA {needsAttention("hero.cta_url") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.hero.cta_url} onChange={(e) => updateField("hero", "cta_url", e.target.value)} className={fieldClass("hero.cta_url", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                 </div>
               )}
@@ -979,12 +1244,12 @@ export default function SiteEditorPage() {
                 <div className="space-y-3">
                   <FileUpload label="Gambar Tentang" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul</label>
-                    <input type="text" value={content.about.title} onChange={(e) => updateField("about", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.about.title} onChange={(e) => updateField("about", "title", e.target.value)} className={fieldClass("about.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi</label>
-                    <textarea rows={3} value={content.about.body} onChange={(e) => updateField("about", "body", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}</label>
+                    <textarea rows={3} value={content.about.body} onChange={(e) => updateField("about", "body", e.target.value)} className={fieldClass("about.body", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} />
                   </div>
                 </div>
               )}
@@ -993,8 +1258,8 @@ export default function SiteEditorPage() {
               {activeTab === "benefits" && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
-                    <input type="text" value={content.benefits.title} onChange={(e) => updateField("benefits", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.benefits.title} onChange={(e) => updateField("benefits", "title", e.target.value)} className={fieldClass("benefits.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   {content.benefits.items?.map((item: any, idx: number) => (
                     <div key={idx} className="border border-white/10 p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
@@ -1002,8 +1267,8 @@ export default function SiteEditorPage() {
                         <span className="text-[10px] uppercase font-bold text-slate-400">#{idx + 1}</span>
                         <button onClick={() => { const n = content.benefits.items.filter((_: any, i: number) => i !== idx); updateField("benefits", "items", n); }} className="text-red-400 text-[11px]">Hapus</button>
                       </div>
-                      <input type="text" value={item.title} onChange={(e) => { const n = [...content.benefits.items]; n[idx].title = e.target.value; updateField("benefits", "items", n); }} placeholder="Judul" className="w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400" />
-                      <textarea rows={2} value={item.description} onChange={(e) => { const n = [...content.benefits.items]; n[idx].description = e.target.value; updateField("benefits", "items", n); }} placeholder="Deskripsi" className="w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400 resize-none" />
+                      <input type="text" value={item.title} onChange={(e) => { const n = [...content.benefits.items]; n[idx].title = e.target.value; updateField("benefits", "items", n); }} placeholder="Judul" className={fieldClass(`benefits.items.${idx}.title`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400")} />
+                      <textarea rows={2} value={item.description} onChange={(e) => { const n = [...content.benefits.items]; n[idx].description = e.target.value; updateField("benefits", "items", n); }} placeholder="Deskripsi" className={fieldClass(`benefits.items.${idx}.description`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400 resize-none")} />
                     </div>
                   ))}
                   <button onClick={() => { const n = [...(content.benefits.items || []), { title: "", description: "" }]; updateField("benefits", "items", n); }} className="w-full text-[12px] py-1.5 border border-white/10 rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1">
@@ -1016,8 +1281,8 @@ export default function SiteEditorPage() {
               {activeTab === "faq" && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
-                    <input type="text" value={content.faq.title} onChange={(e) => updateField("faq", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.faq.title} onChange={(e) => updateField("faq", "title", e.target.value)} className={fieldClass("faq.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   {content.faq.items?.map((item: any, idx: number) => (
                     <div key={idx} className="border border-white/10 p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
@@ -1025,8 +1290,8 @@ export default function SiteEditorPage() {
                         <span className="text-[10px] uppercase font-bold text-slate-400">FAQ #{idx + 1}</span>
                         <button onClick={() => { const n = content.faq.items.filter((_: any, i: number) => i !== idx); updateField("faq", "items", n); }} className="text-red-400 text-[11px]">Hapus</button>
                       </div>
-                      <input type="text" value={item.question} onChange={(e) => { const n = [...content.faq.items]; n[idx].question = e.target.value; updateField("faq", "items", n); }} placeholder="Pertanyaan" className="w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400" />
-                      <textarea rows={2} value={item.answer} onChange={(e) => { const n = [...content.faq.items]; n[idx].answer = e.target.value; updateField("faq", "items", n); }} placeholder="Jawaban" className="w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400 resize-none" />
+                      <input type="text" value={item.question} onChange={(e) => { const n = [...content.faq.items]; n[idx].question = e.target.value; updateField("faq", "items", n); }} placeholder="Pertanyaan" className={fieldClass(`faq.items.${idx}.question`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400")} />
+                      <textarea rows={2} value={item.answer} onChange={(e) => { const n = [...content.faq.items]; n[idx].answer = e.target.value; updateField("faq", "items", n); }} placeholder="Jawaban" className={fieldClass(`faq.items.${idx}.answer`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400 resize-none")} />
                     </div>
                   ))}
                   <button onClick={() => { const n = [...(content.faq.items || []), { question: "", answer: "" }]; updateField("faq", "items", n); }} className="w-full text-[12px] py-1.5 border border-white/10 rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1">
@@ -1039,16 +1304,16 @@ export default function SiteEditorPage() {
               {activeTab === "cta" && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Headline CTA</label>
-                    <input type="text" value={content.cta.headline} onChange={(e) => updateField("cta", "headline", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.cta.headline} onChange={(e) => updateField("cta", "headline", e.target.value)} className={fieldClass("cta.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol</label>
-                    <input type="text" value={content.cta.button_text} onChange={(e) => updateField("cta", "button_text", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Tombol {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.cta.button_text} onChange={(e) => updateField("cta", "button_text", e.target.value)} className={fieldClass("cta.button_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Tombol</label>
-                    <input type="text" value={content.cta.button_url} onChange={(e) => updateField("cta", "button_url", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Tombol {needsAttention("cta.button_url") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.cta.button_url} onChange={(e) => updateField("cta", "button_url", e.target.value)} className={fieldClass("cta.button_url", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                 </div>
               )}
@@ -1057,20 +1322,20 @@ export default function SiteEditorPage() {
               {activeTab === "contact" && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul</label>
-                    <input type="text" value={content.contact.title} onChange={(e) => updateField("contact", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.contact.title} onChange={(e) => updateField("contact", "title", e.target.value)} className={fieldClass("contact.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Alamat</label>
-                    <input type="text" value={content.contact.address} onChange={(e) => updateField("contact", "address", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Alamat {needsAttention("contact.address") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.contact.address} onChange={(e) => updateField("contact", "address", e.target.value)} className={fieldClass("contact.address", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nomor WhatsApp</label>
-                    <input type="text" value={content.contact.phone} onChange={(e) => updateField("contact", "phone", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nomor WhatsApp {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.contact.phone} onChange={(e) => updateField("contact", "phone", e.target.value)} className={fieldClass("contact.phone", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Email</label>
-                    <input type="email" value={content.contact.email} onChange={(e) => updateField("contact", "email", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Email {needsAttention("contact.email") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="email" value={content.contact.email} onChange={(e) => updateField("contact", "email", e.target.value)} className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
                     <span className="text-[12px] font-medium text-slate-200">Formulir Kontak</span>
@@ -1107,12 +1372,12 @@ export default function SiteEditorPage() {
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Meta Title</label>
-                    <input type="text" value={content.seo?.title || ""} onChange={(e) => updateField("seo", "title", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}</label>
+                    <input type="text" value={content.seo?.title || ""} onChange={(e) => updateField("seo", "title", e.target.value)} className={fieldClass("seo.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Meta Description</label>
-                    <textarea rows={3} value={content.seo?.description || ""} onChange={(e) => updateField("seo", "description", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none" />
+                    <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}</label>
+                    <textarea rows={3} value={content.seo?.description || ""} onChange={(e) => updateField("seo", "description", e.target.value)} className={fieldClass("seo.description", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} />
                   </div>
                   <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
                   <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
@@ -1123,12 +1388,54 @@ export default function SiteEditorPage() {
 
             {/* ── AI Prompt bar inside field panel ── */}
             <div className="border-t border-white/10 px-3.5 py-2.5 flex-shrink-0 bg-[#05070b] space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="truncate text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                </span>
+                {undoStack.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={undoLastRegen}
+                    className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                    Undo
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {activeSuggestions.slice(0, 3).map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => setAiInstructions(suggestion)}
+                    className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+              {recentInstructions.length > 0 && (
+                <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
+                  {recentInstructions.slice(0, 5).map((instruction) => (
+                    <button
+                      key={instruction}
+                      type="button"
+                      onClick={() => setAiInstructions(instruction)}
+                      className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200"
+                      title={instruction}
+                    >
+                      {instruction}
+                    </button>
+                  ))}
+                </div>
+              )}
               <input
                 type="text"
                 value={aiInstructions}
                 onChange={(e) => setAiInstructions(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") handleAiRegenerateSection(); }}
-                placeholder="Instruksi AI untuk section ini..."
+                placeholder={aiPlaceholder}
                 className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700"
               />
               <button
@@ -1178,6 +1485,17 @@ export default function SiteEditorPage() {
               AI aktif
             </span>
 
+            <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
+              quality.score >= 85
+                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+                : quality.score >= 65
+                ? "border-amber-500/20 bg-amber-500/10 text-amber-200"
+                : "border-red-500/20 bg-red-500/10 text-red-200"
+            }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
+              {quality.score < 100 && <span className="text-amber-200">⚠️</span>}
+              Completion {quality.score}%
+            </span>
+
             {/* Spacer */}
             <div className="flex-1" />
 
@@ -1209,6 +1527,55 @@ export default function SiteEditorPage() {
             </button>
           </div>
 
+          {pendingDiff && (
+            <div className="flex-shrink-0 border-b border-violet-400/20 bg-[#0b0f1a] px-3 py-2">
+              <div className="flex items-start gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-3.5 w-3.5 text-violet-300" />
+                    <p className="text-[12px] font-bold text-slate-100">
+                      Diff AI: {SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section}
+                    </p>
+                    <span className="rounded-full bg-violet-400/10 px-2 py-0.5 text-[10px] font-semibold text-violet-200">
+                      {pendingDiff.rows.length || 0} perubahan
+                    </span>
+                  </div>
+                  <div className="mt-2 grid max-h-40 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
+                    {(pendingDiff.rows.length ? pendingDiff.rows : [{ label: "Konten", before: JSON.stringify(pendingDiff.before), after: JSON.stringify(pendingDiff.after) }]).map((row, idx) => (
+                      <div key={`${row.label}-${idx}`} className="rounded-md border border-white/10 bg-white/[0.03] p-2 text-[11px]">
+                        <p className="mb-1 font-semibold text-slate-300">{row.label}</p>
+                        <div className="grid gap-1">
+                          <p className="line-clamp-2 rounded bg-red-400/10 px-2 py-1 text-red-100">
+                            <span className="font-bold">Lama:</span> {row.before || "-"}
+                          </p>
+                          <p className="line-clamp-2 rounded bg-emerald-400/10 px-2 py-1 text-emerald-100">
+                            <span className="font-bold">Baru:</span> {row.after || "-"}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-shrink-0 flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={applyRegeneratedSection}
+                    className="rounded-md bg-emerald-500 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-400"
+                  >
+                    Gunakan ini
+                  </button>
+                  <button
+                    type="button"
+                    onClick={restorePendingDiff}
+                    className="rounded-md border border-white/10 px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5"
+                  >
+                    Kembalikan
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Canvas body */}
           <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-2">
             <div
@@ -1221,7 +1588,7 @@ export default function SiteEditorPage() {
                 design_token={designToken ?? null}
                 isEditorMode={true}
                 activeSection={activeTab}
-                onSelectSection={(section: string) => selectSection(section, false)}
+                onSelectSection={handlePreviewSelectSection}
                 onRegenSection={handleAiRegenerateForSection}
               />
             </div>
