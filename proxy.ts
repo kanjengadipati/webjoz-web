@@ -8,7 +8,8 @@ export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
   // Pass dashboard or local development requests through normally, unless they are local subdomains
-  if (host === DASHBOARD_HOST || host === 'localhost:3000' || host === '127.0.0.1:3000') {
+  const isVercelApp = host === 'webjoz.vercel.app' || host.endsWith('.vercel.app')
+  if (host === DASHBOARD_HOST || isVercelApp || host === 'localhost:3000' || host === '127.0.0.1:3000') {
     return NextResponse.next()
   }
 
