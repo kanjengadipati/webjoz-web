@@ -79,12 +79,12 @@ export default function LoginPage() {
     if (params.get("magic_token")) return;
 
     const redirectParam = params.get("redirect");
-    const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+    const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
 
     if (redirectParam) {
       router.replace(redirectParam);
     } else if (pendingWizard) {
-      router.replace("/create");
+      router.replace("/create?action=save");
     } else {
       router.replace("/dashboard/sites");
     }
@@ -95,11 +95,11 @@ export default function LoginPage() {
   function finishLogin(email: string, accessToken: string) {
     persistAuthSession(email, accessToken);
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-    const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+    const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
     if (redirectParam) {
       router.push(redirectParam);
     } else if (pendingWizard) {
-      router.push("/create");
+      router.push("/create?action=save");
     } else {
       router.push("/dashboard/sites");
     }
