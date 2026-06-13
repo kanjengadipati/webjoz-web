@@ -929,29 +929,72 @@ export function SiteWizard({
       )}
 
       {/* ══════════════════════════════════════════════════════════════════
-          STEP 5 — AI Loading
+          STEP 5 — AI Loading (Skeleton Card)
       ══════════════════════════════════════════════════════════════════ */}
       {step === 5 && (
         <div className={isDark
-          ? "bg-white/[0.02] border border-white/5 shadow-2xl rounded-[2.5rem] p-12 sm:p-16 text-center space-y-6"
-          : "border border-border/40 shadow-xl rounded-2xl py-20 flex flex-col items-center justify-center text-center space-y-6"
+          ? "bg-[#111114] border border-white/[0.07] shadow-2xl shadow-black/60 rounded-3xl p-6 sm:p-8 space-y-5 backdrop-blur-sm"
+          : "bg-slate-50 border border-slate-200 shadow-xl rounded-3xl p-6 sm:p-8 space-y-5"
         }>
-          <div className="relative size-20 mx-auto">
-            <div className={`absolute inset-0 rounded-full border-2 animate-[ping_3s_infinite] ${isDark ? "border-indigo-500/20" : "border-primary/20"}`} />
-            <div className={`absolute inset-2 rounded-full border-2 animate-pulse ${isDark ? "border-indigo-500/40" : "border-primary/40"}`} />
-            <div className={`absolute inset-4 rounded-full border-t-2 animate-spin ${isDark ? "border-indigo-400" : "border-primary"}`} />
+          {/* ── Header row ── */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Lightning badge */}
+              <div className={`size-9 rounded-full flex items-center justify-center shrink-0 ${isDark ? "bg-zinc-800 border border-white/10" : "bg-white border border-slate-200 shadow-sm"}`}>
+                <span className="text-base leading-none">⚡</span>
+              </div>
+              <div className="space-y-0.5">
+                <p className={`text-sm font-semibold leading-tight ${isDark ? "text-white/90" : "text-slate-800"}`}>
+                  AI sedang menulis konten...
+                </p>
+                <p className={`text-[11px] font-medium transition-all duration-500 ${isDark ? "text-indigo-400/80" : "text-primary/70"}`}>
+                  {AI_LOADING_STEPS[aiStepIdx]}
+                </p>
+              </div>
+            </div>
+            {/* Pulsing three dots */}
+            <div className="flex items-center gap-1 pr-1">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={`size-1.5 rounded-full animate-pulse ${isDark ? "bg-white/30" : "bg-slate-400"}`}
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
+              ))}
+            </div>
           </div>
-          <div className="space-y-3 max-w-sm mx-auto pt-2">
-            <h2 className={`text-xl font-bold tracking-tight animate-pulse ${isDark ? "text-indigo-400" : "text-primary"}`}>
-              AI Menulis Copywriting...
-            </h2>
-            <p className={`text-sm font-semibold min-h-6 ${mutedClass}`}>
-              {AI_LOADING_STEPS[aiStepIdx]}
-            </p>
-            <p className={`text-[10px] leading-relaxed pt-2 ${mutedClass}`}>
-              Jangan tutup halaman ini. Pembuatan website biasanya memakan waktu sekitar 15–30 detik.
-            </p>
+
+          {/* ── Skeleton text lines ── */}
+          <div className="space-y-2.5 pt-1">
+            {[
+              "w-3/4",
+              "w-full",
+              "w-5/6",
+              "w-1/2",
+            ].map((width, i) => (
+              <div
+                key={i}
+                className={`h-3 rounded-full animate-pulse ${isDark ? "bg-white/[0.07]" : "bg-slate-200"} ${width}`}
+                style={{ animationDelay: `${i * 0.1}s` }}
+              />
+            ))}
           </div>
+
+          {/* ── Skeleton 2-column block grid ── */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            {[0, 1].map((i) => (
+              <div
+                key={i}
+                className={`h-24 rounded-2xl animate-pulse ${isDark ? "bg-white/[0.05]" : "bg-slate-200/70"}`}
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
+
+          {/* ── Disclaimer ── */}
+          <p className={`text-[10px] text-center leading-relaxed pt-1 ${isDark ? "text-white/25" : "text-slate-400"}`}>
+            Jangan tutup halaman ini. Pembuatan website biasanya memakan waktu 15–30 detik.
+          </p>
         </div>
       )}
 
