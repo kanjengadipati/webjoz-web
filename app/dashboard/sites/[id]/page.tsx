@@ -1749,7 +1749,7 @@ export default function SiteEditorPage() {
                   {/* Scaled viewport trick to trigger Tailwind responsive styles */}
                   <div 
                     style={{ 
-                      width: "680px", 
+                      width: "181.81%", 
                       height: "181.81%", 
                       transform: "scale(0.55)", 
                       transformOrigin: "top left" 
