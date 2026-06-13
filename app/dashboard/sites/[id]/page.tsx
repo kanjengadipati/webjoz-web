@@ -104,6 +104,8 @@ export default function SiteEditorPage() {
   // AI instructions state
   const [aiInstructions, setAiInstructions] = useState("");
   const [recentInstructions, setRecentInstructions] = useState<string[]>([]);
+  const [aiDesignPromptOpen, setAiDesignPromptOpen] = useState(false);
+  const [aiDesignInstructions, setAiDesignInstructions] = useState("");
 
   const fetchData = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -472,16 +474,25 @@ export default function SiteEditorPage() {
       },
       ...current,
     ].slice(0, 3));
-    setContent({
-      ...content,
-      [pendingDiff.section]: pendingDiff.after,
-    });
+    
+    if (pendingDiff.section !== "design") {
+      setContent({
+        ...content,
+        [pendingDiff.section]: pendingDiff.after,
+      });
+    } else if (siteDetails) {
+      setSiteDetails({
+        ...siteDetails,
+        template_id: "TEMPLATE_DYNAMIC",
+      });
+    }
+
     if (pendingDiff.nextDesignToken) {
       setDesignToken(pendingDiff.nextDesignToken);
       setLatestAiDesignToken(pendingDiff.nextDesignToken);
     }
     setPendingDiff(null);
-    pushToast(`Hasil AI untuk ${pendingDiff.section} dipakai.`, "success");
+    pushToast(`Hasil AI untuk ${pendingDiff.section === "design" ? "gaya situs" : pendingDiff.section} dipakai.`, "success");
   };
 
   const restorePendingDiff = () => {
@@ -578,6 +589,54 @@ export default function SiteEditorPage() {
   const handlePreviewSelectSection = useCallback((section: string) => selectSection(section, false), [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
+
+  const handleAiRegenerateDesign = async () => {
+    if (!token || !activeTenantId || !siteId) return;
+    if (!aiDesignInstructions.trim()) return;
+
+    try {
+      setAiLoading(true);
+      const res = await request<any>("/ai/regenerate-design", {
+        method: "POST",
+        body: JSON.stringify({
+          site_id: siteId,
+          instructions: aiDesignInstructions,
+          tenant_id: activeTenantId,
+        }),
+      }, token);
+
+      if (res.status === "success" && res.data?.design_token) {
+        const newDesignToken = res.data.design_token;
+        const diffRows = summarizeDiff(designTokenRef.current || {}, newDesignToken);
+        if (diffRows.length === 0) {
+          pushToast("AI belum menghasilkan perubahan gaya yang nyata.", "info");
+          return;
+        }
+
+        setPendingDiff({
+          section: "design",
+          before: cloneData(designTokenRef.current),
+          after: newDesignToken,
+          previousDesignToken: cloneData(designTokenRef.current),
+          nextDesignToken: newDesignToken,
+          rows: diffRows,
+        });
+
+        // Temporarily apply the design token in preview
+        setDesignToken(newDesignToken);
+
+        pushToast("AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.", "success");
+        setAiDesignInstructions("");
+        setAiDesignPromptOpen(false);
+      } else {
+        throw new Error(res.message || "AI gagal memproses desain.");
+      }
+    } catch (err: any) {
+      pushToast(err.message || "AI gagal meregenerasi gaya website.", "error");
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   // Helper updates for form fields
   const updateField = (section: string, key: string, val: any) => {
@@ -860,6 +919,59 @@ export default function SiteEditorPage() {
                       </div>
                     )}
                   </>
+                )}
+              </div>
+            )}
+
+            {!templatePickerOpen && (
+              <div className="mt-2 space-y-1.5">
+                {!aiDesignPromptOpen ? (
+                  <button
+                    type="button"
+                    onClick={() => setAiDesignPromptOpen(true)}
+                    disabled={aiLoading || !!pendingDiff}
+                    className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300 text-[11px] font-semibold hover:bg-violet-500/20 transition disabled:opacity-50"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    Regenerate dengan AI
+                  </button>
+                ) : (
+                  <div className="space-y-1.5 rounded-lg border border-violet-500/20 bg-violet-500/5 p-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-violet-400">AI Design Prompt</span>
+                      <button
+                        type="button"
+                        onClick={() => setAiDesignPromptOpen(false)}
+                        className="text-[9px] text-slate-400 hover:text-slate-200"
+                      >
+                        Batal
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={aiDesignInstructions}
+                      onChange={(e) => setAiDesignInstructions(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
+                      }}
+                      placeholder="cth: tema kopi vintage hangat..."
+                      className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                      disabled={aiLoading || !!pendingDiff}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void handleAiRegenerateDesign()}
+                      disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
+                      className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-violet-600 text-white text-[11px] font-semibold hover:bg-violet-500 transition disabled:opacity-50"
+                    >
+                      {aiLoading ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Sparkles className="w-3 h-3" />
+                      )}
+                      {aiLoading ? "Memproses..." : "Terapkan Gaya"}
+                    </button>
+                  </div>
                 )}
               </div>
             )}

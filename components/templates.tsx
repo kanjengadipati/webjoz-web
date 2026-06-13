@@ -433,8 +433,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
                   <div className="space-y-2">
                     <DynamicIcon name={about.icon} defaultIcon={Utensils} className="w-12 h-12 text-amber-700 mx-auto" />
-                    <p className="font-serif italic text-amber-900 font-semibold text-lg">Indonesian Gastronomy</p>
-                    <p className="text-amber-700/85 text-sm max-w-xs">Menyajikan makanan dengan sentuhan rasa tradisional yang disiapkan sepenuh hati.</p>
+                    <p className="font-serif italic text-amber-900 font-semibold text-lg">{header?.brand_name || "Bisnis Kami"}</p>
+                    <p className="text-amber-700/85 text-sm max-w-xs">{about.title}</p>
                   </div>
                 </div>
                 {about.image_url && (
@@ -679,10 +679,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                     <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm border border-indigo-100">
                       <DynamicIcon name={about.icon} defaultIcon={Shield} className="w-8 h-8" />
                     </div>
-                    <p className="font-bold text-slate-900 text-xl">Solusi Terpercaya</p>
-                    <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
-                      Kami siap memberikan panduan dan eksekusi profesional untuk mendorong kesuksesan bisnis Anda.
-                    </p>
+                    <p className="font-bold text-slate-900 text-xl">{header?.brand_name || "Bisnis Kami"}</p>
+                    <p className="text-slate-500 text-sm max-w-xs leading-relaxed">{about.title}</p>
                   </div>
                 </div>
                 {about.image_url && (

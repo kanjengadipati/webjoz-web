@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { suggestTemplate } from "@/lib/template-registry";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -172,7 +171,7 @@ export function SiteWizard({
   const [isSubdomainManuallyEdited, setIsSubdomainManuallyEdited] = useState(false);
 
   // Template
-  const [templateId, setTemplateId] = useState(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : "TEMPLATE_KULINER01");
+  const [templateId, setTemplateId] = useState("TEMPLATE_DYNAMIC");
 
   // Result
   const [generatedSite, setGeneratedSite] = useState<{ id: string; subdomain: string; customDomain: string } | null>(null);
@@ -228,7 +227,7 @@ export function SiteWizard({
       if (type) {
         setBusinessType(type);
         if (!p.get("template")) {
-          setTemplateId(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : suggestTemplate(type).id);
+          setTemplateId("TEMPLATE_DYNAMIC");
         }
       }
       if (p.get("template")) setTemplateId(p.get("template")!);
@@ -279,7 +278,7 @@ export function SiteWizard({
       setAddressType(d.addressType || "subdomain");
       setSubdomain(d.subdomain || "");
       setCustomDomain(d.customDomain || "");
-      setTemplateId(d.templateId || "TEMPLATE_KULINER01");
+      setTemplateId(d.templateId || "TEMPLATE_DYNAMIC");
       setAgeGroup(d.ageGroup || "");
       setTone(d.tone || "");
       setMotives(d.motives || []);
@@ -484,7 +483,7 @@ export function SiteWizard({
   };
   const chooseBusinessType = (value: string) => {
     setBusinessType(value);
-    setTemplateId(mode === "dashboard" ? "TEMPLATE_DYNAMIC" : suggestTemplate(value).id);
+    setTemplateId("TEMPLATE_DYNAMIC");
   };
 
   // ── Derived style helpers ────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const DASHBOARD_HOST = 'app.giwanganstudio.com'
-const BASE_DOMAIN = 'giwanganstudio.com'
+const DASHBOARD_HOST = 'app.webjoz.com'
+const BASE_DOMAIN = 'webjoz.com'
 
 export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
