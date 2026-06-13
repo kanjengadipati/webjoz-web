@@ -3,7 +3,7 @@ import { request } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import type { Profile } from "@/lib/types";
 
-const TENANT_STORAGE_KEY = "giwangan_active_tenant_id";
+const TENANT_STORAGE_KEY = "webjoz_active_tenant_id";
 
 export interface TenantMembership {
   tenant: {
@@ -18,7 +18,15 @@ export interface TenantMembership {
 
 export function getActiveTenantId(): number | null {
   if (typeof window === "undefined") return null;
-  const val = localStorage.getItem(TENANT_STORAGE_KEY);
+  let val = localStorage.getItem(TENANT_STORAGE_KEY);
+  if (!val) {
+    const oldVal = localStorage.getItem("giwangan_active_tenant_id");
+    if (oldVal) {
+      val = oldVal;
+      localStorage.setItem(TENANT_STORAGE_KEY, oldVal);
+      localStorage.removeItem("giwangan_active_tenant_id");
+    }
+  }
   if (!val) return null;
   const num = parseInt(val, 10);
   return isNaN(num) ? null : num;
