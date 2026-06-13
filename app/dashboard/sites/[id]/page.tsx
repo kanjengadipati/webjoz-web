@@ -28,6 +28,64 @@ import {
 import TemplateThumbnail from "./TemplateThumbnail";
 import SectionForms from "./SectionForms";
 
+const GOOGLE_FONTS_WHITELIST = [
+  "Inter", "Roboto", "Open Sans", "Montserrat", "Lato",
+  "Poppins", "Outfit", "Plus Jakarta Sans", "Work Sans", "DM Sans",
+  "Playfair Display", "Merriweather", "Lora", "PT Serif",
+  "Cinzel", "Cormorant Garamond", "Arvo",
+  "Oswald", "Bebas Neue", "Space Grotesk"
+];
+
+const getTemplateDefaultDesignToken = (templateId: string) => {
+  if (templateId === "TEMPLATE_KULINER01") {
+    return {
+      palette: {
+        primary: "#78350F", // amber-900
+        accent: "#B45309",  // amber-700
+        background: "#FAF7F2",
+        surface: "#FFFFFF",
+        text: "#2C2620"
+      },
+      typography: {
+        heading_font: "Playfair Display",
+        body_font: "Inter",
+        heading_weight: "700",
+        heading_size_hero: "3.5rem"
+      },
+      layout: {
+        hero_style: "centered",
+        corner_radius: "rounded",
+        section_spacing: "normal",
+        section_order: ["hero", "about", "benefits", "faq", "cta", "contact"]
+      },
+      mood: "warm-earthy"
+    };
+  }
+  // Default is TEMPLATE_JASA02 or generic
+  return {
+    palette: {
+      primary: "#4F46E5", // indigo-600
+      accent: "#7C3AED",  // violet-600
+      background: "#F8FAFC",
+      surface: "#FFFFFF",
+      text: "#0F172A"
+    },
+    typography: {
+      heading_font: "Inter",
+      body_font: "Inter",
+      heading_weight: "700",
+      heading_size_hero: "3rem"
+    },
+    layout: {
+      hero_style: "centered",
+      corner_radius: "soft",
+      section_spacing: "normal",
+      section_order: ["hero", "about", "benefits", "cta", "faq", "contact"]
+    },
+    mood: "professional"
+  };
+};
+
 export default function SiteEditorPage() {
   const params = useParams();
   const router = useRouter();
@@ -44,6 +102,7 @@ export default function SiteEditorPage() {
   const [sectionDropdownOpen, setSectionDropdownOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("header");
+  const [editorTab, setEditorTab] = useState<"content" | "design">("content");
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
@@ -649,6 +708,30 @@ export default function SiteEditorPage() {
     });
   };
 
+  const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
+    let nextToken = { ...(designToken || {}) };
+    
+    // Switch to TEMPLATE_DYNAMIC and prefill defaults if we edit manual styles on static templates
+    if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+      const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+      nextToken = {
+        ...defaults,
+        ...nextToken,
+        palette: { ...defaults.palette, ...(nextToken.palette || {}) },
+        typography: { ...defaults.typography, ...(nextToken.typography || {}) },
+        layout: { ...defaults.layout, ...(nextToken.layout || {}) }
+      };
+      setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
+    }
+
+    nextToken[group] = {
+      ...(nextToken[group] || {}),
+      [key]: value
+    };
+
+    setDesignToken(nextToken);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-3">
@@ -730,11 +813,10 @@ export default function SiteEditorPage() {
           <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
             <button
               onClick={() => router.push("/dashboard/sites")}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
+              className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
               aria-label="Kembali ke daftar situs"
             >
               <ChevronLeft className="h-5 w-5 flex-shrink-0" />
-              <span className="text-[11px] font-semibold">Kembali</span>
             </button>
             <div className="h-5 w-px bg-white/10 flex-shrink-0" />
             <div className="min-w-0 flex-1">
@@ -743,486 +825,761 @@ export default function SiteEditorPage() {
             </div>
           </div>
 
-          {/* Visual style selector */}
-          <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
-            <div className="mb-1.5 flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
-              {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-300" />}
-            </div>
+          {/* Tab Switcher: Konten vs Desain */}
+          <div className="flex border-b border-white/10 p-1 bg-white/[0.02] flex-shrink-0">
             <button
-              type="button"
-              onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
-              disabled={templateSaving || !!pendingDiff}
-              className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-haspopup="listbox"
-              aria-expanded={templatePickerOpen}
+              onClick={() => setEditorTab("content")}
+              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${
+                editorTab === "content"
+                  ? "bg-violet-600 text-white shadow-sm font-bold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
             >
-              <div className="w-12 flex-shrink-0">
-                <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
-                <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
-              </div>
-              <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
+              Konten
             </button>
-
-            {templatePickerOpen && (
-              <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label="Pilihan gaya website">
-                {/* 1. LATEST AI GENERATED (TEMPLATE_DYNAMIC) AT THE VERY TOP */}
-                {dynamicTemplate && (() => {
-                  const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
-                  return (
-                    <button
-                      key="top-dynamic-template"
-                      type="button"
-                      onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
-                      disabled={templateSaving}
-                      className={`group w-full rounded-xl border p-2 text-left transition ${
-                        isTopActive
-                          ? "border-violet-400 bg-violet-500/15"
-                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                      }`}
-                      role="option"
-                      aria-selected={isTopActive}
-                    >
-                      <TemplateThumbnail 
-                        previewType="dynamic" 
-                        accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} 
-                        active={isTopActive} 
-                        palette={latestAiDesignToken?.palette}
-                      />
-                      <div className="mt-2 flex items-start gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
-                            <span className="bg-violet-500/25 text-violet-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
-                          </div>
-                          <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
-                            Gaya visual unik buatan AI terbaru untuk website Anda.
-                          </p>
-                        </div>
-                        {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
-                      </div>
-                    </button>
-                  );
-                })()}
-
-                {/* 2. STATIC PRESETS */}
-                {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
-                  const active = template.id === siteDetails.template_id;
-                  return (
-                    <button
-                      key={template.id}
-                      type="button"
-                      onClick={() => void handleTemplateChange(template.id)}
-                      disabled={templateSaving}
-                      className={`group w-full rounded-xl border p-2 text-left transition ${
-                        active
-                          ? "border-violet-400 bg-violet-500/15"
-                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                      }`}
-                      role="option"
-                      aria-selected={active}
-                    >
-                      <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} />
-                      <div className="mt-2 flex items-start gap-2">
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
-                          <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">{template.description}</p>
-                        </div>
-                        {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
-                      </div>
-                    </button>
-                  );
-                })}
-
-                {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
-                {customTemplates.length > 0 && (
-                  <>
-                    <div className="border-t border-white/10 my-2.5 pt-2" />
-                    <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                      Riwayat Desain AI
-                    </p>
-                    {(() => {
-                      let hasMatchedActive = false;
-                      return customTemplates.map((template) => {
-                        const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
-                          isDesignTokenEqual(designToken, template.design_token);
-                        
-                        const active = isMatch && !hasMatchedActive;
-                        if (active) {
-                          hasMatchedActive = true;
-                        }
-
-                        return (
-                          <button
-                            key={template.id}
-                            type="button"
-                            onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
-                            disabled={templateSaving}
-                            className={`group w-full rounded-xl border p-2 text-left transition ${
-                              active
-                                ? "border-violet-400 bg-violet-500/15"
-                                : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                            }`}
-                            role="option"
-                            aria-selected={active}
-                          >
-                            <TemplateThumbnail 
-                              previewType="dynamic" 
-                              accent={template.design_token?.palette?.primary || "#7C3AED"} 
-                              active={active} 
-                              palette={template.design_token?.palette}
-                            />
-                            <div className="mt-2 flex items-start gap-2">
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-1.5">
-                                  <p className="truncate text-[12px] font-bold text-slate-100">
-                                    AI: {template.business_type}
-                                  </p>
-                                  <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
-                                </div>
-                                <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
-                                  Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
-                                </p>
-                              </div>
-                              {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
-                            </div>
-                          </button>
-                        );
-                      });
-                    })()}
-
-                    {customTemplates.length < customTemplatesTotal && (
-                      <div className="pt-2 px-1">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            void fetchCustomTemplates(false);
-                          }}
-                          disabled={loadingTemplates}
-                          className="w-full py-2.5 text-center text-[11px] font-bold text-violet-400 hover:text-violet-300 transition-colors border border-dashed border-white/10 hover:border-violet-500/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
-                        >
-                          {loadingTemplates ? (
-                            <>
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              Memuat...
-                            </>
-                          ) : (
-                            <>
-                              Muat Lebih Banyak ({customTemplatesTotal - customTemplates.length} tersisa)
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {!templatePickerOpen && (
-              <div className="mt-2 space-y-1.5">
-                {!aiDesignPromptOpen ? (
-                  <button
-                    type="button"
-                    onClick={() => setAiDesignPromptOpen(true)}
-                    disabled={aiLoading || !!pendingDiff}
-                    className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300 text-[11px] font-semibold hover:bg-violet-500/20 transition disabled:opacity-50"
-                  >
-                    <Sparkles className="h-3 w-3" />
-                    Regenerate dengan AI
-                  </button>
-                ) : (
-                  <div className="space-y-1.5 rounded-lg border border-violet-500/20 bg-violet-500/5 p-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-violet-400">AI Design Prompt</span>
-                      <button
-                        type="button"
-                        onClick={() => setAiDesignPromptOpen(false)}
-                        className="text-[9px] text-slate-400 hover:text-slate-200"
-                      >
-                        Batal
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      value={aiDesignInstructions}
-                      onChange={(e) => setAiDesignInstructions(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
-                      }}
-                      placeholder="cth: tema kopi vintage hangat..."
-                      className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
-                      disabled={aiLoading || !!pendingDiff}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => void handleAiRegenerateDesign()}
-                      disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
-                      className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-violet-600 text-white text-[11px] font-semibold hover:bg-violet-500 transition disabled:opacity-50"
-                    >
-                      {aiLoading ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3 h-3" />
-                      )}
-                      {aiLoading ? "Memproses..." : "Terapkan Gaya"}
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+            <button
+              onClick={() => setEditorTab("design")}
+              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${
+                editorTab === "design"
+                  ? "bg-violet-600 text-white shadow-sm font-bold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              Desain
+            </button>
           </div>
 
-          {/* Visual section selector dropdown */}
-          <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
-            <div className="mb-1.5 flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
-              <span className="text-[9px] font-semibold text-slate-600">Drag untuk urutan</span>
-            </div>
-            <div className="relative">
+          {/* Visual style selector */}
+          {editorTab === "design" && (
+            <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
+              <div className="mb-1.5 flex items-center justify-between">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
+                {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-300" />}
+              </div>
               <button
                 type="button"
-                onClick={() => !pendingDiff && setSectionDropdownOpen((open) => !open)}
-                disabled={!!pendingDiff}
-                className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
+                disabled={templateSaving || !!pendingDiff}
+                className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
-                aria-expanded={sectionDropdownOpen}
+                aria-expanded={templatePickerOpen}
               >
-                <div className="flex items-center gap-2">
-                  {(() => {
-                    const activeSec = SECTIONS.find(s => s.key === activeTab);
-                    if (activeSec) {
-                      const Icon = activeSec.icon;
-                      return (
-                        <>
-                          <Icon className="w-4 h-4 text-violet-400" />
-                          <span className="text-[13px] font-medium text-slate-200">{activeSec.label}</span>
-                        </>
-                      );
-                    }
-                    return <span className="text-[13px] font-medium text-slate-200">{activeTab}</span>;
-                  })()}
+                <div className="w-12 flex-shrink-0">
+                  <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
                 </div>
-                <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${sectionDropdownOpen ? "rotate-180" : ""}`} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
+                  <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
+                </div>
+                <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {sectionDropdownOpen && (
-                <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#0c0f17] p-1 shadow-lg space-y-0.5" role="listbox">
-                  {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+              {templatePickerOpen && (
+                <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label="Pilihan gaya website">
+                  {/* 1. LATEST AI GENERATED (TEMPLATE_DYNAMIC) AT THE VERY TOP */}
+                  {dynamicTemplate && (() => {
+                    const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
+                    return (
+                      <button
+                        key="top-dynamic-template"
+                        type="button"
+                        onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
+                        disabled={templateSaving}
+                        className={`group w-full rounded-xl border p-2 text-left transition ${
+                          isTopActive
+                            ? "border-violet-400 bg-violet-500/15"
+                            : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                        }`}
+                        role="option"
+                        aria-selected={isTopActive}
+                      >
+                        <TemplateThumbnail 
+                          previewType="dynamic" 
+                          accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} 
+                          active={isTopActive} 
+                          palette={latestAiDesignToken?.palette}
+                        />
+                        <div className="mt-2 flex items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
+                              <span className="bg-violet-500/25 text-violet-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
+                            </div>
+                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                              Gaya visual unik buatan AI terbaru untuk website Anda.
+                            </p>
+                          </div>
+                          {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                        </div>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 2. STATIC PRESETS */}
+                  {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
+                    const active = template.id === siteDetails.template_id;
+                    return (
+                      <button
+                        key={template.id}
+                        type="button"
+                        onClick={() => void handleTemplateChange(template.id)}
+                        disabled={templateSaving}
+                        className={`group w-full rounded-xl border p-2 text-left transition ${
+                          active
+                            ? "border-violet-400 bg-violet-500/15"
+                            : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                        }`}
+                        role="option"
+                        aria-selected={active}
+                      >
+                        <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} />
+                        <div className="mt-2 flex items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
+                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">{template.description}</p>
+                          </div>
+                          {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+
+                  {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
+                  {customTemplates.length > 0 && (
+                    <>
+                      <div className="border-t border-white/10 my-2.5 pt-2" />
+                      <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                        Riwayat Desain AI
+                      </p>
+                      {(() => {
+                        let hasMatchedActive = false;
+                        return customTemplates.map((template) => {
+                          const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
+                            isDesignTokenEqual(designToken, template.design_token);
+                          
+                          const active = isMatch && !hasMatchedActive;
+                          if (active) {
+                            hasMatchedActive = true;
+                          }
+
+                          return (
+                            <button
+                              key={template.id}
+                              type="button"
+                              onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
+                              disabled={templateSaving}
+                              className={`group w-full rounded-xl border p-2 text-left transition ${
+                                active
+                                  ? "border-violet-400 bg-violet-500/15"
+                                  : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                              }`}
+                              role="option"
+                              aria-selected={active}
+                            >
+                              <TemplateThumbnail 
+                                previewType="dynamic" 
+                                accent={template.design_token?.palette?.primary || "#7C3AED"} 
+                                active={active} 
+                                palette={template.design_token?.palette}
+                              />
+                              <div className="mt-2 flex items-start gap-2">
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <p className="truncate text-[12px] font-bold text-slate-100">
+                                      AI: {template.business_type}
+                                    </p>
+                                    <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
+                                  </div>
+                                  <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                                    Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
+                                  </p>
+                                </div>
+                                {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                              </div>
+                            </button>
+                          );
+                        });
+                      })()}
+
+                      {customTemplates.length < customTemplatesTotal && (
+                        <div className="pt-2 px-1">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void fetchCustomTemplates(false);
+                            }}
+                            disabled={loadingTemplates}
+                            className="w-full py-2.5 text-center text-[11px] font-bold text-violet-400 hover:text-violet-300 transition-colors border border-dashed border-white/10 hover:border-violet-500/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
+                          >
+                            {loadingTemplates ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                Memuat...
+                              </>
+                            ) : (
+                              <>
+                                Muat Lebih Banyak ({customTemplatesTotal - customTemplates.length} tersisa)
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {!templatePickerOpen && (
+                <div className="mt-2 space-y-1.5">
+                  {!aiDesignPromptOpen ? (
                     <button
-                      key={key}
                       type="button"
-                      draggable={BODY_SECTION_KEYS.includes(key)}
-                      onDragStart={(event) => {
-                        if (!BODY_SECTION_KEYS.includes(key)) return;
-                        setDraggingSection(key);
-                        event.dataTransfer.effectAllowed = "move";
-                        event.dataTransfer.setData("text/plain", key);
-                      }}
-                      onDragOver={(event) => {
-                        if (!draggingSection || !BODY_SECTION_KEYS.includes(key)) return;
-                        event.preventDefault();
-                        event.dataTransfer.dropEffect = "move";
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-                        const source = event.dataTransfer.getData("text/plain") || draggingSection;
-                        if (source) handleReorderSection(source, key);
-                        setDraggingSection(null);
-                      }}
-                      onDragEnd={() => setDraggingSection(null)}
-                      onClick={() => {
-                        selectSection(key, true);
-                        setSectionDropdownOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
-                        activeTab === key
-                          ? "bg-violet-600 text-white font-semibold shadow-sm"
-                          : draggingSection === key
-                          ? "bg-violet-500/20 text-violet-100"
-                          : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
-                      }`}
-                      role="option"
-                      aria-selected={activeTab === key}
+                      onClick={() => setAiDesignPromptOpen(true)}
+                      disabled={aiLoading || !!pendingDiff}
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300 text-[11px] font-semibold hover:bg-violet-500/20 transition disabled:opacity-50"
                     >
-                      <div className="flex items-center gap-2">
-                        <GripVertical className={`h-3.5 w-3.5 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
-                        <Icon className={`w-4 h-4 ${activeTab === key ? "text-white" : "text-slate-400"}`} />
-                        <span className="text-[13px]">{label}</span>
-                      </div>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                        activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-400"
-                      }`}>{num}</span>
+                      <Sparkles className="h-3 w-3" />
+                      Regenerate dengan AI
                     </button>
-                  ))}
+                  ) : (
+                    <div className="space-y-1.5 rounded-lg border border-violet-500/20 bg-violet-500/5 p-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-violet-400">AI Design Prompt</span>
+                        <button
+                          type="button"
+                          onClick={() => setAiDesignPromptOpen(false)}
+                          className="text-[9px] text-slate-400 hover:text-slate-200"
+                        >
+                          Batal
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={aiDesignInstructions}
+                        onChange={(e) => setAiDesignInstructions(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
+                        }}
+                        placeholder="cth: tema kopi vintage hangat..."
+                        className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                        disabled={aiLoading || !!pendingDiff}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void handleAiRegenerateDesign()}
+                        disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
+                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-violet-600 text-white text-[11px] font-semibold hover:bg-violet-500 transition disabled:opacity-50"
+                      >
+                        {aiLoading ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3 h-3" />
+                        )}
+                        {aiLoading ? "Memproses..." : "Terapkan Gaya"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </div>
+          )}
+
+          {/* Visual section selector dropdown */}
+          {editorTab === "content" && (
+            <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
+              <div className="mb-1.5 flex items-center justify-between">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
+                <span className="text-[9px] font-semibold text-slate-600">Drag untuk urutan</span>
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => !pendingDiff && setSectionDropdownOpen((open) => !open)}
+                  disabled={!!pendingDiff}
+                  className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-haspopup="listbox"
+                  aria-expanded={sectionDropdownOpen}
+                >
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const activeSec = SECTIONS.find(s => s.key === activeTab);
+                      if (activeSec) {
+                        const Icon = activeSec.icon;
+                        return (
+                          <>
+                            <Icon className="w-4 h-4 text-violet-400" />
+                            <span className="text-[13px] font-medium text-slate-200">{activeSec.label}</span>
+                          </>
+                        );
+                      }
+                      return <span className="text-[13px] font-medium text-slate-200">{activeTab}</span>;
+                    })()}
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${sectionDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {sectionDropdownOpen && (
+                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#0c0f17] p-1 shadow-lg space-y-0.5" role="listbox">
+                    {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+                      <button
+                        key={key}
+                        type="button"
+                        draggable={BODY_SECTION_KEYS.includes(key)}
+                        onDragStart={(event) => {
+                          if (!BODY_SECTION_KEYS.includes(key)) return;
+                          setDraggingSection(key);
+                          event.dataTransfer.effectAllowed = "move";
+                          event.dataTransfer.setData("text/plain", key);
+                        }}
+                        onDragOver={(event) => {
+                          if (!draggingSection || !BODY_SECTION_KEYS.includes(key)) return;
+                          event.preventDefault();
+                          event.dataTransfer.dropEffect = "move";
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          const source = event.dataTransfer.getData("text/plain") || draggingSection;
+                          if (source) handleReorderSection(source, key);
+                          setDraggingSection(null);
+                        }}
+                        onDragEnd={() => setDraggingSection(null)}
+                        onClick={() => {
+                          selectSection(key, true);
+                          setSectionDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
+                          activeTab === key
+                            ? "bg-violet-600 text-white font-semibold shadow-sm"
+                            : draggingSection === key
+                            ? "bg-violet-500/20 text-violet-100"
+                            : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                        }`}
+                        role="option"
+                        aria-selected={activeTab === key}
+                      >
+                        <div className="flex items-center gap-2">
+                          <GripVertical className={`h-3.5 w-3.5 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
+                          <Icon className={`w-4 h-4 ${activeTab === key ? "text-white" : "text-slate-400"}`} />
+                          <span className="text-[13px]">{label}</span>
+                        </div>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                          activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-400"
+                        }`}>{num}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* ── Field Panel (scrollable) ── */}
           <div
             className="flex-1 border-t border-white/10 flex flex-col overflow-hidden [&_input]:!border-white/10 [&_textarea]:!border-white/10 [&_select]:!border-white/10 [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
             style={{ minHeight: 0 }}
           >
-            <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
-              <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
-                Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
-              </p>
-            </div>
-            <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
-              {pendingDiff ? (
-                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
-                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400">
-                    <Sparkles className="h-6 w-6 animate-pulse" />
-                  </div>
-                  <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
-                  <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
-                    Silakan gunakan atau kembalikan perubahan AI pada seksi{" "}
-                    <span className="font-bold text-violet-300">
-                      {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
-                    </span>{" "}
-                    di bagian atas halaman preview terlebih dahulu.
-                  </p>
-                  <div className="mt-4 flex gap-2 w-full max-w-[200px]">
-                    <button
-                      type="button"
-                      onClick={applyRegeneratedSection}
-                      className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
-                    >
-                      Gunakan
-                    </button>
-                    <button
-                      type="button"
-                      onClick={restorePendingDiff}
-                      className="flex-1 rounded-md border border-white/15 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
-                    >
-                      Kembalikan
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-              {quality.issues.length > 0 && (
-                <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] leading-relaxed text-amber-100">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold">⚠️ {quality.issues.length} field perlu dicek</span>
-                    <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
-                  </div>
-                  <p className="mt-1 truncate text-amber-100/75">
-                    {quality.issues.slice(0, 3).map((issue) => issue.label).join(", ")}
-                    {quality.issues.length > 3 ? ` +${quality.issues.length - 3} lainnya` : ""}
+            {editorTab === "design" ? (
+              <>
+                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
+                    Kustomisasi Visual
                   </p>
                 </div>
-              )}
+                <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-[#05070b] text-slate-100">
+                  {/* Palet Warna */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
+                    
+                    {/* Primary Color */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Utama (Primary)</label>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.primary || "#4F46E5"}
+                            onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
+                        </div>
+                        <input
+                          type="text"
+                          value={designToken?.palette?.primary || ""}
+                          onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          placeholder="#4F46E5"
+                        />
+                      </div>
+                    </div>
 
-              <SectionForms
-                activeTab={activeTab}
-                content={content}
-                updateField={updateField}
-                needsAttention={needsAttention}
-                fieldClass={fieldClass}
-              />
+                    {/* Accent Color */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Aksen (Accent)</label>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.accent || "#7C3AED"}
+                            onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
+                        </div>
+                        <input
+                          type="text"
+                          value={designToken?.palette?.accent || ""}
+                          onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          placeholder="#7C3AED"
+                        />
+                      </div>
+                    </div>
 
-            </div>
+                    {/* Background Color */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Latar (Background)</label>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.background || "#FAF7F2"}
+                            onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
+                        </div>
+                        <input
+                          type="text"
+                          value={designToken?.palette?.background || ""}
+                          onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          placeholder="#FAF7F2"
+                        />
+                      </div>
+                    </div>
 
-            {/* ── AI Prompt bar inside field panel ── */}
-            <div className="border-t border-white/10 flex-shrink-0 bg-[#05070b] flex flex-col">
-              {/* Header Toggle */}
-              <button
-                type="button"
-                onClick={() => setAiPanelOpen(!aiPanelOpen)}
-                className="flex items-center justify-between w-full px-3.5 py-2.5 text-left hover:bg-white/[0.02] transition-colors outline-none"
-              >
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <Sparkles className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
-                  <span className="truncate text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {undoStack.length > 0 && !aiPanelOpen && (
-                    <span className="text-[9px] font-bold text-violet-400 bg-violet-400/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
-                      Ada Undo
-                    </span>
-                  )}
-                  <ChevronDown className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-200 ${aiPanelOpen ? "rotate-180" : ""}`} />
-                </div>
-              </button>
+                    {/* Surface Color */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Permukaan (Surface)</label>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.surface || "#FFFFFF"}
+                            onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
+                        </div>
+                        <input
+                          type="text"
+                          value={designToken?.palette?.surface || ""}
+                          onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          placeholder="#FFFFFF"
+                        />
+                      </div>
+                    </div>
 
-              {aiPanelOpen && (
-                <div className="px-3.5 pb-3.5 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">
-                      Rekomendasi instruksi
-                    </span>
-                    {undoStack.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={undoLastRegen}
-                        className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
-                      >
-                        <RotateCcw className="h-3 w-3" />
-                        Undo
-                      </button>
-                    )}
+                    {/* Text Color */}
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Teks (Text)</label>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.text || "#2C2C2A"}
+                            onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
+                        </div>
+                        <input
+                          type="text"
+                          value={designToken?.palette?.text || ""}
+                          onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          placeholder="#2C2C2A"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {activeSuggestions.slice(0, 3).map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => setAiInstructions(suggestion)}
-                        disabled={!!pendingDiff}
-                        className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
+
+                  <div className="border-t border-white/10 my-2" />
+
+                  {/* Tipografi */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tipografi (Google Fonts)</p>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Heading</label>
+                      <select
+                        value={designToken?.typography?.heading_font || "Inter"}
+                        onChange={(e) => updateDesignTokenField("typography", "heading_font", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        {suggestion}
-                      </button>
-                    ))}
+                        {GOOGLE_FONTS_WHITELIST.map((font) => (
+                          <option key={font} value={font} className="bg-[#0c0f17]">
+                            {font}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Body</label>
+                      <select
+                        value={designToken?.typography?.body_font || "Inter"}
+                        onChange={(e) => updateDesignTokenField("typography", "body_font", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        {GOOGLE_FONTS_WHITELIST.map((font) => (
+                          <option key={font} value={font} className="bg-[#0c0f17]">
+                            {font}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ketebalan Heading</label>
+                      <select
+                        value={designToken?.typography?.heading_weight || "700"}
+                        onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        <option value="400" className="bg-[#0c0f17]">Regular (400)</option>
+                        <option value="500" className="bg-[#0c0f17]">Medium (500)</option>
+                        <option value="600" className="bg-[#0c0f17]">Semi-Bold (600)</option>
+                        <option value="700" className="bg-[#0c0f17]">Bold (700)</option>
+                        <option value="800" className="bg-[#0c0f17]">Extra-Bold (800)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ukuran Hero Title</label>
+                      <select
+                        value={designToken?.typography?.heading_size_hero || "3rem"}
+                        onChange={(e) => updateDesignTokenField("typography", "heading_size_hero", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        <option value="2rem" className="bg-[#0c0f17]">Kecil (2rem)</option>
+                        <option value="2.5rem" className="bg-[#0c0f17]">Sedang (2.5rem)</option>
+                        <option value="3rem" className="bg-[#0c0f17]">Besar (3rem)</option>
+                        <option value="3.5rem" className="bg-[#0c0f17]">Sangat Besar (3.5rem)</option>
+                        <option value="4rem" className="bg-[#0c0f17]">Maksimal (4rem)</option>
+                      </select>
+                    </div>
                   </div>
-                  {recentInstructions.length > 0 && (
-                    <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
-                      {recentInstructions.slice(0, 5).map((instruction) => (
+
+                  <div className="border-t border-white/10 my-2" />
+
+                  {/* Tata Letak & Gaya */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tata Letak & Gaya</p>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Sudut Border (Radius)</label>
+                      <select
+                        value={designToken?.layout?.corner_radius || "soft"}
+                        onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        <option value="sharp" className="bg-[#0c0f17]">Tajam (0px)</option>
+                        <option value="soft" className="bg-[#0c0f17]">Lembut (8px)</option>
+                        <option value="rounded" className="bg-[#0c0f17]">Bulat (20px)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Jarak Seksi (Spacing)</label>
+                      <select
+                        value={designToken?.layout?.section_spacing || "normal"}
+                        onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        <option value="compact" className="bg-[#0c0f17]">Rapat (Compact)</option>
+                        <option value="normal" className="bg-[#0c0f17]">Normal</option>
+                        <option value="relaxed" className="bg-[#0c0f17]">Longgar (Relaxed)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Gaya Hero</label>
+                      <select
+                        value={designToken?.layout?.hero_style || "centered"}
+                        onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                      >
+                        <option value="centered" className="bg-[#0c0f17]">Centered</option>
+                        <option value="split" className="bg-[#0c0f17]">Split Screen</option>
+                        <option value="full-bleed" className="bg-[#0c0f17]">Full Bleed</option>
+                        <option value="minimal" className="bg-[#0c0f17]">Minimalist</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
+                    Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                  </p>
+                </div>
+                <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
+                  {pendingDiff ? (
+                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
+                      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400">
+                        <Sparkles className="h-6 w-6 animate-pulse" />
+                      </div>
+                      <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
+                      <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
+                        Silakan gunakan atau kembalikan perubahan AI pada seksi{" "}
+                        <span className="font-bold text-violet-300">
+                          {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
+                        </span>{" "}
+                        di bagian atas halaman preview terlebih dahulu.
+                      </p>
+                      <div className="mt-4 flex gap-2 w-full max-w-[200px]">
                         <button
-                          key={instruction}
                           type="button"
-                          onClick={() => setAiInstructions(instruction)}
-                          disabled={!!pendingDiff}
-                          className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
-                          title={instruction}
+                          onClick={applyRegeneratedSection}
+                          className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
                         >
-                          {instruction}
+                          Gunakan
                         </button>
-                      ))}
+                        <button
+                          type="button"
+                          onClick={restorePendingDiff}
+                          className="flex-1 rounded-md border border-white/15 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
+                        >
+                          Kembalikan
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                  {quality.issues.length > 0 && (
+                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] leading-relaxed text-amber-100">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold">⚠️ {quality.issues.length} field perlu dicek</span>
+                        <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
+                      </div>
+                      <p className="mt-1 truncate text-amber-100/75">
+                        {quality.issues.slice(0, 3).map((issue) => issue.label).join(", ")}
+                        {quality.issues.length > 3 ? ` +${quality.issues.length - 3} lainnya` : ""}
+                      </p>
                     </div>
                   )}
-                  <input
-                    type="text"
-                    value={aiInstructions}
-                    onChange={(e) => setAiInstructions(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
-                    placeholder={aiPlaceholder}
-                    disabled={aiLoading || !!pendingDiff}
-                    className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
+
+                  <SectionForms
+                    activeTab={activeTab}
+                    content={content}
+                    updateField={updateField}
+                    needsAttention={needsAttention}
+                    fieldClass={fieldClass}
                   />
-                  <button
-                    onClick={handleAiRegenerateSection}
-                    disabled={aiLoading || !!pendingDiff}
-                    className="w-full h-9 px-3 flex items-center justify-center gap-1.5 rounded-md bg-violet-50 text-violet-700 text-[12px] font-medium hover:bg-violet-100 transition-colors disabled:opacity-50 whitespace-nowrap"
-                  >
-                    {aiLoading ? (
-                      <Loader2 className="w-3.5 h-3.5 flex-shrink-0 animate-spin" />
-                    ) : (
-                      <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
-                    )}
-                    <span className="truncate">{aiLoading ? "Memproses..." : "Regenerate dengan AI"}</span>
-                  </button>
+
                 </div>
-              )}
-            </div>
+
+                {/* ── AI Prompt bar inside field panel ── */}
+                <div className="border-t border-white/10 flex-shrink-0 bg-[#05070b] flex flex-col">
+                  {/* Header Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setAiPanelOpen(!aiPanelOpen)}
+                    className="flex items-center justify-between w-full px-3.5 py-2.5 text-left hover:bg-white/[0.02] transition-colors outline-none"
+                  >
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <Sparkles className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
+                      <span className="truncate text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {undoStack.length > 0 && !aiPanelOpen && (
+                        <span className="text-[9px] font-bold text-violet-400 bg-violet-400/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                          Ada Undo
+                        </span>
+                      )}
+                      <ChevronDown className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-200 ${aiPanelOpen ? "rotate-180" : ""}`} />
+                    </div>
+                  </button>
+
+                  {aiPanelOpen && (
+                    <div className="px-3.5 pb-3.5 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">
+                          Rekomendasi instruksi
+                        </span>
+                        {undoStack.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={undoLastRegen}
+                            className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
+                          >
+                            <RotateCcw className="h-3 w-3" />
+                            Undo
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {activeSuggestions.slice(0, 3).map((suggestion) => (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            onClick={() => setAiInstructions(suggestion)}
+                            disabled={!!pendingDiff}
+                            className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                      {recentInstructions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
+                          {recentInstructions.slice(0, 5).map((instruction) => (
+                            <button
+                              key={instruction}
+                              type="button"
+                              onClick={() => setAiInstructions(instruction)}
+                              disabled={!!pendingDiff}
+                              className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
+                              title={instruction}
+                            >
+                              {instruction}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <input
+                        type="text"
+                        value={aiInstructions}
+                        onChange={(e) => setAiInstructions(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                        placeholder={aiPlaceholder}
+                        disabled={aiLoading || !!pendingDiff}
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
+                      />
+                      <button
+                        onClick={handleAiRegenerateSection}
+                        disabled={aiLoading || !!pendingDiff}
+                        className="w-full h-9 px-3 flex items-center justify-center gap-1.5 rounded-md bg-violet-50 text-violet-700 text-[12px] font-medium hover:bg-violet-100 transition-colors disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {aiLoading ? (
+                          <Loader2 className="w-3.5 h-3.5 flex-shrink-0 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
+                        )}
+                        <span className="truncate">{aiLoading ? "Memproses..." : "Regenerate dengan AI"}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 

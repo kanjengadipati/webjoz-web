@@ -597,15 +597,18 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       {/* Dynamic Section Order */}
       {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
-      {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => (
-          <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
-            {footerData.brand_name && <p className="text-sm font-bold text-amber-100">{footerData.brand_name}</p>}
-            {footerData.tagline && <p className="text-amber-100/50">{footerData.tagline}</p>}
-            <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${footerData.brand_name_fallback || 'Bisnis Kami'}. All rights reserved.`}</p>
-          </footer>
-        )} />
+        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
+          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Kuliner Kami";
+          const displayTagline = footerData.tagline || "Cita rasa autentik untuk kebersamaan keluarga Anda";
+          return (
+            <footer className="bg-amber-955 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
+              <p className="text-sm font-bold text-amber-100">{displayBrand}</p>
+              <p className="text-amber-100/50">{displayTagline}</p>
+              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
+            </footer>
+          );
+        }} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -854,15 +857,18 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       {/* Dynamic Section Order */}
       {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
-      {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => (
-          <footer className="bg-slate-900 text-slate-400 text-center py-10 text-xs border-t border-slate-200 space-y-1">
-            {footerData.brand_name && <p className="text-sm font-bold text-slate-200">{footerData.brand_name}</p>}
-            {footerData.tagline && <p className="text-slate-500">{footerData.tagline}</p>}
-            <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${footerData.brand_name_fallback || 'Bisnis Kami'}. All rights reserved.`}</p>
-          </footer>
-        )} />
+        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
+          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Layanan Bisnis Kami";
+          const displayTagline = footerData.tagline || "Solusi profesional dan terpercaya untuk bisnis Anda";
+          return (
+            <footer className="bg-slate-900 text-slate-400 text-center py-10 text-xs border-t border-slate-200 space-y-1">
+              <p className="text-sm font-bold text-slate-200">{displayBrand}</p>
+              <p className="text-slate-505" style={{ color: "var(--slate-500, #94a3b8)" }}>{displayTagline}</p>
+              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
+            </footer>
+          );
+        }} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -1108,15 +1114,18 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       {/* Dynamic Section Order */}
       {sectionOrder.map((key) => sectionNodes[key] ?? null)}
 
-      {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => (
-          <footer className="bg-slate-955 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
-            {footerData.brand_name && <p className="text-sm font-bold text-slate-400">{footerData.brand_name}</p>}
-            {footerData.tagline && <p className="text-slate-650">{footerData.tagline}</p>}
-            <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${footerData.brand_name_fallback || 'Bisnis Kami'}. All rights reserved.`}</p>
-          </footer>
-        )} />
+        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
+          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Produk Kami";
+          const displayTagline = footerData.tagline || "Kualitas produk terbaik untuk memenuhi kenyamanan Anda";
+          return (
+            <footer className="bg-slate-955 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
+              <p className="text-sm font-bold text-slate-400">{displayBrand}</p>
+              <p className="text-slate-650">{displayTagline}</p>
+              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
+            </footer>
+          );
+        }} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -1225,8 +1234,19 @@ function buildCssVars(dt: DesignToken | null | undefined): Record<string, string
     ? "color-mix(in srgb, var(--dt-bg) 85%, white)"
     : "color-mix(in srgb, var(--dt-bg) 88%, black)";
 
+  const primaryColor = p?.primary ?? "#4F46E5";
+  const isPrimaryDark = isDarkColor(primaryColor);
+  const primaryFg = isPrimaryDark ? "#ffffff" : "#1e293b";
+  const ctaText = isPrimaryDark ? "#ffffff" : "#1e293b";
+  const ctaBtnBg = isPrimaryDark ? "#ffffff" : "#1e293b";
+  const ctaBtnText = isPrimaryDark ? "var(--dt-primary)" : "#ffffff";
+
   return {
-    "--dt-primary": p?.primary ?? "#4F46E5",
+    "--dt-primary": primaryColor,
+    "--dt-primary-foreground": primaryFg,
+    "--dt-cta-text": ctaText,
+    "--dt-cta-btn-bg": ctaBtnBg,
+    "--dt-cta-btn-text": ctaBtnText,
     "--dt-accent": p?.accent ?? "#7C3AED",
     "--dt-bg": bg,
     "--dt-surface": surfaceVal,
@@ -1336,7 +1356,7 @@ const DynamicLeadForm: React.FC<{
       <button
         type="submit"
         disabled={submitting}
-        style={{ padding: "0.75rem 1.5rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", fontWeight: 700, fontFamily: "var(--dt-body-font)", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "opacity 0.2s", border: "none" }}
+        style={{ padding: "0.75rem 1.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", fontWeight: 700, fontFamily: "var(--dt-body-font)", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "opacity 0.2s", border: "none" }}
       >
         {submitting ? "Mengirim..." : <><Send style={{ width: 16, height: 16 }} /> Kirim Pesan</>}
       </button>
@@ -1411,7 +1431,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                       {h.opening_hours}
                     </span>
                   )}
-                  <a href={h.cta_url} className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
+                  <a href={h.cta_url} className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
                     onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
                     onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                   >
@@ -1530,8 +1550,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <div className="px-4 py-8 md:px-8 md:py-16" style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", textAlign: "center", position: "relative", overflow: "hidden" }}>
                   <div style={{ position: "absolute", top: "-30%", right: "-10%", width: "50%", height: "150%", background: "rgba(255,255,255,0.06)", borderRadius: "50%", pointerEvents: "none" }} />
                   <div style={{ position: "relative", zIndex: 1, maxWidth: "36rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: "center" }}>
-                    <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "#fff", margin: 0 }}>{c.headline}</h2>
-                    <a href={c.button_url} className="px-6 py-2.5 md:px-10 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#fff", color: "var(--dt-primary)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
+                    <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-cta-text)", margin: 0 }}>{c.headline}</h2>
+                    <a href={c.button_url} className="px-6 py-2.5 md:px-10 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-cta-btn-bg)", color: "var(--dt-cta-btn-text)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                     >
@@ -1610,7 +1630,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <LogoImage url={h?.logo_url} icon={h?.icon} defaultIcon={Sparkles} iconClass="" imgClass="h-8 w-auto object-contain" />
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h?.brand_name || "Brand Kami"}</span>
               </span>
-              <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "#fff", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
+              <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
@@ -1624,15 +1644,28 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       {/* Dynamic Section Order */}
       {sectionOrder.map((key) => sectionNodes[key] ?? null)}
  
-      {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {
           const { footer: f, brand_name_fallback: bFallback } = data;
+          const displayBrand = f?.brand_name || bFallback || "Bisnis Kami";
+          const displayTagline = f?.tagline || "Memberikan layanan dan produk terbaik untuk memenuhi kebutuhan Anda";
           return (
-            <footer style={{ background: "color-mix(in srgb, var(--dt-text) 90%, transparent)", color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "2.5rem 1.5rem", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-              {f?.brand_name && <p style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)", margin: 0 }}>{f.brand_name}</p>}
-              {f?.tagline && <p style={{ color: "rgba(255,255,255,0.4)", margin: 0 }}>{f.tagline}</p>}
-              <p style={{ margin: 0 }}>{f?.copyright_text || `© ${new Date().getFullYear()} ${bFallback || "Bisnis Kami"}. All rights reserved.`}</p>
+            <footer style={{ 
+              background: "color-mix(in srgb, var(--dt-bg) 95%, var(--dt-text))", 
+              color: "var(--dt-text-muted)", 
+              textAlign: "center", 
+              padding: "2.5rem 1.5rem", 
+              borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, 
+              fontSize: "0.8rem", 
+              display: "flex", 
+              flexDirection: "column", 
+              gap: "0.375rem" 
+            }}>
+              <p style={{ fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{displayBrand}</p>
+              <p style={{ color: "var(--dt-text-muted)", margin: 0, opacity: 0.85 }}>{displayTagline}</p>
+              <p style={{ margin: 0, fontSize: "0.75rem", opacity: 0.7 }}>
+                {f?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
+              </p>
             </footer>
           );
         }} />
