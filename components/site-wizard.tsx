@@ -155,11 +155,11 @@ export function SiteWizard({
   const [location, setLocation] = useState("");
   const [phone, setPhone] = useState("");
   const [sellingPoints, setSellingPoints] = useState<string[]>([]);
-  const [ageGroup, setAgeGroup] = useState("");
-  const [tone, setTone] = useState("");
+  const [ageGroup, setAgeGroup] = useState("Semua usia");
+  const [tone, setTone] = useState("Santai & akrab");
   const [motives, setMotives] = useState<string[]>([]);
-  const [mood, setMood] = useState("");
-  const [layoutStyle, setLayoutStyle] = useState("");
+  const [mood, setMood] = useState("Hangat & earthy");
+  const [layoutStyle, setLayoutStyle] = useState("Minimalis & ruang lega");
   const [story, setStory] = useState("");
   const [tagline, setTagline] = useState("");
   const [proof, setProof] = useState("");
@@ -232,9 +232,8 @@ export function SiteWizard({
       }
       if (p.get("template")) setTemplateId(p.get("template")!);
       const points: string[] = [];
-      if (p.get("market")) points.push(`Target pasar: ${p.get("market")}`);
-      if (p.get("problem")) points.push(`Masalah customer: ${p.get("problem")}`);
-      if (p.get("advantages")) points.push(`Keunggulan: ${p.get("advantages")}`);
+      if (p.get("problem")) points.push(p.get("problem")!);
+      if (p.get("advantages")) points.push(p.get("advantages")!);
       if (points.length > 0) setSellingPoints(points);
       if (p.get("market")) setAgeGroup(p.get("market")!);
       if (p.get("tone")) setTone(p.get("tone")!);
@@ -299,7 +298,8 @@ export function SiteWizard({
   // ── Auto-fill subdomain from business name ───────────────────────────────
   useEffect(() => {
     if (!isSubdomainManuallyEdited && businessName) {
-      setSubdomain(businessName.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+      const cleaned = businessName.toLowerCase().replace(/[^a-z0-9-]/g, "");
+      setSubdomain(cleaned || "situs");
     }
   }, [businessName, isSubdomainManuallyEdited]);
 
@@ -359,39 +359,18 @@ export function SiteWizard({
 
       const cleanSubdomain =
         (data.subdomain || data.businessName).toLowerCase().replace(/[^a-z0-9-]/g, "") || "situs";
-      const enrichedDescription = [
-        `Nama usaha / brand: ${data.businessName}.`,
-        `Produk atau layanan utama: ${data.description}.`,
-        `Kategori bisnis: ${data.businessType}.`,
-        data.story ? `Cerita bisnis: ${data.story}.` : "",
-        data.ageGroup ? `Target pelanggan: ${data.ageGroup}.` : "",
-        data.tone ? `Tone komunikasi: ${data.tone}.` : "",
-        data.motives?.length ? `Alasan pelanggan datang: ${data.motives.join(", ")}.` : "",
-        data.mood ? `Nuansa visual: ${data.mood}.` : "",
-        data.layoutStyle ? `Preferensi layout: ${data.layoutStyle}.` : "",
-        data.tagline ? `Tagline pilihan user: ${data.tagline}.` : "",
-        data.proof ? `Social proof: ${data.proof}.` : "",
-      ].filter(Boolean).join("\n");
-      const enrichedSellingPoints = [
-        ...data.sellingPoints,
-        ...(data.motives || []).map((item) => `Motivasi pelanggan: ${item}`),
-        ...(data.mood ? [`Nuansa visual: ${data.mood}`] : []),
-        ...(data.layoutStyle ? [`Layout: ${data.layoutStyle}`] : []),
-        ...(data.tagline ? [`Tagline: ${data.tagline}`] : []),
-        ...(data.proof ? [`Bukti sosial: ${data.proof}`] : []),
-      ];
 
       const genRes = await request<any>("/ai/generate-site", {
         method: "POST",
         body: JSON.stringify({
           business_name: data.businessName,
           business_type: data.businessType,
-          description: enrichedDescription,
+          description: data.description,
           location: data.location,
           phone: data.phone,
           selling_points:
-            enrichedSellingPoints.length > 0
-              ? enrichedSellingPoints
+            data.sellingPoints.length > 0
+              ? data.sellingPoints
               : [`Lokasi di ${data.location}`, `WhatsApp: ${data.phone}`],
           template_id: data.templateId,
           language: "id",
@@ -640,7 +619,7 @@ export function SiteWizard({
               </div>
 
               <div className="space-y-2">
-                <label className={labelClass}>Produk atau layanan utama <span className="text-red-400">*</span></label>
+                <label className={labelClass}>Apa yang kamu jual atau tawarkan? <span className="text-red-400">*</span></label>
                 <input
                   type="text"
                   value={description}
@@ -648,6 +627,9 @@ export function SiteWizard({
                   placeholder="contoh: kopi arabika, croissant, pastry homemade"
                   className={inputClass}
                 />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Semakin detail, semakin bagus copywriting-nya. Contoh: kopi arabika single origin, jasa desain logo, baju gamis custom.
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -659,6 +641,9 @@ export function SiteWizard({
                   placeholder="Berdiri sejak kapan, kenapa dibuat, ada cerita unik?"
                   className={`${inputClass} resize-none`}
                 />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  💡 Tip: Cerita ini langsung dipakai AI untuk nulis section 'Tentang Kami'. Semakin detail semakin unik hasilnya.
+                </p>
               </div>
 
               <div className={`pt-4 flex justify-between items-center border-t ${dividerClass}`}>
