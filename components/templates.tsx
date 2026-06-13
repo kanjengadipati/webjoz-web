@@ -1195,13 +1195,44 @@ function buildCssVars(dt: DesignToken | null | undefined): Record<string, string
     rounded: "20px",
   };
 
+  const bg = p?.background ?? "#F8F9FF";
+
+  const isDarkColor = (hex: string) => {
+    const clean = (hex || "").replace("#", "").trim();
+    if (clean.length === 3) {
+      const r = parseInt(clean[0] + clean[0], 16);
+      const g = parseInt(clean[1] + clean[1], 16);
+      const b = parseInt(clean[2] + clean[2], 16);
+      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+    }
+    if (clean.length === 6) {
+      const r = parseInt(clean.substring(0, 2), 16);
+      const g = parseInt(clean.substring(2, 4), 16);
+      const b = parseInt(clean.substring(4, 6), 16);
+      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+    }
+    return false;
+  };
+
+  const isDarkBg = isDarkColor(bg);
+  let surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
+  if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
+    surfaceVal = isDarkBg 
+      ? "color-mix(in srgb, var(--dt-bg) 92%, white)" 
+      : "color-mix(in srgb, var(--dt-bg) 96%, black)";
+  }
+  const borderVal = isDarkBg
+    ? "color-mix(in srgb, var(--dt-bg) 85%, white)"
+    : "color-mix(in srgb, var(--dt-bg) 88%, black)";
+
   return {
     "--dt-primary": p?.primary ?? "#4F46E5",
     "--dt-accent": p?.accent ?? "#7C3AED",
-    "--dt-bg": p?.background ?? "#F8F9FF",
-    "--dt-surface": p?.surface ?? "#FFFFFF",
+    "--dt-bg": bg,
+    "--dt-surface": surfaceVal,
+    "--dt-border": borderVal,
     "--dt-text": p?.text ?? "#1e293b",
-    "--dt-text-muted": p?.text ? p.text + "99" : "#64748b",
+    "--dt-text-muted": "color-mix(in srgb, var(--dt-text) 55%, transparent)",
     "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
     "--dt-heading-weight": ty?.heading_weight ?? "700",
