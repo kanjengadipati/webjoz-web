@@ -43,6 +43,8 @@ type PreviewData = {
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
+const INITIAL_MESSAGE = "🤖 Halo! Saya akan membantu membuat website bisnis Anda. Apa nama bisnis Anda?";
+const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 
 const AI_LOADING_STEPS = [
   "Menganalisis profil bisnis Anda...",
@@ -71,10 +73,51 @@ const MOODS = [
   { value: "Bold & Tegas", emoji: "🔥", desc: "Kuat & impactful" },
 ];
 
+const ADVANTAGE_SUGGESTIONS: Record<string, string[]> = {
+  "Kuliner": [
+    "Menu andalan dibuat fresh setiap hari dengan resep khas keluarga.",
+    "Tempat nyaman untuk makan bersama, reservasi, dan acara kecil.",
+    "Bahan pilihan, rasa konsisten, dan pelayanan cepat.",
+  ],
+  "Toko & UMKM": [
+    "Produk lengkap, harga bersaing, dan bisa konsultasi sebelum membeli.",
+    "Stok ready, kualitas terjamin, dan pengiriman cepat.",
+    "Pilihan produk lokal berkualitas dengan layanan ramah.",
+  ],
+  "Jasa": [
+    "Tim berpengalaman, proses kerja jelas, dan hasil rapi tepat waktu.",
+    "Konsultasi mudah, rekomendasi transparan, dan support setelah pekerjaan selesai.",
+    "Solusi dibuat sesuai kebutuhan, bukan paket yang kaku.",
+  ],
+  "Company": [
+    "Tim profesional, standar kerja tinggi, dan dipercaya banyak klien.",
+    "Proses produksi terukur, kualitas konsisten, dan layanan responsif.",
+    "Pengalaman industri kuat dengan solusi yang bisa disesuaikan.",
+  ],
+};
+
 // ─── Build full content with AI data + defaults ─────────────────────────────
 
+function preserveUserBrand(content: Record<string, any>, businessName: string): Record<string, any> {
+  return {
+    ...content,
+    header: {
+      ...(content.header || {}),
+      brand_name: businessName,
+    },
+    footer: {
+      ...(content.footer || {}),
+      brand_name: businessName,
+    },
+    seo: {
+      ...(content.seo || {}),
+      title: content.seo?.title || businessName,
+    },
+  };
+}
+
 function buildFullContent(data: PreviewData, businessName: string, businessType: string, description: string, whatsapp: string) {
-  const c = data.content as Record<string, any>;
+  const c = preserveUserBrand(data.content as Record<string, any>, businessName);
   const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
 
   // Hero image: use AI-provided or pick by business type
@@ -125,7 +168,7 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
 
   return {
     header: {
-      brand_name: c.header?.brand_name || businessName,
+      brand_name: businessName,
       nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
       logo_url: c.header?.logo_url || logoUrl,
     },
@@ -136,6 +179,7 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
       cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
       image_url: c.hero?.image_url || defaultHeroImage,
       badge_text: c.hero?.badge_text || businessType,
+      matra: c.hero?.matra || "",
     },
     about: {
       title: c.about?.title || `Tentang ${businessName}`,
@@ -170,7 +214,7 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
       email: c.contact?.email || "",
     },
     footer: {
-      brand_name: c.footer?.brand_name || businessName,
+      brand_name: businessName,
       tagline: c.footer?.tagline || description,
       copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
     },
@@ -196,22 +240,27 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "mood" | "done">("name");
+  const [chatStage, setChatStage] = useState<"name" | "type" | "matra" | "advantage" | "mood" | "done">("name");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
       sender: "ai",
-      text: "🤖 Halo! Saya akan membantu membuat website bisnis Anda. Apa nama bisnis Anda?",
+      text: INITIAL_MESSAGE,
     },
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [initialWordCount, setInitialWordCount] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
 
   const getProgressPercentage = () => {
     switch (chatStage) {
       case "name": return 20;
-      case "type": return 60;
-      case "mood": return 95;
+      case "matra": return 38;
+      case "type": return 55;
+      case "advantage": return 72;
+      case "mood": return 90;
       case "done": return 100;
       default: return 100;
     }
@@ -232,6 +281,8 @@ export function SiteWizard({
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [mood, setMood] = useState("");
+  const [matra, setMatra] = useState("");
+  const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
 
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
@@ -239,12 +290,58 @@ export function SiteWizard({
 
   // Loading animation state
   const [loadingStep, setLoadingStep] = useState(0);
+
+  // Helper to animate AI typing
+  const typeMessage = (fullText: string, onComplete: () => void) => {
+    let idx = 0;
+    const typingId = 'typing';
+    const interval = setInterval(() => {
+      idx++;
+      const partial = fullText.slice(0, idx);
+      setMessages((prev) => {
+        // Remove previous typing placeholder if present
+        const filtered = prev.filter((m) => m.id !== typingId);
+        return [...filtered, { id: typingId, sender: "ai", text: partial }];
+      });
+      if (idx >= fullText.length) {
+        clearInterval(interval);
+        // Replace typing placeholder with final message id
+        setMessages((prev) => {
+          const filtered = prev.filter((m) => m.id !== typingId);
+          return [...filtered, { id: Date.now().toString(), sender: "ai", text: fullText }];
+        });
+        onComplete();
+      }
+    }, 30);
+  };
   const [pendingPreview, setPendingPreview] = useState<PreviewData | null>(null);
 
   // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatStage]);
+
+  // Type the opening question word-by-word on first load.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setInitialWordCount((count) => {
+        if (count >= INITIAL_MESSAGE_WORDS.length) {
+          clearInterval(interval);
+          return count;
+        }
+
+        return count + 1;
+      });
+    }, 130);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialTyping && (chatStage === "name" || chatStage === "matra" || chatStage === "advantage")) {
+      inputRef.current?.focus();
+    }
+  }, [isInitialTyping, chatStage]);
 
   // Cycle checklist steps during loading state
   useEffect(() => {
@@ -269,10 +366,20 @@ export function SiteWizard({
     }
   }, [pendingPreview, loadingStep]);
 
+  // Show final typing message when generation is complete
+  useEffect(() => {
+    if (previewState === "result") {
+      typeMessage("Sempurna. Semua data sudah siap. Website sedang dibuat...", () => {
+        setChatStage("done");
+      });
+    }
+  }, [previewState]);
+
   // ── Chat handlers ────────────────────────────────────────────────────────
 
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isInitialTyping) return;
     if (!inputValue.trim()) return;
     const val = inputValue.trim();
     setInputValue("");
@@ -283,41 +390,88 @@ export function SiteWizard({
         .map((w) => (w.length > 0 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
         .join(" ");
       setBusinessName(capitalized);
+      // Add user message immediately
       setMessages((prev) => [
         ...prev,
         { id: Date.now().toString(), sender: "user", text: val },
-        {
-          id: (Date.now() + 1).toString(),
-          sender: "ai",
-          text: "Nama yang profesional dan mudah dipercaya.",
-        },
       ]);
-      setChatStage("type");
+      setTimeout(() => {
+        typeMessage("Nama yang profesional dan mudah dipercaya.", () => {
+          setTimeout(() => {
+            typeMessage("Sebelum itu, apa slogan atau matra bisnis Anda? (Contoh: \"Kualitas Tanpa Kompromi\")", () => {
+              setChatStage("matra");
+            });
+          }, 300);
+        });
+      }, 500);
+    } else if (chatStage === "matra") {
+      setMatra(val);
+      // If user provides a matra/slogan, record it and ask for business type; otherwise skip directly to type stage
+      if (val.trim()) {
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now().toString(), sender: "user", text: val },
+        ]);
+        setTimeout(() => {
+          typeMessage("Slogan yang keren! Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
+            setChatStage("type");
+          });
+        }, 500);
+      } else {
+        // No slogan provided; proceed directly to type stage
+        setChatStage("type");
+      }
+    } else if (chatStage === "advantage") {
+      setDescription(val);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), sender: "user", text: val },
+      ]);
+      setTimeout(() => {
+        typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
+          setChatStage("mood");
+        });
+      }, 500);
     }
   };
 
   const handleSelectType = (type: string) => {
     setBusinessType(type);
+    setSelectedAdvantages([]);
+    setInputValue("");
 
-    const userText = type === "Retail" ? "Toko Bahan Bangunan" :
+    const userText = type === "Toko & UMKM" ? "Toko & UMKM" :
       type === "Kuliner" ? "Kuliner / Restoran" :
         type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
 
-    const aiResponse = type === "Retail" ? "Saya akan membuat website dengan fokus konversi WhatsApp dan katalog produk." :
-      type === "Kuliner" ? "Saya akan membuat website dengan fokus menu makanan dan sistem reservasi." :
-        type === "Jasa" ? "Saya akan membuat website dengan fokus portofolio layanan dan testimoni pelanggan." :
-          "Saya akan membuat website dengan fokus company profile dan keunggulan perusahaan.";
+    const aiResponse = type === "Toko & UMKM" ? "Saya akan membuat website dengan fokus produk unggulan, katalog, dan konversi WhatsApp.\n\nApa produk/layanan utama dan keunggulan yang paling ingin ditonjolkan?" :
+      type === "Kuliner" ? "Saya akan membuat website dengan fokus menu andalan, suasana, dan reservasi.\n\nApa produk/menu utama dan keunggulan yang paling ingin ditonjolkan?" :
+        type === "Jasa" ? "Saya akan membuat website dengan fokus layanan, portofolio, dan kepercayaan pelanggan.\n\nApa layanan utama dan keunggulan yang paling ingin ditonjolkan?" :
+          "Saya akan membuat website dengan fokus profil perusahaan, kredibilitas, dan keunggulan bisnis.\n\nApa produk/layanan utama dan keunggulan yang paling ingin ditonjolkan?";
 
+    // Add user selection immediately
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: userText },
-      {
-        id: (Date.now() + 1).toString(),
-        sender: "ai",
-        text: aiResponse,
-      },
     ]);
-    setChatStage("mood");
+    // Add AI response after short delay and move to advantage stage
+    setTimeout(() => {
+      typeMessage(aiResponse, () => {
+        setChatStage("advantage");
+      });
+    }, 500);
+  };
+
+  const toggleAdvantageSuggestion = (suggestion: string) => {
+    setSelectedAdvantages((current) => {
+      const next = current.includes(suggestion)
+        ? current.filter((item) => item !== suggestion)
+        : [...current, suggestion];
+
+      setInputValue(next.join(" "));
+      return next;
+    });
+    inputRef.current?.focus();
   };
 
   // ── Generate (public, no login needed) ──────────────────────────────────
@@ -325,7 +479,8 @@ export function SiteWizard({
   const handleGenerate = async (
     bName = businessName,
     bType = businessType,
-    bMood = mood
+    bMood = mood,
+    bDescription = description
   ) => {
     setPreviewState("loading");
     setLoadingStep(0);
@@ -337,7 +492,7 @@ export function SiteWizard({
         body: JSON.stringify({
           business_name: bName,
           business_type: bType,
-          description: "", // Send empty description to allow backend generation
+          description: bDescription,
           whatsapp: "",     // Send empty WhatsApp to allow backend fallback
           mood: bMood,
         }),
@@ -345,8 +500,9 @@ export function SiteWizard({
 
       if (res.status !== "success") throw new Error(res.message);
 
+      const preservedContent = preserveUserBrand(res.data.content, bName);
       const loadedData = {
-        content: res.data.content,
+        content: preservedContent,
         design_token: res.data.design_token,
       };
 
@@ -356,10 +512,10 @@ export function SiteWizard({
         JSON.stringify({
           businessName: bName,
           businessType: bType,
-          description: "",
+          description: bDescription,
           whatsapp: "",
           mood: bMood,
-          previewContent: res.data.content,
+          previewContent: preservedContent,
           previewDesignToken: res.data.design_token,
         })
       );
@@ -539,6 +695,11 @@ export function SiteWizard({
     );
   };
 
+  const skeletonSubtle = { background: "rgba(255,255,255,0.04)" };
+  const skeletonSoft = { background: "rgba(255,255,255,0.06)" };
+  const skeletonStrong = { background: "rgba(255,255,255,0.08)" };
+  const skeletonPanel = { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.055)" };
+
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -548,7 +709,7 @@ export function SiteWizard({
       <div className="w-[380px] shrink-0 flex flex-col bg-[#111318] border-r h-full overflow-hidden shadow-xl z-10" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
 
         {/* ── Sidebar Header ──────────────────────────────────────────────── */}
-        <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="px-5 pt-4 pb-5 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
           <div className="flex items-start gap-3 mb-4">
             <button
               type="button"
@@ -577,7 +738,7 @@ export function SiteWizard({
           {/* Progress bar */}
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] text-slate-500 font-medium">
-              Langkah {chatStage === "name" ? 1 : chatStage === "type" ? 2 : chatStage === "mood" ? 3 : 3} dari 3
+              {chatStage === "name" ? 1 : chatStage === "type" ? 2 : chatStage === "matra" ? 3 : chatStage === "advantage" ? 4 : chatStage === "mood" ? 5 : 6} dari 6
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
@@ -590,27 +751,39 @@ export function SiteWizard({
         </div>
 
         {/* ── Chat messages ────────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
           {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}
-            >
-              {m.sender === "ai" && (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-3 h-3 text-white" />
+            (() => {
+              const messageText =
+                m.id === "init" && chatStage === "name"
+                  ? INITIAL_MESSAGE_WORDS.slice(0, initialWordCount).join(" ")
+                  : m.text;
+
+              return (
+                <div
+                  key={m.id}
+                  className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  {m.sender === "ai" && (
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <Sparkles className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user"
+                      ? "bg-[#7c3aed] text-white rounded-tr-sm"
+                      : "rounded-tl-sm text-slate-200"
+                      }`}
+                    style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
+                  >
+                    {formatText(messageText, m.sender === "user")}
+                    {m.id === "init" && isInitialTyping && (
+                      <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                    )}
+                  </div>
                 </div>
-              )}
-              <div
-                className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user"
-                  ? "bg-[#7c3aed] text-white rounded-tr-sm"
-                  : "rounded-tl-sm text-slate-200"
-                  }`}
-                style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
-              >
-                {formatText(m.text, m.sender === "user")}
-              </div>
-            </div>
+              );
+            })()
           ))}
 
           {/* Category chips */}
@@ -629,6 +802,38 @@ export function SiteWizard({
                     <span className="text-[10px] text-slate-500">{t.desc}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Advantage suggestions */}
+          {chatStage === "advantage" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+              <p className="text-[11px] font-semibold text-slate-500 px-1">
+                Pilih satu atau beberapa saran untuk keterangan, atau tulis sendiri (pisahkan dengan koma bila lebih dari satu):
+              </p>
+              <div className="space-y-2">
+                {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
+                  const selected = selectedAdvantages.includes(suggestion);
+                  return (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => toggleAdvantageSuggestion(suggestion)}
+                      className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-xs leading-relaxed transition-all active:scale-[0.99] ${selected ? "border-[#7c3aed]/60 text-white" : "text-slate-300 hover:border-[#7c3aed]/50 hover:text-white"
+                        }`}
+                      style={selected
+                        ? { background: "rgba(124,58,237,0.14)" }
+                        : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                    >
+                      <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#7c3aed] bg-[#7c3aed]" : "border-slate-600"
+                        }`}>
+                        {selected && <CheckCircle2 className="h-3 w-3 text-white" />}
+                      </span>
+                      <span>{suggestion}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -652,7 +857,7 @@ export function SiteWizard({
                         },
                       ]);
                       setChatStage("done");
-                      handleGenerate(businessName, businessType, m.value);
+                      handleGenerate(businessName, businessType, m.value, description);
                     }}
                     className="flex items-center gap-2 p-2.5 hover:border-[#7c3aed]/50 border rounded-xl text-left transition-all active:scale-[0.97] group"
                     style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
@@ -697,16 +902,28 @@ export function SiteWizard({
           <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
+                ref={inputRef}
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Tanya AI apa saja..."
+                placeholder={
+                  chatStage === "advantage"
+                    ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
+                    : chatStage === "matra"
+                      ? "Masukkan slogan atau matra bisnis Anda (opsional)"
+                      : chatStage === "name"
+                        ? "Ketik nama bisnis Anda..."
+                        : chatStage === "mood"
+                          ? "Deskripsikan mood website Anda..."
+                          : ""
+                }
                 autoFocus
+                disabled={isInitialTyping}
                 className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none"
               />
               <button
                 type="submit"
-                disabled={!inputValue.trim()}
+                disabled={isInitialTyping || (chatStage === "name" && !inputValue.trim())}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#7c3aed] text-white transition-all disabled:opacity-30 hover:bg-[#6d28d9] shrink-0"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -779,43 +996,43 @@ export function SiteWizard({
             <div className="h-full overflow-y-auto p-8" style={{ background: "#0d0f14" }}>
               <div className="max-w-3xl mx-auto">
                 <header className="flex justify-between items-center pb-6 mb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="h-7 w-28 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
+                  <div className="h-7 w-28 rounded-md" style={skeletonStrong} />
                   <div className="flex gap-4 items-center">
-                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
-                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
-                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
-                    <div className="h-8 w-24 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
+                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
+                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
+                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
+                    <div className="h-8 w-24 rounded-md" style={skeletonStrong} />
                   </div>
                 </header>
-                <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-700 to-slate-800" style={{ height: 260 }}>
+                <section className="relative rounded-2xl overflow-hidden mb-10" style={{ ...skeletonPanel, height: 260 }}>
                   <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
-                    <div className="h-5 w-20 bg-white/10 rounded-full" />
+                    <div className="h-5 w-20 rounded-full" style={skeletonStrong} />
                     <div className="space-y-2">
-                      <div className="h-10 w-3/4 bg-white/15 rounded-xl" />
-                      <div className="h-10 w-1/2 bg-white/15 rounded-xl" />
+                      <div className="h-10 w-3/4 rounded-lg" style={skeletonStrong} />
+                      <div className="h-10 w-1/2 rounded-lg" style={skeletonStrong} />
                     </div>
-                    <div className="h-5 w-2/3 bg-white/10 rounded-full" />
-                    <div className="h-11 w-36 bg-white/20 rounded-xl" />
+                    <div className="h-5 w-2/3 rounded-full" style={skeletonSoft} />
+                    <div className="h-11 w-36 rounded-lg" style={skeletonStrong} />
                   </div>
-                  <div className="absolute right-0 inset-y-0 w-2/5" style={{ background: "rgba(255,255,255,0.05)" }} />
+                  <div className="absolute right-0 inset-y-0 w-2/5" style={skeletonSubtle} />
                 </section>
                 <section className="grid grid-cols-4 gap-4 mb-10">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="p-4 rounded-2xl space-y-3" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                      <div className="w-8 h-8 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
-                      <div className="h-3 w-3/4 rounded" style={{ background: "rgba(255,255,255,0.08)" }} />
-                      <div className="h-2 w-full rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div key={i} className="p-4 rounded-xl space-y-3" style={skeletonPanel}>
+                      <div className="w-8 h-8 rounded-full" style={skeletonStrong} />
+                      <div className="h-3 w-3/4 rounded" style={skeletonStrong} />
+                      <div className="h-2 w-full rounded" style={skeletonSoft} />
                     </div>
                   ))}
                 </section>
-                <section className="flex gap-8 items-center p-8 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <section className="flex gap-8 items-center p-8 rounded-xl" style={skeletonPanel}>
                   <div className="flex-1 space-y-4">
-                    <div className="h-7 w-3/4 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
-                    <div className="h-3 w-full rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
-                    <div className="h-3 w-5/6 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
-                    <div className="h-3 w-4/6 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-7 w-3/4 rounded-md" style={skeletonStrong} />
+                    <div className="h-3 w-full rounded" style={skeletonSoft} />
+                    <div className="h-3 w-5/6 rounded" style={skeletonSoft} />
+                    <div className="h-3 w-4/6 rounded" style={skeletonSoft} />
                   </div>
-                  <div className="w-40 h-40 rounded-2xl shrink-0" style={{ background: "rgba(255,255,255,0.06)" }} />
+                  <div className="w-40 h-40 rounded-xl shrink-0" style={skeletonSoft} />
                 </section>
               </div>
             </div>
