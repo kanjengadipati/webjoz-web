@@ -6,6 +6,7 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   CheckCircle2,
+  ChevronLeft,
   Loader2,
   Pencil,
   Sparkles,
@@ -214,6 +215,15 @@ export function SiteWizard({
       case "done": return 100;
       default: return 100;
     }
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/");
   };
 
   // Form data
@@ -539,17 +549,28 @@ export function SiteWizard({
 
         {/* ── Sidebar Header ──────────────────────────────────────────────── */}
         <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
+          <div className="flex items-start gap-3 mb-4">
+            <button
+              type="button"
+              onClick={handleBack}
+              aria-label="Kembali"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white active:scale-95"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-[18px] h-[18px] text-white" />
+                  </div>
+                  <span className="font-bold text-white text-[17px] leading-tight">
+                    Webjoz AI Assistant
+                  </span>
+                </div>
+                <span className="shrink-0 text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
               </div>
-              <span className="font-bold text-white text-sm">Webjoz AI Assistant</span>
-              <span className="text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Gratis · Tanpa Daftar
             </div>
           </div>
 
@@ -953,4 +974,3 @@ export function SiteWizard({
     </div>
   );
 }
-
