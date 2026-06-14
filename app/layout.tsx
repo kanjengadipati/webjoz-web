@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
@@ -38,8 +39,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Inline script injected synchronously into <head> — runs before first paint
-// so the dark class is applied before React hydrates, preventing the white flash.
+// Inline script injected synchronously before first paint — applies dark/accent
+// class before React hydrates to prevent the white flash on page load.
 const themeScript = `
 (function() {
   try {
@@ -70,7 +71,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/*
+          next/script with strategy="beforeInteractive" injects the script into the
+          HTML before hydration — required in Next.js 16 (React 19) because React 19
+          no longer executes plain <script dangerouslySetInnerHTML> tags inside components.
+        */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
         <meta name="robots" content="index, follow" />
       </head>
       <body className="min-h-full font-sans">

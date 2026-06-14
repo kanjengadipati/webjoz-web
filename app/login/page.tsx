@@ -96,8 +96,13 @@ export default function LoginPage() {
     persistAuthSession(email, accessToken);
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
     const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
+    // Also check a saved redirect key that survives cross-URL navigations (e.g. magic link)
+    const savedRedirect = localStorage.getItem("webjoz_login_redirect");
+    localStorage.removeItem("webjoz_login_redirect");
     if (redirectParam) {
       router.push(redirectParam);
+    } else if (savedRedirect) {
+      router.push(savedRedirect);
     } else if (pendingWizard) {
       router.push("/create?action=save");
     } else {
@@ -219,6 +224,16 @@ export default function LoginPage() {
           const nextStep = response.data.next_step;
           // If backend provides a direct magic link URL, navigate to it immediately
           if (nextStep === "magic_link" && response.data.magic_link_url) {
+            // Persist the intended redirect before navigating away — the magic link URL
+            // won't carry our ?redirect query param, so we save it here and read it
+            // back in finishLogin() after the token is verified.
+            const currentRedirect = new URLSearchParams(window.location.search).get("redirect");
+            const hasPendingWizard = !!localStorage.getItem("webjoz_pending_wizard_data");
+            if (currentRedirect) {
+              localStorage.setItem("webjoz_login_redirect", currentRedirect);
+            } else if (hasPendingWizard) {
+              localStorage.setItem("webjoz_login_redirect", "/create?action=save");
+            }
             window.location.href = response.data.magic_link_url;
             return;
           }

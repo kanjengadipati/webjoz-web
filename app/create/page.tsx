@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { useToast } from "@/components/toast-provider";
@@ -13,48 +11,71 @@ import { request } from "@/lib/api/client";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 
-export default function PublicWizardPage() {
+function PublicWizardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { pushToast } = useToast();
   const token = useAuthToken();
   const authReady = useAuthReady();
   const { activeTenantId, memberships, createTenant, loading: tenantLoading } = useActiveTenant();
 
-  // Show loading screen immediately if returning from login with ?action=save
-  const [autoSaving, setAutoSaving] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("action") !== "save") return false;
-    return !!localStorage.getItem(PENDING_KEY);
-  });
+  const isSaveAction = searchParams.get("action") === "save";
+
+  // We track save state reactively to URL param changes
+  const [pendingSave, setPendingSave] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [autoSaveError, setAutoSaveError] = useState("");
+
+  // Whenever the URL changes to include ?action=save, trigger the save intent
+  useEffect(() => {
+    if (isSaveAction) {
+      setPendingSave(true);
+      setAutoSaving(true);
+    }
+  }, [isSaveAction]);
 
   // ── Auto-save after login redirect ────────────────────────────────────────
   // When user comes back from login with ?action=save, auto-save the pending
   // wizard data and redirect directly to the newly created site editor.
   useEffect(() => {
-    if (!authReady || tenantLoading) return;
+    if (!pendingSave) return;
+    if (!authReady) return;
     if (!token) return;
+    // Wait for tenant to finish loading (we need activeTenantId or createTenant)
+    if (tenantLoading) return;
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("action") !== "save") return;
+    // Clean up the URL immediately so refresh doesn't re-trigger
+    router.replace("/create", { scroll: false });
 
     const raw = localStorage.getItem(PENDING_KEY);
-    if (!raw) return;
+    if (!raw) {
+      // No pending wizard data (e.g. magic link opened in different browser/device).
+      router.replace("/dashboard/sites");
+      setPendingSave(false);
+      setAutoSaving(false);
+      return;
+    }
 
     let pending: Record<string, any>;
     try {
       pending = JSON.parse(raw);
     } catch {
+      router.replace("/dashboard/sites");
+      setPendingSave(false);
+      setAutoSaving(false);
       return;
     }
 
-    if (!pending.businessName || !pending.businessType) return;
-
-    // Remove query param so page doesn't loop on refresh
-    router.replace("/create", { scroll: false });
+    if (!pending.businessName || !pending.businessType) {
+      router.replace("/dashboard/sites");
+      setPendingSave(false);
+      setAutoSaving(false);
+      return;
+    }
 
     const doSave = async () => {
       setAutoSaving(true);
+      setAutoSaveError("");
       try {
         let tenantId = activeTenantId;
         if (!tenantId && createTenant) {
@@ -107,19 +128,23 @@ export default function PublicWizardPage() {
         }
 
         localStorage.removeItem(PENDING_KEY);
+        localStorage.removeItem("webjoz_login_redirect");
 
         // Redirect langsung ke editor website yang baru dibuat
         router.push(`/dashboard/sites/${siteId}`);
       } catch (err: any) {
         console.error(err);
-        pushToast(err.message || "Gagal menyimpan website. Silakan coba lagi.", "error");
+        const msg = err.message || "Gagal menyimpan website. Silakan coba lagi.";
+        pushToast(msg, "error");
+        setAutoSaveError(msg);
         setAutoSaving(false);
+        setPendingSave(false);
       }
     };
 
     doSave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authReady, token, tenantLoading]);
+  }, [pendingSave, authReady, token, tenantLoading]);
 
   // ── Auth redirect handler (called from wizard) ────────────────────────────
   const handleNeedAuth = () => {
@@ -141,8 +166,38 @@ export default function PublicWizardPage() {
           <div className="absolute -inset-2 rounded-3xl border border-indigo-500/20 animate-ping opacity-30" />
         </div>
         <div className="text-center space-y-2">
-          <p className="text-white font-semibold text-lg">Menyimpan & Mempublikasikan Website...</p>
+          <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
           <p className="text-slate-400 text-sm">Sebentar ya, kami sedang merakit website kamu ✨</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Error state after failed auto-save ───────────────────────────────────
+  if (autoSaveError) {
+    return (
+      <div
+        className="min-h-screen text-white flex flex-col items-center justify-center gap-6 px-6"
+        style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
+      >
+        <div className="text-center space-y-3 max-w-sm">
+          <p className="text-4xl">😔</p>
+          <p className="text-white font-bold text-lg">Gagal menyimpan website</p>
+          <p className="text-slate-400 text-sm">{autoSaveError}</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => { setAutoSaveError(""); router.push("/create"); }}
+            className="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-300 text-sm hover:bg-slate-800 transition-all"
+          >
+            Buat Ulang Website
+          </button>
+          <button
+            onClick={() => router.push("/dashboard/sites")}
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-all"
+          >
+            Ke Dashboard
+          </button>
         </div>
       </div>
     );
@@ -150,48 +205,42 @@ export default function PublicWizardPage() {
 
   // ── Main wizard page ──────────────────────────────────────────────────────
   return (
-    <div
-      className="min-h-screen text-white flex flex-col"
-      style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
-    >
-      {/* ── Header ─────────────────────────────────────────────────────── */}
-      <header className="border-b border-white/5 bg-black/30 backdrop-blur-xl sticky top-0 z-50">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="Giwangan Studio"
-              width={28}
-              height={28}
-              className="rounded-lg object-contain"
-            />
-            <span className="text-xs font-semibold tracking-widest text-slate-300 uppercase">
-              Giwangan Studio
-            </span>
-          </Link>
-          <Link
-            href="/"
-            className="text-xs text-white/50 hover:text-white transition flex items-center gap-1.5"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Kembali ke Beranda
-          </Link>
-        </div>
-      </header>
-
-      {/* ── Wizard ─────────────────────────────────────────────────────── */}
-      <div className="flex-1 flex items-stretch py-6">
-        <SiteWizard
-          mode="public"
-          token={token}
-          authReady={authReady}
-          tenantLoading={tenantLoading}
-          activeTenantId={activeTenantId}
-          memberships={memberships}
-          createTenant={createTenant}
-          onNeedAuth={handleNeedAuth}
-        />
-      </div>
+    <div className="w-screen h-screen overflow-hidden bg-slate-100">
+      <SiteWizard
+        mode="public"
+        token={token}
+        authReady={authReady}
+        tenantLoading={tenantLoading}
+        activeTenantId={activeTenantId}
+        memberships={memberships}
+        createTenant={createTenant}
+        onNeedAuth={handleNeedAuth}
+      />
     </div>
+  );
+}
+
+export default function PublicWizardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen text-white flex flex-col items-center justify-center gap-8"
+          style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
+        >
+          <div className="relative">
+            <div className="w-20 h-20 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+              <Loader2 className="w-9 h-9 text-indigo-400 animate-spin" />
+            </div>
+            <div className="absolute -inset-2 rounded-3xl border border-indigo-500/20 animate-ping opacity-30" />
+          </div>
+          <div className="text-center space-y-2">
+            <p className="text-white font-semibold text-lg">Memuat halaman...</p>
+          </div>
+        </div>
+      }
+    >
+      <PublicWizardContent />
+    </Suspense>
   );
 }

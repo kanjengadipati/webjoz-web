@@ -6,6 +6,7 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   CheckCircle2,
+  Loader2,
   Pencil,
   Sparkles,
   Wand2,
@@ -54,13 +55,10 @@ const AI_LOADING_STEPS = [
 ];
 
 const BUSINESS_TYPES = [
-  { value: "Kuliner", emoji: "🍽️" },
-  { value: "Toko/UMKM", emoji: "🛍️" },
-  { value: "Online Shop", emoji: "📦" },
-  { value: "Jasa", emoji: "🔧" },
-  { value: "Industri", emoji: "🏭" },
-  { value: "Organisasi", emoji: "🏛️" },
-  { value: "Lainnya", emoji: "✨" },
+  { value: "Kuliner", emoji: "🍜", label: "Kuliner", desc: "Restoran & Cafe" },
+  { value: "Retail", emoji: "🛍️", label: "Retail", desc: "Toko & UMKM" },
+  { value: "Jasa", emoji: "💼", label: "Jasa", desc: "Agency" },
+  { value: "Company", emoji: "🏢", label: "Company", desc: "Corporate" },
 ];
 
 const MOODS = [
@@ -163,16 +161,26 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "desc" | "wa" | "mood" | "done">("name");
+  const [chatStage, setChatStage] = useState<"name" | "type" | "mood" | "done">("name");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
       sender: "ai",
-      text: "Hai! Saya akan bantu kamu buat website bisnis dalam beberapa menit. 🚀\n\nPertama, apa nama bisnis atau brand kamu?",
+      text: "🤖 Halo! Saya akan membantu membuat website bisnis Anda. Apa nama bisnis Anda?",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const getProgressPercentage = () => {
+    switch (chatStage) {
+      case "name": return 20;
+      case "type": return 60;
+      case "mood": return 95;
+      case "done": return 100;
+      default: return 100;
+    }
+  };
 
   // Form data
   const [businessName, setBusinessName] = useState("");
@@ -183,24 +191,39 @@ export function SiteWizard({
 
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
-  const [aiStepIdx, setAiStepIdx] = useState(0);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+
+  // Loading animation state
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [pendingPreview, setPendingPreview] = useState<PreviewData | null>(null);
 
   // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatStage]);
 
-  // Cycle AI loading steps
+  // Cycle checklist steps during loading state
   useEffect(() => {
     if (previewState === "loading") {
-      setAiStepIdx(0);
+      setLoadingStep(0);
       const interval = setInterval(() => {
-        setAiStepIdx((prev) => (prev < AI_LOADING_STEPS.length - 1 ? prev + 1 : prev));
-      }, 2800);
+        setLoadingStep((prev) => {
+          if (prev < 5) return prev + 1;
+          return prev;
+        });
+      }, 1500); // 1.5s per step, total 7.5s
       return () => clearInterval(interval);
     }
   }, [previewState]);
+
+  // Transition to results screen only when API is done AND progress reaches step 5
+  useEffect(() => {
+    if (pendingPreview && loadingStep >= 5) {
+      setPreviewData(pendingPreview);
+      setPreviewState("result");
+      setPendingPreview(null);
+    }
+  }, [pendingPreview, loadingStep]);
 
   // ── Chat handlers ────────────────────────────────────────────────────────
 
@@ -211,97 +234,93 @@ export function SiteWizard({
     setInputValue("");
 
     if (chatStage === "name") {
-      setBusinessName(val);
+      const capitalized = val
+        .split(/\s+/)
+        .map((w) => (w.length > 0 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
+        .join(" ");
+      setBusinessName(capitalized);
       setMessages((prev) => [
         ...prev,
         { id: Date.now().toString(), sender: "user", text: val },
         {
           id: (Date.now() + 1).toString(),
           sender: "ai",
-          text: `Wah, **${val}** — nama yang keren! 🎉\n\nBisnis ini bergerak di bidang apa?`,
+          text: "Nama yang profesional dan mudah dipercaya.",
         },
       ]);
       setChatStage("type");
-    } else if (chatStage === "desc") {
-      setDescription(val);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), sender: "user", text: val },
-        {
-          id: (Date.now() + 1).toString(),
-          sender: "ai",
-          text: "Mantap! 📱 Sekarang, berikan nomor WhatsApp bisnis kamu.\n\nNomor ini akan kami pasang sebagai tombol kontak di website.",
-        },
-      ]);
-      setChatStage("wa");
-    } else if (chatStage === "wa") {
-      setWhatsapp(val);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), sender: "user", text: val },
-        {
-          id: (Date.now() + 1).toString(),
-          sender: "ai",
-          text: "Terakhir, pilih **vibe** website yang cocok untuk bisnis kamu! 🎨",
-        },
-      ]);
-      setChatStage("mood");
     }
   };
 
   const handleSelectType = (type: string) => {
     setBusinessType(type);
+
+    const userText = type === "Retail" ? "Toko Bahan Bangunan" :
+                     type === "Kuliner" ? "Kuliner / Restoran" :
+                     type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
+
+    const aiResponse = type === "Retail" ? "Saya akan membuat website dengan fokus konversi WhatsApp dan katalog produk." :
+                       type === "Kuliner" ? "Saya akan membuat website dengan fokus menu makanan dan sistem reservasi." :
+                       type === "Jasa" ? "Saya akan membuat website dengan fokus portofolio layanan dan testimoni pelanggan." :
+                       "Saya akan membuat website dengan fokus company profile dan keunggulan perusahaan.";
+
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: "user", text: type },
+      { id: Date.now().toString(), sender: "user", text: userText },
       {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: `Bisnis **${type}**, keren! 💪 Produk atau layanan utamanya apa?`,
+        text: aiResponse,
       },
     ]);
-    setChatStage("desc");
+    setChatStage("mood");
   };
 
   // ── Generate (public, no login needed) ──────────────────────────────────
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (
+    bName = businessName,
+    bType = businessType,
+    bMood = mood
+  ) => {
     setPreviewState("loading");
+    setLoadingStep(0);
+    setPendingPreview(null);
 
     try {
       const res = await request<any>("/ai/public/generate-preview", {
         method: "POST",
         body: JSON.stringify({
-          business_name: businessName,
-          business_type: businessType,
-          description: description,
-          whatsapp: whatsapp,
-          mood: mood,
+          business_name: bName,
+          business_type: bType,
+          description: "", // Send empty description to allow backend generation
+          whatsapp: "",     // Send empty WhatsApp to allow backend fallback
+          mood: bMood,
         }),
       });
 
       if (res.status !== "success") throw new Error(res.message);
 
-      setPreviewData({
+      const loadedData = {
         content: res.data.content,
         design_token: res.data.design_token,
-      });
+      };
 
       // Save the generated preview to localStorage so we can use it after login
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
-          businessName,
-          businessType,
-          description,
-          whatsapp,
-          mood,
+          businessName: bName,
+          businessType: bType,
+          description: "",
+          whatsapp: "",
+          mood: bMood,
           previewContent: res.data.content,
           previewDesignToken: res.data.design_token,
         })
       );
 
-      setPreviewState("result");
+      setPendingPreview(loadedData);
     } catch (err: any) {
       console.error(err);
       pushToast(err.message || "Terjadi kesalahan saat membuat preview.", "error");
@@ -394,12 +413,12 @@ export function SiteWizard({
 
   // ── Text formatter (bold **text**) ───────────────────────────────────────
 
-  const formatText = (text: string) => {
+  const formatText = (text: string, isUser: boolean) => {
     const parts = text.split(/(\*\*.*?\*\*)/g);
     return parts.map((part, i) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <strong key={i} className="text-white font-semibold">
+          <strong key={i} className={`font-bold ${isUser ? "text-white" : "text-slate-950"}`}>
             {part.slice(2, -2)}
           </strong>
         );
@@ -415,309 +434,459 @@ export function SiteWizard({
   const palette = previewData?.design_token?.palette as Record<string, string> | undefined;
   const typography = previewData?.design_token?.typography as Record<string, string> | undefined;
 
+  // Helper to get logs based on selected mood/type
+  const getLogMessages = () => {
+    const keyword = businessType === "Retail" ? "bahan bangunan" : 
+                    businessType === "Kuliner" ? "kuliner" : 
+                    businessType === "Jasa" ? "jasa profesional" : "corporate";
+    
+    const toneMap: Record<string, string> = {
+      "Profesional": "profesional & tepercaya",
+      "Modern & Minimalis": "modern & profesional",
+      "Fun & Colorful": "ceria & dinamis",
+      "Elegan & Mewah": "premium & eksklusif",
+      "Natural & Hangat": "hangat & natural",
+      "Bold & Tegas": "kuat & tegas",
+    };
+    const tone = toneMap[mood] || mood.toLowerCase() || "modern & profesional";
+
+    return [
+      `Menemukan keyword: ${keyword}`,
+      `Memilih tone: ${tone}`,
+      `Menambahkan CTA WhatsApp`,
+      `Membuat struktur halaman...`,
+    ];
+  };
+
+  const getModalProgressPercent = () => {
+    switch (loadingStep) {
+      case 0: return 15;
+      case 1: return 30;
+      case 2: return 45;
+      case 3: return 60;
+      case 4: return 75;
+      case 5: return 100;
+      default: return 100;
+    }
+  };
+
+  const renderChecklistItem = (label: string, index: number) => {
+    let statusIcon = null;
+    let textClass = "text-slate-700";
+
+    if (loadingStep > index) {
+      statusIcon = <span className="text-slate-800 font-bold">✓</span>;
+      textClass = "text-slate-800 font-medium";
+    } else if (loadingStep === index) {
+      statusIcon = <Loader2 className="w-5 h-5 text-[#7c3aed] animate-spin shrink-0" />;
+      textClass = "text-[#7c3aed] font-semibold";
+    } else {
+      statusIcon = <span className="text-slate-400">⏳</span>;
+      textClass = "text-slate-400";
+    }
+
+    return (
+      <div className={`flex items-center gap-3 text-base ${textClass} transition-colors duration-300`}>
+        <span className="w-6 flex justify-center shrink-0">
+          {statusIcon}
+        </span>
+        <span>{label}</span>
+      </div>
+    );
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4">
-      <div
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-        style={{ height: "calc(100vh - 140px)", minHeight: "600px" }}
-      >
-        {/* ── Left: Chat ─────────────────────────────────────────────────── */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl flex flex-col overflow-hidden shadow-xl backdrop-blur-md">
-          {/* Header */}
-          <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/[0.02]">
-            <h2 className="text-sm font-bold flex items-center gap-2 text-white">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              Webjoz AI Assistant
-            </h2>
-            <span className="text-[10px] text-emerald-400 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-              ● Gratis · Tanpa Daftar
-            </span>
-          </div>
+    <div className="flex w-screen h-screen overflow-hidden bg-[#f1f5f9]">
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-5">
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex gap-3 ${m.sender === "user" ? "flex-row-reverse" : ""}`}
-              >
-                {m.sender === "ai" && (
-                  <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 shadow-lg">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.sender === "user"
-                      ? "bg-indigo-600 text-white rounded-tr-sm"
-                      : "bg-white/[0.08] text-slate-300 border border-white/5 rounded-tl-sm"
-                  }`}
-                >
-                  {formatText(m.text)}
-                </div>
+      {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
+      <div className="w-[380px] shrink-0 flex flex-col bg-white border-r border-slate-200 h-full overflow-hidden shadow-xl z-10">
+
+        {/* ── Sidebar Header ──────────────────────────────────────────────── */}
+        <div className="px-5 py-4 border-b border-slate-100 shrink-0">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
               </div>
-            ))}
-
-            {/* Category chips */}
-            {chatStage === "type" && (
-              <div className="pl-11 pr-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <div className="flex flex-wrap gap-2">
-                  {BUSINESS_TYPES.map((t) => (
-                    <button
-                      key={t.value}
-                      onClick={() => handleSelectType(t.value)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-white/[0.05] hover:bg-indigo-600/20 hover:border-indigo-500/40 border border-white/10 rounded-xl text-sm text-slate-200 transition-all"
-                    >
-                      <span>{t.emoji}</span>
-                      {t.value}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Mood chips */}
-            {chatStage === "mood" && (
-              <div className="pl-11 pr-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <div className="flex flex-wrap gap-2">
-                  {MOODS.map((m) => (
-                    <button
-                      key={m.value}
-                      onClick={() => {
-                        setMood(m.value);
-                        setMessages((prev) => [
-                          ...prev,
-                          { id: Date.now().toString(), sender: "user", text: `${m.emoji} ${m.value}` },
-                          {
-                            id: (Date.now() + 1).toString(),
-                            sender: "ai",
-                            text: "Sempurna! Semua data sudah siap. 🚀\n\nSekarang saya akan membuat website kamu — tekan tombol di bawah!",
-                          },
-                        ]);
-                        setChatStage("done");
-                      }}
-                      className="flex flex-col gap-0.5 px-3.5 py-2.5 bg-white/[0.05] hover:bg-indigo-600/20 hover:border-indigo-500/40 border border-white/10 rounded-xl text-sm text-slate-200 transition-all text-left"
-                    >
-                      <span className="text-base">{m.emoji} <span className="font-semibold">{m.value}</span></span>
-                      <span className="text-[10px] text-slate-400">{m.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Generate button */}
-            {chatStage === "done" && previewState === "wireframe" && (
-              <div className="pl-11 pr-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <button
-                  onClick={handleGenerate}
-                  className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all"
-                >
-                  <Wand2 className="w-4 h-4" />
-                  Generate Website Sekarang ✨
-                </button>
-              </div>
-            )}
-
-            {/* Loading hint in chat */}
-            {previewState === "loading" && (
-              <div className="pl-11 pr-2 animate-in fade-in duration-500">
-                <div className="flex items-center gap-2 text-slate-400 text-sm">
-                  <span className="inline-flex gap-1">
-                    {[0, 1, 2].map((i) => (
-                      <span
-                        key={i}
-                        className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce"
-                        style={{ animationDelay: `${i * 0.15}s` }}
-                      />
-                    ))}
-                  </span>
-                  AI sedang merakit website kamu...
-                </div>
-              </div>
-            )}
-
-            {/* Result hint in chat */}
-            {previewState === "result" && (
-              <div className="pl-11 pr-2 animate-in fade-in slide-in-from-bottom-2 duration-700">
-                <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Website siap! Lihat hasilnya di sebelah kanan →
-                </div>
-              </div>
-            )}
-
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Input area */}
-          {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && (
-            <div className="p-4 bg-white/[0.02] border-t border-white/10 shrink-0">
-              <form onSubmit={handleSendText} className="relative flex items-center">
-                {chatStage === "desc" ? (
-                  <textarea
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Contoh: baju murah, kopi susu, servis HP..."
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-5 pr-14 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 resize-none h-24"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendText(e);
-                      }
-                    }}
-                  />
-                ) : chatStage === "wa" ? (
-                  <input
-                    type="tel"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Contoh: 08123456789"
-                    autoFocus
-                    className="w-full bg-white/5 border border-white/10 rounded-full pl-5 pr-14 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50"
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Ketik jawaban Anda..."
-                    autoFocus
-                    className="w-full bg-white/5 border border-white/10 rounded-full pl-5 pr-14 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50"
-                  />
-                )}
-                <button
-                  type="submit"
-                  disabled={!inputValue.trim()}
-                  className={`absolute ${
-                    chatStage === "desc" ? "bottom-3 right-3" : "right-2"
-                  } w-10 h-10 flex items-center justify-center rounded-full bg-indigo-600 text-white transition-all disabled:opacity-30 hover:bg-indigo-500`}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
+              <span className="font-bold text-slate-900 text-sm">Webjoz AI Assistant</span>
+              <span className="text-[10px] font-semibold text-[#7c3aed] bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">BETA</span>
             </div>
-          )}
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Gratis · Tanpa Daftar
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] text-slate-500 font-medium">
+              Langkah {chatStage === "name" ? 1 : chatStage === "type" ? 2 : chatStage === "mood" ? 3 : 3} dari 3
+            </span>
+            <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
+          </div>
+          <div className="h-[5px] bg-slate-100 rounded-full overflow-hidden w-full">
+            <div
+              className="h-full bg-gradient-to-r from-[#7c3aed] to-violet-500 transition-all duration-700 rounded-full"
+              style={{ width: `${getProgressPercentage()}%` }}
+            />
+          </div>
         </div>
 
-        {/* ── Right: Preview Panel ────────────────────────────────────────── */}
-        <div className="hidden lg:flex flex-col rounded-3xl border border-white/10 shadow-xl overflow-hidden">
-          {/* Browser chrome bar */}
-          <div className="h-10 bg-slate-200 border-b border-slate-300 flex items-center px-4 gap-2 shrink-0">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-amber-400" />
-            <div className="w-3 h-3 rounded-full bg-emerald-400" />
-            <div className="ml-4 h-6 flex-1 bg-white/60 rounded-md border border-slate-300 flex items-center px-3">
-              <span className="text-[10px] text-slate-400 truncate">
-                {previewState === "result" ? `${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com` : "preview.webjoz.com"}
+        {/* ── Chat messages ────────────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}
+            >
+              {m.sender === "ai" && (
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Sparkles className="w-3 h-3 text-white" />
+                </div>
+              )}
+              <div
+                className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                  m.sender === "user"
+                    ? "bg-[#7c3aed] text-white rounded-tr-sm"
+                    : "bg-[#f3f4f6] text-slate-800 rounded-tl-sm"
+                }`}
+              >
+                {formatText(m.text, m.sender === "user")}
+              </div>
+            </div>
+          ))}
+
+          {/* Category chips */}
+          {chatStage === "type" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {BUSINESS_TYPES.map((t) => (
+                  <button
+                    key={t.value}
+                    onClick={() => handleSelectType(t.value)}
+                    className="flex flex-col items-start gap-1 p-3 bg-white hover:bg-violet-50 hover:border-[#7c3aed]/50 border border-slate-200 rounded-xl shadow-sm text-left transition-all active:scale-[0.97] group"
+                  >
+                    <span className="text-lg">{t.emoji}</span>
+                    <span className="text-xs font-bold text-slate-800 group-hover:text-[#7c3aed]">{t.label}</span>
+                    <span className="text-[10px] text-slate-400">{t.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Mood chips */}
+          {chatStage === "mood" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {MOODS.map((m) => (
+                  <button
+                    key={m.value}
+                    onClick={() => {
+                      setMood(m.value);
+                      setMessages((prev) => [
+                        ...prev,
+                        { id: Date.now().toString(), sender: "user", text: `${m.emoji} ${m.value}` },
+                        {
+                          id: (Date.now() + 1).toString(),
+                          sender: "ai",
+                          text: "Sempurna. Semua data sudah siap. Website sedang dibuat...",
+                        },
+                      ]);
+                      setChatStage("done");
+                      handleGenerate(businessName, businessType, m.value);
+                    }}
+                    className="flex items-center gap-2 p-2.5 bg-white hover:bg-violet-50 hover:border-[#7c3aed]/50 border border-slate-200 rounded-xl shadow-sm text-left transition-all active:scale-[0.97] group"
+                  >
+                    <span className="text-base shrink-0">{m.emoji}</span>
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 group-hover:text-[#7c3aed] block leading-tight">{m.value}</span>
+                      <span className="text-[10px] text-slate-400 leading-tight">{m.desc}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Retry button */}
+          {chatStage === "done" && previewState === "wireframe" && (
+            <div className="animate-in fade-in duration-300">
+              <button
+                onClick={() => handleGenerate(businessName, businessType, mood)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#7c3aed] to-violet-600 text-white text-sm font-bold shadow-md transition-all hover:shadow-lg"
+              >
+                <Wand2 className="w-4 h-4" />
+                Coba Generate Lagi ✨
+              </button>
+            </div>
+          )}
+
+          {/* Result status in chat */}
+          {previewState === "result" && (
+            <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold animate-in fade-in duration-500 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              Website siap! Lihat hasilnya di panel kanan →
+            </div>
+          )}
+
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* ── Chat Input ───────────────────────────────────────────────────── */}
+        {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && (
+          <div className="px-4 py-3 border-t border-slate-100 shrink-0 bg-white">
+            <form onSubmit={handleSendText} className="flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1 gap-2 focus-within:border-[#7c3aed]/50 focus-within:ring-2 focus-within:ring-[#7c3aed]/10 transition-all">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Tanya AI apa saja..."
+                autoFocus
+                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={!inputValue.trim()}
+                className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#7c3aed] text-white transition-all disabled:opacity-30 hover:bg-[#6d28d9] shrink-0"
+              >
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── Sidebar Footer ───────────────────────────────────────────────── */}
+        <div className="px-5 py-3 border-t border-slate-100 shrink-0 bg-white flex items-center justify-between">
+          <span className="text-[11px] text-slate-400 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+            Draft tersimpan otomatis
+          </span>
+          <span className="text-[11px] text-slate-400">
+            {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+          </span>
+        </div>
+      </div>
+
+      {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#f1f5f9]">
+
+        {/* ── Browser Top Bar ──────────────────────────────────────────────── */}
+        <div className="h-12 bg-white border-b border-slate-200 flex items-center px-4 gap-3 shrink-0 shadow-sm">
+          {/* Tab favicon + url */}
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="w-4 h-4 rounded-sm bg-emerald-500 shrink-0 flex items-center justify-center">
+              <span className="text-[7px] text-white font-bold">W</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1 flex-1 max-w-xs">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+              <span className="text-xs text-slate-600 truncate font-medium">
+                {previewState === "result"
+                  ? `${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com`
+                  : "preview.webjoz.com"}
               </span>
+              {previewState === "loading" && (
+                <span className="ml-auto text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full shrink-0">
+                  Draft Preview
+                </span>
+              )}
+              {previewState === "result" && (
+                <span className="ml-auto text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full shrink-0">
+                  Live Preview
+                </span>
+              )}
             </div>
           </div>
 
-          {/* ── Wireframe state ── */}
+          {/* Right browser controls */}
+          <div className="flex items-center gap-2 shrink-0">
+            {previewState === "result" && (
+              <button
+                onClick={handleGoToEditor}
+                className="flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-[#7c3aed] to-violet-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
+              >
+                <Pencil className="w-3 h-3" />
+                Pratinjau Penuh ↗
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ── Browser Content Area ─────────────────────────────────────────── */}
+        <div className="flex-1 overflow-hidden relative bg-white">
+
+          {/* Wireframe state */}
           {previewState === "wireframe" && (
-            <div className="flex-1 overflow-y-auto bg-white p-6 opacity-60">
-              <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-8">
-                <div className="h-6 w-24 bg-slate-300 rounded" />
-                <div className="flex gap-4">
-                  <div className="h-4 w-12 bg-slate-200 rounded" />
-                  <div className="h-4 w-12 bg-slate-200 rounded" />
-                </div>
-              </header>
-              <main className="space-y-10">
-                <section className="text-center space-y-5 py-10 px-8 bg-slate-50 rounded-2xl border border-slate-200">
-                  <h1 className="text-3xl md:text-4xl font-extrabold text-slate-700 transition-all duration-500 min-h-[2.5rem]">
-                    {businessName || <span className="text-slate-300">Nama Bisnis Anda</span>}
-                  </h1>
-                  <p className="max-w-lg mx-auto text-slate-400 text-xs leading-relaxed transition-all duration-500 min-h-[2rem]">
-                    {description ||
-                      "Deskripsi produk atau layanan utama Anda akan tampil di sini sebagai subheadline yang menarik."}
-                  </p>
-                  <div className="h-10 w-36 bg-slate-300 rounded-full mx-auto mt-4" />
+            <div className="h-full overflow-y-auto p-8 bg-slate-50">
+              <div className="max-w-3xl mx-auto">
+                <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-10">
+                  <div className="h-7 w-28 bg-slate-200 rounded-lg" />
+                  <div className="flex gap-4 items-center">
+                    <div className="h-4 w-14 bg-slate-100 rounded" />
+                    <div className="h-4 w-14 bg-slate-100 rounded" />
+                    <div className="h-4 w-14 bg-slate-100 rounded" />
+                    <div className="h-8 w-24 bg-slate-200 rounded-lg" />
+                  </div>
+                </header>
+                <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-300 to-slate-200" style={{ height: 260 }}>
+                  <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
+                    <div className="h-5 w-20 bg-white/40 rounded-full" />
+                    <div className="space-y-2">
+                      <div className="h-10 w-3/4 bg-white/50 rounded-xl" />
+                      <div className="h-10 w-1/2 bg-white/50 rounded-xl" />
+                    </div>
+                    <div className="h-5 w-2/3 bg-white/30 rounded-full" />
+                    <div className="h-11 w-36 bg-white/60 rounded-xl" />
+                  </div>
+                  <div className="absolute right-0 inset-y-0 w-2/5 bg-slate-300/60" />
                 </section>
-                <section className="grid grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="p-5 border border-slate-200 rounded-xl space-y-3 text-center">
-                      <div className="w-10 h-10 bg-slate-200 rounded-full mx-auto" />
-                      <div className="h-3.5 w-3/4 bg-slate-300 rounded mx-auto" />
-                      <div className="h-2.5 w-full bg-slate-200 rounded" />
-                      <div className="h-2.5 w-5/6 bg-slate-200 rounded mx-auto" />
+                <section className="grid grid-cols-4 gap-4 mb-10">
+                  {[1,2,3,4].map((i) => (
+                    <div key={i} className="p-4 border border-slate-200 rounded-2xl space-y-3 bg-white">
+                      <div className="w-8 h-8 bg-slate-100 rounded-full" />
+                      <div className="h-3 w-3/4 bg-slate-200 rounded" />
+                      <div className="h-2 w-full bg-slate-100 rounded" />
                     </div>
                   ))}
                 </section>
-                <section className="flex gap-6 items-center bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                  <div className="flex-1 space-y-3">
-                    <div className="h-6 w-3/4 bg-slate-300 rounded" />
-                    <div className="h-2.5 w-full bg-slate-200 rounded" />
-                    <div className="h-2.5 w-full bg-slate-200 rounded" />
-                    <div className="h-2.5 w-2/3 bg-slate-200 rounded" />
+                <section className="flex gap-8 items-center bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                  <div className="flex-1 space-y-4">
+                    <div className="h-7 w-3/4 bg-slate-200 rounded-lg" />
+                    <div className="h-3 w-full bg-slate-100 rounded" />
+                    <div className="h-3 w-5/6 bg-slate-100 rounded" />
+                    <div className="h-3 w-4/6 bg-slate-100 rounded" />
                   </div>
-                  <div className="w-1/3 aspect-square bg-slate-200 rounded-xl" />
+                  <div className="w-40 h-40 bg-slate-200 rounded-2xl shrink-0" />
                 </section>
-              </main>
+              </div>
             </div>
           )}
 
-          {/* ── Loading state ── */}
+          {/* Loading state */}
           {previewState === "loading" && (
-            <div className="flex-1 bg-gradient-to-br from-slate-900 to-indigo-950 flex flex-col items-center justify-center gap-8 p-10">
-              {/* Animated logo/icon */}
-              <div className="relative">
-                <div className="w-20 h-20 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
-                  <Wand2 className="w-9 h-9 text-indigo-400 animate-pulse" />
-                </div>
-                <div className="absolute -inset-2 rounded-3xl border border-indigo-500/20 animate-ping opacity-30" />
-              </div>
-
-              {/* Step text */}
-              <div className="text-center space-y-2">
-                <p className="text-white font-semibold text-base">AI sedang merakit website...</p>
-                <p className="text-indigo-300/80 text-sm transition-all duration-700 min-h-[1.25rem]">
-                  {AI_LOADING_STEPS[aiStepIdx]}
-                </p>
-              </div>
-
-              {/* Skeleton preview bars */}
-              <div className="w-full max-w-xs space-y-3 opacity-30">
-                <div className="h-8 bg-white/10 rounded-xl animate-pulse" />
-                {["w-full", "w-5/6", "w-4/6", "w-full", "w-3/4"].map((w, i) => (
-                  <div
-                    key={i}
-                    className={`h-3 ${w} bg-white/10 rounded-full animate-pulse`}
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  />
-                ))}
-                <div className="grid grid-cols-3 gap-2 pt-2">
-                  {[0, 1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="h-16 bg-white/10 rounded-xl animate-pulse"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                  ))}
+            <div className="h-full relative flex flex-col overflow-hidden">
+              {/* Blurred background preview */}
+              <div className="flex-1 overflow-y-auto p-8 bg-slate-50 filter blur-[8px] opacity-50 select-none pointer-events-none">
+                <div className="max-w-3xl mx-auto">
+                  <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-10">
+                    <div>
+                      <div className="h-5 font-bold text-slate-700 text-lg">{businessName || "TB Simatupang"}</div>
+                      <div className="h-3 text-slate-400 text-xs">Toko Bahan Bangunan</div>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      {["Beranda","Produk","Tentang","Layanan","Kontak"].map(l => (
+                        <span key={l} className="text-xs text-slate-600">{l}</span>
+                      ))}
+                      <div className="h-9 w-28 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-xs font-bold px-4">
+                        Hubungi Kami
+                      </div>
+                    </div>
+                  </header>
+                  <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-700 to-slate-900" style={{ height: 300 }}>
+                    <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4 text-white">
+                      <h1 className="text-3xl font-extrabold">Solusi Material Bangunan Terpercaya</h1>
+                      <p className="text-slate-300 text-sm max-w-sm">Menyediakan bahan bangunan berkualitas untuk rumah dan proyek Anda.</p>
+                      <div className="h-11 w-40 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                        Hubungi Kami
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </div>
 
-              {/* Progress dots */}
-              <div className="flex items-center gap-1.5">
-                {AI_LOADING_STEPS.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`h-1 rounded-full transition-all duration-500 ${
-                      i <= aiStepIdx ? "bg-indigo-400 w-6" : "bg-white/10 w-3"
-                    }`}
-                  />
-                ))}
+              {/* Floating modal overlay */}
+              <div className="absolute inset-0 z-30 flex items-center justify-end pr-8">
+                <div className="bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-3xl w-full max-w-sm p-7 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-right-4 zoom-in-95 duration-500">
+
+                  {/* Modal header */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-extrabold text-slate-900 m-0 leading-tight">
+                        AI sedang membangun website Anda ✨
+                      </h3>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Mohon tunggu sebentar...</p>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden flex-1 mr-3">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#7c3aed] to-violet-500 transition-all duration-1000 ease-out rounded-full"
+                          style={{ width: `${getModalProgressPercent()}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-bold text-[#7c3aed] shrink-0">{getModalProgressPercent()}%</span>
+                    </div>
+                  </div>
+
+                  {/* Checklist items */}
+                  <div className="space-y-3">
+                    {[
+                      { label: "Analisis bisnis", desc: "Memahami jenis bisnis dan target pasar Anda", idx: 0 },
+                      { label: "Menentukan layout", desc: "Memilih struktur halaman yang paling efektif", idx: 1 },
+                      { label: "Menulis headline", desc: "Membuat copywriting yang menarik", idx: 2 },
+                      { label: "Membuat SEO", desc: "Optimasi SEO on-page & keyword", idx: 3 },
+                      { label: "Mendesain halaman", desc: "Menyusun desain & komponen halaman", idx: 4 },
+                      { label: "Publish website", desc: "Mempersiapkan hosting & domain", idx: 5 },
+                    ].map(({ label, desc, idx }) => {
+                      const done = loadingStep > idx;
+                      const active = loadingStep === idx;
+                      return (
+                        <div key={idx} className={`flex items-start gap-3 transition-all duration-300 ${done ? "opacity-100" : active ? "opacity-100" : "opacity-40"}`}>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-300 ${
+                            done ? "border-[#7c3aed] bg-[#7c3aed]" : active ? "border-[#7c3aed] bg-white" : "border-slate-300 bg-white"
+                          }`}>
+                            {done ? (
+                              <span className="text-white text-[10px] font-bold">✓</span>
+                            ) : active ? (
+                              <Loader2 className="w-2.5 h-2.5 text-[#7c3aed] animate-spin" />
+                            ) : null}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className={`text-xs font-semibold leading-tight ${done || active ? "text-slate-800" : "text-slate-400"} ${active ? "text-[#7c3aed]" : ""}`}>
+                              {label}
+                            </div>
+                            <div className="text-[10px] text-slate-400 leading-tight mt-0.5">{desc}</div>
+                          </div>
+                          <div className={`text-[10px] font-mono shrink-0 mt-0.5 ${active ? "text-[#7c3aed]" : "text-slate-300"}`}>
+                            {active ? `00:${String(idx + 3).padStart(2, "0")}` : done ? `00:0${idx + 3}` : "00:00"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* AI Insight footer */}
+                  {loadingStep >= 3 && (
+                    <div className="bg-violet-50 border border-violet-100 rounded-2xl p-3.5 animate-in fade-in duration-500">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Sparkles className="w-3 h-3 text-[#7c3aed]" />
+                        <span className="text-[11px] font-bold text-[#7c3aed]">AI Insight</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        {businessType === "Kuliner"
+                          ? "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar."
+                          : businessType === "Retail"
+                          ? "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis bahan bangunan."
+                          : "Website dengan testimoni pelanggan meningkatkan kepercayaan konsumen secara signifikan."}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
-          {/* ── Result state ── */}
+          {/* Result state */}
           {previewState === "result" && previewData && (
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Full website preview via TemplateDynamic */}
+            <div className="h-full flex flex-col overflow-hidden">
               <div className="flex-1 overflow-y-auto">
                 <TemplateDynamic
                   content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
@@ -725,24 +894,21 @@ export function SiteWizard({
                 />
               </div>
 
-              {/* CTA Footer */}
-              <div className="shrink-0 p-4 border-t border-slate-200 bg-gradient-to-r from-indigo-50 to-violet-50 space-y-2.5">
-                <div className="flex items-center gap-2">
+              {/* CTA strip at bottom */}
+              <div className="shrink-0 px-6 py-4 border-t border-slate-200 bg-gradient-to-r from-violet-50 to-indigo-50 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2 min-w-0">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <p className="text-xs font-semibold text-slate-700">
+                  <p className="text-xs font-semibold text-slate-700 truncate">
                     Website <strong>{businessName}</strong> sudah selesai dibuat!
                   </p>
                 </div>
                 <button
                   onClick={handleGoToEditor}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all"
+                  className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#7c3aed] to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all whitespace-nowrap"
                 >
-                  <Pencil className="w-4 h-4" />
-                  Kustomisasi & Publish Website →
+                  <Pencil className="w-3.5 h-3.5" />
+                  Kustomisasi & Publish →
                 </button>
-                <p className="text-center text-[10px] text-slate-500">
-                  Gratis selamanya · Tidak perlu kartu kredit · Simpan kapan saja
-                </p>
               </div>
             </div>
           )}
@@ -751,3 +917,4 @@ export function SiteWizard({
     </div>
   );
 }
+

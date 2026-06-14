@@ -1462,15 +1462,34 @@ export default function SiteEditorPage() {
                     </div>
                   ) : null}
                   {quality.issues.length > 0 && (
-                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] leading-relaxed text-amber-100">
-                      <div className="flex items-center justify-between gap-2">
+                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-100 space-y-2">
+                      <div className="flex items-center justify-between gap-2 border-b border-amber-400/10 pb-1.5">
                         <span className="font-bold">⚠️ {quality.issues.length} field perlu dicek</span>
                         <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
                       </div>
-                      <p className="mt-1 truncate text-amber-100/75">
-                        {quality.issues.slice(0, 3).map((issue) => issue.label).join(", ")}
-                        {quality.issues.length > 3 ? ` +${quality.issues.length - 3} lainnya` : ""}
-                      </p>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {quality.issues.map((issue) => (
+                          <button
+                            key={issue.path}
+                            type="button"
+                            onClick={() => {
+                              const section = issue.path.split(".")[0];
+                              selectSection(section);
+                              setTimeout(() => {
+                                const el = document.getElementById(`field-${issue.path}`);
+                                if (el) {
+                                  el.focus();
+                                  el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                }
+                              }, 100);
+                            }}
+                            className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition cursor-pointer"
+                          >
+                            <span>{issue.label}</span>
+                            <span className="text-[9px] opacity-60">→</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
 
@@ -1745,7 +1764,10 @@ export default function SiteEditorPage() {
                 {/* Speaker/Notch */}
                 <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
                 {/* Screen container */}
-                <div className="h-full w-full overflow-hidden rounded-[28px] bg-white">
+                <div 
+                  className="h-full w-full overflow-hidden rounded-[28px] bg-white relative z-10"
+                  style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
+                >
                   {/* Scaled viewport trick to trigger Tailwind responsive styles */}
                   <div 
                     style={{ 

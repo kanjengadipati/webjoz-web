@@ -1,6 +1,7 @@
 import React from "react";
 import { Plus } from "lucide-react";
 import FileUpload from "@/components/file-upload";
+import { isPlaceholderValue } from "./editor-utils";
 
 export interface SectionFormsProps {
   activeTab: string;
@@ -8,6 +9,171 @@ export interface SectionFormsProps {
   updateField: (section: string, key: string, val: any) => void;
   needsAttention: (path: string) => boolean;
   fieldClass: (path: string, base: string) => string;
+}
+
+interface LinkTypeInputProps {
+  urlValue: string;
+  updateUrl: (val: string) => void;
+  needsAttention: boolean;
+  fieldClass: (path: string, base: string) => string;
+  path: string;
+  label: string;
+  defaultWaNumber?: string;
+}
+
+function LinkTypeInput({
+  urlValue,
+  updateUrl,
+  needsAttention,
+  fieldClass,
+  path,
+  label,
+  defaultWaNumber,
+}: LinkTypeInputProps) {
+  const isWa = /wa\.me|whatsapp\.com|whatsapp:\/\//i.test(urlValue);
+  const [linkType, setLinkType] = React.useState<"whatsapp" | "custom">(isWa ? "whatsapp" : "custom");
+
+  // Keep state in sync with external value
+  React.useEffect(() => {
+    const isCurrentlyWa = /wa\.me|whatsapp\.com|whatsapp:\/\//i.test(urlValue);
+    if (isCurrentlyWa && linkType !== "whatsapp") {
+      setLinkType("whatsapp");
+    } else if (!isCurrentlyWa && linkType === "whatsapp" && urlValue !== "") {
+      setLinkType("custom");
+    }
+  }, [urlValue]);
+
+  // Extract WA number
+  const getWaNumber = (url: string): string => {
+    if (!url) return "";
+    const cleaned = url.replace(/\s+/g, "");
+    const match = cleaned.match(/(?:wa\.me\/|phone=)([0-9]+)/i);
+    return match ? match[1] : "";
+  };
+
+  const [waInput, setWaInput] = React.useState(() => {
+    if (isWa) {
+      return getWaNumber(urlValue);
+    }
+    if (defaultWaNumber) {
+      return defaultWaNumber.replace(/\D/g, "");
+    }
+    return "";
+  });
+
+  React.useEffect(() => {
+    if (isWa) {
+      setWaInput(getWaNumber(urlValue));
+    } else if (defaultWaNumber && !urlValue) {
+      setWaInput(defaultWaNumber.replace(/\D/g, ""));
+    }
+  }, [urlValue, isWa, defaultWaNumber]);
+
+  const handleWaChange = (val: string) => {
+    const digitsOnly = val.replace(/\D/g, "");
+    setWaInput(digitsOnly);
+    
+    let formattedDigits = digitsOnly;
+    if (formattedDigits.startsWith("0")) {
+      formattedDigits = "62" + formattedDigits.slice(1);
+    }
+    
+    if (formattedDigits) {
+      updateUrl(`https://wa.me/${formattedDigits}`);
+    } else {
+      updateUrl("");
+    }
+  };
+
+  const handleTypeChange = (type: "whatsapp" | "custom") => {
+    setLinkType(type);
+    if (type === "whatsapp") {
+      let digits = waInput;
+      if (!digits && defaultWaNumber) {
+        digits = defaultWaNumber.replace(/\D/g, "");
+        setWaInput(digits);
+      }
+      
+      let formattedDigits = digits;
+      if (formattedDigits.startsWith("0")) {
+        formattedDigits = "62" + formattedDigits.slice(1);
+      }
+      updateUrl(formattedDigits ? `https://wa.me/${formattedDigits}` : "https://wa.me/");
+    } else {
+      updateUrl("#contact");
+    }
+  };
+
+  return (
+    <div className="space-y-2 pt-2 border-t border-white/5 mt-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          Tipe Aksi Tombol
+        </label>
+        <div className="flex p-0.5 rounded bg-white/[0.04] border border-white/5">
+          <button
+            type="button"
+            onClick={() => handleTypeChange("whatsapp")}
+            className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
+              linkType === "whatsapp"
+                ? "bg-violet-600 text-white font-bold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            WhatsApp
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTypeChange("custom")}
+            className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
+              linkType === "custom"
+                ? "bg-violet-600 text-white font-bold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Link Kustom
+          </button>
+        </div>
+      </div>
+
+      {linkType === "whatsapp" ? (
+        <div className="space-y-1">
+          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            Nomor WhatsApp {needsAttention && <span className="text-amber-300">⚠️</span>}
+          </label>
+          <div className="relative flex items-center">
+            <span className="absolute left-2.5 text-xs text-slate-500 font-semibold select-none">+</span>
+            <input
+              id={`field-${path}`}
+              type="text"
+              inputMode="tel"
+              value={waInput}
+              onChange={(e) => handleWaChange(e.target.value)}
+              placeholder="628123456789"
+              className={fieldClass(path, "w-full pl-6 pr-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")}
+            />
+          </div>
+          <p className="text-[10px] text-slate-500 leading-normal">
+            Masukkan nomor dengan kode negara (cth. 628123456789 atau 08123456789).
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            {label} {needsAttention && <span className="text-amber-300">⚠️</span>}
+          </label>
+          <input
+            id={`field-${path}`}
+            type="text"
+            value={urlValue}
+            onChange={(e) => updateUrl(e.target.value)}
+            className={fieldClass(path, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")}
+            placeholder="#contact atau https://..."
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function SectionForms({
@@ -27,10 +193,11 @@ export default function SectionForms({
               Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-header.brand_name"
               type="text" 
               value={content.header?.brand_name || ""} 
               onChange={(e) => updateField("header", "brand_name", e.target.value)} 
-              className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -38,10 +205,11 @@ export default function SectionForms({
               Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-header.nav_cta_text"
               type="text" 
               value={content.header?.nav_cta_text || ""} 
               onChange={(e) => updateField("header", "nav_cta_text", e.target.value)} 
-              className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -54,7 +222,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Ikon</label>
-            <input type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" placeholder="cth. Utensils" />
+            <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent" placeholder="cth. Utensils" />
           </div>
         </div>
       )}
@@ -68,10 +236,11 @@ export default function SectionForms({
               Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-hero.headline"
               type="text" 
               value={content.hero.headline || ""} 
               onChange={(e) => updateField("hero", "headline", e.target.value)} 
-              className={fieldClass("hero.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("hero.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -79,10 +248,11 @@ export default function SectionForms({
               Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
             </label>
             <textarea 
+              id="field-hero.subheadline"
               rows={2} 
               value={content.hero.subheadline || ""} 
               onChange={(e) => updateField("hero", "subheadline", e.target.value)} 
-              className={fieldClass("hero.subheadline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} 
+              className={fieldClass("hero.subheadline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -90,23 +260,28 @@ export default function SectionForms({
               Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-hero.cta_text"
               type="text" 
               value={content.hero.cta_text || ""} 
               onChange={(e) => updateField("hero", "cta_text", e.target.value)} 
-              className={fieldClass("hero.cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("hero.cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Link Tombol CTA {needsAttention("hero.cta_url") && <span className="text-amber-300">⚠️</span>}
-            </label>
-            <input 
-              type="text" 
-              value={content.hero.cta_url || ""} 
-              onChange={(e) => updateField("hero", "cta_url", e.target.value)} 
-              className={fieldClass("hero.cta_url", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
-            />
-          </div>
+          <LinkTypeInput 
+            urlValue={content.hero.cta_url || ""}
+            updateUrl={(val) => {
+              updateField("hero", "cta_url", val);
+              const waNumber = val.replace(/\s+/g, "").match(/(?:wa\.me\/|phone=)([0-9]+)/i)?.[1] || "";
+              if (waNumber && (!content.contact?.phone || isPlaceholderValue(content.contact.phone, "phone"))) {
+                updateField("contact", "phone", "0" + waNumber.slice(2));
+              }
+            }}
+            needsAttention={needsAttention("hero.cta_url")}
+            fieldClass={fieldClass}
+            path="hero.cta_url"
+            label="Link Tombol CTA"
+            defaultWaNumber={content.contact?.phone}
+          />
         </div>
       )}
 
@@ -119,10 +294,11 @@ export default function SectionForms({
               Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-about.title"
               type="text" 
               value={content.about.title || ""} 
               onChange={(e) => updateField("about", "title", e.target.value)} 
-              className={fieldClass("about.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("about.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -130,10 +306,11 @@ export default function SectionForms({
               Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
             </label>
             <textarea 
+              id="field-about.body"
               rows={3} 
               value={content.about.body || ""} 
               onChange={(e) => updateField("about", "body", e.target.value)} 
-              className={fieldClass("about.body", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} 
+              className={fieldClass("about.body", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none bg-transparent")} 
             />
           </div>
         </div>
@@ -147,10 +324,11 @@ export default function SectionForms({
               Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-benefits.title"
               type="text" 
               value={content.benefits.title || ""} 
               onChange={(e) => updateField("benefits", "title", e.target.value)} 
-              className={fieldClass("benefits.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("benefits.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           {content.benefits.items?.map((item: any, idx: number) => (
@@ -279,10 +457,11 @@ export default function SectionForms({
               Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-cta.headline"
               type="text" 
               value={content.cta.headline || ""} 
               onChange={(e) => updateField("cta", "headline", e.target.value)} 
-              className={fieldClass("cta.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("cta.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -290,23 +469,28 @@ export default function SectionForms({
               Teks Tombol {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-cta.button_text"
               type="text" 
               value={content.cta.button_text || ""} 
               onChange={(e) => updateField("cta", "button_text", e.target.value)} 
-              className={fieldClass("cta.button_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("cta.button_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Link Tombol {needsAttention("cta.button_url") && <span className="text-amber-300">⚠️</span>}
-            </label>
-            <input 
-              type="text" 
-              value={content.cta.button_url || ""} 
-              onChange={(e) => updateField("cta", "button_url", e.target.value)} 
-              className={fieldClass("cta.button_url", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
-            />
-          </div>
+          <LinkTypeInput 
+            urlValue={content.cta.button_url || ""}
+            updateUrl={(val) => {
+              updateField("cta", "button_url", val);
+              const waNumber = val.replace(/\s+/g, "").match(/(?:wa\.me\/|phone=)([0-9]+)/i)?.[1] || "";
+              if (waNumber && (!content.contact?.phone || isPlaceholderValue(content.contact.phone, "phone"))) {
+                updateField("contact", "phone", "0" + waNumber.slice(2));
+              }
+            }}
+            needsAttention={needsAttention("cta.button_url")}
+            fieldClass={fieldClass}
+            path="cta.button_url"
+            label="Link Tombol"
+            defaultWaNumber={content.contact?.phone}
+          />
         </div>
       )}
 
@@ -318,10 +502,11 @@ export default function SectionForms({
               Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-contact.title"
               type="text" 
               value={content.contact.title || ""} 
               onChange={(e) => updateField("contact", "title", e.target.value)} 
-              className={fieldClass("contact.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("contact.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -329,10 +514,11 @@ export default function SectionForms({
               Alamat {needsAttention("contact.address") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-contact.address"
               type="text" 
               value={content.contact.address || ""} 
               onChange={(e) => updateField("contact", "address", e.target.value)} 
-              className={fieldClass("contact.address", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("contact.address", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -340,10 +526,30 @@ export default function SectionForms({
               Nomor WhatsApp {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-contact.phone"
               type="text" 
               value={content.contact.phone || ""} 
-              onChange={(e) => updateField("contact", "phone", e.target.value)} 
-              className={fieldClass("contact.phone", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              onChange={(e) => {
+                const val = e.target.value;
+                updateField("contact", "phone", val);
+                
+                // Keep Hero/CTA buttons in sync if they are currently set as WhatsApp links
+                const digits = val.replace(/\D/g, "");
+                if (digits) {
+                  let formattedDigits = digits;
+                  if (formattedDigits.startsWith("0")) {
+                    formattedDigits = "62" + formattedDigits.slice(1);
+                  }
+                  
+                  if (/wa\.me|whatsapp\.com/i.test(content.hero?.cta_url || "")) {
+                    updateField("hero", "cta_url", `https://wa.me/${formattedDigits}`);
+                  }
+                  if (/wa\.me|whatsapp\.com/i.test(content.cta?.button_url || "")) {
+                    updateField("cta", "button_url", `https://wa.me/${formattedDigits}`);
+                  }
+                }
+              }} 
+              className={fieldClass("contact.phone", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -351,10 +557,11 @@ export default function SectionForms({
               Email {needsAttention("contact.email") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-contact.email"
               type="email" 
               value={content.contact.email || ""} 
               onChange={(e) => updateField("contact", "email", e.target.value)} 
-              className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
@@ -375,28 +582,31 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Brand</label>
             <input 
+              id="field-footer.brand_name"
               type="text" 
               value={content.footer?.brand_name || ""} 
               onChange={(e) => updateField("footer", "brand_name", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" 
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent" 
             />
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline</label>
             <input 
+              id="field-footer.tagline"
               type="text" 
               value={content.footer?.tagline || ""} 
               onChange={(e) => updateField("footer", "tagline", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" 
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent" 
             />
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Copyright</label>
             <input 
+              id="field-footer.copyright_text"
               type="text" 
               value={content.footer?.copyright_text || ""} 
               onChange={(e) => updateField("footer", "copyright_text", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400" 
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent" 
             />
           </div>
         </div>
@@ -416,10 +626,11 @@ export default function SectionForms({
               Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
+              id="field-seo.title"
               type="text" 
               value={content.seo?.title || ""} 
               onChange={(e) => updateField("seo", "title", e.target.value)} 
-              className={fieldClass("seo.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400")} 
+              className={fieldClass("seo.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent")} 
             />
           </div>
           <div className="space-y-1">
@@ -427,10 +638,11 @@ export default function SectionForms({
               Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
             </label>
             <textarea 
+              id="field-seo.description"
               rows={3} 
               value={content.seo?.description || ""} 
               onChange={(e) => updateField("seo", "description", e.target.value)} 
-              className={fieldClass("seo.description", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none")} 
+              className={fieldClass("seo.description", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none bg-transparent")} 
             />
           </div>
           <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
