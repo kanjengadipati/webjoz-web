@@ -290,13 +290,13 @@ export function SiteWizard({
     setBusinessType(type);
 
     const userText = type === "Retail" ? "Toko Bahan Bangunan" :
-                     type === "Kuliner" ? "Kuliner / Restoran" :
-                     type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
+      type === "Kuliner" ? "Kuliner / Restoran" :
+        type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
 
     const aiResponse = type === "Retail" ? "Saya akan membuat website dengan fokus konversi WhatsApp dan katalog produk." :
-                       type === "Kuliner" ? "Saya akan membuat website dengan fokus menu makanan dan sistem reservasi." :
-                       type === "Jasa" ? "Saya akan membuat website dengan fokus portofolio layanan dan testimoni pelanggan." :
-                       "Saya akan membuat website dengan fokus company profile dan keunggulan perusahaan.";
+      type === "Kuliner" ? "Saya akan membuat website dengan fokus menu makanan dan sistem reservasi." :
+        type === "Jasa" ? "Saya akan membuat website dengan fokus portofolio layanan dan testimoni pelanggan." :
+          "Saya akan membuat website dengan fokus company profile dan keunggulan perusahaan.";
 
     setMessages((prev) => [
       ...prev,
@@ -470,10 +470,10 @@ export function SiteWizard({
 
   // Helper to get logs based on selected mood/type
   const getLogMessages = () => {
-    const keyword = businessType === "Retail" ? "bahan bangunan" : 
-                    businessType === "Kuliner" ? "kuliner" : 
-                    businessType === "Jasa" ? "jasa profesional" : "corporate";
-    
+    const keyword = businessType === "Retail" ? "bahan bangunan" :
+      businessType === "Kuliner" ? "kuliner" :
+        businessType === "Jasa" ? "jasa profesional" : "corporate";
+
     const toneMap: Record<string, string> = {
       "Profesional": "profesional & tepercaya",
       "Modern & Minimalis": "modern & profesional",
@@ -506,17 +506,17 @@ export function SiteWizard({
 
   const renderChecklistItem = (label: string, index: number) => {
     let statusIcon = null;
-    let textClass = "text-slate-700";
+    let textClass = "text-slate-400";
 
     if (loadingStep > index) {
-      statusIcon = <span className="text-slate-800 font-bold">✓</span>;
-      textClass = "text-slate-800 font-medium";
+      statusIcon = <span className="text-emerald-400 font-bold">✓</span>;
+      textClass = "text-slate-200 font-medium";
     } else if (loadingStep === index) {
       statusIcon = <Loader2 className="w-5 h-5 text-[#7c3aed] animate-spin shrink-0" />;
       textClass = "text-[#7c3aed] font-semibold";
     } else {
-      statusIcon = <span className="text-slate-400">⏳</span>;
-      textClass = "text-slate-400";
+      statusIcon = <span className="text-slate-600">⏳</span>;
+      textClass = "text-slate-500";
     }
 
     return (
@@ -532,23 +532,23 @@ export function SiteWizard({
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex w-screen h-screen overflow-hidden bg-[#f1f5f9]">
+    <div className="flex w-screen h-screen overflow-hidden bg-[#0d0f14]">
 
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
-      <div className="w-[380px] shrink-0 flex flex-col bg-white border-r border-slate-200 h-full overflow-hidden shadow-xl z-10">
+      <div className="w-[380px] shrink-0 flex flex-col bg-[#111318] border-r h-full overflow-hidden shadow-xl z-10" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
 
         {/* ── Sidebar Header ──────────────────────────────────────────────── */}
-        <div className="px-5 py-4 border-b border-slate-100 shrink-0">
+        <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center">
                 <Sparkles className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-bold text-slate-900 text-sm">Webjoz AI Assistant</span>
-              <span className="text-[10px] font-semibold text-[#7c3aed] bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">BETA</span>
+              <span className="font-bold text-white text-sm">Webjoz AI Assistant</span>
+              <span className="text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Gratis · Tanpa Daftar
             </div>
           </div>
@@ -560,9 +560,9 @@ export function SiteWizard({
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
-          <div className="h-[5px] bg-slate-100 rounded-full overflow-hidden w-full">
+          <div className="h-[5px] bg-white/5 rounded-full overflow-hidden w-full">
             <div
-              className="h-full bg-gradient-to-r from-[#7c3aed] to-violet-500 transition-all duration-700 rounded-full"
+              className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700 rounded-full"
               style={{ width: `${getProgressPercentage()}%` }}
             />
           </div>
@@ -581,11 +581,11 @@ export function SiteWizard({
                 </div>
               )}
               <div
-                className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                  m.sender === "user"
-                    ? "bg-[#7c3aed] text-white rounded-tr-sm"
-                    : "bg-[#f3f4f6] text-slate-800 rounded-tl-sm"
-                }`}
+                className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user"
+                  ? "bg-[#7c3aed] text-white rounded-tr-sm"
+                  : "rounded-tl-sm text-slate-200"
+                  }`}
+                style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
               >
                 {formatText(m.text, m.sender === "user")}
               </div>
@@ -600,11 +600,12 @@ export function SiteWizard({
                   <button
                     key={t.value}
                     onClick={() => handleSelectType(t.value)}
-                    className="flex flex-col items-start gap-1 p-3 bg-white hover:bg-violet-50 hover:border-[#7c3aed]/50 border border-slate-200 rounded-xl shadow-sm text-left transition-all active:scale-[0.97] group"
+                    className="flex flex-col items-start gap-1 p-3 hover:border-[#7c3aed]/50 border rounded-xl text-left transition-all active:scale-[0.97] group"
+                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
                   >
                     <span className="text-lg">{t.emoji}</span>
-                    <span className="text-xs font-bold text-slate-800 group-hover:text-[#7c3aed]">{t.label}</span>
-                    <span className="text-[10px] text-slate-400">{t.desc}</span>
+                    <span className="text-xs font-bold text-slate-200 group-hover:text-[#7c3aed]">{t.label}</span>
+                    <span className="text-[10px] text-slate-500">{t.desc}</span>
                   </button>
                 ))}
               </div>
@@ -632,12 +633,13 @@ export function SiteWizard({
                       setChatStage("done");
                       handleGenerate(businessName, businessType, m.value);
                     }}
-                    className="flex items-center gap-2 p-2.5 bg-white hover:bg-violet-50 hover:border-[#7c3aed]/50 border border-slate-200 rounded-xl shadow-sm text-left transition-all active:scale-[0.97] group"
+                    className="flex items-center gap-2 p-2.5 hover:border-[#7c3aed]/50 border rounded-xl text-left transition-all active:scale-[0.97] group"
+                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
                   >
                     <span className="text-base shrink-0">{m.emoji}</span>
                     <div>
-                      <span className="text-xs font-bold text-slate-800 group-hover:text-[#7c3aed] block leading-tight">{m.value}</span>
-                      <span className="text-[10px] text-slate-400 leading-tight">{m.desc}</span>
+                      <span className="text-xs font-bold text-slate-200 group-hover:text-[#7c3aed] block leading-tight">{m.value}</span>
+                      <span className="text-[10px] text-slate-500 leading-tight">{m.desc}</span>
                     </div>
                   </button>
                 ))}
@@ -660,7 +662,7 @@ export function SiteWizard({
 
           {/* Result status in chat */}
           {previewState === "result" && (
-            <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold animate-in fade-in duration-500 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold animate-in fade-in duration-500 border border-emerald-500/20 rounded-xl px-3 py-2" style={{ background: "rgba(16,185,129,0.08)" }}>
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               Website siap! Lihat hasilnya di panel kanan →
             </div>
@@ -671,15 +673,15 @@ export function SiteWizard({
 
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
         {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && (
-          <div className="px-4 py-3 border-t border-slate-100 shrink-0 bg-white">
-            <form onSubmit={handleSendText} className="flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1 gap-2 focus-within:border-[#7c3aed]/50 focus-within:ring-2 focus-within:ring-[#7c3aed]/10 transition-all">
+          <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Tanya AI apa saja..."
                 autoFocus
-                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none"
               />
               <button
                 type="submit"
@@ -693,41 +695,41 @@ export function SiteWizard({
         )}
 
         {/* ── Sidebar Footer ───────────────────────────────────────────────── */}
-        <div className="px-5 py-3 border-t border-slate-100 shrink-0 bg-white flex items-center justify-between">
-          <span className="text-[11px] text-slate-400 flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+        <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <span className="text-[11px] text-slate-500 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
             Draft tersimpan otomatis
           </span>
-          <span className="text-[11px] text-slate-400">
+          <span className="text-[11px] text-slate-500">
             {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
           </span>
         </div>
       </div>
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#f1f5f9]">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#0d0f14]">
 
         {/* ── Browser Top Bar ──────────────────────────────────────────────── */}
-        <div className="h-12 bg-white border-b border-slate-200 flex items-center px-4 gap-3 shrink-0 shadow-sm">
+        <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           {/* Tab favicon + url */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="w-4 h-4 rounded-sm bg-emerald-500 shrink-0 flex items-center justify-center">
               <span className="text-[7px] text-white font-bold">W</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1 flex-1 max-w-xs">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-              <span className="text-xs text-slate-600 truncate font-medium">
-                {previewState === "result"
+            <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 flex-1 max-w-xs" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${businessName ? "bg-emerald-400" : "bg-slate-600"}`} />
+              <span className="text-xs text-slate-400 truncate font-medium transition-all duration-300">
+                {businessName
                   ? `${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com`
                   : "preview.webjoz.com"}
               </span>
               {previewState === "loading" && (
-                <span className="ml-auto text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full shrink-0">
+                <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full shrink-0">
                   Draft Preview
                 </span>
               )}
               {previewState === "result" && (
-                <span className="ml-auto text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full shrink-0">
+                <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">
                   Live Preview
                 </span>
               )}
@@ -753,46 +755,46 @@ export function SiteWizard({
 
           {/* Wireframe state */}
           {previewState === "wireframe" && (
-            <div className="h-full overflow-y-auto p-8 bg-slate-50">
+            <div className="h-full overflow-y-auto p-8" style={{ background: "#0d0f14" }}>
               <div className="max-w-3xl mx-auto">
-                <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-10">
-                  <div className="h-7 w-28 bg-slate-200 rounded-lg" />
+                <header className="flex justify-between items-center pb-6 mb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div className="h-7 w-28 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
                   <div className="flex gap-4 items-center">
-                    <div className="h-4 w-14 bg-slate-100 rounded" />
-                    <div className="h-4 w-14 bg-slate-100 rounded" />
-                    <div className="h-4 w-14 bg-slate-100 rounded" />
-                    <div className="h-8 w-24 bg-slate-200 rounded-lg" />
+                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-4 w-14 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-8 w-24 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
                   </div>
                 </header>
-                <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-300 to-slate-200" style={{ height: 260 }}>
+                <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-700 to-slate-800" style={{ height: 260 }}>
                   <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
-                    <div className="h-5 w-20 bg-white/40 rounded-full" />
+                    <div className="h-5 w-20 bg-white/10 rounded-full" />
                     <div className="space-y-2">
-                      <div className="h-10 w-3/4 bg-white/50 rounded-xl" />
-                      <div className="h-10 w-1/2 bg-white/50 rounded-xl" />
+                      <div className="h-10 w-3/4 bg-white/15 rounded-xl" />
+                      <div className="h-10 w-1/2 bg-white/15 rounded-xl" />
                     </div>
-                    <div className="h-5 w-2/3 bg-white/30 rounded-full" />
-                    <div className="h-11 w-36 bg-white/60 rounded-xl" />
+                    <div className="h-5 w-2/3 bg-white/10 rounded-full" />
+                    <div className="h-11 w-36 bg-white/20 rounded-xl" />
                   </div>
-                  <div className="absolute right-0 inset-y-0 w-2/5 bg-slate-300/60" />
+                  <div className="absolute right-0 inset-y-0 w-2/5" style={{ background: "rgba(255,255,255,0.05)" }} />
                 </section>
                 <section className="grid grid-cols-4 gap-4 mb-10">
-                  {[1,2,3,4].map((i) => (
-                    <div key={i} className="p-4 border border-slate-200 rounded-2xl space-y-3 bg-white">
-                      <div className="w-8 h-8 bg-slate-100 rounded-full" />
-                      <div className="h-3 w-3/4 bg-slate-200 rounded" />
-                      <div className="h-2 w-full bg-slate-100 rounded" />
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="p-4 rounded-2xl space-y-3" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                      <div className="w-8 h-8 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+                      <div className="h-3 w-3/4 rounded" style={{ background: "rgba(255,255,255,0.08)" }} />
+                      <div className="h-2 w-full rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
                     </div>
                   ))}
                 </section>
-                <section className="flex gap-8 items-center bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                <section className="flex gap-8 items-center p-8 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
                   <div className="flex-1 space-y-4">
-                    <div className="h-7 w-3/4 bg-slate-200 rounded-lg" />
-                    <div className="h-3 w-full bg-slate-100 rounded" />
-                    <div className="h-3 w-5/6 bg-slate-100 rounded" />
-                    <div className="h-3 w-4/6 bg-slate-100 rounded" />
+                    <div className="h-7 w-3/4 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
+                    <div className="h-3 w-full rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-3 w-5/6 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
+                    <div className="h-3 w-4/6 rounded" style={{ background: "rgba(255,255,255,0.05)" }} />
                   </div>
-                  <div className="w-40 h-40 bg-slate-200 rounded-2xl shrink-0" />
+                  <div className="w-40 h-40 rounded-2xl shrink-0" style={{ background: "rgba(255,255,255,0.06)" }} />
                 </section>
               </div>
             </div>
@@ -802,7 +804,7 @@ export function SiteWizard({
           {previewState === "loading" && (
             <div className="h-full relative flex flex-col overflow-hidden">
               {/* Blurred background preview */}
-              <div className="flex-1 overflow-y-auto p-8 bg-slate-50 filter blur-[8px] opacity-50 select-none pointer-events-none">
+              <div className="flex-1 overflow-y-auto p-8 filter blur-[8px] opacity-30 select-none pointer-events-none" style={{ background: "#0d0f14" }}>
                 <div className="max-w-3xl mx-auto">
                   <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-10">
                     <div>
@@ -810,7 +812,7 @@ export function SiteWizard({
                       <div className="h-3 text-slate-400 text-xs">Toko Bahan Bangunan</div>
                     </div>
                     <div className="flex gap-4 items-center">
-                      {["Beranda","Produk","Tentang","Layanan","Kontak"].map(l => (
+                      {["Beranda", "Produk", "Tentang", "Layanan", "Kontak"].map(l => (
                         <span key={l} className="text-xs text-slate-600">{l}</span>
                       ))}
                       <div className="h-9 w-28 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-xs font-bold px-4">
@@ -832,7 +834,7 @@ export function SiteWizard({
 
               {/* Floating modal overlay */}
               <div className="absolute inset-0 z-30 flex items-center justify-end pr-8">
-                <div className="bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-3xl w-full max-w-sm p-7 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-right-4 zoom-in-95 duration-500">
+                <div className="backdrop-blur-xl rounded-3xl w-full max-w-sm p-7 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-right-4 zoom-in-95 duration-500" style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}>
 
                   {/* Modal header */}
                   <div className="flex items-center gap-2.5">
@@ -840,19 +842,19 @@ export function SiteWizard({
                       <Sparkles className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-extrabold text-slate-900 m-0 leading-tight">
+                      <h3 className="text-sm font-extrabold text-white m-0 leading-tight">
                         AI sedang membangun website Anda ✨
                       </h3>
-                      <p className="text-[11px] text-slate-500 mt-0.5">Mohon tunggu sebentar...</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Mohon tunggu sebentar...</p>
                     </div>
                   </div>
 
                   {/* Progress bar */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden flex-1 mr-3">
+                      <div className="h-2.5 rounded-full overflow-hidden flex-1 mr-3" style={{ background: "rgba(255,255,255,0.06)" }}>
                         <div
-                          className="h-full bg-gradient-to-r from-[#7c3aed] to-violet-500 transition-all duration-1000 ease-out rounded-full"
+                          className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-1000 ease-out rounded-full"
                           style={{ width: `${getModalProgressPercent()}%` }}
                         />
                       </div>
@@ -874,9 +876,8 @@ export function SiteWizard({
                       const active = loadingStep === idx;
                       return (
                         <div key={idx} className={`flex items-start gap-3 transition-all duration-300 ${done ? "opacity-100" : active ? "opacity-100" : "opacity-40"}`}>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-300 ${
-                            done ? "border-[#7c3aed] bg-[#7c3aed]" : active ? "border-[#7c3aed] bg-white" : "border-slate-300 bg-white"
-                          }`}>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-300 ${done ? "border-[#7c3aed] bg-[#7c3aed]" : active ? "border-[#7c3aed]" : "border-slate-700"
+                            }`} style={!done ? { background: "rgba(255,255,255,0.04)" } : {}}>
                             {done ? (
                               <span className="text-white text-[10px] font-bold">✓</span>
                             ) : active ? (
@@ -884,10 +885,10 @@ export function SiteWizard({
                             ) : null}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className={`text-xs font-semibold leading-tight ${done || active ? "text-slate-800" : "text-slate-400"} ${active ? "text-[#7c3aed]" : ""}`}>
+                            <div className={`text-xs font-semibold leading-tight ${done ? "text-slate-200" : active ? "text-[#7c3aed]" : "text-slate-600"}`}>
                               {label}
                             </div>
-                            <div className="text-[10px] text-slate-400 leading-tight mt-0.5">{desc}</div>
+                            <div className="text-[10px] text-slate-600 leading-tight mt-0.5">{desc}</div>
                           </div>
                           <div className={`text-[10px] font-mono shrink-0 mt-0.5 ${active ? "text-[#7c3aed]" : "text-slate-300"}`}>
                             {active ? `00:${String(idx + 3).padStart(2, "0")}` : done ? `00:0${idx + 3}` : "00:00"}
@@ -899,17 +900,17 @@ export function SiteWizard({
 
                   {/* AI Insight footer */}
                   {loadingStep >= 3 && (
-                    <div className="bg-violet-50 border border-violet-100 rounded-2xl p-3.5 animate-in fade-in duration-500">
+                    <div className="rounded-2xl p-3.5 animate-in fade-in duration-500" style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}>
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <Sparkles className="w-3 h-3 text-[#7c3aed]" />
-                        <span className="text-[11px] font-bold text-[#7c3aed]">AI Insight</span>
+                        <span className="text-[11px] font-bold text-violet-400">AI Insight</span>
                       </div>
-                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                      <p className="text-[11px] text-slate-400 leading-relaxed">
                         {businessType === "Kuliner"
                           ? "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar."
                           : businessType === "Retail"
-                          ? "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis bahan bangunan."
-                          : "Website dengan testimoni pelanggan meningkatkan kepercayaan konsumen secara signifikan."}
+                            ? "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis bahan bangunan."
+                            : "Website dengan testimoni pelanggan meningkatkan kepercayaan konsumen secara signifikan."}
                       </p>
                     </div>
                   )}
@@ -929,16 +930,17 @@ export function SiteWizard({
               </div>
 
               {/* CTA strip at bottom */}
-              <div className="shrink-0 px-6 py-4 border-t border-slate-200 bg-gradient-to-r from-violet-50 to-indigo-50 flex items-center justify-between gap-4">
+              <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
                 <div className="flex items-center gap-2 min-w-0">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <p className="text-xs font-semibold text-slate-700 truncate">
-                    Website <strong>{businessName}</strong> sudah selesai dibuat!
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <p className="text-xs font-semibold text-slate-300 truncate">
+                    Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
                   </p>
                 </div>
                 <button
                   onClick={handleGoToEditor}
-                  className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#7c3aed] to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all whitespace-nowrap"
+                  className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
+                  style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   Kustomisasi & Publish →

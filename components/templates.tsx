@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useId, useState } from "react";
-import { 
-  Utensils, Calendar, Clock, MapPin, Phone, Mail, Check, 
-  ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown, 
+import {
+  Utensils, Calendar, Clock, MapPin, Phone, Mail, Check,
+  ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown,
   ChevronUp, Star, HelpCircle, Send, Globe, MessageSquare,
   Image as ImageIcon
 } from "lucide-react";
@@ -123,59 +123,56 @@ export const PreviewSectionWrapper: React.FC<{
   isEditorMode?: boolean;
   children: React.ReactNode;
   label: string;
-}> = ({ 
-  section, 
-  activeSection, 
-  onSelectSection, 
-  onRegenSection, 
-  isEditorMode = false, 
+}> = ({
+  section,
+  activeSection,
+  onSelectSection,
+  onRegenSection,
+  isEditorMode = false,
   children,
-  label 
+  label
 }) => {
-  if (!isEditorMode) {
-    return <>{children}</>;
-  }
+    if (!isEditorMode) {
+      return <>{children}</>;
+    }
 
-  const isSelected = activeSection === section;
+    const isSelected = activeSection === section;
 
-  return (
-    <div 
-      id={`section-preview-${section}`}
-      onClick={() => onSelectSection?.(section)}
-      className={`group relative transition-all duration-200 border ${
-        isSelected 
-          ? "border-violet-600 bg-violet-500/[0.02] ring-2 ring-violet-500/10 shadow-md" 
+    return (
+      <div
+        id={`section-preview-${section}`}
+        onClick={() => onSelectSection?.(section)}
+        className={`group relative transition-all duration-200 border ${isSelected
+          ? "border-violet-600 bg-violet-500/[0.02] ring-2 ring-violet-500/10 shadow-md"
           : "border-transparent hover:border-slate-300 hover:bg-slate-500/5"
-      }`}
-    >
-      {/* Label Badge */}
-      <div className={`absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none transition-opacity duration-200 ${
-        isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-      }`}>
-        {label}
-      </div>
-
-      {/* AI Regen button */}
-      <button 
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRegenSection?.(section);
-        }}
-        className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white ${
-          isSelected ? "flex opacity-100 visible" : "hidden group-hover:flex"
-        }`}
+          }`}
       >
-        <Sparkles className="w-3 h-3 text-white" />
-        AI Regen
-      </button>
+        {/* Label Badge */}
+        <div className={`absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none transition-opacity duration-200 ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}>
+          {label}
+        </div>
 
-      <div>
-        {children}
+        {/* AI Regen button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRegenSection?.(section);
+          }}
+          className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white ${isSelected ? "flex opacity-100 visible" : "hidden group-hover:flex"
+            }`}
+        >
+          <Sparkles className="w-3 h-3 text-white" />
+          AI Regen
+        </button>
+
+        <div>
+          {children}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 const MemoPreviewSectionWrapper = React.memo(PreviewSectionWrapper);
 
@@ -302,9 +299,9 @@ const LeadForm: React.FC<{
       )}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nama Lengkap</label>
-        <input 
-          type="text" 
-          required 
+        <input
+          type="text"
+          required
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="cth. Budi Santoso"
@@ -314,9 +311,9 @@ const LeadForm: React.FC<{
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email</label>
-          <input 
-            type="email" 
-            required 
+          <input
+            type="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="cth. budi@email.com"
@@ -325,9 +322,9 @@ const LeadForm: React.FC<{
         </div>
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nomor WA</label>
-          <input 
-            type="tel" 
-            required 
+          <input
+            type="tel"
+            required
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="cth. 08123456789"
@@ -337,8 +334,8 @@ const LeadForm: React.FC<{
       </div>
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pesan Anda</label>
-        <textarea 
-          required 
+        <textarea
+          required
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -346,8 +343,8 @@ const LeadForm: React.FC<{
           className={inputClass}
         ></textarea>
       </div>
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         disabled={submitting}
         className={`${buttonClass} w-full min-h-11 py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2`}
       >
@@ -365,7 +362,7 @@ const LeadForm: React.FC<{
 // ==========================================
 // 1. TEMPLATE_KULINER01 (Cafe / Restaurant)
 // ==========================================
-export const TemplateKuliner: React.FC<TemplateProps> = ({ 
+export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
@@ -379,14 +376,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(hero) => (
           <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-20 bg-gradient-to-b from-amber-50/50 to-[#FAF7F2] overflow-hidden">
             {hero.image_url && (
-              <img 
-                src={hero.image_url} 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply" 
-                alt="Hero" 
+              <img
+                src={hero.image_url}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply"
+                alt="Hero"
               />
             )}
-            <div className="absolute inset-0 bg-[radial-gradient(#E5D5BC_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
             <div className="max-w-4xl relative z-10 space-y-6">
 
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-955 leading-tight">
@@ -402,8 +398,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 </p>
               )}
               <div className="pt-4">
-                <a 
-                  href={hero.cta_url} 
+                <a
+                  href={hero.cta_url}
                   className="min-h-11 px-8 py-4 bg-amber-800 hover:bg-amber-900 text-white rounded-full font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]"
                 >
                   {hero.cta_text}
@@ -435,11 +431,11 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                   </div>
                 </div>
                 {about.image_url && (
-                  <img 
-                    src={about.image_url} 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                    className="w-full h-full object-cover absolute inset-0 z-10" 
-                    alt="About" 
+                  <img
+                    src={about.image_url}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    className="w-full h-full object-cover absolute inset-0 z-10"
+                    alt="About"
                   />
                 )}
               </div>
@@ -499,8 +495,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{cta.headline}</h2>
                 <div className="pt-4">
-                  <a 
-                    href={cta.button_url} 
+                  <a
+                    href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-amber-800 hover:bg-amber-900 text-white rounded-full font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]"
                   >
                     {cta.button_text}
@@ -536,9 +532,9 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
-                    <a 
-                      href={data.contact.maps_url} 
-                      target="_blank" 
+                    <a
+                      href={data.contact.maps_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-amber-800 underline hover:text-amber-955 inline-flex items-center gap-1.5 font-medium"
                     >
@@ -551,7 +547,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               {data.contact.show_lead_form && data.onSubmitLead && (
                 <div className="bg-white p-8 rounded-3xl border border-[#EADFCB] shadow-sm">
                   <h3 className="text-lg font-bold font-serif text-amber-955 mb-6">Hubungi Kami / Reservasi</h3>
-                  <LeadForm 
+                  <LeadForm
                     onSubmit={data.onSubmitLead}
                     submitting={data.leadSubmitting}
                     success={data.leadSuccess}
@@ -621,7 +617,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 // ==========================================
 // 2. TEMPLATE_JASA02 (Agency / Consultant)
 // ==========================================
-export const TemplateJasa: React.FC<TemplateProps> = ({ 
+export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
@@ -635,11 +631,11 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(hero) => (
           <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-slate-50 via-slate-100/50 to-indigo-50/30 overflow-hidden">
             {hero.image_url && (
-              <img 
-                src={hero.image_url} 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity" 
-                alt="Hero" 
+              <img
+                src={hero.image_url}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity"
+                alt="Hero"
               />
             )}
             <div className="max-w-4xl text-center space-y-6 relative z-10">
@@ -651,8 +647,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 {hero.subheadline}
               </p>
               <div className="pt-4">
-                <a 
-                  href={hero.cta_url} 
+                <a
+                  href={hero.cta_url}
                   className="min-h-11 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50"
                 >
                   {hero.cta_text}
@@ -681,11 +677,11 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                   </div>
                 </div>
                 {about.image_url && (
-                  <img 
-                    src={about.image_url} 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                    className="w-full h-full object-cover absolute inset-0 z-10" 
-                    alt="About" 
+                  <img
+                    src={about.image_url}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    className="w-full h-full object-cover absolute inset-0 z-10"
+                    alt="About"
                   />
                 )}
               </div>
@@ -756,8 +752,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{cta.headline}</h2>
                 <div className="pt-4">
-                  <a 
-                    href={cta.button_url} 
+                  <a
+                    href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-white hover:bg-slate-50 text-indigo-800 rounded-xl font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-700"
                   >
                     {cta.button_text}
@@ -793,9 +789,9 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
-                    <a 
-                      href={data.contact.maps_url} 
-                      target="_blank" 
+                    <a
+                      href={data.contact.maps_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-indigo-600 hover:text-indigo-800 font-bold inline-flex items-center gap-1.5"
                     >
@@ -808,7 +804,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               {data.contact.show_lead_form && data.onSubmitLead && (
                 <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                   <h3 className="text-lg font-bold text-slate-900 mb-6">Kirim Pertanyaan Anda</h3>
-                  <LeadForm 
+                  <LeadForm
                     onSubmit={data.onSubmitLead}
                     submitting={data.leadSubmitting}
                     success={data.leadSuccess}
@@ -877,7 +873,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
 
 // 3. TEMPLATE_PRODUK03 (Brand / Product)
 // =========================================
-export const TemplateProduk: React.FC<TemplateProps> = ({ 
+export const TemplateProduk: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
@@ -893,11 +889,11 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
             {hero.image_url && <div className="absolute inset-0 bg-slate-955/80 z-0" />}
             {hero.image_url && (
-              <img 
-                src={hero.image_url} 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0" 
-                alt="Hero" 
+              <img
+                src={hero.image_url}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0"
+                alt="Hero"
               />
             )}
             <div className="max-w-4xl text-center space-y-8 relative z-10">
@@ -909,8 +905,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 {hero.subheadline}
               </p>
               <div className="pt-4">
-                <a 
-                  href={hero.cta_url} 
+                <a
+                  href={hero.cta_url}
                   className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-955 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-955"
                 >
                   {hero.cta_text}
@@ -946,11 +942,11 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                   </div>
                 </div>
                 {about.image_url && (
-                  <img 
-                    src={about.image_url} 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                    className="w-full h-full object-cover absolute inset-0 z-10" 
-                    alt="About" 
+                  <img
+                    src={about.image_url}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    className="w-full h-full object-cover absolute inset-0 z-10"
+                    alt="About"
                   />
                 )}
               </div>
@@ -1010,8 +1006,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <div className="relative z-10 max-w-2xl mx-auto space-y-6">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">{cta.headline}</h2>
                 <div className="pt-4">
-                  <a 
-                    href={cta.button_url} 
+                  <a
+                    href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-955 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                   >
                     {cta.button_text}
@@ -1047,9 +1043,9 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
-                    <a 
-                      href={data.contact.maps_url} 
-                      target="_blank" 
+                    <a
+                      href={data.contact.maps_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-cyan-400 hover:text-cyan-300 font-bold inline-flex items-center gap-1.5"
                     >
@@ -1062,7 +1058,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               {data.contact.show_lead_form && data.onSubmitLead && (
                 <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm">
                   <h3 className="text-lg font-bold text-white mb-6">Hubungi Kami Langsung</h3>
-                  <LeadForm 
+                  <LeadForm
                     onSubmit={data.onSubmitLead}
                     submitting={data.leadSubmitting}
                     success={data.leadSuccess}
@@ -1138,14 +1134,13 @@ const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isD
   const answerId = `faq-answer-${reactId}`;
 
   return (
-    <div 
-      className={`border rounded-2xl transition-all overflow-hidden ${
-        isDark 
-          ? "border-slate-800 bg-slate-900/40 hover:bg-slate-900/60" 
-          : "border-[#EADFCB] bg-[#FAF7F2]/40 hover:bg-white"
-      }`}
+    <div
+      className={`border rounded-2xl transition-all overflow-hidden ${isDark
+        ? "border-slate-800 bg-slate-900/40 hover:bg-slate-900/60"
+        : "border-[#EADFCB] bg-[#FAF7F2]/40 hover:bg-white"
+        }`}
     >
-      <button 
+      <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
@@ -1162,11 +1157,10 @@ const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isD
         )}
       </button>
       {isOpen && (
-        <div id={answerId} className={`px-6 pb-5 pt-1 text-sm leading-relaxed border-t ${
-          isDark 
-            ? "text-slate-300 border-slate-800 bg-slate-950/20" 
-            : "text-[#6D5D50] border-[#EADFCB]/50 bg-amber-50/10"
-        }`}>
+        <div id={answerId} className={`px-6 pb-5 pt-1 text-sm leading-relaxed border-t ${isDark
+          ? "text-slate-300 border-slate-800 bg-slate-950/20"
+          : "text-[#6D5D50] border-[#EADFCB]/50 bg-amber-50/10"
+          }`}>
           {item.answer}
         </div>
       )}
@@ -1217,8 +1211,8 @@ function buildCssVars(dt: DesignToken | null | undefined): Record<string, string
   const isDarkBg = isDarkColor(bg);
   let surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
   if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
-    surfaceVal = isDarkBg 
-      ? "color-mix(in srgb, var(--dt-bg) 92%, white)" 
+    surfaceVal = isDarkBg
+      ? "color-mix(in srgb, var(--dt-bg) 92%, white)"
       : "color-mix(in srgb, var(--dt-bg) 96%, black)";
   }
   const borderVal = isDarkBg
@@ -1396,11 +1390,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
                 <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08, backgroundImage: `linear-gradient(var(--dt-primary) 1px, transparent 1px), linear-gradient(90deg, var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
                 {h.image_url && (
-                  <img 
-                    src={h.image_url} 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", zIndex: 1 }} 
-                    alt="Hero" 
+                  <img
+                    src={h.image_url}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", zIndex: 1 }}
+                    alt="Hero"
                   />
                 )}
                 <div style={{ maxWidth: hStyle === "split" ? "560px" : "800px", textAlign: hStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: hStyle === "split" ? "flex-start" : "center" }}>
@@ -1429,7 +1423,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       case "about": return (
         <MemoPreviewSectionWrapper key="about" section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ about, dt }} render={(data) => {
@@ -1454,11 +1448,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                       </div>
                     </div>
                     {a.image_url && (
-                      <img 
-                        src={a.image_url} 
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }} 
-                        alt="About" 
+                      <img
+                        src={a.image_url}
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }}
+                        alt="About"
                       />
                     )}
                   </div>
@@ -1468,7 +1462,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       case "benefits": return (
         <MemoPreviewSectionWrapper key="benefits" section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ benefits, dt }} render={(data) => {
@@ -1507,7 +1501,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       case "faq": return (
         <MemoPreviewSectionWrapper key="faq" section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ faq, dt }} render={(data) => {
@@ -1526,7 +1520,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       case "cta": return (
         <MemoPreviewSectionWrapper key="cta" section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ cta, dt }} render={(data) => {
@@ -1550,7 +1544,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       case "contact": return (
         <MemoPreviewSectionWrapper key="contact" section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, dt }} render={(data) => {
@@ -1590,11 +1584,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       );
- 
+
       default: return null;
     }
   };
- 
+
   const sectionNodes = {
     hero: renderSection("hero"),
     about: renderSection("about"),
@@ -1603,7 +1597,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     cta: renderSection("cta"),
     contact: renderSection("contact"),
   } as Record<string, React.ReactNode>;
- 
+
   return (
     <div style={rootStyle}>
       {/* Header */}
@@ -1626,26 +1620,26 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           );
         }} />
       </MemoPreviewSectionWrapper>
- 
+
       {/* Dynamic Section Order */}
       {sectionOrder.map((key) => sectionNodes[key] ?? null)}
- 
+
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {
           const { footer: f, brand_name_fallback: bFallback } = data;
           const displayBrand = f?.brand_name || bFallback || "Bisnis Kami";
           const displayTagline = f?.tagline || "Memberikan layanan dan produk terbaik untuk memenuhi kebutuhan Anda";
           return (
-            <footer style={{ 
-              background: "color-mix(in srgb, var(--dt-bg) 95%, var(--dt-text))", 
-              color: "var(--dt-text-muted)", 
-              textAlign: "center", 
-              padding: "2.5rem 1.5rem", 
-              borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, 
-              fontSize: "0.8rem", 
-              display: "flex", 
-              flexDirection: "column", 
-              gap: "0.375rem" 
+            <footer style={{
+              background: "color-mix(in srgb, var(--dt-bg) 95%, var(--dt-text))",
+              color: "var(--dt-text-muted)",
+              textAlign: "center",
+              padding: "2.5rem 1.5rem",
+              borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`,
+              fontSize: "0.8rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.375rem"
             }}>
               <p style={{ fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{displayBrand}</p>
               <p style={{ color: "var(--dt-text-muted)", margin: 0, opacity: 0.85 }}>{displayTagline}</p>
@@ -1656,7 +1650,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           );
         }} />
       </MemoPreviewSectionWrapper>
- 
+
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ seo, dt }} render={(data) => {
