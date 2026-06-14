@@ -699,13 +699,13 @@ export default function SiteEditorPage() {
 
   // Helper updates for form fields
   const updateField = (section: string, key: string, val: any) => {
-    setContent({
-      ...content,
+    setContent((prev: any) => ({
+      ...prev,
       [section]: {
-        ...content[section],
+        ...prev[section],
         [key]: val
       }
-    });
+    }));
   };
 
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
@@ -756,13 +756,20 @@ export default function SiteEditorPage() {
     );
   }
 
-  const orderedSectionKeys = getOrderedSections(designToken);
-  const SECTIONS = orderedSectionKeys.map((key, idx) => ({
-    key,
-    label: SECTION_META[key]?.label ?? key,
-    icon: SECTION_META[key]?.icon ?? Layout,
-    num: idx + 1,
-  }));
+  const orderedSectionKeys = getOrderedSections(designToken, content);
+  const SECTIONS = orderedSectionKeys
+    .filter((key) => {
+      // Only show menu/catalog tabs when content actually has them
+      if (key === "menu") return !!content?.menu;
+      if (key === "catalog") return !!content?.catalog;
+      return true;
+    })
+    .map((key, idx) => ({
+      key,
+      label: SECTION_META[key]?.label ?? key,
+      icon: SECTION_META[key]?.icon ?? Layout,
+      num: idx + 1,
+    }));
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
   const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { isPlaceholderValue } from "./editor-utils";
 
@@ -649,6 +649,235 @@ export default function SectionForms({
           <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
         </div>
       )}
+
+      {/* MENU FORM */}
+      {activeTab === "menu" && (
+        <MenuCatalogForm
+          sectionKey="menu"
+          sectionTitle="Menu"
+          itemLabel="item menu"
+          hasPrice
+          hasBadge={false}
+          data={content.menu}
+          updateField={updateField}
+        />
+      )}
+
+      {/* CATALOG FORM */}
+      {activeTab === "catalog" && (
+        <MenuCatalogForm
+          sectionKey="catalog"
+          sectionTitle="Katalog Produk"
+          itemLabel="produk"
+          hasPrice
+          hasBadge
+          data={content.catalog}
+          updateField={updateField}
+        />
+      )}
     </>
+  );
+}
+
+// ─── Shared Menu / Catalog Editor ───────────────────────────────────────────
+interface MenuCatalogFormProps {
+  sectionKey: "menu" | "catalog";
+  sectionTitle: string;
+  itemLabel: string;
+  hasPrice: boolean;
+  hasBadge: boolean;
+  data: any;
+  updateField: (section: string, key: string, val: any) => void;
+}
+
+function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField }: MenuCatalogFormProps) {
+  const [expandedCat, setExpandedCat] = React.useState<number | null>(0);
+
+  const categories: any[] = data?.categories ?? [];
+
+  const updateCategories = (next: any[]) => updateField(sectionKey, "categories", next);
+
+  const addCategory = () => {
+    const next = [...categories, { name: `Kategori ${categories.length + 1}`, items: [] }];
+    updateCategories(next);
+    setExpandedCat(next.length - 1);
+  };
+
+  const removeCategory = (catIdx: number) => {
+    updateCategories(categories.filter((_, i) => i !== catIdx));
+    setExpandedCat(null);
+  };
+
+  const updateCategoryName = (catIdx: number, name: string) => {
+    const next = [...categories];
+    next[catIdx] = { ...next[catIdx], name };
+    updateCategories(next);
+  };
+
+  const addItem = (catIdx: number) => {
+    const next = [...categories];
+    const newItem: any = { name: "", description: "", price: "", image_url: null };
+    if (hasBadge) newItem.badge = null;
+    next[catIdx] = { ...next[catIdx], items: [...(next[catIdx].items ?? []), newItem] };
+    updateCategories(next);
+  };
+
+  const removeItem = (catIdx: number, itemIdx: number) => {
+    const next = [...categories];
+    next[catIdx] = { ...next[catIdx], items: next[catIdx].items.filter((_: any, i: number) => i !== itemIdx) };
+    updateCategories(next);
+  };
+
+  const updateItem = (catIdx: number, itemIdx: number, field: string, value: any) => {
+    const next = [...categories];
+    const items = [...(next[catIdx].items ?? [])];
+    items[itemIdx] = { ...items[itemIdx], [field]: value };
+    next[catIdx] = { ...next[catIdx], items };
+    updateCategories(next);
+  };
+
+  const inputBase = "w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600";
+
+  return (
+    <div className="space-y-4">
+      {/* Section title */}
+      <div className="space-y-1">
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+        <input
+          type="text"
+          value={data?.title ?? ""}
+          onChange={(e) => updateField(sectionKey, "title", e.target.value)}
+          placeholder={`cth. Menu ${sectionTitle}`}
+          className={inputBase}
+        />
+      </div>
+
+      {/* Categories */}
+      {categories.map((cat: any, catIdx: number) => (
+        <div key={catIdx} className="border border-white/10 rounded-xl overflow-hidden bg-white/[0.02]">
+          {/* Category header */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.03]">
+            <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
+            <input
+              type="text"
+              value={cat.name ?? ""}
+              onChange={(e) => updateCategoryName(catIdx, e.target.value)}
+              placeholder="Nama kategori"
+              className="flex-1 bg-transparent text-[13px] font-semibold text-slate-200 outline-none border-none placeholder-slate-600"
+            />
+            <span className="text-[10px] text-slate-600 flex-shrink-0">{cat.items?.length ?? 0} item</span>
+            <button
+              type="button"
+              onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)}
+              className="text-slate-500 hover:text-slate-300 p-0.5 cursor-pointer"
+            >
+              {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => removeCategory(catIdx)}
+              className="text-red-500/60 hover:text-red-400 p-0.5 cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Items */}
+          {expandedCat === catIdx && (
+            <div className="p-3 space-y-3">
+              {(cat.items ?? []).map((item: any, itemIdx: number) => (
+                <div key={itemIdx} className="border border-white/8 rounded-lg p-3 space-y-2.5 bg-white/[0.02]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
+                    <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Item image */}
+                  <FileUpload
+                    label="Foto"
+                    value={item.image_url ?? ""}
+                    onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
+                    placeholder="https://..."
+                    maxWidth={800}
+                    maxHeight={600}
+                    quality={0.8}
+                  />
+
+                  {/* Name */}
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Nama</label>
+                    <input
+                      type="text"
+                      value={item.name ?? ""}
+                      onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
+                      placeholder={`Nama ${itemLabel}`}
+                      className={inputBase}
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Deskripsi</label>
+                    <textarea
+                      rows={2}
+                      value={item.description ?? ""}
+                      onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+                      placeholder="Deskripsi singkat..."
+                      className={`${inputBase} resize-none`}
+                    />
+                  </div>
+
+                  {/* Price + Badge row */}
+                  <div className={`grid gap-2 ${hasBadge ? "grid-cols-2" : "grid-cols-1"}`}>
+                    {hasPrice && (
+                      <div>
+                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Harga</label>
+                        <input
+                          type="text"
+                          value={item.price ?? ""}
+                          onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)}
+                          placeholder="cth. Rp 25.000"
+                          className={inputBase}
+                        />
+                      </div>
+                    )}
+                    {hasBadge && (
+                      <div>
+                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Badge</label>
+                        <input
+                          type="text"
+                          value={item.badge ?? ""}
+                          onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
+                          placeholder="cth. Best Seller"
+                          className={inputBase}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => addItem(catIdx)}
+                className="w-full text-[12px] py-1.5 border border-dashed border-white/10 rounded-lg text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={addCategory}
+        className="w-full text-[12px] py-2 border border-white/10 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+      >
+        <Plus className="w-3.5 h-3.5" /> Tambah Kategori
+      </button>
+    </div>
   );
 }

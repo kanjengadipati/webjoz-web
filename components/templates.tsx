@@ -21,6 +21,31 @@ interface FaqItem {
   answer: string;
 }
 
+interface MenuItem {
+  name: string;
+  description?: string;
+  price?: string;
+  image_url?: string | null;
+}
+
+interface MenuCategory {
+  name: string;
+  items: MenuItem[];
+}
+
+interface CatalogItem {
+  name: string;
+  description?: string;
+  price?: string;
+  badge?: string | null;
+  image_url?: string | null;
+}
+
+interface CatalogCategory {
+  name: string;
+  items: CatalogItem[];
+}
+
 export interface DesignToken {
   palette?: {
     primary?: string;
@@ -93,6 +118,15 @@ export interface TemplateProps {
       brand_name?: string;
       tagline?: string;
       copyright_text?: string;
+      social_links?: Array<{ platform: string; url: string }>;
+    };
+    menu?: {
+      title: string;
+      categories: MenuCategory[];
+    };
+    catalog?: {
+      title: string;
+      categories: CatalogCategory[];
     };
     seo?: {
       title?: string;
@@ -366,9 +400,9 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu } = content;
   const dt = design_token ?? null;
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "faq", "cta", "contact"];
 
   const sectionNodes = {
     hero: (
@@ -562,6 +596,47 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(menuData) => (
+          <section className="px-5 sm:px-6 py-20 bg-white border-y border-[#EADFCB]" id="menu">
+            <div className="max-w-6xl mx-auto space-y-12">
+              <div className="text-center space-y-2">
+                <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pilihan Kami</span>
+                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{menuData.title}</h2>
+              </div>
+              {menuData.categories?.map((cat, catIdx) => (
+                <div key={catIdx} className="space-y-6">
+                  <h3 className="text-lg font-bold font-serif text-amber-900 border-b border-[#EADFCB] pb-2">{cat.name}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {cat.items?.map((item, itemIdx) => (
+                      <div key={itemIdx} className="group bg-[#FAF7F2] border border-[#EADFCB] rounded-2xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-300">
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        ) : (
+                          <div className="w-full h-44 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
+                            <Utensils className="w-10 h-10 text-amber-300" />
+                          </div>
+                        )}
+                        <div className="p-4 space-y-1.5">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-bold text-amber-955 text-sm leading-tight">{item.name}</h4>
+                            {item.price && (
+                              <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.price}</span>
+                            )}
+                          </div>
+                          {item.description && <p className="text-[#6D5D50] text-xs leading-relaxed">{item.description}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
   } as Record<string, React.ReactNode>;
 
   return (
@@ -877,9 +952,9 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog } = content;
   const dt = design_token ?? null;
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
+  const sectionOrder = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "cta", "about", "faq", "contact"];
 
   const sectionNodes = {
     hero: (
@@ -1073,6 +1148,48 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(catalogData) => (
+          <section className="px-5 sm:px-6 py-24 border-y border-slate-800 bg-slate-900/20" id="catalog">
+            <div className="max-w-6xl mx-auto space-y-12">
+              <div className="text-center space-y-2">
+                <span className="text-cyan-400 font-extrabold tracking-wider uppercase text-xs">Koleksi</span>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{catalogData.title}</h2>
+              </div>
+              {catalogData.categories?.map((cat, catIdx) => (
+                <div key={catIdx} className="space-y-6">
+                  <h3 className="text-base font-bold text-cyan-400 border-b border-slate-800 pb-2 uppercase tracking-wide">{cat.name}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {cat.items?.map((item, itemIdx) => (
+                      <div key={itemIdx} className="group bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        ) : (
+                          <div className="w-full h-44 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                            <ImageIcon className="w-10 h-10 text-slate-700" />
+                          </div>
+                        )}
+                        <div className="p-4 space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-bold text-white text-sm leading-tight">{item.name}</h4>
+                            {item.badge && (
+                              <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.badge}</span>
+                            )}
+                          </div>
+                          {item.description && <p className="text-slate-400 text-xs leading-relaxed">{item.description}</p>}
+                          {item.price && <p className="text-cyan-400 font-bold text-sm">{item.price}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
   } as Record<string, React.ReactNode>;
 
   return (
@@ -1596,6 +1713,91 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     faq: renderSection("faq"),
     cta: renderSection("cta"),
     contact: renderSection("contact"),
+    menu: content.menu ? (
+      <MemoPreviewSectionWrapper key="menu" section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={content.menu} render={(menuData) => (
+          <section id="menu" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
+            <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+              <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pilihan Kami</span>
+                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{menuData.title}</h2>
+              </div>
+              {menuData.categories?.map((cat, catIdx) => (
+                <div key={catIdx} style={{ marginBottom: "3rem" }}>
+                  <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, paddingBottom: "0.625rem", marginBottom: "1.5rem" }}>{cat.name}</h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "1.25rem" }}>
+                    {cat.items?.map((item, itemIdx) => (
+                      <div key={itemIdx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", transition: "box-shadow 0.2s, transform 0.2s" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 20px color-mix(in srgb, var(--dt-primary) 12%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                      >
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} style={{ width: "100%", height: "11rem", objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        ) : (
+                          <div style={{ width: "100%", height: "11rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Utensils style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
+                          </div>
+                        )}
+                        <div style={{ padding: "1rem" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.375rem" }}>
+                            <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }}>{item.name}</h4>
+                            {item.price && <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.2rem 0.625rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}>{item.price}</span>}
+                          </div>
+                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0 }}>{item.description}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    catalog: content.catalog ? (
+      <MemoPreviewSectionWrapper key="catalog" section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={content.catalog} render={(catalogData) => (
+          <section id="catalog" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
+            <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+              <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Produk Kami</span>
+                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{catalogData.title}</h2>
+              </div>
+              {catalogData.categories?.map((cat, catIdx) => (
+                <div key={catIdx} style={{ marginBottom: "3rem" }}>
+                  <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, paddingBottom: "0.625rem", marginBottom: "1.5rem" }}>{cat.name}</h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1.25rem" }}>
+                    {cat.items?.map((item, itemIdx) => (
+                      <div key={itemIdx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", transition: "box-shadow 0.2s, transform 0.2s" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 20px color-mix(in srgb, var(--dt-primary) 15%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                      >
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} style={{ width: "100%", height: "11rem", objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        ) : (
+                          <div style={{ width: "100%", height: "11rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <ImageIcon style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
+                          </div>
+                        )}
+                        <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
+                            <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0 }}>{item.name}</h4>
+                            {item.badge && <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, border: `1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`, padding: "0.15rem 0.5rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.badge}</span>}
+                          </div>
+                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.78rem", lineHeight: 1.5, margin: 0 }}>{item.description}</p>}
+                          {item.price && <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}>{item.price}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
   } as Record<string, React.ReactNode>;
 
   return (
