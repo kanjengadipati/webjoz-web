@@ -6,15 +6,12 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   CheckCircle2,
-  ExternalLink,
-  Globe,
-  Laptop,
   Pencil,
   Sparkles,
   Wand2,
 } from "lucide-react";
-import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { TemplateDynamic } from "@/components/templates";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -75,7 +72,85 @@ const MOODS = [
   { value: "Bold & Tegas", emoji: "🔥", desc: "Kuat & impactful" },
 ];
 
-// ─── Component ──────────────────────────────────────────────────────────────
+// ─── Build full content with AI data + defaults ─────────────────────────────
+
+function buildFullContent(data: PreviewData, businessName: string, businessType: string, description: string, whatsapp: string) {
+  const c = data.content as Record<string, any>;
+  const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
+
+  // Hero image: use AI-provided or pick by business type
+  const heroImageMap: Record<string, string> = {
+    "Kuliner": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80",
+    "Jasa": "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&auto=format&fit=crop&q=80",
+    "Online Shop": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&auto=format&fit=crop&q=80",
+    "Toko/UMKM": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&auto=format&fit=crop&q=80",
+    "Industri": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80",
+    "Organisasi": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&auto=format&fit=crop&q=80",
+  };
+  const defaultHeroImage = heroImageMap[businessType] || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80";
+  const aboutImage = "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80";
+
+  return {
+    header: {
+      brand_name: c.header?.brand_name || businessName,
+      nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
+      logo_url: c.header?.logo_url || logoUrl,
+    },
+    hero: {
+      headline: c.hero?.headline || businessName,
+      subheadline: c.hero?.subheadline || description,
+      cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
+      cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+      image_url: c.hero?.image_url || defaultHeroImage,
+      badge_text: c.hero?.badge_text || businessType,
+    },
+    about: {
+      title: c.about?.title || `Tentang ${businessName}`,
+      body: c.about?.body || description,
+      image_url: c.about?.image_url || aboutImage,
+    },
+    benefits: {
+      title: c.benefits?.title || "Kenapa Pilih Kami?",
+      items: (c.benefits?.items?.length ? c.benefits.items : [
+        { title: "Kualitas Terjamin", description: "Produk dan layanan pilihan terbaik untuk Anda." },
+        { title: "Harga Terjangkau", description: "Harga kompetitif tanpa mengorbankan kualitas." },
+        { title: "Pelayanan Ramah", description: "Tim kami siap membantu kapan saja Anda butuh." },
+      ]),
+    },
+    faq: {
+      title: c.faq?.title || "Pertanyaan Umum",
+      items: (c.faq?.items?.length ? c.faq.items : [
+        { question: `Apa yang ditawarkan ${businessName}?`, answer: description || `${businessName} menyediakan produk dan layanan berkualitas terbaik untuk kebutuhan Anda.` },
+        { question: "Bagaimana cara menghubungi kami?", answer: whatsapp ? `Anda bisa menghubungi kami via WhatsApp di ${whatsapp}.` : "Silakan hubungi kami melalui formulir kontak di bawah ini." },
+        { question: "Apakah ada garansi?", answer: "Kami berkomitmen memberikan produk dan layanan terbaik. Kepuasan Anda adalah prioritas kami." },
+      ]),
+    },
+    cta: {
+      headline: c.cta?.headline || `Siap Memulai dengan ${businessName}?`,
+      button_text: c.cta?.button_text || "Hubungi Sekarang",
+      button_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+    },
+    contact: {
+      title: c.contact?.title || "Hubungi Kami",
+      address: c.contact?.address || "",
+      phone: c.contact?.phone || whatsapp || "",
+      email: c.contact?.email || "",
+    },
+    footer: {
+      brand_name: c.footer?.brand_name || businessName,
+      tagline: c.footer?.tagline || description,
+      copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
+    },
+    seo: {
+      title: c.seo?.title || businessName,
+      description: c.seo?.description || description,
+      favicon_url: c.seo?.favicon_url || logoUrl,
+      og_image_url: c.seo?.og_image_url || defaultHeroImage,
+    },
+  };
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────
 
 export function SiteWizard({
   mode,
@@ -182,7 +257,7 @@ export function SiteWizard({
       {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: `Bisnis **${type}**, mantap! 💪\n\nSekarang ceritakan sedikit produk/layanan utamanya. Apa yang membuat bisnis kamu berbeda dari yang lain?`,
+        text: `Bisnis **${type}**, keren! 💪 Produk atau layanan utamanya apa?`,
       },
     ]);
     setChatStage("desc");
@@ -485,7 +560,7 @@ export function SiteWizard({
                   <textarea
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Tuliskan di sini..."
+                    placeholder="Contoh: baju murah, kopi susu, servis HP..."
                     className="w-full bg-white/5 border border-white/10 rounded-2xl pl-5 pr-14 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 resize-none h-24"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
@@ -642,94 +717,16 @@ export function SiteWizard({
           {/* ── Result state ── */}
           {previewState === "result" && previewData && (
             <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Preview content area */}
-              <div
-                className="flex-1 overflow-y-auto p-6 space-y-5"
-                style={{
-                  background: palette?.background || "#ffffff",
-                }}
-              >
-                {/* Hero section preview */}
-                <div
-                  className="rounded-2xl p-8 text-center space-y-4"
-                  style={{
-                    background: `linear-gradient(135deg, ${palette?.primary || "#6366f1"}22, ${palette?.accent || "#8b5cf6"}11)`,
-                    border: `1px solid ${palette?.primary || "#6366f1"}30`,
-                  }}
-                >
-                  <div className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-white/50 text-slate-600">
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ background: palette?.primary || "#6366f1" }}
-                    />
-                    {businessType || "Bisnis"}
-                  </div>
-                  <h1
-                    className="text-2xl font-extrabold leading-tight"
-                    style={{
-                      color: palette?.text || "#1f2937",
-                      fontFamily: typography?.heading_font ? `"${typography.heading_font}", serif` : undefined,
-                    }}
-                  >
-                    {heroCopy?.headline || businessName}
-                  </h1>
-                  <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
-                    {heroCopy?.subheadline || description}
-                  </p>
-                  <button
-                    className="mt-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold shadow-md"
-                    style={{ background: palette?.primary || "#6366f1" }}
-                  >
-                    {heroCopy?.cta_label || "Hubungi Kami"}
-                  </button>
-                </div>
-
-                {/* Benefits grid preview */}
-                {Array.isArray((previewData.content?.benefits as any)?.items) && (
-                  <div className="grid grid-cols-3 gap-3">
-                    {((previewData.content.benefits as any).items as any[])
-                      .slice(0, 3)
-                      .map((item: any, i: number) => (
-                        <div
-                          key={i}
-                          className="rounded-xl p-4 text-center space-y-2 border"
-                          style={{
-                            background: palette?.surface || "#fff",
-                            borderColor: `${palette?.primary || "#6366f1"}20`,
-                          }}
-                        >
-                          <div
-                            className="w-8 h-8 rounded-full mx-auto flex items-center justify-center text-white text-xs font-bold"
-                            style={{ background: palette?.primary || "#6366f1" }}
-                          >
-                            {i + 1}
-                          </div>
-                          <p className="text-xs font-semibold" style={{ color: palette?.text || "#1f2937" }}>
-                            {item.title || item.heading}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                )}
-
-                {/* About preview */}
-                {(previewData.content?.about as any)?.body && (
-                  <div
-                    className="rounded-xl p-5 border"
-                    style={{
-                      background: palette?.surface || "#fff",
-                      borderColor: `${palette?.primary || "#6366f1"}15`,
-                    }}
-                  >
-                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
-                      {(previewData.content.about as any).body}
-                    </p>
-                  </div>
-                )}
+              {/* Full website preview via TemplateDynamic */}
+              <div className="flex-1 overflow-y-auto">
+                <TemplateDynamic
+                  content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
+                  design_token={previewData.design_token as any}
+                />
               </div>
 
               {/* CTA Footer */}
-              <div className="shrink-0 p-5 border-t border-slate-200 bg-gradient-to-r from-indigo-50 to-violet-50 space-y-3">
+              <div className="shrink-0 p-4 border-t border-slate-200 bg-gradient-to-r from-indigo-50 to-violet-50 space-y-2.5">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   <p className="text-xs font-semibold text-slate-700">

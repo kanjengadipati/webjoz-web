@@ -388,10 +388,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             )}
             <div className="absolute inset-0 bg-[radial-gradient(#E5D5BC_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
             <div className="max-w-4xl relative z-10 space-y-6">
-              <span className="px-4 py-1.5 bg-amber-100/80 text-amber-800 rounded-full text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm border border-amber-200/50">
-                <Sparkles className="w-3.5 h-3.5" />
-                {hero.badge_text || "Cita Rasa Autentik"}
-              </span>
+
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-955 leading-tight">
                 {hero.headline}
               </h1>
@@ -646,10 +643,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl text-center space-y-6 relative z-10">
-              <span className="px-4 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm">
-                <Award className="w-3.5 h-3.5 text-indigo-600" />
-                Layanan Terakreditasi
-              </span>
+
               <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
                 {hero.headline}
               </h1>
@@ -841,7 +835,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <LogoImage
                 url={headerData.logo_url}
                 icon={headerData.icon}
-                defaultIcon={Sparkles}
+                defaultIcon={Globe}
                 iconClass="w-5 h-5 text-indigo-600"
                 imgClass="h-8 w-auto object-contain"
               />
@@ -907,10 +901,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl text-center space-y-8 relative z-10">
-              <span className="px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-semibold inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                {hero.launch_label || "Produk Unggulan Baru"}
-              </span>
+
               <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
                 {hero.headline}
               </h1>
@@ -1413,12 +1404,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   />
                 )}
                 <div style={{ maxWidth: hStyle === "split" ? "560px" : "800px", textAlign: hStyle === "split" ? "left" : "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: hStyle === "split" ? "flex-start" : "center" }}>
-                  {(h.badge_text || h.launch_label) && (
-                    <span className="px-2.5 py-1 md:px-3.5 md:py-1.5 text-[10px] md:text-xs font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "9999px", color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
-                      <Sparkles style={{ width: 12, height: 12 }} />
-                      {h.badge_text || h.launch_label}
-                    </span>
-                  )}
+
                   <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 6cqw, var(--dt-hero-size))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}>
                     {h.headline}
                   </h1>
@@ -1461,7 +1447,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1rem", padding: "2rem", textAlign: "center", background: "linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, transparent), color-mix(in srgb, var(--dt-accent) 25%, transparent))", position: "absolute", inset: 0 }}>
                       <div style={{ position: "absolute", inset: 0, opacity: 0.1, backgroundImage: `radial-gradient(var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "16px 16px" }} />
                       <div style={{ background: "var(--dt-surface)", width: "5rem", height: "5rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px color-mix(in srgb, var(--dt-primary) 20%, transparent)", position: "relative", zIndex: 1 }}>
-                        <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={a.icon} defaultIcon={Sparkles} className="w-8 h-8" /></span>
+                        <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={a.icon} defaultIcon={Award} className="w-8 h-8" /></span>
                       </div>
                       <div style={{ position: "relative", zIndex: 1, background: "color-mix(in srgb, var(--dt-surface) 50%, transparent)", backdropFilter: "blur(4px)", padding: "0.5rem 1rem", borderRadius: "2rem" }}>
                         <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{a.title}</p>
@@ -1627,7 +1613,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           return (
             <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
               <span className="flex items-center gap-1.5 md:gap-2 min-w-0 text-sm md:text-lg font-bold" style={{ display: "flex", alignItems: "center", fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>
-                <LogoImage url={h?.logo_url} icon={h?.icon} defaultIcon={Sparkles} iconClass="" imgClass="h-8 w-auto object-contain" />
+                <LogoImage url={h?.logo_url} icon={h?.icon} defaultIcon={Globe} iconClass="" imgClass="h-8 w-auto object-contain" />
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h?.brand_name || "Brand Kami"}</span>
               </span>
               <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
