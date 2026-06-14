@@ -32,6 +32,7 @@ type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
+  widget?: "type-chips" | "advantage-chips" | "mood-chips";
 };
 
 // content + design_token returned from public generate-preview endpoint
@@ -241,6 +242,7 @@ export function SiteWizard({
 
   // Chat state
   const [chatStage, setChatStage] = useState<"name" | "type" | "matra" | "advantage" | "mood" | "done">("name");
+  // Stage order: name → type → matra → advantage → mood → done
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -255,14 +257,27 @@ export function SiteWizard({
   const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
 
   const getProgressPercentage = () => {
+    // Stage order: name(1) → type(2) → matra(3) → advantage(4) → mood(5) → done
     switch (chatStage) {
       case "name": return 20;
-      case "matra": return 38;
-      case "type": return 55;
-      case "advantage": return 72;
+      case "type": return 40;
+      case "matra": return 55;
+      case "advantage": return 75;
       case "mood": return 90;
       case "done": return 100;
       default: return 100;
+    }
+  };
+
+  const getStageNumber = () => {
+    switch (chatStage) {
+      case "name": return 1;
+      case "type": return 2;
+      case "matra": return 3;
+      case "advantage": return 4;
+      case "mood": return 5;
+      case "done": return 5;
+      default: return 1;
     }
   };
 
@@ -318,8 +333,10 @@ export function SiteWizard({
 
   // Auto-scroll chat
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, chatStage]);
+    setTimeout(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }, [messages, chatStage, previewState]);
 
   // Type the opening question word-by-word on first load.
   useEffect(() => {
@@ -366,21 +383,21 @@ export function SiteWizard({
     }
   }, [pendingPreview, loadingStep]);
 
-  // Show final typing message when generation is complete
+  // When user picks mood (chatStage -> "done"), type the final message THEN start generate
   useEffect(() => {
-    if (previewState === "result") {
+    if (chatStage === "done" && previewState === "wireframe" && mood) {
       typeMessage("Sempurna. Semua data sudah siap. Website sedang dibuat...", () => {
-        setChatStage("done");
+        handleGenerate(businessName, businessType, mood, description);
       });
     }
-  }, [previewState]);
+  }, [chatStage]);
 
   // ── Chat handlers ────────────────────────────────────────────────────────
 
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && chatStage !== "matra") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -390,37 +407,58 @@ export function SiteWizard({
         .map((w) => (w.length > 0 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
         .join(" ");
       setBusinessName(capitalized);
-      // Add user message immediately
       setMessages((prev) => [
         ...prev,
         { id: Date.now().toString(), sender: "user", text: val },
       ]);
       setTimeout(() => {
-        typeMessage("Nama yang profesional dan mudah dipercaya.", () => {
+        typeMessage("Nama yang profesional dan mudah dipercaya. 👍", () => {
           setTimeout(() => {
-            typeMessage("Sebelum itu, apa slogan atau matra bisnis Anda? (Contoh: \"Kualitas Tanpa Kompromi\")", () => {
-              setChatStage("matra");
+            typeMessage("Sekarang, pilih jenis bisnis Anda:", () => {
+              setMessages((prev) => [
+                ...prev,
+                { id: "widget-type-chips", sender: "ai", text: "", widget: "type-chips" },
+              ]);
+              setChatStage("type");
             });
           }, 300);
         });
       }, 500);
+
     } else if (chatStage === "matra") {
-      setMatra(val);
-      // If user provides a matra/slogan, record it and ask for business type; otherwise skip directly to type stage
-      if (val.trim()) {
+      // Matra is optional — val can be empty (user pressed Enter to skip)
+      if (val) {
+        setMatra(val);
         setMessages((prev) => [
           ...prev,
           { id: Date.now().toString(), sender: "user", text: val },
         ]);
         setTimeout(() => {
-          typeMessage("Slogan yang keren! Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
-            setChatStage("type");
+          typeMessage("Slogan yang keren! ✨ Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
+            setMessages((prev) => [
+              ...prev,
+              { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
+            ]);
+            setChatStage("advantage");
           });
         }, 500);
       } else {
-        // No slogan provided; proceed directly to type stage
-        setChatStage("type");
+        // Skipped — no user message, just move to advantage with a bridging AI message
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now().toString(), sender: "user", text: "Lewati" },
+        ]);
+        setTimeout(() => {
+          typeMessage("Oke, dilewati. Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
+            setMessages((prev) => [
+              ...prev,
+              { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
+            ]);
+            setChatStage("advantage");
+          });
+        }, 500);
       }
+
     } else if (chatStage === "advantage") {
       setDescription(val);
       setMessages((prev) => [
@@ -429,6 +467,10 @@ export function SiteWizard({
       ]);
       setTimeout(() => {
         typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: "widget-mood-chips", sender: "ai", text: "", widget: "mood-chips" },
+          ]);
           setChatStage("mood");
         });
       }, 500);
@@ -444,20 +486,23 @@ export function SiteWizard({
       type === "Kuliner" ? "Kuliner / Restoran" :
         type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
 
-    const aiResponse = type === "Toko & UMKM" ? "Saya akan membuat website dengan fokus produk unggulan, katalog, dan konversi WhatsApp.\n\nApa produk/layanan utama dan keunggulan yang paling ingin ditonjolkan?" :
-      type === "Kuliner" ? "Saya akan membuat website dengan fokus menu andalan, suasana, dan reservasi.\n\nApa produk/menu utama dan keunggulan yang paling ingin ditonjolkan?" :
-        type === "Jasa" ? "Saya akan membuat website dengan fokus layanan, portofolio, dan kepercayaan pelanggan.\n\nApa layanan utama dan keunggulan yang paling ingin ditonjolkan?" :
-          "Saya akan membuat website dengan fokus profil perusahaan, kredibilitas, dan keunggulan bisnis.\n\nApa produk/layanan utama dan keunggulan yang paling ingin ditonjolkan?";
+    const typeContext = type === "Toko & UMKM"
+      ? "toko & produk unggulan"
+      : type === "Kuliner"
+        ? "menu andalan & suasana"
+        : type === "Jasa"
+          ? "layanan & portofolio"
+          : "profil perusahaan & kredibilitas";
 
-    // Add user selection immediately
+    const aiResponse = `Bagus! Saya akan membuat website dengan fokus ${typeContext}.\n\nApakah ada slogan atau matra bisnis Anda? (Opsional — tekan Enter untuk lewati)`;
+
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: userText },
     ]);
-    // Add AI response after short delay and move to advantage stage
     setTimeout(() => {
       typeMessage(aiResponse, () => {
-        setChatStage("advantage");
+        setChatStage("matra");
       });
     }, 500);
   };
@@ -636,7 +681,7 @@ export function SiteWizard({
 
   // Helper to get logs based on selected mood/type
   const getLogMessages = () => {
-    const keyword = businessType === "Retail" ? "bahan bangunan" :
+    const keyword = businessType === "Toko & UMKM" ? "toko & produk" :
       businessType === "Kuliner" ? "kuliner" :
         businessType === "Jasa" ? "jasa profesional" : "corporate";
 
@@ -738,7 +783,7 @@ export function SiteWizard({
           {/* Progress bar */}
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] text-slate-500 font-medium">
-              {chatStage === "name" ? 1 : chatStage === "type" ? 2 : chatStage === "matra" ? 3 : chatStage === "advantage" ? 4 : chatStage === "mood" ? 5 : 6} dari 6
+              Langkah {getStageNumber()} dari 5
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
@@ -751,9 +796,129 @@ export function SiteWizard({
         </div>
 
         {/* ── Chat messages ────────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+        <div className="flex-1 overflow-y-auto px-4 py-5 pb-8 space-y-4">
           {messages.map((m) => (
             (() => {
+              // ── Inline widget messages ──
+              if (m.widget === "type-chips") {
+                const isLocked = chatStage !== "type";
+                return (
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {BUSINESS_TYPES.map((t) => {
+                        const isSelected = businessType === t.value;
+                        return (
+                          <button
+                            key={t.value}
+                            onClick={() => !isLocked && handleSelectType(t.value)}
+                            disabled={isLocked}
+                            className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected
+                                ? "border-[#7c3aed]/70"
+                                : isLocked
+                                  ? "opacity-30 cursor-default"
+                                  : "hover:border-[#7c3aed]/50 active:scale-[0.97] cursor-pointer"
+                              }`}
+                            style={isSelected
+                              ? { background: "rgba(124,58,237,0.15)", borderColor: "rgba(124,58,237,0.5)" }
+                              : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                          >
+                            <span className="text-lg">{t.emoji}</span>
+                            <span className={`text-xs font-bold ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{t.label}</span>
+                            <span className="text-[10px] text-slate-500">{t.desc}</span>
+                            {isSelected && <span className="text-[9px] font-bold text-[#7c3aed] mt-0.5">✓ Dipilih</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+
+              if (m.widget === "advantage-chips") {
+                const isLocked = chatStage !== "advantage";
+                return (
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+                    {!isLocked && (
+                      <p className="text-[11px] font-semibold text-slate-500 px-1">
+                        Pilih satu atau beberapa saran, atau tulis sendiri:
+                      </p>
+                    )}
+                    <div className="space-y-2">
+                      {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
+                        const selected = selectedAdvantages.includes(suggestion);
+                        return (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            disabled={isLocked}
+                            onClick={() => !isLocked && toggleAdvantageSuggestion(suggestion)}
+                            className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-xs leading-relaxed transition-all ${selected
+                                ? "border-[#7c3aed]/60 text-white"
+                                : isLocked
+                                  ? "opacity-30 cursor-default"
+                                  : "text-slate-300 hover:border-[#7c3aed]/50 hover:text-white active:scale-[0.99]"
+                              }`}
+                            style={selected
+                              ? { background: "rgba(124,58,237,0.14)" }
+                              : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                          >
+                            <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#7c3aed] bg-[#7c3aed]" : "border-slate-600"}`}>
+                              {selected && <CheckCircle2 className="h-3 w-3 text-white" />}
+                            </span>
+                            <span>{suggestion}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+
+              if (m.widget === "mood-chips") {
+                const isLocked = chatStage === "done";
+                return (
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {MOODS.map((mo) => {
+                        const isSelected = mood === mo.value;
+                        return (
+                          <button
+                            key={mo.value}
+                            disabled={isLocked}
+                            onClick={() => {
+                              if (isLocked) return;
+                              setMood(mo.value);
+                              setChatStage("done");
+                              setMessages((prev) => [
+                                ...prev,
+                                { id: Date.now().toString(), sender: "user", text: `${mo.emoji} ${mo.value}` },
+                              ]);
+                            }}
+                            className={`flex items-center gap-2 p-2.5 border rounded-xl text-left transition-all ${isSelected
+                                ? "border-[#7c3aed]/70"
+                                : isLocked
+                                  ? "opacity-30 cursor-default"
+                                  : "hover:border-[#7c3aed]/50 active:scale-[0.97] cursor-pointer"
+                              }`}
+                            style={isSelected
+                              ? { background: "rgba(124,58,237,0.15)", borderColor: "rgba(124,58,237,0.5)" }
+                              : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                          >
+                            <span className="text-base shrink-0">{mo.emoji}</span>
+                            <div className="flex-1 min-w-0">
+                              <span className={`text-xs font-bold block leading-tight ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{mo.value}</span>
+                              <span className="text-[10px] text-slate-500 leading-tight">{mo.desc}</span>
+                              {isSelected && <span className="text-[9px] font-bold text-[#7c3aed] block mt-0.5">✓ Dipilih</span>}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+
+              // ── Regular text messages ──
               const messageText =
                 m.id === "init" && chatStage === "name"
                   ? INITIAL_MESSAGE_WORDS.slice(0, initialWordCount).join(" ")
@@ -786,111 +951,129 @@ export function SiteWizard({
             })()
           ))}
 
-          {/* Category chips */}
-          {chatStage === "type" && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {BUSINESS_TYPES.map((t) => (
-                  <button
-                    key={t.value}
-                    onClick={() => handleSelectType(t.value)}
-                    className="flex flex-col items-start gap-1 p-3 hover:border-[#7c3aed]/50 border rounded-xl text-left transition-all active:scale-[0.97] group"
-                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
-                  >
-                    <span className="text-lg">{t.emoji}</span>
-                    <span className="text-xs font-bold text-slate-200 group-hover:text-[#7c3aed]">{t.label}</span>
-                    <span className="text-[10px] text-slate-500">{t.desc}</span>
-                  </button>
-                ))}
+          {/* Loading bubble — visible during generate */}
+          {previewState === "loading" && (
+            <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-3 h-3 text-white" />
               </div>
-            </div>
-          )}
-
-          {/* Advantage suggestions */}
-          {chatStage === "advantage" && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-              <p className="text-[11px] font-semibold text-slate-500 px-1">
-                Pilih satu atau beberapa saran untuk keterangan, atau tulis sendiri (pisahkan dengan koma bila lebih dari satu):
-              </p>
-              <div className="space-y-2">
-                {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
-                  const selected = selectedAdvantages.includes(suggestion);
-                  return (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      onClick={() => toggleAdvantageSuggestion(suggestion)}
-                      className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-xs leading-relaxed transition-all active:scale-[0.99] ${selected ? "border-[#7c3aed]/60 text-white" : "text-slate-300 hover:border-[#7c3aed]/50 hover:text-white"
-                        }`}
-                      style={selected
-                        ? { background: "rgba(124,58,237,0.14)" }
-                        : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
-                    >
-                      <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#7c3aed] bg-[#7c3aed]" : "border-slate-600"
-                        }`}>
-                        {selected && <CheckCircle2 className="h-3 w-3 text-white" />}
-                      </span>
-                      <span>{suggestion}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Mood chips */}
-          {chatStage === "mood" && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {MOODS.map((m) => (
-                  <button
-                    key={m.value}
-                    onClick={() => {
-                      setMood(m.value);
-                      setMessages((prev) => [
-                        ...prev,
-                        { id: Date.now().toString(), sender: "user", text: `${m.emoji} ${m.value}` },
-                        {
-                          id: (Date.now() + 1).toString(),
-                          sender: "ai",
-                          text: "Sempurna. Semua data sudah siap. Website sedang dibuat...",
-                        },
-                      ]);
-                      setChatStage("done");
-                      handleGenerate(businessName, businessType, m.value, description);
-                    }}
-                    className="flex items-center gap-2 p-2.5 hover:border-[#7c3aed]/50 border rounded-xl text-left transition-all active:scale-[0.97] group"
-                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
-                  >
-                    <span className="text-base shrink-0">{m.emoji}</span>
-                    <div>
-                      <span className="text-xs font-bold text-slate-200 group-hover:text-[#7c3aed] block leading-tight">{m.value}</span>
-                      <span className="text-[10px] text-slate-500 leading-tight">{m.desc}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Retry button */}
-          {chatStage === "done" && previewState === "wireframe" && (
-            <div className="animate-in fade-in duration-300">
-              <button
-                onClick={() => handleGenerate(businessName, businessType, mood)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#7c3aed] to-violet-600 text-white text-sm font-bold shadow-md transition-all hover:shadow-lg"
+              <div
+                className="flex-1 min-w-0 rounded-2xl rounded-tl-sm px-3.5 py-3 space-y-3"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" }}
               >
-                <Wand2 className="w-4 h-4" />
-                Coba Generate Lagi ✨
-              </button>
+                {/* Progress bar */}
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-1000 ease-out"
+                      style={{
+                        width: `${[15, 30, 45, 60, 75, 100][loadingStep] ?? 15}%`,
+                        background: "linear-gradient(90deg, #7c3aed, #38bdf8)",
+                      }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold shrink-0" style={{ color: "#a78bfa" }}>
+                    {[15, 30, 45, 60, 75, 100][loadingStep] ?? 15}%
+                  </span>
+                </div>
+
+                {/* Step list */}
+                <div className="space-y-2">
+                  {[
+                    { label: "Analisis bisnis & target pasar", icon: "🔍" },
+                    { label: "Menyusun struktur halaman", icon: "📐" },
+                    { label: "Menulis headline & copywriting", icon: "✍️" },
+                    { label: "Optimasi SEO on-page", icon: "🔎" },
+                    { label: "Memilih palet warna & tipografi", icon: "🎨" },
+                    { label: "Website siap dipublish!", icon: "🚀" },
+                  ].map(({ label, icon }, idx) => {
+                    const done = loadingStep > idx;
+                    const active = loadingStep === idx;
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2.5 transition-all duration-300"
+                        style={{ opacity: done ? 1 : active ? 1 : 0.3 }}
+                      >
+                        <div
+                          className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
+                          style={
+                            done
+                              ? { background: "rgba(52,211,153,0.2)", border: "1px solid rgba(52,211,153,0.4)" }
+                              : active
+                                ? { background: "rgba(124,58,237,0.2)", border: "1px solid rgba(124,58,237,0.5)" }
+                                : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                          }
+                        >
+                          {done ? (
+                            <span className="text-[8px] text-emerald-400 font-bold">✓</span>
+                          ) : active ? (
+                            <Loader2 className="w-2.5 h-2.5 text-[#7c3aed] animate-spin" />
+                          ) : null}
+                        </div>
+                        <span
+                          className="text-[11px] font-medium leading-tight"
+                          style={{ color: done ? "#86efac" : active ? "#a78bfa" : "rgba(148,163,184,1)" }}
+                        >
+                          {label}
+                        </span>
+                        {active && (
+                          <span className="ml-auto text-[9px] font-mono shrink-0" style={{ color: "#7c3aed" }}>
+                            {String(idx + 2).padStart(2, "0")}s
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Result status in chat */}
+          {/* Result status in chat — rich AI bubble with CTA */}
           {previewState === "result" && (
-            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold animate-in fade-in duration-500 border border-emerald-500/20 rounded-xl px-3 py-2" style={{ background: "rgba(16,185,129,0.08)" }}>
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              Website siap! Lihat hasilnya di panel kanan →
+            <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-3 h-3 text-white" />
+              </div>
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                {/* Info bubble */}
+                <div
+                  className="rounded-2xl rounded-tl-sm px-3.5 py-3 text-sm leading-relaxed"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" }}
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="text-emerald-400 font-bold text-xs">Website siap!</span>
+                  </div>
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat. Lihat preview di panel kanan, lalu kustomisasi dan publish kapan saja.
+                  </p>
+                </div>
+
+                {/* CTA buttons */}
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={handleGoToEditor}
+                    className="flex items-center justify-between gap-2 w-full px-3.5 py-2.5 rounded-xl text-white text-xs font-bold transition-all hover:opacity-90 active:scale-[0.98]"
+                    style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Pencil className="w-3.5 h-3.5" />
+                      Kustomisasi & Publish
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleGenerate(businessName, businessType, mood, description)}
+                    className="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-400 transition-all hover:text-slate-200 active:scale-[0.98]"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                  >
+                    <Wand2 className="w-3 h-3" />
+                    Generate ulang dengan desain berbeda
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -910,12 +1093,10 @@ export function SiteWizard({
                   chatStage === "advantage"
                     ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
                     : chatStage === "matra"
-                      ? "Masukkan slogan atau matra bisnis Anda (opsional)"
+                      ? "Slogan bisnis Anda... (opsional, Enter untuk lewati)"
                       : chatStage === "name"
                         ? "Ketik nama bisnis Anda..."
-                        : chatStage === "mood"
-                          ? "Deskripsikan mood website Anda..."
-                          : ""
+                        : ""
                 }
                 autoFocus
                 disabled={isInitialTyping}
@@ -929,6 +1110,9 @@ export function SiteWizard({
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </form>
+            {chatStage === "matra" && (
+              <p className="text-[10px] text-slate-600 mt-1.5 px-1">Tekan Enter untuk melewati langkah ini</p>
+            )}
           </div>
         )}
 
@@ -1146,9 +1330,11 @@ export function SiteWizard({
                       <p className="text-[11px] text-slate-400 leading-relaxed">
                         {businessType === "Kuliner"
                           ? "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar."
-                          : businessType === "Retail"
-                            ? "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis bahan bangunan."
-                            : "Website dengan testimoni pelanggan meningkatkan kepercayaan konsumen secara signifikan."}
+                          : businessType === "Toko & UMKM"
+                            ? "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis toko & UMKM."
+                            : businessType === "Jasa"
+                              ? "Website dengan portofolio & testimoni nyata meningkatkan kepercayaan calon klien secara signifikan."
+                              : "Website profesional dengan profil perusahaan yang kuat mempercepat kepercayaan klien korporat."}
                       </p>
                     </div>
                   )}
