@@ -1388,7 +1388,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
               <section style={{ position: "relative", minHeight: hStyle === "minimal" ? "60vh" : "85vh", display: "flex", alignItems: "center", justifyContent: hStyle === "split" ? "flex-start" : "center", padding: "5rem 1.5rem", background: hStyle === "full-bleed" ? `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg)), var(--dt-bg))` : "var(--dt-bg)", overflow: "hidden" }}>
                 {/* Decorative blob */}
                 <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.08, backgroundImage: `linear-gradient(var(--dt-primary) 1px, transparent 1px), linear-gradient(90deg, var(--dt-primary) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
+                <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "35%", height: "60%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-accent) 12%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
                 {h.image_url && (
                   <img
                     src={h.image_url}
