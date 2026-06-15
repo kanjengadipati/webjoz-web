@@ -809,12 +809,12 @@ export default function SiteEditorPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-6 overflow-hidden bg-[#05070b] text-slate-100">
+    <div className="flex w-screen h-screen overflow-hidden bg-[#0d0f14] text-slate-100">
       {/* ── Main editor split ── */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* ════ LEFT SIDEBAR ════ */}
-        <div className="w-[300px] flex-shrink-0 border-r border-white/10 flex flex-col overflow-hidden bg-[#05070b]">
+        <div className="w-[300px] flex-shrink-0 border-r flex flex-col overflow-hidden bg-[#111318]" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
 
           {/* Site identity */}
           <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
@@ -1127,7 +1127,7 @@ export default function SiteEditorPage() {
                 </button>
 
                 {sectionDropdownOpen && (
-                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#0c0f17] p-1 shadow-lg space-y-0.5" role="listbox">
+                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#111318] p-1 shadow-lg space-y-0.5" role="listbox">
                     {SECTIONS.map(({ key, label, icon: Icon, num }) => (
                       <button
                         key={key}
@@ -1193,7 +1193,7 @@ export default function SiteEditorPage() {
                     Kustomisasi Visual
                   </p>
                 </div>
-                <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-[#05070b] text-slate-100">
+                <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-[#111318] text-slate-100">
                   {/* Palet Warna */}
                   <div className="space-y-3">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
@@ -1328,7 +1328,7 @@ export default function SiteEditorPage() {
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
                         {GOOGLE_FONTS_WHITELIST.map((font) => (
-                          <option key={font} value={font} className="bg-[#0c0f17]">
+                          <option key={font} value={font} className="bg-[#111318]">
                             {font}
                           </option>
                         ))}
@@ -1343,7 +1343,7 @@ export default function SiteEditorPage() {
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
                         {GOOGLE_FONTS_WHITELIST.map((font) => (
-                          <option key={font} value={font} className="bg-[#0c0f17]">
+                          <option key={font} value={font} className="bg-[#111318]">
                             {font}
                           </option>
                         ))}
@@ -1357,11 +1357,11 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        <option value="400" className="bg-[#0c0f17]">Regular (400)</option>
-                        <option value="500" className="bg-[#0c0f17]">Medium (500)</option>
-                        <option value="600" className="bg-[#0c0f17]">Semi-Bold (600)</option>
-                        <option value="700" className="bg-[#0c0f17]">Bold (700)</option>
-                        <option value="800" className="bg-[#0c0f17]">Extra-Bold (800)</option>
+                        <option value="400" className="bg-[#111318]">Regular (400)</option>
+                        <option value="500" className="bg-[#111318]">Medium (500)</option>
+                        <option value="600" className="bg-[#111318]">Semi-Bold (600)</option>
+                        <option value="700" className="bg-[#111318]">Bold (700)</option>
+                        <option value="800" className="bg-[#111318]">Extra-Bold (800)</option>
                       </select>
                     </div>
 
@@ -1372,11 +1372,11 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateDesignTokenField("typography", "heading_size_hero", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        <option value="2rem" className="bg-[#0c0f17]">Kecil (2rem)</option>
-                        <option value="2.5rem" className="bg-[#0c0f17]">Sedang (2.5rem)</option>
-                        <option value="3rem" className="bg-[#0c0f17]">Besar (3rem)</option>
-                        <option value="3.5rem" className="bg-[#0c0f17]">Sangat Besar (3.5rem)</option>
-                        <option value="4rem" className="bg-[#0c0f17]">Maksimal (4rem)</option>
+                        <option value="2rem" className="bg-[#111318]">Kecil (2rem)</option>
+                        <option value="2.5rem" className="bg-[#111318]">Sedang (2.5rem)</option>
+                        <option value="3rem" className="bg-[#111318]">Besar (3rem)</option>
+                        <option value="3.5rem" className="bg-[#111318]">Sangat Besar (3.5rem)</option>
+                        <option value="4rem" className="bg-[#111318]">Maksimal (4rem)</option>
                       </select>
                     </div>
                   </div>
@@ -1394,9 +1394,9 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        <option value="sharp" className="bg-[#0c0f17]">Tajam (0px)</option>
-                        <option value="soft" className="bg-[#0c0f17]">Lembut (8px)</option>
-                        <option value="rounded" className="bg-[#0c0f17]">Bulat (20px)</option>
+                        <option value="sharp" className="bg-[#111318]">Tajam (0px)</option>
+                        <option value="soft" className="bg-[#111318]">Lembut (8px)</option>
+                        <option value="rounded" className="bg-[#111318]">Bulat (20px)</option>
                       </select>
                     </div>
 
@@ -1407,9 +1407,9 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        <option value="compact" className="bg-[#0c0f17]">Rapat (Compact)</option>
-                        <option value="normal" className="bg-[#0c0f17]">Normal</option>
-                        <option value="relaxed" className="bg-[#0c0f17]">Longgar (Relaxed)</option>
+                        <option value="compact" className="bg-[#111318]">Rapat (Compact)</option>
+                        <option value="normal" className="bg-[#111318]">Normal</option>
+                        <option value="relaxed" className="bg-[#111318]">Longgar (Relaxed)</option>
                       </select>
                     </div>
 
@@ -1420,10 +1420,10 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
                       >
-                        <option value="centered" className="bg-[#0c0f17]">Centered</option>
-                        <option value="split" className="bg-[#0c0f17]">Split Screen</option>
-                        <option value="full-bleed" className="bg-[#0c0f17]">Full Bleed</option>
-                        <option value="minimal" className="bg-[#0c0f17]">Minimalist</option>
+                        <option value="centered" className="bg-[#111318]">Centered</option>
+                        <option value="split" className="bg-[#111318]">Split Screen</option>
+                        <option value="full-bleed" className="bg-[#111318]">Full Bleed</option>
+                        <option value="minimal" className="bg-[#111318]">Minimalist</option>
                       </select>
                     </div>
                   </div>
@@ -1511,7 +1511,7 @@ export default function SiteEditorPage() {
                 </div>
 
                 {/* ── AI Prompt bar inside field panel ── */}
-                <div className="border-t border-white/10 flex-shrink-0 bg-[#05070b] flex flex-col">
+                <div className="border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col">
                   {/* Header Toggle */}
                   <button
                     type="button"
@@ -1613,7 +1613,7 @@ export default function SiteEditorPage() {
         <div className="flex-1 min-h-0 flex flex-col overflow-hidden min-w-0">
 
           {/* Canvas topbar */}
-          <div className="flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#05070b] px-3">
+          <div className="flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
               <button
@@ -1738,8 +1738,8 @@ export default function SiteEditorPage() {
             </div>
           )}
 
-          {/* Canvas body */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto flex items-start justify-center p-4" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.03) 24px), repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(255,255,255,0.03) 24px), #0a0c10" }}>
+          {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center">
             {pendingDiff && (
               <style dangerouslySetInnerHTML={{ __html: `
                 #preview-scroll-container div[id^="section-preview-"] {
@@ -1762,8 +1762,8 @@ export default function SiteEditorPage() {
             )}
 
             {device === "mobile" ? (
-              /* Premium Mobile Phone Frame Wrapper */
-              <div className="relative mx-auto my-4 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
+              /* Mobile: centered with some margin */
+              <div className="relative mx-auto my-6 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
                 {/* Speaker/Notch */}
                 <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
                 {/* Screen container */}
@@ -1771,7 +1771,6 @@ export default function SiteEditorPage() {
                   className="h-full w-full overflow-hidden rounded-[28px] bg-white relative z-10"
                   style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
                 >
-                  {/* Scaled viewport trick to trigger Tailwind responsive styles */}
                   <div 
                     style={{ 
                       width: "181.81%", 
@@ -1795,9 +1794,8 @@ export default function SiteEditorPage() {
                 <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
               </div>
             ) : (
-              <div
-                className="bg-white shadow-2xl shadow-black/40 rounded-xl overflow-hidden transition-all duration-300 w-full max-w-[1228px] ring-1 ring-white/10"
-              >
+              /* Desktop: full width, no padding — site fills the canvas edge-to-edge */
+              <div className="w-full overflow-hidden">
                 <TemplateComponent
                   content={content}
                   design_token={designToken ?? null}
