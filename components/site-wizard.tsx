@@ -813,9 +813,13 @@ export function SiteWizard({
                   setDescription(combined);
                   setInputValue("");
                   setSelectedAdvantages([]);
+                  // Format as checklist for the user bubble
+                  const displayText = selectedAdvantages.length > 0
+                    ? selectedAdvantages.map(s => `✓ ${s}`).join("\n")
+                    : combined;
                   setMessages((prev) => [
                     ...prev,
-                    { id: Date.now().toString(), sender: "user", text: combined },
+                    { id: Date.now().toString(), sender: "user", text: displayText },
                   ]);
                   setTimeout(() => {
                     typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
@@ -835,7 +839,7 @@ export function SiteWizard({
                       </p>
                     )}
                     {/* Chips grid */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col gap-2">
                       {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
                         const selected = !isLocked && selectedAdvantages.includes(suggestion);
                         return (
@@ -844,19 +848,28 @@ export function SiteWizard({
                             type="button"
                             disabled={isLocked}
                             onClick={() => !isLocked && toggleAdvantageSuggestion(suggestion)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer active:scale-95 ${
+                            className={`flex items-start gap-2.5 w-full px-3.5 py-2.5 rounded-xl border text-left text-sm leading-snug transition-all cursor-pointer active:scale-[0.98] ${
                               selected
-                                ? "text-violet-200 border-violet-500/60"
+                                ? "text-violet-100 border-violet-500/50"
                                 : isLocked
                                   ? "opacity-30 cursor-default text-slate-400 border-white/8"
-                                  : "text-slate-300 border-white/10 hover:border-violet-400/50 hover:text-white"
+                                  : "text-slate-300 border-white/10 hover:border-violet-400/40 hover:text-white"
                             }`}
                             style={selected
-                              ? { background: "rgba(124,58,237,0.2)" }
-                              : { background: "rgba(255,255,255,0.05)" }}
+                              ? { background: "rgba(124,58,237,0.18)" }
+                              : { background: "rgba(255,255,255,0.04)" }}
                           >
-                            {selected && <span className="mr-1 text-violet-400">✓</span>}
-                            {suggestion.length > 40 ? suggestion.slice(0, 40) + "…" : suggestion}
+                            {/* Checkbox circle */}
+                            <span className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                              selected ? "bg-violet-500 border-violet-400" : "border-slate-600"
+                            }`}>
+                              {selected && (
+                                <svg viewBox="0 0 10 8" className="w-2.5 h-2 fill-white">
+                                  <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              )}
+                            </span>
+                            <span>{suggestion}</span>
                           </button>
                         );
                       })}
