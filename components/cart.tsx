@@ -32,6 +32,7 @@ interface CartContextValue {
   clear: () => void;
   open: boolean;
   setOpen: (v: boolean) => void;
+  previewMode: boolean;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -48,11 +49,12 @@ export function useCart(): CartContextValue {
 
 interface CartProviderProps {
   children: React.ReactNode;
-  waPhone: string; // e.g. "628123456789" or "08123456789"
+  waPhone: string;
   brandName?: string;
+  previewMode?: boolean; // when true, FAB uses absolute positioning inside container
 }
 
-export function CartProvider({ children, waPhone, brandName }: CartProviderProps) {
+export function CartProvider({ children, waPhone, brandName, previewMode }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -86,7 +88,7 @@ export function CartProvider({ children, waPhone, brandName }: CartProviderProps
   const clear = useCallback(() => setItems([]), []);
 
   return (
-    <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, clear, open, setOpen }}>
+    <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, clear, open, setOpen, previewMode: !!previewMode }}>
       {children}
       <CartDrawer waPhone={waPhone} brandName={brandName} />
     </CartContext.Provider>
@@ -96,8 +98,9 @@ export function CartProvider({ children, waPhone, brandName }: CartProviderProps
 // ─── Floating Cart Button ─────────────────────────────────────────────────────
 
 export function CartFab({ colorStyle }: { colorStyle?: React.CSSProperties }) {
-  const { totalQty, setOpen } = useCart();
-  if (totalQty === 0) return null;
+  const { totalQty, setOpen, previewMode } = useCart();
+  // Never show FAB in preview/editor mode — cart is for public visitors only
+  if (totalQty === 0 || previewMode) return null;
 
   return (
     <button
@@ -223,9 +226,9 @@ function normalizePhone(raw: string): string {
 }
 
 function CartDrawer({ waPhone, brandName }: { waPhone: string; brandName?: string }) {
-  const { items, open, setOpen, increment, decrement, remove, clear, totalQty } = useCart();
+  const { items, open, setOpen, increment, decrement, remove, clear, totalQty, previewMode } = useCart();
 
-  if (!open) return null;
+  if (!open || previewMode) return null;
 
   const handleCheckout = () => {
     if (items.length === 0) return;

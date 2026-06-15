@@ -1359,6 +1359,7 @@ export function SiteWizard({
                 <TemplateDynamicWithCart
                   content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
                   design_token={previewData.design_token as any}
+                  previewMode={true}
                 />
               </div>
 

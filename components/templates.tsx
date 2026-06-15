@@ -78,6 +78,7 @@ export interface TemplateProps {
       nav_cta_text: string;
       icon?: string;
       logo_url?: string;
+      tagline?: string;
     };
     hero: {
       headline: string;
@@ -88,7 +89,6 @@ export interface TemplateProps {
       badge_text?: string;
       opening_hours?: string;
       launch_label?: string;
-      matra?: string;
     };
     about: {
       title: string;
@@ -435,13 +435,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-955 leading-tight">
                 {hero.headline}
               </h1>
-              {hero.matra && (
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-px w-10 bg-amber-700/40" />
-                  <span className="text-amber-800 font-semibold tracking-wide text-sm md:text-base italic">{hero.matra}</span>
-                  <div className="h-px w-10 bg-amber-700/40" />
-                </div>
-              )}
+
               <p className="text-lg md:text-xl text-[#6D5D50] max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -673,11 +667,11 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   const waPhone = contact?.phone ?? "";
 
   return (
-    <CartProvider waPhone={waPhone} brandName={header?.brand_name}>
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
     <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon }} render={(headerData) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-955 tracking-wide flex items-center gap-2">
               <LogoImage
@@ -687,7 +681,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 iconClass="w-5 h-5 text-amber-700"
                 imgClass="h-8 w-auto object-contain"
               />
-              <span className="truncate">{headerData.brand_name || "Brand Kami"}</span>
+              <span className="min-w-0">
+                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
+                {headerData.tagline && <span className="block text-[10px] font-normal text-amber-700/70 tracking-wide truncate">{headerData.tagline}</span>}
+              </span>
             </span>
             <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
               {headerData.nav_cta_text || "Hubungi Kami"}
@@ -755,13 +752,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
                 {hero.headline}
               </h1>
-              {hero.matra && (
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-px w-10 bg-indigo-300" />
-                  <span className="text-indigo-600 font-semibold tracking-widest text-xs md:text-sm uppercase">{hero.matra}</span>
-                  <div className="h-px w-10 bg-indigo-300" />
-                </div>
-              )}
+
               <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -944,7 +935,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon }} render={(headerData) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-955 tracking-wider flex items-center gap-2">
               <LogoImage
@@ -1028,13 +1019,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
                 {hero.headline}
               </h1>
-              {hero.matra && (
-                <div className="flex items-center justify-center gap-3">
-                  <div className="h-px w-10 bg-cyan-500/40" />
-                  <span className="text-cyan-400 font-bold tracking-widest text-xs uppercase">{hero.matra}</span>
-                  <div className="h-px w-10 bg-cyan-500/40" />
-                </div>
-              )}
+
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -1267,11 +1252,11 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   const waPhone = contact?.phone ?? "";
 
   return (
-    <CartProvider waPhone={waPhone} brandName={header?.brand_name}>
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
     <div className="bg-slate-955 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon }} render={(headerData) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-955/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
               <LogoImage
@@ -1616,13 +1601,6 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 6cqw, var(--dt-hero-size))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}>
                     {h.headline}
                   </h1>
-                  {h.matra && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", justifyContent: hStyle === "split" ? "flex-start" : "center" }}>
-                      <div style={{ height: "1px", width: "2rem", background: "color-mix(in srgb, var(--dt-primary) 40%, transparent)" }} />
-                      <span style={{ color: "var(--dt-primary)", fontFamily: "var(--dt-body-font)", fontWeight: 600, fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>{h.matra}</span>
-                      <div style={{ height: "1px", width: "2rem", background: "color-mix(in srgb, var(--dt-primary) 40%, transparent)" }} />
-                    </div>
-                  )}
                   <p style={{ fontSize: "clamp(0.95rem, 3.5cqw, 1.125rem)", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}>
                     {h.subheadline}
                   </p>
@@ -1987,11 +1965,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   );
 };
 
-export function TemplateDynamicWithCart(props: TemplateProps) {
+export function TemplateDynamicWithCart(props: TemplateProps & { previewMode?: boolean }) {
   const waPhone = props.content?.contact?.phone ?? "";
   const brandName = props.content?.header?.brand_name;
   return (
-    <CartProvider waPhone={waPhone} brandName={brandName}>
+    <CartProvider waPhone={waPhone} brandName={brandName} previewMode={props.previewMode}>
       <TemplateDynamic {...props} />
     </CartProvider>
   );
