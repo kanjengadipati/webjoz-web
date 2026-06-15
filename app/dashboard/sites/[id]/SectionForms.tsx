@@ -1,7 +1,172 @@
 import React from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Sparkles, RefreshCw, Loader2 } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { isPlaceholderValue } from "./editor-utils";
+import { request } from "@/lib/api/client";
+
+export interface SectionFormsProps {
+  activeTab: string;
+  content: any;
+  updateField: (section: string, key: string, val: any) => void;
+  needsAttention: (path: string) => boolean;
+  fieldClass: (path: string, base: string) => string;
+  // For inline AI field generation
+  token?: string | null;
+  activeTenantId?: number | string | null;
+  siteId?: number | null;
+}
+
+// ─── Unsplash image pool (mirrors the API backend pool) ───────────────────────
+const UNSPLASH_POOLS: Record<string, string[]> = {
+  food: [
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&auto=format&fit=crop&q=80",
+  ],
+  cafe: [
+    "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=1200&auto=format&fit=crop&q=80",
+  ],
+  fashion: [
+    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&auto=format&fit=crop&q=80",
+  ],
+  retail: [
+    "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1200&auto=format&fit=crop&q=80",
+  ],
+  service: [
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80",
+  ],
+  health: [
+    "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&auto=format&fit=crop&q=80",
+  ],
+  beauty: [
+    "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1200&auto=format&fit=crop&q=80",
+  ],
+  travel: [
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&auto=format&fit=crop&q=80",
+  ],
+  education: [
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&auto=format&fit=crop&q=80",
+  ],
+  realestate: [
+    "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+  ],
+  business: [
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=80",
+  ],
+};
+
+function getUnsplashPool(businessType: string): string[] {
+  const lower = (businessType || "").toLowerCase();
+  if (["kuliner", "makanan", "restoran", "warung", "food"].some(k => lower.includes(k))) return UNSPLASH_POOLS.food;
+  if (["cafe", "kafe", "kopi", "coffee"].some(k => lower.includes(k))) return UNSPLASH_POOLS.cafe;
+  if (["fashion", "pakaian", "baju", "clothing"].some(k => lower.includes(k))) return UNSPLASH_POOLS.fashion;
+  if (["toko", "retail", "produk", "umkm", "online"].some(k => lower.includes(k))) return UNSPLASH_POOLS.retail;
+  if (["klinik", "dokter", "kesehatan", "health"].some(k => lower.includes(k))) return UNSPLASH_POOLS.health;
+  if (["salon", "kecantikan", "barber", "beauty"].some(k => lower.includes(k))) return UNSPLASH_POOLS.beauty;
+  if (["travel", "hotel", "wisata", "tourism"].some(k => lower.includes(k))) return UNSPLASH_POOLS.travel;
+  if (["edukasi", "sekolah", "kursus", "education"].some(k => lower.includes(k))) return UNSPLASH_POOLS.education;
+  if (["properti", "rumah", "bangunan", "realestate"].some(k => lower.includes(k))) return UNSPLASH_POOLS.realestate;
+  if (["jasa", "service", "konsultan"].some(k => lower.includes(k))) return UNSPLASH_POOLS.service;
+  return UNSPLASH_POOLS.business;
+}
+
+// ─── AI Field Button ──────────────────────────────────────────────────────────
+interface AiFieldButtonProps {
+  onGenerate: () => Promise<void>;
+  loading: boolean;
+  title?: string;
+}
+
+function AiFieldButton({ onGenerate, loading, title = "Generate dengan AI" }: AiFieldButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onGenerate}
+      disabled={loading}
+      title={title}
+      className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-violet-500/15 text-violet-400 hover:bg-violet-500/30 hover:text-violet-200 transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-violet-400"
+    >
+      {loading
+        ? <Loader2 className="w-3 h-3 animate-spin" />
+        : <Sparkles className="w-3 h-3" />
+      }
+    </button>
+  );
+}
+
+// ─── AI Image Button ──────────────────────────────────────────────────────────
+interface AiImageButtonProps {
+  businessType: string;
+  onSelect: (url: string) => void;
+}
+
+function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
+  const pool = getUnsplashPool(businessType);
+  const handleClick = () => {
+    const randomUrl = pool[Math.floor(Math.random() * pool.length)];
+    onSelect(randomUrl);
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      title="Pilih foto acak dari Unsplash"
+      className="flex items-center gap-1 px-2 h-7 rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-white/10"
+    >
+      <RefreshCw className="w-3 h-3" />
+      Random foto
+    </button>
+  );
+}
+
+// ─── Inline AI text generation via regenerate-section ─────────────────────────
+// Calls the section regenerate endpoint but only applies the specific field
+async function generateFieldText(
+  token: string,
+  activeTenantId: number | string,
+  siteId: number,
+  section: string,
+  fieldKey: string,
+  currentContent: any,
+  prompt: string
+): Promise<string | null> {
+  try {
+    const res = await request<any>("/ai/regenerate-section", {
+      method: "POST",
+      body: JSON.stringify({
+        site_id: siteId,
+        section,
+        instructions: `Fokus hanya pada field "${fieldKey}": ${prompt}. Jaga field lain tetap sama.`,
+        tenant_id: activeTenantId,
+      }),
+    }, token);
+    if (res.status !== "success" || !res.data?.section) return null;
+    const updated = res.data.section;
+    // Return the specific field value from the updated section
+    return updated[fieldKey] ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export interface SectionFormsProps {
   activeTab: string;
@@ -182,7 +347,31 @@ export default function SectionForms({
   updateField,
   needsAttention,
   fieldClass,
+  token,
+  activeTenantId,
+  siteId,
 }: SectionFormsProps) {
+  const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
+  const businessType = content?.header?.brand_name ? "" : "";
+  // Extract business type from seo title or brand context as best-effort
+  const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
+
+  const handleAiText = async (section: string, fieldKey: string, prompt: string) => {
+    if (!token || !activeTenantId || !siteId) return;
+    const loadKey = `${section}.${fieldKey}`;
+    setAiLoadingField(loadKey);
+    try {
+      const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, prompt);
+      if (result) updateField(section, fieldKey, result);
+    } finally {
+      setAiLoadingField(null);
+    }
+  };
+
+  const handleAiImage = (section: string, fieldKey: string, url: string) => {
+    updateField(section, fieldKey, url);
+  };
+
   return (
     <>
       {/* HEADER FORM */}
@@ -230,10 +419,25 @@ export default function SectionForms({
       {/* HERO FORM */}
       {activeTab === "hero" && (
         <div className="space-y-3">
-          <FileUpload label="Gambar Hero" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Gambar Hero {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)} />
+            </label>
+            <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "hero.headline"}
+                onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata")}
+                title="AI: generate headline"
+              />
             </label>
             <input 
               id="field-hero.headline"
@@ -244,8 +448,15 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "hero.subheadline"}
+                onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata")}
+                title="AI: generate subheadline"
+              />
             </label>
             <textarea 
               id="field-hero.subheadline"
@@ -288,10 +499,23 @@ export default function SectionForms({
       {/* ABOUT FORM */}
       {activeTab === "about" && (
         <div className="space-y-3">
-          <FileUpload label="Gambar Tentang" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Gambar Tentang</span>
+              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)} />
+            </label>
+            <FileUpload label="" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "about.title"}
+                onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis")}
+                title="AI: generate judul"
+              />
             </label>
             <input 
               id="field-about.title"
@@ -302,8 +526,15 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "about.body"}
+                onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.")}
+                title="AI: generate deskripsi"
+              />
             </label>
             <textarea 
               id="field-about.body"
@@ -453,8 +684,15 @@ export default function SectionForms({
       {activeTab === "cta" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "cta.headline"}
+                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli")}
+                title="AI: generate headline CTA"
+              />
             </label>
             <input 
               id="field-cta.headline"
@@ -622,8 +860,15 @@ export default function SectionForms({
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "seo.title"}
+                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.")}
+                title="AI: generate SEO title"
+              />
             </label>
             <input 
               id="field-seo.title"
@@ -634,8 +879,15 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1">
+                Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
+              </span>
+              <AiFieldButton
+                loading={aiLoadingField === "seo.description"}
+                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.")}
+                title="AI: generate meta description"
+              />
             </label>
             <textarea 
               id="field-seo.description"

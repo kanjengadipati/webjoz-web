@@ -8,7 +8,8 @@ import { request } from "@/lib/api/client";
 import { 
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
-  Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw
+  Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw,
+  Eye, EyeOff
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -575,7 +576,7 @@ export default function SiteEditorPage() {
 
   const handleReorderSection = (source: string, target: string) => {
     if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
-    const currentOrder = getOrderedSections(designToken).filter((key) => BODY_SECTION_KEYS.includes(key));
+    const currentOrder = getOrderedSections(designToken, content).filter((key) => BODY_SECTION_KEYS.includes(key));
     const nextOrder = [...currentOrder];
     const from = nextOrder.indexOf(source);
     const to = nextOrder.indexOf(target);
@@ -587,6 +588,24 @@ export default function SiteEditorPage() {
       layout: {
         ...(designToken?.layout || {}),
         section_order: nextOrder,
+      },
+    });
+  };
+
+  const hiddenSections: string[] = designToken?.layout?.hidden_sections ?? [];
+
+  const toggleSectionVisibility = (key: string) => {
+    // header, footer, seo cannot be hidden
+    if (["header", "footer", "seo"].includes(key)) return;
+    const current: string[] = designToken?.layout?.hidden_sections ?? [];
+    const next = current.includes(key)
+      ? current.filter((k) => k !== key)
+      : [...current, key];
+    setDesignToken({
+      ...(designToken || {}),
+      layout: {
+        ...(designToken?.layout || {}),
+        hidden_sections: next,
       },
     });
   };
@@ -1097,7 +1116,7 @@ export default function SiteEditorPage() {
             <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
-                <span className="text-[9px] font-semibold text-slate-600">Drag untuk urutan</span>
+                <span className="text-[9px] font-semibold text-slate-600">Drag urutan · Eye hide</span>
               </div>
               <div className="relative">
                 <button
@@ -1117,6 +1136,9 @@ export default function SiteEditorPage() {
                           <>
                             <Icon className="w-4 h-4 text-violet-400" />
                             <span className="text-[13px] font-medium text-slate-200">{activeSec.label}</span>
+                            {hiddenSections.includes(activeTab) && (
+                              <EyeOff className="w-3 h-3 text-slate-500" />
+                            )}
                           </>
                         );
                       }
@@ -1155,24 +1177,49 @@ export default function SiteEditorPage() {
                           selectSection(key, true);
                           setSectionDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
+                        className={`group/item w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
                           activeTab === key
                             ? "bg-violet-600 text-white font-semibold shadow-sm"
                             : draggingSection === key
                             ? "bg-violet-500/20 text-violet-100"
+                            : hiddenSections.includes(key)
+                            ? "text-slate-600 hover:bg-white/5"
                             : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
                         }`}
                         role="option"
                         aria-selected={activeTab === key}
                       >
-                        <div className="flex items-center gap-2">
-                          <GripVertical className={`h-3.5 w-3.5 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
-                          <Icon className={`w-4 h-4 ${activeTab === key ? "text-white" : "text-slate-400"}`} />
-                          <span className="text-[13px]">{label}</span>
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <GripVertical className={`h-3.5 w-3.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
+                          <Icon className={`w-4 h-4 shrink-0 ${activeTab === key ? "text-white" : hiddenSections.includes(key) ? "text-slate-600" : "text-slate-400"}`} />
+                          <span className={`text-[13px] truncate ${hiddenSections.includes(key) ? "line-through text-slate-600" : ""}`}>{label}</span>
                         </div>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                          activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-400"
-                        }`}>{num}</span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Visibility toggle — not for header/footer/seo */}
+                          {!["header", "footer", "seo"].includes(key) && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleSectionVisibility(key);
+                              }}
+                              title={hiddenSections.includes(key) ? "Tampilkan section" : "Sembunyikan section"}
+                              className={`p-1 rounded transition-colors cursor-pointer ${
+                                hiddenSections.includes(key)
+                                  ? "text-slate-600 hover:text-slate-300"
+                                  : "text-slate-500 hover:text-slate-200 opacity-0 group-hover/item:opacity-100"
+                              }`}
+                            >
+                              {hiddenSections.includes(key)
+                                ? <EyeOff className="w-3.5 h-3.5" />
+                                : <Eye className="w-3.5 h-3.5" />
+                              }
+                            </button>
+                          )}
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                            activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-500"
+                          }`}>{num}</span>
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -1506,6 +1553,9 @@ export default function SiteEditorPage() {
                     updateField={updateField}
                     needsAttention={needsAttention}
                     fieldClass={fieldClass}
+                    token={token}
+                    activeTenantId={activeTenantId}
+                    siteId={siteId}
                   />
 
                 </div>
