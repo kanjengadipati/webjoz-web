@@ -402,7 +402,15 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu } = content;
   const dt = design_token ?? null;
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "faq", "cta", "contact"];
+  const baseSectionOrderKuliner: string[] = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "faq", "cta", "contact"];
+  const sectionOrder = (menu && !baseSectionOrderKuliner.includes("menu"))
+    ? (() => {
+        const order = [...baseSectionOrderKuliner];
+        const idx = order.indexOf("benefits") >= 0 ? order.indexOf("benefits") : order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length;
+        order.splice(idx, 0, "menu");
+        return order;
+      })()
+    : baseSectionOrderKuliner;
 
   const sectionNodes = {
     hero: (
@@ -954,7 +962,15 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog } = content;
   const dt = design_token ?? null;
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "cta", "about", "faq", "contact"];
+  const baseSectionOrderProduk: string[] = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "cta", "about", "faq", "contact"];
+  const sectionOrder = (catalog && !baseSectionOrderProduk.includes("catalog"))
+    ? (() => {
+        const order = [...baseSectionOrderProduk];
+        const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("about") >= 0 ? order.indexOf("about") : order.length;
+        order.splice(idx, 0, "catalog");
+        return order;
+      })()
+    : baseSectionOrderProduk;
 
   const sectionNodes = {
     hero: (
@@ -1475,7 +1491,26 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
   const cssVars = buildCssVars(dt);
   const heroStyle = dt?.layout?.hero_style ?? "centered";
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "cta", "faq", "contact"];
+
+  // Build section order: start from design token, then append any content sections
+  // that exist but weren't listed (menu, catalog) so they're never silently dropped.
+  const baseSectionOrder: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "cta", "faq", "contact"];
+  const extraSections = (["menu", "catalog"] as const).filter(
+    (key) => content[key] && !baseSectionOrder.includes(key)
+  );
+  // Insert extras right before "cta" if present, otherwise before "faq", otherwise at end
+  const sectionOrder = (() => {
+    if (extraSections.length === 0) return baseSectionOrder;
+    const order = [...baseSectionOrder];
+    const insertBefore = order.indexOf("cta") >= 0 ? "cta" : order.indexOf("faq") >= 0 ? "faq" : null;
+    if (insertBefore) {
+      const idx = order.indexOf(insertBefore);
+      order.splice(idx, 0, ...extraSections);
+    } else {
+      order.push(...extraSections);
+    }
+    return order;
+  })();
 
   // Load Google Fonts
   React.useEffect(() => {
