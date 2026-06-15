@@ -177,34 +177,36 @@ export const PreviewSectionWrapper: React.FC<{
       <div
         id={`section-preview-${section}`}
         onClick={() => onSelectSection?.(section)}
-        className={`group relative transition-all duration-200 border ${isSelected
-          ? "border-violet-600 bg-violet-500/[0.02] ring-2 ring-violet-500/10 shadow-md"
-          : "border-transparent hover:border-slate-300 hover:bg-slate-500/5"
+        className={`group relative transition-all duration-150 ${isSelected
+          ? "outline outline-2 outline-violet-500/60 outline-offset-[-2px]"
+          : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
           }`}
       >
-        {/* Label Badge */}
-        <div className={`absolute top-5 left-5 z-[80] bg-slate-900/80 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase select-none pointer-events-none transition-opacity duration-200 ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}>
-          {label}
+        {/* Label Badge — floats above the top edge, not overlapping content */}
+        <div className={`absolute -top-5 left-3 z-[80] flex items-center gap-1.5 pointer-events-none transition-all duration-150 ${
+          isSelected ? "opacity-100 translate-y-0" : "opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
+        }`}>
+          <span className="bg-violet-600 text-white text-[9px] font-bold tracking-widest px-2 py-0.5 rounded uppercase select-none shadow-sm">
+            {label}
+          </span>
         </div>
 
-        {/* AI Regen button */}
+        {/* AI Regen button — small, top-right, subtle */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-5 right-5 z-[80] bg-violet-600 text-white hover:bg-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white ${isSelected ? "flex opacity-100 visible" : "hidden group-hover:flex"
-            }`}
+          className={`absolute top-2 right-2 z-[80] bg-slate-900/80 backdrop-blur-sm text-violet-300 border border-violet-500/30 hover:bg-violet-600 hover:text-white hover:border-violet-500 text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-violet-500 ${
+            isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
         >
-          <Sparkles className="w-3 h-3 text-white" />
-          AI Regen
+          <Sparkles className="w-2.5 h-2.5" />
+          Regen
         </button>
 
-        <div>
-          {children}
-        </div>
+        {children}
       </div>
     );
   };

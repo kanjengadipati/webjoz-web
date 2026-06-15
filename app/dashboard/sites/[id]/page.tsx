@@ -814,7 +814,7 @@ export default function SiteEditorPage() {
       <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* ════ LEFT SIDEBAR ════ */}
-        <div className="w-[260px] flex-shrink-0 border-r border-white/10 flex flex-col overflow-hidden bg-[#05070b]">
+        <div className="w-[300px] flex-shrink-0 border-r border-white/10 flex flex-col overflow-hidden bg-[#05070b]">
 
           {/* Site identity */}
           <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
@@ -1613,83 +1613,79 @@ export default function SiteEditorPage() {
         <div className="flex-1 min-h-0 flex flex-col overflow-hidden min-w-0">
 
           {/* Canvas topbar */}
-          <div className="flex h-9 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#05070b] px-2.5">
+          <div className="flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#05070b] px-3">
             {/* Device switcher */}
-            <button
-              onClick={() => setDevice("desktop")}
-              className={`flex h-6 w-7 items-center justify-center rounded-md border text-[12px] transition-colors ${
-                device === "desktop" ? "bg-white text-slate-950 border-slate-200" : "border-white/10 hover:bg-white/5 text-slate-500"
-              }`}
-              aria-label="Preview desktop"
-            >
-              <Monitor className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setDevice("mobile")}
-              className={`flex h-6 w-7 items-center justify-center rounded-md border text-[12px] transition-colors ${
-                device === "mobile" ? "bg-white text-slate-950 border-slate-200" : "border-white/10 hover:bg-white/5 text-slate-500"
-              }`}
-              aria-label="Preview mobile"
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+              <button
+                onClick={() => setDevice("desktop")}
+                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${
+                  device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                }`}
+                aria-label="Preview desktop"
+              >
+                <Monitor className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setDevice("mobile")}
+                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${
+                  device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                }`}
+                aria-label="Preview mobile"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+              </button>
+            </div>
 
-            {/* AI badge */}
-            <span className="ml-1 flex items-center gap-1 rounded-full border border-violet-500/20 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-200">
-              <Sparkles className="h-3 w-3" />
-              AI aktif
-            </span>
-
+            {/* Completion score */}
             <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
               quality.score >= 85
-                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
                 : quality.score >= 65
-                ? "border-amber-500/20 bg-amber-500/10 text-amber-200"
-                : "border-red-500/20 bg-red-500/10 text-red-200"
+                ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
+                : "border-red-500/20 bg-red-500/10 text-red-300"
             }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
-              {quality.score < 100 && <span className="text-amber-200">⚠️</span>}
-              Completion {quality.score}%
+              {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
             </span>
 
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Autosave status indicator */}
+            {/* Autosave status */}
             {autosaveStatus !== "idle" && (
               <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${
-                autosaveStatus === "saving" ? "bg-amber-500/10 text-amber-300 border border-amber-500/20" :
-                autosaveStatus === "saved" ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20" :
-                "bg-red-500/10 text-red-300 border border-red-500/20"
+                autosaveStatus === "saving" ? "text-amber-300" :
+                autosaveStatus === "saved" ? "text-emerald-400" :
+                "text-red-300"
               }`}>
                 {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                 {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
                 {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
                 {autosaveStatus === "saving" ? "Menyimpan..." :
-                 autosaveStatus === "saved" ? "Tersimpan otomatis" :
-                 "Gagal menyimpan"}
+                 autosaveStatus === "saved" ? "Tersimpan" :
+                 "Gagal simpan"}
               </span>
             )}
 
-            {/* Buka preview link */}
+            {/* Preview link */}
             <a
               href={`/s/${siteDetails.subdomain}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-6 items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
             >
               <Globe className="h-3.5 w-3.5" />
-              Buka preview
+              Preview
             </a>
 
             {/* Save button */}
             <button
               onClick={handleSaveContent}
               disabled={saving}
-              className="flex h-6 items-center gap-1.5 rounded-md px-2.5 text-[11px] font-medium text-white transition-colors"
+              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-white transition-colors hover:brightness-110 disabled:opacity-60"
               style={{ background: "#1D9E75" }}
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              Simpan Perubahan
+              Simpan
             </button>
           </div>
 
@@ -1743,7 +1739,7 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-slate-100 flex items-start justify-center p-4">
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto flex items-start justify-center p-4" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.03) 24px), repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(255,255,255,0.03) 24px), #0a0c10" }}>
             {pendingDiff && (
               <style dangerouslySetInnerHTML={{ __html: `
                 #preview-scroll-container div[id^="section-preview-"] {
@@ -1800,7 +1796,7 @@ export default function SiteEditorPage() {
               </div>
             ) : (
               <div
-                className="bg-white shadow-lg rounded-md overflow-hidden transition-all duration-300 w-full max-w-[1228px]"
+                className="bg-white shadow-2xl shadow-black/40 rounded-xl overflow-hidden transition-all duration-300 w-full max-w-[1228px] ring-1 ring-white/10"
               >
                 <TemplateComponent
                   content={content}
