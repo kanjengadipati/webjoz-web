@@ -448,6 +448,20 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">
+              Matra / Tagline
+            </label>
+            <input
+              id="field-hero.matra"
+              type="text"
+              value={content.hero?.matra || ""}
+              onChange={(e) => updateField("hero", "matra", e.target.value)}
+              placeholder="cth. Cita Rasa Jogja · Sejak 2010"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline dan subheadline dengan garis dekoratif.</p>
+          </div>
+          <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1">
                 Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}

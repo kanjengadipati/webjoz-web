@@ -187,7 +187,7 @@ export default function SiteEditorPage() {
       const data = stripRegeneratedMarkers(contentRes.data?.content || {});
       const fallback = {
         header: { brand_name: "", nav_cta_text: "", logo_url: "", icon: "" },
-        hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "" },
+        hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "", matra: "" },
         about: { title: "", body: "", image_url: "", icon: "" },
         benefits: { title: "", items: [] },
         faq: { title: "", items: [] },
@@ -201,7 +201,7 @@ export default function SiteEditorPage() {
         ...fallback,
         ...data,
         header: { ...fallback.header, ...data.header },
-        hero: { ...fallback.hero, ...data.hero },
+        hero: { ...fallback.hero, ...data.hero, matra: data.hero?.matra ?? "" },
         about: { ...fallback.about, ...data.about },
         benefits: { ...fallback.benefits, ...data.benefits },
         faq: { ...fallback.faq, ...data.faq },

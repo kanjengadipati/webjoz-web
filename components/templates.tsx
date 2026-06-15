@@ -88,6 +88,7 @@ export interface TemplateProps {
       badge_text?: string;
       opening_hours?: string;
       launch_label?: string;
+      matra?: string;
     };
     about: {
       title: string;
@@ -434,6 +435,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-955 leading-tight">
                 {hero.headline}
               </h1>
+              {hero.matra && (
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-px w-10 bg-amber-700/40" />
+                  <span className="text-amber-800 font-semibold tracking-wide text-sm md:text-base italic">{hero.matra}</span>
+                  <div className="h-px w-10 bg-amber-700/40" />
+                </div>
+              )}
               <p className="text-lg md:text-xl text-[#6D5D50] max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -747,6 +755,13 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
                 {hero.headline}
               </h1>
+              {hero.matra && (
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-px w-10 bg-indigo-300" />
+                  <span className="text-indigo-600 font-semibold tracking-widest text-xs md:text-sm uppercase">{hero.matra}</span>
+                  <div className="h-px w-10 bg-indigo-300" />
+                </div>
+              )}
               <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -1013,6 +1028,13 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
                 {hero.headline}
               </h1>
+              {hero.matra && (
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-px w-10 bg-cyan-500/40" />
+                  <span className="text-cyan-400 font-bold tracking-widest text-xs uppercase">{hero.matra}</span>
+                  <div className="h-px w-10 bg-cyan-500/40" />
+                </div>
+              )}
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
@@ -1594,6 +1616,13 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   <h1 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 6cqw, var(--dt-hero-size))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}>
                     {h.headline}
                   </h1>
+                  {h.matra && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", justifyContent: hStyle === "split" ? "flex-start" : "center" }}>
+                      <div style={{ height: "1px", width: "2rem", background: "color-mix(in srgb, var(--dt-primary) 40%, transparent)" }} />
+                      <span style={{ color: "var(--dt-primary)", fontFamily: "var(--dt-body-font)", fontWeight: 600, fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>{h.matra}</span>
+                      <div style={{ height: "1px", width: "2rem", background: "color-mix(in srgb, var(--dt-primary) 40%, transparent)" }} />
+                    </div>
+                  )}
                   <p style={{ fontSize: "clamp(0.95rem, 3.5cqw, 1.125rem)", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}>
                     {h.subheadline}
                   </p>
