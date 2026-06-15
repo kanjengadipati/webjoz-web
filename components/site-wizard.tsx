@@ -244,8 +244,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "matra" | "advantage" | "mood" | "done">("name");
-  // Stage order: name → type → matra → advantage → mood → done
+  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "done">("name");
+  // Stage order: name → type → advantage → mood → done
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -260,11 +260,10 @@ export function SiteWizard({
   const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
 
   const getProgressPercentage = () => {
-    // Stage order: name(1) → type(2) → matra(3) → advantage(4) → mood(5) → done
+    // Stage order: name(1) → type(2) → advantage(3) → mood(4) → done
     switch (chatStage) {
-      case "name": return 20;
-      case "type": return 40;
-      case "matra": return 55;
+      case "name": return 25;
+      case "type": return 50;
       case "advantage": return 75;
       case "mood": return 90;
       case "done": return 100;
@@ -276,10 +275,9 @@ export function SiteWizard({
     switch (chatStage) {
       case "name": return 1;
       case "type": return 2;
-      case "matra": return 3;
-      case "advantage": return 4;
-      case "mood": return 5;
-      case "done": return 5;
+      case "advantage": return 3;
+      case "mood": return 4;
+      case "done": return 4;
       default: return 1;
     }
   };
@@ -358,7 +356,7 @@ export function SiteWizard({
   }, []);
 
   useEffect(() => {
-    if (!isInitialTyping && (chatStage === "name" || chatStage === "matra" || chatStage === "advantage")) {
+    if (!isInitialTyping && (chatStage === "name" || chatStage === "advantage")) {
       inputRef.current?.focus();
     }
   }, [isInitialTyping, chatStage]);
@@ -400,7 +398,7 @@ export function SiteWizard({
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim() && chatStage !== "matra") return;
+    if (!inputValue.trim()) return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -427,40 +425,6 @@ export function SiteWizard({
           }, 300);
         });
       }, 500);
-
-    } else if (chatStage === "matra") {
-      // Matra is optional — val can be empty (user pressed Enter to skip)
-      if (val) {
-        setMatra(val);
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now().toString(), sender: "user", text: val },
-        ]);
-        setTimeout(() => {
-          typeMessage("Slogan yang keren! ✨ Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
-            ]);
-            setChatStage("advantage");
-          });
-        }, 500);
-      } else {
-        // Skipped — no user message, just move to advantage with a bridging AI message
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now().toString(), sender: "user", text: "Lewati" },
-        ]);
-        setTimeout(() => {
-          typeMessage("Oke, dilewati. Sekarang ceritakan produk/layanan utama dan keunggulan bisnis Anda.", () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
-            ]);
-            setChatStage("advantage");
-          });
-        }, 500);
-      }
 
     } else if (chatStage === "advantage") {
       setDescription(val);
@@ -497,7 +461,7 @@ export function SiteWizard({
           ? "layanan & portofolio"
           : "profil perusahaan & kredibilitas";
 
-    const aiResponse = `Bagus! Saya akan membuat website dengan fokus ${typeContext}.\n\nApakah ada slogan atau matra bisnis Anda? (Opsional — tekan Enter untuk lewati)`;
+    const aiResponse = `Bagus! Saya akan membuat website dengan fokus ${typeContext}.\n\nCeritakan produk/layanan utama dan keunggulan bisnis Anda:`;
 
     setMessages((prev) => [
       ...prev,
@@ -505,7 +469,11 @@ export function SiteWizard({
     ]);
     setTimeout(() => {
       typeMessage(aiResponse, () => {
-        setChatStage("matra");
+        setMessages((prev) => [
+          ...prev,
+          { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
+        ]);
+        setChatStage("advantage");
       });
     }, 500);
   };
@@ -786,7 +754,7 @@ export function SiteWizard({
           {/* Progress bar */}
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] text-slate-500 font-medium">
-              Langkah {getStageNumber()} dari 5
+              Langkah {getStageNumber()} dari 4
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
@@ -839,40 +807,72 @@ export function SiteWizard({
 
               if (m.widget === "advantage-chips") {
                 const isLocked = chatStage !== "advantage";
+                const handleSubmitAdvantages = () => {
+                  const combined = selectedAdvantages.join(". ") || inputValue.trim();
+                  if (!combined) return;
+                  setDescription(combined);
+                  setInputValue("");
+                  setSelectedAdvantages([]);
+                  setMessages((prev) => [
+                    ...prev,
+                    { id: Date.now().toString(), sender: "user", text: combined },
+                  ]);
+                  setTimeout(() => {
+                    typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
+                      setMessages((prev) => [
+                        ...prev,
+                        { id: "widget-mood-chips", sender: "ai", text: "", widget: "mood-chips" },
+                      ]);
+                      setChatStage("mood");
+                    });
+                  }, 400);
+                };
                 return (
-                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                     {!isLocked && (
                       <p className="text-[11px] font-semibold text-slate-500 px-1">
-                        Pilih satu atau beberapa saran, atau tulis sendiri:
+                        Pilih satu atau lebih:
                       </p>
                     )}
-                    <div className="space-y-2">
+                    {/* Chips grid */}
+                    <div className="flex flex-wrap gap-2">
                       {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
-                        const selected = selectedAdvantages.includes(suggestion);
+                        const selected = !isLocked && selectedAdvantages.includes(suggestion);
                         return (
                           <button
                             key={suggestion}
                             type="button"
                             disabled={isLocked}
                             onClick={() => !isLocked && toggleAdvantageSuggestion(suggestion)}
-                            className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-xs leading-relaxed transition-all ${selected
-                                ? "border-[#7c3aed]/60 text-white"
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer active:scale-95 ${
+                              selected
+                                ? "text-violet-200 border-violet-500/60"
                                 : isLocked
-                                  ? "opacity-30 cursor-default"
-                                  : "text-slate-300 hover:border-[#7c3aed]/50 hover:text-white active:scale-[0.99]"
-                              }`}
+                                  ? "opacity-30 cursor-default text-slate-400 border-white/8"
+                                  : "text-slate-300 border-white/10 hover:border-violet-400/50 hover:text-white"
+                            }`}
                             style={selected
-                              ? { background: "rgba(124,58,237,0.14)" }
-                              : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                              ? { background: "rgba(124,58,237,0.2)" }
+                              : { background: "rgba(255,255,255,0.05)" }}
                           >
-                            <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#7c3aed] bg-[#7c3aed]" : "border-slate-600"}`}>
-                              {selected && <CheckCircle2 className="h-3 w-3 text-white" />}
-                            </span>
-                            <span>{suggestion}</span>
+                            {selected && <span className="mr-1 text-violet-400">✓</span>}
+                            {suggestion.length > 40 ? suggestion.slice(0, 40) + "…" : suggestion}
                           </button>
                         );
                       })}
                     </div>
+                    {/* Lanjut button — appears when something is selected */}
+                    {!isLocked && selectedAdvantages.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleSubmitAdvantages}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] cursor-pointer"
+                        style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                      >
+                        Lanjut dengan {selectedAdvantages.length} keunggulan
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 );
               }
@@ -1095,11 +1095,7 @@ export function SiteWizard({
                 placeholder={
                   chatStage === "advantage"
                     ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
-                    : chatStage === "matra"
-                      ? "Slogan bisnis Anda... (opsional, Enter untuk lewati)"
-                      : chatStage === "name"
-                        ? "Ketik nama bisnis Anda..."
-                        : ""
+                    : "Ketik nama bisnis Anda..."
                 }
                 autoFocus
                 disabled={isInitialTyping}
@@ -1113,9 +1109,6 @@ export function SiteWizard({
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </form>
-            {chatStage === "matra" && (
-              <p className="text-[10px] text-slate-600 mt-1.5 px-1">Tekan Enter untuk melewati langkah ini</p>
-            )}
           </div>
         )}
 
