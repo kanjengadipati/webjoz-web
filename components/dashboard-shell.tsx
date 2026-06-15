@@ -94,7 +94,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
 
   const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new";
-  const isFullscreenWorkspace = isEditPage;
+  const isNewSitePage = pathname === "/dashboard/sites/new";
+  const isFullscreenWorkspace = isEditPage || isNewSitePage;
 
   return (
     <div className="min-h-screen bg-background">
@@ -152,10 +153,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       </nav>
 
       <div className={cn(
-        "mx-auto grid min-h-screen gap-6 px-4 py-6 pb-28 lg:px-8 lg:pb-6",
+        "mx-auto grid min-h-screen",
         isFullscreenWorkspace 
-          ? "max-w-none w-full grid-cols-1" 
-          : "max-w-7xl lg:grid-cols-[290px_minmax(0,1fr)]"
+          ? "max-w-none w-full grid-cols-1 p-0 gap-0" 
+          : "max-w-7xl gap-6 px-4 py-6 pb-28 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)]"
       )}>
         {!isFullscreenWorkspace && (
           <aside className="hidden lg:block">
@@ -306,7 +307,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </header>
           )}
 
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className={cn(
+            "animate-in fade-in slide-in-from-bottom-2 duration-500",
+            isFullscreenWorkspace && "h-full"
+          )}>
             {loading ? (
               <div className="flex flex-col items-center justify-center h-80 gap-4">
                 <div className="relative size-12 animate-in zoom-in duration-300">

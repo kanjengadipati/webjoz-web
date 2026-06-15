@@ -4,7 +4,6 @@ import { Building2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
-import { Button, Card } from "@/components/ui";
 import { SiteWizard } from "@/components/site-wizard";
 
 export default function NewSiteWizardPage() {
@@ -14,35 +13,36 @@ export default function NewSiteWizardPage() {
 
   if (tenantLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-80 gap-3">
-        <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Menghubungkan ke workspace...</p>
+      <div className="flex flex-col items-center justify-center h-screen gap-3 bg-[#0d0f14]">
+        <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+        <p className="text-xs text-slate-500">Menghubungkan ke workspace...</p>
       </div>
     );
   }
 
   if (!activeTenantId) {
     return (
-      <Card className="max-w-md mx-auto p-6 text-center border-dashed">
-        <Building2 className="w-12 h-12 text-primary mx-auto mb-4 opacity-70" />
-        <h2 className="text-lg font-bold mb-2">Harap Buat Workspace Terlebih Dahulu</h2>
-        <p className="text-xs text-muted-foreground mb-4">
+      <div className="flex flex-col items-center justify-center h-screen gap-4 bg-[#0d0f14] px-6 text-center">
+        <Building2 className="w-12 h-12 text-violet-400/60 mx-auto" />
+        <h2 className="text-lg font-bold text-white">Harap Buat Workspace Terlebih Dahulu</h2>
+        <p className="text-xs text-slate-500 max-w-xs">
           Anda perlu memiliki setidaknya satu workspace bisnis aktif untuk membuat website.
         </p>
-        <Button onClick={() => router.push("/dashboard/sites")} className="rounded-xl">
+        <button
+          onClick={() => router.push("/dashboard/sites")}
+          className="mt-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold transition-colors"
+        >
           Kembali ke Dashboard
-        </Button>
-      </Card>
+        </button>
+      </div>
     );
   }
 
   return (
-    <div className="py-4 text-white">
-      <SiteWizard
-        mode="dashboard"
-        token={token}
-        activeTenantId={activeTenantId}
-      />
-    </div>
+    <SiteWizard
+      mode="dashboard"
+      token={token}
+      activeTenantId={activeTenantId}
+    />
   );
 }

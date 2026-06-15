@@ -652,28 +652,46 @@ export default function SectionForms({
 
       {/* MENU FORM */}
       {activeTab === "menu" && (
-        <MenuCatalogForm
-          sectionKey="menu"
-          sectionTitle="Menu"
-          itemLabel="item menu"
-          hasPrice
-          hasBadge={false}
-          data={content.menu}
-          updateField={updateField}
-        />
+        <>
+          <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 px-3 py-2.5 text-[12px] leading-relaxed text-violet-200 mb-1">
+            <p className="font-semibold text-violet-100">📋 Section Menu</p>
+            <p className="mt-1 text-violet-200/80">
+              Tambah kategori dan item di sini. Setiap item bisa dilengkapi foto, nama, deskripsi, dan harga.
+              Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.
+            </p>
+          </div>
+          <MenuCatalogForm
+            sectionKey="menu"
+            sectionTitle="Menu"
+            itemLabel="item menu"
+            hasPrice
+            hasBadge={false}
+            data={content.menu}
+            updateField={updateField}
+          />
+        </>
       )}
 
       {/* CATALOG FORM */}
       {activeTab === "catalog" && (
-        <MenuCatalogForm
-          sectionKey="catalog"
-          sectionTitle="Katalog Produk"
-          itemLabel="produk"
-          hasPrice
-          hasBadge
-          data={content.catalog}
-          updateField={updateField}
-        />
+        <>
+          <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 px-3 py-2.5 text-[12px] leading-relaxed text-violet-200 mb-1">
+            <p className="font-semibold text-violet-100">🛍️ Section Katalog Produk</p>
+            <p className="mt-1 text-violet-200/80">
+              Tambah kategori dan produk di sini. Setiap produk bisa dilengkapi foto, nama, deskripsi, harga, dan badge (cth: Best Seller).
+              Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.
+            </p>
+          </div>
+          <MenuCatalogForm
+            sectionKey="catalog"
+            sectionTitle="Katalog Produk"
+            itemLabel="produk"
+            hasPrice
+            hasBadge
+            data={content.catalog}
+            updateField={updateField}
+          />
+        </>
       )}
     </>
   );
