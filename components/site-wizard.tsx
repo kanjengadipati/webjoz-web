@@ -219,6 +219,9 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
       tagline: c.footer?.tagline || description,
       copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
     },
+    // Preserve AI-generated menu/catalog if present — user edits details in the dashboard editor
+    ...(c.menu ? { menu: c.menu } : {}),
+    ...(c.catalog ? { catalog: c.catalog } : {}),
     seo: {
       title: c.seo?.title || businessName,
       description: c.seo?.description || description,
