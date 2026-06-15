@@ -8,7 +8,7 @@ import {
   Image as ImageIcon, Plus, Minus, ShoppingCart
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
-import { CartProvider, CartFab, AddToCartButton } from "@/components/cart";
+import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 interface BenefitItem {
   title: string;
   description: string;
@@ -632,7 +632,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                           <div className="p-4 space-y-2 flex-1 flex flex-col">
                             <div className="flex items-start justify-between gap-2">
                               <h4 className="font-bold text-amber-955 text-sm leading-tight">{item.name}</h4>
-                              {item.price && (
+                              {item.price && !isPlaceholderPrice(item.price) && (
                                 <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.price}</span>
                               )}
                             </div>
@@ -1214,7 +1214,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                               )}
                             </div>
                             {item.description && <p className="text-slate-400 text-xs leading-relaxed flex-1">{item.description}</p>}
-                            {item.price && (
+                            {item.price && !isPlaceholderPrice(item.price) && (
                               <p className="text-cyan-400 font-bold text-sm">{item.price}</p>
                             )}
                             <AddToCartButton
@@ -1813,7 +1813,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                         <div style={{ padding: "1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.375rem" }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
                             <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }}>{item.name}</h4>
-                            {item.price && <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.2rem 0.625rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}>{item.price}</span>}
+                            {item.price && !isPlaceholderPrice(item.price) && <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.2rem 0.625rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}>{item.price}</span>}
                           </div>
                           {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
                           <AddToCartButton
@@ -1866,7 +1866,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                             {item.badge && <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, border: `1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`, padding: "0.15rem 0.5rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.badge}</span>}
                           </div>
                           {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.78rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
-                          {item.price && <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}>{item.price}</p>}
+                          {item.price && !isPlaceholderPrice(item.price) && <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}>{item.price}</p>}
                           <AddToCartButton
                             itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
                             itemName={item.name}

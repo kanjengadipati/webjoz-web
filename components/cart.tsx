@@ -117,7 +117,13 @@ export function CartFab({ colorStyle }: { colorStyle?: React.CSSProperties }) {
   );
 }
 
-// ─── Add-to-Cart Button ────────────────────────────────────────────────────────
+// Helper: hides "Hubungi kami" placeholder prices from item cards.
+// The price is shown in the cart and WA message only when it's a real value.
+export function isPlaceholderPrice(price?: string | null): boolean {
+  if (!price) return true;
+  const lower = price.toLowerCase().trim();
+  return lower === "hubungi kami" || lower === "hubungi" || lower === "-" || lower === "";
+}
 
 interface AddToCartButtonProps {
   itemId: string;
@@ -128,6 +134,8 @@ interface AddToCartButtonProps {
   style?: React.CSSProperties;
   variant?: "light" | "dark" | "dynamic";
 }
+
+// ─── Add-to-Cart Button ────────────────────────────────────────────────────────
 
 export function AddToCartButton({
   itemId, itemName, itemPrice, category,
@@ -197,7 +205,7 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
   Object.entries(byCategory).forEach(([cat, catItems]) => {
     lines.push(`*${cat}*`);
     catItems.forEach((item) => {
-      const priceStr = item.price && item.price.toLowerCase() !== "hubungi kami" ? ` (${item.price})` : "";
+      const priceStr = item.price && !isPlaceholderPrice(item.price) ? ` (${item.price})` : "";
       lines.push(`• ${item.qty}x ${item.name}${priceStr}`);
     });
   });
@@ -289,7 +297,7 @@ function CartDrawer({ waPhone, brandName }: { waPhone: string; brandName?: strin
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-800 leading-tight truncate">{item.name}</p>
                   <p className="text-xs text-slate-400 mt-0.5">{item.category}</p>
-                  {item.price && item.price.toLowerCase() !== "hubungi kami" && (
+                  {item.price && !isPlaceholderPrice(item.price) && (
                     <p className="text-xs font-bold text-slate-600 mt-0.5">{item.price}</p>
                   )}
                 </div>
