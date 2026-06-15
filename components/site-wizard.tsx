@@ -13,7 +13,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
-import { TemplateDynamic } from "@/components/templates";
+import { TemplateDynamicWithCart } from "@/components/templates";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -1350,7 +1350,7 @@ export function SiteWizard({
           {previewState === "result" && previewData && (
             <div className="h-full flex flex-col overflow-hidden">
               <div className="flex-1 overflow-y-auto">
-                <TemplateDynamic
+                <TemplateDynamicWithCart
                   content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
                   design_token={previewData.design_token as any}
                 />

@@ -5,9 +5,10 @@ import {
   Utensils, Calendar, Clock, MapPin, Phone, Mail, Check,
   ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown,
   ChevronUp, Star, HelpCircle, Send, Globe, MessageSquare,
-  Image as ImageIcon
+  Image as ImageIcon, Plus, Minus, ShoppingCart
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { CartProvider, CartFab, AddToCartButton } from "@/components/cart";
 interface BenefitItem {
   title: string;
   description: string;
@@ -617,26 +618,37 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 <div key={catIdx} className="space-y-6">
                   <h3 className="text-lg font-bold font-serif text-amber-900 border-b border-[#EADFCB] pb-2">{cat.name}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {cat.items?.map((item, itemIdx) => (
-                      <div key={itemIdx} className="group bg-[#FAF7F2] border border-[#EADFCB] rounded-2xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-300">
-                        {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        ) : (
-                          <div className="w-full h-44 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
-                            <Utensils className="w-10 h-10 text-amber-300" />
+                    {cat.items?.map((item, itemIdx) => {
+                      const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
+                      return (
+                        <div key={itemIdx} className="group bg-[#FAF7F2] border border-[#EADFCB] rounded-2xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-300 flex flex-col">
+                          {item.image_url ? (
+                            <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ) : (
+                            <div className="w-full h-44 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
+                              <Utensils className="w-10 h-10 text-amber-300" />
+                            </div>
+                          )}
+                          <div className="p-4 space-y-2 flex-1 flex flex-col">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-bold text-amber-955 text-sm leading-tight">{item.name}</h4>
+                              {item.price && (
+                                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.price}</span>
+                              )}
+                            </div>
+                            {item.description && <p className="text-[#6D5D50] text-xs leading-relaxed flex-1">{item.description}</p>}
+                            <AddToCartButton
+                              itemId={itemId}
+                              itemName={item.name}
+                              itemPrice={item.price}
+                              category={cat.name}
+                              className="mt-2 w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-amber-800 hover:bg-amber-900 text-white transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-1"
+                              style={{ background: "#92400e", color: "#fff" }}
+                            />
                           </div>
-                        )}
-                        <div className="p-4 space-y-1.5">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-bold text-amber-955 text-sm leading-tight">{item.name}</h4>
-                            {item.price && (
-                              <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.price}</span>
-                            )}
-                          </div>
-                          {item.description && <p className="text-[#6D5D50] text-xs leading-relaxed">{item.description}</p>}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -647,7 +659,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     ) : null,
   } as Record<string, React.ReactNode>;
 
+  const waPhone = contact?.phone ?? "";
+
   return (
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name}>
     <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -693,7 +708,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
+      {/* Floating cart button */}
+      {!isEditorMode && <CartFab colorStyle={{ background: "#92400e", color: "#fff" }} />}
     </div>
+    </CartProvider>
   );
 };
 
@@ -1177,27 +1195,40 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 <div key={catIdx} className="space-y-6">
                   <h3 className="text-base font-bold text-cyan-400 border-b border-slate-800 pb-2 uppercase tracking-wide">{cat.name}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    {cat.items?.map((item, itemIdx) => (
-                      <div key={itemIdx} className="group bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-                        {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        ) : (
-                          <div className="w-full h-44 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                            <ImageIcon className="w-10 h-10 text-slate-700" />
-                          </div>
-                        )}
-                        <div className="p-4 space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-bold text-white text-sm leading-tight">{item.name}</h4>
-                            {item.badge && (
-                              <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.badge}</span>
+                    {cat.items?.map((item, itemIdx) => {
+                      const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
+                      return (
+                        <div key={itemIdx} className="group bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)] flex flex-col">
+                          {item.image_url ? (
+                            <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ) : (
+                            <div className="w-full h-44 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                              <ImageIcon className="w-10 h-10 text-slate-700" />
+                            </div>
+                          )}
+                          <div className="p-4 space-y-2 flex-1 flex flex-col">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-bold text-white text-sm leading-tight">{item.name}</h4>
+                              {item.badge && (
+                                <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.badge}</span>
+                              )}
+                            </div>
+                            {item.description && <p className="text-slate-400 text-xs leading-relaxed flex-1">{item.description}</p>}
+                            {item.price && (
+                              <p className="text-cyan-400 font-bold text-sm">{item.price}</p>
                             )}
+                            <AddToCartButton
+                              itemId={itemId}
+                              itemName={item.name}
+                              itemPrice={item.price}
+                              category={cat.name}
+                              className="mt-1 w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-1 focus:ring-offset-slate-900"
+                              style={{ background: "#06b6d4", color: "#0f172a" }}
+                            />
                           </div>
-                          {item.description && <p className="text-slate-400 text-xs leading-relaxed">{item.description}</p>}
-                          {item.price && <p className="text-cyan-400 font-bold text-sm">{item.price}</p>}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -1208,7 +1239,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     ) : null,
   } as Record<string, React.ReactNode>;
 
+  const waPhone = contact?.phone ?? "";
+
   return (
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name}>
     <div className="bg-slate-955 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -1254,7 +1288,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
+      {/* Floating cart button */}
+      {!isEditorMode && <CartFab colorStyle={{ background: "#06b6d4", color: "#0f172a" }} />}
     </div>
+    </CartProvider>
   );
 };
 
@@ -1773,12 +1810,20 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                             <Utensils style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
                           </div>
                         )}
-                        <div style={{ padding: "1rem" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.375rem" }}>
+                        <div style={{ padding: "1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
                             <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }}>{item.name}</h4>
                             {item.price && <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.2rem 0.625rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}>{item.price}</span>}
                           </div>
-                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0 }}>{item.description}</p>}
+                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
+                          <AddToCartButton
+                            itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                            itemName={item.name}
+                            itemPrice={item.price}
+                            category={cat.name}
+                            className="flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-opacity hover:opacity-80 active:scale-95 focus:outline-none"
+                            style={{ marginTop: "0.625rem", padding: "0.5rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)" }}
+                          />
                         </div>
                       </div>
                     ))}
@@ -1815,13 +1860,21 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                             <ImageIcon style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
                           </div>
                         )}
-                        <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+                        <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.375rem", flex: 1 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
                             <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0 }}>{item.name}</h4>
                             {item.badge && <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, border: `1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`, padding: "0.15rem 0.5rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.badge}</span>}
                           </div>
-                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.78rem", lineHeight: 1.5, margin: 0 }}>{item.description}</p>}
+                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.78rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
                           {item.price && <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}>{item.price}</p>}
+                          <AddToCartButton
+                            itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                            itemName={item.name}
+                            itemPrice={item.price}
+                            category={cat.name}
+                            className="flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-opacity hover:opacity-80 active:scale-95 focus:outline-none"
+                            style={{ marginTop: "0.375rem", padding: "0.5rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)" }}
+                          />
                         </div>
                       </div>
                     ))}
@@ -1896,6 +1949,18 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       )}
+      {/* Floating cart button — uses design token primary color */}
+      {!isEditorMode && <CartFab />}
     </div>
   );
 };
+
+export function TemplateDynamicWithCart(props: TemplateProps) {
+  const waPhone = props.content?.contact?.phone ?? "";
+  const brandName = props.content?.header?.brand_name;
+  return (
+    <CartProvider waPhone={waPhone} brandName={brandName}>
+      <TemplateDynamic {...props} />
+    </CartProvider>
+  );
+}

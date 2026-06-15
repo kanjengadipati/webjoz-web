@@ -6,6 +6,7 @@ import {
   TemplateKuliner,
   TemplateProduk,
   TemplateDynamic,
+  TemplateDynamicWithCart,
 } from "@/components/templates";
 
 export type { DesignToken };
@@ -59,7 +60,7 @@ export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
     category: "AI-Generated",
     description: "Tampilan unik yang dibuat khusus oleh AI untuk bisnis Anda. Warna, font, dan layout disesuaikan otomatis.",
     accent: "#7C3AED",
-    component: TemplateDynamic,
+    component: TemplateDynamicWithCart,
     previewType: "dynamic",
     tags: [],
     isDynamic: true,
