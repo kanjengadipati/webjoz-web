@@ -814,7 +814,7 @@ export default function SiteEditorPage() {
       <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* ════ LEFT SIDEBAR ════ */}
-        <div className="w-[300px] flex-shrink-0 border-r flex flex-col overflow-hidden bg-[#111318]" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
+        <div className="w-[380px] flex-shrink-0 border-r flex flex-col overflow-hidden bg-[#111318]" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
 
           {/* Site identity */}
           <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
