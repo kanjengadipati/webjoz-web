@@ -7,6 +7,10 @@ import {
   TemplateProduk,
   TemplateDynamic,
   TemplateDynamicWithCart,
+  TemplateElegant,
+  TemplateNatural,
+  TemplateColorful,
+  TemplateMinimalist,
 } from "@/components/templates";
 
 export type { DesignToken };
@@ -64,6 +68,46 @@ export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
     previewType: "dynamic",
     tags: [],
     isDynamic: true,
+  },
+  {
+    id: "TEMPLATE_ELEGANT",
+    name: "Noir Prestige",
+    category: "Premium & Eksklusif",
+    description: "Dark gold premium. Elegan, mewah, dan berkesan. Cocok untuk bisnis high-end, spa, fine dining, dan brand premium.",
+    accent: "#C9A84C",
+    component: TemplateElegant,
+    previewType: "brand",
+    tags: ["elegant", "mewah", "premium", "spa", "salon", "fine dining", "eksklusif", "luxury", "perhiasan", "butik"],
+  },
+  {
+    id: "TEMPLATE_NATURAL",
+    name: "Bumi Lestari",
+    category: "Organik & Natural",
+    description: "Earthy, hangat, dan organik. Ideal untuk produk lokal, pertanian, skincare alami, dan bisnis berbasis alam.",
+    accent: "#3d5a45",
+    component: TemplateNatural,
+    previewType: "brand",
+    tags: ["natural", "organik", "pertanian", "skincare", "herbal", "eco", "hijau", "tani", "kebun", "produk lokal"],
+  },
+  {
+    id: "TEMPLATE_COLORFUL",
+    name: "Pop Riot",
+    category: "Bold & Playful",
+    description: "Neo-brutalist, penuh warna, dan berenergi tinggi. Cocok untuk brand anak muda, toko online, bubble tea, dan bisnis yang ingin tampil beda.",
+    accent: "#FF3CAC",
+    component: TemplateColorful,
+    previewType: "catalog",
+    tags: ["colorful", "fun", "playful", "anak muda", "bubble tea", "jajanan", "streetfood", "tren", "viral", "fashion"],
+  },
+  {
+    id: "TEMPLATE_MINIMALIST",
+    name: "White Space",
+    category: "Minimalis & Editorial",
+    description: "Editorial, bersih, dan typografi besar. Cocok untuk portofolio, konsultan, fotografer, brand premium subtle, dan bisnis yang mengutamakan kesan profesional.",
+    accent: "#18181B",
+    component: TemplateMinimalist,
+    previewType: "service",
+    tags: ["minimalist", "editorial", "portfolio", "fotografer", "arsitektur", "konsultan", "desainer", "clean", "modern"],
   },
 ];
 

@@ -5,7 +5,7 @@ import {
   Utensils, Calendar, Clock, MapPin, Phone, Mail, Check,
   ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown,
   ChevronUp, Star, HelpCircle, Send, Globe, MessageSquare,
-  Image as ImageIcon, Plus, Minus, ShoppingCart, Menu, X
+  Image as ImageIcon, Plus, Minus, ShoppingCart, Menu, X, Leaf
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -2301,3 +2301,1154 @@ export function TemplateDynamicWithCart(props: TemplateProps & { previewMode?: b
     </CartProvider>
   );
 }
+
+// ==========================================
+// 5. TEMPLATE_ELEGANT — Dark Gold Premium
+// ==========================================
+export const TemplateElegant: React.FC<TemplateProps> = ({
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
+}) => {
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = (() => {
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const order = [...base];
+    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
+    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
+    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    return order;
+  })();
+
+  const gold = "#c9a84c";
+  const goldLight = "#f0d080";
+  const darkBg = "#0a0a0a";
+  const darkSurface = "#0f0f0f";
+  const darkCard = "#141414";
+  const textMuted = "rgba(200,160,60,0.5)";
+
+  const sectionNodes: Record<string, React.ReactNode> = {
+    hero: (
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={hero} render={(h) => (
+          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, #0d0c08 0%, ${darkBg} 100%)` }}>
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-[100px] pointer-events-none" style={{ background: gold }} />
+            <div className="max-w-4xl mx-auto relative z-10 space-y-7">
+              {h.eyebrow && (
+                <span className="inline-flex items-center gap-1.5 border px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest font-sans" style={{ borderColor: `${gold}30`, background: `${gold}08`, color: gold }}>
+                  <Award className="w-3 h-3" /> {h.eyebrow}
+                </span>
+              )}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>
+                {h.headline}
+              </h1>
+              <p className="text-sm md:text-base leading-relaxed max-w-xl mx-auto font-light" style={{ color: "rgba(245,230,192,0.6)", fontFamily: "sans-serif" }}>
+                {h.subheadline}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: "#0a0a0a" }}>
+                  {h.cta_text} <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+              {h.badge_text && (
+                <p className="text-[10px] uppercase tracking-widest" style={{ color: textMuted }}>{h.badge_text}</p>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    about: (
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={about} render={(a) => (
+          <section className="py-20 px-6 border-y" id="about" style={{ background: darkSurface, borderColor: `${gold}15` }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-5">
+                {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: gold }}>{a.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-bold leading-snug" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{a.title}</h2>
+                <p className="text-sm leading-relaxed font-light font-sans" style={{ color: "rgba(245,230,192,0.55)" }}>{a.body}</p>
+                {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: `${gold}20` }}>
+                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                      <div key={i}>
+                        <p className="text-xl font-bold" style={{ color: gold, fontFamily: "Georgia, serif" }}>{stat!.value}</p>
+                        <p className="text-[10px] font-sans mt-1" style={{ color: "rgba(245,230,192,0.4)" }}>{stat!.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 rounded blur-xl opacity-20" style={{ background: gold }} />
+                <div className="relative rounded border p-8 text-center space-y-3" style={{ background: darkCard, borderColor: `${gold}25` }}>
+                  {a.image_url
+                    ? <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    : <Award className="w-12 h-12 mx-auto" style={{ color: gold }} />}
+                  <p className="text-sm font-bold font-sans" style={{ color: goldLight }}>{header?.brand_name}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    benefits: (
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={benefits} render={(b) => (
+          <section className="py-20 px-6" id="benefits" style={{ background: darkBg }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-2">
+                {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: gold }}>{b.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{b.title}</h2>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {b.items?.map((item, idx) => (
+                  <div key={idx} className="p-6 rounded border space-y-3 transition-all hover:brightness-110" style={{ background: darkCard, borderColor: `${gold}20` }}>
+                    <div className="w-10 h-10 rounded flex items-center justify-center" style={{ background: `${gold}15` }}>
+                      <Star className="w-5 h-5" style={{ color: gold }} />
+                    </div>
+                    {item.stat && <p className="text-2xl font-bold" style={{ color: gold, fontFamily: "Georgia, serif" }}>{item.stat}<span className="text-sm ml-1" style={{ color: textMuted }}>{item.stat_label}</span></p>}
+                    <h3 className="text-sm font-bold font-sans" style={{ color: "#f5e6c0" }}>{item.title}</h3>
+                    <p className="text-xs leading-relaxed font-light font-sans" style={{ color: "rgba(245,230,192,0.45)" }}>{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          headingClass=""
+          eyebrowClass=""
+          cardClass=""
+          quoteClass=""
+          nameClass=""
+          roleClass=""
+          bgClass="py-20 px-6"
+          sectionStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
+          cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "8px" }}
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    faq: (
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={faq} render={(f) => (
+          <section className="py-20 px-6 max-w-3xl mx-auto space-y-10" id="faq">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{f.title}</h2>
+            </div>
+            <div className="space-y-3">
+              {f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} isDark={true} />)}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    cta: (
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={cta} render={(c) => (
+          <section className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
+            <div className="max-w-2xl mx-auto text-center space-y-5">
+              {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>{c.eyebrow}</span>}
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.headline}</h2>
+              {c.subheadline && <p className="text-sm font-light font-sans" style={{ color: "rgba(245,230,192,0.55)" }}>{c.subheadline}</p>}
+              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: "#0a0a0a" }}>
+                {c.button_text} <ArrowRight className="w-4 h-4" />
+              </a>
+              {c.trust_signal && <p className="text-[10px] font-sans" style={{ color: textMuted }}>{c.trust_signal}</p>}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    contact: (
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
+          <section className="py-20 px-6" id="contact" style={{ background: darkBg }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+              <div className="space-y-5">
+                <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{data.contact.title}</h2>
+                <div className="space-y-3 font-sans text-sm" style={{ color: "rgba(245,230,192,0.55)" }}>
+                  {data.contact.address && <div className="flex gap-3"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: gold }} /><p>{data.contact.address}</p></div>}
+                  {data.contact.phone && <div className="flex gap-3"><Phone className="w-4 h-4 flex-shrink-0" style={{ color: gold }} /><p>{data.contact.phone}</p></div>}
+                  {data.contact.email && <div className="flex gap-3"><Mail className="w-4 h-4 flex-shrink-0" style={{ color: gold }} /><p>{data.contact.email}</p></div>}
+                </div>
+              </div>
+              {data.contact.show_lead_form && data.onSubmitLead && (
+                <div className="p-6 rounded border" style={{ background: darkCard, borderColor: `${gold}25` }}>
+                  <h3 className="text-sm font-bold font-sans mb-5" style={{ color: goldLight }}>Hubungi Kami</h3>
+                  <LeadForm onSubmit={data.onSubmitLead} submitting={data.leadSubmitting} success={data.leadSuccess} error={data.leadError}
+                    buttonClass="rounded font-bold text-[11px] uppercase tracking-widest bg-amber-500 text-black hover:bg-amber-400"
+                    inputClass="w-full px-3 py-2.5 rounded text-sm font-sans outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/25 text-amber-100 placeholder-neutral-600"
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+  };
+
+  return (
+    <div style={{ background: darkBg, color: "#f5e6c0", fontFamily: "Georgia, serif", minHeight: "100vh", overflowX: "hidden" }}>
+      {/* Announcement bar */}
+      <div className="py-2 text-center text-[10px] uppercase tracking-widest font-sans" style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
+        {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
+      </div>
+
+      {/* Header */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url }} render={(h) => (
+          <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative" style={{ background: `${darkBg}cc`, borderBottom: `1px solid ${gold}15` }}>
+            <span className="text-base font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: gold }}>
+              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Globe} iconClass="" imgClass="h-8 w-auto object-contain" />
+              {h.brand_name}
+            </span>
+            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: darkCard, borderTop: `1px solid ${gold}20` }} />
+            <a href="#contact" className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110 font-sans" style={{ background: gold, color: "#0a0a0a" }}>
+              {h.nav_cta_text || "Hubungi Kami"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+
+      {/* Footer */}
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand: header?.brand_name }} render={(f) => (
+          <footer className="py-10 text-center font-sans border-t" style={{ background: "#070707", borderColor: `${gold}15` }}>
+            <p className="text-[10px] uppercase tracking-widest" style={{ color: `${gold}40` }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
+          </footer>
+        )} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
+    </div>
+  );
+};
+
+// ==========================================
+// 6. TEMPLATE_NATURAL — Earthy Organic Warm
+// ==========================================
+export const TemplateNatural: React.FC<TemplateProps> = ({
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
+}) => {
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = (() => {
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const order = [...base];
+    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
+    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
+    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    return order;
+  })();
+
+  const cream = "#fcf8f2";
+  const sage = "#3d5a45";
+  const sageDark = "#2c4233";
+  const sageLight = "#e9f0ea";
+  const brown = "#2e251b";
+  const brownMuted = "#5a4e42";
+  const border = "#eae1d0";
+
+  const sectionNodes: Record<string, React.ReactNode> = {
+    hero: (
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={hero} render={(h) => (
+          <section className="py-16 px-6 grid md:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
+            <div className="space-y-5">
+              {h.eyebrow && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border font-sans" style={{ background: sageLight, borderColor: "#a2b5a5", color: sageDark }}>
+                  <Leaf className="w-3 h-3" /> {h.eyebrow}
+                </span>
+              )}
+              <h1 className="text-3xl md:text-5xl font-medium leading-tight" style={{ color: "#233527", fontFamily: "Georgia, 'Playfair Display', serif" }}>
+                {h.headline}
+              </h1>
+              <p className="text-sm md:text-base leading-relaxed italic font-light" style={{ color: brownMuted }}>
+                {h.subheadline}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: sage }}>
+                  {h.cta_text} <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+              {h.badge_text && <p className="text-[10px] uppercase tracking-wider font-sans" style={{ color: "#8a9e8d" }}>{h.badge_text}</p>}
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 rounded-[3rem] rotate-1" style={{ background: sageLight }} />
+              <div className="relative rounded-[3rem] p-6 text-center space-y-4 border shadow" style={{ background: "white", borderColor: border }}>
+                {h.image_url
+                  ? <img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-2xl" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  : (
+                    <>
+                      <span className="text-4xl block">🌿</span>
+                      <h3 className="italic text-lg" style={{ color: sageDark, fontFamily: "Georgia, serif" }}>"{h.headline}"</h3>
+                      <p className="text-[9px] uppercase tracking-widest font-sans" style={{ color: "#aaa" }}>{header?.brand_name}</p>
+                    </>
+                  )}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    about: (
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={about} render={(a) => (
+          <section className="py-16 px-6 border-y" id="about" style={{ background: "#efe9df40", borderColor: border }}>
+            <div className="max-w-5xl mx-auto space-y-8">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{a.eyebrow}</span>}
+                  <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{a.title}</h2>
+                  <p className="text-sm leading-relaxed italic font-light" style={{ color: brownMuted }}>{a.body}</p>
+                </div>
+                {a.image_url && (
+                  <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded-2xl border" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                )}
+              </div>
+              {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: border }}>
+                  {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                    <div key={i} className="text-center space-y-1">
+                      <p className="text-2xl font-bold" style={{ color: sage, fontFamily: "Georgia, serif" }}>{stat!.value}</p>
+                      <p className="text-[10px] font-sans" style={{ color: brownMuted }}>{stat!.label}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    benefits: (
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={benefits} render={(b) => (
+          <section className="py-16 px-6" id="benefits" style={{ background: cream }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <div className="text-center space-y-2">
+                {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{b.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{b.title}</h2>
+                {b.subtitle && <p className="text-sm italic" style={{ color: brownMuted }}>{b.subtitle}</p>}
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {b.items?.map((item, idx) => (
+                  <div key={idx} className="p-6 rounded-2xl border space-y-3 transition-all hover:shadow-md" style={{ background: "white", borderColor: border }}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: sageLight }}>
+                      <Sparkles className="w-5 h-5" style={{ color: sage }} />
+                    </div>
+                    {item.stat && <p className="text-xl font-bold" style={{ color: sage, fontFamily: "Georgia, serif" }}>{item.stat}</p>}
+                    <h3 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.title}</h3>
+                    <p className="text-xs leading-relaxed italic font-light" style={{ color: brownMuted }}>{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection testimonials={testimonials}
+          headingClass="font-medium" eyebrowClass="" cardClass="" quoteClass="" nameClass="" roleClass=""
+          bgClass="py-16 px-6"
+          sectionStyle={{ background: "#efe9df40", borderTop: `1px solid ${border}` }}
+          cardStyle={{ background: "white", border: `1px solid ${border}`, borderRadius: "16px" }}
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(menuData) => (
+          <section className="py-16 px-6 border-y" id="menu" style={{ background: cream, borderColor: border }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <div className="text-center"><h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{menuData.title}</h2></div>
+              {menuData.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cat.items?.map((item, ii) => {
+                      const itemId = `${cat.name}__${item.name}__${ci}_${ii}`;
+                      return (
+                        <div key={ii} className="rounded-2xl border overflow-hidden flex flex-col transition-all hover:shadow-sm" style={{ background: "white", borderColor: border }}>
+                          {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : <div className="w-full h-36 flex items-center justify-center" style={{ background: sageLight }}><Utensils className="w-8 h-8" style={{ color: sage, opacity: 0.4 }} /></div>}
+                          <div className="p-4 flex-1 flex flex-col gap-1.5">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.name}</h4>
+                              {item.price && !isPlaceholderPrice(item.price) && <span className="text-xs font-bold px-2 py-0.5 rounded-full font-sans" style={{ background: sageLight, color: sageDark }}>{item.price}</span>}
+                            </div>
+                            {item.description && <p className="text-xs italic" style={{ color: brownMuted }}>{item.description}</p>}
+                            <AddToCartButton itemId={itemId} itemName={item.name} itemPrice={item.price} category={cat.name}
+                              className="mt-auto flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                              style={{ background: sage }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(catalogData) => (
+          <section className="py-16 px-6 border-y" id="catalog" style={{ background: cream, borderColor: border }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <div className="text-center"><h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{catalogData.title}</h2></div>
+              {catalogData.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cat.items?.map((item, ii) => {
+                      const itemId = `${cat.name}__${item.name}__${ci}_${ii}`;
+                      return (
+                        <div key={ii} className="rounded-2xl border overflow-hidden flex flex-col" style={{ background: "white", borderColor: border }}>
+                          {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : <div className="w-full h-36 flex items-center justify-center" style={{ background: sageLight }}><ImageIcon className="w-8 h-8" style={{ color: sage, opacity: 0.4 }} /></div>}
+                          <div className="p-4 flex-1 flex flex-col gap-1.5">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.name}</h4>
+                              {item.badge && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full font-sans" style={{ background: sageLight, color: sageDark }}>{item.badge}</span>}
+                            </div>
+                            {item.description && <p className="text-xs italic flex-1" style={{ color: brownMuted }}>{item.description}</p>}
+                            {item.price && !isPlaceholderPrice(item.price) && <p className="text-sm font-bold font-sans" style={{ color: sage }}>{item.price}</p>}
+                            <AddToCartButton itemId={itemId} itemName={item.name} itemPrice={item.price} category={cat.name}
+                              className="flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                              style={{ background: sage }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    faq: (
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={faq} render={(f) => (
+          <section className="py-16 px-6 max-w-3xl mx-auto space-y-8" id="faq">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{f.title}</h2>
+            </div>
+            <div className="space-y-3">{f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} />)}</div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    cta: (
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={cta} render={(c) => (
+          <section className="py-16 px-6 border-y" style={{ background: "#efe9df40", borderColor: border }}>
+            <div className="max-w-2xl mx-auto text-center space-y-5">
+              {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>{c.eyebrow}</span>}
+              <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{c.headline}</h2>
+              {c.subheadline && <p className="text-sm italic font-light" style={{ color: brownMuted }}>{c.subheadline}</p>}
+              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: sage }}>
+                {c.button_text} <ArrowRight className="w-4 h-4" />
+              </a>
+              {c.trust_signal && <p className="text-[10px] font-sans" style={{ color: brownMuted }}>{c.trust_signal}</p>}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    contact: (
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
+          <section className="py-16 px-6" id="contact" style={{ background: cream }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{data.contact.title}</h2>
+                <div className="space-y-3 text-sm font-sans" style={{ color: brownMuted }}>
+                  {data.contact.address && <div className="flex gap-3"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: sage }} /><p>{data.contact.address}</p></div>}
+                  {data.contact.phone && <div className="flex gap-3"><Phone className="w-4 h-4 flex-shrink-0" style={{ color: sage }} /><p>{data.contact.phone}</p></div>}
+                  {data.contact.email && <div className="flex gap-3"><Mail className="w-4 h-4 flex-shrink-0" style={{ color: sage }} /><p>{data.contact.email}</p></div>}
+                </div>
+              </div>
+              {data.contact.show_lead_form && data.onSubmitLead && (
+                <div className="p-6 rounded-2xl border" style={{ background: "white", borderColor: border }}>
+                  <h3 className="text-sm font-bold font-sans mb-4" style={{ color: sageDark }}>Kirim Pesan</h3>
+                  <LeadForm onSubmit={data.onSubmitLead} submitting={data.leadSubmitting} success={data.leadSuccess} error={data.leadError}
+                    buttonClass={`rounded-full text-white font-bold text-xs uppercase tracking-wider`}
+                    inputClass={`w-full px-3 py-2.5 rounded-xl text-sm font-sans border outline-none focus:ring-1 focus:ring-[${sage}]`}
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+  };
+
+  return (
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <div style={{ background: cream, color: brown, fontFamily: "Georgia, 'Playfair Display', serif", minHeight: "100vh", overflowX: "hidden" }}>
+      {/* Header */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+          <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative border-b font-sans" style={{ background: `${cream}e0`, borderColor: border }}>
+            <span className="flex items-center gap-2 text-base font-bold" style={{ color: sage }}>
+              <span>🌿</span>
+              <span className="min-w-0">
+                <span className="block truncate">{h.brand_name}</span>
+                {h.tagline && <span className="block text-[10px] font-normal" style={{ color: brownMuted }}>{h.tagline}</span>}
+              </span>
+            </span>
+            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: cream, borderTop: `1px solid ${border}` }} />
+            <a href="#contact" className="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: sage }}>
+              {h.nav_cta_text || "Hubungi Kami"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+
+      {/* Footer */}
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text }} render={(f) => (
+          <footer className="py-8 text-center border-t font-sans" style={{ background: "#f5ede0", borderColor: border }}>
+            <p className="text-[10px] uppercase tracking-widest" style={{ color: brownMuted }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
+          </footer>
+        )} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
+      {!isEditorMode && <CartFab colorStyle={{ background: sage, color: "white" }} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
+    </div>
+    </CartProvider>
+  );
+};
+
+// 7. TEMPLATE_COLORFUL — Neo-Brutalist Bold & Fun
+// ==========================================
+export const TemplateColorful: React.FC<TemplateProps> = ({
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
+}) => {
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = (() => {
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const order = [...base];
+    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
+    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
+    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    return order;
+  })();
+
+  const yellow = "#FFE135";
+  const pink = "#FF3CAC";
+  const black = "#0D0D0D";
+  const bg = "#FFFBEB";
+  const surface = "#FFFFFF";
+
+  const shadowBlock = "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
+  const shadowBlockHover = "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:translate-x-0.5";
+
+  const sectionNodes: Record<string, React.ReactNode> = {
+    hero: (
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={hero} render={(h) => (
+          <section className="py-14 px-6 max-w-5xl mx-auto grid md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-7 space-y-5">
+              {h.eyebrow && (
+                <span className="inline-flex items-center gap-1.5 bg-yellow-200 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000" }}>
+                  <Sparkles className="w-3 h-3" /> {h.eyebrow}
+                </span>
+              )}
+              <h1 className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tight" style={{ color: black }}>
+                {h.headline}
+              </h1>
+              <p className="text-sm font-bold leading-relaxed" style={{ color: "#3D2B00" }}>{h.subheadline}</p>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <a href={h.cta_url}
+                  className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all ${shadowBlock} ${shadowBlockHover}`}
+                  style={{ background: yellow, color: black }}>
+                  {h.cta_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
+                </a>
+                {h.cta_secondary_text && (
+                  <a href="#contact"
+                    className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all bg-white ${shadowBlock} ${shadowBlockHover}`}
+                    style={{ color: black }}>
+                    {h.cta_secondary_text}
+                  </a>
+                )}
+              </div>
+              {h.badge_text && <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: pink }}>{h.badge_text}</p>}
+            </div>
+            <div className="md:col-span-5 relative">
+              <div className="absolute inset-0 rounded-2xl rotate-2 border-2 border-black" style={{ background: pink }} />
+              <div className={`relative bg-white border-4 border-black rounded-2xl p-5 space-y-4 ${shadowBlock}`}>
+                {h.image_url
+                  ? <img src={h.image_url} alt={h.headline} className="w-full h-48 object-cover rounded-xl border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  : (
+                    <div className="w-full h-48 rounded-xl border-2 border-black flex items-center justify-center" style={{ background: yellow }}>
+                      <span className="text-5xl">🎯</span>
+                    </div>
+                  )}
+                <div className="border-t-2 border-black pt-3 text-center">
+                  <p className="font-black text-sm uppercase">{header?.brand_name}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    about: (
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={about} render={(a) => (
+          <section id="about" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E8F5E9" }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+              <div className="space-y-4">
+                {a.eyebrow && <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-2 py-1">{a.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-black uppercase leading-snug" style={{ color: black }}>{a.title}</h2>
+                <p className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }}>{a.body}</p>
+                {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
+                  <div className="grid grid-cols-3 gap-3 pt-3">
+                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                      <div key={i} className={`border-2 border-black p-3 text-center ${shadowBlock}`} style={{ background: i === 0 ? yellow : i === 1 ? pink : "#B2EBF2" }}>
+                        <p className="text-xl font-black" style={{ color: black }}>{stat!.value}</p>
+                        <p className="text-[9px] font-black uppercase tracking-wider" style={{ color: black }}>{stat!.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {a.image_url && (
+                <div className="relative">
+                  <div className="absolute inset-0 border-2 border-black rounded-xl rotate-2" style={{ background: yellow }} />
+                  <img src={a.image_url} alt={a.title} className="relative w-full h-60 object-cover rounded-xl border-4 border-black" style={{ boxShadow: "5px 5px 0 #000" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                </div>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    benefits: (
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={benefits} render={(b) => (
+          <section id="benefits" className="py-14 px-6" style={{ background: bg }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <div className="text-center space-y-3">
+                {b.eyebrow && <span className="inline-block border-2 border-black bg-yellow-300 text-[10px] font-black uppercase px-2.5 py-1" style={{ boxShadow: "2px 2px 0 #000" }}>{b.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-black uppercase" style={{ color: black }}>{b.title}</h2>
+                {b.subtitle && <p className="text-sm font-bold" style={{ color: "#5D4037" }}>{b.subtitle}</p>}
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {b.items?.map((item, idx) => {
+                  const colors = [yellow, "#FFB3C1", "#B3E5FC", "#C8E6C9", "#E1BEE7", "#FFE0B2"];
+                  return (
+                    <div key={idx} className={`border-2 border-black p-5 space-y-3 transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: colors[idx % colors.length] }}>
+                      <div className="w-9 h-9 border-2 border-black flex items-center justify-center font-black text-lg" style={{ background: black, color: yellow }}>
+                        {String.fromCharCode(65 + idx)}
+                      </div>
+                      <h3 className="font-black text-sm uppercase" style={{ color: black }}>{item.title}</h3>
+                      <p className="text-[11px] font-semibold leading-relaxed" style={{ color: "#333" }}>{item.description}</p>
+                      {item.stat && <div className="border-t-2 border-black pt-2"><span className="text-xl font-black" style={{ color: black }}>{item.stat}</span><span className="text-[9px] font-black uppercase ml-1">{item.stat_label}</span></div>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          bgClass="py-14 px-6 border-y-4 border-black"
+          sectionStyle={{ background: "#FFF9C4" }}
+          headingClass="font-black uppercase text-2xl md:text-3xl"
+          eyebrowClass="font-black uppercase text-xs"
+          cardClass="border-2 border-black"
+          cardStyle={{ background: surface, boxShadow: "4px 4px 0px #000" }}
+          quoteClass="text-sm font-semibold"
+          nameClass="text-sm font-black uppercase"
+          roleClass="text-xs font-bold"
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(m) => (
+          <section id="menu" className="py-14 px-6 border-y-4 border-black" style={{ background: "#FCE4EC" }}>
+            <div className="max-w-5xl mx-auto space-y-8">
+              <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{m.title}</h2>
+              {m.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className={`border-2 border-black p-4 flex gap-3 transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: surface }}>
+                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover border-2 border-black flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <p className="font-black text-sm uppercase" style={{ color: black }}>{item.name}</p>
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-sm whitespace-nowrap" style={{ color: pink }}>{item.price}</span>}
+                          </div>
+                          {item.description && <p className="text-[11px] font-semibold mt-1" style={{ color: "#555" }}>{item.description}</p>}
+                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className={`mt-2 flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: yellow, color: black }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(c) => (
+          <section id="catalog" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E3F2FD" }}>
+            <div className="max-w-5xl mx-auto space-y-8">
+              <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{c.title}</h2>
+              {c.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className={`border-2 border-black p-4 space-y-2 transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: surface }}>
+                        {item.badge && <span className="inline-block bg-black text-yellow-300 text-[9px] font-black uppercase px-2 py-0.5">{item.badge}</span>}
+                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <p className="font-black text-sm uppercase" style={{ color: black }}>{item.name}</p>
+                        {item.description && <p className="text-[11px] font-semibold" style={{ color: "#555" }}>{item.description}</p>}
+                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-black" style={{ color: pink }}>{item.price}</p>}
+                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className={`w-full flex items-center justify-center gap-1.5 py-2 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: yellow, color: black }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    faq: (
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={faq} render={(f) => (
+          <section id="faq" className="py-14 px-6" style={{ background: "#F3E5F5" }}>
+            <div className="max-w-3xl mx-auto space-y-6">
+              <h2 className="text-2xl font-black uppercase text-center border-b-4 border-black pb-4" style={{ color: black }}>{f.title}</h2>
+              <div className="space-y-4">
+                {f.items?.map((item, idx) => (
+                  <details key={idx} className={`border-2 border-black p-4 group ${shadowBlock}`} style={{ background: surface }}>
+                    <summary className="font-black text-sm uppercase cursor-pointer list-none flex justify-between items-center">
+                      {item.question}
+                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform stroke-[3]" />
+                    </summary>
+                    <p className="mt-3 text-sm font-semibold leading-relaxed border-t-2 border-black pt-3" style={{ color: "#444" }}>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    cta: (
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={cta} render={(c) => (
+          <section className="py-16 px-6 border-y-4 border-black text-center" style={{ background: black }}>
+            <div className="max-w-2xl mx-auto space-y-6">
+              {c.eyebrow && <span className="inline-block border-2 border-yellow-300 text-yellow-300 text-[10px] font-black uppercase px-2.5 py-1">{c.eyebrow}</span>}
+              <h2 className="text-2xl md:text-4xl font-black uppercase leading-tight" style={{ color: yellow }}>{c.headline}</h2>
+              {c.subheadline && <p className="text-sm font-bold" style={{ color: "#ccc" }}>{c.subheadline}</p>}
+              <a href={c.button_url} className={`inline-flex items-center gap-2 px-8 py-4 border-4 border-yellow-300 font-black text-sm uppercase tracking-wider transition-all ${shadowBlock} hover:translate-y-0.5`} style={{ background: yellow, color: black }}>
+                {c.button_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
+              </a>
+              {c.trust_signal && <p className="text-[11px] font-bold" style={{ color: "#999" }}>{c.trust_signal}</p>}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    contact: (
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={contact} render={(c) => (
+          <section id="contact" className="py-14 px-6" style={{ background: bg }}>
+            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-black uppercase" style={{ color: black }}>{c.title}</h2>
+                <div className="space-y-3">
+                  {c.address && <div className="flex items-start gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: yellow }}><MapPin className="w-4 h-4" style={{ color: black }} /></div><p className="text-sm font-semibold" style={{ color: "#333" }}>{c.address}</p></div>}
+                  {c.phone && <div className="flex items-center gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: pink }}><Phone className="w-4 h-4 text-white" /></div><p className="text-sm font-black" style={{ color: black }}>{c.phone}</p></div>}
+                  {c.email && <div className="flex items-center gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: "#B3E5FC" }}><Mail className="w-4 h-4" style={{ color: black }} /></div><p className="text-sm font-semibold" style={{ color: "#333" }}>{c.email}</p></div>}
+                </div>
+              </div>
+              {c.show_lead_form && onSubmitLead && (
+                <div className={`border-2 border-black p-6 ${shadowBlock}`} style={{ background: surface }}>
+                  <LeadForm onSubmit={onSubmitLead} submitting={leadSubmitting} success={leadSuccess} error={leadError}
+                    buttonClass="border-2 border-black font-black uppercase text-sm"
+                    inputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white" />
+                </div>
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+  };
+
+  return (
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <div style={{ background: bg, color: black, fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+      {/* Header */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+          <header className="sticky top-0 z-50 border-b-4 border-black px-6 py-3 flex items-center justify-between gap-4 relative" style={{ background: yellow }}>
+            <span className="flex items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: black }}>
+              <span className="w-8 h-8 border-2 border-black flex items-center justify-center font-black text-sm" style={{ background: black, color: yellow }}>{h.brand_name?.charAt(0)}</span>
+              <span className="min-w-0">
+                <span className="block truncate">{h.brand_name}</span>
+                {h.tagline && <span className="block text-[10px] font-bold uppercase tracking-widest" style={{ color: "#5D4037" }}>{h.tagline}</span>}
+              </span>
+            </span>
+            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="font-black uppercase text-sm text-black" drawerStyle={{ background: yellow, borderTop: "4px solid #000" }} />
+            <a href="#contact" className="px-4 py-2 border-2 border-black font-black text-xs uppercase tracking-wider transition-all" style={{ background: black, color: yellow, boxShadow: "2px 2px 0 rgba(0,0,0,0.3)" }}>
+              {h.nav_cta_text || "Hubungi Kami"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+
+      {/* Footer */}
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text, social_links: footer?.social_links }} render={(f) => (
+          <footer className="py-8 text-center border-t-4 border-black" style={{ background: black }}>
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: yellow }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
+          </footer>
+        )} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
+      {!isEditorMode && <CartFab colorStyle={{ background: pink, color: "white" }} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
+    </div>
+    </CartProvider>
+  );
+};
+
+// 8. TEMPLATE_MINIMALIST — Editorial Large Type, Clean Portfolio
+// ==========================================
+export const TemplateMinimalist: React.FC<TemplateProps> = ({
+  content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
+}) => {
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
+  const dt = design_token ?? null;
+  const sectionOrder = (() => {
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const order = [...base];
+    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
+    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
+    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    return order;
+  })();
+
+  const bg = "#FAFAFA";
+  const surface = "#FFFFFF";
+  const zinc900 = "#18181B";
+  const zinc500 = "#71717A";
+  const zinc200 = "#E4E4E7";
+  const zinc100 = "#F4F4F5";
+
+  const sectionNodes: Record<string, React.ReactNode> = {
+    hero: (
+      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={hero} render={(h) => (
+          <section className="py-20 px-6 md:px-12 max-w-5xl mx-auto space-y-8">
+            {h.eyebrow && <span className="text-xs font-semibold tracking-widest uppercase block" style={{ color: zinc500 }}>{h.eyebrow}</span>}
+            <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900 }}>
+              {h.headline}
+            </h1>
+            <div className="w-12 h-px" style={{ background: zinc900 }} />
+            <p className="text-sm md:text-base font-light leading-relaxed max-w-2xl" style={{ color: zinc500 }}>{h.subheadline}</p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <a href={h.cta_url} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-70" style={{ background: zinc900, color: "#fff" }}>
+                {h.cta_text} <ArrowRight className="w-4 h-4" />
+              </a>
+              {h.cta_secondary_text && (
+                <a href="#about" className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest border transition-all hover:opacity-70" style={{ borderColor: zinc900, color: zinc900 }}>
+                  {h.cta_secondary_text}
+                </a>
+              )}
+            </div>
+            {h.image_url && (
+              <div className="pt-8">
+                <img src={h.image_url} alt={h.headline} className="w-full max-h-[480px] object-cover" style={{ filter: "grayscale(15%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              </div>
+            )}
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    about: (
+      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={about} render={(a) => (
+          <section id="about" className="py-16 px-6 md:px-12 border-y" style={{ background: zinc100, borderColor: zinc200 }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+              <div className="space-y-6">
+                {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{a.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900 }}>{a.title}</h2>
+                <p className="text-sm font-light leading-relaxed" style={{ color: zinc500 }}>{a.body}</p>
+                {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
+                  <div className="grid grid-cols-3 gap-6 pt-4 border-t" style={{ borderColor: zinc200 }}>
+                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                      <div key={i} className="space-y-1">
+                        <p className="text-2xl font-light" style={{ color: zinc900 }}>{stat!.value}</p>
+                        <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: zinc500 }}>{stat!.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {a.image_url && (
+                <img src={a.image_url} alt={a.title} className="w-full h-72 object-cover" style={{ filter: "grayscale(10%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    benefits: (
+      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={benefits} render={(b) => (
+          <section id="benefits" className="py-16 px-6 md:px-12" style={{ background: surface }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="space-y-3">
+                {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{b.eyebrow}</span>}
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900 }}>{b.title}</h2>
+                {b.subtitle && <p className="text-sm font-light" style={{ color: zinc500 }}>{b.subtitle}</p>}
+              </div>
+              <div className="grid md:grid-cols-3 gap-0 border-l border-t" style={{ borderColor: zinc200 }}>
+                {b.items?.map((item, idx) => (
+                  <div key={idx} className="p-8 border-r border-b space-y-4 hover:bg-zinc-50 transition-colors" style={{ borderColor: zinc200 }}>
+                    <span className="text-[10px] font-mono font-semibold" style={{ color: zinc500 }}>0{idx + 1}</span>
+                    <h3 className="text-base font-medium" style={{ color: zinc900 }}>{item.title}</h3>
+                    <p className="text-xs font-light leading-relaxed" style={{ color: zinc500 }}>{item.description}</p>
+                    {item.stat && <div className="pt-2"><span className="text-xl font-light" style={{ color: zinc900 }}>{item.stat}</span><span className="text-[10px] font-mono ml-1.5" style={{ color: zinc500 }}>{item.stat_label}</span></div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          bgClass="py-16 px-6 md:px-12"
+          sectionStyle={{ background: zinc100, borderTop: `1px solid ${zinc200}`, borderBottom: `1px solid ${zinc200}` }}
+          headingClass="text-2xl md:text-3xl font-light tracking-tight"
+          eyebrowClass="text-[10px] font-semibold uppercase tracking-widest"
+          cardClass="border"
+          cardStyle={{ background: surface, borderColor: zinc200 }}
+          quoteClass="text-sm font-light leading-relaxed"
+          nameClass="text-sm font-medium"
+          roleClass="text-xs font-light"
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(m) => (
+          <section id="menu" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{m.title}</h2>
+              {m.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
+                  <div className="divide-y" style={{ borderColor: zinc200 }}>
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className="py-4 flex items-center justify-between gap-4 group">
+                        <div className="flex items-center gap-4 min-w-0">
+                          {item.image_url && <img src={item.image_url} alt={item.name} className="w-14 h-14 object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium" style={{ color: zinc900 }}>{item.name}</p>
+                            {item.description && <p className="text-xs font-light mt-0.5" style={{ color: zinc500 }}>{item.description}</p>}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 flex-shrink-0">
+                          {!isPlaceholderPrice(item.price) && item.price && <span className="text-sm font-light" style={{ color: zinc900 }}>{item.price}</span>}
+                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc200, color: zinc500 }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(c) => (
+          <section id="catalog" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+              {c.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-4">
+                  <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-px" style={{ background: zinc200 }}>
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className="p-6 space-y-3 hover:bg-zinc-50 transition-colors group" style={{ background: surface }}>
+                        {item.badge && <span className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>{item.badge}</span>}
+                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-40 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <p className="text-sm font-medium" style={{ color: zinc900 }}>{item.name}</p>
+                        {item.description && <p className="text-xs font-light" style={{ color: zinc500 }}>{item.description}</p>}
+                        <div className="flex items-center justify-between pt-1">
+                          {!isPlaceholderPrice(item.price) && item.price && <span className="text-sm font-light" style={{ color: zinc900 }}>{item.price}</span>}
+                          <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc200, color: zinc500 }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    faq: (
+      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={faq} render={(f) => (
+          <section id="faq" className="py-16 px-6 md:px-12" style={{ background: zinc100 }}>
+            <div className="max-w-3xl mx-auto space-y-8">
+              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{f.title}</h2>
+              <div className="divide-y" style={{ borderColor: zinc200 }}>
+                {f.items?.map((item, idx) => (
+                  <details key={idx} className="py-5 group">
+                    <summary className="text-sm font-medium cursor-pointer list-none flex justify-between items-center" style={{ color: zinc900 }}>
+                      {item.question}
+                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform flex-shrink-0 ml-4" style={{ color: zinc500 }} />
+                    </summary>
+                    <p className="mt-4 text-sm font-light leading-relaxed" style={{ color: zinc500 }}>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    cta: (
+      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={cta} render={(c) => (
+          <section className="py-20 px-6 md:px-12" style={{ background: zinc900 }}>
+            <div className="max-w-5xl mx-auto space-y-6">
+              {c.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{c.eyebrow}</span>}
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-tight max-w-2xl" style={{ color: "#F4F4F5" }}>{c.headline}</h2>
+              {c.subheadline && <p className="text-sm font-light max-w-xl" style={{ color: zinc500 }}>{c.subheadline}</p>}
+              <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
+                <a href={c.button_url} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-80" style={{ background: "#F4F4F5", color: zinc900 }}>
+                  {c.button_text} <ArrowRight className="w-4 h-4" />
+                </a>
+                {c.trust_signal && <span className="text-[11px] font-light self-center" style={{ color: zinc500 }}>{c.trust_signal}</span>}
+              </div>
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+    contact: (
+      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={contact} render={(c) => (
+          <section id="contact" className="py-16 px-6 md:px-12 border-t" style={{ background: surface, borderColor: zinc200 }}>
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+                <div className="space-y-4">
+                  {c.address && <div className="flex items-start gap-4"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc500 }}>{c.address}</p></div>}
+                  {c.phone && <div className="flex items-center gap-4"><Phone className="w-4 h-4 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc900 }}>{c.phone}</p></div>}
+                  {c.email && <div className="flex items-center gap-4"><Mail className="w-4 h-4 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc500 }}>{c.email}</p></div>}
+                </div>
+              </div>
+              {c.show_lead_form && onSubmitLead && (
+                <LeadForm onSubmit={onSubmitLead} submitting={leadSubmitting} success={leadSuccess} error={leadError}
+                  buttonClass="bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest"
+                  inputClass="w-full border border-zinc-200 p-3 text-sm font-light focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white" />
+              )}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ),
+  };
+
+  return (
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <div style={{ background: bg, color: zinc900, fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+      {/* Header */}
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+          <header className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between gap-4 relative border-b" style={{ background: `${surface}F0`, borderColor: zinc200, backdropFilter: "blur(8px)" }}>
+            <span className="flex items-center gap-3 text-sm font-medium tracking-widest uppercase" style={{ color: zinc900 }}>
+              <span className="min-w-0">
+                <span className="block truncate">{h.brand_name}</span>
+                {h.tagline && <span className="block text-[9px] font-light uppercase tracking-widest" style={{ color: zinc500 }}>{h.tagline}</span>}
+              </span>
+            </span>
+            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-zinc-600 text-xs tracking-widest uppercase font-medium" drawerStyle={{ background: surface, borderTop: `1px solid ${zinc200}` }} />
+            <a href="#contact" className="px-4 py-2 border text-[10px] font-semibold uppercase tracking-widest transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc900, color: zinc900 }}>
+              {h.nav_cta_text || "Hubungi"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+
+      {/* Footer */}
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text }} render={(f) => (
+          <footer className="py-8 px-6 md:px-12 border-t flex items-center justify-between" style={{ background: bg, borderColor: zinc200 }}>
+            <p className="text-[10px] font-light uppercase tracking-widest" style={{ color: zinc500 }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}`}</p>
+            <span className="text-[9px] font-mono" style={{ color: zinc500 }}>Made with care</span>
+          </footer>
+        )} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
+      {!isEditorMode && <CartFab colorStyle={{ background: zinc900, color: "#fff" }} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
+    </div>
+    </CartProvider>
+  );
+};
