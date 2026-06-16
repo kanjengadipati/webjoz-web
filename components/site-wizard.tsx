@@ -151,6 +151,10 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
         { title: "Pelayanan Ramah", description: "Tim kami siap membantu kapan saja Anda butuh." },
       ]),
     },
+    testimonials: {
+      ...c.testimonials,
+      items: c.testimonials?.items ?? [],
+    },
     faq: {
       title: c.faq?.title || "Pertanyaan Umum",
       items: (c.faq?.items?.length ? c.faq.items : [
@@ -199,8 +203,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "done">("name");
-  // Stage order: name → type → advantage → mood → done
+  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "whatsapp" | "done">("name");
+  // Stage order: name → type → advantage → mood → whatsapp → done
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -215,12 +219,12 @@ export function SiteWizard({
   const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
 
   const getProgressPercentage = () => {
-    // Stage order: name(1) → type(2) → advantage(3) → mood(4) → done
     switch (chatStage) {
-      case "name": return 25;
-      case "type": return 50;
-      case "advantage": return 75;
-      case "mood": return 90;
+      case "name": return 20;
+      case "type": return 40;
+      case "advantage": return 60;
+      case "mood": return 78;
+      case "whatsapp": return 92;
       case "done": return 100;
       default: return 100;
     }
@@ -232,7 +236,8 @@ export function SiteWizard({
       case "type": return 2;
       case "advantage": return 3;
       case "mood": return 4;
-      case "done": return 4;
+      case "whatsapp": return 5;
+      case "done": return 5;
       default: return 1;
     }
   };
@@ -263,24 +268,26 @@ export function SiteWizard({
   const [loadingStep, setLoadingStep] = useState(0);
 
   // Helper to animate AI typing
+  const [isAiTyping, setIsAiTyping] = React.useState(false);
+
   const typeMessage = (fullText: string, onComplete: () => void) => {
     let idx = 0;
     const typingId = 'typing';
+    setIsAiTyping(true);
     const interval = setInterval(() => {
       idx++;
       const partial = fullText.slice(0, idx);
       setMessages((prev) => {
-        // Remove previous typing placeholder if present
         const filtered = prev.filter((m) => m.id !== typingId);
         return [...filtered, { id: typingId, sender: "ai", text: partial }];
       });
       if (idx >= fullText.length) {
         clearInterval(interval);
-        // Replace typing placeholder with final message id
         setMessages((prev) => {
           const filtered = prev.filter((m) => m.id !== typingId);
           return [...filtered, { id: Date.now().toString(), sender: "ai", text: fullText }];
         });
+        setIsAiTyping(false);
         onComplete();
       }
     }, 30);
@@ -311,7 +318,7 @@ export function SiteWizard({
   }, []);
 
   useEffect(() => {
-    if (!isInitialTyping && (chatStage === "name" || chatStage === "advantage")) {
+    if (!isInitialTyping && (chatStage === "name" || chatStage === "advantage" || chatStage === "whatsapp")) {
       inputRef.current?.focus();
     }
   }, [isInitialTyping, chatStage]);
@@ -339,21 +346,21 @@ export function SiteWizard({
     }
   }, [pendingPreview, loadingStep]);
 
-  // When user picks mood (chatStage -> "done"), type the final message THEN start generate
+  // When user submits WA number (chatStage -> "done"), type the final message THEN start generate
   useEffect(() => {
     if (chatStage === "done" && previewState === "wireframe" && mood) {
       typeMessage("Sempurna. Semua data sudah siap. Website sedang dibuat...", () => {
         handleGenerate(businessName, businessType, mood, description);
       });
     }
-  }, [chatStage]);
+  }, [chatStage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Chat handlers ────────────────────────────────────────────────────────
 
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && chatStage !== "whatsapp") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -373,7 +380,7 @@ export function SiteWizard({
             typeMessage("Sekarang, pilih jenis bisnis Anda:", () => {
               setMessages((prev) => [
                 ...prev,
-                { id: "widget-type-chips", sender: "ai", text: "", widget: "type-chips" },
+                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
               ]);
               setChatStage("type");
             });
@@ -391,11 +398,30 @@ export function SiteWizard({
         typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
           setMessages((prev) => [
             ...prev,
-            { id: "widget-mood-chips", sender: "ai", text: "", widget: "mood-chips" },
+            { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
           ]);
           setChatStage("mood");
         });
       }, 500);
+
+    } else if (chatStage === "whatsapp") {
+      // WA is optional — user can skip with empty input
+      const digits = val.replace(/\D/g, "");
+      if (digits) {
+        // normalize: 08xx → 628xx
+        const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
+        setWhatsapp(normalized);
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now().toString(), sender: "user", text: val },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now().toString(), sender: "user", text: "Lewati" },
+        ]);
+      }
+      setChatStage("done");
     }
   };
 
@@ -426,7 +452,7 @@ export function SiteWizard({
       typeMessage(aiResponse, () => {
         setMessages((prev) => [
           ...prev,
-          { id: "widget-advantage-chips", sender: "ai", text: "", widget: "advantage-chips" },
+          { id: `widget-advantage-chips-${Date.now()}`, sender: "ai", text: "", widget: "advantage-chips" },
         ]);
         setChatStage("advantage");
       });
@@ -709,7 +735,7 @@ export function SiteWizard({
           {/* Progress bar */}
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] text-slate-500 font-medium">
-              Langkah {getStageNumber()} dari 4
+              Langkah {getStageNumber()} dari 5
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
@@ -780,7 +806,7 @@ export function SiteWizard({
                     typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
                       setMessages((prev) => [
                         ...prev,
-                        { id: "widget-mood-chips", sender: "ai", text: "", widget: "mood-chips" },
+                        { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
                       ]);
                       setChatStage("mood");
                     });
@@ -846,7 +872,7 @@ export function SiteWizard({
               }
 
               if (m.widget === "mood-chips") {
-                const isLocked = chatStage === "done";
+                const isLocked = chatStage === "whatsapp" || chatStage === "done";
                 return (
                   <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                     <div className="grid grid-cols-2 gap-2 mt-2">
@@ -859,11 +885,16 @@ export function SiteWizard({
                             onClick={() => {
                               if (isLocked) return;
                               setMood(mo.value);
-                              setChatStage("done");
                               setMessages((prev) => [
                                 ...prev,
                                 { id: Date.now().toString(), sender: "user", text: `${mo.emoji} ${mo.value}` },
                               ]);
+                              // Ask for WA number before generating
+                              setTimeout(() => {
+                                typeMessage("Hampir selesai! 🎉 Masukkan nomor WhatsApp bisnis Anda — akan dipakai untuk tombol CTA di website. (Opsional — tekan Enter untuk lewati)", () => {
+                                  setChatStage("whatsapp");
+                                });
+                              }, 400);
                             }}
                             className={`flex items-center gap-2 p-2.5 border rounded-xl text-left transition-all ${isSelected
                                 ? "border-[#7c3aed]/70"
@@ -1057,21 +1088,24 @@ export function SiteWizard({
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
                 ref={inputRef}
-                type="text"
+                type={chatStage === "whatsapp" ? "tel" : "text"}
+                inputMode={chatStage === "whatsapp" ? "tel" : undefined}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
-                  chatStage === "advantage"
+                  chatStage === "whatsapp"
+                    ? "cth. 08123456789 (atau Enter untuk lewati)"
+                    : chatStage === "advantage"
                     ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
                     : "Ketik nama bisnis Anda..."
                 }
                 autoFocus
-                disabled={isInitialTyping}
-                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none"
+                disabled={isInitialTyping || isAiTyping}
+                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
               />
               <button
                 type="submit"
-                disabled={isInitialTyping || (chatStage === "name" && !inputValue.trim())}
+                disabled={isInitialTyping || isAiTyping || (chatStage === "name" && !inputValue.trim())}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#7c3aed] text-white transition-all disabled:opacity-30 hover:bg-[#6d28d9] shrink-0"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -1139,49 +1173,143 @@ export function SiteWizard({
         {/* ── Browser Content Area ─────────────────────────────────────────── */}
         <div className="flex-1 overflow-hidden relative bg-white">
 
-          {/* Wireframe state */}
+          {/* Wireframe state — reacts to user input with subtle animations */}
           {previewState === "wireframe" && (
             <div className="h-full overflow-y-auto p-8" style={{ background: "#0d0f14" }}>
               <div className="max-w-3xl mx-auto">
+                {/* Header skeleton — shows brand name when filled */}
                 <header className="flex justify-between items-center pb-6 mb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="h-7 w-28 rounded-md" style={skeletonStrong} />
+                  <div className="flex items-center gap-3">
+                    {businessName ? (
+                      <div
+                        className="h-7 px-3 flex items-center rounded-md text-sm font-bold text-white animate-in fade-in slide-in-from-left-2 duration-400"
+                        style={{ background: "rgba(124,58,237,0.25)", border: "1px solid rgba(124,58,237,0.4)" }}
+                      >
+                        {businessName}
+                      </div>
+                    ) : (
+                      <div className="h-7 w-28 rounded-md animate-pulse" style={skeletonStrong} />
+                    )}
+                  </div>
                   <div className="flex gap-4 items-center">
-                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
-                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
-                    <div className="h-4 w-14 rounded" style={skeletonSoft} />
-                    <div className="h-8 w-24 rounded-md" style={skeletonStrong} />
+                    {businessType ? (
+                      <div className="flex gap-2 items-center animate-in fade-in duration-400">
+                        {["Tentang", "Keunggulan", "Kontak"].map(l => (
+                          <span key={l} className="text-[11px] text-slate-500">{l}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="h-4 w-14 rounded animate-pulse" style={skeletonSoft} />
+                        <div className="h-4 w-14 rounded animate-pulse" style={skeletonSoft} />
+                        <div className="h-4 w-14 rounded animate-pulse" style={skeletonSoft} />
+                      </>
+                    )}
+                    <div className="h-8 w-24 rounded-md animate-pulse" style={skeletonStrong} />
                   </div>
                 </header>
-                <section className="relative rounded-2xl overflow-hidden mb-10" style={{ ...skeletonPanel, height: 260 }}>
+
+                {/* Hero skeleton — reacts to each step */}
+                <section
+                  className="relative rounded-2xl overflow-hidden mb-10 transition-all duration-500"
+                  style={{
+                    ...skeletonPanel,
+                    height: 260,
+                    border: chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "done"
+                      ? "1px solid rgba(124,58,237,0.35)"
+                      : "1px solid rgba(255,255,255,0.055)",
+                    boxShadow: chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
+                  }}
+                >
                   <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
-                    <div className="h-5 w-20 rounded-full" style={skeletonStrong} />
+                    {/* Business type badge */}
+                    {businessType ? (
+                      <div
+                        className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400"
+                        style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.3)" }}
+                      >
+                        {businessType}
+                      </div>
+                    ) : (
+                      <div className="h-5 w-20 rounded-full animate-pulse" style={skeletonStrong} />
+                    )}
+
+                    {/* Headline area */}
                     <div className="space-y-2">
-                      <div className="h-10 w-3/4 rounded-lg" style={skeletonStrong} />
-                      <div className="h-10 w-1/2 rounded-lg" style={skeletonStrong} />
+                      {businessName ? (
+                        <div
+                          className="h-10 px-3 flex items-center rounded-lg text-white font-black text-xl animate-in fade-in slide-in-from-bottom-2 duration-500"
+                          style={{ background: "rgba(255,255,255,0.06)" }}
+                        >
+                          {businessName}
+                        </div>
+                      ) : (
+                        <div className="h-10 w-3/4 rounded-lg animate-pulse" style={skeletonStrong} />
+                      )}
+                      {description ? (
+                        <div
+                          className="h-6 px-3 flex items-center rounded-lg text-slate-300 text-xs animate-in fade-in duration-500"
+                          style={{ background: "rgba(255,255,255,0.04)" }}
+                        >
+                          <span className="truncate">{description.slice(0, 60)}{description.length > 60 ? "..." : ""}</span>
+                        </div>
+                      ) : (
+                        <div className="h-10 w-1/2 rounded-lg animate-pulse" style={skeletonStrong} />
+                      )}
                     </div>
-                    <div className="h-5 w-2/3 rounded-full" style={skeletonSoft} />
-                    <div className="h-11 w-36 rounded-lg" style={skeletonStrong} />
+
+                    <div className="h-5 w-2/3 rounded-full animate-pulse" style={skeletonSoft} />
+
+                    {/* CTA button — shows mood color when mood selected */}
+                    <div
+                      className="h-11 w-36 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-500"
+                      style={mood
+                        ? { background: "rgba(124,58,237,0.7)", color: "#fff", border: "1px solid rgba(124,58,237,0.8)" }
+                        : { ...skeletonStrong }
+                      }
+                    >
+                      {mood ? "Pesan Sekarang →" : ""}
+                    </div>
                   </div>
                   <div className="absolute right-0 inset-y-0 w-2/5" style={skeletonSubtle} />
                 </section>
+
+                {/* Benefits skeleton — reacts when advantage submitted */}
                 <section className="grid grid-cols-4 gap-4 mb-10">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="p-4 rounded-xl space-y-3" style={skeletonPanel}>
-                      <div className="w-8 h-8 rounded-full" style={skeletonStrong} />
-                      <div className="h-3 w-3/4 rounded" style={skeletonStrong} />
-                      <div className="h-2 w-full rounded" style={skeletonSoft} />
+                  {[0, 1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className={`p-4 rounded-xl space-y-3 transition-all duration-300 ${description && i === 0 ? "ring-1 ring-violet-500/30" : ""}`}
+                      style={{
+                        ...skeletonPanel,
+                        animationDelay: `${i * 80}ms`,
+                      }}
+                    >
+                      <div className="w-8 h-8 rounded-full animate-pulse" style={skeletonStrong} />
+                      <div className="h-3 w-3/4 rounded animate-pulse" style={skeletonStrong} />
+                      <div className="h-2 w-full rounded animate-pulse" style={skeletonSoft} />
                     </div>
                   ))}
                 </section>
+
+                {/* About skeleton */}
                 <section className="flex gap-8 items-center p-8 rounded-xl" style={skeletonPanel}>
                   <div className="flex-1 space-y-4">
-                    <div className="h-7 w-3/4 rounded-md" style={skeletonStrong} />
-                    <div className="h-3 w-full rounded" style={skeletonSoft} />
-                    <div className="h-3 w-5/6 rounded" style={skeletonSoft} />
-                    <div className="h-3 w-4/6 rounded" style={skeletonSoft} />
+                    <div className="h-7 w-3/4 rounded-md animate-pulse" style={skeletonStrong} />
+                    <div className="h-3 w-full rounded animate-pulse" style={skeletonSoft} />
+                    <div className="h-3 w-5/6 rounded animate-pulse" style={skeletonSoft} />
+                    <div className="h-3 w-4/6 rounded animate-pulse" style={skeletonSoft} />
                   </div>
-                  <div className="w-40 h-40 rounded-xl shrink-0" style={skeletonSoft} />
+                  <div className="w-40 h-40 rounded-xl shrink-0 animate-pulse" style={skeletonSoft} />
                 </section>
+
+                {/* Scanning line effect when stage changes */}
+                {(chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp") && (
+                  <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
+                    <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
+                    <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

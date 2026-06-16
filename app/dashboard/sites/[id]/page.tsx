@@ -57,7 +57,7 @@ const getTemplateDefaultDesignToken = (templateId: string) => {
         hero_style: "centered",
         corner_radius: "rounded",
         section_spacing: "normal",
-        section_order: ["hero", "about", "benefits", "faq", "cta", "contact"]
+        section_order: ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"]
       },
       mood: "warm-earthy"
     };
@@ -77,11 +77,11 @@ const getTemplateDefaultDesignToken = (templateId: string) => {
       heading_weight: "700",
       heading_size_hero: "3rem"
     },
-    layout: {
-      hero_style: "centered",
-      corner_radius: "soft",
-      section_spacing: "normal",
-      section_order: ["hero", "about", "benefits", "cta", "faq", "contact"]
+      section: {
+        hero_style: "centered",
+        corner_radius: "soft",
+        section_spacing: "normal",
+        section_order: ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"]
     },
     mood: "professional"
   };
@@ -190,6 +190,7 @@ export default function SiteEditorPage() {
         hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "", matra: "" },
         about: { title: "", body: "", image_url: "", icon: "" },
         benefits: { title: "", items: [] },
+        testimonials: { title: "", items: [] },
         faq: { title: "", items: [] },
         cta: { headline: "", button_text: "", button_url: "" },
         contact: { title: "", address: "", phone: "", email: "", show_lead_form: true },
