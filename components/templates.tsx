@@ -105,6 +105,106 @@ const NavMenu: React.FC<NavMenuProps> = ({
   );
 };
 
+interface TestimonialItem {
+  quote: string;
+  name: string;
+  role: string;
+  avatar_initials: string;
+  avatar_color: string;
+}
+
+// ─── WhatsApp Floating Button ────────────────────────────────────────────────
+
+const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean }> = ({ phone, isEditorMode }) => {
+  if (isEditorMode || !phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  const waUrl = digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`;
+  return (
+    <a
+      href={waUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat via WhatsApp"
+      className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+      style={{ background: "#25D366" }}
+    >
+      <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </a>
+  );
+};
+
+// ─── Back To Top ──────────────────────────────────────────────────────────────
+
+const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    if (isEditorMode) return;
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isEditorMode]);
+  if (isEditorMode || !visible) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Kembali ke atas"
+      className="fixed bottom-24 right-6 z-[150] w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40"
+    >
+      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-white stroke-2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+  );
+};
+
+// ─── Shared Testimonials Section ─────────────────────────────────────────────
+
+const TestimonialsSection: React.FC<{
+  testimonials: TemplateProps["content"]["testimonials"];
+  headingClass?: string;
+  eyebrowClass?: string;
+  cardStyle?: React.CSSProperties;
+  cardClass?: string;
+  quoteClass?: string;
+  nameClass?: string;
+  roleClass?: string;
+  bgClass?: string;
+  sectionStyle?: React.CSSProperties;
+}> = ({ testimonials, headingClass = "text-slate-900", eyebrowClass = "text-violet-600", cardClass = "bg-white border border-slate-200", quoteClass = "text-slate-700", nameClass = "text-slate-900", roleClass = "text-slate-500", bgClass = "bg-slate-50 py-20 px-5 sm:px-6", cardStyle, sectionStyle }) => {
+  if (!testimonials?.items?.length) return null;
+  return (
+    <section id="testimonials" className={bgClass} style={sectionStyle}>
+      <div className="max-w-6xl mx-auto space-y-12">
+        <div className="text-center space-y-2">
+          {testimonials.eyebrow && <span className={`text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`} style={eyebrowClass ? undefined : { color: "var(--dt-primary)", letterSpacing: "0.15em" }}>{testimonials.eyebrow}</span>}
+          <h2 className={`text-3xl md:text-4xl font-bold ${headingClass}`} style={headingClass ? undefined : { fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>{testimonials.title}</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {testimonials.items.map((t, idx) => (
+            <div key={idx} className={`${cardClass} rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200`} style={cardStyle}>
+              <div className={`text-4xl leading-none font-serif opacity-30 ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-primary)" }}>"</div>
+              <p className={`text-sm leading-relaxed flex-1 ${quoteClass}`} style={quoteClass ? undefined : { color: "var(--dt-text-muted)" }}>{t.quote}</p>
+              <div className="flex items-center gap-3 pt-2" style={{ borderTop: cardStyle ? "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" : undefined }}>
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                  style={{ background: t.avatar_color || "#7c3aed" }}
+                >
+                  {t.avatar_initials}
+                </div>
+                <div>
+                  <p className={`text-sm font-bold leading-tight ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" }}>{t.name}</p>
+                  <p className={`text-xs ${roleClass}`} style={roleClass ? undefined : { color: "var(--dt-text-muted)" }}>{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 interface BenefitItem {
   title: string;
   description: string;
@@ -182,6 +282,8 @@ export interface TemplateProps {
       cta_text: string;
       cta_url: string;
       image_url?: string;
+      eyebrow?: string;
+      cta_secondary_text?: string;
       badge_text?: string;
       opening_hours?: string;
       launch_label?: string;
@@ -191,10 +293,21 @@ export interface TemplateProps {
       body: string;
       image_url?: string | null;
       icon?: string;
+      eyebrow?: string;
+      highlight_stat_1?: { value: string; label: string };
+      highlight_stat_2?: { value: string; label: string };
+      highlight_stat_3?: { value: string; label: string };
     };
     benefits: {
       title: string;
       items: BenefitItem[];
+      eyebrow?: string;
+      subtitle?: string;
+    };
+    testimonials?: {
+      title: string;
+      eyebrow?: string;
+      items: TestimonialItem[];
     };
     faq: {
       title: string;
@@ -204,6 +317,9 @@ export interface TemplateProps {
       headline: string;
       button_text: string;
       button_url: string;
+      eyebrow?: string;
+      subheadline?: string;
+      trust_signal?: string;
     };
     contact: {
       title: string;
@@ -501,7 +617,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials } = content;
   const dt = design_token ?? null;
   const baseSectionOrderKuliner: string[] = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "faq", "cta", "contact"];
   const sectionOrder = (menu && !baseSectionOrderKuliner.includes("menu"))
@@ -522,7 +638,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               <img
                 src={hero.image_url}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply"
+                className="absolute inset-0 w-full h-full object-cover opacity-50"
                 alt="Hero"
               />
             )}
@@ -706,6 +822,20 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          headingClass="text-amber-955 font-serif"
+          eyebrowClass="text-amber-800"
+          cardClass="bg-white border border-[#EADFCB]"
+          quoteClass="text-[#6D5D50]"
+          nameClass="text-amber-955"
+          roleClass="text-amber-700/60"
+          bgClass="bg-[#F4EEE0] border-y border-[#EADFCB] py-20 px-5 sm:px-6"
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(menuData) => (
@@ -820,6 +950,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       )}
       {/* Floating cart button */}
       {!isEditorMode && <CartFab colorStyle={{ background: "#92400e", color: "#fff" }} />}
+      {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />}
+      {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
     </div>
     </CartProvider>
   );
@@ -832,7 +964,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials } = content;
   const dt = design_token ?? null;
   const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
 
@@ -845,7 +977,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <img
                 src={hero.image_url}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-luminosity"
+                className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity"
                 alt="Hero"
               />
             )}
@@ -1031,6 +1163,20 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          headingClass="text-slate-900 font-extrabold tracking-tight"
+          eyebrowClass="text-indigo-600"
+          cardClass="bg-white border border-slate-200"
+          quoteClass="text-slate-600"
+          nameClass="text-slate-900"
+          roleClass="text-slate-500"
+          bgClass="bg-slate-100 border-y border-slate-200 py-24 px-6"
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
   } as Record<string, React.ReactNode>;
 
   return (
@@ -1088,6 +1234,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
     </div>
   );
 };
@@ -1098,7 +1246,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials } = content;
   const dt = design_token ?? null;
   const baseSectionOrderProduk: string[] = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "cta", "about", "faq", "contact"];
   const sectionOrder = (catalog && !baseSectionOrderProduk.includes("catalog"))
@@ -1121,7 +1269,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <img
                 src={hero.image_url}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0"
+                className="absolute inset-0 w-full h-full object-cover opacity-55 mix-blend-overlay z-0"
                 alt="Hero"
               />
             )}
@@ -1303,6 +1451,20 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    testimonials: testimonials ? (
+      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          headingClass="text-white font-extrabold tracking-tight"
+          eyebrowClass="text-cyan-400"
+          cardClass="bg-slate-900 border border-slate-800"
+          quoteClass="text-slate-300"
+          nameClass="text-white"
+          roleClass="text-slate-500"
+          bgClass="bg-slate-955 border-y border-slate-800 py-24 px-6"
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(catalogData) => (
@@ -1420,6 +1582,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       )}
       {/* Floating cart button */}
       {!isEditorMode && <CartFab colorStyle={{ background: "#06b6d4", color: "#0f172a" }} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>
   );
@@ -1662,7 +1826,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   // Build section order: start from design token, then append any content sections
   // that exist but weren't listed (menu, catalog) so they're never silently dropped.
   const baseSectionOrder: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "cta", "faq", "contact"];
-  const extraSections = (["menu", "catalog"] as const).filter(
+  const extraSections = (["menu", "catalog", "testimonials"] as const).filter(
     (key) => content[key] && !baseSectionOrder.includes(key)
   );
   // Insert extras right before "cta" if present, otherwise before "faq", otherwise at end
@@ -1915,6 +2079,22 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     faq: renderSection("faq"),
     cta: renderSection("cta"),
     contact: renderSection("contact"),
+    testimonials: content.testimonials ? (
+      <MemoPreviewSectionWrapper key="testimonials" section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <TestimonialsSection
+          testimonials={content.testimonials}
+          headingClass=""
+          eyebrowClass=""
+          cardClass=""
+          quoteClass=""
+          nameClass=""
+          roleClass=""
+          bgClass="py-20 px-5 sm:px-6"
+          sectionStyle={{ background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}
+          cardStyle={{ background: "var(--dt-surface)", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", borderRadius: "var(--dt-radius-lg)" }}
+        />
+      </MemoPreviewSectionWrapper>
+    ) : null,
     menu: content.menu ? (
       <MemoPreviewSectionWrapper key="menu" section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={content.menu} render={(menuData) => (
@@ -2090,6 +2270,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       )}
       {/* Floating cart button — uses design token primary color */}
       {!isEditorMode && <CartFab />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
     </div>
   );
 };

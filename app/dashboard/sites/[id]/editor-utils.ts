@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag
+  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star
 } from "lucide-react";
 
 export const stripRegeneratedMarkers = (value: any): any => {
@@ -17,38 +17,40 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "menu", "catalog", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo"];
 
 // Sections that are only shown in the sidebar when content actually has that key
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
-  header:  { label: "Header",   icon: Layout },
-  hero:    { label: "Hero",     icon: Layout },
-  about:   { label: "Tentang",  icon: User },
-  benefits:{ label: "Keunggulan", icon: Award },
-  menu:    { label: "Menu",     icon: UtensilsCrossed },
-  catalog: { label: "Katalog",  icon: ShoppingBag },
-  faq:     { label: "FAQ",      icon: HelpCircle },
-  cta:     { label: "CTA",      icon: Sparkles },
-  contact: { label: "Kontak",   icon: Mail },
-  footer:  { label: "Footer",   icon: BookOpen },
-  seo:     { label: "SEO",      icon: Globe },
+  header:       { label: "Header",       icon: Layout },
+  hero:         { label: "Hero",         icon: Layout },
+  about:        { label: "Tentang",      icon: User },
+  benefits:     { label: "Keunggulan",   icon: Award },
+  testimonials: { label: "Testimoni",    icon: Star },
+  menu:         { label: "Menu",         icon: UtensilsCrossed },
+  catalog:      { label: "Katalog",      icon: ShoppingBag },
+  faq:          { label: "FAQ",          icon: HelpCircle },
+  cta:          { label: "CTA",          icon: Sparkles },
+  contact:      { label: "Kontak",       icon: Mail },
+  footer:       { label: "Footer",       icon: BookOpen },
+  seo:          { label: "SEO",          icon: Globe },
 };
 
 export const AI_SUGGESTIONS: Record<string, string[]> = {
-  header:  ["Buat brand terasa lebih premium", "CTA nav lebih jelas untuk WhatsApp", "Ringkas nama brand agar mudah diingat"],
-  hero:    ["Buat hero lebih emosional dan menggugah", "Tekankan masalah utama pelanggan", "Buat CTA lebih spesifik dan mendesak"],
-  about:   ["Jadikan cerita bisnis lebih hangat", "Tambahkan alasan kenapa pelanggan percaya", "Buat narasi lebih lokal dan manusiawi"],
-  benefits:["Ubah benefit menjadi hasil nyata", "Tambahkan bukti angka jika memungkinkan", "Buat tiap poin lebih singkat dan tajam"],
-  menu:    ["Buat nama menu lebih menggugah selera", "Tambahkan deskripsi yang membuat lapar", "Perbarui harga semua item menu"],
-  catalog: ["Buat nama produk lebih menarik", "Tambahkan badge Best Seller untuk produk terlaris", "Perbarui harga dan deskripsi produk"],
-  faq:     ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
-  cta:     ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Arahkan ke aksi WhatsApp yang jelas"],
-  contact: ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
-  footer:  ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
-  seo:     ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy"],
+  header:       ["Buat brand terasa lebih premium", "CTA nav lebih jelas untuk WhatsApp", "Ringkas nama brand agar mudah diingat"],
+  hero:         ["Buat hero lebih emosional dan menggugah", "Tekankan masalah utama pelanggan", "Buat CTA lebih spesifik dan mendesak"],
+  about:        ["Jadikan cerita bisnis lebih hangat", "Tambahkan detail konkret: tahun, lokasi, bahan", "Buat narasi lebih personal dan manusiawi"],
+  benefits:     ["Ubah benefit menjadi hasil nyata", "Tambahkan angka/stat jika memungkinkan", "Buat tiap poin lebih singkat dan tajam"],
+  testimonials: ["Buat kutipan lebih spesifik dan believable", "Tambahkan detail nyata di setiap testimoni", "Variasikan profil pemberi testimoni"],
+  menu:         ["Buat nama menu lebih menggugah selera", "Tambahkan deskripsi yang membuat lapar", "Perbarui harga semua item menu"],
+  catalog:      ["Buat nama produk lebih menarik", "Tambahkan badge Best Seller untuk produk terlaris", "Perbarui harga dan deskripsi produk"],
+  faq:          ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
+  cta:          ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Tambahkan trust signal yang mengurangi friction"],
+  contact:      ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
+  footer:       ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
+  seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy"],
 };
 
 export const getOrderedSections = (designToken: any, content?: any) => {
