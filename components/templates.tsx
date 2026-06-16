@@ -619,15 +619,19 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials } = content;
   const dt = design_token ?? null;
-  const baseSectionOrderKuliner: string[] = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "faq", "cta", "contact"];
-  const sectionOrder = (menu && !baseSectionOrderKuliner.includes("menu"))
-    ? (() => {
-        const order = [...baseSectionOrderKuliner];
-        const idx = order.indexOf("benefits") >= 0 ? order.indexOf("benefits") : order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length;
-        order.splice(idx, 0, "menu");
-        return order;
-      })()
-    : baseSectionOrderKuliner;
+  const baseSectionOrderKuliner: string[] = dt?.layout?.section_order ?? ["hero", "about", "menu", "benefits", "testimonials", "faq", "cta", "contact"];
+  const sectionOrder = (() => {
+    const order = [...baseSectionOrderKuliner];
+    if (menu && !order.includes("menu")) {
+      const idx = order.indexOf("benefits") >= 0 ? order.indexOf("benefits") : order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length;
+      order.splice(idx, 0, "menu");
+    }
+    if (testimonials && !order.includes("testimonials")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "testimonials");
+    }
+    return order;
+  })();
 
   const sectionNodes = {
     hero: (
@@ -966,7 +970,15 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials } = content;
   const dt = design_token ?? null;
-  const sectionOrder = dt?.layout?.section_order ?? ["hero", "about", "benefits", "faq", "cta", "contact"];
+  const sectionOrder = (() => {
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
+    const order = [...base];
+    if (testimonials && !order.includes("testimonials")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "testimonials");
+    }
+    return order;
+  })();
 
   const sectionNodes = {
     hero: (
@@ -1248,15 +1260,19 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials } = content;
   const dt = design_token ?? null;
-  const baseSectionOrderProduk: string[] = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "cta", "about", "faq", "contact"];
-  const sectionOrder = (catalog && !baseSectionOrderProduk.includes("catalog"))
-    ? (() => {
-        const order = [...baseSectionOrderProduk];
-        const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("about") >= 0 ? order.indexOf("about") : order.length;
-        order.splice(idx, 0, "catalog");
-        return order;
-      })()
-    : baseSectionOrderProduk;
+  const baseSectionOrderProduk: string[] = dt?.layout?.section_order ?? ["hero", "benefits", "catalog", "testimonials", "cta", "about", "faq", "contact"];
+  const sectionOrder = (() => {
+    const order = [...baseSectionOrderProduk];
+    if (catalog && !order.includes("catalog")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("about") >= 0 ? order.indexOf("about") : order.length;
+      order.splice(idx, 0, "catalog");
+    }
+    if (testimonials && !order.includes("testimonials")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "testimonials");
+    }
+    return order;
+  })();
 
   const sectionNodes = {
     hero: (
