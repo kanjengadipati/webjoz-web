@@ -65,6 +65,42 @@ const BUSINESS_TYPES = [
   { value: "Company", emoji: "🏢", label: "Company", desc: "Corporate" },
 ];
 
+const SUB_TYPES: Record<string, Array<{ value: string; emoji: string; label: string }>> = {
+  "Kuliner": [
+    { value: "Restoran", emoji: "🍛", label: "Restoran" },
+    { value: "Kafe", emoji: "☕", label: "Kafe" },
+    { value: "Bakery & Pastry", emoji: "🥐", label: "Bakery" },
+    { value: "Catering", emoji: "🍱", label: "Catering" },
+    { value: "Warung Makan", emoji: "🥘", label: "Warung Makan" },
+    { value: "Minuman & Bubble Tea", emoji: "🧋", label: "Minuman" },
+  ],
+  "Toko & UMKM": [
+    { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
+    { value: "Elektronik", emoji: "📱", label: "Elektronik" },
+    { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
+    { value: "Toko Online", emoji: "🛒", label: "Toko Online" },
+    { value: "Minimarket", emoji: "🏪", label: "Minimarket" },
+    { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
+  ],
+  "Jasa": [
+    { value: "Salon & Kecantikan", emoji: "💄", label: "Salon" },
+    { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
+    { value: "Laundry", emoji: "🧺", label: "Laundry" },
+    { value: "Otomotif & Bengkel", emoji: "🔧", label: "Bengkel" },
+    { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik" },
+    { value: "Konsultan", emoji: "📊", label: "Konsultan" },
+    { value: "Fotografer", emoji: "📷", label: "Fotografer" },
+  ],
+  "Company": [
+    { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
+    { value: "Konstruksi", emoji: "🏗️", label: "Konstruksi" },
+    { value: "Pendidikan & Kursus", emoji: "📚", label: "Pendidikan" },
+    { value: "Travel & Wisata", emoji: "✈️", label: "Travel" },
+    { value: "Hotel & Penginapan", emoji: "🏨", label: "Hotel" },
+    { value: "Manufaktur", emoji: "🏭", label: "Manufaktur" },
+  ],
+};
+
 const MOODS = [
   { value: "Profesional", emoji: "🎯", desc: "Serius & terpercaya" },
   { value: "Modern & Minimalis", emoji: "⚡", desc: "Clean & elegan" },
@@ -75,6 +111,7 @@ const MOODS = [
 ];
 
 const ADVANTAGE_SUGGESTIONS: Record<string, string[]> = {
+  // Broad types
   "Kuliner": [
     "Menu andalan dibuat fresh setiap hari dengan resep khas keluarga.",
     "Tempat nyaman untuk makan bersama, reservasi, dan acara kecil.",
@@ -94,6 +131,135 @@ const ADVANTAGE_SUGGESTIONS: Record<string, string[]> = {
     "Tim profesional, standar kerja tinggi, dan dipercaya banyak klien.",
     "Proses produksi terukur, kualitas konsisten, dan layanan responsif.",
     "Pengalaman industri kuat dengan solusi yang bisa disesuaikan.",
+  ],
+  // Sub-types — Kuliner
+  "Restoran": [
+    "Resep autentik yang tidak berubah sejak pertama kali buka.",
+    "Bahan segar dari supplier pilihan, dimasak setiap hari.",
+    "Suasana hangat untuk makan bersama keluarga atau rekan bisnis.",
+  ],
+  "Kafe": [
+    "Single origin beans pilihan, diseduh dengan metode yang tepat.",
+    "Tempat kerja dan ngobrol yang nyaman dengan WiFi cepat.",
+    "Menu minuman unik yang tidak ada di tempat lain.",
+  ],
+  "Bakery & Pastry": [
+    "Dipanggang setiap pagi — tidak ada produk dari hari sebelumnya.",
+    "Bahan-bahan premium: butter asli, tepung pilihan, tanpa pengawet.",
+    "Menerima custom order untuk acara dan hampers.",
+  ],
+  "Catering": [
+    "Menu bisa disesuaikan dengan selera dan budget acara Anda.",
+    "Tim terlatih untuk acara dari 20 orang hingga ribuan tamu.",
+    "Kebersihan dan keamanan pangan jadi prioritas utama.",
+  ],
+  "Warung Makan": [
+    "Masakan rumahan yang terasa seperti dimasak sendiri.",
+    "Harga terjangkau dengan porsi yang mengenyangkan.",
+    "Buka setiap hari, cocok untuk sarapan sampai makan malam.",
+  ],
+  "Minuman & Bubble Tea": [
+    "Bahan premium: teh asli, susu segar, tanpa sirup murahan.",
+    "Ratusan variasi rasa dan level kemanisan sesuai selera.",
+    "Sistem antrian digital yang membuat proses order lebih cepat.",
+  ],
+  // Sub-types — Toko & UMKM
+  "Fashion & Pakaian": [
+    "Desain eksklusif yang tidak dijual di toko lain.",
+    "Ukuran lengkap dari S hingga XL, bisa custom ukuran.",
+    "Material berkualitas yang nyaman dipakai seharian.",
+  ],
+  "Elektronik": [
+    "Produk bergaransi resmi, bukan barang rekondisi.",
+    "Teknisi tersedia untuk instalasi dan konsultasi teknis.",
+    "Harga transparan, tidak ada biaya tersembunyi.",
+  ],
+  "Produk Lokal Handmade": [
+    "Setiap produk dibuat tangan — tidak ada dua yang sama persis.",
+    "Bahan lokal berkelanjutan yang mendukung pengrajin setempat.",
+    "Bisa custom nama, warna, atau ukuran sesuai permintaan.",
+  ],
+  "Toko Online": [
+    "Pengiriman ke seluruh Indonesia dalam 1-2 hari kerja.",
+    "Foto produk akurat, tidak ada perbedaan dengan aslinya.",
+    "Proses komplain dan return yang mudah tanpa ribet.",
+  ],
+  "Minimarket": [
+    "Stok lengkap, jarang kosong, buka dari pagi hingga malam.",
+    "Harga bersaing dengan minimarket besar, tanpa antrian panjang.",
+    "Lokasi strategis dan mudah dijangkau dari mana saja.",
+  ],
+  "Perabot & Furnitur": [
+    "Dibuat dari kayu solid pilihan, bukan partikel board.",
+    "Desain bisa dikustomisasi sesuai ukuran dan selera ruangan.",
+    "Pengiriman dan pemasangan termasuk dalam harga.",
+  ],
+  // Sub-types — Jasa
+  "Salon & Kecantikan": [
+    "Stylist berpengalaman yang memahami karakter rambut Anda.",
+    "Produk perawatan premium yang tidak merusak rambut.",
+    "Sistem booking online yang mudah, tidak perlu antri lama.",
+  ],
+  "Barbershop": [
+    "Barber bersertifikat dengan teknik cutting terkini.",
+    "Suasana maskulin yang nyaman, dilengkapi WiFi dan minuman.",
+    "Booking slot tersedia online, tidak perlu datang duluan.",
+  ],
+  "Laundry": [
+    "Pakaian bersih, harum, dan dilipat rapi — siap pakai langsung.",
+    "Antar-jemput tersedia, tidak perlu keluar rumah.",
+    "Mesin cuci modern yang aman untuk semua jenis kain.",
+  ],
+  "Otomotif & Bengkel": [
+    "Mekanik bersertifikat dengan pengalaman lebih dari 5 tahun.",
+    "Harga transparan — estimasi diberikan sebelum pengerjaan dimulai.",
+    "Spare part original, tidak ada barang KW tanpa persetujuan.",
+  ],
+  "Klinik & Kesehatan": [
+    "Dokter berpengalaman dengan jadwal yang fleksibel.",
+    "Alat diagnostik modern untuk hasil pemeriksaan yang akurat.",
+    "Antrian teratur, tidak ada waktu tunggu yang berlebihan.",
+  ],
+  "Konsultan": [
+    "Analisis mendalam sebelum memberikan rekomendasi.",
+    "Laporan yang jelas dan bisa langsung diimplementasikan.",
+    "Tersedia untuk sesi tindak lanjut setelah konsultasi selesai.",
+  ],
+  "Fotografer": [
+    "Editing profesional — hasil foto siap pakai dalam 3 hari kerja.",
+    "Memahami momen — tidak perlu banyak arahan untuk hasil terbaik.",
+    "Paket fleksibel untuk berbagai jenis acara dan kebutuhan.",
+  ],
+  // Sub-types — Company
+  "Properti & Real Estate": [
+    "Database properti terlengkap di area yang kami layani.",
+    "Agen bersertifikat dengan pengetahuan pasar yang mendalam.",
+    "Proses legal yang transparan dan pendampingan sampai akad.",
+  ],
+  "Konstruksi": [
+    "RAB detail dan transparan sebelum proyek dimulai.",
+    "Tim arsitek dan kontraktor berpengalaman dalam satu atap.",
+    "Garansi pengerjaan — kami perbaiki jika ada yang kurang.",
+  ],
+  "Pendidikan & Kursus": [
+    "Kurikulum berbasis industri, bukan sekadar teori.",
+    "Instruktur praktisi yang masih aktif di bidangnya.",
+    "Program mentoring hingga peserta benar-benar bisa mandiri.",
+  ],
+  "Travel & Wisata": [
+    "Itinerari yang fleksibel — bisa disesuaikan kapan saja.",
+    "Pemandu lokal berpengalaman yang tahu tempat terbaik.",
+    "All-inclusive yang jelas, tidak ada biaya kejutan di perjalanan.",
+  ],
+  "Hotel & Penginapan": [
+    "Kamar bersih dan nyaman dengan standar hotel yang ketat.",
+    "Sarapan buatan sendiri — bukan dari paket frozen.",
+    "Lokasi strategis dekat pusat kota atau objek wisata utama.",
+  ],
+  "Manufaktur": [
+    "Kapasitas produksi yang bisa disesuaikan dengan kebutuhan order.",
+    "Quality control ketat di setiap tahap produksi.",
+    "Lead time yang konsisten dan bisa diprediksi.",
   ],
 };
 
@@ -254,6 +420,7 @@ export function SiteWizard({
   // Form data
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState("");
+  const [businessSubType, setBusinessSubType] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [mood, setMood] = useState("");
@@ -427,26 +594,22 @@ export function SiteWizard({
 
   const handleSelectType = (type: string) => {
     setBusinessType(type);
+    setBusinessSubType(""); // reset sub-type when main type changes
+    setSelectedAdvantages([]);
+    setInputValue("");
+  };
+
+  const handleSelectSubType = (subType: string) => {
+    setBusinessSubType(subType);
     setSelectedAdvantages([]);
     setInputValue("");
 
-    const userText = type === "Toko & UMKM" ? "Toko & UMKM" :
-      type === "Kuliner" ? "Kuliner / Restoran" :
-        type === "Jasa" ? "Layanan Jasa" : "Company / Perusahaan";
-
-    const typeContext = type === "Toko & UMKM"
-      ? "toko & produk unggulan"
-      : type === "Kuliner"
-        ? "menu andalan & suasana"
-        : type === "Jasa"
-          ? "layanan & portofolio"
-          : "profil perusahaan & kredibilitas";
-
-    const aiResponse = `Bagus! Saya akan membuat website dengan fokus ${typeContext}.\n\nCeritakan produk/layanan utama dan keunggulan bisnis Anda:`;
+    const typeContext = subType || businessType;
+    const aiResponse = `Bagus! Saya akan membuat website untuk bisnis ${subType} Anda.\n\nCeritakan produk/layanan utama dan keunggulan bisnis Anda:`;
 
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: "user", text: userText },
+      { id: Date.now().toString(), sender: "user", text: subType },
     ]);
     setTimeout(() => {
       typeMessage(aiResponse, () => {
@@ -456,7 +619,7 @@ export function SiteWizard({
         ]);
         setChatStage("advantage");
       });
-    }, 500);
+    }, 400);
   };
 
   const toggleAdvantageSuggestion = (suggestion: string) => {
@@ -483,14 +646,17 @@ export function SiteWizard({
     setLoadingStep(0);
     setPendingPreview(null);
 
+    // Use sub-type if selected — backend recognises it directly via keyword map
+    const effectiveType = businessSubType || bType;
+
     try {
       const res = await request<any>("/ai/public/generate-preview", {
         method: "POST",
         body: JSON.stringify({
           business_name: bName,
-          business_type: bType,
+          business_type: effectiveType,
           description: bDescription,
-          whatsapp: "",     // Send empty WhatsApp to allow backend fallback
+          whatsapp: "",
           mood: bMood,
         }),
       });
@@ -754,8 +920,10 @@ export function SiteWizard({
               // ── Inline widget messages ──
               if (m.widget === "type-chips") {
                 const isLocked = chatStage !== "type";
+                const subTypes = businessType ? SUB_TYPES[businessType] : null;
                 return (
-                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+                    {/* Main type grid */}
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       {BUSINESS_TYPES.map((t) => {
                         const isSelected = businessType === t.value;
@@ -777,11 +945,44 @@ export function SiteWizard({
                             <span className="text-lg">{t.emoji}</span>
                             <span className={`text-xs font-bold ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{t.label}</span>
                             <span className="text-[10px] text-slate-500">{t.desc}</span>
-                            {isSelected && <span className="text-[9px] font-bold text-[#7c3aed] mt-0.5">✓ Dipilih</span>}
+                            {isSelected && !businessSubType && <span className="text-[9px] font-bold text-[#7c3aed] mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
+                            {isSelected && businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {businessSubType}</span>}
                           </button>
                         );
                       })}
                     </div>
+
+                    {/* Sub-type chips — appears inline after main type selected */}
+                    {subTypes && !isLocked && (
+                      <div className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+                        <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {subTypes.map((st) => {
+                            const isSubSelected = businessSubType === st.value;
+                            return (
+                              <button
+                                key={st.value}
+                                type="button"
+                                onClick={() => !isLocked && handleSelectSubType(st.value)}
+                                disabled={isLocked}
+                                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${
+                                  isSubSelected
+                                    ? "text-white border-emerald-500/60"
+                                    : "text-slate-300 border-white/10 hover:border-violet-400/50 hover:text-white"
+                                }`}
+                                style={isSubSelected
+                                  ? { background: "rgba(16,185,129,0.2)" }
+                                  : { background: "rgba(255,255,255,0.05)" }}
+                              >
+                                <span>{st.emoji}</span>
+                                <span>{st.label}</span>
+                                {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -821,7 +1022,7 @@ export function SiteWizard({
                     )}
                     {/* Chips grid */}
                     <div className="flex flex-col gap-2">
-                      {(ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
+                      {(ADVANTAGE_SUGGESTIONS[businessSubType] || ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
                         const selected = !isLocked && selectedAdvantages.includes(suggestion);
                         return (
                           <button
@@ -1228,7 +1429,7 @@ export function SiteWizard({
                         className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400"
                         style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.3)" }}
                       >
-                        {businessType}
+                        {businessSubType || businessType}
                       </div>
                     ) : (
                       <div className="h-5 w-20 rounded-full animate-pulse" style={skeletonStrong} />
