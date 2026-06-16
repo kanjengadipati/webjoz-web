@@ -5,10 +5,106 @@ import {
   Utensils, Calendar, Clock, MapPin, Phone, Mail, Check,
   ArrowRight, Sparkles, Award, Shield, Zap, ChevronDown,
   ChevronUp, Star, HelpCircle, Send, Globe, MessageSquare,
-  Image as ImageIcon, Plus, Minus, ShoppingCart
+  Image as ImageIcon, Plus, Minus, ShoppingCart, Menu, X
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
+// ─── Nav Menu ─────────────────────────────────────────────────────────────────
+
+// Sections that should NOT appear in nav
+const NAV_SKIP = new Set(["header", "hero", "footer", "seo"]);
+
+// Human-readable labels for nav items
+const NAV_LABELS: Record<string, string> = {
+  about:    "Tentang",
+  benefits: "Keunggulan",
+  menu:     "Menu",
+  catalog:  "Katalog",
+  faq:      "FAQ",
+  cta:      "Promo",
+  contact:  "Kontak",
+};
+
+interface NavMenuProps {
+  sectionOrder: string[];
+  hiddenSections?: string[];
+  /** Tailwind text colour class for links, e.g. "text-amber-900" */
+  linkClass?: string;
+  /** Tailwind/CSS active indicator colour */
+  activeColor?: string;
+  /** Inline style for the mobile drawer bg */
+  drawerStyle?: React.CSSProperties;
+}
+
+const NavMenu: React.FC<NavMenuProps> = ({
+  sectionOrder,
+  hiddenSections = [],
+  linkClass = "text-slate-700",
+  drawerStyle,
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const navItems = sectionOrder
+    .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && NAV_LABELS[k])
+    .map(k => ({ key: k, label: NAV_LABELS[k] }));
+
+  if (navItems.length === 0) return null;
+
+  const handleClick = (key: string) => {
+    setOpen(false);
+    const el = document.getElementById(key);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <>
+      {/* Desktop nav — hidden on small screens */}
+      <nav className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
+        {navItems.map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => handleClick(key)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Mobile hamburger button */}
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className={`md:hidden flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none ${linkClass}`}
+        aria-label={open ? "Tutup menu" : "Buka menu"}
+        aria-expanded={open}
+      >
+        {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+      </button>
+
+      {/* Mobile dropdown */}
+      {open && (
+        <div
+          className="md:hidden absolute top-full left-0 right-0 z-[60] shadow-lg py-2"
+          style={drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }}
+        >
+          {navItems.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => handleClick(key)}
+              className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
 interface BenefitItem {
   title: string;
   description: string;
@@ -495,7 +591,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="bg-amber-900/5 px-5 sm:px-6 py-20 border-y border-[#EADFCB]">
+          <section className="bg-amber-900/5 px-5 sm:px-6 py-20 border-y border-[#EADFCB]" id="benefits">
             <div className="max-w-6xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Keunggulan</span>
@@ -520,7 +616,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(faq) => (
-          <section className="px-6 py-20 max-w-4xl mx-auto space-y-12">
+          <section className="px-6 py-20 max-w-4xl mx-auto space-y-12" id="faq">
             <div className="text-center space-y-2">
               <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
               <h2 className="text-3xl font-bold font-serif text-amber-955">{faq.title}</h2>
@@ -672,7 +768,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
             <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-955 tracking-wide flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
@@ -686,6 +782,12 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 {headerData.tagline && <span className="block text-[10px] font-normal text-amber-700/70 tracking-wide truncate">{headerData.tagline}</span>}
               </span>
             </span>
+            <NavMenu
+              sectionOrder={sectionOrder}
+              hiddenSections={dt?.layout?.hidden_sections}
+              linkClass="text-amber-900"
+              drawerStyle={{ background: "#FAF7F2", borderTop: "1px solid #EADFCB" }}
+            />
             <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
@@ -808,7 +910,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="bg-indigo-950 text-indigo-100 px-6 py-24">
+          <section className="bg-indigo-950 text-indigo-100 px-6 py-24" id="benefits">
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-3">
                 <span className="text-indigo-400 font-extrabold tracking-wider uppercase text-xs">Mengapa Kami</span>
@@ -840,7 +942,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(faq) => (
-          <section className="px-6 py-24 max-w-4xl mx-auto space-y-16">
+          <section className="px-6 py-24 max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
               <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">Solusi Pertanyaan</span>
               <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{faq.title}</h2>
@@ -936,7 +1038,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
             <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-955 tracking-wider flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
@@ -945,8 +1047,17 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 iconClass="w-5 h-5 text-indigo-600"
                 imgClass="h-8 w-auto object-contain"
               />
-              <span className="truncate">{headerData.brand_name || "Brand Kami"}</span>
+              <span className="min-w-0">
+                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
+                {headerData.tagline && <span className="block text-[10px] font-normal text-indigo-400 tracking-wide truncate">{headerData.tagline}</span>}
+              </span>
             </span>
+            <NavMenu
+              sectionOrder={sectionOrder}
+              hiddenSections={dt?.layout?.hidden_sections}
+              linkClass="text-slate-700"
+              drawerStyle={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}
+            />
             <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
@@ -1077,7 +1188,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="bg-slate-900/30 border-y border-slate-900 px-6 py-28">
+          <section className="bg-slate-900/30 border-y border-slate-900 px-6 py-28" id="benefits">
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-3">
                 <span className="text-cyan-400 font-extrabold tracking-wider uppercase text-xs">Teknologi</span>
@@ -1102,7 +1213,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(faq) => (
-          <section className="px-6 py-28 max-w-4xl mx-auto space-y-16">
+          <section className="px-6 py-28 max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
               <span className="text-cyan-400 font-extrabold tracking-wider uppercase text-xs">Pusat Bantuan</span>
               <h2 className="text-3xl font-extrabold tracking-tight">{faq.title}</h2>
@@ -1257,7 +1368,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       {/* Navbar mock */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-955/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-955/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
             <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
@@ -1266,8 +1377,17 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 iconClass="w-5 h-5 text-cyan-400 fill-cyan-400/20"
                 imgClass="h-8 w-auto object-contain"
               />
-              <span className="truncate">{headerData.brand_name || "Brand Kami"}</span>
+              <span className="min-w-0">
+                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
+                {headerData.tagline && <span className="block text-[10px] font-normal text-cyan-400/60 tracking-wide truncate">{headerData.tagline}</span>}
+              </span>
             </span>
+            <NavMenu
+              sectionOrder={sectionOrder}
+              hiddenSections={dt?.layout?.hidden_sections}
+              linkClass="text-slate-300"
+              drawerStyle={{ background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+            />
             <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
@@ -1667,7 +1787,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoSectionContent content={{ benefits, dt }} render={(data) => {
             const { benefits: b } = data;
             return (
-              <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
+              <section id="benefits" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
                 <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
                   <div style={{ textAlign: "center", marginBottom: "3rem" }}>
                     <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Keunggulan</span>
@@ -1706,7 +1826,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoSectionContent content={{ faq, dt }} render={(data) => {
             const { faq: f } = data;
             return (
-              <section style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
+              <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
                 <div style={{ textAlign: "center", marginBottom: "3rem" }}>
                   <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
                   <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{f.title}</h2>
@@ -1905,11 +2025,20 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         <MemoSectionContent content={{ header, dt }} render={(data) => {
           const { header: h } = data;
           return (
-            <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
+            <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4 relative" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
               <span className="flex items-center gap-1.5 md:gap-2 min-w-0 text-sm md:text-lg font-bold" style={{ display: "flex", alignItems: "center", fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>
                 <LogoImage url={h?.logo_url} icon={h?.icon} defaultIcon={Globe} iconClass="" imgClass="h-8 w-auto object-contain" />
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h?.brand_name || "Brand Kami"}</span>
+                <span style={{ overflow: "hidden" }}>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{h?.brand_name || "Brand Kami"}</span>
+                  {h?.tagline && <span style={{ display: "block", fontSize: "0.65rem", fontFamily: "var(--dt-body-font)", color: "var(--dt-text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{h.tagline}</span>}
+                </span>
               </span>
+              <NavMenu
+                sectionOrder={sectionOrder}
+                hiddenSections={dt?.layout?.hidden_sections}
+                linkClass=""
+                drawerStyle={{ background: "var(--dt-surface, #fff)", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}
+              />
               <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}

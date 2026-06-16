@@ -117,75 +117,31 @@ function preserveUserBrand(content: Record<string, any>, businessName: string): 
   };
 }
 
-function buildFullContent(data: PreviewData, businessName: string, businessType: string, description: string, whatsapp: string) {
+function buildFullContent(data: PreviewData, businessName: string, businessType: string, description: string, whatsapp: string, matraValue?: string) {
   const c = preserveUserBrand(data.content as Record<string, any>, businessName);
   const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
 
-  // Hero image: use AI-provided or pick by business type
-  const heroImagePool: Record<string, string[]> = {
-    "Kuliner": [
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80", // food spread
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80", // restaurant interior
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&auto=format&fit=crop&q=80", // fine dining
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1200&auto=format&fit=crop&q=80", // pizza
-      "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=1200&auto=format&fit=crop&q=80", // breakfast
-      "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=1200&auto=format&fit=crop&q=80", // healthy food
-      "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=1200&auto=format&fit=crop&q=80", // cafe bar
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&auto=format&fit=crop&q=80", // coffee shop
-    ],
-    "Toko & UMKM": [
-      "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&auto=format&fit=crop&q=80", // online shopping
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&auto=format&fit=crop&q=80", // retail store
-      "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&auto=format&fit=crop&q=80", // clothing store
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80", // shop interior
-      "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=1200&auto=format&fit=crop&q=80", // marketplace
-      "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=1200&auto=format&fit=crop&q=80", // fashion retail
-      "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=1200&auto=format&fit=crop&q=80", // boutique
-    ],
-    "Jasa": [
-      "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&auto=format&fit=crop&q=80", // handshake
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&auto=format&fit=crop&q=80", // team meeting
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&auto=format&fit=crop&q=80", // agency team
-      "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&auto=format&fit=crop&q=80", // coworking
-      "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=1200&auto=format&fit=crop&q=80", // whiteboard planning
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80", // professional
-      "https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=1200&auto=format&fit=crop&q=80", // consulting
-    ],
-    "Company": [
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80", // modern office
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80", // glass building
-      "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1200&auto=format&fit=crop&q=80", // corporate
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&auto=format&fit=crop&q=80", // executive
-      "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1200&auto=format&fit=crop&q=80", // boardroom
-      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1200&auto=format&fit=crop&q=80", // business team
-      "https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?w=1200&auto=format&fit=crop&q=80", // skyscraper
-    ],
-  };
-  const pool = heroImagePool[businessType];
-  const defaultHeroImage = pool
-    ? pool[Math.floor(Math.random() * pool.length)]
-    : "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80";
-  const aboutImage = "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80";
-
+  // All images come from the backend (populateImageUrls). Never override with random frontend picks.
   return {
     header: {
       brand_name: businessName,
       nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
       logo_url: c.header?.logo_url || logoUrl,
+      tagline: c.header?.tagline || "",
     },
     hero: {
       headline: c.hero?.headline || businessName,
+      matra: c.hero?.matra || matraValue || "",
       subheadline: c.hero?.subheadline || description,
       cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
       cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
-      image_url: c.hero?.image_url || defaultHeroImage,
+      image_url: c.hero?.image_url || "",
       badge_text: c.hero?.badge_text || businessType,
-      matra: c.hero?.matra || "",
     },
     about: {
       title: c.about?.title || `Tentang ${businessName}`,
       body: c.about?.body || description,
-      image_url: c.about?.image_url || aboutImage,
+      image_url: c.about?.image_url || "",
     },
     benefits: {
       title: c.benefits?.title || "Kenapa Pilih Kami?",
@@ -219,14 +175,13 @@ function buildFullContent(data: PreviewData, businessName: string, businessType:
       tagline: c.footer?.tagline || description,
       copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
     },
-    // Preserve AI-generated menu/catalog if present — user edits details in the dashboard editor
     ...(c.menu ? { menu: c.menu } : {}),
     ...(c.catalog ? { catalog: c.catalog } : {}),
     seo: {
       title: c.seo?.title || businessName,
       description: c.seo?.description || description,
       favicon_url: c.seo?.favicon_url || logoUrl,
-      og_image_url: c.seo?.og_image_url || defaultHeroImage,
+      og_image_url: c.seo?.og_image_url || "",
     },
   };
 }
