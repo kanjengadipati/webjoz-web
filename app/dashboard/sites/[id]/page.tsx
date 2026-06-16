@@ -208,7 +208,11 @@ export default function SiteEditorPage() {
         cta: { ...fallback.cta, ...data.cta },
         contact: { ...fallback.contact, ...data.contact },
         footer: { ...fallback.footer, ...data.footer },
-        seo: { ...fallback.seo, ...data.seo }
+        seo: { ...fallback.seo, ...data.seo },
+        // Preserve optional sections as-is
+        ...(data.testimonials ? { testimonials: data.testimonials } : {}),
+        ...(data.menu ? { menu: data.menu } : {}),
+        ...(data.catalog ? { catalog: data.catalog } : {}),
       };
 
       setContent(finalContent);

@@ -916,6 +916,145 @@ export default function SectionForms({
         </div>
       )}
 
+      {/* TESTIMONIALS FORM */}
+      {activeTab === "testimonials" && (
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+            <input
+              type="text"
+              value={content.testimonials?.title || ""}
+              onChange={(e) => updateField("testimonials", "title", e.target.value)}
+              placeholder="cth. Cerita dari Pelanggan Kami"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600"
+            />
+          </div>
+          {(content.testimonials?.items || []).map((item: any, idx: number) => (
+            <div key={idx} className="border border-white/10 p-3 rounded-xl space-y-2.5 bg-white/[0.02]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-slate-500">Testimoni #{idx + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const n = content.testimonials.items.filter((_: any, i: number) => i !== idx);
+                    updateField("testimonials", "items", n);
+                  }}
+                  className="text-red-400/70 hover:text-red-400 text-[11px] cursor-pointer"
+                >
+                  Hapus
+                </button>
+              </div>
+              {/* Quote */}
+              <div>
+                <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Kutipan</label>
+                <textarea
+                  rows={2}
+                  value={item.quote || ""}
+                  onChange={(e) => {
+                    const n = [...content.testimonials.items];
+                    n[idx] = { ...n[idx], quote: e.target.value };
+                    updateField("testimonials", "items", n);
+                  }}
+                  placeholder="Tulis kutipan spesifik dan believable..."
+                  className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600 resize-none"
+                />
+              </div>
+              {/* Name + Role row */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Nama</label>
+                  <input
+                    type="text"
+                    value={item.name || ""}
+                    onChange={(e) => {
+                      const n = [...content.testimonials.items];
+                      n[idx] = { ...n[idx], name: e.target.value };
+                      updateField("testimonials", "items", n);
+                    }}
+                    placeholder="cth. Budi Santoso"
+                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Profesi / Konteks</label>
+                  <input
+                    type="text"
+                    value={item.role || ""}
+                    onChange={(e) => {
+                      const n = [...content.testimonials.items];
+                      n[idx] = { ...n[idx], role: e.target.value };
+                      updateField("testimonials", "items", n);
+                    }}
+                    placeholder="cth. Pelanggan tetap"
+                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600"
+                  />
+                </div>
+              </div>
+              {/* Avatar initials + color row */}
+              <div className="grid grid-cols-2 gap-2 items-end">
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Inisial Avatar</label>
+                  <input
+                    type="text"
+                    maxLength={2}
+                    value={item.avatar_initials || ""}
+                    onChange={(e) => {
+                      const n = [...content.testimonials.items];
+                      n[idx] = { ...n[idx], avatar_initials: e.target.value.toUpperCase().slice(0, 2) };
+                      updateField("testimonials", "items", n);
+                    }}
+                    placeholder="BS"
+                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600 uppercase"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Warna Avatar</label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                      <input
+                        type="color"
+                        value={item.avatar_color || "#7c3aed"}
+                        onChange={(e) => {
+                          const n = [...content.testimonials.items];
+                          n[idx] = { ...n[idx], avatar_color: e.target.value };
+                          updateField("testimonials", "items", n);
+                        }}
+                        className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                      />
+                      <div className="w-full h-full" style={{ backgroundColor: item.avatar_color || "#7c3aed" }} />
+                    </div>
+                    <input
+                      type="text"
+                      value={item.avatar_color || ""}
+                      onChange={(e) => {
+                        const n = [...content.testimonials.items];
+                        n[idx] = { ...n[idx], avatar_color: e.target.value };
+                        updateField("testimonials", "items", n);
+                      }}
+                      placeholder="#7c3aed"
+                      className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              const current = content.testimonials?.items || [];
+              updateField("testimonials", "items", [
+                ...current,
+                { quote: "", name: "", role: "", avatar_initials: "", avatar_color: "#7c3aed" }
+              ]);
+            }}
+            className="w-full text-[12px] py-2 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Tambah Testimoni
+          </button>
+        </div>
+      )}
+
       {/* MENU FORM */}
       {activeTab === "menu" && (
         <>
