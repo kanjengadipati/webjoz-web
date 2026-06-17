@@ -749,9 +749,10 @@ export function SiteWizard({
           business_name: bName,
           business_type: effectiveType,
           description: bDescription,
-          whatsapp: "",
+          whatsapp: whatsapp || "",
           mood: bMood,
           template_id: selectedTemplateId,
+          selling_points: selectedAdvantages.length > 0 ? selectedAdvantages : undefined,
         }),
       });
 
@@ -773,7 +774,7 @@ export function SiteWizard({
           businessName: bName,
           businessType: bType,
           description: bDescription,
-          whatsapp: "",
+          whatsapp: whatsapp || "",
           mood: bMood,
           templateId,
           previewContent: preservedContent,
