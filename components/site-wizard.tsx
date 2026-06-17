@@ -1457,7 +1457,7 @@ export function SiteWizard({
                     style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.25)", color: "#a78bfa" }}
                   >
                     <Wand2 className="w-3.5 h-3.5" />
-                    Coba template lain
+                    Generate ulang dengan desain berbeda
                   </button>
                 </div>
               </div>
