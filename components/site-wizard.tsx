@@ -13,7 +13,17 @@ import {
   Wand2,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
-import { TemplateDynamicWithCart } from "@/components/templates";
+import {
+  TemplateDynamicWithCart,
+  TemplateKuliner,
+  TemplateJasa,
+  TemplateProduk,
+  TemplateElegant,
+  TemplateNatural,
+  TemplateColorful,
+  TemplateMinimalist,
+  type TemplateProps,
+} from "@/components/templates";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -39,7 +49,53 @@ type Message = {
 type PreviewData = {
   content: Record<string, any>;
   design_token: Record<string, any>;
+  template_id?: string;
 };
+
+// ─── Template selection (mirrors backend autoSelectTemplate) ─────────────────
+function selectTemplate(businessType: string, mood: string): string {
+  const lower = businessType.toLowerCase();
+  const lm = mood.toLowerCase();
+
+  // Mood overrides (highest priority)
+  if (lm.includes("elegan") || lm.includes("mewah")) return "TEMPLATE_ELEGANT";
+  if (lm.includes("natural") || lm.includes("hangat")) return "TEMPLATE_NATURAL";
+  if (lm.includes("fun") || lm.includes("colorful") || lm.includes("playful")) return "TEMPLATE_COLORFUL";
+  if (lm.includes("modern") || lm.includes("minimalis")) {
+    const isJasaType = lower.includes("jasa") || lower.includes("konsultan") || lower.includes("company") ||
+      lower.includes("fotografer") || lower.includes("properti") || lower.includes("konstruksi") ||
+      lower.includes("pendidikan");
+    return isJasaType ? "TEMPLATE_MINIMALIST" : "TEMPLATE_COLORFUL";
+  }
+
+  // Business type mapping
+  if (lower.includes("kafe") || lower.includes("cafe") || lower.includes("kopi") ||
+    lower.includes("restoran") || lower.includes("warung") || lower.includes("bakery") ||
+    lower.includes("catering") || lower.includes("kuliner")) return "TEMPLATE_KULINER01";
+  if (lower.includes("jasa") || lower.includes("konsultan") || lower.includes("agensi") ||
+    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter")) return "TEMPLATE_JASA02";
+  if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
+    lower.includes("fashion") || lower.includes("elektronik") || lower.includes("umkm") ||
+    lower.includes("online") || lower.includes("minuman") || lower.includes("bubble") ||
+    lower.includes("boba")) return "TEMPLATE_PRODUK03";
+  if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
+    lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) return "TEMPLATE_JASA02";
+
+  return "TEMPLATE_DYNAMIC";
+}
+
+function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
+  switch (templateId) {
+    case "TEMPLATE_KULINER01": return TemplateKuliner;
+    case "TEMPLATE_JASA02": return TemplateJasa;
+    case "TEMPLATE_PRODUK03": return TemplateProduk;
+    case "TEMPLATE_ELEGANT": return TemplateElegant;
+    case "TEMPLATE_NATURAL": return TemplateNatural;
+    case "TEMPLATE_COLORFUL": return TemplateColorful;
+    case "TEMPLATE_MINIMALIST": return TemplateMinimalist;
+    default: return TemplateDynamicWithCart;
+  }
+}
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -648,6 +704,8 @@ export function SiteWizard({
 
     // Use sub-type if selected — backend recognises it directly via keyword map
     const effectiveType = businessSubType || bType;
+    // Pick template based on type + mood (mirrors backend autoSelectTemplate)
+    const selectedTemplateId = selectTemplate(effectiveType, bMood);
 
     try {
       const res = await request<any>("/ai/public/generate-preview", {
@@ -658,15 +716,19 @@ export function SiteWizard({
           description: bDescription,
           whatsapp: "",
           mood: bMood,
+          template_id: selectedTemplateId,
         }),
       });
 
       if (res.status !== "success") throw new Error(res.message);
 
       const preservedContent = preserveUserBrand(res.data.content, bName);
-      const loadedData = {
+      // Use template_id from backend response (authoritative), fallback to frontend selection
+      const templateId = res.data.template_id || selectedTemplateId;
+      const loadedData: PreviewData = {
         content: preservedContent,
         design_token: res.data.design_token,
+        template_id: templateId,
       };
 
       // Save the generated preview to localStorage so we can use it after login
@@ -678,6 +740,7 @@ export function SiteWizard({
           description: bDescription,
           whatsapp: "",
           mood: bMood,
+          templateId,
           previewContent: preservedContent,
           previewDesignToken: res.data.design_token,
         })
@@ -741,7 +804,7 @@ export function SiteWizard({
           headers: { "X-Tenant-ID": tenantId.toString() },
           body: JSON.stringify({
             name: businessName,
-            template_id: "TEMPLATE_DYNAMIC",
+            template_id: previewData?.template_id || selectTemplate(businessSubType || businessType, mood),
             subdomain,
           }),
         },
@@ -1179,6 +1242,31 @@ export function SiteWizard({
                     {[15, 30, 45, 60, 75, 100][loadingStep] ?? 15}%
                   </span>
                 </div>
+
+                {/* Template badge */}
+                {mood && (() => {
+                  const tid = selectTemplate(businessSubType || businessType, mood);
+                  const templateNames: Record<string, { name: string; emoji: string }> = {
+                    "TEMPLATE_KULINER01": { name: "Vista Prime", emoji: "🍜" },
+                    "TEMPLATE_JASA02": { name: "Elevate One", emoji: "💼" },
+                    "TEMPLATE_PRODUK03": { name: "Forge Flow", emoji: "🛍️" },
+                    "TEMPLATE_ELEGANT": { name: "Noir Prestige", emoji: "👑" },
+                    "TEMPLATE_NATURAL": { name: "Bumi Lestari", emoji: "🌿" },
+                    "TEMPLATE_COLORFUL": { name: "Pop Riot", emoji: "🎨" },
+                    "TEMPLATE_MINIMALIST": { name: "White Space", emoji: "⚡" },
+                    "TEMPLATE_DYNAMIC": { name: "AI Design Engine", emoji: "✨" },
+                  };
+                  const tpl = templateNames[tid] || { name: tid, emoji: "✨" };
+                  return (
+                    <div className="flex items-center gap-1.5 pt-1">
+                      <span className="text-[10px]" style={{ color: "rgba(148,163,184,0.6)" }}>Template terpilih:</span>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.25)" }}>
+                        {tpl.emoji} {tpl.name}
+                      </span>
+                    </div>
+                  );
+                })()}
 
                 {/* Step list */}
                 <div className="space-y-2">
@@ -1637,13 +1725,15 @@ export function SiteWizard({
           )}
 
           {/* Result state */}
-          {previewState === "result" && previewData && (
+          {previewState === "result" && previewData && (() => {
+            const TemplateComponent = getTemplateComponent(previewData.template_id || selectTemplate(businessSubType || businessType, mood));
+            return (
             <div className="h-full flex flex-col overflow-hidden">
               <div className="flex-1 overflow-y-auto">
-                <TemplateDynamicWithCart
+                <TemplateComponent
                   content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
                   design_token={previewData.design_token as any}
-                  previewMode={true}
+                  isEditorMode={false}
                 />
               </div>
 
@@ -1665,7 +1755,8 @@ export function SiteWizard({
                 </button>
               </div>
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </div>
