@@ -1390,51 +1390,74 @@ export function SiteWizard({
                     </div>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
-                  {/* Undo / Redo row — only shown after 2+ generates */}
-                  {previewHistory.length > 1 && (
-                    <div className="flex gap-2">
-                      <button
-                        disabled={historyIndex <= 0}
-                        onClick={() => {
-                          const prev = historyIndex - 1;
-                          setHistoryIndex(prev);
-                          setPreviewData(previewHistory[prev]);
-                        }}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "#94a3b8" }}
-                      >
-                        ← Sebelumnya
-                      </button>
-                      <button
-                        disabled={historyIndex >= previewHistory.length - 1}
-                        onClick={() => {
-                          const next = historyIndex + 1;
-                          setHistoryIndex(next);
-                          setPreviewData(previewHistory[next]);
-                        }}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "#94a3b8" }}
-                      >
-                        Berikutnya →
-                      </button>
-                    </div>
-                  )}
-                  {previewHistory.length > 1 && (
-                    <p className="text-center text-[10px]" style={{ color: "rgba(148,163,184,0.35)" }}>
-                      Desain {historyIndex + 1} dari {previewHistory.length}
-                    </p>
-                  )}
+                  {/* History navigation — shown after 2+ generates */}
+                  {previewHistory.length > 1 && (() => {
+                    const TEMPLATE_NAMES: Record<string, string> = {
+                      "TEMPLATE_KULINER01": "Vista Prime 🍜",
+                      "TEMPLATE_JASA02": "Elevate One 💼",
+                      "TEMPLATE_PRODUK03": "Forge Flow 🛍️",
+                      "TEMPLATE_ELEGANT": "Noir Prestige 👑",
+                      "TEMPLATE_NATURAL": "Bumi Lestari 🌿",
+                      "TEMPLATE_COLORFUL": "Pop Riot 🎨",
+                      "TEMPLATE_MINIMALIST": "White Space ⚡",
+                      "TEMPLATE_DYNAMIC": "AI Design ✨",
+                    };
+                    const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
+                    return (
+                      <div className="space-y-2.5 pt-1">
+                        {/* Current template label */}
+                        <div className="text-center space-y-1">
+                          <p className="text-[11px] font-semibold" style={{ color: "#a78bfa" }}>{currentName}</p>
+                          {/* Dot indicators */}
+                          <div className="flex items-center justify-center gap-1.5">
+                            {previewHistory.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => { setHistoryIndex(i); setPreviewData(previewHistory[i]); }}
+                                className="transition-all duration-200"
+                                style={{
+                                  width: i === historyIndex ? 20 : 6,
+                                  height: 6,
+                                  borderRadius: 9999,
+                                  background: i === historyIndex ? "#7c3aed" : "rgba(255,255,255,0.18)",
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {/* Prev / Next arrows */}
+                        <div className="flex items-center justify-between gap-2">
+                          <button
+                            disabled={historyIndex <= 0}
+                            onClick={() => { const p = historyIndex - 1; setHistoryIndex(p); setPreviewData(previewHistory[p]); }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
+                            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
+                          >
+                            ‹ Desain sebelumnya
+                          </button>
+                          <button
+                            disabled={historyIndex >= previewHistory.length - 1}
+                            onClick={() => { const n = historyIndex + 1; setHistoryIndex(n); setPreviewData(previewHistory[n]); }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
+                            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
+                          >
+                            Desain berikutnya ›
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <button
                     onClick={() => {
                       const nextRegen = regenCount + 1;
                       setRegenCount(nextRegen);
                       handleGenerate(businessName, businessType, mood, description, nextRegen);
                     }}
-                    className="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-400 transition-all hover:text-slate-200 active:scale-[0.98]"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    className="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
+                    style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.25)", color: "#a78bfa" }}
                   >
-                    <Wand2 className="w-3 h-3" />
-                    Generate ulang dengan desain berbeda
+                    <Wand2 className="w-3.5 h-3.5" />
+                    Coba template lain
                   </button>
                 </div>
               </div>
