@@ -106,10 +106,8 @@ export const collectQualityIssues = (content: any) => {
     { path: "cta.button_text", label: "Teks tombol CTA", value: content?.cta?.button_text, required: true },
     { path: "cta.button_url", label: "URL tombol CTA", value: content?.cta?.button_url, required: true },
     { path: "contact.title", label: "Judul kontak", value: content?.contact?.title, required: true },
-    { path: "contact.address", label: "Alamat", value: content?.contact?.address },
     { path: "contact.phone", label: "Nomor WhatsApp", value: content?.contact?.phone, required: true },
-    // email is optional — only flag if it has a value that looks like a placeholder
-    ...(content?.contact?.email ? [{ path: "contact.email", label: "Email", value: content?.contact?.email }] : []),
+    // address and email are optional — never flag them
     { path: "seo.title", label: "SEO title", value: content?.seo?.title },
     { path: "seo.description", label: "SEO description", value: content?.seo?.description },
   ];
@@ -123,7 +121,10 @@ export const collectQualityIssues = (content: any) => {
     fields.push({ path: `faq.items.${idx}.answer`, label: `Jawaban FAQ #${idx + 1}`, value: item?.answer, required: true });
   });
 
-  const issues = fields.filter((field) => field.required || typeof field.value === "string").filter((field) => {
+  // Only flag required fields OR non-empty optional fields that contain placeholder text
+  const issues = fields.filter((field) => {
+    if (!field.required && (!field.value || field.value === "")) return false;
+    if (!field.required && typeof field.value !== "string") return false;
     const parts = field.path.split(".");
     return isPlaceholderValue(field.value, parts[parts.length - 1]);
   });
