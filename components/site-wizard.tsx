@@ -1285,46 +1285,139 @@ export function SiteWizard({
           ))}
 
           {/* Confirm step — show summary before generating */}
-          {chatStage === "confirm" && previewState === "wireframe" && (
-            <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                <Sparkles className="w-3 h-3 text-white" />
+          {chatStage === "confirm" && previewState === "wireframe" && (() => {
+            // Inline-editable confirm card
+            const [editingField, setEditingField] = React.useState<string | null>(null);
+            const [draftName, setDraftName] = React.useState(businessName);
+            const [draftWA, setDraftWA] = React.useState(whatsapp);
+            const [draftLocation, setDraftLocation] = React.useState(location);
+
+            const saveField = (field: string) => {
+              if (field === "name") setBusinessName(draftName.trim() || businessName);
+              if (field === "wa") {
+                const digits = draftWA.replace(/\D/g, "");
+                setWhatsapp(digits ? (digits.startsWith("0") ? "62" + digits.slice(1) : digits) : "");
+              }
+              if (field === "location") setLocation(draftLocation.trim());
+              setEditingField(null);
+            };
+
+            const fieldRow = (
+              label: string,
+              field: string,
+              display: string,
+              draftValue: string,
+              setDraft: (v: string) => void,
+              inputType: string = "text"
+            ) => (
+              <div key={field} className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">{label}</span>
+                {editingField === field ? (
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <input
+                      autoFocus
+                      type={inputType}
+                      value={draftValue}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") saveField(field); if (e.key === "Escape") setEditingField(null); }}
+                      className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5"
+                      style={{ borderColor: "#7c3aed" }}
+                    />
+                    <button onClick={() => saveField(field)} className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
+                    <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500 hover:text-slate-300">✕</button>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-[12px] text-slate-200 flex-1 truncate">{display || <span className="text-slate-600 italic">—</span>}</span>
+                    <button
+                      type="button"
+                      onClick={() => setEditingField(field)}
+                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
+                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}
+                    >
+                      Ubah
+                    </button>
+                  </>
+                )}
               </div>
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
-                <div
-                  className="rounded-2xl rounded-tl-sm px-3.5 py-3 text-sm leading-relaxed"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" }}
-                >
-                  <p className="text-slate-300 text-xs font-semibold mb-2">Ringkasan data bisnis Anda:</p>
-                  <div className="space-y-1 text-xs text-slate-400">
-                    <div><span className="text-slate-300 font-medium">Nama:</span> {businessName}</div>
-                    <div><span className="text-slate-300 font-medium">Jenis:</span> {[businessType, businessSubType].filter(Boolean).join(" › ")}</div>
-                    {mood && <div><span className="text-slate-300 font-medium">Gaya:</span> {mood}</div>}
-                    {whatsapp && <div><span className="text-slate-300 font-medium">WhatsApp:</span> {whatsapp}</div>}
-                    {location && <div><span className="text-slate-300 font-medium">Lokasi:</span> {location}</div>}
-                    {selectedAdvantages.length > 0 && (
-                      <div>
-                        <span className="text-slate-300 font-medium">Keunggulan:</span>
-                        <ul className="mt-1 space-y-0.5 pl-2">
-                          {selectedAdvantages.slice(0, 2).map((a, i) => (
-                            <li key={i} className="truncate">• {a.slice(0, 50)}{a.length > 50 ? "..." : ""}</li>
-                          ))}
-                        </ul>
+            );
+
+            return (
+              <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Sparkles className="w-3 h-3 text-white" />
+                </div>
+                <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div className="px-3.5 pt-3 pb-1.5">
+                    <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#7c3aed" }}>✓ Cek sebelum generate</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Klik Ubah untuk koreksi langsung</p>
+                  </div>
+
+                  {/* Name */}
+                  {fieldRow("Nama", "name", draftName || businessName, draftName, setDraftName)}
+
+                  {/* Type — read-only, back button */}
+                  <div className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Jenis</span>
+                    <span className="text-[12px] text-slate-200 flex-1 truncate">{[businessType, businessSubType].filter(Boolean).join(" › ")}</span>
+                    <button type="button" onClick={() => setChatStage("type")}
+                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
+                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
+                      Ubah
+                    </button>
+                  </div>
+
+                  {/* Mood — read-only */}
+                  <div className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Gaya</span>
+                    <span className="text-[12px] text-slate-200 flex-1 truncate">{mood}</span>
+                    <button type="button" onClick={() => setChatStage("mood")}
+                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
+                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
+                      Ubah
+                    </button>
+                  </div>
+
+                  {/* WhatsApp — inline editable */}
+                  {fieldRow("WhatsApp", "wa", draftWA, draftWA, setDraftWA, "tel")}
+
+                  {/* Location — inline editable */}
+                  {fieldRow("Lokasi", "location", draftLocation, draftLocation, setDraftLocation)}
+
+                  {/* Advantages — read-only summary */}
+                  {selectedAdvantages.length > 0 && (
+                    <div className="flex items-start gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                      <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Keunggulan</span>
+                      <div className="flex-1 min-w-0">
+                        {selectedAdvantages.slice(0, 2).map((a, i) => (
+                          <p key={i} className="text-[11px] text-slate-300 truncate">• {a.slice(0, 45)}{a.length > 45 ? "…" : ""}</p>
+                        ))}
+                        {selectedAdvantages.length > 2 && <p className="text-[10px] text-slate-500">+{selectedAdvantages.length - 2} lainnya</p>}
                       </div>
-                    )}
+                      <button type="button" onClick={() => setChatStage("advantage")}
+                        className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80 self-start"
+                        style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
+                        Ubah
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Generate button */}
+                  <div className="px-3.5 py-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <button
+                      onClick={() => { if (editingField) return; setChatStage("done"); }}
+                      disabled={!!editingField}
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+                      style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
+                    >
+                      <Wand2 className="w-4 h-4" />
+                      {editingField ? "Selesai edit dulu ↑" : "Generate Website →"}
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => setChatStage("done")}
-                  className="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl text-white text-xs font-bold transition-all hover:opacity-90 active:scale-[0.98]"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
-                >
-                  <Wand2 className="w-3.5 h-3.5" />
-                  Generate Website →
-                </button>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Loading bubble — visible during generate */}
           {previewState === "loading" && (
