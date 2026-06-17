@@ -84,6 +84,28 @@ function selectTemplate(businessType: string, mood: string): string {
   return "TEMPLATE_DYNAMIC";
 }
 
+// Returns a rotation of different templates on re-generate so user sees real layout variety.
+// regenCount=0 → primary selection, 1→ alt1, 2→alt2, cycles back.
+function selectAlternateTemplate(businessType: string, mood: string, regenCount: number): string {
+  const primary = selectTemplate(businessType, mood);
+  // Build a pool of all 8 templates, put primary first, then rotate
+  const all = [
+    "TEMPLATE_KULINER01",
+    "TEMPLATE_JASA02",
+    "TEMPLATE_PRODUK03",
+    "TEMPLATE_DYNAMIC",
+    "TEMPLATE_ELEGANT",
+    "TEMPLATE_NATURAL",
+    "TEMPLATE_COLORFUL",
+    "TEMPLATE_MINIMALIST",
+  ];
+  // Remove primary from pool so it doesn't repeat on regen=1
+  const others = all.filter(t => t !== primary);
+  if (regenCount === 0) return primary;
+  // Cycle through the others
+  return others[(regenCount - 1) % others.length];
+}
+
 function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
   switch (templateId) {
     case "TEMPLATE_KULINER01": return TemplateKuliner;
@@ -486,6 +508,7 @@ export function SiteWizard({
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+  const [regenCount, setRegenCount] = useState(0);
 
   // Loading animation state
   const [loadingStep, setLoadingStep] = useState(0);
@@ -572,8 +595,9 @@ export function SiteWizard({
   // When user submits WA number (chatStage -> "done"), type the final message THEN start generate
   useEffect(() => {
     if (chatStage === "done" && previewState === "wireframe" && mood) {
+      setRegenCount(0); // reset regen cycle for fresh generation
       typeMessage("Sempurna. Semua data sudah siap. Website sedang dibuat...", () => {
-        handleGenerate(businessName, businessType, mood, description);
+        handleGenerate(businessName, businessType, mood, description, 0);
       });
     }
   }, [chatStage]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -696,7 +720,8 @@ export function SiteWizard({
     bName = businessName,
     bType = businessType,
     bMood = mood,
-    bDescription = description
+    bDescription = description,
+    regen = regenCount
   ) => {
     setPreviewState("loading");
     setLoadingStep(0);
@@ -704,8 +729,8 @@ export function SiteWizard({
 
     // Use sub-type if selected — backend recognises it directly via keyword map
     const effectiveType = businessSubType || bType;
-    // Pick template based on type + mood (mirrors backend autoSelectTemplate)
-    const selectedTemplateId = selectTemplate(effectiveType, bMood);
+    // Pick template based on type + mood, cycling on regen
+    const selectedTemplateId = selectAlternateTemplate(effectiveType, bMood, regen);
 
     try {
       const res = await request<any>("/ai/public/generate-preview", {
@@ -1245,7 +1270,7 @@ export function SiteWizard({
 
                 {/* Template badge */}
                 {mood && (() => {
-                  const tid = selectTemplate(businessSubType || businessType, mood);
+                  const tid = selectAlternateTemplate(businessSubType || businessType, mood, regenCount);
                   const templateNames: Record<string, { name: string; emoji: string }> = {
                     "TEMPLATE_KULINER01": { name: "Vista Prime", emoji: "🍜" },
                     "TEMPLATE_JASA02": { name: "Elevate One", emoji: "💼" },
@@ -1356,7 +1381,11 @@ export function SiteWizard({
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => handleGenerate(businessName, businessType, mood, description)}
+                    onClick={() => {
+                      const nextRegen = regenCount + 1;
+                      setRegenCount(nextRegen);
+                      handleGenerate(businessName, businessType, mood, description, nextRegen);
+                    }}
                     className="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-400 transition-all hover:text-slate-200 active:scale-[0.98]"
                     style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
                   >
