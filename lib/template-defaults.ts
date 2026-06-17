@@ -167,6 +167,28 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
         },
         mood: "clean-modern",
     },
+    TEMPLATE_BOLD: {
+        palette: {
+            primary: "#DC2626",
+            accent: "#B91C1C",
+            background: "#070504",
+            surface: "#0D0907",
+            text: "#F5F5F5",
+        },
+        typography: {
+            heading_font: "Outfit",
+            body_font: "Outfit",
+            heading_weight: "900",
+            heading_size_hero: "3.5rem",
+        },
+        layout: {
+            hero_style: "full-bleed",
+            corner_radius: "sharp",
+            section_spacing: "normal",
+            section_order: ["hero", "benefits", "testimonials", "cta", "about", "faq", "contact"],
+        },
+        mood: "bold-dark",
+    },
 };
 
 /**
