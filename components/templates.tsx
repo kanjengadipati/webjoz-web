@@ -1290,33 +1290,31 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden">
-            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 rounded-full filter blur-[60px] md:blur-[120px] opacity-70"></div>
-            {hero.image_url && <div className="absolute inset-0 bg-slate-955/80 z-0" />}
+          <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden bg-slate-950">
+            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/20 rounded-full filter blur-[80px] opacity-60 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-teal-500/10 rounded-full filter blur-[100px] opacity-50 pointer-events-none" />
             {hero.image_url && (
               <img
                 src={hero.image_url}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-55 mix-blend-overlay z-0"
+                className="absolute inset-0 w-full h-full object-cover opacity-20 z-0"
                 alt="Hero"
               />
             )}
             <div className="max-w-4xl text-center space-y-8 relative z-10">
-
-              <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300">
+              <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-white">
                 {hero.headline}
               </h1>
-
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
                 {hero.subheadline}
               </p>
               <div className="pt-4">
                 <a
                   href={hero.cta_url}
-                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-955 rounded-full font-bold shadow-lg hover:shadow-cyan-500/25 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-955"
+                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:scale-105 text-slate-950 rounded-full font-bold shadow-lg hover:shadow-cyan-500/30 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950"
                 >
                   {hero.cta_text}
-                  <ArrowRight className="w-4 h-4 text-slate-955" />
+                  <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </div>
@@ -2450,6 +2448,75 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
           sectionStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
           cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "8px" }}
         />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(m) => (
+          <section id="menu" className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-2">
+                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>Menu</span>
+                <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{m.title}</h2>
+              </div>
+              {m.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-6">
+                  <h3 className="text-sm uppercase tracking-widest font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className="flex gap-4 items-start p-4" style={{ background: darkCard, border: `1px solid ${gold}15` }}>
+                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-20 h-20 object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex justify-between gap-2">
+                            <p className="font-bold text-sm font-sans" style={{ color: "#f5e6c0" }}>{item.name}</p>
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-bold font-sans text-sm shrink-0" style={{ color: gold }}>{item.price}</span>}
+                          </div>
+                          {item.description && <p className="text-[11px] font-sans font-light" style={{ color: textMuted }}>{item.description}</p>}
+                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest font-sans transition-all hover:brightness-110"
+                            style={{ background: gold, color: "#0a0a0a" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(c) => (
+          <section id="catalog" className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-2">
+                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>Koleksi</span>
+                <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.title}</h2>
+              </div>
+              {c.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-6">
+                  <h3 className="text-sm uppercase tracking-widest font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {cat.items?.map((item, ii) => (
+                      <div key={ii} className="space-y-3 group" style={{ background: darkCard, border: `1px solid ${gold}15`, padding: "1rem" }}>
+                        {item.badge && <span className="inline-block text-[9px] uppercase tracking-widest px-2 py-0.5 font-sans" style={{ background: gold, color: "#0a0a0a" }}>{item.badge}</span>}
+                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-40 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <p className="font-bold text-sm font-sans" style={{ color: "#f5e6c0" }}>{item.name}</p>
+                        {item.description && <p className="text-[11px] font-sans font-light" style={{ color: textMuted }}>{item.description}</p>}
+                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-bold font-sans text-sm" style={{ color: gold }}>{item.price}</p>}
+                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
+                          className="w-full flex items-center justify-center gap-1.5 py-2 text-[10px] font-bold uppercase tracking-widest font-sans transition-all hover:brightness-110"
+                          style={{ background: gold, color: "#0a0a0a" }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     faq: (
