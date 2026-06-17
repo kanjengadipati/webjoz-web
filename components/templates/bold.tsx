@@ -185,7 +185,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                           </div>
                           {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
                             style={{ background: red }} />
                         </div>
                       </div>
@@ -217,7 +217,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                         {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
                         {!isPlaceholderPrice(item.price) && item.price && <p className="font-black" style={{ color: red }}>{item.price}</p>}
                         <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                          className="w-full flex items-center justify-center gap-1.5 py-2 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
                           style={{ background: red }} />
                       </div>
                     ))}
@@ -286,12 +286,6 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                       <p>{data.contact.address}</p>
                     </div>
                   )}
-                  {data.contact.phone && (
-                    <div className={`flex items-center gap-3 ${!data.contact.show_lead_form ? "justify-center" : ""}`}>
-                      <Phone className="w-4 h-4 shrink-0" style={{ color: red }} />
-                      <p className="text-white font-bold">{data.contact.phone}</p>
-                    </div>
-                  )}
                   {data.contact.email && !data.contact.email.includes("brand-anda") && (
                     <div className={`flex items-center gap-3 ${!data.contact.show_lead_form ? "justify-center" : ""}`}>
                       <Mail className="w-4 h-4 shrink-0" style={{ color: red }} />
@@ -303,7 +297,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                   <a href={`https://wa.me/${data.contact.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 font-black text-xs uppercase tracking-widest text-white transition-all hover:brightness-110"
                     style={{ background: red }}>
-                    <Phone className="w-4 h-4" /> WhatsApp Sekarang
+                    <Phone className="w-4 h-4" /> {data.contact.phone}
                   </a>
                 )}
               </div>
