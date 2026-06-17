@@ -3452,3 +3452,5 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     </CartProvider>
   );
 };
+
+
