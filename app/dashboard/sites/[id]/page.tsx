@@ -1483,10 +1483,24 @@ export default function SiteEditorPage() {
               </>
             ) : (
               <>
-                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
+                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0 flex items-center justify-between gap-2">
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
                     Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                   </p>
+                  {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
+                    <button
+                      type="button"
+                      onClick={() => toggleSectionVisibility(activeTab)}
+                      title={hiddenSections.includes(activeTab) ? "Tampilkan section" : "Sembunyikan section"}
+                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                      style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
+                    >
+                      {hiddenSections.includes(activeTab)
+                        ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
+                        : <><Eye className="w-3 h-3" /> Sembunyikan</>
+                      }
+                    </button>
+                  )}
                 </div>
                 <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
                   {pendingDiff ? (
