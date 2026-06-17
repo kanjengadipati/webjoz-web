@@ -509,6 +509,9 @@ export function SiteWizard({
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [regenCount, setRegenCount] = useState(0);
+  // History for undo/redo — stores up to 5 past previews
+  const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   // Loading animation state
   const [loadingStep, setLoadingStep] = useState(0);
@@ -586,11 +589,18 @@ export function SiteWizard({
   // Transition to results screen only when API is done AND progress reaches step 5
   useEffect(() => {
     if (pendingPreview && loadingStep >= 5) {
+      setPreviewHistory(prev => {
+        // Truncate any "future" entries if user had gone back, then append new
+        const base = prev.slice(0, historyIndex + 1);
+        const next = [...base, pendingPreview].slice(-5); // keep max 5
+        setHistoryIndex(next.length - 1);
+        return next;
+      });
       setPreviewData(pendingPreview);
       setPreviewState("result");
       setPendingPreview(null);
     }
-  }, [pendingPreview, loadingStep]);
+  }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When user submits WA number (chatStage -> "done"), type the final message THEN start generate
   useEffect(() => {
@@ -1380,6 +1390,40 @@ export function SiteWizard({
                     </div>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
+                  {/* Undo / Redo row — only shown after 2+ generates */}
+                  {previewHistory.length > 1 && (
+                    <div className="flex gap-2">
+                      <button
+                        disabled={historyIndex <= 0}
+                        onClick={() => {
+                          const prev = historyIndex - 1;
+                          setHistoryIndex(prev);
+                          setPreviewData(previewHistory[prev]);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "#94a3b8" }}
+                      >
+                        ← Sebelumnya
+                      </button>
+                      <button
+                        disabled={historyIndex >= previewHistory.length - 1}
+                        onClick={() => {
+                          const next = historyIndex + 1;
+                          setHistoryIndex(next);
+                          setPreviewData(previewHistory[next]);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "#94a3b8" }}
+                      >
+                        Berikutnya →
+                      </button>
+                    </div>
+                  )}
+                  {previewHistory.length > 1 && (
+                    <p className="text-center text-[10px]" style={{ color: "rgba(148,163,184,0.35)" }}>
+                      Desain {historyIndex + 1} dari {previewHistory.length}
+                    </p>
+                  )}
                   <button
                     onClick={() => {
                       const nextRegen = regenCount + 1;

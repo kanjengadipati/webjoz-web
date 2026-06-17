@@ -777,22 +777,28 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, brand_name: header?.brand_name }} render={(data) => (
           <section className="px-6 py-20 bg-[#F4EEE0] border-t border-[#EADFCB]" id="contact">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-12" : "max-w-xl"}`}>
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold font-serif text-amber-955">{data.contact.title}</h2>
                 <div className="space-y-4 text-amber-900">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-amber-700 mt-0.5 flex-shrink-0" />
-                    <p>{data.contact.address}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-amber-700 flex-shrink-0" />
-                    <p>{data.contact.phone}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-amber-700 flex-shrink-0" />
-                    <p>{data.contact.email}</p>
-                  </div>
+                  {data.contact.address && data.contact.address !== "area sekitar" && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-amber-700 mt-0.5 flex-shrink-0" />
+                      <p>{data.contact.address}</p>
+                    </div>
+                  )}
+                  {data.contact.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-5 h-5 text-amber-700 flex-shrink-0" />
+                      <p>{data.contact.phone}</p>
+                    </div>
+                  )}
+                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-5 h-5 text-amber-700 flex-shrink-0" />
+                      <p>{data.contact.email}</p>
+                    </div>
+                  )}
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
@@ -1126,22 +1132,28 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, brand_name: header?.brand_name }} render={(data) => (
           <section className="px-6 py-24 bg-slate-100 border-t border-slate-200" id="contact">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-16" : "max-w-xl"}`}>
               <div className="space-y-6">
                 <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{data.contact.title}</h2>
                 <div className="space-y-4 text-slate-600">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
-                    <p>{data.contact.address}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                    <p>{data.contact.phone}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                    <p>{data.contact.email}</p>
-                  </div>
+                  {data.contact.address && data.contact.address !== "area sekitar" && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                      <p>{data.contact.address}</p>
+                    </div>
+                  )}
+                  {data.contact.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                      <p>{data.contact.phone}</p>
+                    </div>
+                  )}
+                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                      <p>{data.contact.email}</p>
+                    </div>
+                  )}
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
@@ -1418,22 +1430,28 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
           <section className="px-6 py-28 bg-slate-955 border-t border-slate-900" id="contact">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-16" : "max-w-xl"}`}>
               <div className="space-y-6">
                 <h2 className="text-3xl font-extrabold tracking-tight">{data.contact.title}</h2>
                 <div className="space-y-4 text-slate-300">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                    <p>{data.contact.address}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                    <p>{data.contact.phone}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                    <p>{data.contact.email}</p>
-                  </div>
+                  {data.contact.address && data.contact.address !== "area sekitar" && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
+                      <p>{data.contact.address}</p>
+                    </div>
+                  )}
+                  {data.contact.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                      <p>{data.contact.phone}</p>
+                    </div>
+                  )}
+                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                      <p>{data.contact.email}</p>
+                    </div>
+                  )}
                 </div>
                 {data.contact.maps_url && (
                   <div className="pt-4">
