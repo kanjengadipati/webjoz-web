@@ -22,6 +22,7 @@ import {
   TemplateNatural,
   TemplateColorful,
   TemplateMinimalist,
+  TemplateBold,
   type TemplateProps,
 } from "@/components/templates";
 
@@ -61,6 +62,7 @@ function selectTemplate(businessType: string, mood: string): string {
   if (lm.includes("elegan") || lm.includes("mewah")) return "TEMPLATE_ELEGANT";
   if (lm.includes("natural") || lm.includes("hangat")) return "TEMPLATE_NATURAL";
   if (lm.includes("fun") || lm.includes("colorful") || lm.includes("playful")) return "TEMPLATE_COLORFUL";
+  if (lm.includes("bold") || lm.includes("tegas")) return "TEMPLATE_BOLD";
   if (lm.includes("modern") || lm.includes("minimalis")) {
     const isJasaType = lower.includes("jasa") || lower.includes("konsultan") || lower.includes("company") ||
       lower.includes("fotografer") || lower.includes("properti") || lower.includes("konstruksi") ||
@@ -126,6 +128,7 @@ function getTemplateComponent(templateId: string): React.ComponentType<TemplateP
     case "TEMPLATE_NATURAL": return TemplateNatural;
     case "TEMPLATE_COLORFUL": return TemplateColorful;
     case "TEMPLATE_MINIMALIST": return TemplateMinimalist;
+    case "TEMPLATE_BOLD": return TemplateBold;
     default: return TemplateDynamicWithCart;
   }
 }
@@ -1304,6 +1307,7 @@ export function SiteWizard({
                     "TEMPLATE_COLORFUL": { name: "Pop Riot", emoji: "🎨" },
                     "TEMPLATE_MINIMALIST": { name: "White Space", emoji: "⚡" },
                     "TEMPLATE_DYNAMIC": { name: "AI Design Engine", emoji: "✨" },
+                    "TEMPLATE_BOLD": { name: "Fire Force", emoji: "🔥" },
                   };
                   const tpl = templateNames[tid] || { name: tid, emoji: "✨" };
                   return (

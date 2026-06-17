@@ -8,3 +8,4 @@ export { TemplateElegant } from "./elegant";
 export { TemplateNatural } from "./natural";
 export { TemplateColorful } from "./colorful";
 export { TemplateMinimalist } from "./minimalist";
+export { TemplateBold } from "./bold";

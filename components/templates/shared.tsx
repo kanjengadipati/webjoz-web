@@ -159,17 +159,21 @@ interface TestimonialsSectionProps {
   testimonials?: { title: string; eyebrow?: string; items: TestimonialItem[] };
   headingClass?: string;
   eyebrowClass?: string;
+  eyebrowStyle?: React.CSSProperties;
   cardStyle?: React.CSSProperties;
   cardClass?: string;
   quoteClass?: string;
+  quoteStyle?: React.CSSProperties;
   nameClass?: string;
   roleClass?: string;
+  roleStyle?: React.CSSProperties;
   bgClass?: string;
   sectionStyle?: React.CSSProperties;
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   testimonials, headingClass = "text-slate-900", eyebrowClass = "text-violet-600",
+  eyebrowStyle, quoteStyle, roleStyle,
   cardClass = "bg-white border border-slate-200", quoteClass = "text-slate-700",
   nameClass = "text-slate-900", roleClass = "text-slate-500",
   bgClass = "bg-slate-50 py-20 px-5 sm:px-6", cardStyle, sectionStyle,
@@ -179,14 +183,14 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     <section id="testimonials" className={bgClass} style={sectionStyle}>
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="text-center space-y-2">
-          {testimonials.eyebrow && <span className={`text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`} style={eyebrowClass ? undefined : { color: "var(--dt-primary)", letterSpacing: "0.15em" }}>{testimonials.eyebrow}</span>}
+          {testimonials.eyebrow && <span className={`text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`} style={eyebrowStyle || (eyebrowClass ? undefined : { color: "var(--dt-primary)", letterSpacing: "0.15em" })}>{testimonials.eyebrow}</span>}
           <h2 className={`text-3xl md:text-4xl font-bold ${headingClass}`} style={headingClass ? undefined : { fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>{testimonials.title}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.items.map((t, idx) => (
             <div key={idx} className={`${cardClass} rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200`} style={cardStyle}>
               <div className={`text-4xl leading-none font-serif opacity-30 ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-primary)" }}>"</div>
-              <p className={`text-sm leading-relaxed flex-1 ${quoteClass}`} style={quoteClass ? undefined : { color: "var(--dt-text-muted)" }}>{t.quote}</p>
+              <p className={`text-sm leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle || (quoteClass ? undefined : { color: "var(--dt-text-muted)" })}>{t.quote}</p>
               <div className="flex items-center gap-3 pt-2" style={{ borderTop: cardStyle ? "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" : undefined }}>
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
@@ -196,7 +200,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 </div>
                 <div>
                   <p className={`text-sm font-bold leading-tight ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" }}>{t.name}</p>
-                  <p className={`text-xs ${roleClass}`} style={roleClass ? undefined : { color: "var(--dt-text-muted)" }}>{t.role}</p>
+                  <p className={`text-xs ${roleClass}`} style={roleStyle || (roleClass ? undefined : { color: "var(--dt-text-muted)" })}>{t.role}</p>
                 </div>
               </div>
             </div>
@@ -354,9 +358,11 @@ interface LeadFormProps {
   error: string | null;
   buttonClass: string;
   inputClass: string;
+  buttonStyle?: React.CSSProperties;
+  inputStyle?: React.CSSProperties;
 }
 
-const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, error, buttonClass, inputClass }) => {
+const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, error, buttonClass, inputClass, buttonStyle, inputStyle }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -392,7 +398,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nama Lengkap</label>
         <input
           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-          placeholder="cth. Budi Santoso" className={inputClass}
+          placeholder="cth. Budi Santoso" className={inputClass} style={inputStyle}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -400,14 +406,14 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email</label>
           <input
             type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-            placeholder="cth. budi@email.com" className={inputClass}
+            placeholder="cth. budi@email.com" className={inputClass} style={inputStyle}
           />
         </div>
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nomor WA</label>
           <input
             type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)}
-            placeholder="cth. 08123456789" className={inputClass}
+            placeholder="cth. 08123456789" className={inputClass} style={inputStyle}
           />
         </div>
       </div>
@@ -415,12 +421,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pesan Anda</label>
         <textarea
           required rows={4} value={message} onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tulis pesan atau pertanyaan Anda di sini..." className={inputClass}
+          placeholder="Tulis pesan atau pertanyaan Anda di sini..." className={inputClass} style={inputStyle}
         ></textarea>
       </div>
       <button
         type="submit" disabled={submitting}
         className={`${buttonClass} w-full min-h-11 py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2`}
+        style={buttonStyle}
       >
         {submitting ? "Mengirim..." : (
           <>
@@ -528,6 +535,6 @@ export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref,
   TestimonialsSection, MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
-  CartProvider, CartFab,
+  CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
 };
 export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps };

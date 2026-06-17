@@ -11,6 +11,7 @@ import {
   TemplateNatural,
   TemplateColorful,
   TemplateMinimalist,
+  TemplateBold,
 } from "@/components/templates";
 
 export type { DesignToken };
@@ -108,6 +109,16 @@ export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
     component: TemplateMinimalist,
     previewType: "service",
     tags: ["minimalist", "editorial", "portfolio", "fotografer", "arsitektur", "konsultan", "desainer", "clean", "modern"],
+  },
+  {
+    id: "TEMPLATE_BOLD",
+    name: "Fire Force",
+    category: "Bold & Tegas",
+    description: "Agresif, high-contrast, penuh energi. Dark background dengan aksen merah menyala. Cocok untuk bengkel, gym, otomotif, dan brand yang ingin tampil kuat dan bertenaga.",
+    accent: "#dc2626",
+    component: TemplateBold,
+    previewType: "service",
+    tags: ["bold", "tegas", "bengkel", "otomotif", "gym", "olahraga", "kuat", "agresif", "hitam", "merah"],
   },
 ];
 
