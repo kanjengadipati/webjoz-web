@@ -459,16 +459,67 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass }: {
 // ─── SEO Editor Preview ───────────────────────────────────────────────────────
 
 const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string } }) => (
-  <section className="bg-white text-slate-700 px-6 py-10 border-t border-slate-200">
-    <div className="max-w-5xl mx-auto space-y-3 text-xs leading-relaxed">
-      <div className="rounded-lg border border-cyan-200 bg-cyan-50 px-4 py-3 text-cyan-950">
-        <p className="font-bold">SEO tidak muncul sebagai section di website publik.</p>
-        <p className="mt-1 text-cyan-900/80">
-          Ini adalah metadata untuk mesin pencari dan preview saat link dibagikan, bukan konten visual halaman.
-        </p>
+  <section className="bg-[#0d0f14] px-5 py-8 border-t border-white/5">
+    <div className="max-w-2xl mx-auto space-y-6">
+
+      {/* Info banner */}
+      <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-[11px]" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)" }}>
+        <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" d="M12 16v-4M12 8h.01"/></svg>
+        <span className="text-indigo-300 leading-relaxed">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari & saat link dibagikan.</span>
       </div>
-      <p><span className="font-semibold text-slate-950">Title:</span> {seo?.title || "Belum ada SEO title"}</p>
-      <p><span className="font-semibold text-slate-950">Desc:</span> {seo?.description || "Belum ada meta description"}</p>
+
+      {/* Google search preview */}
+      <div>
+        <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Preview di Google</p>
+        <div className="rounded-xl p-4 space-y-1" style={{ background: "#fff", border: "1px solid #e2e8f0" }}>
+          {/* Favicon + URL bar */}
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center">
+              <span className="text-[8px] text-slate-500 font-bold">W</span>
+            </div>
+            <span className="text-[11px] text-slate-500 truncate">webjoz.id › bisnis</span>
+          </div>
+          {/* Title */}
+          <p className="text-[15px] font-medium leading-snug truncate" style={{ color: "#1a0dab" }}>
+            {seo?.title || <span className="text-slate-300 italic">Tambahkan SEO title...</span>}
+          </p>
+          {/* Description */}
+          <p className="text-[12px] leading-relaxed" style={{ color: "#4d5156" }}>
+            {seo?.description
+              ? (seo.description.length > 160 ? seo.description.slice(0, 157) + "..." : seo.description)
+              : <span className="text-slate-400 italic">Tambahkan meta description...</span>
+            }
+          </p>
+          {/* Char counters */}
+          <div className="flex gap-4 pt-1">
+            <span className={`text-[10px] font-mono ${(seo?.title?.length || 0) > 60 ? "text-red-500" : "text-slate-400"}`}>
+              Title: {seo?.title?.length || 0}/60
+            </span>
+            <span className={`text-[10px] font-mono ${(seo?.description?.length || 0) > 155 ? "text-red-500" : "text-slate-400"}`}>
+              Desc: {seo?.description?.length || 0}/155
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* OG / WhatsApp share preview */}
+      <div>
+        <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Preview saat link dibagikan (WhatsApp / Sosmed)</p>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+          {seo?.og_image_url
+            ? <img src={seo.og_image_url} alt="OG" className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            : <div className="w-full h-28 flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
+                <span className="text-[11px] text-slate-600">Tidak ada OG image</span>
+              </div>
+          }
+          <div className="px-3 py-2.5 space-y-0.5" style={{ background: "rgba(255,255,255,0.03)" }}>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500">webjoz.id</p>
+            <p className="text-[12px] font-semibold text-slate-200 leading-tight truncate">{seo?.title || "–"}</p>
+            <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">{seo?.description || "–"}</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 );

@@ -106,9 +106,10 @@ export const collectQualityIssues = (content: any) => {
     { path: "cta.button_text", label: "Teks tombol CTA", value: content?.cta?.button_text, required: true },
     { path: "cta.button_url", label: "URL tombol CTA", value: content?.cta?.button_url, required: true },
     { path: "contact.title", label: "Judul kontak", value: content?.contact?.title, required: true },
-    { path: "contact.address", label: "Alamat", value: content?.contact?.address, required: true },
+    { path: "contact.address", label: "Alamat", value: content?.contact?.address },
     { path: "contact.phone", label: "Nomor WhatsApp", value: content?.contact?.phone, required: true },
-    { path: "contact.email", label: "Email", value: content?.contact?.email },
+    // email is optional — only flag if it has a value that looks like a placeholder
+    ...(content?.contact?.email ? [{ path: "contact.email", label: "Email", value: content?.contact?.email }] : []),
     { path: "seo.title", label: "SEO title", value: content?.seo?.title },
     { path: "seo.description", label: "SEO description", value: content?.seo?.description },
   ];

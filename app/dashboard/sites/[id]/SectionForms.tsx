@@ -878,7 +878,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Alamat {needsAttention("contact.address") && <span className="text-amber-300">⚠️</span>}
+              Alamat <span className="text-slate-600 normal-case font-normal">(opsional)</span>
             </label>
             <input 
               id="field-contact.address"
@@ -921,7 +921,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Email {needsAttention("contact.email") && <span className="text-amber-300">⚠️</span>}
+              Email <span className="text-slate-600 normal-case font-normal">(opsional)</span>
             </label>
             <input 
               id="field-contact.email"
