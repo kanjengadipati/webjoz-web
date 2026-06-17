@@ -110,7 +110,9 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                 {b.items?.map((item, idx) => (
                   <div key={idx} className="p-6 rounded border space-y-3 transition-all hover:brightness-110" style={{ background: darkCard, borderColor: `${gold}20` }}>
                     <div className="w-10 h-10 rounded flex items-center justify-center" style={{ background: `${gold}15` }}>
-                      <Star className="w-5 h-5" style={{ color: gold }} />
+                      <span style={{ color: gold }}>
+                        <DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" />
+                      </span>
                     </div>
                     {item.stat && <p className="text-2xl font-bold" style={{ color: gold, fontFamily: "Georgia, serif" }}>{item.stat}<span className="text-sm ml-1" style={{ color: textMuted }}>{item.stat_label}</span></p>}
                     <h3 className="text-sm font-bold font-sans" style={{ color: "#f5e6c0" }}>{item.title}</h3>

@@ -1,5 +1,5 @@
-import React from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Sparkles, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { isPlaceholderValue } from "./editor-utils";
 import { request } from "@/lib/api/client";
@@ -14,6 +14,56 @@ export interface SectionFormsProps {
   token?: string | null;
   activeTenantId?: number | string | null;
   siteId?: number | null;
+}
+
+// ─── Icon Picker ──────────────────────────────────────────────────────────────
+const ICON_OPTIONS: Array<{ name: string; icon: React.ComponentType<any> }> = [
+  { name: "Star", icon: Star }, { name: "Zap", icon: Zap }, { name: "Shield", icon: Shield },
+  { name: "Award", icon: Award }, { name: "Heart", icon: Heart }, { name: "CheckCircle", icon: CheckCircle },
+  { name: "Clock", icon: Clock }, { name: "Globe", icon: Globe }, { name: "Users", icon: Users },
+  { name: "TrendingUp", icon: TrendingUp }, { name: "Leaf", icon: Leaf }, { name: "Flame", icon: Flame },
+  { name: "Lightbulb", icon: Lightbulb }, { name: "Target", icon: Target }, { name: "Truck", icon: Truck },
+  { name: "ThumbsUp", icon: ThumbsUp }, { name: "Lock", icon: Lock }, { name: "Phone", icon: Phone },
+  { name: "Mail", icon: Mail }, { name: "MapPin", icon: MapPin }, { name: "Camera", icon: Camera },
+  { name: "Utensils", icon: Utensils }, { name: "Coffee", icon: Coffee }, { name: "ShoppingBag", icon: ShoppingBag },
+  { name: "Wrench", icon: Wrench }, { name: "Stethoscope", icon: Stethoscope }, { name: "BookOpen", icon: BookOpen },
+  { name: "Home", icon: Home }, { name: "Building2", icon: Building2 }, { name: "Briefcase", icon: Briefcase },
+];
+
+function IconPicker({ value, onChange }: { value?: string; onChange: (name: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const selected = ICON_OPTIONS.find(o => o.name === value);
+  const SelectedIcon = selected?.icon ?? Star;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-2 px-2 py-1.5 border border-white/10 rounded text-[11px] text-slate-300 hover:bg-white/5 transition-all w-full"
+      >
+        <SelectedIcon className="w-4 h-4 text-violet-400 shrink-0" />
+        <span className="flex-1 text-left truncate">{value || "Pilih icon"}</span>
+        <ChevronDown className="w-3 h-3 text-slate-500 shrink-0" />
+      </button>
+      {open && (
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-white/10 rounded-lg p-2 shadow-xl">
+          <div className="grid grid-cols-6 gap-1">
+            {ICON_OPTIONS.map(({ name, icon: Icon }) => (
+              <button
+                key={name}
+                type="button"
+                title={name}
+                onClick={() => { onChange(name); setOpen(false); }}
+                className={`flex items-center justify-center p-2 rounded transition-all hover:bg-violet-500/20 ${value === name ? "bg-violet-500/30 ring-1 ring-violet-400" : ""}`}
+              >
+                <Icon className={`w-4 h-4 ${value === name ? "text-violet-300" : "text-slate-400"}`} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Unsplash image pool (mirrors the API backend pool) ───────────────────────
@@ -648,6 +698,36 @@ export default function SectionForms({
                 placeholder="Deskripsi" 
                 className={fieldClass(`benefits.items.${idx}.description`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-violet-400 resize-none")} 
               />
+              {/* Icon + Stat row */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] text-slate-500 uppercase">Icon</label>
+                <IconPicker
+                  value={item.icon || ""}
+                  onChange={(name) => { const n = [...content.benefits.items]; n[idx].icon = name; updateField("benefits", "items", n); }}
+                />
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1 space-y-0.5">
+                  <label className="text-[10px] text-slate-500 uppercase">Stat</label>
+                  <input
+                    type="text"
+                    value={item.stat || ""}
+                    onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat = e.target.value; updateField("benefits", "items", n); }}
+                    placeholder="50+"
+                    className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-violet-400 bg-transparent text-slate-200"
+                  />
+                </div>
+                <div className="flex-1 space-y-0.5">
+                  <label className="text-[10px] text-slate-500 uppercase">Keterangan Stat</label>
+                  <input
+                    type="text"
+                    value={item.stat_label || ""}
+                    onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat_label = e.target.value; updateField("benefits", "items", n); }}
+                    placeholder="Proyek Selesai"
+                    className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-violet-400 bg-transparent text-slate-200"
+                  />
+                </div>
+              </div>
             </div>
           ))}
           <button 
