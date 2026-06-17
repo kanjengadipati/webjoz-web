@@ -516,6 +516,7 @@ export function SiteWizard({
   const [businessSubType, setBusinessSubType] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [location, setLocation] = useState("");
   const [mood, setMood] = useState("");
   const [matra, setMatra] = useState("");
   const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
@@ -680,19 +681,17 @@ export function SiteWizard({
       // WA is optional — user can skip with empty input
       const digits = val.replace(/\D/g, "");
       if (digits) {
-        // normalize: 08xx → 628xx
         const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
         setWhatsapp(normalized);
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now().toString(), sender: "user", text: val },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now().toString(), sender: "user", text: "Lewati" },
-        ]);
       }
+      // location is already in state via setLocation — no extra parsing needed
+      const displayParts: string[] = [];
+      if (val.trim()) displayParts.push(val.trim());
+      if (location.trim()) displayParts.push(`📍 ${location.trim()}`);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), sender: "user", text: displayParts.length > 0 ? displayParts.join("  ·  ") : "Lewati" },
+      ]);
       setChatStage("done");
     }
   };
@@ -751,8 +750,7 @@ export function SiteWizard({
     bMood = mood,
     bDescription = description,
     regen = regenCount
-  ) => {
-    setPreviewState("loading");
+  ) => {    setPreviewState("loading");
     setLoadingStep(0);
     setPendingPreview(null);
 
@@ -769,6 +767,7 @@ export function SiteWizard({
           business_type: effectiveType,
           description: bDescription,
           whatsapp: whatsapp || "",
+          location: location || "",
           mood: bMood,
           template_id: selectedTemplateId,
           selling_points: selectedAdvantages.length > 0 ? selectedAdvantages : undefined,
@@ -794,6 +793,7 @@ export function SiteWizard({
           businessType: bType,
           description: bDescription,
           whatsapp: whatsapp || "",
+          location: location || "",
           mood: bMood,
           templateId,
           previewContent: preservedContent,
@@ -1488,25 +1488,59 @@ export function SiteWizard({
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
         {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && (
           <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <input
-                ref={inputRef}
-                type={chatStage === "whatsapp" ? "tel" : "text"}
-                inputMode={chatStage === "whatsapp" ? "tel" : undefined}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={
-                  chatStage === "whatsapp"
-                    ? "cth. 08123456789 (atau Enter untuk lewati)"
-                    : chatStage === "advantage"
+            {chatStage === "whatsapp" ? (
+              // WA + Location stacked — same step, no new progress bar entry
+              <form onSubmit={handleSendText} className="space-y-2">
+                <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  <input
+                    ref={inputRef}
+                    type="tel"
+                    inputMode="tel"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="cth. 08123456789 (opsional)"
+                    disabled={isInitialTyping || isAiTyping}
+                    className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                  />
+                  <span className="text-[10px] text-slate-600 shrink-0">WA</span>
+                </div>
+                <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="Kota/lokasi bisnis (opsional) — cth. Bandung, Yogyakarta"
+                    disabled={isInitialTyping || isAiTyping}
+                    className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                  />
+                  <span className="text-[10px] text-slate-600 shrink-0">📍</span>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isInitialTyping || isAiTyping}
+                  className="w-full py-2 rounded-xl text-xs font-semibold text-slate-300 transition-all hover:bg-white/10 active:scale-[0.98]"
+                  style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.25)" }}
+                >
+                  {inputValue.trim() || location.trim() ? "Lanjut →" : "Lewati →"}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder={
+                    chatStage === "advantage"
                       ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
                       : "Ketik nama bisnis Anda..."
-                }
-                autoFocus
-                disabled={isInitialTyping || isAiTyping}
-                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
-              />
-              <button
+                  }
+                  autoFocus
+                  disabled={isInitialTyping || isAiTyping}
+                  className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                />
+                <button
                 type="submit"
                 disabled={isInitialTyping || isAiTyping || (chatStage === "name" && !inputValue.trim())}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#7c3aed] text-white transition-all disabled:opacity-30 hover:bg-[#6d28d9] shrink-0"
@@ -1514,6 +1548,7 @@ export function SiteWizard({
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </form>
+            )}
           </div>
         )}
 
