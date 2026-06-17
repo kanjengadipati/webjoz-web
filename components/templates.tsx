@@ -930,7 +930,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
 
       {/* Dynamic Section Order */}
-      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => sectionNodes[key] ?? null)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
@@ -1224,7 +1224,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
 
       {/* Dynamic Section Order */}
-      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => sectionNodes[key] ?? null)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
@@ -1574,7 +1574,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
 
       {/* Dynamic Section Order */}
-      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => sectionNodes[key] ?? null)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
@@ -2247,7 +2247,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
 
       {/* Dynamic Section Order */}
-      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => sectionNodes[key] ?? null)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {
@@ -2517,7 +2517,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => <React.Fragment key={k}>{sectionNodes[k] ?? null}</React.Fragment>)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -2822,7 +2822,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => <React.Fragment key={k}>{sectionNodes[k] ?? null}</React.Fragment>)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -3141,7 +3141,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => <React.Fragment key={k}>{sectionNodes[k] ?? null}</React.Fragment>)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -3433,7 +3433,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => sectionNodes[k] ?? null)}
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => <React.Fragment key={k}>{sectionNodes[k] ?? null}</React.Fragment>)}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
