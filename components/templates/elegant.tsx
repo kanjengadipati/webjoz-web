@@ -274,9 +274,8 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             <div className="max-w-2xl mx-auto text-center space-y-8">
               {/* Title */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: textMuted }}>Hubungi Kami</span>
                 <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>
-                  {data.contact.title || "Mari Berbicara"}
+                  {data.contact.title || "Hubungi Kami"}
                 </h2>
               </div>
 
