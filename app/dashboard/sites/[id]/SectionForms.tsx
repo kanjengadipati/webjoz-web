@@ -1159,145 +1159,167 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
     updateCategories(next);
   };
 
-  const inputBase = "w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-violet-400 bg-transparent text-slate-200 placeholder-slate-600";
+  const inputBase = "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
+  const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
 
   return (
     <div className="space-y-4">
-      {/* Section title */}
-      <div className="space-y-1">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
-        <input
-          type="text"
-          value={data?.title ?? ""}
-          onChange={(e) => updateField(sectionKey, "title", e.target.value)}
-          placeholder={`cth. Menu ${sectionTitle}`}
-          className={inputBase}
-        />
-      </div>
-
-      {/* Categories */}
-      {categories.map((cat: any, catIdx: number) => (
-        <div key={catIdx} className="border border-white/10 rounded-xl overflow-hidden bg-white/[0.02]">
-          {/* Category header */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.03]">
-            <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
+      <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-white/[0.02] p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex-1 space-y-2">
+            <label className={inputLabel}>Judul Section</label>
             <input
               type="text"
-              value={cat.name ?? ""}
-              onChange={(e) => updateCategoryName(catIdx, e.target.value)}
-              placeholder="Nama kategori"
-              className="flex-1 bg-transparent text-[13px] font-semibold text-slate-200 outline-none border-none placeholder-slate-600"
+              value={data?.title ?? ""}
+              onChange={(e) => updateField(sectionKey, "title", e.target.value)}
+              placeholder={`cth. Menu ${sectionTitle}`}
+              className={`${inputBase} bg-white/[0.04]`}
             />
-            <span className="text-[10px] text-slate-600 flex-shrink-0">{cat.items?.length ?? 0} item</span>
-            <button
-              type="button"
-              onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)}
-              className="text-slate-500 hover:text-slate-300 p-0.5 cursor-pointer"
-            >
-              {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
-            <button
-              type="button"
-              onClick={() => removeCategory(catIdx)}
-              className="text-red-500/60 hover:text-red-400 p-0.5 cursor-pointer"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
           </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-semibold text-violet-200">
+            {sectionKey === "menu" ? "Kuliner" : "Produk"} · {categories.length} kategori
+          </div>
+        </div>
+      </div>
 
-          {/* Items */}
-          {expandedCat === catIdx && (
-            <div className="p-3 space-y-3">
-              {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                <div key={itemIdx} className="border border-white/8 rounded-lg p-3 space-y-2.5 bg-white/[0.02]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
-                    <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+      {categories.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-violet-500/20 bg-violet-500/5 p-6 text-center">
+          <p className="text-sm font-semibold text-slate-200">Belum ada kategori</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">Tambahkan kategori agar {itemLabel} bisa ditampilkan lebih rapi di website.</p>
+        </div>
+      )}
 
-                  {/* Item image */}
-                  <FileUpload
-                    label="Foto"
-                    value={item.image_url ?? ""}
-                    onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
-                    placeholder="https://..."
-                    maxWidth={800}
-                    maxHeight={600}
-                    quality={0.8}
-                  />
+      {categories.map((cat: any, catIdx: number) => {
+        const itemCount = cat.items?.length ?? 0;
 
-                  {/* Name */}
-                  <div>
-                    <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Nama</label>
-                    <input
-                      type="text"
-                      value={item.name ?? ""}
-                      onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
-                      placeholder={`Nama ${itemLabel}`}
-                      className={inputBase}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Deskripsi</label>
-                    <textarea
-                      rows={2}
-                      value={item.description ?? ""}
-                      onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-                      placeholder="Deskripsi singkat..."
-                      className={`${inputBase} resize-none`}
-                    />
-                  </div>
-
-                  {/* Price + Badge row */}
-                  <div className={`grid gap-2 ${hasBadge ? "grid-cols-2" : "grid-cols-1"}`}>
-                    {hasPrice && (
-                      <div>
-                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Harga</label>
-                        <input
-                          type="text"
-                          value={item.price ?? ""}
-                          onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)}
-                          placeholder="cth. Rp 25.000"
-                          className={inputBase}
-                        />
-                      </div>
-                    )}
-                    {hasBadge && (
-                      <div>
-                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Badge</label>
-                        <input
-                          type="text"
-                          value={item.badge ?? ""}
-                          onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
-                          placeholder="cth. Best Seller"
-                          className={inputBase}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
+        return (
+          <div key={catIdx} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-white/10">
+              <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
+              <input
+                type="text"
+                value={cat.name ?? ""}
+                onChange={(e) => updateCategoryName(catIdx, e.target.value)}
+                placeholder="Nama kategori"
+                className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
+              />
+              <span className="text-[10px] text-slate-500 flex-shrink-0">{itemCount} item</span>
               <button
                 type="button"
-                onClick={() => addItem(catIdx)}
-                className="w-full text-[12px] py-1.5 border border-dashed border-white/10 rounded-lg text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)}
+                className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer"
               >
-                <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
+                {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => removeCategory(catIdx)}
+                className="text-red-500/60 hover:text-red-400 p-1 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
-          )}
-        </div>
-      ))}
+
+            {expandedCat === catIdx && (
+              <div className="p-3 space-y-3">
+                {(cat.items ?? []).length === 0 && (
+                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center text-xs text-slate-500">
+                    Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
+                  </div>
+                )}
+
+                {(cat.items ?? []).map((item: any, itemIdx: number) => (
+                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
+                      <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
+                      <FileUpload
+                        label="Foto"
+                        value={item.image_url ?? ""}
+                        onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
+                        placeholder="https://..."
+                        maxWidth={800}
+                        maxHeight={600}
+                        quality={0.8}
+                      />
+
+                      <div className="space-y-3">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div>
+                            <label className={inputLabel}>Nama</label>
+                            <input
+                              type="text"
+                              value={item.name ?? ""}
+                              onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
+                              placeholder={`Nama ${itemLabel}`}
+                              className={inputBase}
+                            />
+                          </div>
+
+                          {hasPrice && (
+                            <div>
+                              <label className={inputLabel}>Harga</label>
+                              <input
+                                type="text"
+                                value={item.price ?? ""}
+                                onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)}
+                                placeholder="cth. Rp 25.000"
+                                className={inputBase}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className={inputLabel}>Deskripsi</label>
+                          <textarea
+                            rows={2}
+                            value={item.description ?? ""}
+                            onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+                            placeholder="Deskripsi singkat..."
+                            className={`${inputBase} resize-none`}
+                          />
+                        </div>
+
+                        {hasBadge && (
+                          <div>
+                            <label className={inputLabel}>Badge</label>
+                            <input
+                              type="text"
+                              value={item.badge ?? ""}
+                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
+                              placeholder="cth. Best Seller"
+                              className={inputBase}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => addItem(catIdx)}
+                  className="w-full text-[12px] py-2 border border-dashed border-violet-500/20 rounded-xl text-violet-200/80 hover:bg-violet-500/10 hover:border-violet-500/40 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
 
       <button
         type="button"
         onClick={addCategory}
-        className="w-full text-[12px] py-2 border border-white/10 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+        className="w-full text-[12px] py-2.5 border border-white/10 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
       >
         <Plus className="w-3.5 h-3.5" /> Tambah Kategori
       </button>

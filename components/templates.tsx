@@ -158,6 +158,18 @@ const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
   );
 };
 
+// ─── Nav CTA href helper ─────────────────────────────────────────────────────
+// Maps nav_cta_text to the correct section anchor.
+// e.g. "Lihat Katalog" → "#catalog", "Pesan Meja" → "#menu", else → "#contact"
+function navCtaHref(navCtaText?: string): string {
+  const lower = (navCtaText || "").toLowerCase();
+  if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) return "#catalog";
+  if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) return "#menu";
+  if (lower.includes("tentang") || lower.includes("about")) return "#about";
+  if (lower.includes("keunggulan") || lower.includes("benefit")) return "#benefits";
+  return "#contact";
+}
+
 // ─── Shared Testimonials Section ─────────────────────────────────────────────
 
 const TestimonialsSection: React.FC<{
@@ -204,6 +216,133 @@ const TestimonialsSection: React.FC<{
     </section>
   );
 };
+
+interface MenuCatalogCardProps {
+  itemId: string;
+  itemName: string;
+  itemPrice?: string | null;
+  itemDescription?: string | null;
+  category: string;
+  image_url?: string | null;
+  badge?: string | null;
+  icon: React.ElementType;
+  layout?: "grid" | "compact";
+  className?: string;
+  style?: React.CSSProperties;
+  imageClassName?: string;
+  imageStyle?: React.CSSProperties;
+  placeholderClassName?: string;
+  placeholderStyle?: React.CSSProperties;
+  placeholderIconClassName?: string;
+  placeholderIconStyle?: React.CSSProperties;
+  contentClassName?: string;
+  contentStyle?: React.CSSProperties;
+  headerClassName?: string;
+  headerStyle?: React.CSSProperties;
+  titleClassName?: string;
+  titleStyle?: React.CSSProperties;
+  descriptionClassName?: string;
+  descriptionStyle?: React.CSSProperties;
+  priceClassName?: string;
+  priceStyle?: React.CSSProperties;
+  badgeClassName?: string;
+  badgeStyle?: React.CSSProperties;
+  buttonClassName?: string;
+  buttonStyle?: React.CSSProperties;
+}
+
+function MenuCatalogCard({
+  itemId,
+  itemName,
+  itemPrice,
+  itemDescription,
+  category,
+  image_url,
+  badge,
+  icon,
+  layout = "grid",
+  className,
+  style,
+  imageClassName,
+  imageStyle,
+  placeholderClassName,
+  placeholderStyle,
+  placeholderIconClassName,
+  placeholderIconStyle,
+  contentClassName,
+  contentStyle,
+  headerClassName,
+  headerStyle,
+  titleClassName,
+  titleStyle,
+  descriptionClassName,
+  descriptionStyle,
+  priceClassName,
+  priceStyle,
+  badgeClassName,
+  badgeStyle,
+  buttonClassName,
+  buttonStyle,
+}: MenuCatalogCardProps) {
+  const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
+  const imageNode = image_url ? (
+    <img src={image_url} alt={itemName} className={imageClassName} style={imageStyle} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+  ) : (
+    <div className={placeholderClassName} style={placeholderStyle}>
+      {React.createElement(icon, { className: placeholderIconClassName, style: placeholderIconStyle })}
+    </div>
+  );
+
+  const header = (
+    <div className={headerClassName} style={headerStyle}>
+      <div className="min-w-0">
+        {badge && <span className={badgeClassName} style={badgeStyle}>{badge}</span>}
+        <h4 className={titleClassName} style={titleStyle}>{itemName}</h4>
+      </div>
+      {showPrice && <span className={priceClassName} style={priceStyle}>{itemPrice}</span>}
+    </div>
+  );
+
+  if (layout === "compact") {
+    return (
+      <div className={className} style={style}>
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">{imageNode}</div>
+          <div className="min-w-0 flex-1" style={contentStyle}>
+            {header}
+            {itemDescription && <p className={descriptionClassName} style={descriptionStyle}>{itemDescription}</p>}
+            <AddToCartButton
+              itemId={itemId}
+              itemName={itemName}
+              itemPrice={itemPrice ?? null}
+              category={category}
+              className={buttonClassName}
+              style={buttonStyle}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={className} style={style}>
+      {imageNode}
+      <div className={contentClassName} style={contentStyle}>
+        {header}
+        {itemDescription && <p className={descriptionClassName} style={descriptionStyle}>{itemDescription}</p>}
+        <AddToCartButton
+          itemId={itemId}
+          itemName={itemName}
+          itemPrice={itemPrice ?? null}
+          category={category}
+          className={buttonClassName}
+          style={buttonStyle}
+        />
+      </div>
+    </div>
+  );
+}
 
 interface BenefitItem {
   title: string;
@@ -849,45 +988,45 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(menuData) => (
-          <section className="px-5 sm:px-6 py-20 bg-white border-y border-[#EADFCB]" id="menu">
-            <div className="max-w-6xl mx-auto space-y-12">
-              <div className="text-center space-y-2">
-                <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pilihan Kami</span>
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{menuData.title}</h2>
+          <section className="relative px-5 sm:px-6 py-24 bg-gradient-to-b from-white via-white to-amber-50/70 border-y border-[#EADFCB] overflow-hidden" id="menu">
+            <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-amber-100/70 blur-3xl pointer-events-none" />
+            <div className="max-w-6xl mx-auto space-y-10 relative">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-amber-800">Pilihan Menu</span>
+                <h2 className="text-3xl md:text-5xl font-bold font-serif text-amber-950 max-w-3xl mx-auto leading-tight">{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, catIdx) => (
-                <div key={catIdx} className="space-y-6">
-                  <h3 className="text-lg font-bold font-serif text-amber-900 border-b border-[#EADFCB] pb-2">{cat.name}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div key={catIdx} className="space-y-5">
+                  <div className="flex items-center gap-3">
+                    <span className="h-px flex-1 bg-amber-200/70" />
+                    <h3 className="px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-sm font-bold font-serif whitespace-nowrap">{cat.name}</h3>
+                    <span className="h-px flex-1 bg-amber-200/70" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {cat.items?.map((item, itemIdx) => {
                       const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
                       return (
-                        <div key={itemIdx} className="group bg-[#FAF7F2] border border-[#EADFCB] rounded-2xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-300 flex flex-col">
-                          {item.image_url ? (
-                            <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          ) : (
-                            <div className="w-full h-44 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
-                              <Utensils className="w-10 h-10 text-amber-300" />
-                            </div>
-                          )}
-                          <div className="p-4 space-y-2 flex-1 flex flex-col">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-bold text-amber-955 text-sm leading-tight">{item.name}</h4>
-                              {item.price && !isPlaceholderPrice(item.price) && (
-                                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.price}</span>
-                              )}
-                            </div>
-                            {item.description && <p className="text-[#6D5D50] text-xs leading-relaxed flex-1">{item.description}</p>}
-                            <AddToCartButton
-                              itemId={itemId}
-                              itemName={item.name}
-                              itemPrice={item.price}
-                              category={cat.name}
-                              className="mt-2 w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-amber-800 hover:bg-amber-900 text-white transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-1"
-                              style={{ background: "#92400e", color: "#fff" }}
-                            />
-                          </div>
-                        </div>
+                        <MenuCatalogCard
+                          key={itemIdx}
+                          itemId={itemId}
+                          itemName={item.name}
+                          itemPrice={item.price}
+                          itemDescription={item.description}
+                          category={cat.name}
+                          image_url={item.image_url}
+                          icon={Utensils}
+                          className="group rounded-[1.75rem] overflow-hidden bg-white border border-amber-100 shadow-sm hover:shadow-lg hover:border-amber-300 transition-all duration-300"
+                          imageClassName="w-full h-52 object-cover"
+                          placeholderClassName="w-full h-52 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center"
+                          placeholderIconClassName="w-12 h-12 text-amber-300"
+                          contentClassName="p-5 space-y-3 flex flex-col flex-1"
+                          headerClassName="flex items-start justify-between gap-3"
+                          titleClassName="font-serif font-bold text-amber-950 text-base leading-tight"
+                          descriptionClassName="text-amber-900/65 text-sm leading-relaxed flex-1"
+                          priceClassName="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
+                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl text-xs font-bold bg-amber-800 hover:bg-amber-900 text-white transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-1"
+                          buttonStyle={{ background: "#92400e", color: "#fff" }}
+                        />
                       );
                     })}
                   </div>
@@ -928,7 +1067,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               linkClass="text-amber-900"
               drawerStyle={{ background: "#FAF7F2", borderTop: "1px solid #EADFCB" }}
             />
-            <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -1228,7 +1367,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               linkClass="text-slate-700"
               drawerStyle={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}
             />
-            <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -1500,48 +1639,46 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(catalogData) => (
-          <section className="px-5 sm:px-6 py-24 border-y border-slate-800 bg-slate-900/20" id="catalog">
-            <div className="max-w-6xl mx-auto space-y-12">
-              <div className="text-center space-y-2">
-                <span className="text-cyan-400 font-extrabold tracking-wider uppercase text-xs">Koleksi</span>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{catalogData.title}</h2>
+          <section className="relative px-5 sm:px-6 py-24 border-y border-slate-800 bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900/70 overflow-hidden" id="catalog" style={{ backgroundImage: "radial-gradient(circle at top right, rgba(34,211,238,0.16), transparent 35%), radial-gradient(circle at bottom left, rgba(20,184,166,0.12), transparent 30%)" }}>
+            <div className="max-w-7xl mx-auto space-y-10 relative">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-cyan-300">Koleksi Produk</span>
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white max-w-3xl mx-auto leading-tight">{catalogData.title}</h2>
               </div>
               {catalogData.categories?.map((cat, catIdx) => (
-                <div key={catIdx} className="space-y-6">
-                  <h3 className="text-base font-bold text-cyan-400 border-b border-slate-800 pb-2 uppercase tracking-wide">{cat.name}</h3>
+                <div key={catIdx} className="space-y-5">
+                  <div className="flex items-center gap-3">
+                    <span className="h-px flex-1 bg-slate-800" />
+                    <h3 className="px-4 py-2 rounded-full bg-slate-900/80 border border-slate-800 text-cyan-300 text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap">{cat.name}</h3>
+                    <span className="h-px flex-1 bg-slate-800" />
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {cat.items?.map((item, itemIdx) => {
                       const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
                       return (
-                        <div key={itemIdx} className="group bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)] flex flex-col">
-                          {item.image_url ? (
-                            <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          ) : (
-                            <div className="w-full h-44 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                              <ImageIcon className="w-10 h-10 text-slate-700" />
-                            </div>
-                          )}
-                          <div className="p-4 space-y-2 flex-1 flex flex-col">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-bold text-white text-sm leading-tight">{item.name}</h4>
-                              {item.badge && (
-                                <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{item.badge}</span>
-                              )}
-                            </div>
-                            {item.description && <p className="text-slate-400 text-xs leading-relaxed flex-1">{item.description}</p>}
-                            {item.price && !isPlaceholderPrice(item.price) && (
-                              <p className="text-cyan-400 font-bold text-sm">{item.price}</p>
-                            )}
-                            <AddToCartButton
-                              itemId={itemId}
-                              itemName={item.name}
-                              itemPrice={item.price}
-                              category={cat.name}
-                              className="mt-1 w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-1 focus:ring-offset-slate-900"
-                              style={{ background: "#06b6d4", color: "#0f172a" }}
-                            />
-                          </div>
-                        </div>
+                        <MenuCatalogCard
+                          key={itemIdx}
+                          itemId={itemId}
+                          itemName={item.name}
+                          itemPrice={item.price}
+                          itemDescription={item.description}
+                          category={cat.name}
+                          image_url={item.image_url}
+                          badge={item.badge}
+                          icon={ImageIcon}
+                          className="group rounded-[1.5rem] overflow-hidden bg-slate-900 border border-slate-800 hover:border-cyan-400/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,211,238,0.14)]"
+                          imageClassName="w-full h-56 object-cover"
+                          placeholderClassName="w-full h-56 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
+                          placeholderIconClassName="w-12 h-12 text-slate-600"
+                          contentClassName="p-5 space-y-3 flex flex-col flex-1"
+                          headerClassName="flex items-start justify-between gap-3"
+                          titleClassName="font-bold text-white text-sm leading-tight"
+                          descriptionClassName="text-slate-400 text-sm leading-relaxed flex-1"
+                          priceClassName="text-cyan-300 font-black text-sm whitespace-nowrap"
+                          badgeClassName="text-[10px] font-black text-cyan-950 bg-cyan-300 border border-cyan-200 px-2 py-0.5 rounded-full whitespace-nowrap uppercase tracking-wide"
+                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl text-xs font-black bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-1 focus:ring-offset-slate-900"
+                          buttonStyle={{ background: "#06b6d4", color: "#0f172a" }}
+                        />
                       );
                     })}
                   </div>
@@ -1582,7 +1719,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               linkClass="text-slate-300"
               drawerStyle={{ background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.08)" }}
             />
-            <a href="#contact" aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -2133,41 +2270,39 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <section id="menu" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
             <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
               <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pilihan Kami</span>
-                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{menuData.title}</h2>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 8%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>Pilihan Menu</span>
+                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: "var(--dt-text)", marginTop: "0.85rem", lineHeight: 1.15 }}>{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} style={{ marginBottom: "3rem" }}>
-                  <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, paddingBottom: "0.625rem", marginBottom: "1.5rem" }}>{cat.name}</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "1.25rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
+                    <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, var(--dt-primary) 16%, transparent)` }} />
+                    <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+                    <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, var(--dt-primary) 16%, transparent)` }} />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
                     {cat.items?.map((item, itemIdx) => (
-                      <div key={itemIdx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", transition: "box-shadow 0.2s, transform 0.2s" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 20px color-mix(in srgb, var(--dt-primary) 12%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
-                      >
-                        {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} style={{ width: "100%", height: "11rem", objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        ) : (
-                          <div style={{ width: "100%", height: "11rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Utensils style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
-                          </div>
-                        )}
-                        <div style={{ padding: "1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                            <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }}>{item.name}</h4>
-                            {item.price && !isPlaceholderPrice(item.price) && <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.2rem 0.625rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}>{item.price}</span>}
-                          </div>
-                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
-                          <AddToCartButton
-                            itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
-                            itemName={item.name}
-                            itemPrice={item.price}
-                            category={cat.name}
-                            className="flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-opacity hover:opacity-80 active:scale-95 focus:outline-none"
-                            style={{ marginTop: "0.625rem", padding: "0.5rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)" }}
-                          />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={itemIdx}
+                        itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        icon={Utensils}
+                        className="transition-all duration-300"
+                        style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
+                        imageStyle={{ width: "100%", height: "12rem", objectFit: "cover", display: "block" }}
+                        placeholderStyle={{ width: "100%", height: "12rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}
+                        placeholderIconStyle={{ width: 40, height: 40, color: "var(--dt-primary)", opacity: 0.28 }}
+                        contentStyle={{ padding: "1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}
+                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
+                        titleStyle={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
+                        descriptionStyle={{ color: "var(--dt-text-muted)", fontSize: "0.82rem", lineHeight: 1.55, margin: 0, flex: 1 }}
+                        priceStyle={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.25rem 0.65rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0 }}
+                        buttonStyle={{ marginTop: "0.625rem", padding: "0.625rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)", fontWeight: 800, fontSize: "0.75rem" }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -2183,42 +2318,41 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <section id="catalog" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
             <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
               <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Produk Kami</span>
-                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{catalogData.title}</h2>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 8%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>Koleksi Produk</span>
+                <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: "var(--dt-text)", marginTop: "0.85rem", lineHeight: 1.15 }}>{catalogData.title}</h2>
               </div>
               {catalogData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} style={{ marginBottom: "3rem" }}>
-                  <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, paddingBottom: "0.625rem", marginBottom: "1.5rem" }}>{cat.name}</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1.25rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
+                    <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, var(--dt-primary) 16%, transparent)` }} />
+                    <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+                    <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, var(--dt-primary) 16%, transparent)` }} />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
                     {cat.items?.map((item, itemIdx) => (
-                      <div key={itemIdx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", transition: "box-shadow 0.2s, transform 0.2s" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 20px color-mix(in srgb, var(--dt-primary) 15%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; (e.currentTarget as HTMLElement).style.transform = "none"; }}
-                      >
-                        {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} style={{ width: "100%", height: "11rem", objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        ) : (
-                          <div style={{ width: "100%", height: "11rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <ImageIcon style={{ width: 36, height: 36, color: "var(--dt-primary)", opacity: 0.3 }} />
-                          </div>
-                        )}
-                        <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.375rem", flex: 1 }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                            <h4 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0 }}>{item.name}</h4>
-                            {item.badge && <span style={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, border: `1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`, padding: "0.15rem 0.5rem", borderRadius: "9999px", whiteSpace: "nowrap", flexShrink: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.badge}</span>}
-                          </div>
-                          {item.description && <p style={{ color: "var(--dt-text-muted)", fontSize: "0.78rem", lineHeight: 1.5, margin: 0, flex: 1 }}>{item.description}</p>}
-                          {item.price && !isPlaceholderPrice(item.price) && <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}>{item.price}</p>}
-                          <AddToCartButton
-                            itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
-                            itemName={item.name}
-                            itemPrice={item.price}
-                            category={cat.name}
-                            className="flex items-center justify-center gap-1.5 text-xs font-bold cursor-pointer transition-opacity hover:opacity-80 active:scale-95 focus:outline-none"
-                            style={{ marginTop: "0.375rem", padding: "0.5rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)" }}
-                          />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={itemIdx}
+                        itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={ImageIcon}
+                        className="transition-all duration-300"
+                        style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", overflow: "hidden", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
+                        imageStyle={{ width: "100%", height: "12rem", objectFit: "cover", display: "block" }}
+                        placeholderStyle={{ width: "100%", height: "12rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface)), color-mix(in srgb, var(--dt-accent) 8%, var(--dt-surface)))`, display: "flex", alignItems: "center", justifyContent: "center" }}
+                        placeholderIconStyle={{ width: 40, height: 40, color: "var(--dt-primary)", opacity: 0.28 }}
+                        contentStyle={{ padding: "1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}
+                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
+                        titleStyle={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0, lineHeight: 1.35 }}
+                        descriptionStyle={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.55, margin: 0, flex: 1 }}
+                        priceStyle={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, color: "var(--dt-primary)", fontSize: "0.9rem", margin: 0 }}
+                        badgeStyle={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`, border: `1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`, padding: "0.15rem 0.5rem", borderRadius: "9999px", whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.05em" }}
+                        buttonStyle={{ marginTop: "0.375rem", padding: "0.625rem 0.875rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", border: "none", fontFamily: "var(--dt-body-font)", fontWeight: 800, fontSize: "0.75rem" }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -2251,7 +2385,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 linkClass=""
                 drawerStyle={{ background: "var(--dt-surface, #fff)", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}
               />
-              <a href="#contact" className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
+              <a href={navCtaHref(h?.nav_cta_text)} className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
@@ -2453,30 +2587,38 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
+          <section id="menu" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
+            <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-2">
-                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>Menu</span>
-                <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{m.title}</h2>
+                <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Menu Pilihan</span>
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{m.title}</h2>
               </div>
               {m.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-6">
-                  <h3 className="text-sm uppercase tracking-widest font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                <div key={ci} className="space-y-5">
+                  <h3 className="text-sm uppercase tracking-[0.22em] font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
                   <div className="grid sm:grid-cols-2 gap-5">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 items-start p-4" style={{ background: darkCard, border: `1px solid ${gold}15` }}>
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-20 h-20 object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex justify-between gap-2">
-                            <p className="font-bold text-sm font-sans" style={{ color: "#f5e6c0" }}>{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-bold font-sans text-sm shrink-0" style={{ color: gold }}>{item.price}</span>}
-                          </div>
-                          {item.description && <p className="text-[11px] font-sans font-light" style={{ color: textMuted }}>{item.description}</p>}
-                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest font-sans transition-all hover:brightness-110"
-                            style={{ background: gold, color: "#0a0a0a" }} />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`menu-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        icon={Utensils}
+                        className="transition-all hover:brightness-110"
+                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem" }}
+                        imageStyle={{ width: "100%", height: "10rem", objectFit: "cover", borderRadius: "12px" }}
+                        placeholderStyle={{ height: "10rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
+                        placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
+                        contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
+                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
+                        titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
+                        descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
+                        priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.85rem", fontWeight: 700 }}
+                        buttonStyle={{ padding: "0.45rem 0.75rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase" }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -2489,27 +2631,40 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
+          <section id="catalog" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
+            <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-2">
-                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>Koleksi</span>
-                <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.title}</h2>
+                <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Koleksi Eksklusif</span>
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.title}</h2>
               </div>
               {c.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-6">
-                  <h3 className="text-sm uppercase tracking-widest font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
-                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div key={ci} className="space-y-5">
+                  <h3 className="text-sm uppercase tracking-[0.22em] font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 group" style={{ background: darkCard, border: `1px solid ${gold}15`, padding: "1rem" }}>
-                        {item.badge && <span className="inline-block text-[9px] uppercase tracking-widest px-2 py-0.5 font-sans" style={{ background: gold, color: "#0a0a0a" }}>{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-40 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="font-bold text-sm font-sans" style={{ color: "#f5e6c0" }}>{item.name}</p>
-                        {item.description && <p className="text-[11px] font-sans font-light" style={{ color: textMuted }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-bold font-sans text-sm" style={{ color: gold }}>{item.price}</p>}
-                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                          className="w-full flex items-center justify-center gap-1.5 py-2 text-[10px] font-bold uppercase tracking-widest font-sans transition-all hover:brightness-110"
-                          style={{ background: gold, color: "#0a0a0a" }} />
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`cat-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={ImageIcon}
+                        className="transition-all hover:brightness-110"
+                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem" }}
+                        imageStyle={{ width: "100%", height: "11rem", objectFit: "cover", borderRadius: "12px" }}
+                        placeholderStyle={{ height: "11rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
+                        placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
+                        contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
+                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
+                        titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
+                        descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
+                        priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.9rem", fontWeight: 700 }}
+                        badgeStyle={{ color: "#0a0a0a", background: gold, borderRadius: "999px", padding: "0.15rem 0.5rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonStyle={{ padding: "0.55rem 0.75rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase" }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -2596,7 +2751,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
               {h.brand_name}
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: darkCard, borderTop: `1px solid ${gold}20` }} />
-            <a href="#contact" className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110 font-sans" style={{ background: gold, color: "#0a0a0a" }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110 font-sans" style={{ background: gold, color: "#0a0a0a" }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -2762,29 +2917,43 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         <MemoSectionContent content={menu} render={(menuData) => (
           <section className="py-16 px-6 border-y" id="menu" style={{ background: cream, borderColor: border }}>
             <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center"><h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{menuData.title}</h2></div>
+              <div className="text-center space-y-3">
+                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Menu Pilihan</span>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{menuData.title}</h2>
+              </div>
               {menuData.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-4">
+                <div key={ci} className="space-y-5">
                   <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {cat.items?.map((item, ii) => {
-                      const itemId = `${cat.name}__${item.name}__${ci}_${ii}`;
-                      return (
-                        <div key={ii} className="rounded-2xl border overflow-hidden flex flex-col transition-all hover:shadow-sm" style={{ background: "white", borderColor: border }}>
-                          {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : <div className="w-full h-36 flex items-center justify-center" style={{ background: sageLight }}><Utensils className="w-8 h-8" style={{ color: sage, opacity: 0.4 }} /></div>}
-                          <div className="p-4 flex-1 flex flex-col gap-1.5">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.name}</h4>
-                              {item.price && !isPlaceholderPrice(item.price) && <span className="text-xs font-bold px-2 py-0.5 rounded-full font-sans" style={{ background: sageLight, color: sageDark }}>{item.price}</span>}
-                            </div>
-                            {item.description && <p className="text-xs italic" style={{ color: brownMuted }}>{item.description}</p>}
-                            <AddToCartButton itemId={itemId} itemName={item.name} itemPrice={item.price} category={cat.name}
-                              className="mt-auto flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
-                              style={{ background: sage }} />
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {cat.items?.map((item, ii) => (
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`${cat.name}__${item.name}__${ci}_${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        icon={Utensils}
+                        className="rounded-3xl border overflow-hidden flex flex-col transition-all hover:shadow-md"
+                        style={{ background: "white", borderColor: border }}
+                        imageClassName="w-full h-44 object-cover"
+                        placeholderClassName="w-full h-44 flex items-center justify-center"
+                        placeholderStyle={{ background: sageLight }}
+                        placeholderIconClassName="w-10 h-10"
+                        placeholderIconStyle={{ color: sage, opacity: 0.45 }}
+                        contentClassName="p-5 flex-1 flex flex-col gap-2"
+                        headerClassName="flex items-start justify-between gap-2"
+                        titleClassName="text-sm font-bold font-sans"
+                        titleStyle={{ color: brown }}
+                        descriptionClassName="text-xs italic flex-1"
+                        descriptionStyle={{ color: brownMuted }}
+                        priceClassName="text-xs font-bold px-2 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
+                        priceStyle={{ background: sageLight, color: sageDark }}
+                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                        buttonStyle={{ background: sage }}
+                      />
+                    ))}
                   </div>
                 </div>
               ))}
@@ -2798,30 +2967,46 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         <MemoSectionContent content={catalog} render={(catalogData) => (
           <section className="py-16 px-6 border-y" id="catalog" style={{ background: cream, borderColor: border }}>
             <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center"><h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{catalogData.title}</h2></div>
+              <div className="text-center space-y-3">
+                <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Koleksi Pilihan</span>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{catalogData.title}</h2>
+              </div>
               {catalogData.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-4">
+                <div key={ci} className="space-y-5">
                   <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {cat.items?.map((item, ii) => {
-                      const itemId = `${cat.name}__${item.name}__${ci}_${ii}`;
-                      return (
-                        <div key={ii} className="rounded-2xl border overflow-hidden flex flex-col" style={{ background: "white", borderColor: border }}>
-                          {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : <div className="w-full h-36 flex items-center justify-center" style={{ background: sageLight }}><ImageIcon className="w-8 h-8" style={{ color: sage, opacity: 0.4 }} /></div>}
-                          <div className="p-4 flex-1 flex flex-col gap-1.5">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.name}</h4>
-                              {item.badge && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full font-sans" style={{ background: sageLight, color: sageDark }}>{item.badge}</span>}
-                            </div>
-                            {item.description && <p className="text-xs italic flex-1" style={{ color: brownMuted }}>{item.description}</p>}
-                            {item.price && !isPlaceholderPrice(item.price) && <p className="text-sm font-bold font-sans" style={{ color: sage }}>{item.price}</p>}
-                            <AddToCartButton itemId={itemId} itemName={item.name} itemPrice={item.price} category={cat.name}
-                              className="flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
-                              style={{ background: sage }} />
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {cat.items?.map((item, ii) => (
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`${cat.name}__${item.name}__${ci}_${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={ImageIcon}
+                        className="rounded-3xl border overflow-hidden flex flex-col transition-all hover:shadow-md"
+                        style={{ background: "white", borderColor: border }}
+                        imageClassName="w-full h-44 object-cover"
+                        placeholderClassName="w-full h-44 flex items-center justify-center"
+                        placeholderStyle={{ background: sageLight }}
+                        placeholderIconClassName="w-10 h-10"
+                        placeholderIconStyle={{ color: sage, opacity: 0.45 }}
+                        contentClassName="p-5 flex-1 flex flex-col gap-2"
+                        headerClassName="flex items-start justify-between gap-2"
+                        titleClassName="text-sm font-bold font-sans"
+                        titleStyle={{ color: brown }}
+                        descriptionClassName="text-xs italic flex-1"
+                        descriptionStyle={{ color: brownMuted }}
+                        priceClassName="text-sm font-bold font-sans"
+                        priceStyle={{ color: sage }}
+                        badgeClassName="text-[10px] font-bold px-2 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
+                        badgeStyle={{ background: sageLight, color: sageDark }}
+                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                        buttonStyle={{ background: sage }}
+                      />
+                    ))}
                   </div>
                 </div>
               ))}
@@ -2903,7 +3088,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: cream, borderTop: `1px solid ${border}` }} />
-            <a href="#contact" className="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: sage }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all hover:opacity-90" style={{ background: sage }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -3087,23 +3272,42 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         <MemoSectionContent content={menu} render={(m) => (
           <section id="menu" className="py-14 px-6 border-y-4 border-black" style={{ background: "#FCE4EC" }}>
             <div className="max-w-5xl mx-auto space-y-8">
-              <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{m.title}</h2>
+              <div className="text-center space-y-3">
+                <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Menu</span>
+                <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{m.title}</h2>
+              </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
                   <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className={`border-2 border-black p-4 flex gap-3 transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: surface }}>
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover border-2 border-black flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start gap-2">
-                            <p className="font-black text-sm uppercase" style={{ color: black }}>{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-sm whitespace-nowrap" style={{ color: pink }}>{item.price}</span>}
-                          </div>
-                          {item.description && <p className="text-[11px] font-semibold mt-1" style={{ color: "#555" }}>{item.description}</p>}
-                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className={`mt-2 flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: yellow, color: black }} />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`menu-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        icon={Utensils}
+                        className={`border-2 border-black p-4 flex gap-3 transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        style={{ background: surface }}
+                        imageClassName="w-20 h-20 object-cover border-2 border-black flex-shrink-0"
+                        placeholderClassName="w-20 h-20 border-2 border-black flex items-center justify-center flex-shrink-0"
+                        placeholderStyle={{ background: yellow }}
+                        placeholderIconClassName="w-8 h-8"
+                        placeholderIconStyle={{ color: black }}
+                        contentClassName="flex-1 min-w-0"
+                        headerClassName="flex justify-between items-start gap-2"
+                        titleClassName="font-black text-sm uppercase"
+                        titleStyle={{ color: black }}
+                        descriptionClassName="text-[11px] font-semibold mt-1"
+                        descriptionStyle={{ color: "#555" }}
+                        priceClassName="font-black text-sm whitespace-nowrap"
+                        priceStyle={{ color: pink }}
+                        buttonClassName={`mt-2 flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        buttonStyle={{ background: yellow, color: black }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -3118,20 +3322,44 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E3F2FD" }}>
             <div className="max-w-5xl mx-auto space-y-8">
-              <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{c.title}</h2>
+              <div className="text-center space-y-3">
+                <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Katalog</span>
+                <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{c.title}</h2>
+              </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
                   <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className={`border-2 border-black p-4 space-y-2 transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: surface }}>
-                        {item.badge && <span className="inline-block bg-black text-yellow-300 text-[9px] font-black uppercase px-2 py-0.5">{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="font-black text-sm uppercase" style={{ color: black }}>{item.name}</p>
-                        {item.description && <p className="text-[11px] font-semibold" style={{ color: "#555" }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-black" style={{ color: pink }}>{item.price}</p>}
-                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className={`w-full flex items-center justify-center gap-1.5 py-2 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`} style={{ background: yellow, color: black }} />
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`cat-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={ImageIcon}
+                        className={`border-2 border-black p-4 space-y-2 transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        style={{ background: surface }}
+                        imageClassName="w-full h-40 object-cover border-2 border-black"
+                        placeholderClassName="w-full h-40 border-2 border-black flex items-center justify-center"
+                        placeholderStyle={{ background: yellow }}
+                        placeholderIconClassName="w-10 h-10"
+                        placeholderIconStyle={{ color: black }}
+                        contentClassName="space-y-2"
+                        headerClassName="flex items-start justify-between gap-2"
+                        titleClassName="font-black text-sm uppercase"
+                        titleStyle={{ color: black }}
+                        descriptionClassName="text-[11px] font-semibold"
+                        descriptionStyle={{ color: "#555" }}
+                        priceClassName="font-black"
+                        priceStyle={{ color: pink }}
+                        badgeClassName="inline-block bg-black text-yellow-300 text-[9px] font-black uppercase px-2 py-0.5"
+                        buttonClassName={`w-full flex items-center justify-center gap-1.5 py-2 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        buttonStyle={{ background: yellow, color: black }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -3222,7 +3450,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="font-black uppercase text-sm text-black" drawerStyle={{ background: yellow, borderTop: "4px solid #000" }} />
-            <a href="#contact" className="px-4 py-2 border-2 border-black font-black text-xs uppercase tracking-wider transition-all" style={{ background: black, color: yellow, boxShadow: "2px 2px 0 rgba(0,0,0,0.3)" }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-4 py-2 border-2 border-black font-black text-xs uppercase tracking-wider transition-all" style={{ background: black, color: yellow, boxShadow: "2px 2px 0 rgba(0,0,0,0.3)" }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -3376,25 +3604,42 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         <MemoSectionContent content={menu} render={(m) => (
           <section id="menu" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
             <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{m.title}</h2>
+              <div className="space-y-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Menu</p>
+                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{m.title}</h2>
+              </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
                   <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
                   <div className="divide-y" style={{ borderColor: zinc200 }}>
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="py-4 flex items-center justify-between gap-4 group">
-                        <div className="flex items-center gap-4 min-w-0">
-                          {item.image_url && <img src={item.image_url} alt={item.name} className="w-14 h-14 object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium" style={{ color: zinc900 }}>{item.name}</p>
-                            {item.description && <p className="text-xs font-light mt-0.5" style={{ color: zinc500 }}>{item.description}</p>}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 flex-shrink-0">
-                          {!isPlaceholderPrice(item.price) && item.price && <span className="text-sm font-light" style={{ color: zinc900 }}>{item.price}</span>}
-                          <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc200, color: zinc500 }} />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`menu-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        icon={Utensils}
+                        layout="compact"
+                        className="py-4 flex items-center justify-between gap-4 group"
+                        imageClassName="w-16 h-16 object-cover flex-shrink-0"
+                        placeholderClassName="w-16 h-16 flex items-center justify-center flex-shrink-0"
+                        placeholderStyle={{ background: zinc100 }}
+                        placeholderIconClassName="w-6 h-6"
+                        placeholderIconStyle={{ color: zinc500 }}
+                        contentClassName="min-w-0 flex-1"
+                        headerClassName="flex items-start justify-between gap-4"
+                        titleClassName="text-sm font-medium"
+                        titleStyle={{ color: zinc900 }}
+                        descriptionClassName="text-xs font-light mt-0.5"
+                        descriptionStyle={{ color: zinc500 }}
+                        priceClassName="text-sm font-light whitespace-nowrap"
+                        priceStyle={{ color: zinc900 }}
+                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900"
+                        buttonStyle={{ borderColor: zinc200, color: zinc500 }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -3409,22 +3654,45 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
             <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+              <div className="space-y-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Katalog</p>
+                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+              </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
                   <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-px" style={{ background: zinc200 }}>
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="p-6 space-y-3 hover:bg-zinc-50 transition-colors group" style={{ background: surface }}>
-                        {item.badge && <span className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-40 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="text-sm font-medium" style={{ color: zinc900 }}>{item.name}</p>
-                        {item.description && <p className="text-xs font-light" style={{ color: zinc500 }}>{item.description}</p>}
-                        <div className="flex items-center justify-between pt-1">
-                          {!isPlaceholderPrice(item.price) && item.price && <span className="text-sm font-light" style={{ color: zinc900 }}>{item.price}</span>}
-                          <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name} className="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc200, color: zinc500 }} />
-                        </div>
-                      </div>
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`cat-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={ImageIcon}
+                        className="p-6 space-y-3 hover:bg-zinc-50 transition-colors group"
+                        style={{ background: surface }}
+                        imageClassName="w-full h-44 object-cover"
+                        placeholderClassName="w-full h-44 flex items-center justify-center"
+                        placeholderStyle={{ background: zinc100 }}
+                        placeholderIconClassName="w-10 h-10"
+                        placeholderIconStyle={{ color: zinc500 }}
+                        contentClassName="space-y-3"
+                        headerClassName="flex items-start justify-between gap-2"
+                        titleClassName="text-sm font-medium"
+                        titleStyle={{ color: zinc900 }}
+                        descriptionClassName="text-xs font-light"
+                        descriptionStyle={{ color: zinc500 }}
+                        priceClassName="text-sm font-light"
+                        priceStyle={{ color: zinc900 }}
+                        badgeClassName="text-[9px] font-semibold uppercase tracking-widest"
+                        badgeStyle={{ color: zinc500 }}
+                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900"
+                        buttonStyle={{ borderColor: zinc200, color: zinc500 }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -3514,7 +3782,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-zinc-600 text-xs tracking-widest uppercase font-medium" drawerStyle={{ background: surface, borderTop: `1px solid ${zinc200}` }} />
-            <a href="#contact" className="px-4 py-2 border text-[10px] font-semibold uppercase tracking-widest transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc900, color: zinc900 }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-4 py-2 border text-[10px] font-semibold uppercase tracking-widest transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc900, color: zinc900 }}>
               {h.nav_cta_text || "Hubungi"}
             </a>
           </header>
