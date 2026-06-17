@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { 
+import {
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw,
@@ -14,6 +14,7 @@ import {
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
+import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import {
   stripRegeneratedMarkers,
   BODY_SECTION_KEYS,
@@ -36,56 +37,6 @@ const GOOGLE_FONTS_WHITELIST = [
   "Cinzel", "Cormorant Garamond", "Arvo",
   "Oswald", "Bebas Neue", "Space Grotesk"
 ];
-
-const getTemplateDefaultDesignToken = (templateId: string) => {
-  if (templateId === "TEMPLATE_KULINER01") {
-    return {
-      palette: {
-        primary: "#78350F", // amber-900
-        accent: "#B45309",  // amber-700
-        background: "#FAF7F2",
-        surface: "#FFFFFF",
-        text: "#2C2620"
-      },
-      typography: {
-        heading_font: "Playfair Display",
-        body_font: "Inter",
-        heading_weight: "700",
-        heading_size_hero: "3.5rem"
-      },
-      layout: {
-        hero_style: "centered",
-        corner_radius: "rounded",
-        section_spacing: "normal",
-        section_order: ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"]
-      },
-      mood: "warm-earthy"
-    };
-  }
-  // Default is TEMPLATE_JASA02 or generic
-  return {
-    palette: {
-      primary: "#4F46E5", // indigo-600
-      accent: "#7C3AED",  // violet-600
-      background: "#F8FAFC",
-      surface: "#FFFFFF",
-      text: "#0F172A"
-    },
-    typography: {
-      heading_font: "Inter",
-      body_font: "Inter",
-      heading_weight: "700",
-      heading_size_hero: "3rem"
-    },
-      section: {
-        hero_style: "centered",
-        corner_radius: "soft",
-        section_spacing: "normal",
-        section_order: ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"]
-    },
-    mood: "professional"
-  };
-};
 
 export default function SiteEditorPage() {
   const params = useParams();
@@ -134,7 +85,7 @@ export default function SiteEditorPage() {
   const autosaveTimerRef = useRef<any>(null);
   const lastSavedRef = useRef<{ content: any; designToken: any; siteDetails: any } | null>(null);
   const initialLoadedRef = useRef(false);
-  
+
   const [customTemplates, setCustomTemplates] = useState<any[]>([]);
   const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
@@ -182,7 +133,7 @@ export default function SiteEditorPage() {
       const contentRes = await request<any>(`/sites/${siteId}/content`, {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
-      
+
       // Fallback empty content scaffold if empty
       const data = stripRegeneratedMarkers(contentRes.data?.content || {});
       const fallback = {
@@ -297,11 +248,11 @@ export default function SiteEditorPage() {
     if (!shouldScrollToActiveRef.current) return;
     shouldScrollToActiveRef.current = false;
     if (!activeTab) return;
-    
+
     // Find the section element inside the preview
     const sectionEl = document.getElementById(`section-preview-${activeTab}`);
     const containerEl = document.getElementById("preview-scroll-container");
-    
+
     if (sectionEl && containerEl) {
       requestAnimationFrame(() => {
         sectionEl.scrollIntoView({
@@ -371,10 +322,10 @@ export default function SiteEditorPage() {
   // Scroll preview to pending diff section when it changes
   useEffect(() => {
     if (!pendingDiff?.section) return;
-    
+
     const sectionEl = document.getElementById(`section-preview-${pendingDiff.section}`);
     const containerEl = document.getElementById("preview-scroll-container");
-    
+
     if (sectionEl && containerEl) {
       requestAnimationFrame(() => {
         sectionEl.scrollIntoView({
@@ -518,8 +469,15 @@ export default function SiteEditorPage() {
 
     setTemplatePickerOpen(false);
     setSiteDetails({ ...siteDetails, template_id: templateId });
+
     if (customDesignToken) {
       setDesignToken(customDesignToken);
+    } else if (templateId !== "TEMPLATE_DYNAMIC") {
+      // Static preset selected without an explicit design token (e.g. picking
+      // "Noir Prestige" / "Bumi Lestari" / "Pop Riot" / "White Space" from the
+      // picker) — apply that template's own default palette/typography/layout
+      // instead of silently keeping the previous template's design token.
+      setDesignToken(getTemplateDefaultDesignToken(templateId));
     }
   };
 
@@ -539,7 +497,7 @@ export default function SiteEditorPage() {
       },
       ...current,
     ].slice(0, 3));
-    
+
     if (pendingDiff.section !== "design") {
       setContent({
         ...content,
@@ -618,7 +576,7 @@ export default function SiteEditorPage() {
   const handleAiRegenerateForSection = useCallback(async (section: string, customInstructions?: string) => {
     const currentContent = contentRef.current;
     if (!token || !activeTenantId || !siteId || !currentContent) return;
-    
+
     let instructions = customInstructions || aiInstructions;
     if (!instructions.trim()) {
       const input = window.prompt(`Masukkan instruksi AI untuk regenerasi bagian "${section}" (cth: "buat kalimat lebih persuasif"):`);
@@ -734,7 +692,7 @@ export default function SiteEditorPage() {
 
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
     let nextToken = { ...(designToken || {}) };
-    
+
     // Switch to TEMPLATE_DYNAMIC and prefill defaults if we edit manual styles on static templates
     if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
       const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
@@ -798,18 +756,17 @@ export default function SiteEditorPage() {
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
   const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
   const aiPlaceholder = activeSuggestions[0] || "Buat copy lebih jelas dan meyakinkan...";
-  const fieldClass = (path: string, base: string) => `${base} ${
-    issuePaths.has(path)
+  const fieldClass = (path: string, base: string) => `${base} ${issuePaths.has(path)
       ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
       : ""
-  }`;
+    }`;
   const needsAttention = (path: string) => issuePaths.has(path);
   const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
   const TemplateComponent = currentTemplate.component;
   const dynamicTemplate = TEMPLATE_REGISTRY.find(t => t.id === "TEMPLATE_DYNAMIC");
 
   // Find if active template is one of the custom ones from the library
-  const activeCustomTemplate = siteDetails.template_id === "TEMPLATE_DYNAMIC" && customTemplates.find(ct => 
+  const activeCustomTemplate = siteDetails.template_id === "TEMPLATE_DYNAMIC" && customTemplates.find(ct =>
     isDesignTokenEqual(designToken, ct.design_token)
   );
 
@@ -860,21 +817,19 @@ export default function SiteEditorPage() {
           <div className="flex border-b border-white/10 p-1 bg-white/[0.02] flex-shrink-0">
             <button
               onClick={() => setEditorTab("content")}
-              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${
-                editorTab === "content"
+              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
                   ? "bg-violet-600 text-white shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
-              }`}
+                }`}
             >
               Konten
             </button>
             <button
               onClick={() => setEditorTab("design")}
-              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${
-                editorTab === "design"
+              className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "design"
                   ? "bg-violet-600 text-white shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
-              }`}
+                }`}
             >
               Desain
             </button>
@@ -916,18 +871,17 @@ export default function SiteEditorPage() {
                         type="button"
                         onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                         disabled={templateSaving}
-                        className={`group w-full rounded-xl border p-2 text-left transition ${
-                          isTopActive
+                        className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
                             ? "border-violet-400 bg-violet-500/15"
                             : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                        }`}
+                          }`}
                         role="option"
                         aria-selected={isTopActive}
                       >
-                        <TemplateThumbnail 
-                          previewType="dynamic" 
-                          accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} 
-                          active={isTopActive} 
+                        <TemplateThumbnail
+                          previewType="dynamic"
+                          accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent}
+                          active={isTopActive}
                           palette={latestAiDesignToken?.palette}
                         />
                         <div className="mt-2 flex items-start gap-2">
@@ -955,15 +909,19 @@ export default function SiteEditorPage() {
                         type="button"
                         onClick={() => void handleTemplateChange(template.id)}
                         disabled={templateSaving}
-                        className={`group w-full rounded-xl border p-2 text-left transition ${
-                          active
+                        className={`group w-full rounded-xl border p-2 text-left transition ${active
                             ? "border-violet-400 bg-violet-500/15"
                             : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                        }`}
+                          }`}
                         role="option"
                         aria-selected={active}
                       >
-                        <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} />
+                        <TemplateThumbnail
+                          previewType={template.previewType}
+                          accent={template.accent}
+                          active={active}
+                          palette={getTemplateDefaultDesignToken(template.id).palette}
+                        />
                         <div className="mt-2 flex items-start gap-2">
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
@@ -985,9 +943,9 @@ export default function SiteEditorPage() {
                       {(() => {
                         let hasMatchedActive = false;
                         return customTemplates.map((template) => {
-                          const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" && 
+                          const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" &&
                             isDesignTokenEqual(designToken, template.design_token);
-                          
+
                           const active = isMatch && !hasMatchedActive;
                           if (active) {
                             hasMatchedActive = true;
@@ -999,18 +957,17 @@ export default function SiteEditorPage() {
                               type="button"
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${
-                                active
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active
                                   ? "border-violet-400 bg-violet-500/15"
                                   : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
-                              }`}
+                                }`}
                               role="option"
                               aria-selected={active}
                             >
-                              <TemplateThumbnail 
-                                previewType="dynamic" 
-                                accent={template.design_token?.palette?.primary || "#7C3AED"} 
-                                active={active} 
+                              <TemplateThumbnail
+                                previewType="dynamic"
+                                accent={template.design_token?.palette?.primary || "#7C3AED"}
+                                active={active}
                                 palette={template.design_token?.palette}
                               />
                               <div className="mt-2 flex items-start gap-2">
@@ -1182,15 +1139,14 @@ export default function SiteEditorPage() {
                           selectSection(key, true);
                           setSectionDropdownOpen(false);
                         }}
-                        className={`group/item w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${
-                          activeTab === key
+                        className={`group/item w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${activeTab === key
                             ? "bg-violet-600 text-white font-semibold shadow-sm"
                             : draggingSection === key
-                            ? "bg-violet-500/20 text-violet-100"
-                            : hiddenSections.includes(key)
-                            ? "text-slate-600 hover:bg-white/5"
-                            : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
-                        }`}
+                              ? "bg-violet-500/20 text-violet-100"
+                              : hiddenSections.includes(key)
+                                ? "text-slate-600 hover:bg-white/5"
+                                : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                          }`}
                         role="option"
                         aria-selected={activeTab === key}
                       >
@@ -1211,11 +1167,10 @@ export default function SiteEditorPage() {
                               }}
                               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
                               title={hiddenSections.includes(key) ? "Tampilkan section" : "Sembunyikan section"}
-                              className={`p-1 rounded transition-colors cursor-pointer ${
-                                hiddenSections.includes(key)
+                              className={`p-1 rounded transition-colors cursor-pointer ${hiddenSections.includes(key)
                                   ? "text-slate-600 hover:text-slate-300"
                                   : "text-slate-500 hover:text-slate-200 opacity-0 group-hover/item:opacity-100"
-                              }`}
+                                }`}
                             >
                               {hiddenSections.includes(key)
                                 ? <EyeOff className="w-3.5 h-3.5" />
@@ -1223,9 +1178,8 @@ export default function SiteEditorPage() {
                               }
                             </div>
                           )}
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                            activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-500"
-                          }`}>{num}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-500"
+                            }`}>{num}</span>
                         </div>
                       </button>
                     ))}
@@ -1251,7 +1205,7 @@ export default function SiteEditorPage() {
                   {/* Palet Warna */}
                   <div className="space-y-3">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
-                    
+
                     {/* Primary Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Utama (Primary)</label>
@@ -1689,18 +1643,16 @@ export default function SiteEditorPage() {
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
               <button
                 onClick={() => setDevice("desktop")}
-                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${
-                  device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
-                }`}
+                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                  }`}
                 aria-label="Preview desktop"
               >
                 <Monitor className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setDevice("mobile")}
-                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${
-                  device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
-                }`}
+                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                  }`}
                 aria-label="Preview mobile"
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -1708,13 +1660,12 @@ export default function SiteEditorPage() {
             </div>
 
             {/* Completion score */}
-            <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
-              quality.score >= 85
+            <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
                 ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
                 : quality.score >= 65
-                ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
-                : "border-red-500/20 bg-red-500/10 text-red-300"
-            }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
+                  ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
+                  : "border-red-500/20 bg-red-500/10 text-red-300"
+              }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
               {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
             </span>
 
@@ -1723,17 +1674,16 @@ export default function SiteEditorPage() {
 
             {/* Autosave status */}
             {autosaveStatus !== "idle" && (
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${
-                autosaveStatus === "saving" ? "text-amber-300" :
-                autosaveStatus === "saved" ? "text-emerald-400" :
-                "text-red-300"
-              }`}>
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-amber-300" :
+                  autosaveStatus === "saved" ? "text-emerald-400" :
+                    "text-red-300"
+                }`}>
                 {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                 {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
                 {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
                 {autosaveStatus === "saving" ? "Menyimpan..." :
-                 autosaveStatus === "saved" ? "Tersimpan" :
-                 "Gagal simpan"}
+                  autosaveStatus === "saved" ? "Tersimpan" :
+                    "Gagal simpan"}
               </span>
             )}
 
@@ -1812,7 +1762,8 @@ export default function SiteEditorPage() {
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
           <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center">
             {pendingDiff && (
-              <style dangerouslySetInnerHTML={{ __html: `
+              <style dangerouslySetInnerHTML={{
+                __html: `
                 #preview-scroll-container div[id^="section-preview-"] {
                   transition: all 0.3s ease-in-out;
                 }
@@ -1838,16 +1789,16 @@ export default function SiteEditorPage() {
                 {/* Speaker/Notch */}
                 <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
                 {/* Screen container */}
-                <div 
+                <div
                   className="h-full w-full overflow-hidden rounded-[28px] bg-white relative z-10"
                   style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
                 >
-                  <div 
-                    style={{ 
-                      width: "181.81%", 
-                      height: "181.81%", 
-                      transform: "scale(0.55)", 
-                      transformOrigin: "top left" 
+                  <div
+                    style={{
+                      width: "181.81%",
+                      height: "181.81%",
+                      transform: "scale(0.55)",
+                      transformOrigin: "top left"
                     }}
                     className="overflow-y-auto h-full"
                   >
