@@ -1202,12 +1202,14 @@ export default function SiteEditorPage() {
                         <div className="flex items-center gap-1.5 shrink-0">
                           {/* Visibility toggle — not for header/footer/seo */}
                           {!["header", "footer", "seo"].includes(key) && (
-                            <button
-                              type="button"
+                            <div
+                              role="button"
+                              tabIndex={0}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 toggleSectionVisibility(key);
                               }}
+                              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
                               title={hiddenSections.includes(key) ? "Tampilkan section" : "Sembunyikan section"}
                               className={`p-1 rounded transition-colors cursor-pointer ${
                                 hiddenSections.includes(key)
@@ -1219,7 +1221,7 @@ export default function SiteEditorPage() {
                                 ? <EyeOff className="w-3.5 h-3.5" />
                                 : <Eye className="w-3.5 h-3.5" />
                               }
-                            </button>
+                            </div>
                           )}
                           <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                             activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-500"
