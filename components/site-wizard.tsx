@@ -1207,7 +1207,7 @@ export function SiteWizard({
                               ]);
                               // Ask for WA number before generating
                               setTimeout(() => {
-                                typeMessage("Hampir selesai! 🎉 Masukkan nomor WhatsApp bisnis Anda — akan dipakai untuk tombol CTA di website. (Opsional — tekan Enter untuk lewati)", () => {
+                                typeMessage("Hampir selesai! 🎉 Masukkan nomor WhatsApp dan kota bisnis Anda — keduanya opsional, bisa dilewati.", () => {
                                   setChatStage("whatsapp");
                                 });
                               }, 400);
@@ -1491,34 +1491,38 @@ export function SiteWizard({
             {chatStage === "whatsapp" ? (
               // WA + Location stacked — same step, no new progress bar entry
               <form onSubmit={handleSendText} className="space-y-2">
-                <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <input
-                    ref={inputRef}
-                    type="tel"
-                    inputMode="tel"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="cth. 08123456789 (opsional)"
-                    disabled={isInitialTyping || isAiTyping}
-                    className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
-                  />
-                  <span className="text-[10px] text-slate-600 shrink-0">WA</span>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider px-1" style={{ color: "rgba(148,163,184,0.6)" }}>📱 Nomor WhatsApp</label>
+                  <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <input
+                      ref={inputRef}
+                      type="tel"
+                      inputMode="tel"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="cth. 08123456789"
+                      disabled={isInitialTyping || isAiTyping}
+                      className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Kota/lokasi bisnis (opsional) — cth. Bandung, Yogyakarta"
-                    disabled={isInitialTyping || isAiTyping}
-                    className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
-                  />
-                  <span className="text-[10px] text-slate-600 shrink-0">📍</span>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider px-1" style={{ color: "rgba(148,163,184,0.6)" }}>📍 Kota / Lokasi Bisnis</label>
+                  <div className="flex items-center rounded-2xl px-4 py-1 gap-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <input
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="cth. Bandung, Yogyakarta, Jl. Malioboro"
+                      disabled={isInitialTyping || isAiTyping}
+                      className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"
                   disabled={isInitialTyping || isAiTyping}
-                  className="w-full py-2 rounded-xl text-xs font-semibold text-slate-300 transition-all hover:bg-white/10 active:scale-[0.98]"
+                  className="w-full py-2.5 rounded-xl text-xs font-semibold text-slate-300 transition-all hover:bg-white/10 active:scale-[0.98]"
                   style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.25)" }}
                 >
                   {inputValue.trim() || location.trim() ? "Lanjut →" : "Lewati →"}
