@@ -1702,32 +1702,12 @@ export function SiteWizard({
           {/* Loading state */}
           {previewState === "loading" && (
             <div className="h-full relative flex flex-col overflow-hidden">
-              {/* Blurred background preview */}
-              <div className="flex-1 overflow-y-auto p-8 filter blur-[8px] opacity-30 select-none pointer-events-none" style={{ background: "#0d0f14" }}>
-                <div className="max-w-3xl mx-auto">
-                  <header className="flex justify-between items-center pb-6 border-b border-slate-200 mb-10">
-                    <div>
-                      <div className="h-5 font-bold text-slate-700 text-lg">{businessName || "TB Simatupang"}</div>
-                      <div className="h-3 text-slate-400 text-xs">Toko Bahan Bangunan</div>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                      {["Beranda", "Produk", "Tentang", "Layanan", "Kontak"].map(l => (
-                        <span key={l} className="text-xs text-slate-600">{l}</span>
-                      ))}
-                      <div className="h-9 w-28 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-xs font-bold px-4">
-                        Hubungi Kami
-                      </div>
-                    </div>
-                  </header>
-                  <section className="relative rounded-3xl overflow-hidden mb-10 bg-gradient-to-br from-slate-700 to-slate-900" style={{ height: 300 }}>
-                    <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4 text-white">
-                      <h1 className="text-3xl font-extrabold">Solusi Material Bangunan Terpercaya</h1>
-                      <p className="text-slate-300 text-sm max-w-sm">Menyediakan bahan bangunan berkualitas untuk rumah dan proyek Anda.</p>
-                      <div className="h-11 w-40 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-sm font-bold">
-                        Hubungi Kami
-                      </div>
-                    </div>
-                  </section>
+              {/* Blurred dark background — no fake white mockup */}
+              <div className="flex-1 overflow-hidden filter blur-[12px] opacity-20 select-none pointer-events-none" style={{ background: "#0d0f14" }}>
+                <div className="h-full w-full" style={{ background: "linear-gradient(135deg, #1a1040 0%, #0d0f14 50%, #0a1628 100%)" }}>
+                  {/* Abstract shapes for visual depth */}
+                  <div className="absolute top-12 left-1/4 w-64 h-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%)" }} />
+                  <div className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full" style={{ background: "radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%)" }} />
                 </div>
               </div>
 
