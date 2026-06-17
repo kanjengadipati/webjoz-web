@@ -558,6 +558,41 @@ export default function SectionForms({
               className={fieldClass("about.body", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-violet-400 resize-none bg-transparent")} 
             />
           </div>
+          {/* Highlight Stats */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Statistik Highlight</label>
+            {[1, 2, 3].map((n) => {
+              const statKey = `highlight_stat_${n}` as "highlight_stat_1" | "highlight_stat_2" | "highlight_stat_3";
+              const stat = (content.about as any)[statKey] as { value?: string; label?: string } | undefined;
+              return (
+                <div key={n} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Stat {n}</span>
+                  <div className="flex gap-2">
+                    <div className="flex-1 space-y-0.5">
+                      <label className="text-[10px] text-slate-500">Nilai</label>
+                      <input
+                        type="text"
+                        value={stat?.value || ""}
+                        onChange={(e) => updateField("about", statKey, { ...(stat || {}), value: e.target.value })}
+                        placeholder="cth. 500+"
+                        className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-violet-400 bg-transparent text-slate-200"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-0.5">
+                      <label className="text-[10px] text-slate-500">Label</label>
+                      <input
+                        type="text"
+                        value={stat?.label || ""}
+                        onChange={(e) => updateField("about", statKey, { ...(stat || {}), label: e.target.value })}
+                        placeholder="cth. Pelanggan Puas"
+                        className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-violet-400 bg-transparent text-slate-200"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
