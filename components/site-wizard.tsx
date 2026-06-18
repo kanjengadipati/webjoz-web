@@ -524,8 +524,6 @@ export function SiteWizard({
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
-  // Progressive section reveal — starts at 1 (hero only), increments until all sections visible
-  const [visibleSectionCount, setVisibleSectionCount] = useState<number>(99);
   // History for undo/redo — stores up to 5 past previews
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -615,15 +613,7 @@ export function SiteWizard({
       setPreviewData(pendingPreview);
       setPreviewState("result");
       setPendingPreview(null);
-      // Start progressive section reveal: show 1 section, then reveal more every 350ms
-      setVisibleSectionCount(1);
-      const totalSections = 9; // max sections in any template
-      let count = 1;
-      const revealInterval = setInterval(() => {
-        count += 1;
-        setVisibleSectionCount(count);
-        if (count >= totalSections) clearInterval(revealInterval);
-      }, 350);
+      // Progressive reveal removed — template renders fully with fade-in animation
     }
   }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -778,7 +768,6 @@ export function SiteWizard({
     setPreviewState("loading");
     setLoadingStep(0);
     setPendingPreview(null);
-    setVisibleSectionCount(99); // reset so old result is fully visible during loading
 
     // Use sub-type if selected — backend recognises it directly via keyword map
     const effectiveType = businessSubType || bType;
@@ -1016,6 +1005,103 @@ export function SiteWizard({
   const skeletonSoft = { background: "rgba(255,255,255,0.06)" };
   const skeletonStrong = { background: "rgba(255,255,255,0.08)" };
   const skeletonPanel = { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.055)" };
+
+  // Result preview content (extracted from IIFE for Turbopack compat)
+  let resultPreviewContent: React.ReactNode = null;
+
+  // Template history navigation (extracted from IIFE for Turbopack compat)
+  const TEMPLATE_NAMES: Record<string, string> = {
+    "TEMPLATE_KULINER01": "Vista Prime 🍜",
+    "TEMPLATE_JASA02": "Elevate One 💼",
+    "TEMPLATE_PRODUK03": "Forge Flow 🛍️",
+    "TEMPLATE_ELEGANT": "Noir Prestige 👑",
+    "TEMPLATE_NATURAL": "Bumi Lestari 🌿",
+    "TEMPLATE_COLORFUL": "Pop Riot 🎨",
+    "TEMPLATE_MINIMALIST": "White Space ⚡",
+    "TEMPLATE_DYNAMIC": "AI Design ✨",
+  };
+  const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
+  let historyNavContent: React.ReactNode = null;
+  if (previewHistory.length > 1) {
+    historyNavContent = (
+      <div className="space-y-2.5 pt-1">
+        {/* Current template label */}
+        <div className="text-center space-y-1">
+          <p className="text-[11px] font-semibold" style={{ color: "#a78bfa" }}>{currentName}</p>
+          {/* Dot indicators */}
+          <div className="flex items-center justify-center gap-1.5">
+            {previewHistory.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => { setHistoryIndex(i); setPreviewData(previewHistory[i]); }}
+                className="transition-all duration-200"
+                style={{
+                  width: i === historyIndex ? 20 : 6,
+                  height: 6,
+                  borderRadius: 9999,
+                  background: i === historyIndex ? "#7c3aed" : "rgba(255,255,255,0.18)",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        {/* Prev / Next arrows */}
+        <div className="flex items-center justify-between gap-2">
+          <button
+            disabled={historyIndex <= 0}
+            onClick={() => { const p = historyIndex - 1; setHistoryIndex(p); setPreviewData(previewHistory[p]); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
+            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
+          >
+            ‹ Desain sebelumnya
+          </button>
+          <button
+            disabled={historyIndex >= previewHistory.length - 1}
+            onClick={() => { const n = historyIndex + 1; setHistoryIndex(n); setPreviewData(previewHistory[n]); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
+            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
+          >
+            Desain berikutnya ›
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (previewState === "result" && previewData) {
+    const TemplateComponent = getTemplateComponent(previewData.template_id || selectTemplate(businessSubType || businessType, mood));
+    resultPreviewContent = (
+      <div className="h-full flex flex-col overflow-hidden">
+        <div
+          className="flex-1 overflow-y-auto animate-in fade-in duration-700 min-h-0"
+          key={`${previewData.template_id}-${regenCount}`}
+        >
+          <TemplateComponent
+            content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
+            design_token={previewData.design_token as any}
+            isEditorMode={false}
+          />
+        </div>
+
+        {/* CTA strip at bottom — outside scroll area */}
+        <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <p className="text-xs font-semibold text-slate-300 truncate">
+              Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
+            </p>
+          </div>
+          <button
+            onClick={handleGoToEditor}
+            className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}
+          >
+            <Pencil className="w-3.5 h-3.5" />
+            Kustomisasi & Publish →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -1679,62 +1765,7 @@ export function SiteWizard({
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                   {/* History navigation — shown after 2+ generates */}
-                  {previewHistory.length > 1 && (() => {
-                    const TEMPLATE_NAMES: Record<string, string> = {
-                      "TEMPLATE_KULINER01": "Vista Prime 🍜",
-                      "TEMPLATE_JASA02": "Elevate One 💼",
-                      "TEMPLATE_PRODUK03": "Forge Flow 🛍️",
-                      "TEMPLATE_ELEGANT": "Noir Prestige 👑",
-                      "TEMPLATE_NATURAL": "Bumi Lestari 🌿",
-                      "TEMPLATE_COLORFUL": "Pop Riot 🎨",
-                      "TEMPLATE_MINIMALIST": "White Space ⚡",
-                      "TEMPLATE_DYNAMIC": "AI Design ✨",
-                    };
-                    const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
-                    return (
-                      <div className="space-y-2.5 pt-1">
-                        {/* Current template label */}
-                        <div className="text-center space-y-1">
-                          <p className="text-[11px] font-semibold" style={{ color: "#a78bfa" }}>{currentName}</p>
-                          {/* Dot indicators */}
-                          <div className="flex items-center justify-center gap-1.5">
-                            {previewHistory.map((_, i) => (
-                              <button
-                                key={i}
-                                onClick={() => { setHistoryIndex(i); setPreviewData(previewHistory[i]); }}
-                                className="transition-all duration-200"
-                                style={{
-                                  width: i === historyIndex ? 20 : 6,
-                                  height: 6,
-                                  borderRadius: 9999,
-                                  background: i === historyIndex ? "#7c3aed" : "rgba(255,255,255,0.18)",
-                                }}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        {/* Prev / Next arrows */}
-                        <div className="flex items-center justify-between gap-2">
-                          <button
-                            disabled={historyIndex <= 0}
-                            onClick={() => { const p = historyIndex - 1; setHistoryIndex(p); setPreviewData(previewHistory[p]); }}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
-                            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
-                          >
-                            ‹ Desain sebelumnya
-                          </button>
-                          <button
-                            disabled={historyIndex >= previewHistory.length - 1}
-                            onClick={() => { const n = historyIndex + 1; setHistoryIndex(n); setPreviewData(previewHistory[n]); }}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-25 disabled:cursor-not-allowed hover:opacity-80"
-                            style={{ background: "rgba(255,255,255,0.06)", color: "#94a3b8" }}
-                          >
-                            Desain berikutnya ›
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })()}
+                  {historyNavContent}
                   {!hasUnsavedEdits && (
                   <button
                     onClick={() => {
@@ -2093,51 +2124,7 @@ export function SiteWizard({
           )}
 
           {/* Result state */}
-          {previewState === "result" && previewData && (() => {
-            const TemplateComponent = getTemplateComponent(previewData.template_id || selectTemplate(businessSubType || businessType, mood));
-            const isRevealing = visibleSectionCount < 9;
-            return (
-              <div className="h-full flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-y-auto" key={`${previewData.template_id}-${regenCount}`}>
-                  <style>{`
-                    @keyframes sectionReveal {
-                      from { opacity: 0; transform: translateY(10px); }
-                      to   { opacity: 1; transform: translateY(0); }
-                    }
-                    .pgrev > * { animation: sectionReveal 0.45s ease-out both; }
-                    ${Array.from({ length: 9 }, (_, i) =>
-                      `.pgrev > *:nth-child(${i + 1}) { animation-delay:${i * 0.16}s;${isRevealing && i >= visibleSectionCount ? 'visibility:hidden;height:0;overflow:hidden;margin:0;padding:0;' : ''} }`
-                    ).join(' ')}
-                  `}</style>
-                  <div className="pgrev">
-                    <TemplateComponent
-                      content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
-                      design_token={previewData.design_token as any}
-                      isEditorMode={false}
-                    />
-                  </div>
-                </div>
-
-                {/* CTA strip at bottom */}
-                <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <p className="text-xs font-semibold text-slate-300 truncate">
-                      Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleGoToEditor}
-                    className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
-                    style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    Kustomisasi & Publish →
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
+          {resultPreviewContent}
         </div>
       </div>
     </div>
