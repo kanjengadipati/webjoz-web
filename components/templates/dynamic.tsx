@@ -10,7 +10,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, TestimonialsSection, MenuCatalogCard,
   WAFloatingButton, BackToTop, SeoEditorPreview, navCtaHref, CartFab,
-  CartProvider,
+  CartProvider, ContactSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont } from "./helpers";
 import type { TemplateProps, FaqItem, DesignToken } from "./types";

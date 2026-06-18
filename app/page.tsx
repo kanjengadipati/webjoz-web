@@ -74,7 +74,7 @@ const FEATURES = [
   {
     icon: "🌐",
     title: "Subdomain Langsung Aktif",
-    desc: "Setiap website aktif di subdomain Giwangan Studio dalam detik. Hubungkan domain sendiri kapan saja.",
+    desc: "Setiap website aktif di subdomain Webjoz dalam detik. Hubungkan domain sendiri kapan saja.",
   },
   {
     icon: "📊",
@@ -169,14 +169,14 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center gap-2.5">
             <Image
               src="/logo.png"
-              alt="Giwangan Studio"
+              alt="Webjoz"
               width={32}
               height={32}
               className="h-8 w-8 rounded-lg object-contain"
               priority
             />
             <span className="text-sm font-semibold tracking-tight text-foreground">
-              Giwangan Studio
+              Webjoz
             </span>
           </Link>
 
@@ -265,7 +265,7 @@ export default function LandingPage() {
                 <div className="h-3 w-3 rounded-full bg-green-400/60" />
               </div>
               <div className="flex-1 rounded-full bg-muted/60 px-4 py-1.5 text-center text-xs text-muted-foreground">
-                giwanganstudio.com/dashboard/sites/new
+                webjoz.com/dashboard/sites/new
               </div>
             </div>
             <div className="grid min-h-[280px] gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 sm:min-h-[320px]">
@@ -437,7 +437,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              KENAPA GIWANGAN STUDIO
+              KENAPA WEBJOZ
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Semua yang Anda butuhkan,{" "}
@@ -504,7 +504,7 @@ export default function LandingPage() {
                 Mulai Gratis Sekarang ⚡
               </button>
               <a
-                href="https://wa.me/6282298870033?text=Halo%20Giwangan%20Studio%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
+                href="https://wa.me/6282298870033?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition hover:bg-card"
@@ -532,11 +532,11 @@ export default function LandingPage() {
       <footer className="border-t border-border/40 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Giwangan Studio" width={24} height={24} className="h-6 w-6 rounded-md object-contain" />
-            <span className="text-sm font-semibold text-foreground">Giwangan Studio</span>
+            <Image src="/logo.png" alt="Webjoz" width={24} height={24} className="h-6 w-6 rounded-md object-contain" />
+            <span className="text-sm font-semibold text-foreground">Webjoz</span>
           </div>
           <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} Giwangan Studio. AI Website Builder untuk Bisnis Indonesia.
+            © {new Date().getFullYear()} Webjoz. AI Website Builder untuk Bisnis Indonesia.
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <Link href="/login" className="hover:text-foreground transition">Masuk</Link>

@@ -7,6 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -265,73 +266,35 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <section className="py-24 px-6" id="contact" style={{ background: darkBg }}>
-            {/* Decorative top divider */}
-            <div className="flex items-center gap-4 max-w-sm mx-auto mb-16">
-              <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${gold}40)` }} />
-              <div className="w-1.5 h-1.5 rotate-45" style={{ background: gold }} />
-              <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${gold}40)` }} />
-            </div>
-
-            <div className="max-w-2xl mx-auto text-center space-y-8">
-              {/* Title */}
-              <div className="space-y-2">
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>
-                  {data.contact.title || "Hubungi Kami"}
-                </h2>
-              </div>
-
-              {/* Contact info pills */}
-              {(data.contact.phone || data.contact.email || data.contact.address) && (
-                <div className="flex flex-col items-center gap-3 font-sans text-sm">
-                  {data.contact.address && data.contact.address !== "area sekitar" && (
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded" style={{ background: darkCard, border: `1px solid ${gold}20`, color: "rgba(245,230,192,0.6)" }}>
-                      <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: gold }} />
-                      <span>{data.contact.address}</span>
-                    </div>
-                  )}
-                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded" style={{ background: darkCard, border: `1px solid ${gold}20`, color: "rgba(245,230,192,0.6)" }}>
-                      <Mail className="w-3.5 h-3.5 shrink-0" style={{ color: gold }} />
-                      <span>{data.contact.email}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* WhatsApp CTA — prominent */}
-              {data.contact.phone && (
-                <a
-                  href={`https://wa.me/${data.contact.phone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-8 py-4 font-sans font-bold text-sm uppercase tracking-widest transition-all hover:brightness-110"
-                  style={{ background: gold, color: "#0a0a0a" }}
-                >
-                  <Phone className="w-4 h-4" />
-                  {data.contact.phone}
-                </a>
-              )}
-
-              {/* Lead form — shown when explicitly enabled */}
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="mt-8 p-8 rounded text-left" style={{ background: darkCard, border: `1px solid ${gold}20` }}>
-                  <h3 className="text-sm font-bold font-sans mb-6 text-center uppercase tracking-widest" style={{ color: gold }}>Kirim Pesan</h3>
-                  <LeadForm onSubmit={data.onSubmitLead} submitting={data.leadSubmitting} success={data.leadSuccess} error={data.leadError}
-                    buttonClass="w-full font-bold text-[11px] uppercase tracking-widest hover:brightness-110 transition-all"
-                    inputClass="w-full px-3 py-2.5 text-sm font-sans outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/20 text-amber-100 placeholder-neutral-600"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Decorative bottom divider */}
-            <div className="flex items-center gap-4 max-w-sm mx-auto mt-16">
-              <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${gold}40)` }} />
-              <div className="w-1.5 h-1.5 rotate-45" style={{ background: gold }} />
-              <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${gold}40)` }} />
-            </div>
-          </section>
+          <ContactSection
+            title={data.contact.title || "Hubungi Kami"}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="py-24 px-6"
+            wrapperStyle={{ background: darkBg }}
+            titleClass="text-2xl md:text-3xl font-bold"
+            titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}
+            accentColor={gold}
+            textClass="text-sm"
+            textStyle={{ color: "rgba(245,230,192,0.6)" }}
+            phoneBtnClass="font-sans font-bold text-sm uppercase tracking-widest"
+            phoneBtnStyle={{ background: gold, color: "#0a0a0a" }}
+            mapsUrl={data.contact.maps_url}
+            leadCardClass="mt-8 p-8 rounded"
+            leadCardStyle={{ background: darkCard, border: `1px solid ${gold}20` }}
+            leadTitleClass="text-sm font-bold font-sans text-center uppercase tracking-widest"
+            leadTitleStyle={{ color: gold }}
+            leadTitleText="Kirim Pesan"
+            leadFormBtnClass="w-full font-bold text-[11px] uppercase tracking-widest hover:brightness-110 transition-all"
+            leadFormBtnStyle={{ background: gold }}
+            leadFormInputClass="w-full px-3 py-2.5 text-sm font-sans outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/20 text-amber-100 placeholder-neutral-600"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

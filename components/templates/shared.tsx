@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
+import { WhatsAppIcon } from "@/components/icons";
 import type { TestimonialItem, FaqItem } from "./types";
 
 // ─── Nav Menu ─────────────────────────────────────────────────────────────────
@@ -531,10 +532,139 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
   </section>
 );
 
+// ─── Contact Section ───────────────────────────────────────────────────────────
+
+interface ContactSectionProps {
+  title?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  mapsUrl?: string | null;
+  showLeadForm?: boolean | null;
+  onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<void>) | null;
+  leadSubmitting?: boolean | null;
+  leadSuccess?: boolean | null;
+  leadError?: string | null;
+  wrapperClass?: string;
+  wrapperStyle?: React.CSSProperties;
+  titleClass?: string;
+  titleStyle?: React.CSSProperties;
+  accentColor?: string;
+  textClass?: string;
+  textStyle?: React.CSSProperties;
+  phoneBtnClass?: string;
+  phoneBtnStyle?: React.CSSProperties;
+  leadCardClass?: string;
+  leadCardStyle?: React.CSSProperties;
+  leadTitleClass?: string;
+  leadTitleStyle?: React.CSSProperties;
+  leadTitleText?: string;
+  leadFormBtnClass?: string;
+  leadFormBtnStyle?: React.CSSProperties;
+  leadFormInputClass?: string;
+  leadFormInputStyle?: React.CSSProperties;
+  mapsLinkClass?: string;
+  mapsLinkStyle?: React.CSSProperties;
+}
+
+const ContactSection: React.FC<ContactSectionProps> = ({
+  title, address, phone, email, mapsUrl,
+  showLeadForm, onSubmitLead, leadSubmitting, leadSuccess, leadError,
+  wrapperClass = "py-16 px-6", wrapperStyle,
+  titleClass = "text-2xl font-bold", titleStyle,
+  accentColor = "currentColor",
+  textClass = "text-sm", textStyle,
+  phoneBtnClass, phoneBtnStyle,
+  leadCardClass, leadCardStyle,
+  leadTitleClass, leadTitleStyle, leadTitleText = "Hubungi Kami",
+  leadFormBtnClass, leadFormBtnStyle,
+  leadFormInputClass, leadFormInputStyle,
+  mapsLinkClass, mapsLinkStyle,
+}) => {
+  const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
+  const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
+    ...(address && address !== "area sekitar" ? [{ icon: MapPin, text: address }] : []),
+    ...(phone && !phoneBtnClass ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
+    ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email }] : []),
+  ];
+
+  return (
+    <section id="contact" className={wrapperClass} style={wrapperStyle}>
+      <div className={`mx-auto ${hasLeadForm ? "max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14" : "max-w-xl text-center"}`}>
+        {/* Contact info */}
+        <div className="space-y-6">
+          <h2 className={titleClass} style={titleStyle}>{title}</h2>
+          <div className="space-y-4">
+            {infoItems.map(({ icon: Icon, text, href }) => {
+              const content = (
+                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : "items-center justify-center"}`}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
+                    <Icon className="w-4 h-4" style={{ color: accentColor }} />
+                  </div>
+                  <div className={hasLeadForm ? "flex-1 min-w-0 pt-1" : "min-w-0"}>
+                    <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
+                  </div>
+                </div>
+              );
+              if (href) {
+                return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{content}</a>;
+              }
+              return <div key={text}>{content}</div>;
+            })}
+          </div>
+
+          {/* Phone as prominent CTA */}
+          {phone && phoneBtnClass && (
+            <a
+              href={`https://wa.me/${phone.replace(/\D/g, "")}`}
+              target="_blank" rel="noopener noreferrer"
+              className={`inline-flex max-w-full items-center justify-center gap-2.5 px-6 py-3 font-bold text-sm transition-all hover:brightness-110 ${phoneBtnClass}`}
+              style={phoneBtnStyle}
+            >
+              <WhatsAppIcon size="sm" className="shrink-0" />
+              <span className="min-w-0">WhatsApp</span>
+            </a>
+          )}
+
+          {mapsUrl && (
+            <a
+              href={mapsUrl}
+              target="_blank" rel="noopener noreferrer"
+              className={`inline-flex items-center gap-2 text-sm font-semibold hover:underline transition-colors ${mapsLinkClass || ""}`}
+              style={{ color: accentColor, ...mapsLinkStyle }}
+            >
+              <Globe className="w-4 h-4" />
+              Buka Google Maps
+            </a>
+          )}
+        </div>
+
+        {/* Lead form */}
+        {hasLeadForm && (
+          <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
+            <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{leadTitleText}</h3>
+            <LeadForm
+              onSubmit={onSubmitLead!}
+              submitting={leadSubmitting ?? false}
+              success={leadSuccess ?? false}
+              error={leadError ?? null}
+              buttonClass={leadFormBtnClass || ""}
+              buttonStyle={leadFormBtnStyle}
+              inputClass={leadFormInputClass || ""}
+              inputStyle={leadFormInputStyle}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref,
   TestimonialsSection, MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
+  ContactSection,
 };
-export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps };
+export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps };

@@ -273,7 +273,7 @@ export function SocialAuthButtons({
                 pushToast(`Welcome! Google ${mode === "login" ? "login" : "signup"} successful.`, "success");
                 
                 const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-                const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+                const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
                 if (redirectParam) {
                   router.push(redirectParam);
                 } else if (pendingWizard) {
@@ -332,7 +332,7 @@ export function SocialAuthButtons({
                 pushToast(`Welcome! Facebook ${mode === "login" ? "login" : "signup"} successful.`, "success");
                 
                 const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-                const pendingWizard = localStorage.getItem("giwangan_pending_wizard_data");
+                const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
                 if (redirectParam) {
                   router.push(redirectParam);
                 } else if (pendingWizard) {

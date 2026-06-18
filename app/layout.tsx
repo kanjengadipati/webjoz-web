@@ -16,21 +16,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.giwanganstudio.com"),
-  title: "Giwangan Studio — AI Website Builder untuk Bisnis",
+  metadataBase: new URL("https://app.webjoz.com"),
+  title: "Webjoz — AI Website Builder untuk Bisnis",
   description:
     "Buat website bisnis profesional dalam 5 menit dengan AI. Isi profil bisnis, pilih template, dan website Anda langsung aktif — tanpa coding, tanpa tunggu tim.",
   openGraph: {
-    title: "Giwangan Studio — AI Website Builder untuk Bisnis",
+    title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
-    url: "https://app.giwanganstudio.com",
-    siteName: "Giwangan Studio",
+    url: "https://app.webjoz.com",
+    siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Giwangan Studio — AI Website Builder untuk Bisnis",
+    title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
   },
   robots: {
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
 const themeScript = `
 (function() {
   try {
-    var theme = localStorage.getItem('giwangan_theme');
-    var accent = localStorage.getItem('giwangan_accent');
+    var theme = localStorage.getItem('webjoz_theme');
+    var accent = localStorage.getItem('webjoz_accent');
 
     // Handle Light/Dark Mode
     if (!theme || theme === 'dark') {

@@ -28,7 +28,7 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Production Subdomain check (e.g. cafe-jogja.giwanganstudio.com)
+  // Production Subdomain check (e.g. cafe-jogja.webjoz.com)
   if (host.endsWith(`.${BASE_DOMAIN}`)) {
     const subdomain = host.replace(`.${BASE_DOMAIN}`, '')
     return NextResponse.rewrite(

@@ -33,7 +33,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
     // Preserve wizard prefill parameters before redirecting to login
     if (typeof window !== "undefined" && window.location.pathname.includes("/dashboard/sites/new") && window.location.search) {
-      localStorage.setItem("giwangan_wizard_prefill", window.location.search);
+      localStorage.setItem("webjoz_wizard_prefill", window.location.search);
     }
 
     window.location.replace("/login");
@@ -44,9 +44,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     if (!authReady || !token) return;
     if (typeof window === "undefined") return;
 
-    const prefill = localStorage.getItem("giwangan_wizard_prefill");
+    const prefill = localStorage.getItem("webjoz_wizard_prefill");
     if (prefill) {
-      localStorage.removeItem("giwangan_wizard_prefill");
+      localStorage.removeItem("webjoz_wizard_prefill");
       router.push(`/dashboard/sites/new${prefill}`);
     }
   }, [authReady, token, router]);
@@ -166,13 +166,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="flex items-center gap-3">
                     <Image
                       src="/logo.png"
-                      alt="Giwangan logo"
+                      alt="Webjoz logo"
                       width={36}
                       height={36}
                       className="h-9 w-9 object-contain"
                       priority
                     />
-                    <CardTitle className="text-2xl font-bold tracking-tighter">Giwangan Console</CardTitle>
+                    <CardTitle className="text-2xl font-bold tracking-tighter">Webjoz Console</CardTitle>
                   </div>
                   <CardDescription className="text-xs font-medium opacity-80">
                     {ENV_NAME} Admin Workspace

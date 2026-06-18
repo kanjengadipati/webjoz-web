@@ -68,7 +68,7 @@ export function buildFullContent(
       cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
       cta_url: waUrl ?? (c.hero?.cta_url || "#contact"),           // ← preserve AI value if WA not provided
       image_url: c.hero?.image_url || "",
-      badge_text: c.hero?.badge_text || businessType,
+      badge_text: c.hero?.badge_text || "",
     },
     about: {
       ...c.about,

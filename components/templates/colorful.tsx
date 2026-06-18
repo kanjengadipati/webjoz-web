@@ -7,6 +7,7 @@ import {
   NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -305,25 +306,32 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={contact} render={(c) => (
-          <section id="contact" className="py-14 px-6" style={{ background: bg }}>
-            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-black uppercase" style={{ color: black }}>{c.title}</h2>
-                <div className="space-y-3">
-                  {c.address && <div className="flex items-start gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: yellow }}><MapPin className="w-4 h-4" style={{ color: black }} /></div><p className="text-sm font-semibold" style={{ color: "#333" }}>{c.address}</p></div>}
-                  {c.phone && <div className="flex items-center gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: pink }}><Phone className="w-4 h-4 text-white" /></div><p className="text-sm font-black" style={{ color: black }}>{c.phone}</p></div>}
-                  {c.email && <div className="flex items-center gap-3"><div className="w-8 h-8 border-2 border-black flex items-center justify-center flex-shrink-0" style={{ background: "#B3E5FC" }}><Mail className="w-4 h-4" style={{ color: black }} /></div><p className="text-sm font-semibold" style={{ color: "#333" }}>{c.email}</p></div>}
-                </div>
-              </div>
-              {c.show_lead_form && onSubmitLead && (
-                <div className={`border-2 border-black p-6 ${shadowBlock}`} style={{ background: surface }}>
-                  <LeadForm onSubmit={onSubmitLead} submitting={leadSubmitting} success={leadSuccess} error={leadError}
-                    buttonClass="border-2 border-black font-black uppercase text-sm"
-                    inputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white" />
-                </div>
-              )}
-            </div>
-          </section>
+          <ContactSection
+            title={c.title}
+            address={c.address}
+            phone={c.phone}
+            email={c.email}
+            mapsUrl={c.maps_url}
+            showLeadForm={c.show_lead_form}
+            onSubmitLead={onSubmitLead}
+            leadSubmitting={leadSubmitting}
+            leadSuccess={leadSuccess}
+            leadError={leadError}
+            wrapperClass="py-14 px-6"
+            wrapperStyle={{ background: bg }}
+            titleClass="text-2xl font-black uppercase"
+            titleStyle={{ color: black }}
+            accentColor={pink}
+            textClass="text-sm font-semibold"
+            textStyle={{ color: "#333" }}
+            phoneBtnClass="font-black text-xs uppercase tracking-wider text-white"
+            phoneBtnStyle={{ background: pink, boxShadow: "3px 3px 0 #000", border: "2px solid #000" }}
+            leadCardClass={`border-2 border-black p-6 ${shadowBlock}`}
+            leadCardStyle={{ background: surface }}
+            leadTitleText=""
+            leadFormBtnClass="border-2 border-black font-black uppercase text-sm"
+            leadFormInputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

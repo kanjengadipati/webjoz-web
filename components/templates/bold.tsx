@@ -7,6 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -275,45 +276,34 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <section id="contact" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className={`max-w-5xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid md:grid-cols-2 gap-12" : "max-w-xl mx-auto text-center"}`}>
-              <div className="space-y-5">
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{data.contact.title}</h2>
-                <div className="space-y-3 text-sm font-light" style={{ color: textMuted }}>
-                  {data.contact.address && data.contact.address !== "area sekitar" && (
-                    <div className={`flex items-start gap-3 ${!data.contact.show_lead_form ? "justify-center" : ""}`}>
-                      <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: red }} />
-                      <p>{data.contact.address}</p>
-                    </div>
-                  )}
-                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
-                    <div className={`flex items-center gap-3 ${!data.contact.show_lead_form ? "justify-center" : ""}`}>
-                      <Mail className="w-4 h-4 shrink-0" style={{ color: red }} />
-                      <p>{data.contact.email}</p>
-                    </div>
-                  )}
-                </div>
-                {data.contact.phone && (
-                  <a href={`https://wa.me/${data.contact.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 font-black text-xs uppercase tracking-widest text-white transition-all hover:brightness-110"
-                    style={{ background: red }}>
-                    <Phone className="w-4 h-4" /> {data.contact.phone}
-                  </a>
-                )}
-              </div>
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="p-6" style={{ background: card, border: `2px solid ${border}` }}>
-                  <h3 className="text-sm font-black uppercase tracking-widest text-white mb-5">Kirim Pesan</h3>
-                  <LeadForm onSubmit={data.onSubmitLead} submitting={data.leadSubmitting} success={data.leadSuccess} error={data.leadError}
-                    buttonClass="w-full font-black text-xs uppercase tracking-widest text-white hover:brightness-110 transition-all"
-                    buttonStyle={{ background: red }}
-                    inputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-600"
-                    inputStyle={{ background: "#1a110e", border: `1px solid ${border}`, borderRadius: 0 }}
-                  />
-                </div>
-              )}
-            </div>
-          </section>
+          <ContactSection
+            title={data.contact.title}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            mapsUrl={data.contact.maps_url}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="py-16 px-6"
+            wrapperStyle={{ background: bg, borderTop: `1px solid ${border}` }}
+            titleClass="text-2xl md:text-3xl font-black uppercase tracking-tight text-white"
+            accentColor={red}
+            textClass="text-sm font-light"
+            textStyle={{ color: textMuted }}
+            phoneBtnClass="font-black text-xs uppercase tracking-widest text-white"
+            phoneBtnStyle={{ background: red }}
+            leadCardClass="p-6"
+            leadCardStyle={{ background: card, border: `2px solid ${border}` }}
+            leadTitleClass="text-sm font-black uppercase tracking-widest text-white"
+            leadTitleText="Kirim Pesan"
+            leadFormBtnClass="w-full font-black text-xs uppercase tracking-widest text-white hover:brightness-110 transition-all"
+            leadFormBtnStyle={{ background: red }}
+            leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-600"
+            leadFormInputStyle={{ background: "#1a110e", border: `1px solid ${border}`, borderRadius: 0 }}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

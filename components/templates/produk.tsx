@@ -7,6 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -171,59 +172,29 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <section className="px-6 py-28 bg-slate-955 border-t border-slate-900" id="contact">
-            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-16" : "max-w-xl mx-auto text-center"}`}>
-              <div className="space-y-6">
-                <h2 className="text-3xl font-extrabold tracking-tight">{data.contact.title}</h2>
-                <div className="space-y-4 text-slate-300">
-                  {data.contact.address && data.contact.address !== "area sekitar" && (
-                    <div className="flex items-start justify-center gap-3">
-                      <MapPin className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                      <p>{data.contact.address}</p>
-                    </div>
-                  )}
-                  {data.contact.phone && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Phone className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                      <p>{data.contact.phone}</p>
-                    </div>
-                  )}
-                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Mail className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                      <p>{data.contact.email}</p>
-                    </div>
-                  )}
-                </div>
-                {data.contact.maps_url && (
-                  <div className="pt-4">
-                    <a
-                      href={data.contact.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-cyan-400 hover:text-cyan-300 font-bold inline-flex items-center gap-1.5"
-                    >
-                      <Globe className="w-4 h-4" />
-                      Buka Lokasi Kantor
-                    </a>
-                  </div>
-                )}
-              </div>
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm">
-                  <h3 className="text-lg font-bold text-white mb-6">Hubungi Kami Langsung</h3>
-                  <LeadForm
-                    onSubmit={data.onSubmitLead}
-                    submitting={data.leadSubmitting}
-                    success={data.leadSuccess}
-                    error={data.leadError}
-                    buttonClass="bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-xl"
-                    inputClass="w-full px-4 py-2.5 bg-slate-955/50 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl outline-none text-sm text-slate-100 transition-all"
-                  />
-                </div>
-              )}
-            </div>
-          </section>
+          <ContactSection
+            title={data.contact.title}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            mapsUrl={data.contact.maps_url}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="px-6 py-28 border-t border-slate-900"
+            wrapperStyle={{ background: "#0f172a" }}
+            titleClass="text-3xl font-extrabold tracking-tight text-white"
+            accentColor="#22d3ee"
+            textClass="text-slate-300"
+            mapsLinkClass="text-cyan-400 hover:text-cyan-300 font-bold"
+            leadCardClass="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm"
+            leadTitleClass="text-lg font-bold text-white"
+            leadTitleText="Hubungi Kami Langsung"
+            leadFormBtnClass="bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-xl"
+            leadFormInputClass="w-full px-4 py-2.5 bg-slate-955/50 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl outline-none text-sm text-slate-100 transition-all"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

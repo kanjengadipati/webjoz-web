@@ -172,7 +172,7 @@ export default function PublicSite({ subdomain, host }: PublicSiteProps) {
         </div>
         <h1 className="text-2xl font-bold text-white">Situs Tidak Aktif</h1>
         <p className="text-slate-400 max-w-md text-sm leading-relaxed">
-          {error || "Website yang Anda tuju belum terdaftar atau belum selesai dikonfigurasi di dashboard Giwangan Studio."}
+          {error || "Website yang Anda tuju belum terdaftar atau belum selesai dikonfigurasi di dashboard Webjoz."}
         </p>
       </div>
     );

@@ -7,6 +7,7 @@ import {
   NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -277,27 +278,33 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <section className="py-16 px-6" id="contact" style={{ background: cream }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{data.contact.title}</h2>
-                <div className="space-y-3 text-sm font-sans" style={{ color: brownMuted }}>
-                  {data.contact.address && <div className="flex gap-3"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: sage }} /><p>{data.contact.address}</p></div>}
-                  {data.contact.phone && <div className="flex gap-3"><Phone className="w-4 h-4 flex-shrink-0" style={{ color: sage }} /><p>{data.contact.phone}</p></div>}
-                  {data.contact.email && <div className="flex gap-3"><Mail className="w-4 h-4 flex-shrink-0" style={{ color: sage }} /><p>{data.contact.email}</p></div>}
-                </div>
-              </div>
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="p-6 rounded-2xl border" style={{ background: "white", borderColor: border }}>
-                  <h3 className="text-sm font-bold font-sans mb-4" style={{ color: sageDark }}>Kirim Pesan</h3>
-                  <LeadForm onSubmit={data.onSubmitLead} submitting={data.leadSubmitting} success={data.leadSuccess} error={data.leadError}
-                    buttonClass="rounded-full text-white font-bold text-xs uppercase tracking-wider"
-                    inputClass="w-full px-3 py-2.5 rounded-xl text-sm font-sans border outline-none focus:ring-1 focus:ring-[#3d5a45]"
-                  />
-                </div>
-              )}
-            </div>
-          </section>
+          <ContactSection
+            title={data.contact.title}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            mapsUrl={data.contact.maps_url}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="py-16 px-6"
+            wrapperStyle={{ background: cream }}
+            titleClass="text-2xl font-medium"
+            titleStyle={{ color: "#233527", fontFamily: "Georgia, serif" }}
+            accentColor={sage}
+            textClass="text-sm font-sans"
+            textStyle={{ color: brownMuted }}
+            leadCardClass="p-6 rounded-2xl border"
+            leadCardStyle={{ background: "white", borderColor: border }}
+            leadTitleClass="text-sm font-bold font-sans"
+            leadTitleStyle={{ color: sageDark }}
+            leadTitleText="Kirim Pesan"
+            leadFormBtnClass="rounded-full text-white font-bold text-xs uppercase tracking-wider"
+            leadFormBtnStyle={{ background: sage }}
+            leadFormInputClass="w-full px-3 py-2.5 rounded-xl text-sm font-sans border outline-none focus:ring-1 focus:ring-[#3d5a45]"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

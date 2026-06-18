@@ -7,6 +7,7 @@ import {
   NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -278,23 +279,30 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={contact} render={(c) => (
-          <section id="contact" className="py-16 px-6 md:px-12 border-t" style={{ background: surface, borderColor: zinc200 }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
-              <div className="space-y-6">
-                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
-                <div className="space-y-4">
-                  {c.address && <div className="flex items-start gap-4"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc500 }}>{c.address}</p></div>}
-                  {c.phone && <div className="flex items-center gap-4"><Phone className="w-4 h-4 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc900 }}>{c.phone}</p></div>}
-                  {c.email && <div className="flex items-center gap-4"><Mail className="w-4 h-4 flex-shrink-0" style={{ color: zinc500 }} /><p className="text-sm font-light" style={{ color: zinc500 }}>{c.email}</p></div>}
-                </div>
-              </div>
-              {c.show_lead_form && onSubmitLead && (
-                <LeadForm onSubmit={onSubmitLead} submitting={leadSubmitting} success={leadSuccess} error={leadError}
-                  buttonClass="bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest"
-                  inputClass="w-full border border-zinc-200 p-3 text-sm font-light focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white" />
-              )}
-            </div>
-          </section>
+          <ContactSection
+            title={c.title}
+            address={c.address}
+            phone={c.phone}
+            email={c.email}
+            mapsUrl={c.maps_url}
+            showLeadForm={c.show_lead_form}
+            onSubmitLead={onSubmitLead}
+            leadSubmitting={leadSubmitting}
+            leadSuccess={leadSuccess}
+            leadError={leadError}
+            wrapperClass="py-16 px-6 md:px-12 border-t"
+            wrapperStyle={{ background: surface, borderColor: zinc200 }}
+            titleClass="text-2xl font-light tracking-tight"
+            titleStyle={{ color: zinc900 }}
+            accentColor={zinc500}
+            textClass="text-sm font-light"
+            textStyle={{ color: zinc500 }}
+            leadCardClass=""
+            leadCardStyle={{}}
+            leadTitleText=""
+            leadFormBtnClass="bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest"
+            leadFormInputClass="w-full border border-zinc-200 p-3 text-sm font-light focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

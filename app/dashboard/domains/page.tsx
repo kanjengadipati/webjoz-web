@@ -140,7 +140,7 @@ export default function DomainsPage() {
   };
 
   const handleCopyCNAME = () => {
-    navigator.clipboard.writeText("sites.giwanganstudio.com");
+    navigator.clipboard.writeText("sites.webjoz.com");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -237,7 +237,7 @@ export default function DomainsPage() {
                   <div className="flex items-center justify-between col-span-1">
                     <div>
                       <span className="font-sans block font-semibold text-slate-400">TARGET/VALUE</span>
-                      sites.giwanganstudio.com
+                      sites.webjoz.com
                     </div>
                     <button 
                       type="button" 

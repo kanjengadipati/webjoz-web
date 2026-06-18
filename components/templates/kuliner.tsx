@@ -7,6 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -170,60 +171,30 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     ),
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, brand_name: header?.brand_name }} render={(data) => (
-          <section className="px-6 py-20 bg-[#F4EEE0] border-t border-[#EADFCB]" id="contact">
-            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-12" : "max-w-xl mx-auto text-center"}`}>
-              <div className="space-y-6">
-                <h2 className="text-3xl font-bold font-serif text-amber-955">{data.contact.title}</h2>
-                <div className="space-y-4 text-amber-900">
-                  {data.contact.address && data.contact.address !== "area sekitar" && (
-                    <div className="flex items-start justify-center gap-3">
-                      <MapPin className="w-5 h-5 text-amber-700 mt-0.5 flex-shrink-0" />
-                      <p>{data.contact.address}</p>
-                    </div>
-                  )}
-                  {data.contact.phone && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Phone className="w-5 h-5 text-amber-700 flex-shrink-0" />
-                      <p>{data.contact.phone}</p>
-                    </div>
-                  )}
-                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Mail className="w-5 h-5 text-amber-700 flex-shrink-0" />
-                      <p>{data.contact.email}</p>
-                    </div>
-                  )}
-                </div>
-                {data.contact.maps_url && (
-                  <div className="pt-4">
-                    <a
-                      href={data.contact.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-amber-800 underline hover:text-amber-955 inline-flex items-center gap-1.5 font-medium"
-                    >
-                      <Globe className="w-4 h-4" />
-                      Buka Google Maps
-                    </a>
-                  </div>
-                )}
-              </div>
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="bg-white p-8 rounded-3xl border border-[#EADFCB] shadow-sm">
-                  <h3 className="text-lg font-bold font-serif text-amber-955 mb-6">Hubungi Kami / Reservasi</h3>
-                  <LeadForm
-                    onSubmit={data.onSubmitLead}
-                    submitting={data.leadSubmitting}
-                    success={data.leadSuccess}
-                    error={data.leadError}
-                    buttonClass="bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-sm hover:shadow"
-                    inputClass="w-full px-4 py-2.5 bg-amber-50/50 border border-[#EADFCB] focus:border-amber-600 focus:ring-1 focus:ring-amber-600 rounded-xl outline-none text-sm transition-all"
-                  />
-                </div>
-              )}
-            </div>
-          </section>
+        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
+          <ContactSection
+            title={data.contact.title}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            mapsUrl={data.contact.maps_url}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="px-6 py-20 border-t border-[#EADFCB]"
+            wrapperStyle={{ background: "#F4EEE0" }}
+            titleClass="text-3xl font-bold font-serif text-amber-955"
+            accentColor="#b45309"
+            textClass="text-amber-900"
+            mapsLinkClass="text-amber-800 underline hover:text-amber-955 font-medium"
+            leadCardClass="bg-white p-8 rounded-3xl border border-[#EADFCB] shadow-sm"
+            leadTitleClass="text-lg font-bold font-serif text-amber-955"
+            leadTitleText="Hubungi Kami / Reservasi"
+            leadFormBtnClass="bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-sm hover:shadow"
+            leadFormInputClass="w-full px-4 py-2.5 bg-amber-50/50 border border-[#EADFCB] focus:border-amber-600 focus:ring-1 focus:ring-amber-600 rounded-xl outline-none text-sm transition-all"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

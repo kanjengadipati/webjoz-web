@@ -6,6 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   WAFloatingButton, BackToTop, navCtaHref, FaqAccordion, SeoEditorPreview,
+  ContactSection,
 } from "./shared";
 import type { TemplateProps } from "./types";
 
@@ -167,60 +168,30 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     ),
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError, brand_name: header?.brand_name }} render={(data) => (
-          <section className="px-6 py-24 bg-slate-100 border-t border-slate-200" id="contact">
-            <div className={`max-w-6xl mx-auto ${data.contact.show_lead_form && data.onSubmitLead ? "grid grid-cols-1 lg:grid-cols-2 gap-16" : "max-w-xl mx-auto text-center"}`}>
-              <div className="space-y-6">
-                <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{data.contact.title}</h2>
-                <div className="space-y-4 text-slate-600">
-                  {data.contact.address && data.contact.address !== "area sekitar" && (
-                    <div className="flex items-start justify-center gap-3">
-                      <MapPin className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
-                      <p>{data.contact.address}</p>
-                    </div>
-                  )}
-                  {data.contact.phone && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Phone className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <p>{data.contact.phone}</p>
-                    </div>
-                  )}
-                  {data.contact.email && !data.contact.email.includes("brand-anda") && (
-                    <div className="flex items-center justify-center gap-3">
-                      <Mail className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <p>{data.contact.email}</p>
-                    </div>
-                  )}
-                </div>
-                {data.contact.maps_url && (
-                  <div className="pt-4">
-                    <a
-                      href={data.contact.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-800 font-bold inline-flex items-center gap-1.5"
-                    >
-                      <Globe className="w-4 h-4" />
-                      Buka Peta Lokasi
-                    </a>
-                  </div>
-                )}
-              </div>
-              {data.contact.show_lead_form && data.onSubmitLead && (
-                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Kirim Pertanyaan Anda</h3>
-                  <LeadForm
-                    onSubmit={data.onSubmitLead}
-                    submitting={data.leadSubmitting}
-                    success={data.leadSuccess}
-                    error={data.leadError}
-                    buttonClass="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm"
-                    inputClass="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl outline-none text-sm transition-all"
-                  />
-                </div>
-              )}
-            </div>
-          </section>
+        <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
+          <ContactSection
+            title={data.contact.title}
+            address={data.contact.address}
+            phone={data.contact.phone}
+            email={data.contact.email}
+            mapsUrl={data.contact.maps_url}
+            showLeadForm={data.contact.show_lead_form}
+            onSubmitLead={data.onSubmitLead}
+            leadSubmitting={data.leadSubmitting}
+            leadSuccess={data.leadSuccess}
+            leadError={data.leadError}
+            wrapperClass="px-6 py-24 border-t border-slate-200"
+            wrapperStyle={{ background: "#f1f5f9" }}
+            titleClass="text-3xl font-extrabold text-slate-900 tracking-tight"
+            accentColor="#4f46e5"
+            textClass="text-slate-600"
+            mapsLinkClass="text-indigo-600 hover:text-indigo-800 font-bold"
+            leadCardClass="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm"
+            leadTitleClass="text-lg font-bold text-slate-900"
+            leadTitleText="Kirim Pertanyaan Anda"
+            leadFormBtnClass="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm"
+            leadFormInputClass="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl outline-none text-sm transition-all"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
