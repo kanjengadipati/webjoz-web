@@ -85,11 +85,11 @@ If a magic link is sent, the link opens `/login?magic_token=...`; the dashboard 
 
 Passwordless OTP never creates a new account. Unknown email addresses or WhatsApp numbers should show the API error message and stop the flow.
 
-The dashboard does not create a device id in JavaScript. The API owns device identity through the `pleco_device_id` HttpOnly cookie, and also sets the `pleco_refresh_token` HttpOnly cookie for refresh rotation.
+The dashboard does not create a device id in JavaScript. The API owns device identity through an HttpOnly cookie, and also sets the refresh token HttpOnly cookie for refresh rotation.
 
 ### Refresh Token
 
-The dashboard automatically calls `POST /auth/refresh` after a `401` response. The refresh token should be stored by the API as the `pleco_refresh_token` HttpOnly cookie.
+The dashboard automatically calls `POST /auth/refresh` after a `401` response. The refresh token should be stored by the API as an HttpOnly cookie.
 
 ## Error Format
 

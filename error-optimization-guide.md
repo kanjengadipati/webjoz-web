@@ -25,7 +25,7 @@ AI-powered error message optimization automatically generates helpful, contextua
 
 ### Why It Matters
 
-**Current Pleco Error Messages:**
+**Current Error Messages:**
 ```json
 {
   "status": "error",
@@ -80,7 +80,7 @@ AI-powered error message optimization automatically generates helpful, contextua
 
 ## Problem Analysis
 
-### Current Pleco Error Handling
+### Current Error Handling
 
 #### 1. **Generic Error Messages**
 ```go

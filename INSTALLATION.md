@@ -92,7 +92,7 @@ PORT=3000 HOSTNAME=0.0.0.0 node .next/standalone/server.js
 Tagged releases publish a file named like:
 
 ```text
-pleco-console-v0.1.0-standalone.tar.gz
+    webjoz-v0.1.0-standalone.tar.gz
 ```
 
 After downloading:

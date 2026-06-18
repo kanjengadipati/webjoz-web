@@ -24,5 +24,5 @@ Actual:
 
 - OS:
 - Browser:
-- Pleco Console version or commit:
+- Webjoz version or commit:
 - API version or commit:
