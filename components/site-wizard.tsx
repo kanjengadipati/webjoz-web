@@ -483,15 +483,15 @@ export function SiteWizard({
     }, 30);
   };
   const streamedSectionsRef = useRef<Record<string, any>>({});
-  useEffect(() => { streamedSectionsRef.current = streamedSections; }, [streamedSections]);
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
-  useEffect(() => { streamedTokenRef.current = streamedDesignToken; }, [streamedDesignToken]);
 
   const { startStream, cancelStream } = useGenerateStream({
     onDesignToken: (token) => {
       setStreamedDesignToken(token);
+      streamedTokenRef.current = token; // sync update — no useEffect delay
     },
     onSection: (section, data) => {
+      streamedSectionsRef.current = { ...streamedSectionsRef.current, [section]: data }; // sync
       setStreamedSections((prev) => ({ ...prev, [section]: data }));
       setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
       if (section === "hero") {
@@ -732,6 +732,8 @@ export function SiteWizard({
     setStreamedDesignToken(null);
     setArrivedSections([]);
     setStreamedTemplateId("");
+    streamedSectionsRef.current = {};
+    streamedTokenRef.current = null;
     setPreviewState("loading");
     setLoadingStep(0);
 
