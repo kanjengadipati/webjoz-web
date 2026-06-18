@@ -524,6 +524,8 @@ export function SiteWizard({
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
+  // Progressive section reveal — starts at 1 (hero only), increments until all sections visible
+  const [visibleSectionCount, setVisibleSectionCount] = useState<number>(99);
   // History for undo/redo — stores up to 5 past previews
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -605,15 +607,23 @@ export function SiteWizard({
   useEffect(() => {
     if (pendingPreview && loadingStep >= 5) {
       setPreviewHistory(prev => {
-        // Truncate any "future" entries if user had gone back, then append new
         const base = prev.slice(0, historyIndex + 1);
-        const next = [...base, pendingPreview].slice(-5); // keep max 5
+        const next = [...base, pendingPreview].slice(-5);
         setHistoryIndex(next.length - 1);
         return next;
       });
       setPreviewData(pendingPreview);
       setPreviewState("result");
       setPendingPreview(null);
+      // Start progressive section reveal: show 1 section, then reveal more every 350ms
+      setVisibleSectionCount(1);
+      const totalSections = 9; // max sections in any template
+      let count = 1;
+      const revealInterval = setInterval(() => {
+        count += 1;
+        setVisibleSectionCount(count);
+        if (count >= totalSections) clearInterval(revealInterval);
+      }, 350);
     }
   }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -764,9 +774,11 @@ export function SiteWizard({
     bMood = mood,
     bDescription = description,
     regen = regenCount
-  ) => {    setPreviewState("loading");
+  ) => {
+    setPreviewState("loading");
     setLoadingStep(0);
     setPendingPreview(null);
+    setVisibleSectionCount(99); // reset so old result is fully visible during loading
 
     // Use sub-type if selected — backend recognises it directly via keyword map
     const effectiveType = businessSubType || bType;
@@ -2083,14 +2095,27 @@ export function SiteWizard({
           {/* Result state */}
           {previewState === "result" && previewData && (() => {
             const TemplateComponent = getTemplateComponent(previewData.template_id || selectTemplate(businessSubType || businessType, mood));
+            const isRevealing = visibleSectionCount < 9;
             return (
               <div className="h-full flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-y-auto">
-                  <TemplateComponent
-                    content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
-                    design_token={previewData.design_token as any}
-                    isEditorMode={false}
-                  />
+                <div className="flex-1 overflow-y-auto" key={`${previewData.template_id}-${regenCount}`}>
+                  <style>{`
+                    @keyframes sectionReveal {
+                      from { opacity: 0; transform: translateY(10px); }
+                      to   { opacity: 1; transform: translateY(0); }
+                    }
+                    .pgrev > * { animation: sectionReveal 0.45s ease-out both; }
+                    ${Array.from({ length: 9 }, (_, i) =>
+                      `.pgrev > *:nth-child(${i + 1}) { animation-delay:${i * 0.16}s;${isRevealing && i >= visibleSectionCount ? 'visibility:hidden;height:0;overflow:hidden;margin:0;padding:0;' : ''} }`
+                    ).join(' ')}
+                  `}</style>
+                  <div className="pgrev">
+                    <TemplateComponent
+                      content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
+                      design_token={previewData.design_token as any}
+                      isEditorMode={false}
+                    />
+                  </div>
                 </div>
 
                 {/* CTA strip at bottom */}
