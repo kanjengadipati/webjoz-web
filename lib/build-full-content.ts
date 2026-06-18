@@ -65,11 +65,13 @@ export function buildFullContent(
       badge_text: c.hero?.badge_text || businessType,
     },
     about: {
+      ...c.about,
       title: c.about?.title || `Tentang ${businessName}`,
       body: c.about?.body || description,
       image_url: c.about?.image_url || "",
     },
     benefits: {
+      ...c.benefits,
       title: c.benefits?.title || "Kenapa Pilih Kami?",
       items: c.benefits?.items ?? [],
     },
@@ -78,21 +80,25 @@ export function buildFullContent(
       items: c.testimonials?.items ?? [],
     },
     faq: {
+      ...c.faq,
       title: c.faq?.title || "Pertanyaan Umum",
       items: c.faq?.items ?? [],
     },
     cta: {
+      ...c.cta,
       headline: c.cta?.headline || `Siap Memulai dengan ${businessName}?`,
       button_text: c.cta?.button_text || "Hubungi Sekarang",
       button_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
     },
     contact: {
+      ...c.contact,
       title: c.contact?.title || "Hubungi Kami",
       address: c.contact?.address || "",
       phone: c.contact?.phone || whatsapp || "",
       email: c.contact?.email || "",
     },
     footer: {
+      ...c.footer,
       brand_name: businessName,
       tagline: c.footer?.tagline || description,
       copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
