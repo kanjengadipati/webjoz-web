@@ -47,20 +47,26 @@ export function buildFullContent(
   const c = preserveUserBrand(data.content as Record<string, any>, businessName);
   const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
 
+  const waUrl = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : null;
+
   // All images come from the backend (populateImageUrls). Never override with random frontend picks.
+  // IMPORTANT: spread ALL AI fields first (...c.section), then only override required fallbacks.
+  // This ensures NO field is ever lost when AI returns extra fields (eyebrow, opening_hours, etc.)
   return {
     header: {
+      ...c.header,                                                  // ← keep ALL fields from AI (icon, tagline, etc.)
       brand_name: businessName,
       nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
       logo_url: c.header?.logo_url || logoUrl,
       tagline: c.header?.tagline || "",
     },
     hero: {
+      ...c.hero,                                                    // ← keep ALL fields from AI (eyebrow, cta_secondary_text, opening_hours, etc.)
       headline: c.hero?.headline || businessName,
       matra: c.hero?.matra || matraValue || "",
       subheadline: c.hero?.subheadline || description,
       cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
-      cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+      cta_url: waUrl ?? (c.hero?.cta_url || "#contact"),           // ← preserve AI value if WA not provided
       image_url: c.hero?.image_url || "",
       badge_text: c.hero?.badge_text || businessType,
     },
@@ -88,7 +94,7 @@ export function buildFullContent(
       ...c.cta,
       headline: c.cta?.headline || `Siap Memulai dengan ${businessName}?`,
       button_text: c.cta?.button_text || "Hubungi Sekarang",
-      button_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+      button_url: waUrl ?? (c.cta?.button_url || "#contact"),      // ← preserve AI value if WA not provided
     },
     contact: {
       ...c.contact,
@@ -106,6 +112,7 @@ export function buildFullContent(
     ...(c.menu ? { menu: c.menu } : {}),
     ...(c.catalog ? { catalog: c.catalog } : {}),
     seo: {
+      ...c.seo,
       title: c.seo?.title || businessName,
       description: c.seo?.description || description,
       favicon_url: c.seo?.favicon_url || logoUrl,
