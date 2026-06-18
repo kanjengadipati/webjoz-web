@@ -1,6 +1,6 @@
 # Troubleshooting
 
-This page covers the issues most likely to block a Pleco Console setup.
+This page covers common issues when running Webjoz.
 
 ## The login request fails with a CORS error
 
@@ -11,7 +11,7 @@ Symptoms:
 
 Checks:
 
-- Confirm `NEXT_PUBLIC_API_BASE_URL` points to the correct Pleco API origin
+- Confirm `NEXT_PUBLIC_API_BASE_URL` points to the correct API origin
 - Confirm the API allows the dashboard origin in `CORS_ALLOWED_ORIGINS`
 - Make sure the origin includes the correct scheme, host, and port
 
@@ -30,7 +30,7 @@ Symptoms:
 
 Checks:
 
-- Verify the API is setting the `pleco_refresh_token` and `pleco_device_id` cookies
+- Verify the API is setting the refresh token and device ID cookies
 - For local development, confirm the API is configured to allow credentialed requests from the dashboard origin
 - For non-local environments, make sure both apps are served over HTTPS
 
@@ -58,14 +58,14 @@ This app defaults to `http://localhost:8080` when `NEXT_PUBLIC_API_BASE_URL` is 
 
 Checks:
 
-- Restart the Pleco API after changing `DB_DRIVER` or `DATABASE_URL`
+- Restart the API after changing `DB_DRIVER` or `DATABASE_URL`
 - Run API migrations and seed data for the selected database
 - Keep `NEXT_PUBLIC_API_BASE_URL` pointed at the API host, not the database host
 - Restart the dashboard only if `NEXT_PUBLIC_API_BASE_URL` changed
 
 Why this happens:
 
-Pleco Console is database-agnostic. It only talks to the API, so most database-driver issues need to be fixed in `pleco-api`.
+Webjoz is database-agnostic. It only talks to the API, so most database-driver issues need to be fixed in the API project.
 
 ## Social login buttons are missing
 

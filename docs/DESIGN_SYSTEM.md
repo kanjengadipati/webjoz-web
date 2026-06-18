@@ -1,6 +1,6 @@
 # Design System
 
-Pleco Console uses a compact operational dashboard style: dense, scannable, and quiet, with restrained motion and clear semantic color.
+Webjoz uses a compact operational dashboard style: dense, scannable, and quiet, with restrained motion and clear semantic color.
 
 ## Typography
 

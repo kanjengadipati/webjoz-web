@@ -2,7 +2,7 @@
 
 Configure the API base URL with `NEXT_PUBLIC_API_BASE_URL`.
 
-The dashboard is database-agnostic. PostgreSQL/MySQL selection is handled by `pleco-api` through `DB_DRIVER` and `DATABASE_URL`; no dashboard database setting is required.
+The dashboard is database-agnostic. PostgreSQL/MySQL selection is handled by the API through `DB_DRIVER` and `DATABASE_URL`; no dashboard database setting is required.
 
 ## Authentication
 

@@ -3,62 +3,33 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-// ─── Template showcase data ───────────────────────────────────────────────────
-
-const TEMPLATES = [
-  {
-    id: "TEMPLATE_JASA02",
-    name: "Elevate One",
-    category: "Jasa & Konsultan",
-    desc: "Template bergaya SaaS premium untuk bisnis jasa, konsultan, dan agency. Trust-first dengan CTA yang kuat.",
-    accent: "#38bdf8",
-    preview: "service",
-  },
-  {
-    id: "TEMPLATE_PRODUK03",
-    name: "Forge Flow",
-    category: "Produk & Katalog",
-    desc: "Landing page produk bergaya launch page modern. Grid rapi, CTA langsung, cocok untuk retail & UMKM.",
-    accent: "#818cf8",
-    preview: "catalog",
-  },
-  {
-    id: "TEMPLATE_KULINER01",
-    name: "Vista Prime",
-    category: "Kuliner & Brand",
-    desc: "Template hangat dengan storytelling premium. Ideal untuk kuliner, lifestyle, beauty, dan brand visual.",
-    accent: "#fb923c",
-    preview: "brand",
-    light: true,
-  },
-];
+import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 
 // ─── How it works steps ────────────────────────────────────────────────────────
 
 const STEPS = [
   {
     num: "01",
-    title: "Isi Profil Bisnis",
-    desc: "Masukkan nama, jenis usaha, produk, dan nomor WhatsApp. Hanya sekitar 60 detik.",
-    icon: "✏️",
+    title: "Ceritakan Bisnis Anda",
+    desc: "Chat singkat dengan AI — nama bisnis, jenis usaha, dan area layanan. Kurang dari 2 menit.",
+    icon: "💬",
   },
   {
     num: "02",
-    title: "Pilih Template Visual",
-    desc: "Pilih dari 3 template yang sudah dioptimalkan untuk konversi. Cocok otomatis dengan jenis bisnis Anda.",
+    title: "Pilih Mood Visual",
+    desc: "Pilih nuansa yang cocok: modern, elegan, playful, atau natural. AI sesuaikan desain otomatis.",
     icon: "🎨",
   },
   {
     num: "03",
-    title: "AI Tulis Kontennya",
-    desc: "AI kami menulis headline, deskripsi layanan, dan CTA secara otomatis dari data bisnis Anda.",
+    title: "AI Generate Website",
+    desc: "Konten, layout, warna, dan template dipilihkan otomatis oleh AI berdasarkan bisnis Anda.",
     icon: "⚡",
   },
   {
     num: "04",
-    title: "Luncurkan Website",
-    desc: "Preview, kustomisasi seperlunya, lalu publish. Website aktif di subdomain Anda dalam hitungan menit.",
+    title: "Luncurkan Sekarang",
+    desc: "Review, kustomisasi seperlunya, lalu publish. Website aktif di subdomain Anda dalam hitungan menit.",
     icon: "🚀",
   },
 ];
@@ -68,8 +39,13 @@ const STEPS = [
 const FEATURES = [
   {
     icon: "🤖",
-    title: "AI Copywriting Instan",
-    desc: "Tidak perlu jago nulis. AI membaca profil bisnis Anda dan menghasilkan konten yang menjual secara otomatis.",
+    title: "Chat, Bukan Form",
+    desc: "Tidak perlu isi form panjang. Cukup chat singkat dengan AI dan semua konten dibuat otomatis.",
+  },
+  {
+    icon: "🎨",
+    title: "Template Auto-Match",
+    desc: "AI memilih dan menyesuaikan template berdasarkan jenis bisnis dan mood yang Anda pilih.",
   },
   {
     icon: "🌐",
@@ -77,75 +53,21 @@ const FEATURES = [
     desc: "Setiap website aktif di subdomain Webjoz dalam detik. Hubungkan domain sendiri kapan saja.",
   },
   {
-    icon: "📊",
-    title: "Dashboard Lengkap",
-    desc: "Kelola konten, pantau leads, lihat analitik, dan hubungkan domain kustom — semuanya dalam satu tempat.",
-  },
-  {
     icon: "📱",
     title: "Mobile-First & Siap Iklan",
     desc: "Setiap template dioptimalkan untuk tampil sempurna di mobile dan siap dipakai untuk kampanye iklan.",
   },
   {
-    icon: "🔒",
-    title: "Aman & Terstruktur",
-    desc: "Autentikasi modern, isolasi data per tenant, dan infrastruktur yang sudah production-ready.",
+    icon: "✏️",
+    title: "Edit Setelah Generate",
+    desc: "Tidak puas dengan bagian tertentu? Regenerate per section atau edit langsung di dashboard.",
   },
   {
     icon: "💬",
     title: "WhatsApp CTA Otomatis",
-    desc: "Setiap template sudah dilengkapi tombol WhatsApp yang terintegrasi dengan nomor bisnis Anda.",
+    desc: "Tombol WhatsApp langsung terintegrasi dengan nomor bisnis Anda di setiap template.",
   },
 ];
-
-// ─── Template mini preview ─────────────────────────────────────────────────────
-
-function TemplateMiniPreview({ type, light }: { type: string; light?: boolean }) {
-  if (type === "service") {
-    return (
-      <div className="relative h-full w-full overflow-hidden bg-[#07111f]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.16),transparent_32%)]" />
-        <div className="absolute left-5 top-5 h-8 w-24 rounded-full border border-cyan-300/30 bg-cyan-300/10" />
-        <div className="absolute left-5 top-18 h-24 w-[56%] rounded-[1.2rem] border border-white/10 bg-white/6" />
-        <div className="absolute right-5 top-18 grid w-[28%] gap-2">
-          <div className="h-10 rounded-xl border border-white/10 bg-white/6" />
-          <div className="h-10 rounded-xl border border-white/10 bg-white/6" />
-          <div className="h-10 rounded-xl border border-white/10 bg-white/6" />
-        </div>
-        <div className="absolute left-5 bottom-5 h-3 w-28 rounded-full bg-white/70" />
-        <div className="absolute left-5 bottom-10 h-3 w-36 rounded-full bg-white/25" />
-      </div>
-    );
-  }
-  if (type === "catalog") {
-    return (
-      <div className="relative h-full w-full overflow-hidden bg-[#0d1117]">
-        <div className="absolute inset-y-0 left-0 w-[42%] bg-[linear-gradient(180deg,#38bdf8,#2563eb)]" />
-        <div className="absolute right-5 top-5 h-4 w-24 rounded-full bg-white/80" />
-        <div className="absolute right-5 top-14 h-5 w-32 rounded-full bg-white/85" />
-        <div className="absolute right-5 top-26 h-3 w-36 rounded-full bg-white/35" />
-        <div className="absolute right-5 top-34 grid w-[44%] gap-2">
-          <div className="h-9 rounded-xl bg-white/10" />
-          <div className="h-9 rounded-xl bg-white/10" />
-          <div className="h-9 rounded-xl bg-white/10" />
-        </div>
-      </div>
-    );
-  }
-  // brand / kuliner
-  return (
-    <div className="relative h-full w-full overflow-hidden bg-[#f8efe7]">
-      <div className="absolute inset-x-6 top-5 h-12 rounded-full bg-white/80" />
-      <div className="absolute left-6 top-22 h-16 w-[calc(100%-48px)] rounded-[1.4rem] bg-[linear-gradient(135deg,#f3d8c0,#e6a27a)]" />
-      <div className="absolute left-6 top-[10rem] h-3 w-24 rounded-full bg-[#8f3d22]" />
-      <div className="absolute left-6 top-[12rem] h-3 w-32 rounded-full bg-[#8f3d22]/35" />
-      <div className="absolute bottom-5 left-6 right-6 grid grid-cols-2 gap-2">
-        <div className="h-12 rounded-[1rem] border border-[#ead5c4] bg-white/90" />
-        <div className="h-12 rounded-[1rem] border border-[#ead5c4] bg-white/90" />
-      </div>
-    </div>
-  );
-}
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
@@ -229,8 +151,8 @@ export default function LandingPage() {
 
           {/* Subtitle */}
           <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Isi profil bisnis, pilih template, dan AI akan menulis konten serta menyusun website Anda secara otomatis.{" "}
-            <strong className="text-foreground font-semibold">Tanpa coding, tanpa tunggu tim.</strong>
+            Chat singkat dengan AI, pilih gaya visual, dan website bisnis Anda siap dipublish.{" "}
+            <strong className="text-foreground font-semibold">Tanpa coding, tanpa form panjang.</strong>
           </p>
 
           {/* CTAs */}
@@ -251,7 +173,7 @@ export default function LandingPage() {
 
           {/* Social proof */}
           <p className="mt-8 text-sm text-muted-foreground">
-            ✅ Gratis dicoba &nbsp;·&nbsp; 🚀 Aktif dalam menit &nbsp;·&nbsp; 📱 Mobile-first & siap iklan
+            ✅ Gratis dicoba &nbsp;·&nbsp; 💬 Chat AI, bukan form &nbsp;·&nbsp; 🚀 Aktif dalam menit
           </p>
         </div>
 
@@ -265,60 +187,62 @@ export default function LandingPage() {
                 <div className="h-3 w-3 rounded-full bg-green-400/60" />
               </div>
               <div className="flex-1 rounded-full bg-muted/60 px-4 py-1.5 text-center text-xs text-muted-foreground">
-                webjoz.com/dashboard/sites/new
+                webjoz.com/create
               </div>
             </div>
-            <div className="grid min-h-[280px] gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 sm:min-h-[320px]">
-              {/* Wizard step preview */}
-              <div className="col-span-1 flex flex-col gap-3 lg:col-span-1">
-                <div className="rounded-2xl border border-primary/20 bg-primary/8 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-3">Langkah 1 — Profil Bisnis</p>
-                  <div className="space-y-2">
-                    <div className="h-8 rounded-lg bg-background/60 border border-border/40 px-3 flex items-center">
-                      <span className="text-xs text-muted-foreground">Nama Bisnis...</span>
-                    </div>
-                    <div className="h-8 rounded-lg bg-background/60 border border-border/40 px-3 flex items-center">
-                      <span className="text-xs text-muted-foreground">Jenis Usaha...</span>
-                    </div>
-                    <div className="h-16 rounded-lg bg-background/60 border border-border/40 p-3">
-                      <span className="text-xs text-muted-foreground">Produk/Layanan Anda...</span>
+            <div className="grid min-h-[280px] gap-0 md:grid-cols-2 sm:min-h-[320px] overflow-hidden rounded-b-[1.8rem]">
+              {/* Chat panel */}
+              <div className="flex flex-col gap-3 p-5 border-r border-border/30">
+                <div className="flex flex-col gap-2.5">
+                  {/* AI bubble */}
+                  <div className="flex gap-2 items-end">
+                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] shrink-0">✨</div>
+                    <div className="rounded-2xl rounded-bl-sm bg-card border border-border/50 px-3 py-2 text-xs text-foreground max-w-[80%]">
+                      Halo! Apa nama bisnis Anda?
                     </div>
                   </div>
-                </div>
-                <div className="rounded-2xl border border-border/40 bg-card/60 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Progress</p>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div className="h-2 w-1/4 rounded-full bg-primary" />
+                  {/* User bubble */}
+                  <div className="flex justify-end">
+                    <div className="rounded-2xl rounded-br-sm bg-primary/15 border border-primary/20 px-3 py-2 text-xs text-foreground max-w-[75%]">
+                      Toko Kopi Nusantara
+                    </div>
                   </div>
-                  <p className="mt-2 text-xs text-muted-foreground">Step 1 of 4</p>
+                  {/* AI bubble */}
+                  <div className="flex gap-2 items-end">
+                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] shrink-0">✨</div>
+                    <div className="rounded-2xl rounded-bl-sm bg-card border border-border/50 px-3 py-2 text-xs text-foreground max-w-[80%]">
+                      Nama yang keren! 👍 Sekarang, pilih jenis bisnis Anda:
+                    </div>
+                  </div>
+                  {/* Type chips */}
+                  <div className="flex flex-wrap gap-1.5 ml-8">
+                    {["Kuliner", "Jasa", "Produk"].map((t, i) => (
+                      <div key={t} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold border ${i === 0 ? "bg-primary/15 border-primary/30 text-primary" : "bg-card border-border/50 text-muted-foreground"}`}>{t}</div>
+                    ))}
+                  </div>
+                  {/* Progress */}
+                  <div className="mt-1 ml-8">
+                    <div className="h-1 rounded-full bg-muted overflow-hidden w-32">
+                      <div className="h-1 w-1/3 rounded-full bg-primary" />
+                    </div>
+                    <p className="mt-1 text-[9px] text-muted-foreground">Langkah 2 dari 5</p>
+                  </div>
                 </div>
               </div>
 
-              {/* AI generation preview */}
-              <div className="col-span-1 flex flex-col gap-3 lg:col-span-2">
-                <div className="rounded-2xl border border-border/40 bg-card/60 p-4 flex-1">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">⚡</div>
-                    <p className="text-xs font-semibold text-foreground">AI sedang menulis konten...</p>
-                    <div className="ml-auto flex gap-1">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-4 w-3/4 rounded-full bg-foreground/10" />
-                    <div className="h-3 w-full rounded-full bg-foreground/6" />
-                    <div className="h-3 w-5/6 rounded-full bg-foreground/6" />
-                    <div className="h-3 w-4/6 rounded-full bg-foreground/6" />
-                  </div>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
-                    <div className="h-20 rounded-xl bg-primary/8 border border-primary/15" />
-                    <div className="h-20 rounded-xl bg-foreground/5 border border-border/40" />
-                  </div>
+              {/* Preview panel */}
+              <div className="relative hidden md:block bg-muted/30">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.12),transparent_50%)]" />
+                <div className="absolute left-4 top-4 right-4 h-8 rounded-xl bg-primary/10 border border-primary/20" />
+                <div className="absolute left-4 top-16 right-4 h-3 rounded-full bg-foreground/15" />
+                <div className="absolute left-4 top-22 right-12 h-3 rounded-full bg-foreground/8" />
+                <div className="absolute left-4 top-28 w-20 h-3 rounded-full bg-foreground/8" />
+                <div className="absolute left-4 top-36 right-4 grid grid-cols-2 gap-2">
+                  <div className="h-14 rounded-xl bg-primary/8 border border-primary/15" />
+                  <div className="h-14 rounded-xl bg-foreground/5 border border-border/30" />
                 </div>
-                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/8 px-4 py-3">
-                  <p className="text-xs font-semibold text-emerald-400">✓ Konten siap! Website Anda aktif di subdomain</p>
+                <div className="absolute bottom-4 left-4 right-4 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center px-3">
+                  <span className="text-[9px] font-semibold text-emerald-400">✓ Preview siap di kanan →</span>
                 </div>
               </div>
             </div>
@@ -334,7 +258,7 @@ export default function LandingPage() {
               CARA KERJANYA
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Dari bisnis ke website dalam{" "}
+              Dari chat ke website dalam{" "}
               <span className="text-primary">4 langkah</span>
             </h2>
           </div>
@@ -377,58 +301,18 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              TEMPLATE SIAP PAKAI
+              CONTOH HASIL AI
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Pilih yang paling pas{" "}
-              <span className="text-primary">untuk bisnis Anda</span>
+              Website yang dihasilkan{" "}
+              <span className="text-primary">untuk berbagai bisnis</span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
-              Semua template sudah dioptimalkan untuk konversi, mobile-first, dan siap dipakai untuk kampanye iklan.
+              AI memilih template dan menulis konten secara otomatis. Ini contoh hasil untuk beberapa jenis bisnis.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {TEMPLATES.map((tpl) => (
-              <div
-                key={tpl.id}
-                className="group flex flex-col overflow-hidden rounded-[2rem] border border-border/50 bg-card/60 shadow-lg transition hover:border-primary/30 hover:shadow-primary/10 hover:shadow-xl"
-              >
-                {/* Preview */}
-                <div className="relative h-56 overflow-hidden rounded-t-[1.8rem]">
-                  <TemplateMiniPreview type={tpl.preview} light={tpl.light} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <div
-                    className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs font-semibold backdrop-blur"
-                    style={{ color: tpl.accent }}
-                  >
-                    {tpl.category}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="mb-2 text-xl font-bold text-foreground">{tpl.name}</h3>
-                  <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">{tpl.desc}</p>
-                  <button
-                    onClick={() => startWizard(tpl.id)}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-4 py-3 text-sm font-semibold text-indigo-400 transition hover:bg-indigo-600 hover:text-white hover:border-indigo-600 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600"
-                  >
-                    Buat dengan template ini ⚡
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => startWizard()}
-              className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline transition"
-            >
-              Tidak yakin? Pilih template di wizard →
-            </button>
-          </div>
+          <LandingTemplateShowcase onStart={() => startWizard()} />
         </div>
       </section>
 
@@ -493,7 +377,7 @@ export default function LandingPage() {
               Siap buat website bisnis Anda?
             </h2>
             <p className="mx-auto mb-10 max-w-xl text-lg text-muted-foreground">
-              Mulai gratis sekarang. Tidak perlu kartu kredit, tidak perlu coding — cukup ceritakan bisnis Anda.
+              Mulai gratis sekarang. Tidak perlu kartu kredit — cukup chat singkat dengan AI dan website Anda siap.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">

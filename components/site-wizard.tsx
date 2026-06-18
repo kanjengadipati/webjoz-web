@@ -364,8 +364,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "detail" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
-  // Stage order: name → type → service_area → whatsapp → mood → confirm
+  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
+  // Stage order: name → type → advantage → service_area → whatsapp → mood → confirm
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -385,10 +385,9 @@ export function SiteWizard({
       case "name": return 15;
       case "type": return 28;
       case "advantage": return 40;
-      case "detail": return 52;
-      case "service_area": return 52;
-      case "whatsapp": return 68;
-      case "mood": return 84;
+      case "service_area": return 55;
+      case "whatsapp": return 70;
+      case "mood": return 85;
       case "confirm": return 100;
       case "done": return 100;
       default: return 100;
@@ -400,7 +399,6 @@ export function SiteWizard({
       case "name": return 1;
       case "type": return 2;
       case "advantage": return 3;
-      case "detail": return 3;
       case "service_area": return 3;
       case "whatsapp": return 4;
       case "mood": return 5;
@@ -604,28 +602,10 @@ export function SiteWizard({
     }, 300);
   };
 
-  const buildDetailSummary = () => {
-    const lines = [
-      storyInput.trim() ? `Cerita: ${storyInput.trim()}` : null,
-      taglineInput.trim() ? `Tagline: ${taglineInput.trim()}` : null,
-      proofInput.trim() ? `Bukti: ${proofInput.trim()}` : null,
-    ].filter(Boolean);
-
-    return lines.length > 0 ? lines.join("\n") : "Lewati detail tambahan";
-  };
-
-  const submitDetailStep = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), sender: "user", text: buildDetailSummary() },
-    ]);
-    proceedToMoodStep();
-  };
-
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim() && chatStage !== "detail" && chatStage !== "whatsapp" && chatStage !== "service_area") return;
+    if (!inputValue.trim() && chatStage !== "whatsapp" && chatStage !== "service_area") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -656,17 +636,13 @@ export function SiteWizard({
         { id: Date.now().toString(), sender: "user", text: val },
       ]);
       setTimeout(() => {
-        typeMessage("Mantap! Satu langkah lagi - jawab 3 pertanyaan singkat ini (semuanya opsional, tapi makin detail makin bagus hasilnya).", () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-detail-inputs-${Date.now()}`, sender: "ai", text: "", widget: "detail-inputs" },
-          ]);
-          setChatStage("detail");
+        const serviceAreaReply = "Mantap! Jangkauan bisnis Anda? (atau Enter untuk lewati)";
+        typeMessage(serviceAreaReply, () => {
+          setInputValue("");
+          setChatStage("service_area");
+          window.setTimeout(() => inputRef.current?.focus(), 0);
         });
       }, 500);
-
-    } else if (chatStage === "detail") {
-      submitDetailStep();
 
     } else if (chatStage === "whatsapp") {
       // WA is optional
@@ -1246,12 +1222,10 @@ export function SiteWizard({
                     { id: Date.now().toString(), sender: "user", text: displayText },
                   ]);
                   setTimeout(() => {
-                    typeMessage("Mantap! Satu langkah lagi - jawab 3 pertanyaan singkat ini (semuanya opsional, tapi makin detail makin bagus hasilnya).", () => {
-                      setMessages((prev) => [
-                        ...prev,
-                        { id: `widget-detail-inputs-${Date.now()}`, sender: "ai", text: "", widget: "detail-inputs" },
-                      ]);
-                      setChatStage("detail");
+                    typeMessage("Mantap! Jangkauan bisnis Anda? (atau Enter untuk lewati)", () => {
+                      setInputValue("");
+                      setChatStage("service_area");
+                      window.setTimeout(() => inputRef.current?.focus(), 0);
                     });
                   }, 400);
                 };
@@ -1305,74 +1279,6 @@ export function SiteWizard({
                         style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
                       >
                         Lanjut dengan {selectedAdvantages.length} keunggulan
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                );
-              }
-
-              if (m.widget === "detail-inputs") {
-                const isLocked = chatStage !== "detail";
-                const handleSubmitDetail = () => {
-                  submitDetailStep();
-                };
-
-                return (
-                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
-                        Ada cerita singkat di balik bisnis ini? <span className="text-slate-600">(opsional)</span>
-                      </label>
-                      <textarea
-                        disabled={isLocked}
-                        value={storyInput}
-                        onChange={(e) => setStoryInput(e.target.value)}
-                        placeholder="cth: Dimulai dari dapur rumah pada 2018, resep turun-temurun dari nenek..."
-                        rows={2}
-                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
-                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
-                        Ada tagline favorit? <span className="text-slate-600">(opsional)</span>
-                      </label>
-                      <input
-                        type="text"
-                        disabled={isLocked}
-                        value={taglineInput}
-                        onChange={(e) => setTaglineInput(e.target.value)}
-                        placeholder="cth: Dari dapur kami, untuk meja makan Anda"
-                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
-                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
-                        Pencapaian yang boleh kami sebut? <span className="text-slate-600">(opsional)</span>
-                      </label>
-                      <input
-                        type="text"
-                        disabled={isLocked}
-                        value={proofInput}
-                        onChange={(e) => setProofInput(e.target.value)}
-                        placeholder="cth: 500+ pelanggan setia, buka sejak 2019, dipercaya 3 perusahaan"
-                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
-                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
-                      />
-                    </div>
-
-                    {!isLocked && (
-                      <button
-                        type="button"
-                        onClick={handleSubmitDetail}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] cursor-pointer"
-                        style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-                      >
-                        Lanjut
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     )}
@@ -1857,7 +1763,7 @@ export function SiteWizard({
         </div>
 
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
-        {chatStage !== "type" && chatStage !== "detail" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
+        {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
           <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
@@ -1991,7 +1897,7 @@ export function SiteWizard({
                   style={{
                     ...skeletonPanel,
                     height: 260,
-                    border: chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
+                    border: chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
                       ? "1px solid rgba(124,58,237,0.35)"
                       : "1px solid rgba(255,255,255,0.055)",
                     boxShadow: chatStage === "confirm" || chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
@@ -2080,7 +1986,7 @@ export function SiteWizard({
                 </section>
 
                 {/* Scanning line effect when stage changes */}
-                {(chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
+                {(chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
                   <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
                     <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
                     <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>

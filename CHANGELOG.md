@@ -1,10 +1,8 @@
 # Changelog
 
-All notable changes to `pleco-console` will be documented in this file.
+All notable changes to `webjoz` will be documented in this file.
 
 ## Unreleased
-
-- Clarify that Pleco Console is database-agnostic while Pleco API supports PostgreSQL/MySQL selection.
 - Sync dashboard auth flows with rotated tokens returned by `/auth/logout-others`.
 - Remove stale `superadmin` assumptions from dashboard permission handling.
 - Improve AI investigation risk scoring to consider signal volume, recommendation urgency, log volume, and failure-oriented status.
