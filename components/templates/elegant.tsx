@@ -345,7 +345,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       </div>
 
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url }} render={(h) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative" style={{ background: `${darkBg}cc`, borderBottom: `1px solid ${gold}15` }}>
             <span className="text-base font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: gold }}>
               <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Globe} iconClass="" imgClass="h-8 w-auto object-contain" />

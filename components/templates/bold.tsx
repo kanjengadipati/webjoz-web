@@ -324,7 +324,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     <div style={{ background: bg, color: "#f5f5f5", fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}f0`, borderBottom: `2px solid ${border}`, backdropFilter: "blur(8px)" }}>
             <span className="flex items-center gap-2 font-black uppercase tracking-tighter text-white text-lg">
               <Flame className="w-5 h-5" style={{ color: red }} />

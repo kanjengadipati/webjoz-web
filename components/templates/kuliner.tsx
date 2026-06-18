@@ -301,7 +301,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
     <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline }} render={(headerData) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
             <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-955 tracking-wide flex items-center gap-2">
               <LogoImage

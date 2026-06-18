@@ -307,7 +307,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
     <div style={{ background: cream, color: brown, fontFamily: "Georgia, 'Playfair Display', serif", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative border-b font-sans" style={{ background: `${cream}e0`, borderColor: border }}>
             <span className="flex items-center gap-2 text-base font-bold" style={{ color: sage }}>
               <span>🌿</span>

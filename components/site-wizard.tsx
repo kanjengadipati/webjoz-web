@@ -523,6 +523,7 @@ export function SiteWizard({
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [regenCount, setRegenCount] = useState(0);
+  const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
   // History for undo/redo — stores up to 5 past previews
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -1304,12 +1305,13 @@ export function SiteWizard({
             const setDraftLocation = setConfirmDraftLocation;
 
             const saveField = (field: string) => {
-              if (field === "name" && draftName.trim()) setBusinessName(draftName.trim());
+              if (field === "name" && draftName.trim()) { setBusinessName(draftName.trim()); setHasUnsavedEdits(true); }
               if (field === "wa") {
                 const digits = draftWA.replace(/\D/g, "");
                 setWhatsapp(digits ? (digits.startsWith("0") ? "62" + digits.slice(1) : digits) : "");
+                setHasUnsavedEdits(true);
               }
-              if (field === "location") setLocation(draftLocation.trim());
+              if (field === "location") { setLocation(draftLocation.trim()); setHasUnsavedEdits(true); }
               setEditingField(null);
             };
 
@@ -1359,7 +1361,7 @@ export function SiteWizard({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {BUSINESS_TYPES.map(t => (
-                            <button key={t.value} type="button" onClick={() => { setBusinessType(t.value); setBusinessSubType(""); }}
+                            <button key={t.value} type="button" onClick={() => { setBusinessType(t.value); setBusinessSubType(""); setHasUnsavedEdits(true); }}
                               className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
                               style={businessType === t.value ? chipActive : chipDefault}>
                               {t.emoji} {t.label}
@@ -1369,7 +1371,7 @@ export function SiteWizard({
                         {businessType && SUB_TYPES[businessType] && (
                           <div className="flex flex-wrap gap-1">
                             {SUB_TYPES[businessType].map(st => (
-                              <button key={st.value} type="button" onClick={() => setBusinessSubType(st.value === businessSubType ? "" : st.value)}
+                              <button key={st.value} type="button" onClick={() => { setBusinessSubType(st.value === businessSubType ? "" : st.value); setHasUnsavedEdits(true); }}
                                 className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
                                 style={businessSubType === st.value ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
                                 {st.emoji} {st.label}
@@ -1404,7 +1406,7 @@ export function SiteWizard({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {MOODS.map(mo => (
-                            <button key={mo.value} type="button" onClick={() => { setMood(mo.value); setEditingField(null); }}
+                            <button key={mo.value} type="button" onClick={() => { setMood(mo.value); setEditingField(null); setHasUnsavedEdits(true); }}
                               className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
                               style={mood === mo.value ? chipActive : chipDefault}>
                               {mo.emoji} {mo.value}
@@ -1439,7 +1441,7 @@ export function SiteWizard({
                             const sel = selectedAdvantages.includes(adv);
                             return (
                               <button key={adv} type="button"
-                                onClick={() => setSelectedAdvantages(prev => sel ? prev.filter(a => a !== adv) : [...prev, adv])}
+                                onClick={() => { setSelectedAdvantages(prev => sel ? prev.filter(a => a !== adv) : [...prev, adv]); setHasUnsavedEdits(true); }}
                                 className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all text-left"
                                 style={sel ? chipActive : chipDefault}>
                                 {sel ? "✓ " : ""}{adv.slice(0, 28)}{adv.length > 28 ? "…" : ""}
@@ -1497,23 +1499,29 @@ export function SiteWizard({
                     )}
                   </div>
 
-                  {/* Generate */}
+                  {/* Generate — hidden when result is fresh, shown when edits pending */}
+                  {(previewState !== "result" || hasUnsavedEdits) && (
                   <div className="px-3 py-2.5 border-t" style={rowBorder}>
                     <button
                       onClick={() => {
                         if (editingField) return;
                         const nextRegen = previewState === "result" ? regenCount + 1 : 0;
                         setRegenCount(nextRegen);
+                        setHasUnsavedEdits(false);
                         handleGenerate(businessName, businessType, mood, description, nextRegen);
                       }}
                       disabled={!!editingField || previewState === "loading"}
                       className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
-                      style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
+                      style={{ background: hasUnsavedEdits ? "linear-gradient(135deg, #059669, #047857)" : "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: hasUnsavedEdits ? "0 4px 16px rgba(5,150,105,0.3)" : "0 4px 16px rgba(124,58,237,0.3)" }}
                     >
                       <Wand2 className="w-4 h-4" />
-                      {editingField ? "Selesai edit dulu ↑" : previewState === "result" ? "Generate Ulang →" : previewState === "loading" ? "Sedang dibuat..." : "Generate Website →"}
+                      {editingField ? "Selesai edit dulu ↑"
+                        : previewState === "loading" ? "Sedang dibuat..."
+                        : hasUnsavedEdits ? "Terapkan & Generate Ulang →"
+                        : "Generate Website →"}
                     </button>
                   </div>
+                  )}
                 </div>
               </div>
             );
@@ -1715,6 +1723,7 @@ export function SiteWizard({
                       </div>
                     );
                   })()}
+                  {!hasUnsavedEdits && (
                   <button
                     onClick={() => {
                       const nextRegen = regenCount + 1;
@@ -1727,6 +1736,7 @@ export function SiteWizard({
                     <Wand2 className="w-3.5 h-3.5" />
                     Generate ulang dengan desain berbeda
                   </button>
+                  )}
                 </div>
               </div>
             </div>

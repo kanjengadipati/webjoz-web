@@ -305,7 +305,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     <div style={{ background: bg, color: zinc900, fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between gap-4 relative border-b" style={{ background: `${surface}F0`, borderColor: zinc200, backdropFilter: "blur(8px)" }}>
             <span className="flex items-center gap-3 text-sm font-medium tracking-widest uppercase" style={{ color: zinc900 }}>
               <span className="min-w-0">

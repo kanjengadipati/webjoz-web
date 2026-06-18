@@ -334,7 +334,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     <div style={{ background: bg, color: black, fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline }} render={(h) => (
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 border-b-4 border-black px-6 py-3 flex items-center justify-between gap-4 relative" style={{ background: yellow }}>
             <span className="flex items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: black }}>
               <span className="w-8 h-8 border-2 border-black flex items-center justify-center font-black text-sm" style={{ background: black, color: yellow }}>{h.brand_name?.charAt(0)}</span>
