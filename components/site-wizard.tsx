@@ -25,6 +25,8 @@ import {
   TemplateBold,
   type TemplateProps,
 } from "@/components/templates";
+import { useGenerateStream } from "@/hooks/use-generate-stream";
+import type { StreamSection } from "@/hooks/use-generate-stream";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -522,6 +524,10 @@ export function SiteWizard({
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+  const [streamedSections, setStreamedSections] = useState<Record<string, any>>({});
+  const [streamedDesignToken, setStreamedDesignToken] = useState<Record<string, any> | null>(null);
+  const [streamedTemplateId, setStreamedTemplateId] = useState<string>("");
+  const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
   // History for undo/redo — stores up to 5 past previews
@@ -557,6 +563,36 @@ export function SiteWizard({
     }, 30);
   };
   const [pendingPreview, setPendingPreview] = useState<PreviewData | null>(null);
+
+  const streamedSectionsRef = useRef<Record<string, any>>({});
+  useEffect(() => { streamedSectionsRef.current = streamedSections; }, [streamedSections]);
+  const streamedTokenRef = useRef<Record<string, any> | null>(null);
+  useEffect(() => { streamedTokenRef.current = streamedDesignToken; }, [streamedDesignToken]);
+
+  const { startStream, cancelStream } = useGenerateStream({
+    onDesignToken: (token) => {
+      setStreamedDesignToken(token);
+    },
+    onSection: (section, data) => {
+      setStreamedSections((prev) => ({ ...prev, [section]: data }));
+      setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
+      if (section === "hero") {
+        setPreviewState("result");
+      }
+    },
+    onDone: (templateId, _qualityScore) => {
+      setStreamedTemplateId(templateId);
+      setPendingPreview({
+        content: streamedSectionsRef.current,
+        design_token: streamedTokenRef.current ?? {},
+        template_id: templateId,
+      });
+    },
+    onError: (message) => {
+      pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
+      setPreviewState("wireframe");
+    },
+  });
 
   // Auto-scroll chat
   useEffect(() => {
@@ -604,16 +640,37 @@ export function SiteWizard({
   // Transition to results screen only when API is done AND progress reaches step 5
   useEffect(() => {
     if (pendingPreview && loadingStep >= 5) {
-      setPreviewHistory(prev => {
+      const finalContent = Object.keys(streamedSectionsRef.current).length > 0
+        ? streamedSectionsRef.current
+        : pendingPreview.content;
+      const finalToken = streamedTokenRef.current ?? pendingPreview.design_token;
+      const mergedPreview: PreviewData = {
+        content: finalContent,
+        design_token: finalToken,
+        template_id: streamedTemplateId || pendingPreview.template_id,
+      };
+      setPreviewHistory((prev) => {
         const base = prev.slice(0, historyIndex + 1);
-        const next = [...base, pendingPreview].slice(-5);
+        const next = [...base, mergedPreview].slice(-5);
         setHistoryIndex(next.length - 1);
         return next;
       });
-      setPreviewData(pendingPreview);
-      setPreviewState("result");
+      setPreviewData(mergedPreview);
+      localStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({
+          businessName,
+          businessType,
+          description,
+          whatsapp: whatsapp || "",
+          location: location || "",
+          mood,
+          templateId: mergedPreview.template_id,
+          previewContent: mergedPreview.content,
+          previewDesignToken: mergedPreview.design_token,
+        })
+      );
       setPendingPreview(null);
-      // Progressive reveal removed — template renders fully with fade-in animation
     }
   }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -765,73 +822,49 @@ export function SiteWizard({
     bDescription = description,
     regen = regenCount
   ) => {
+    setStreamedSections({});
+    setStreamedDesignToken(null);
+    setArrivedSections([]);
+    setStreamedTemplateId("");
+    setPendingPreview(null);
     setPreviewState("loading");
     setLoadingStep(0);
-    setPendingPreview(null);
 
-    // Use sub-type if selected — backend recognises it directly via keyword map
     const effectiveType = businessSubType || bType;
-    // Pick template based on type + mood, cycling on regen
     const selectedTemplateId = selectAlternateTemplate(effectiveType, bMood, regen);
 
-    try {
-      const res = await request<any>("/ai/public/generate-preview", {
-        method: "POST",
-        body: JSON.stringify({
-          business_name: bName,
-          business_type: effectiveType,
-          description: (() => {
-            const enrichedDesc = [
-              businessSubType || bType,
-              bDescription,
-              selectedAdvantages.length > 0
-                ? selectedAdvantages.map(a => extractKeyPhrase(a)).filter(Boolean).join(', ')
-                : null,
-              location ? `lokasi ${location}` : null,
-            ].filter(Boolean).join('. ');
-            return enrichedDesc;
-          })(),
-          whatsapp: whatsapp || "",
-          location: location || "",
-          mood: bMood,
-          template_id: selectedTemplateId,
-          selling_points: selectedAdvantages.length > 0 ? selectedAdvantages : undefined,
-        }),
-      });
+    const enrichedDesc = [
+      businessSubType || bType,
+      bDescription,
+      selectedAdvantages.length > 0
+        ? selectedAdvantages.map((a) => extractKeyPhrase(a)).filter(Boolean).join(", ")
+        : null,
+      location ? `lokasi ${location}` : null,
+    ].filter(Boolean).join(". ");
 
-      if (res.status !== "success") throw new Error(res.message);
+    localStorage.setItem(
+      PENDING_KEY,
+      JSON.stringify({
+        businessName: bName,
+        businessType: bType,
+        description: bDescription,
+        whatsapp: whatsapp || "",
+        location: location || "",
+        mood: bMood,
+        templateId: selectedTemplateId,
+      })
+    );
 
-      const preservedContent = preserveUserBrand(res.data.content, bName);
-      // Use template_id from backend response (authoritative), fallback to frontend selection
-      const templateId = res.data.template_id || selectedTemplateId;
-      const loadedData: PreviewData = {
-        content: preservedContent,
-        design_token: res.data.design_token,
-        template_id: templateId,
-      };
-
-      // Save the generated preview to localStorage so we can use it after login
-      localStorage.setItem(
-        PENDING_KEY,
-        JSON.stringify({
-          businessName: bName,
-          businessType: bType,
-          description: bDescription,
-          whatsapp: whatsapp || "",
-          location: location || "",
-          mood: bMood,
-          templateId,
-          previewContent: preservedContent,
-          previewDesignToken: res.data.design_token,
-        })
-      );
-
-      setPendingPreview(loadedData);
-    } catch (err: any) {
-      console.error(err);
-      pushToast(err.message || "Terjadi kesalahan saat membuat preview.", "error");
-      setPreviewState("wireframe");
-    }
+    await startStream({
+      business_name: bName,
+      business_type: effectiveType,
+      description: enrichedDesc,
+      whatsapp: whatsapp || "",
+      location: location || "",
+      mood: bMood,
+      template_id: selectedTemplateId,
+      selling_points: selectedAdvantages.length > 0 ? selectedAdvantages : undefined,
+    });
   };
 
   // ── Go to editor (requires login, then saves site using existing preview) ──
@@ -1068,21 +1101,21 @@ export function SiteWizard({
     );
   }
   if (previewState === "result" && previewData) {
-    const TemplateComponent = getTemplateComponent(previewData.template_id || selectTemplate(businessSubType || businessType, mood));
+    const liveContent = Object.keys(streamedSections).length > 0 ? streamedSections : previewData.content;
+    const liveToken = streamedDesignToken ?? previewData.design_token;
+    const TemplateComponent = getTemplateComponent(
+      streamedTemplateId || previewData.template_id || selectTemplate(businessSubType || businessType, mood)
+    );
     resultPreviewContent = (
       <div className="h-full flex flex-col overflow-hidden">
-        <div
-          className="flex-1 overflow-y-auto animate-in fade-in duration-700 min-h-0"
-          key={`${previewData.template_id}-${regenCount}`}
-        >
+        <div className="flex-1 overflow-y-auto min-h-0" key={`${previewData.template_id}-${regenCount}`}>
           <TemplateComponent
-            content={buildFullContent(previewData, businessName, businessType, description, whatsapp) as any}
-            design_token={previewData.design_token as any}
+            content={buildFullContent({ content: liveContent, design_token: liveToken, template_id: streamedTemplateId || previewData.template_id }, businessName, businessType, description, whatsapp) as any}
+            design_token={liveToken as any}
             isEditorMode={false}
           />
         </div>
-
-        {/* CTA strip at bottom — outside scroll area */}
+        {/* CTA strip */}
         <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="flex items-center gap-2 min-w-0">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -1090,11 +1123,9 @@ export function SiteWizard({
               Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
             </p>
           </div>
-          <button
-            onClick={handleGoToEditor}
+          <button onClick={handleGoToEditor}
             className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}
-          >
+            style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}>
             <Pencil className="w-3.5 h-3.5" />
             Kustomisasi & Publish →
           </button>
@@ -1102,6 +1133,11 @@ export function SiteWizard({
       </div>
     );
   }
+
+  // ── Cleanup stream on unmount ────────────────────────────────────────────
+  useEffect(() => {
+    return () => { cancelStream(); };
+  }, [cancelStream]);
 
   // ── Render ───────────────────────────────────────────────────────────────
 
