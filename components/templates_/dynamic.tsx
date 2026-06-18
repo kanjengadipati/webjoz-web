@@ -111,7 +111,7 @@ const DynamicLeadForm: React.FC<{
 export const TemplateDynamic: React.FC<TemplateProps> = ({
   content, design_token,
   onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const dt = design_token ?? null;
   const { header, hero, about, benefits, faq, cta, contact, footer, seo } = content;
@@ -514,10 +514,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         }} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder
-        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-        .filter((key) => !arrivedSections || arrivedSections.includes(key))
-        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {

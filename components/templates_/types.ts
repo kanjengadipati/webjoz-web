@@ -160,12 +160,4 @@ export interface TemplateProps {
   onSelectSection?: (section: string) => void;
   onRegenSection?: (section: string) => void;
   isEditorMode?: boolean;
-  /**
-   * Daftar nama section yang sudah diterima dari SSE stream.
-   * undefined → bukan mode streaming, semua section langsung dianggap "sudah ada"
-   * (dipakai di editor/saved-site, bukan saat live generate).
-   * Saat ada array, section yang TIDAK ada di sini belum ditampilkan,
-   * supaya efek "dibangun bertahap" terlihat sesuai urutan SSE dari backend.
-   */
-  arrivedSections?: string[];
 }

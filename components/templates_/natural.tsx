@@ -12,7 +12,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateNatural: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
   const dt = design_token ?? null;
@@ -324,10 +324,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder
-        .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
-        .filter(k => !arrivedSections || arrivedSections.includes(k))
-        .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
+      {sectionOrder.filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k)).map(k => <React.Fragment key={k}>{sectionNodes[k] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text }} render={(f) => (

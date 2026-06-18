@@ -8,6 +8,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { useToast } from "@/components/toast-provider";
 import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
+import { buildFullContent } from "@/lib/build-full-content";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 
@@ -112,14 +113,24 @@ function PublicWizardContent() {
         const siteId = createRes.data.id;
 
         // 2. Restore the AI-generated content from localStorage (saved before login)
+        // PENTING: pending.previewContent itu konten mentah dari AI/stream — bisa ada
+        // field kosong. Jalankan buildFullContent dulu, sama seperti yang dipakai untuk
+        // preview di wizard, supaya site yang baru dibuat tidak kosong di Editor.
         if (pending.previewContent) {
+          const enrichedContent = buildFullContent(
+            { content: pending.previewContent },
+            pending.businessName,
+            pending.businessType,
+            pending.description || "",
+            pending.whatsapp || ""
+          );
           await request(
             `/sites/${siteId}/content`,
             {
               method: "PUT",
               headers: { "X-Tenant-ID": tenantId.toString() },
               body: JSON.stringify({
-                content: pending.previewContent,
+                content: enrichedContent,
                 design_token: pending.previewDesignToken || {},
               }),
             },

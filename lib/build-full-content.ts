@@ -1,0 +1,109 @@
+// FILE: lib/build-full-content.ts
+//
+// Mengisi gap pada konten hasil AI dengan nilai fallback yang wajib benar
+// (nama brand, nomor WA → wa.me link, dst.) supaya section TIDAK PERNAH
+// kosong — baik saat dipakai untuk preview di wizard, MAUPUN saat
+// benar-benar disimpan ke server.
+//
+// PENTING: dulu fungsi ini hanya dipakai untuk preview (rendering di memori),
+// sementara proses SAVE (handleGoToEditor di site-wizard.tsx, dan auto-save
+// setelah login di app/create/page.tsx) menyimpan `previewData.content` /
+// `pending.previewContent` MENTAH — hasil AI asli tanpa fallback ini.
+// Akibatnya kalau AI mengembalikan field kosong (mis. provider "mock", atau
+// AI gagal mengisi sebagian field), preview di wizard tetap kelihatan utuh
+// (karena dipoles fallback ini), tapi site yang tersimpan di server jadi
+// bolong — persis kasus "14 field perlu dicek" di Editor.
+//
+// Fix: import fungsi ini di KEDUA tempat (wizard save + auto-save login),
+// dan jalankan sebelum body PUT /sites/:id/content dikirim, supaya yang
+// disimpan = yang dilihat user di preview.
+
+export function preserveUserBrand(content: Record<string, any>, businessName: string): Record<string, any> {
+  return {
+    ...content,
+    header: {
+      ...(content.header || {}),
+      brand_name: businessName,
+    },
+    footer: {
+      ...(content.footer || {}),
+      brand_name: businessName,
+    },
+    seo: {
+      ...(content.seo || {}),
+      title: content.seo?.title || businessName,
+    },
+  };
+}
+
+export function buildFullContent(
+  data: { content: Record<string, any>; [key: string]: any },
+  businessName: string,
+  businessType: string,
+  description: string,
+  whatsapp: string,
+  matraValue?: string
+) {
+  const c = preserveUserBrand(data.content as Record<string, any>, businessName);
+  const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
+
+  // All images come from the backend (populateImageUrls). Never override with random frontend picks.
+  return {
+    header: {
+      brand_name: businessName,
+      nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
+      logo_url: c.header?.logo_url || logoUrl,
+      tagline: c.header?.tagline || "",
+    },
+    hero: {
+      headline: c.hero?.headline || businessName,
+      matra: c.hero?.matra || matraValue || "",
+      subheadline: c.hero?.subheadline || description,
+      cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
+      cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+      image_url: c.hero?.image_url || "",
+      badge_text: c.hero?.badge_text || businessType,
+    },
+    about: {
+      title: c.about?.title || `Tentang ${businessName}`,
+      body: c.about?.body || description,
+      image_url: c.about?.image_url || "",
+    },
+    benefits: {
+      title: c.benefits?.title || "Kenapa Pilih Kami?",
+      items: c.benefits?.items ?? [],
+    },
+    testimonials: {
+      ...c.testimonials,
+      items: c.testimonials?.items ?? [],
+    },
+    faq: {
+      title: c.faq?.title || "Pertanyaan Umum",
+      items: c.faq?.items ?? [],
+    },
+    cta: {
+      headline: c.cta?.headline || `Siap Memulai dengan ${businessName}?`,
+      button_text: c.cta?.button_text || "Hubungi Sekarang",
+      button_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
+    },
+    contact: {
+      title: c.contact?.title || "Hubungi Kami",
+      address: c.contact?.address || "",
+      phone: c.contact?.phone || whatsapp || "",
+      email: c.contact?.email || "",
+    },
+    footer: {
+      brand_name: businessName,
+      tagline: c.footer?.tagline || description,
+      copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
+    },
+    ...(c.menu ? { menu: c.menu } : {}),
+    ...(c.catalog ? { catalog: c.catalog } : {}),
+    seo: {
+      title: c.seo?.title || businessName,
+      description: c.seo?.description || description,
+      favicon_url: c.seo?.favicon_url || logoUrl,
+      og_image_url: c.seo?.og_image_url || "",
+    },
+  };
+}

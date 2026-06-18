@@ -11,7 +11,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials } = content;
   const dt = design_token ?? null;
@@ -271,10 +271,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder
-        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-        .filter((key) => !arrivedSections || arrivedSections.includes(key))
-        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+      {sectionOrder.filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key)).map((key) => <React.Fragment key={key}>{sectionNodes[key] ?? null}</React.Fragment>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {

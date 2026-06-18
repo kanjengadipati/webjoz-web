@@ -27,6 +27,7 @@ import {
 } from "@/components/templates";
 import { useGenerateStream } from "@/hooks/use-generate-stream";
 import type { StreamSection } from "@/hooks/use-generate-stream";
+import { buildFullContent } from "@/lib/build-full-content";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -354,90 +355,9 @@ const ADVANTAGE_SUGGESTIONS: Record<string, string[]> = {
   ],
 };
 
-// ─── Build full content with AI data + defaults ─────────────────────────────
-
-function preserveUserBrand(content: Record<string, any>, businessName: string): Record<string, any> {
-  return {
-    ...content,
-    header: {
-      ...(content.header || {}),
-      brand_name: businessName,
-    },
-    footer: {
-      ...(content.footer || {}),
-      brand_name: businessName,
-    },
-    seo: {
-      ...(content.seo || {}),
-      title: content.seo?.title || businessName,
-    },
-  };
-}
-
-function buildFullContent(data: PreviewData, businessName: string, businessType: string, description: string, whatsapp: string, matraValue?: string) {
-  const c = preserveUserBrand(data.content as Record<string, any>, businessName);
-  const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
-
-  // All images come from the backend (populateImageUrls). Never override with random frontend picks.
-  return {
-    header: {
-      brand_name: businessName,
-      nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
-      logo_url: c.header?.logo_url || logoUrl,
-      tagline: c.header?.tagline || "",
-    },
-    hero: {
-      headline: c.hero?.headline || businessName,
-      matra: c.hero?.matra || matraValue || "",
-      subheadline: c.hero?.subheadline || description,
-      cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
-      cta_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
-      image_url: c.hero?.image_url || "",
-      badge_text: c.hero?.badge_text || businessType,
-    },
-    about: {
-      title: c.about?.title || `Tentang ${businessName}`,
-      body: c.about?.body || description,
-      image_url: c.about?.image_url || "",
-    },
-    benefits: {
-      title: c.benefits?.title || "Kenapa Pilih Kami?",
-      items: c.benefits?.items ?? [],
-    },
-    testimonials: {
-      ...c.testimonials,
-      items: c.testimonials?.items ?? [],
-    },
-    faq: {
-      title: c.faq?.title || "Pertanyaan Umum",
-      items: c.faq?.items ?? [],
-    },
-    cta: {
-      headline: c.cta?.headline || `Siap Memulai dengan ${businessName}?`,
-      button_text: c.cta?.button_text || "Hubungi Sekarang",
-      button_url: whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#contact",
-    },
-    contact: {
-      title: c.contact?.title || "Hubungi Kami",
-      address: c.contact?.address || "",
-      phone: c.contact?.phone || whatsapp || "",
-      email: c.contact?.email || "",
-    },
-    footer: {
-      brand_name: businessName,
-      tagline: c.footer?.tagline || description,
-      copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
-    },
-    ...(c.menu ? { menu: c.menu } : {}),
-    ...(c.catalog ? { catalog: c.catalog } : {}),
-    seo: {
-      title: c.seo?.title || businessName,
-      description: c.seo?.description || description,
-      favicon_url: c.seo?.favicon_url || logoUrl,
-      og_image_url: c.seo?.og_image_url || "",
-    },
-  };
-}
+// preserveUserBrand & buildFullContent dipindah ke lib/build-full-content.ts
+// supaya bisa dipakai juga di app/create/page.tsx (auto-save setelah login),
+// bukan cuma di preview wizard ini.
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -562,8 +482,6 @@ export function SiteWizard({
       }
     }, 30);
   };
-  const [pendingPreview, setPendingPreview] = useState<PreviewData | null>(null);
-
   const streamedSectionsRef = useRef<Record<string, any>>({});
   useEffect(() => { streamedSectionsRef.current = streamedSections; }, [streamedSections]);
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
@@ -661,43 +579,6 @@ export function SiteWizard({
       return () => clearInterval(interval);
     }
   }, [previewState]);
-
-  // Transition to results screen only when API is done AND progress reaches step 5
-  useEffect(() => {
-    if (pendingPreview && loadingStep >= 5) {
-      const finalContent = Object.keys(streamedSectionsRef.current).length > 0
-        ? streamedSectionsRef.current
-        : pendingPreview.content;
-      const finalToken = streamedTokenRef.current ?? pendingPreview.design_token;
-      const mergedPreview: PreviewData = {
-        content: finalContent,
-        design_token: finalToken,
-        template_id: streamedTemplateId || pendingPreview.template_id,
-      };
-      setPreviewHistory((prev) => {
-        const base = prev.slice(0, historyIndex + 1);
-        const next = [...base, mergedPreview].slice(-5);
-        setHistoryIndex(next.length - 1);
-        return next;
-      });
-      setPreviewData(mergedPreview);
-      localStorage.setItem(
-        PENDING_KEY,
-        JSON.stringify({
-          businessName,
-          businessType,
-          description,
-          whatsapp: whatsapp || "",
-          location: location || "",
-          mood,
-          templateId: mergedPreview.template_id,
-          previewContent: mergedPreview.content,
-          previewDesignToken: mergedPreview.design_token,
-        })
-      );
-      setPendingPreview(null);
-    }
-  }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When chatStage → "done" (legacy path, no longer triggered in normal flow)
   useEffect(() => {
@@ -851,7 +732,6 @@ export function SiteWizard({
     setStreamedDesignToken(null);
     setArrivedSections([]);
     setStreamedTemplateId("");
-    setPendingPreview(null);
     setPreviewState("loading");
     setLoadingStep(0);
 
@@ -952,14 +832,25 @@ export function SiteWizard({
       const siteId = createRes.data.id;
 
       // 2. Save the existing AI-generated preview content (no second AI call!)
+      // PENTING: previewData.content adalah hasil mentah dari AI/stream — bisa
+      // saja ada field kosong (AI tidak selalu lengkap). Jalankan buildFullContent
+      // dulu supaya yang TERSIMPAN = yang TERLIHAT di preview (brand name, link WA,
+      // dan fallback teks lain ikut tersimpan, bukan cuma tampil di memori).
       if (previewData) {
+        const enrichedContent = buildFullContent(
+          { content: previewData.content },
+          businessName,
+          businessType,
+          description,
+          whatsapp
+        );
         await request(
           `/sites/${siteId}/content`,
           {
             method: "PUT",
             headers: { "X-Tenant-ID": tenantId.toString() },
             body: JSON.stringify({
-              content: previewData.content,
+              content: enrichedContent,
               design_token: previewData.design_token,
             }),
           },
@@ -1125,38 +1016,48 @@ export function SiteWizard({
       </div>
     );
   }
-  if (previewState === "result" && previewData) {
-    const liveContent = Object.keys(streamedSections).length > 0 ? streamedSections : previewData.content;
-    const liveToken = streamedDesignToken ?? previewData.design_token;
-    const TemplateComponent = getTemplateComponent(
-      streamedTemplateId || previewData.template_id || selectTemplate(businessSubType || businessType, mood)
-    );
-    resultPreviewContent = (
-      <div className="h-full flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto min-h-0" key={`${previewData.template_id}-${regenCount}`}>
-          <TemplateComponent
-            content={buildFullContent({ content: liveContent, design_token: liveToken, template_id: streamedTemplateId || previewData.template_id }, businessName, businessType, description, whatsapp) as any}
-            design_token={liveToken as any}
-            isEditorMode={false}
-          />
-        </div>
-        {/* CTA strip */}
-        <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <div className="flex items-center gap-2 min-w-0">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <p className="text-xs font-semibold text-slate-300 truncate">
-              Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
-            </p>
+  if (previewState === "result") {
+    // During streaming: use streamedSections + streamedDesignToken as live content
+    // After done: use previewData (which has the final merged content)
+    const hasLiveData = Object.keys(streamedSections).length > 0;
+    const hasPreviewData = !!previewData;
+    if (!hasLiveData && !hasPreviewData) {
+      // Nothing to show yet — keep resultPreviewContent null
+    } else {
+      const liveContent = hasLiveData ? streamedSections : previewData!.content;
+      const liveToken = streamedDesignToken ?? (hasPreviewData ? previewData!.design_token : {});
+      const liveTemplateId = streamedTemplateId || (hasPreviewData ? previewData!.template_id : "") || selectTemplate(businessSubType || businessType, mood);
+      const TemplateComponent = getTemplateComponent(liveTemplateId);
+      const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
+      resultPreviewContent = (
+        <div className="h-full flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto min-h-0" key={`${liveTemplateId}-${regenCount}`}>
+            <TemplateComponent
+              content={buildFullContent(displayData, businessName, businessType, description, whatsapp) as any}
+              design_token={liveToken as any}
+              isEditorMode={false}
+            />
           </div>
-          <button onClick={handleGoToEditor}
-            className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}>
-            <Pencil className="w-3.5 h-3.5" />
-            Kustomisasi & Publish →
-          </button>
+          {/* CTA strip — only when all sections arrived (done event) */}
+          {hasPreviewData && (
+          <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <div className="flex items-center gap-2 min-w-0">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <p className="text-xs font-semibold text-slate-300 truncate">
+                Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
+              </p>
+            </div>
+            <button onClick={handleGoToEditor}
+              className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}>
+              <Pencil className="w-3.5 h-3.5" />
+              Kustomisasi & Publish →
+            </button>
+          </div>
+          )}
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   // ── Cleanup stream on unmount ────────────────────────────────────────────
