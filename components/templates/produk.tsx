@@ -194,6 +194,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             leadTitleText="Hubungi Kami Langsung"
             leadFormBtnClass="bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-xl"
             leadFormInputClass="w-full px-4 py-2.5 bg-slate-955/50 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl outline-none text-sm text-slate-100 transition-all"
+            phoneBtnClass="rounded-xl font-bold text-sm text-slate-950"
+            phoneBtnStyle={{ background: "linear-gradient(to right, #06b6d4, #14b8a6)" }}
           />
         )} />
       </MemoPreviewSectionWrapper>

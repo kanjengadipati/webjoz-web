@@ -242,6 +242,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             leadTitleText="Kirim Pertanyaan Anda"
             leadFormBtnClass="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm"
             leadFormInputClass="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl outline-none text-sm transition-all"
+            phoneBtnClass="rounded-xl font-bold text-sm"
+            phoneBtnStyle={{ background: "#4f46e5", color: "#ffffff" }}
           />
         )} />
       </MemoPreviewSectionWrapper>

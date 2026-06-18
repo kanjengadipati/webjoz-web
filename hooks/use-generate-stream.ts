@@ -32,7 +32,7 @@ export interface GenerateStreamRequest {
   description?: string;
   template_id?: string;
   whatsapp?: string;
-  location?: string;
+  service_area?: string;
   mood?: string;
   selling_points?: string[];
   story?: string;

@@ -304,6 +304,8 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             leadFormBtnClass="rounded-full text-white font-bold text-xs uppercase tracking-wider"
             leadFormBtnStyle={{ background: sage }}
             leadFormInputClass="w-full px-3 py-2.5 rounded-xl text-sm font-sans border outline-none focus:ring-1 focus:ring-[#3d5a45]"
+            phoneBtnClass="rounded-full font-bold text-xs uppercase tracking-wider"
+            phoneBtnStyle={{ background: sage, color: "#ffffff" }}
           />
         )} />
       </MemoPreviewSectionWrapper>

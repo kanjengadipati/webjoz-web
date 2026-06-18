@@ -12,6 +12,7 @@ import {
   WAFloatingButton, BackToTop, SeoEditorPreview, navCtaHref, CartFab,
   CartProvider, ContactSection,
 } from "./shared";
+import { WhatsAppIcon } from "@/components/icons";
 import { buildCssVars, loadGoogleFont } from "./helpers";
 import type { TemplateProps, FaqItem, DesignToken } from "./types";
 
@@ -328,7 +329,6 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
                       {[
                         { icon: MapPin, text: c.address },
-                        { icon: Phone, text: c.phone },
                         { icon: Mail, text: c.email },
                       ].map(({ icon: Icon, text }) => text && (
                         <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
@@ -340,6 +340,16 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                     {c.maps_url && (
                       <a href={c.maps_url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem" }}>
                         <Globe style={{ width: 15, height: 15 }} /> Buka Google Maps
+                      </a>
+                    )}
+                    {c.phone && (
+                      <a
+                        href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
+                        target="_blank" rel="noopener noreferrer"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "0.625rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", padding: "0.625rem 1.25rem", borderRadius: "var(--dt-radius)", fontWeight: 700, fontSize: "0.875rem", textDecoration: "none" }}
+                      >
+                        <WhatsAppIcon size="sm" />
+                        <span>WhatsApp</span>
                       </a>
                     )}
                   </div>

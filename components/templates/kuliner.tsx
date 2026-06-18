@@ -194,6 +194,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             leadTitleText="Hubungi Kami / Reservasi"
             leadFormBtnClass="bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-sm hover:shadow"
             leadFormInputClass="w-full px-4 py-2.5 bg-amber-50/50 border border-[#EADFCB] focus:border-amber-600 focus:ring-1 focus:ring-amber-600 rounded-xl outline-none text-sm transition-all"
+            phoneBtnClass="rounded-xl font-bold text-sm"
+            phoneBtnStyle={{ background: "#b45309", color: "#ffffff" }}
           />
         )} />
       </MemoPreviewSectionWrapper>

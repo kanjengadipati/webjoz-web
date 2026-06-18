@@ -584,7 +584,6 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
     ...(address && address !== "area sekitar" ? [{ icon: MapPin, text: address }] : []),
-    ...(phone && !phoneBtnClass ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
     ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email }] : []),
   ];
 
@@ -622,7 +621,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
               style={phoneBtnStyle}
             >
               <WhatsAppIcon size="sm" className="shrink-0" />
-              <span className="min-w-0">WhatsApp</span>
+              <span>WhatsApp</span>
             </a>
           )}
 

@@ -364,8 +364,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "detail" | "mood" | "whatsapp" | "location" | "confirm" | "done">("name");
-  // Stage order: name → type → mood → whatsapp → location → done
+  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "detail" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
+  // Stage order: name → type → service_area → whatsapp → mood → confirm
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -386,9 +386,9 @@ export function SiteWizard({
       case "type": return 28;
       case "advantage": return 40;
       case "detail": return 52;
-      case "mood": return 58;
-      case "whatsapp": return 84;
-      case "location": return 90;
+      case "service_area": return 52;
+      case "whatsapp": return 68;
+      case "mood": return 84;
       case "confirm": return 100;
       case "done": return 100;
       default: return 100;
@@ -401,9 +401,9 @@ export function SiteWizard({
       case "type": return 2;
       case "advantage": return 3;
       case "detail": return 3;
-      case "mood": return 3;
+      case "service_area": return 3;
       case "whatsapp": return 4;
-      case "location": return 5;
+      case "mood": return 5;
       case "confirm": return 5;
       case "done": return 5;
       default: return 1;
@@ -425,12 +425,12 @@ export function SiteWizard({
   const [businessSubType, setBusinessSubType] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [location, setLocation] = useState("");
+  const [serviceArea, setServiceArea] = useState("");
   // Confirm stage inline-edit state (hoisted to avoid Rules of Hooks violation)
   const [confirmEditingField, setConfirmEditingField] = useState<string | null>(null);
   const [confirmDraftName, setConfirmDraftName] = useState("");
   const [confirmDraftWA, setConfirmDraftWA] = useState("");
-  const [confirmDraftLocation, setConfirmDraftLocation] = useState("");
+  const [confirmDraftServiceArea, setConfirmDraftServiceArea] = useState("");
   const [mood, setMood] = useState("");
   const [matra, setMatra] = useState("");
   const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
@@ -525,7 +525,7 @@ export function SiteWizard({
           businessSubType,
           description,
           whatsapp: whatsapp || "",
-          location: location || "",
+          service_area: serviceArea || "",
           mood,
           templateId: mergedPreview.template_id,
           previewContent: mergedPreview.content,
@@ -563,10 +563,10 @@ export function SiteWizard({
   }, []);
 
   useEffect(() => {
-    if (!isInitialTyping && (chatStage === "name" || chatStage === "advantage" || chatStage === "whatsapp" || chatStage === "location")) {
-      inputRef.current?.focus();
+    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "advantage" || chatStage === "whatsapp" || chatStage === "service_area")) {
+      window.setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [isInitialTyping, chatStage]);
+  }, [isInitialTyping, isAiTyping, chatStage]);
 
   // Cycle checklist steps during loading state
   useEffect(() => {
@@ -625,7 +625,7 @@ export function SiteWizard({
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim() && chatStage !== "detail" && chatStage !== "whatsapp" && chatStage !== "location") return;
+    if (!inputValue.trim() && chatStage !== "detail" && chatStage !== "whatsapp" && chatStage !== "service_area") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -640,16 +640,12 @@ export function SiteWizard({
         { id: Date.now().toString(), sender: "user", text: val },
       ]);
       setTimeout(() => {
-        typeMessage("Nama yang profesional dan mudah dipercaya. 👍", () => {
-          setTimeout(() => {
-            typeMessage("Sekarang, pilih jenis bisnis Anda:", () => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
-              ]);
-              setChatStage("type");
-            });
-          }, 300);
+        typeMessage("Nama yang profesional dan mudah dipercaya. 👍 Sekarang, pilih jenis bisnis Anda:", () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
+          ]);
+          setChatStage("type");
         });
       }, 500);
 
@@ -682,29 +678,36 @@ export function SiteWizard({
       } else {
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
-      // Advance to location step
+      // Advance to the final visual style step.
       setTimeout(() => {
-        typeMessage("Lokasi bisnis Anda? (atau Enter untuk lewati)", () => {
-          setChatStage("location");
+        typeMessage("Sip. Sekarang gong-nya: pilih gaya visual untuk website-nya.", () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
+          ]);
+          setChatStage("mood");
         });
       }, 400);
 
-    } else if (chatStage === "location") {
-      // Location is optional
+    } else if (chatStage === "service_area") {
+      // Service area is optional
       if (val.trim()) {
-        setLocation(val.trim());
+        setServiceArea(val.trim());
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
       } else {
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
       setTimeout(() => {
-        // Seed confirm draft state with current values
-        setConfirmDraftName(businessName);
-        setConfirmDraftWA(whatsapp);
-        setConfirmDraftLocation(val.trim() || location);
-        setConfirmEditingField(null);
-        setChatStage("confirm");
-      }, 200);
+        setConfirmDraftServiceArea(val.trim() || serviceArea);
+        const serviceAreaReply = val.trim()
+          ? `Oke, berarti jangkauan bisnisnya ${val.trim()}. Ini membantu website terasa lebih relevan untuk calon pelanggan.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)`
+          : "Oke, jangkauan bisnis bisa dilengkapi nanti di editor.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)";
+        typeMessage(serviceAreaReply, () => {
+          setInputValue("");
+          setChatStage("whatsapp");
+          window.setTimeout(() => inputRef.current?.focus(), 0);
+        });
+      }, 400);
     }
   };
 
@@ -731,21 +734,16 @@ export function SiteWizard({
     setTaglineInput("");
     setProofInput("");
     setInputValue("");
-    setChatStage("mood");
+    setChatStage("service_area");
 
-    const aiResponse = `Bagus, bisnis ${subType}.\n\nSekarang pilih gaya visual untuk website-nya.`;
+    const aiResponse = `Bagus, bisnis ${subType}.\n\nJangkauan bisnis Anda? (atau Enter untuk lewati)`;
 
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
     ]);
     setTimeout(() => {
-      typeMessage(aiResponse, () => {
-        setMessages((prev) => [
-          ...prev,
-          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
-        ]);
-      });
+      typeMessage(aiResponse, () => undefined);
     }, 400);
   };
 
@@ -784,7 +782,7 @@ export function SiteWizard({
 
     const enrichedDesc = [
       bDescription,
-      location ? `lokasi ${location}` : null,
+      serviceArea ? `jangkauan bisnis ${serviceArea}` : null,
     ].filter(Boolean).join(". ");
 
     localStorage.setItem(
@@ -795,7 +793,7 @@ export function SiteWizard({
         businessSubType,
         description: bDescription,
         whatsapp: whatsapp || "",
-        location: location || "",
+        service_area: serviceArea || "",
         mood: bMood,
         templateId: selectedTemplateId,
       })
@@ -807,7 +805,7 @@ export function SiteWizard({
       business_sub_type: businessSubType || undefined,
       description: enrichedDesc,
       whatsapp: whatsapp || "",
-      location: location || "",
+      service_area: serviceArea || "",
       mood: bMood,
       template_id: selectedTemplateId,
     });
@@ -825,6 +823,7 @@ export function SiteWizard({
           businessType,
           businessSubType,
           description,
+          service_area: serviceArea || "",
           previewContent: previewData?.content,
           previewDesignToken: previewData?.design_token,
         })
@@ -1382,7 +1381,7 @@ export function SiteWizard({
               }
 
               if (m.widget === "mood-chips") {
-                const isLocked = chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm" || chatStage === "done";
+                const isLocked = chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done";
                 return (
                   <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                     <div className="grid grid-cols-2 gap-2 mt-2">
@@ -1399,10 +1398,13 @@ export function SiteWizard({
                                 ...prev,
                                 { id: Date.now().toString(), sender: "user", text: `${mo.emoji} ${mo.value}` },
                               ]);
-                              // Ask for WA number before generating
                               setTimeout(() => {
-                                typeMessage("Hampir selesai! 🎉 Masukkan nomor WA dan lokasi bisnis — keduanya opsional, tapi bikin tombol CTA dan konten lebih relevan.\n\nNomor WhatsApp:", () => {
-                                  setChatStage("whatsapp");
+                                setConfirmDraftName(businessName);
+                                setConfirmDraftWA(whatsapp);
+                                setConfirmDraftServiceArea(serviceArea);
+                                setConfirmEditingField(null);
+                                typeMessage("Hampir selesai! Cek dulu data website-nya sebelum dibuat.", () => {
+                                  setChatStage("confirm");
                                 });
                               }, 400);
                             }}
@@ -1471,8 +1473,8 @@ export function SiteWizard({
             const setDraftName = setConfirmDraftName;
             const draftWA = confirmDraftWA;
             const setDraftWA = setConfirmDraftWA;
-            const draftLocation = confirmDraftLocation;
-            const setDraftLocation = setConfirmDraftLocation;
+            const draftServiceArea = confirmDraftServiceArea;
+            const setDraftServiceArea = setConfirmDraftServiceArea;
 
             const saveField = (field: string) => {
               if (field === "name" && draftName.trim()) { setBusinessName(draftName.trim()); setHasUnsavedEdits(true); }
@@ -1481,7 +1483,7 @@ export function SiteWizard({
                 setWhatsapp(digits ? (digits.startsWith("0") ? "62" + digits.slice(1) : digits) : "");
                 setHasUnsavedEdits(true);
               }
-              if (field === "location") { setLocation(draftLocation.trim()); setHasUnsavedEdits(true); }
+              if (field === "service_area") { setServiceArea(draftServiceArea.trim()); setHasUnsavedEdits(true); }
               setEditingField(null);
             };
 
@@ -1637,27 +1639,27 @@ export function SiteWizard({
                     )}
                   </div>
 
-                  {/* ── LOKASI ── inline */}
+                  {/* ── JANGKAUAN ── inline */}
                   <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
-                    <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Lokasi</span>
-                    {editingField === "location" ? (
+                    <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Jangkauan</span>
+                    {editingField === "service_area" ? (
                       <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                        <input autoFocus type="text" value={draftLocation} onChange={(e) => setDraftLocation(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter") saveField("location"); if (e.key === "Escape") setEditingField(null); }}
+                        <input autoFocus type="text" value={draftServiceArea} onChange={(e) => setDraftServiceArea(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter") saveField("service_area"); if (e.key === "Escape") setEditingField(null); }}
                           className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5" style={{ borderColor: "#7c3aed" }} />
-                        <button onClick={() => saveField("location")} className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
+                        <button onClick={() => saveField("service_area")} className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
                         <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500 shrink-0">✕</button>
                       </div>
                     ) : (
                       <>
-                        <span className="text-[12px] text-slate-300 flex-1 truncate">{draftLocation || <span className="text-slate-600 italic">—</span>}</span>
+                        <span className="text-[12px] text-slate-300 flex-1 truncate">{draftServiceArea || <span className="text-slate-600 italic">—</span>}</span>
                         <button
                           type="button"
-                          onClick={() => { setDraftLocation(location); setEditingField("location"); }}
+                          onClick={() => { setDraftServiceArea(serviceArea); setEditingField("service_area"); }}
                           className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                          style={draftLocation ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}
+                          style={draftServiceArea ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}
                         >
-                          {draftLocation ? "Ubah" : "Isi"}
+                          {draftServiceArea ? "Ubah" : "Isi"}
                         </button>
                       </>
                     )}
@@ -1867,8 +1869,8 @@ export function SiteWizard({
                 placeholder={
                   chatStage === "whatsapp"
                     ? "cth. 08123456789 — atau Enter untuk lewati"
-                    : chatStage === "location"
-                      ? "cth. Bandung, Yogyakarta, Jl. Malioboro..."
+                    : chatStage === "service_area"
+                      ? "cth. Jogja, Sleman-Bantul, Jabodetabek, seluruh Indonesia, online"
                       : chatStage === "advantage"
                         ? "cth: roti dipanggang tiap pagi sejak 2018, 200+ pelanggan setia, bahan lokal pilihan..."
                         : "Ketik nama bisnis Anda..."
@@ -1989,7 +1991,7 @@ export function SiteWizard({
                   style={{
                     ...skeletonPanel,
                     height: 260,
-                    border: chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm" || chatStage === "done"
+                    border: chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
                       ? "1px solid rgba(124,58,237,0.35)"
                       : "1px solid rgba(255,255,255,0.055)",
                     boxShadow: chatStage === "confirm" || chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
@@ -2078,7 +2080,7 @@ export function SiteWizard({
                 </section>
 
                 {/* Scanning line effect when stage changes */}
-                {(chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm") && (
+                {(chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
                   <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
                     <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
                     <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>

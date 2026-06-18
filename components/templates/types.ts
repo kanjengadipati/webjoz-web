@@ -138,10 +138,14 @@ export interface TemplateProps {
     };
     menu?: {
       title: string;
+      eyebrow?: string;
+      subtitle?: string;
       categories: MenuCategory[];
     };
     catalog?: {
       title: string;
+      eyebrow?: string;
+      subtitle?: string;
       categories: CatalogCategory[];
     };
     seo?: {
