@@ -582,11 +582,36 @@ export function SiteWizard({
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
-      setPendingPreview({
-        content: streamedSectionsRef.current,
-        design_token: streamedTokenRef.current ?? {},
+      // Streaming: commit directly to previewData without waiting for loadingStep gate
+      const finalContent = streamedSectionsRef.current;
+      const finalToken = streamedTokenRef.current ?? {};
+      const mergedPreview: PreviewData = {
+        content: Object.keys(finalContent).length > 0 ? finalContent : {},
+        design_token: finalToken,
         template_id: templateId,
+      };
+      setPreviewHistory((prev) => {
+        const base = prev; // historyIndex handled below
+        const next = [...base, mergedPreview].slice(-5);
+        setHistoryIndex(next.length - 1);
+        return next;
       });
+      setPreviewData(mergedPreview);
+      setPreviewState("result");
+      localStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({
+          businessName,
+          businessType,
+          description,
+          whatsapp: whatsapp || "",
+          location: location || "",
+          mood,
+          templateId: mergedPreview.template_id,
+          previewContent: mergedPreview.content,
+          previewDesignToken: mergedPreview.design_token,
+        })
+      );
     },
     onError: (message) => {
       pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
