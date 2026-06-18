@@ -1383,7 +1383,14 @@ export function SiteWizard({
                     ) : (
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Jenis</span>
-                        <span className="text-[12px] text-white flex-1 truncate">{[businessType, businessSubType].filter(Boolean).join(" › ")}</span>
+                        <span className="text-[12px] text-white flex-1 truncate">
+                          {(() => {
+                            const typeEmoji = BUSINESS_TYPES.find(t => t.value === businessType)?.emoji ?? "";
+                            const subEmoji = businessSubType ? (SUB_TYPES[businessType]?.find(s => s.value === businessSubType)?.emoji ?? "") : "";
+                            const label = [businessType, businessSubType].filter(Boolean).join(" › ");
+                            return <>{typeEmoji && <span className="mr-1">{subEmoji || typeEmoji}</span>}{label}</>;
+                          })()}
+                        </span>
                         <button type="button" onClick={() => setEditingField("type")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
                       </div>
                     )}
@@ -1410,7 +1417,12 @@ export function SiteWizard({
                     ) : (
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Gaya</span>
-                        <span className="text-[12px] text-white flex-1 truncate">{mood}</span>
+                        <span className="text-[12px] text-white flex-1 truncate">
+                          {(() => {
+                            const mo = MOODS.find(m => m.value === mood);
+                            return <>{mo?.emoji && <span className="mr-1">{mo.emoji}</span>}{mood}</>;
+                          })()}
+                        </span>
                         <button type="button" onClick={() => setEditingField("mood")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
                       </div>
                     )}
