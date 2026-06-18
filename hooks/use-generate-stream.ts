@@ -52,6 +52,18 @@ export interface UseGenerateStreamOptions {
 export function useGenerateStream(options: UseGenerateStreamOptions) {
   const { onDesignToken, onSection, onDone, onError } = options;
 
+  // Use refs for callbacks to avoid stale closures and unnecessary re-creation
+  const onDesignTokenRef = useRef(onDesignToken);
+  const onSectionRef = useRef(onSection);
+  const onDoneRef = useRef(onDone);
+  const onErrorRef = useRef(onError);
+
+  // Keep refs up to date every render without triggering re-creation of startStream
+  onDesignTokenRef.current = onDesignToken;
+  onSectionRef.current = onSection;
+  onDoneRef.current = onDone;
+  onErrorRef.current = onError;
+
   // Simpan referensi ke reader aktif agar bisa di-cancel
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -86,17 +98,16 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         });
       } catch (err: any) {
         if (err?.name === "AbortError") return;
-        onError(err?.message || "Gagal menghubungi server.");
+        onErrorRef.current(err?.message || "Gagal menghubungi server.");
         return;
       }
 
       if (!response.ok || !response.body) {
-        // Fallback: coba parse JSON error
         try {
           const json = await response.json();
-          onError(json?.message || `HTTP ${response.status}`);
+          onErrorRef.current(json?.message || `HTTP ${response.status}`);
         } catch {
-          onError(`HTTP ${response.status}`);
+          onErrorRef.current(`HTTP ${response.status}`);
         }
         return;
       }
@@ -136,33 +147,33 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
 
             switch (event.type) {
               case "design_token":
-                if (event.data) onDesignToken(event.data);
+                if (event.data) onDesignTokenRef.current(event.data);
                 break;
 
               case "section":
                 if (event.section && event.data) {
-                  onSection(event.section, event.data);
+                  onSectionRef.current(event.section, event.data);
                 }
                 break;
 
               case "done":
-                onDone(event.template_id ?? "", event.quality_score ?? 0);
+                onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0);
                 break;
 
               case "error":
-                onError(event.error ?? "Terjadi kesalahan saat generate.");
+                onErrorRef.current(event.error ?? "Terjadi kesalahan saat generate.");
                 break;
             }
           }
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
-        onError(err?.message || "Koneksi terputus.");
+        onErrorRef.current(err?.message || "Koneksi terputus.");
       } finally {
         readerRef.current = null;
       }
     },
-    [cancelStream, onDesignToken, onSection, onDone, onError]
+    [cancelStream] // stable — callbacks accessed via refs
   );
 
   return { startStream, cancelStream };
