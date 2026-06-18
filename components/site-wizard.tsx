@@ -510,6 +510,11 @@ export function SiteWizard({
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [location, setLocation] = useState("");
+  // Confirm stage inline-edit state (hoisted to avoid Rules of Hooks violation)
+  const [confirmEditingField, setConfirmEditingField] = useState<string | null>(null);
+  const [confirmDraftName, setConfirmDraftName] = useState("");
+  const [confirmDraftWA, setConfirmDraftWA] = useState("");
+  const [confirmDraftLocation, setConfirmDraftLocation] = useState("");
   const [mood, setMood] = useState("");
   const [matra, setMatra] = useState("");
   const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
@@ -696,6 +701,11 @@ export function SiteWizard({
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
       setTimeout(() => {
+        // Seed confirm draft state with current values
+        setConfirmDraftName(businessName);
+        setConfirmDraftWA(whatsapp);
+        setConfirmDraftLocation(val.trim() || location);
+        setConfirmEditingField(null);
         setChatStage("confirm");
       }, 200);
     }
@@ -1286,11 +1296,15 @@ export function SiteWizard({
 
           {/* Confirm step — show summary before generating */}
           {chatStage === "confirm" && previewState === "wireframe" && (() => {
-            // Inline-editable confirm card
-            const [editingField, setEditingField] = React.useState<string | null>(null);
-            const [draftName, setDraftName] = React.useState(businessName);
-            const [draftWA, setDraftWA] = React.useState(whatsapp);
-            const [draftLocation, setDraftLocation] = React.useState(location);
+            // Inline-editable confirm card — uses hoisted state (no hooks inside)
+            const editingField = confirmEditingField;
+            const setEditingField = setConfirmEditingField;
+            const draftName = confirmDraftName || businessName;
+            const setDraftName = setConfirmDraftName;
+            const draftWA = confirmDraftWA || whatsapp;
+            const setDraftWA = setConfirmDraftWA;
+            const draftLocation = confirmDraftLocation || location;
+            const setDraftLocation = setConfirmDraftLocation;
 
             const saveField = (field: string) => {
               if (field === "name") setBusinessName(draftName.trim() || businessName);
