@@ -1296,7 +1296,7 @@ export function SiteWizard({
 
           {/* Confirm step — show summary before generating */}
           {chatStage === "confirm" && previewState === "wireframe" && (() => {
-            // Inline-editable confirm card — uses hoisted state (no hooks inside)
+            // All edits happen inline — no going back to chat
             const editingField = confirmEditingField;
             const setEditingField = setConfirmEditingField;
             const draftName = confirmDraftName;
@@ -1307,7 +1307,7 @@ export function SiteWizard({
             const setDraftLocation = setConfirmDraftLocation;
 
             const saveField = (field: string) => {
-              if (field === "name") setBusinessName(draftName.trim() || businessName);
+              if (field === "name" && draftName.trim()) setBusinessName(draftName.trim());
               if (field === "wa") {
                 const digits = draftWA.replace(/\D/g, "");
                 setWhatsapp(digits ? (digits.startsWith("0") ? "62" + digits.slice(1) : digits) : "");
@@ -1316,43 +1316,31 @@ export function SiteWizard({
               setEditingField(null);
             };
 
-            const fieldRow = (
-              label: string,
-              field: string,
-              display: string,
-              draftValue: string,
-              setDraft: (v: string) => void,
-              inputType: string = "text"
-            ) => (
-              <div key={field} className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">{label}</span>
-                {editingField === field ? (
-                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                    <input
-                      autoFocus
-                      type={inputType}
-                      value={draftValue}
-                      onChange={(e) => setDraft(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") saveField(field); if (e.key === "Escape") setEditingField(null); }}
-                      className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5"
-                      style={{ borderColor: "#7c3aed" }}
-                    />
-                    <button onClick={() => saveField(field)} className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
-                    <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500 hover:text-slate-300">✕</button>
-                  </div>
-                ) : (
-                  <>
-                    <span className="text-[12px] text-slate-200 flex-1 truncate">{display || <span className="text-slate-600 italic">—</span>}</span>
-                    <button
-                      type="button"
-                      onClick={() => setEditingField(field)}
-                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
-                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}
-                    >
-                      Ubah
-                    </button>
-                  </>
-                )}
+            // Reusable text input row
+            const editableRow = (label: string, field: string, display: string, draft: string, setDraft: (v: string) => void, inputType = "text") => (
+              <div className="px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-16">{label}</span>
+                  {editingField === field ? (
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <input autoFocus type={inputType} value={draft} onChange={(e) => setDraft(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") saveField(field); if (e.key === "Escape") setEditingField(null); }}
+                        className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5"
+                        style={{ borderColor: "#7c3aed" }} />
+                      <button onClick={() => saveField(field)} className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
+                      <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500 hover:text-slate-300 shrink-0">✕</button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-[12px] text-slate-200 flex-1 truncate">{display || <span className="text-slate-600 italic">—</span>}</span>
+                      <button type="button" onClick={() => { setDraft(display); setEditingField(field); }}
+                        className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded hover:opacity-80"
+                        style={{ color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" }}>
+                        Ubah
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             );
 
@@ -1362,59 +1350,89 @@ export function SiteWizard({
                   <Sparkles className="w-3 h-3 text-white" />
                 </div>
                 <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div className="px-3.5 pt-3 pb-1.5">
+                  <div className="px-3.5 pt-3 pb-1">
                     <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#7c3aed" }}>✓ Cek sebelum generate</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Klik Ubah untuk koreksi langsung</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Semua bisa diubah langsung di sini</p>
                   </div>
 
-                  {/* Name */}
-                  {fieldRow("Nama", "name", draftName || businessName, draftName, setDraftName)}
+                  {/* Nama */}
+                  {editableRow("Nama", "name", draftName || businessName, draftName, setDraftName)}
 
-                  {/* Type — read-only, back button */}
-                  <div className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                    <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Jenis</span>
-                    <span className="text-[12px] text-slate-200 flex-1 truncate">{[businessType, businessSubType].filter(Boolean).join(" › ")}</span>
-                    <button type="button" onClick={() => setChatStage("type")}
-                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
-                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-                      Ubah
-                    </button>
-                  </div>
-
-                  {/* Mood — read-only */}
-                  <div className="flex items-center gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                    <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Gaya</span>
-                    <span className="text-[12px] text-slate-200 flex-1 truncate">{mood}</span>
-                    <button type="button" onClick={() => setChatStage("mood")}
-                      className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80"
-                      style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-                      Ubah
-                    </button>
-                  </div>
-
-                  {/* WhatsApp — inline editable */}
-                  {fieldRow("WhatsApp", "wa", draftWA, draftWA, setDraftWA, "tel")}
-
-                  {/* Location — inline editable */}
-                  {fieldRow("Lokasi", "location", draftLocation, draftLocation, setDraftLocation)}
-
-                  {/* Advantages — read-only summary */}
-                  {selectedAdvantages.length > 0 && (
-                    <div className="flex items-start gap-2 px-3.5 py-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                      <span className="text-[11px] font-semibold text-slate-500 shrink-0 w-20">Keunggulan</span>
-                      <div className="flex-1 min-w-0">
-                        {selectedAdvantages.slice(0, 2).map((a, i) => (
-                          <p key={i} className="text-[11px] text-slate-300 truncate">• {a.slice(0, 45)}{a.length > 45 ? "…" : ""}</p>
-                        ))}
-                        {selectedAdvantages.length > 2 && <p className="text-[10px] text-slate-500">+{selectedAdvantages.length - 2} lainnya</p>}
-                      </div>
-                      <button type="button" onClick={() => setChatStage("advantage")}
-                        className="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded transition-all hover:opacity-80 self-start"
-                        style={{ color: "#7c3aed", background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-                        Ubah
-                      </button>
+                  {/* Jenis bisnis — inline chips */}
+                  <div className="px-3.5 py-2 border-t space-y-2" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <span className="text-[11px] font-semibold text-slate-500 block">Jenis Bisnis</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {BUSINESS_TYPES.map(t => (
+                        <button key={t.value} type="button" onClick={() => { setBusinessType(t.value); setBusinessSubType(""); }}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all"
+                          style={businessType === t.value
+                            ? { background: "rgba(124,58,237,0.2)", borderColor: "#7c3aed", color: "#a78bfa" }
+                            : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#94a3b8" }
+                          }>
+                          {t.emoji} {t.label}
+                        </button>
+                      ))}
                     </div>
-                  )}
+                    {/* Sub-type chips */}
+                    {businessType && SUB_TYPES[businessType] && (
+                      <div className="flex flex-wrap gap-1">
+                        {SUB_TYPES[businessType].map(st => (
+                          <button key={st.value} type="button" onClick={() => setBusinessSubType(st.value === businessSubType ? "" : st.value)}
+                            className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all"
+                            style={businessSubType === st.value
+                              ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" }
+                              : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "#64748b" }
+                            }>
+                            {st.emoji} {st.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Gaya — inline mood chips */}
+                  <div className="px-3.5 py-2 border-t space-y-2" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <span className="text-[11px] font-semibold text-slate-500 block">Gaya Visual</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {MOODS.map(mo => (
+                        <button key={mo.value} type="button" onClick={() => setMood(mo.value)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all"
+                          style={mood === mo.value
+                            ? { background: "rgba(124,58,237,0.2)", borderColor: "#7c3aed", color: "#a78bfa" }
+                            : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#94a3b8" }
+                          }>
+                          {mo.emoji} {mo.value}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WhatsApp */}
+                  {editableRow("WhatsApp", "wa", draftWA, draftWA, setDraftWA, "tel")}
+
+                  {/* Lokasi */}
+                  {editableRow("Lokasi", "location", draftLocation, draftLocation, setDraftLocation)}
+
+                  {/* Keunggulan — re-selectable chips */}
+                  <div className="px-3.5 py-2 border-t space-y-2" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    <span className="text-[11px] font-semibold text-slate-500 block">Keunggulan</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(ADVANTAGE_SUGGESTIONS[businessSubType] || ADVANTAGE_SUGGESTIONS[businessType] || []).slice(0, 5).map((adv) => {
+                        const selected = selectedAdvantages.includes(adv);
+                        return (
+                          <button key={adv} type="button"
+                            onClick={() => setSelectedAdvantages(prev => selected ? prev.filter(a => a !== adv) : [...prev, adv])}
+                            className="text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all text-left"
+                            style={selected
+                              ? { background: "rgba(124,58,237,0.15)", borderColor: "#7c3aed", color: "#a78bfa" }
+                              : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "#64748b" }
+                            }>
+                            {selected ? "✓ " : ""}{adv.slice(0, 35)}{adv.length > 35 ? "…" : ""}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
                   {/* Generate button */}
                   <div className="px-3.5 py-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
