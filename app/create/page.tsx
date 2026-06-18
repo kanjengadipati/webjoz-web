@@ -120,7 +120,7 @@ function PublicWizardContent() {
           const enrichedContent = buildFullContent(
             { content: pending.previewContent },
             pending.businessName,
-            pending.businessType,
+            pending.businessSubType || pending.businessType,
             pending.description || "",
             pending.whatsapp || ""
           );

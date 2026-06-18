@@ -46,7 +46,7 @@ type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "advantage-chips" | "mood-chips";
+  widget?: "type-chips" | "advantage-chips" | "detail-inputs" | "mood-chips";
 };
 
 // content + design_token returned from public generate-preview endpoint
@@ -57,14 +57,6 @@ type PreviewData = {
 };
 
 // ─── Template selection (mirrors backend autoSelectTemplate) ─────────────────
-function extractKeyPhrase(sentence: string): string {
-  // Strip filler words, keep core concept (max 4 words)
-  const filler = /\b(yang|dengan|untuk|dari|dan|atau|ini|itu|kami|anda|setiap|selalu|semua|sangat|lebih|juga|sudah|akan|ada|tidak|bisa|paling|agar|di|ke|pada|dalam|oleh|adalah|sebagai|serta|karena|sehingga|tanpa|namun|jadi|telah)\b/gi;
-  const cleaned = sentence.replace(filler, ' ').replace(/\s+/g, ' ').trim();
-  const words = cleaned.split(' ').filter(w => w.length > 2);
-  return words.slice(0, 4).join(' ');
-}
-
 function selectTemplate(businessType: string, mood: string): string {
   const lower = businessType.toLowerCase();
   const lm = mood.toLowerCase();
@@ -372,8 +364,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "whatsapp" | "location" | "confirm" | "done">("name");
-  // Stage order: name → type → advantage → mood → whatsapp → location → done
+  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "detail" | "mood" | "whatsapp" | "location" | "confirm" | "done">("name");
+  // Stage order: name → type → mood → whatsapp → location → done
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -390,13 +382,14 @@ export function SiteWizard({
 
   const getProgressPercentage = () => {
     switch (chatStage) {
-      case "name": return 18;
-      case "type": return 34;
-      case "advantage": return 52;
-      case "mood": return 68;
-      case "whatsapp": return 82;
-      case "location": return 88;
-      case "confirm": return 96;
+      case "name": return 15;
+      case "type": return 28;
+      case "advantage": return 40;
+      case "detail": return 52;
+      case "mood": return 58;
+      case "whatsapp": return 84;
+      case "location": return 90;
+      case "confirm": return 100;
       case "done": return 100;
       default: return 100;
     }
@@ -407,11 +400,12 @@ export function SiteWizard({
       case "name": return 1;
       case "type": return 2;
       case "advantage": return 3;
-      case "mood": return 4;
-      case "whatsapp": return 5;
-      case "location": return 6;
-      case "confirm": return 6;
-      case "done": return 6;
+      case "detail": return 3;
+      case "mood": return 3;
+      case "whatsapp": return 4;
+      case "location": return 5;
+      case "confirm": return 5;
+      case "done": return 5;
       default: return 1;
     }
   };
@@ -440,6 +434,9 @@ export function SiteWizard({
   const [mood, setMood] = useState("");
   const [matra, setMatra] = useState("");
   const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
+  const [storyInput, setStoryInput] = useState("");
+  const [taglineInput, setTaglineInput] = useState("");
+  const [proofInput, setProofInput] = useState("");
 
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
@@ -484,6 +481,11 @@ export function SiteWizard({
   };
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
+  const historyIndexRef = useRef(historyIndex);
+
+  useEffect(() => {
+    historyIndexRef.current = historyIndex;
+  }, [historyIndex]);
 
   const { startStream, cancelStream } = useGenerateStream({
     onDesignToken: (token) => {
@@ -500,7 +502,6 @@ export function SiteWizard({
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
-      // Streaming: commit directly to previewData without waiting for loadingStep gate
       const finalContent = streamedSectionsRef.current;
       const finalToken = streamedTokenRef.current ?? {};
       const mergedPreview: PreviewData = {
@@ -509,7 +510,7 @@ export function SiteWizard({
         template_id: templateId,
       };
       setPreviewHistory((prev) => {
-        const base = prev; // historyIndex handled below
+        const base = prev.slice(0, historyIndexRef.current + 1);
         const next = [...base, mergedPreview].slice(-5);
         setHistoryIndex(next.length - 1);
         return next;
@@ -521,6 +522,7 @@ export function SiteWizard({
         JSON.stringify({
           businessName,
           businessType,
+          businessSubType,
           description,
           whatsapp: whatsapp || "",
           location: location || "",
@@ -590,10 +592,40 @@ export function SiteWizard({
 
   // ── Chat handlers ────────────────────────────────────────────────────────
 
+  const proceedToMoodStep = () => {
+    setChatStage("mood");
+    setTimeout(() => {
+      typeMessage("Oke! Sekarang pilih gaya visual untuk website-nya.", () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
+        ]);
+      });
+    }, 300);
+  };
+
+  const buildDetailSummary = () => {
+    const lines = [
+      storyInput.trim() ? `Cerita: ${storyInput.trim()}` : null,
+      taglineInput.trim() ? `Tagline: ${taglineInput.trim()}` : null,
+      proofInput.trim() ? `Bukti: ${proofInput.trim()}` : null,
+    ].filter(Boolean);
+
+    return lines.length > 0 ? lines.join("\n") : "Lewati detail tambahan";
+  };
+
+  const submitDetailStep = () => {
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString(), sender: "user", text: buildDetailSummary() },
+    ]);
+    proceedToMoodStep();
+  };
+
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim() && chatStage !== "whatsapp" && chatStage !== "location") return;
+    if (!inputValue.trim() && chatStage !== "detail" && chatStage !== "whatsapp" && chatStage !== "location") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -628,14 +660,17 @@ export function SiteWizard({
         { id: Date.now().toString(), sender: "user", text: val },
       ]);
       setTimeout(() => {
-        typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
+        typeMessage("Mantap! Satu langkah lagi - jawab 3 pertanyaan singkat ini (semuanya opsional, tapi makin detail makin bagus hasilnya).", () => {
           setMessages((prev) => [
             ...prev,
-            { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
+            { id: `widget-detail-inputs-${Date.now()}`, sender: "ai", text: "", widget: "detail-inputs" },
           ]);
-          setChatStage("mood");
+          setChatStage("detail");
         });
       }, 500);
+
+    } else if (chatStage === "detail") {
+      submitDetailStep();
 
     } else if (chatStage === "whatsapp") {
       // WA is optional
@@ -649,7 +684,7 @@ export function SiteWizard({
       }
       // Advance to location step
       setTimeout(() => {
-        typeMessage("Dimana lokasi bisnis Anda? Ini bantu AI buat konten yang lebih relevan. (opsional)", () => {
+        typeMessage("Lokasi bisnis Anda? (atau Enter untuk lewati)", () => {
           setChatStage("location");
         });
       }, 400);
@@ -677,6 +712,10 @@ export function SiteWizard({
     setBusinessType(type);
     setBusinessSubType(""); // reset sub-type when main type changes
     setSelectedAdvantages([]);
+    setDescription("");
+    setStoryInput("");
+    setTaglineInput("");
+    setProofInput("");
     setInputValue("");
     // Scroll to sub-type section after render
     setTimeout(() => {
@@ -687,10 +726,14 @@ export function SiteWizard({
   const handleSelectSubType = (subType: string) => {
     setBusinessSubType(subType);
     setSelectedAdvantages([]);
+    setDescription("");
+    setStoryInput("");
+    setTaglineInput("");
+    setProofInput("");
     setInputValue("");
+    setChatStage("mood");
 
-    const typeContext = subType || businessType;
-    const aiResponse = `Bagus! Saya akan membuat website untuk bisnis ${subType} Anda.\n\nCeritakan produk/layanan utama dan keunggulan bisnis Anda:`;
+    const aiResponse = `Bagus, bisnis ${subType}.\n\nSekarang pilih gaya visual untuk website-nya.`;
 
     setMessages((prev) => [
       ...prev,
@@ -700,9 +743,8 @@ export function SiteWizard({
       typeMessage(aiResponse, () => {
         setMessages((prev) => [
           ...prev,
-          { id: `widget-advantage-chips-${Date.now()}`, sender: "ai", text: "", widget: "advantage-chips" },
+          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
         ]);
-        setChatStage("advantage");
       });
     }, 400);
   };
@@ -741,11 +783,7 @@ export function SiteWizard({
     const selectedTemplateId = selectAlternateTemplate(effectiveType, bMood, regen);
 
     const enrichedDesc = [
-      businessSubType || bType,
       bDescription,
-      selectedAdvantages.length > 0
-        ? selectedAdvantages.map((a) => extractKeyPhrase(a)).filter(Boolean).join(", ")
-        : null,
       location ? `lokasi ${location}` : null,
     ].filter(Boolean).join(". ");
 
@@ -754,6 +792,7 @@ export function SiteWizard({
       JSON.stringify({
         businessName: bName,
         businessType: bType,
+        businessSubType,
         description: bDescription,
         whatsapp: whatsapp || "",
         location: location || "",
@@ -764,13 +803,13 @@ export function SiteWizard({
 
     await startStream({
       business_name: bName,
-      business_type: effectiveType,
+      business_type: bType,
+      business_sub_type: businessSubType || undefined,
       description: enrichedDesc,
       whatsapp: whatsapp || "",
       location: location || "",
       mood: bMood,
       template_id: selectedTemplateId,
-      selling_points: selectedAdvantages.length > 0 ? selectedAdvantages : undefined,
     });
   };
 
@@ -784,6 +823,7 @@ export function SiteWizard({
         JSON.stringify({
           businessName,
           businessType,
+          businessSubType,
           description,
           previewContent: previewData?.content,
           previewDesignToken: previewData?.design_token,
@@ -842,7 +882,7 @@ export function SiteWizard({
         const enrichedContent = buildFullContent(
           { content: previewData.content },
           businessName,
-          businessType,
+          businessSubType || businessType,
           description,
           whatsapp
         );
@@ -1019,25 +1059,25 @@ export function SiteWizard({
     );
   }
   if (previewState === "result") {
-    // During streaming: use streamedSections + streamedDesignToken as live content
-    // After done: use previewData (which has the final merged content)
     const hasLiveData = Object.keys(streamedSections).length > 0;
     const hasPreviewData = !!previewData;
     if (!hasLiveData && !hasPreviewData) {
       // Nothing to show yet — keep resultPreviewContent null
     } else {
-      const liveContent = hasLiveData ? streamedSections : previewData!.content;
-      const liveToken = streamedDesignToken ?? (hasPreviewData ? previewData!.design_token : {});
-      const liveTemplateId = streamedTemplateId || (hasPreviewData ? previewData!.template_id : "") || selectTemplate(businessSubType || businessType, mood);
+      const isStreamingLive = hasLiveData && (!streamedTemplateId || !hasPreviewData);
+      const liveContent = isStreamingLive ? streamedSections : previewData!.content;
+      const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : previewData!.design_token;
+      const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData!.template_id) || selectTemplate(businessSubType || businessType, mood);
       const TemplateComponent = getTemplateComponent(liveTemplateId);
       const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
       resultPreviewContent = (
         <div className="h-full flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto min-h-0" key={`${liveTemplateId}-${regenCount}`}>
+          <div className="flex-1 overflow-y-auto min-h-0" key={`${liveTemplateId}-${regenCount}-${historyIndex}`}>
             <TemplateComponent
               content={buildFullContent(displayData, businessName, businessType, description, whatsapp) as any}
               design_token={liveToken as any}
               isEditorMode={false}
+              arrivedSections={isStreamingLive ? arrivedSections : undefined}
             />
           </div>
           {/* CTA strip — only when all sections arrived (done event) */}
@@ -1105,7 +1145,7 @@ export function SiteWizard({
           {/* Progress bar */}
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] text-slate-500 font-medium">
-              Langkah {getStageNumber()} dari 6
+              Langkah {getStageNumber()} dari 5
             </span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{getProgressPercentage()}%</span>
           </div>
@@ -1207,12 +1247,12 @@ export function SiteWizard({
                     { id: Date.now().toString(), sender: "user", text: displayText },
                   ]);
                   setTimeout(() => {
-                    typeMessage("Mantap. Keunggulan ini akan saya tonjolkan di headline, benefit, dan CTA. Sekarang pilih gaya visualnya.", () => {
+                    typeMessage("Mantap! Satu langkah lagi - jawab 3 pertanyaan singkat ini (semuanya opsional, tapi makin detail makin bagus hasilnya).", () => {
                       setMessages((prev) => [
                         ...prev,
-                        { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
+                        { id: `widget-detail-inputs-${Date.now()}`, sender: "ai", text: "", widget: "detail-inputs" },
                       ]);
-                      setChatStage("mood");
+                      setChatStage("detail");
                     });
                   }, 400);
                 };
@@ -1273,6 +1313,74 @@ export function SiteWizard({
                 );
               }
 
+              if (m.widget === "detail-inputs") {
+                const isLocked = chatStage !== "detail";
+                const handleSubmitDetail = () => {
+                  submitDetailStep();
+                };
+
+                return (
+                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
+                        Ada cerita singkat di balik bisnis ini? <span className="text-slate-600">(opsional)</span>
+                      </label>
+                      <textarea
+                        disabled={isLocked}
+                        value={storyInput}
+                        onChange={(e) => setStoryInput(e.target.value)}
+                        placeholder="cth: Dimulai dari dapur rumah pada 2018, resep turun-temurun dari nenek..."
+                        rows={2}
+                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
+                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
+                        Ada tagline favorit? <span className="text-slate-600">(opsional)</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isLocked}
+                        value={taglineInput}
+                        onChange={(e) => setTaglineInput(e.target.value)}
+                        placeholder="cth: Dari dapur kami, untuk meja makan Anda"
+                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
+                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-500 px-0.5 block">
+                        Pencapaian yang boleh kami sebut? <span className="text-slate-600">(opsional)</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isLocked}
+                        value={proofInput}
+                        onChange={(e) => setProofInput(e.target.value)}
+                        placeholder="cth: 500+ pelanggan setia, buka sejak 2019, dipercaya 3 perusahaan"
+                        className="w-full bg-transparent border rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 disabled:opacity-40"
+                        style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
+                      />
+                    </div>
+
+                    {!isLocked && (
+                      <button
+                        type="button"
+                        onClick={handleSubmitDetail}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] cursor-pointer"
+                        style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                      >
+                        Lanjut
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                );
+              }
+
               if (m.widget === "mood-chips") {
                 const isLocked = chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm" || chatStage === "done";
                 return (
@@ -1293,7 +1401,7 @@ export function SiteWizard({
                               ]);
                               // Ask for WA number before generating
                               setTimeout(() => {
-                                typeMessage("Hampir selesai! 🎉 Nomor WhatsApp bisnis Anda? Akan dipakai untuk tombol CTA di website. (Opsional — tekan Enter untuk lewati)", () => {
+                                typeMessage("Hampir selesai! 🎉 Masukkan nomor WA dan lokasi bisnis — keduanya opsional, tapi bikin tombol CTA dan konten lebih relevan.\n\nNomor WhatsApp:", () => {
                                   setChatStage("whatsapp");
                                 });
                               }, 400);
@@ -1382,6 +1490,15 @@ export function SiteWizard({
             const chipDefault = { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#64748b" };
             const editBtn = { color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" };
 
+            const clearWizardCopyContext = () => {
+              setSelectedAdvantages([]);
+              setDescription("");
+              setStoryInput("");
+              setTaglineInput("");
+              setProofInput("");
+              setHasUnsavedEdits(true);
+            };
+
             return (
               <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
@@ -1391,7 +1508,7 @@ export function SiteWizard({
 
                   {/* Header */}
                   <div className="px-3 pt-2.5 pb-1.5 flex items-center justify-between">
-                    <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#7c3aed" }}>✓ Cek & ubah sebelum generate</p>
+                    <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#7c3aed" }}>Hampir jadi — cek dan lengkapi</p>
                   </div>
 
                   {/* ── NAMA ── */}
@@ -1423,7 +1540,7 @@ export function SiteWizard({
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {BUSINESS_TYPES.map(t => (
-                            <button key={t.value} type="button" onClick={() => { setBusinessType(t.value); setBusinessSubType(""); setHasUnsavedEdits(true); }}
+                            <button key={t.value} type="button" onClick={() => { setBusinessType(t.value); setBusinessSubType(""); clearWizardCopyContext(); }}
                               className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
                               style={businessType === t.value ? chipActive : chipDefault}>
                               {t.emoji} {t.label}
@@ -1433,7 +1550,11 @@ export function SiteWizard({
                         {businessType && SUB_TYPES[businessType] && (
                           <div className="flex flex-wrap gap-1">
                             {SUB_TYPES[businessType].map(st => (
-                              <button key={st.value} type="button" onClick={() => { setBusinessSubType(st.value === businessSubType ? "" : st.value); setHasUnsavedEdits(true); }}
+                              <button key={st.value} type="button" onClick={() => {
+                                const nextSubType = st.value === businessSubType ? "" : st.value;
+                                setBusinessSubType(nextSubType);
+                                clearWizardCopyContext();
+                              }}
                                 className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
                                 style={businessSubType === st.value ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
                                 {st.emoji} {st.label}
@@ -1490,39 +1611,6 @@ export function SiteWizard({
                     )}
                   </div>
 
-                  {/* ── KEUNGGULAN ── collapsed */}
-                  <div className="px-3 py-1.5 border-t" style={rowBorder}>
-                    {editingField === "adv" ? (
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-semibold text-slate-500">Keunggulan</span>
-                          <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500">✕ tutup</button>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {(ADVANTAGE_SUGGESTIONS[businessSubType] || ADVANTAGE_SUGGESTIONS[businessType] || []).slice(0, 6).map((adv) => {
-                            const sel = selectedAdvantages.includes(adv);
-                            return (
-                              <button key={adv} type="button"
-                                onClick={() => { setSelectedAdvantages(prev => sel ? prev.filter(a => a !== adv) : [...prev, adv]); setHasUnsavedEdits(true); }}
-                                className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all text-left"
-                                style={sel ? chipActive : chipDefault}>
-                                {sel ? "✓ " : ""}{adv.slice(0, 28)}{adv.length > 28 ? "…" : ""}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Keunggulan</span>
-                        <span className="text-[11px] text-slate-300 flex-1 truncate">
-                          {selectedAdvantages.length > 0 ? `${selectedAdvantages.length} dipilih` : <span className="text-slate-600 italic">belum dipilih</span>}
-                        </span>
-                        <button type="button" onClick={() => setEditingField("adv")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
-                      </div>
-                    )}
-                  </div>
-
                   {/* ── WA ── inline */}
                   <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
                     <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">WA</span>
@@ -1537,7 +1625,14 @@ export function SiteWizard({
                     ) : (
                       <>
                         <span className="text-[12px] text-slate-300 flex-1 truncate">{draftWA || <span className="text-slate-600 italic">—</span>}</span>
-                        <button type="button" onClick={() => { setDraftWA(whatsapp); setEditingField("wa"); }} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
+                        <button
+                          type="button"
+                          onClick={() => { setDraftWA(whatsapp); setEditingField("wa"); }}
+                          className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                          style={draftWA ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}
+                        >
+                          {draftWA ? "Ubah" : "Isi"}
+                        </button>
                       </>
                     )}
                   </div>
@@ -1556,7 +1651,14 @@ export function SiteWizard({
                     ) : (
                       <>
                         <span className="text-[12px] text-slate-300 flex-1 truncate">{draftLocation || <span className="text-slate-600 italic">—</span>}</span>
-                        <button type="button" onClick={() => { setDraftLocation(location); setEditingField("location"); }} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
+                        <button
+                          type="button"
+                          onClick={() => { setDraftLocation(location); setEditingField("location"); }}
+                          className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                          style={draftLocation ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}
+                        >
+                          {draftLocation ? "Ubah" : "Isi"}
+                        </button>
                       </>
                     )}
                   </div>
@@ -1753,7 +1855,7 @@ export function SiteWizard({
         </div>
 
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
-        {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
+        {chatStage !== "type" && chatStage !== "detail" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
           <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
@@ -1764,11 +1866,11 @@ export function SiteWizard({
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
                   chatStage === "whatsapp"
-                    ? "cth. 08123456789 (atau Enter untuk lewati)"
+                    ? "cth. 08123456789 — atau Enter untuk lewati"
                     : chatStage === "location"
                       ? "cth. Bandung, Yogyakarta, Jl. Malioboro..."
                       : chatStage === "advantage"
-                        ? "Contoh: produk fresh, harga terjangkau, layanan cepat..."
+                        ? "cth: roti dipanggang tiap pagi sejak 2018, 200+ pelanggan setia, bahan lokal pilihan..."
                         : "Ketik nama bisnis Anda..."
                 }
                 autoFocus
@@ -1887,7 +1989,7 @@ export function SiteWizard({
                   style={{
                     ...skeletonPanel,
                     height: 260,
-                    border: chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm" || chatStage === "done"
+                    border: chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm" || chatStage === "done"
                       ? "1px solid rgba(124,58,237,0.35)"
                       : "1px solid rgba(255,255,255,0.055)",
                     boxShadow: chatStage === "confirm" || chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
@@ -1976,7 +2078,7 @@ export function SiteWizard({
                 </section>
 
                 {/* Scanning line effect when stage changes */}
-                {(chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm") && (
+                {(chatStage === "advantage" || chatStage === "detail" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "location" || chatStage === "confirm") && (
                   <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
                     <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
                     <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>

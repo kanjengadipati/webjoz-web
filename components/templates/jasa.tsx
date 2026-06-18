@@ -4,7 +4,8 @@ import React from "react";
 import { Shield, Globe, Zap, MapPin, Phone, Mail, ArrowRight, Send, Star, Sparkles } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
+  NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
+  CartProvider, CartFab,
   WAFloatingButton, BackToTop, navCtaHref, FaqAccordion, SeoEditorPreview,
   ContactSection,
 } from "./shared";
@@ -14,7 +15,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, catalog } = content;
   const dt = design_token ?? null;
   const sectionOrder = (() => {
     const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
@@ -22,6 +23,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     if (testimonials && !order.includes("testimonials")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "testimonials");
+    }
+    if (catalog && !order.includes("catalog")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "catalog");
     }
     return order;
   })();
@@ -127,6 +132,52 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    catalog: catalog ? (
+      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={catalog} render={(catalogData) => (
+          <section className="px-6 py-24 bg-white border-y border-slate-200" id="catalog">
+            <div className="max-w-6xl mx-auto space-y-14">
+              <div className="text-center space-y-3">
+                {catalogData.eyebrow && <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-955 tracking-tight">{catalogData.title}</h2>
+                {catalogData.subtitle && <p className="text-slate-600 max-w-2xl mx-auto">{catalogData.subtitle}</p>}
+              </div>
+              {catalogData.categories?.map((cat, ci) => (
+                <div key={ci} className="space-y-6">
+                  <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-3">{cat.name}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {cat.items?.map((item, ii) => (
+                      <MenuCatalogCard
+                        key={ii}
+                        itemId={`catalog-${ci}-${ii}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        badge={item.badge}
+                        icon={Sparkles}
+                        className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all"
+                        imageClassName="w-full h-40 object-cover rounded-xl border border-slate-200"
+                        placeholderClassName="w-full h-40 rounded-xl border border-indigo-100 bg-indigo-50 flex items-center justify-center"
+                        placeholderIconClassName="w-10 h-10 text-indigo-500"
+                        contentClassName="space-y-3"
+                        headerClassName="flex items-start justify-between gap-3"
+                        titleClassName="font-extrabold text-slate-900 text-base leading-snug"
+                        descriptionClassName="text-sm text-slate-600 leading-relaxed"
+                        priceClassName="font-bold text-indigo-600 text-sm whitespace-nowrap"
+                        badgeClassName="inline-block mb-2 text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full"
+                        buttonClassName="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all"
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(faq) => (
@@ -212,6 +263,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   } as Record<string, React.ReactNode>;
 
   return (
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
     <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
@@ -267,8 +319,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
+      {!isEditorMode && <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />}
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
+    </CartProvider>
   );
 };

@@ -28,12 +28,16 @@ export interface StreamEvent {
 export interface GenerateStreamRequest {
   business_name: string;
   business_type: string;
+  business_sub_type?: string;
   description?: string;
   template_id?: string;
   whatsapp?: string;
   location?: string;
   mood?: string;
   selling_points?: string[];
+  story?: string;
+  tagline?: string;
+  proof?: string;
 }
 
 export interface UseGenerateStreamOptions {
