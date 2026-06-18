@@ -685,7 +685,7 @@ export function SiteWizard({
       }
       // Advance to location step
       setTimeout(() => {
-        typeMessage("Bisnis Anda berlokasi di mana? (opsional)\n\nMenyertakan kota membantu AI menulis copy yang lebih spesifik — misalnya \"Kafe kopi spesialti di Yogyakarta\" terasa lebih nyata dari \"Kafe kopi spesialti\" saja.", () => {
+        typeMessage("Dimana lokasi bisnis Anda? Ini bantu AI buat konten yang lebih relevan. (opsional)", () => {
           setChatStage("location");
         });
       }, 400);
