@@ -1299,11 +1299,11 @@ export function SiteWizard({
             // Inline-editable confirm card — uses hoisted state (no hooks inside)
             const editingField = confirmEditingField;
             const setEditingField = setConfirmEditingField;
-            const draftName = confirmDraftName || businessName;
+            const draftName = confirmDraftName;
             const setDraftName = setConfirmDraftName;
-            const draftWA = confirmDraftWA || whatsapp;
+            const draftWA = confirmDraftWA;
             const setDraftWA = setConfirmDraftWA;
-            const draftLocation = confirmDraftLocation || location;
+            const draftLocation = confirmDraftLocation;
             const setDraftLocation = setConfirmDraftLocation;
 
             const saveField = (field: string) => {
