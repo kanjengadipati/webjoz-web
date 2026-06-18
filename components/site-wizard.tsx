@@ -616,13 +616,11 @@ export function SiteWizard({
     }
   }, [pendingPreview, loadingStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When chatStage → "done", type final message THEN start generate
+  // When chatStage → "done" (legacy path, no longer triggered in normal flow)
   useEffect(() => {
     if (chatStage === "done" && previewState === "wireframe" && mood) {
       setRegenCount(0);
-      typeMessage("Sempurna. Semua data sudah siap. Website sedang dibuat...", () => {
-        handleGenerate(businessName, businessType, mood, description, 0);
-      });
+      handleGenerate(businessName, businessType, mood, description, 0);
     }
   }, [chatStage]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1295,7 +1293,7 @@ export function SiteWizard({
           ))}
 
           {/* Confirm step — show summary before generating */}
-          {chatStage === "confirm" && previewState === "wireframe" && (() => {
+          {chatStage === "confirm" && (() => {
             const editingField = confirmEditingField;
             const setEditingField = setConfirmEditingField;
             const draftName = confirmDraftName;
@@ -1502,13 +1500,18 @@ export function SiteWizard({
                   {/* Generate */}
                   <div className="px-3 py-2.5 border-t" style={rowBorder}>
                     <button
-                      onClick={() => { if (editingField) return; setChatStage("done"); }}
-                      disabled={!!editingField}
+                      onClick={() => {
+                        if (editingField) return;
+                        const nextRegen = previewState === "result" ? regenCount + 1 : 0;
+                        setRegenCount(nextRegen);
+                        handleGenerate(businessName, businessType, mood, description, nextRegen);
+                      }}
+                      disabled={!!editingField || previewState === "loading"}
                       className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
                       style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
                     >
                       <Wand2 className="w-4 h-4" />
-                      {editingField ? "Selesai edit dulu ↑" : "Generate Website →"}
+                      {editingField ? "Selesai edit dulu ↑" : previewState === "result" ? "Generate Ulang →" : previewState === "loading" ? "Sedang dibuat..." : "Generate Website →"}
                     </button>
                   </div>
                 </div>
