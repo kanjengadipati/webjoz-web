@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -10,7 +11,9 @@ import {
   Eye,
   Loader2,
   MessageCircle,
+  Monitor,
   Pencil,
+  Smartphone,
   Sparkles,
   Wand2,
 } from "lucide-react";
@@ -48,7 +51,7 @@ type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "detail-inputs" | "mood-chips";
+  widget?: "type-chips" | "detail-inputs";
 };
 
 // content + design_token returned from public generate-preview endpoint
@@ -58,22 +61,102 @@ type PreviewData = {
   template_id?: string;
 };
 
-// ─── Template selection (mirrors backend autoSelectTemplate) ─────────────────
-function selectTemplate(businessType: string, mood: string): string {
-  const lower = businessType.toLowerCase();
-  const lm = mood.toLowerCase();
+function DevicePreviewFrame({
+  device,
+  children,
+}: {
+  device: "desktop" | "mobile";
+  children: React.ReactNode;
+}) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
 
-  // Mood overrides (highest priority)
-  if (lm.includes("elegan") || lm.includes("mewah")) return "TEMPLATE_ELEGANT";
-  if (lm.includes("natural") || lm.includes("hangat")) return "TEMPLATE_NATURAL";
-  if (lm.includes("fun") || lm.includes("colorful") || lm.includes("playful")) return "TEMPLATE_COLORFUL";
-  if (lm.includes("bold") || lm.includes("tegas")) return "TEMPLATE_BOLD";
-  if (lm.includes("modern") || lm.includes("minimalis")) {
-    const isJasaType = lower.includes("jasa") || lower.includes("konsultan") || lower.includes("company") ||
-      lower.includes("fotografer") || lower.includes("properti") || lower.includes("konstruksi") ||
-      lower.includes("pendidikan");
-    return isJasaType ? "TEMPLATE_MINIMALIST" : "TEMPLATE_COLORFUL";
-  }
+  const syncFrameDocument = () => {
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc) return;
+
+    doc.head.innerHTML = "";
+    const viewport = doc.createElement("meta");
+    viewport.name = "viewport";
+    viewport.content = "width=device-width, initial-scale=1";
+    doc.head.appendChild(viewport);
+
+    const baseStyle = doc.createElement("style");
+    baseStyle.textContent = `html,body{margin:0;min-height:100%;background:#fff;} body{overflow:${device === "desktop" ? "hidden" : "auto"};}`;
+    doc.head.appendChild(baseStyle);
+
+    document
+      .querySelectorAll<HTMLLinkElement | HTMLStyleElement>('link[rel="stylesheet"], style')
+      .forEach((node) => {
+        doc.head.appendChild(node.cloneNode(true));
+      });
+
+    if (doc.body) setMountNode(doc.body);
+  };
+
+  useEffect(() => {
+    syncFrameDocument();
+  }, [device]);
+
+  return (
+    <iframe
+      key={device}
+      ref={iframeRef}
+      title={device === "desktop" ? "Preview desktop" : "Preview mobile"}
+      onLoad={syncFrameDocument}
+      srcDoc="<!doctype html><html><head></head><body></body></html>"
+      className={device === "desktop" ? "h-[1400px] w-[1440px] max-w-none bg-white" : "h-full w-full bg-white"}
+    >
+      {mountNode ? createPortal(children, mountNode) : null}
+    </iframe>
+  );
+}
+
+function DesktopMonitorPreview({ children }: { children: React.ReactNode }) {
+  const screenRef = useRef<HTMLDivElement>(null);
+  const [screenWidth, setScreenWidth] = useState(0);
+  const scale = screenWidth > 0 ? Math.min(screenWidth / 1440, 0.8) : 0.45;
+  const screenHeight = Math.max(430, Math.min(620, Math.round(1180 * scale)));
+
+  useEffect(() => {
+    const node = screenRef.current;
+    if (!node) return;
+
+    const update = () => setScreenWidth(node.clientWidth);
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col items-center justify-center pb-6">
+      <div className="w-full rounded-[18px] border-[8px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 md:rounded-[22px] md:border-[12px]">
+        <div ref={screenRef} className="w-full overflow-hidden rounded-[10px] bg-white" style={{ height: screenHeight }}>
+          <div
+            style={{
+              width: 1440,
+              height: 1400,
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+          >
+            <DevicePreviewFrame device="desktop">
+              {children}
+            </DevicePreviewFrame>
+          </div>
+        </div>
+      </div>
+      <div className="h-5 w-16 bg-slate-900 shadow-xl md:h-6 md:w-20" />
+      <div className="h-3 w-36 rounded-t-xl bg-slate-900 shadow-xl md:w-44" />
+    </div>
+  );
+}
+
+// ─── Template fallback for local preview/save when backend template is missing ─
+function selectTemplate(businessType: string): string {
+  const lower = businessType.toLowerCase();
 
   // Business type mapping
   if (lower.includes("kafe") || lower.includes("cafe") || lower.includes("kopi") ||
@@ -89,28 +172,6 @@ function selectTemplate(businessType: string, mood: string): string {
     lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) return "TEMPLATE_JASA02";
 
   return "TEMPLATE_DYNAMIC";
-}
-
-// Returns a rotation of different templates on re-generate so user sees real layout variety.
-// regenCount=0 → primary selection, 1→ alt1, 2→alt2, cycles back.
-function selectAlternateTemplate(businessType: string, mood: string, regenCount: number): string {
-  const primary = selectTemplate(businessType, mood);
-  // Build a pool of all 8 templates, put primary first, then rotate
-  const all = [
-    "TEMPLATE_KULINER01",
-    "TEMPLATE_JASA02",
-    "TEMPLATE_PRODUK03",
-    "TEMPLATE_DYNAMIC",
-    "TEMPLATE_ELEGANT",
-    "TEMPLATE_NATURAL",
-    "TEMPLATE_COLORFUL",
-    "TEMPLATE_MINIMALIST",
-  ];
-  // Remove primary from pool so it doesn't repeat on regen=1
-  const others = all.filter(t => t !== primary);
-  if (regenCount === 0) return primary;
-  // Cycle through the others
-  return others[(regenCount - 1) % others.length];
 }
 
 function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
@@ -187,15 +248,6 @@ const SUB_TYPES: Record<string, Array<{ value: string; emoji: string; label: str
   ],
 };
 
-const MOODS = [
-  { value: "Profesional", emoji: "🎯", desc: "Serius & terpercaya" },
-  { value: "Modern & Minimalis", emoji: "⚡", desc: "Clean & elegan" },
-  { value: "Fun & Colorful", emoji: "🎨", desc: "Ceria & energik" },
-  { value: "Elegan & Mewah", emoji: "👑", desc: "Premium & eksklusif" },
-  { value: "Natural & Hangat", emoji: "🌿", desc: "Earthy & ramah" },
-  { value: "Bold & Tegas", emoji: "🔥", desc: "Kuat & impactful" },
-];
-
 // preserveUserBrand & buildFullContent dipindah ke lib/build-full-content.ts
 // supaya bisa dipakai juga di app/create/page.tsx (auto-save setelah login),
 // bukan cuma di preview wizard ini.
@@ -213,8 +265,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
-  // Stage order: name → type → service_area → whatsapp → mood → confirm
+  const [chatStage, setChatStage] = useState<"name" | "type" | "whatsapp" | "service_area" | "confirm" | "done">("name");
+  // Stage order: name → type → service_area → whatsapp → confirm
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -235,7 +287,6 @@ export function SiteWizard({
       case "type": return 28;
       case "service_area": return 55;
       case "whatsapp": return 70;
-      case "mood": return 85;
       case "confirm": return 100;
       case "done": return 100;
       default: return 100;
@@ -248,7 +299,6 @@ export function SiteWizard({
       case "type": return 2;
       case "service_area": return 3;
       case "whatsapp": return 4;
-      case "mood": return 5;
       case "confirm": return 5;
       case "done": return 5;
       default: return 1;
@@ -276,11 +326,11 @@ export function SiteWizard({
   const [confirmDraftName, setConfirmDraftName] = useState("");
   const [confirmDraftWA, setConfirmDraftWA] = useState("");
   const [confirmDraftServiceArea, setConfirmDraftServiceArea] = useState("");
-  const [mood, setMood] = useState("");
 
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
   const [streamedSections, setStreamedSections] = useState<Record<string, any>>({});
   const [streamedDesignToken, setStreamedDesignToken] = useState<Record<string, any> | null>(null);
   const [streamedTemplateId, setStreamedTemplateId] = useState<string>("");
@@ -323,10 +373,17 @@ export function SiteWizard({
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
   const historyIndexRef = useRef(historyIndex);
+  const hasPromptedDetailsRef = useRef(false);
 
   useEffect(() => {
     historyIndexRef.current = historyIndex;
   }, [historyIndex]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
+      setPreviewDevice("mobile");
+    }
+  }, []);
 
   const { startStream, cancelStream } = useGenerateStream({
     onDesignToken: (token) => {
@@ -337,9 +394,6 @@ export function SiteWizard({
       streamedSectionsRef.current = { ...streamedSectionsRef.current, [section]: data }; // sync
       setStreamedSections((prev) => ({ ...prev, [section]: data }));
       setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
-      if (section === "hero") {
-        setPreviewState("result");
-      }
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
@@ -358,6 +412,20 @@ export function SiteWizard({
       });
       setPreviewData(mergedPreview);
       setPreviewState("result");
+      if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
+        setPreviewDevice("mobile");
+      }
+      setMobilePreviewOpen(true);
+      if (!hasPromptedDetailsRef.current) {
+        hasPromptedDetailsRef.current = true;
+        typeMessage(
+          "Preview awal sudah siap. Supaya website lebih siap dipublish, lengkapi jangkauan bisnis dan nomor WhatsApp: jangkauan membantu AI menulis konten yang lebih relevan untuk area pelanggan, sedangkan WhatsApp membuat tombol kontak langsung bisa dipakai.\n\nJangkauan bisnis Anda? (atau Enter untuk lewati)",
+          () => {
+            setChatStage("service_area");
+            window.setTimeout(() => inputRef.current?.focus(), 0);
+          }
+        );
+      }
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
@@ -367,7 +435,6 @@ export function SiteWizard({
           description,
           whatsapp: whatsapp || "",
           service_area: serviceArea || "",
-          mood,
           templateId: mergedPreview.template_id,
           previewContent: mergedPreview.content,
           previewDesignToken: mergedPreview.design_token,
@@ -423,27 +490,7 @@ export function SiteWizard({
     }
   }, [previewState]);
 
-  // When chatStage → "done" (legacy path, no longer triggered in normal flow)
-  useEffect(() => {
-    if (chatStage === "done" && previewState === "wireframe" && mood) {
-      setRegenCount(0);
-      handleGenerate(businessName, businessType, mood, description, 0);
-    }
-  }, [chatStage]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // ── Chat handlers ────────────────────────────────────────────────────────
-
-  const proceedToMoodStep = () => {
-    setChatStage("mood");
-    setTimeout(() => {
-      typeMessage("Oke! Sekarang pilih gaya visual untuk website-nya.", () => {
-        setMessages((prev) => [
-          ...prev,
-          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
-        ]);
-      });
-    }, 300);
-  };
 
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
@@ -484,13 +531,16 @@ export function SiteWizard({
         setWhatsapp("");
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
+      if (previewState === "result") setHasUnsavedEdits(true);
       setTimeout(() => {
-        typeMessage("Sip. Sekarang gong-nya: pilih gaya visual untuk website-nya.", () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" },
-          ]);
-          setChatStage("mood");
+        setConfirmDraftName(businessName);
+        setConfirmDraftWA(normalizedWhatsapp);
+        setConfirmDraftServiceArea(serviceArea);
+        setConfirmEditingField(null);
+        typeMessage(previewState === "result"
+          ? "Sip. Cek data tambahan ini, lalu terapkan agar preview diperbarui."
+          : "Hampir selesai! Cek dulu data website-nya sebelum dibuat.", () => {
+          setChatStage("confirm");
         });
       }, 400);
 
@@ -502,11 +552,12 @@ export function SiteWizard({
       } else {
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
+      if (previewState === "result") setHasUnsavedEdits(true);
       setTimeout(() => {
         setConfirmDraftServiceArea(val.trim() || serviceArea);
         const serviceAreaReply = val.trim()
-          ? `Oke, berarti jangkauan bisnisnya ${val.trim()}. Ini membantu website terasa lebih relevan untuk calon pelanggan.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)`
-          : "Oke, jangkauan bisnis bisa dilengkapi nanti di editor.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)";
+          ? `Oke, jangkauan bisnisnya ${val.trim()}. Saya pakai info ini supaya website terasa lebih relevan untuk calon pelanggan di area tersebut.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)`
+          : "Oke, jangkauan bisnis bisa dilengkapi nanti di editor. Nomor WhatsApp tetap berguna agar tombol kontak di website langsung mengarah ke chat pelanggan.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)";
         typeMessage(serviceAreaReply, () => {
           setInputValue("");
           setChatStage("whatsapp");
@@ -531,17 +582,21 @@ export function SiteWizard({
     setBusinessSubType(subType);
     setDescription("");
     setInputValue("");
-    setChatStage("service_area");
-
-    const aiResponse = `Bagus, bisnis ${subType}.\n\nJangkauan bisnis Anda? (atau Enter untuk lewati)`;
+    setChatStage("done");
+    setConfirmDraftName(businessName);
+    setConfirmDraftWA(whatsapp);
+    setConfirmDraftServiceArea(serviceArea);
+    setConfirmEditingField(null);
+    setRegenCount(0);
+    setHasUnsavedEdits(false);
+    hasPromptedDetailsRef.current = false;
 
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
     ]);
-    setTimeout(() => {
-      typeMessage(aiResponse, () => undefined);
-    }, 400);
+
+    void handleGenerate(businessName, businessType, { businessSubType: subType });
   };
 
   // ── Generate (public, no login needed) ──────────────────────────────────
@@ -549,10 +604,16 @@ export function SiteWizard({
   const handleGenerate = async (
     bName = businessName,
     bType = businessType,
-    bMood = mood,
-    _bDescription = description,
-    regen = regenCount
+    overrides: {
+      businessSubType?: string;
+      whatsapp?: string;
+      serviceArea?: string;
+    } = {}
   ) => {
+    const nextBusinessSubType = overrides.businessSubType ?? businessSubType;
+    const nextWhatsapp = overrides.whatsapp ?? whatsapp;
+    const nextServiceArea = overrides.serviceArea ?? serviceArea;
+
     setStreamedSections({});
     setStreamedDesignToken(null);
     setArrivedSections([]);
@@ -562,30 +623,23 @@ export function SiteWizard({
     setPreviewState("loading");
     setLoadingStep(0);
 
-    const effectiveType = businessSubType || bType;
-    const selectedTemplateId = selectAlternateTemplate(effectiveType, bMood, regen);
-
     localStorage.setItem(
       PENDING_KEY,
       JSON.stringify({
         businessName: bName,
         businessType: bType,
-        businessSubType,
-        whatsapp: whatsapp || "",
-        service_area: serviceArea || "",
-        mood: bMood,
-        templateId: selectedTemplateId,
+        businessSubType: nextBusinessSubType,
+        whatsapp: nextWhatsapp || "",
+        service_area: nextServiceArea || "",
       })
     );
 
     await startStream({
       business_name: bName,
       business_type: bType,
-      business_sub_type: businessSubType || undefined,
-      whatsapp: whatsapp || "",
-      service_area: serviceArea || "",
-      mood: bMood,
-      template_id: selectedTemplateId,
+      business_sub_type: nextBusinessSubType || undefined,
+      whatsapp: nextWhatsapp || "",
+      service_area: nextServiceArea || "",
     });
   };
 
@@ -641,7 +695,7 @@ export function SiteWizard({
           headers: { "X-Tenant-ID": tenantId.toString() },
           body: JSON.stringify({
             name: businessName,
-            template_id: previewData?.template_id || selectTemplate(businessSubType || businessType, mood),
+            template_id: previewData?.template_id || selectTemplate(businessSubType || businessType),
             subdomain,
           }),
         },
@@ -707,30 +761,7 @@ export function SiteWizard({
   const headerCopy = previewData?.content?.header as Record<string, any> | undefined;
   const palette = previewData?.design_token?.palette as Record<string, string> | undefined;
   const typography = previewData?.design_token?.typography as Record<string, string> | undefined;
-
-  // Helper to get logs based on selected mood/type
-  const getLogMessages = () => {
-    const keyword = businessType === "Toko & UMKM" ? "toko & produk" :
-      businessType === "Kuliner" ? "kuliner" :
-        businessType === "Jasa" ? "jasa profesional" : "corporate";
-
-    const toneMap: Record<string, string> = {
-      "Profesional": "profesional & tepercaya",
-      "Modern & Minimalis": "modern & profesional",
-      "Fun & Colorful": "ceria & dinamis",
-      "Elegan & Mewah": "premium & eksklusif",
-      "Natural & Hangat": "hangat & natural",
-      "Bold & Tegas": "kuat & tegas",
-    };
-    const tone = toneMap[mood] || mood.toLowerCase() || "modern & profesional";
-
-    return [
-      `Menemukan keyword: ${keyword}`,
-      `Memilih tone: ${tone}`,
-      `Menambahkan CTA WhatsApp`,
-      `Membuat struktur halaman...`,
-    ];
-  };
+  const shouldPromptDetails = previewState === "result" && (!serviceArea || !whatsapp);
 
   const getModalProgressPercent = () => {
     switch (loadingStep) {
@@ -844,36 +875,37 @@ export function SiteWizard({
       const isStreamingLive = hasLiveData && (!streamedTemplateId || !hasPreviewData);
       const liveContent = isStreamingLive ? streamedSections : previewData!.content;
       const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : previewData!.design_token;
-      const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData!.template_id) || selectTemplate(businessSubType || businessType, mood);
+      const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData!.template_id) || selectTemplate(businessSubType || businessType);
       const TemplateComponent = getTemplateComponent(liveTemplateId);
       const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
+      const templatePreview = (
+        <TemplateComponent
+          content={buildFullContent(displayData, businessName, businessType, description, whatsapp) as any}
+          design_token={liveToken as any}
+          isEditorMode={false}
+          arrivedSections={isStreamingLive ? arrivedSections : undefined}
+        />
+      );
       resultPreviewContent = (
         <div className="h-full flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto min-h-0" key={`${liveTemplateId}-${regenCount}-${historyIndex}`}>
-            <TemplateComponent
-              content={buildFullContent(displayData, businessName, businessType, description, whatsapp) as any}
-              design_token={liveToken as any}
-              isEditorMode={false}
-              arrivedSections={isStreamingLive ? arrivedSections : undefined}
-            />
-          </div>
-          {/* CTA strip — only when all sections arrived (done event) */}
-          {hasPreviewData && (
-          <div className="shrink-0 px-3 py-3 flex items-center justify-between gap-3 md:px-6 md:py-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <div className="flex items-center gap-2 min-w-0">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <p className="text-xs font-semibold text-slate-300 truncate">
-                Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat!
-              </p>
+          {previewDevice === "mobile" ? (
+            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${liveTemplateId}-${regenCount}-${historyIndex}`}>
+              <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
+                <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
+                <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
+                  <DevicePreviewFrame device="mobile">
+                    {templatePreview}
+                  </DevicePreviewFrame>
+                </div>
+                <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
+              </div>
             </div>
-            <button onClick={handleGoToEditor}
-              className="shrink-0 flex items-center gap-2 py-2.5 px-3 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap md:px-5"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}>
-              <Pencil className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Kustomisasi & Publish →</span>
-              <span className="sm:hidden">Publish →</span>
-            </button>
-          </div>
+          ) : (
+            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-2 pb-24 md:p-6" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
+              <DesktopMonitorPreview>
+                {templatePreview}
+              </DesktopMonitorPreview>
+            </div>
           )}
         </div>
       );
@@ -1013,58 +1045,6 @@ export function SiteWizard({
                 );
               }
 
-              if (m.widget === "mood-chips") {
-                const isLocked = chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done";
-                return (
-                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {MOODS.map((mo) => {
-                        const isSelected = mood === mo.value;
-                        return (
-                          <button
-                            key={mo.value}
-                            disabled={isLocked}
-                            onClick={() => {
-                              if (isLocked) return;
-                              setMood(mo.value);
-                              setMessages((prev) => [
-                                ...prev,
-                                { id: Date.now().toString(), sender: "user", text: `${mo.emoji} ${mo.value}` },
-                              ]);
-                              setTimeout(() => {
-                                setConfirmDraftName(businessName);
-                                setConfirmDraftWA(whatsapp);
-                                setConfirmDraftServiceArea(serviceArea);
-                                setConfirmEditingField(null);
-                                typeMessage("Hampir selesai! Cek dulu data website-nya sebelum dibuat.", () => {
-                                  setChatStage("confirm");
-                                });
-                              }, 400);
-                            }}
-                            className={`flex items-center gap-2 p-2.5 border rounded-xl text-left transition-all ${isSelected
-                              ? "border-[#7c3aed]/70"
-                              : isLocked
-                                ? "opacity-30 cursor-default"
-                                : "hover:border-[#7c3aed]/50 active:scale-[0.97] cursor-pointer"
-                              }`}
-                            style={isSelected
-                              ? { background: "rgba(124,58,237,0.15)", borderColor: "rgba(124,58,237,0.5)" }
-                              : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
-                          >
-                            <span className="text-base shrink-0">{mo.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <span className={`text-xs font-bold block leading-tight ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{mo.value}</span>
-                              <span className="text-[10px] text-slate-500 leading-tight">{mo.desc}</span>
-                              {isSelected && <span className="text-[9px] font-bold text-[#7c3aed] block mt-0.5">✓ Dipilih</span>}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              }
-
               // ── Regular text messages ──
               const messageText =
                 m.id === "init" && chatStage === "name"
@@ -1121,8 +1101,8 @@ export function SiteWizard({
             };
 
             const rowBorder = { borderColor: "rgba(255,255,255,0.06)" };
-            const chipActive = { background: "rgba(124,58,237,0.18)", borderColor: "#7c3aed", color: "#a78bfa" };
             const chipDefault = { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#64748b" };
+            const chipActive = { background: "rgba(124,58,237,0.15)", borderColor: "#7c3aed", color: "#c4b5fd" };
             const editBtn = { color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" };
 
             const clearWizardCopyContext = () => {
@@ -1210,38 +1190,6 @@ export function SiteWizard({
                     )}
                   </div>
 
-                  {/* ── GAYA ── collapsed */}
-                  <div className="px-3 py-1.5 border-t" style={rowBorder}>
-                    {editingField === "mood" ? (
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-semibold text-slate-500">Gaya Visual</span>
-                          <button onClick={() => setEditingField(null)} className="text-[10px] text-slate-500">✕ tutup</button>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {MOODS.map(mo => (
-                            <button key={mo.value} type="button" onClick={() => { setMood(mo.value); setEditingField(null); setHasUnsavedEdits(true); }}
-                              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
-                              style={mood === mo.value ? chipActive : chipDefault}>
-                              {mo.emoji} {mo.value}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Gaya</span>
-                        <span className="text-[12px] text-white flex-1 truncate">
-                          {(() => {
-                            const mo = MOODS.find(m => m.value === mood);
-                            return <>{mo?.emoji && <span className="mr-1">{mo.emoji}</span>}{mood}</>;
-                          })()}
-                        </span>
-                        <button type="button" onClick={() => setEditingField("mood")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
-                      </div>
-                    )}
-                  </div>
-
                   {/* ── WA ── inline */}
                   <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
                     <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">WA</span>
@@ -1303,7 +1251,7 @@ export function SiteWizard({
                         const nextRegen = previewState === "result" ? regenCount + 1 : 0;
                         setRegenCount(nextRegen);
                         setHasUnsavedEdits(false);
-                        handleGenerate(businessName, businessType, mood, description, nextRegen);
+                        handleGenerate(businessName, businessType);
                       }}
                       disabled={!!editingField || previewState === "loading"}
                       className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
@@ -1347,32 +1295,6 @@ export function SiteWizard({
                     {[15, 30, 45, 60, 75, 100][loadingStep] ?? 15}%
                   </span>
                 </div>
-
-                {/* Template badge */}
-                {mood && (() => {
-                  const tid = selectAlternateTemplate(businessSubType || businessType, mood, regenCount);
-                  const templateNames: Record<string, { name: string; emoji: string }> = {
-                    "TEMPLATE_KULINER01": { name: "Vista Prime", emoji: "🍜" },
-                    "TEMPLATE_JASA02": { name: "Elevate One", emoji: "💼" },
-                    "TEMPLATE_PRODUK03": { name: "Forge Flow", emoji: "🛍️" },
-                    "TEMPLATE_ELEGANT": { name: "Noir Prestige", emoji: "👑" },
-                    "TEMPLATE_NATURAL": { name: "Bumi Lestari", emoji: "🌿" },
-                    "TEMPLATE_COLORFUL": { name: "Pop Riot", emoji: "🎨" },
-                    "TEMPLATE_MINIMALIST": { name: "White Space", emoji: "⚡" },
-                    "TEMPLATE_DYNAMIC": { name: "AI Design Engine", emoji: "✨" },
-                    "TEMPLATE_BOLD": { name: "Fire Force", emoji: "🔥" },
-                  };
-                  const tpl = templateNames[tid] || { name: tid, emoji: "✨" };
-                  return (
-                    <div className="flex items-center gap-1.5 pt-1">
-                      <span className="text-[10px]" style={{ color: "rgba(148,163,184,0.6)" }}>Template terpilih:</span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.25)" }}>
-                        {tpl.emoji} {tpl.name}
-                      </span>
-                    </div>
-                  );
-                })()}
 
                 {/* Step list */}
                 <div className="space-y-2">
@@ -1427,77 +1349,22 @@ export function SiteWizard({
             </div>
           )}
 
-          {/* Result status in chat — rich AI bubble with CTA */}
-          {previewState === "result" && (
-            <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                <Sparkles className="w-3 h-3 text-white" />
-              </div>
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
-                {/* Info bubble */}
-                <div
-                  className="rounded-2xl rounded-tl-sm px-3.5 py-3 text-sm leading-relaxed"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" }}
-                >
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span className="text-emerald-400 font-bold text-xs">Website siap!</span>
-                  </div>
-                  <p className="text-slate-300 text-xs leading-relaxed">
-                    Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat. Buka preview, lalu kustomisasi dan publish kapan saja.
-                  </p>
-                </div>
-
-                {/* CTA buttons */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={handleGoToEditor}
-                    className="flex items-center justify-between gap-2 w-full px-3.5 py-2.5 rounded-xl text-white text-xs font-bold transition-all hover:opacity-90 active:scale-[0.98]"
-                    style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Pencil className="w-3.5 h-3.5" />
-                      Kustomisasi & Publish
-                    </div>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                  {/* History navigation — shown after 2+ generates */}
-                  {historyNavContent}
-                  {!hasUnsavedEdits && (
-                  <button
-                    onClick={() => {
-                      const nextRegen = regenCount + 1;
-                      setRegenCount(nextRegen);
-                      handleGenerate(businessName, businessType, mood, description, nextRegen);
-                    }}
-                    className="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
-                    style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.25)", color: "#a78bfa" }}
-                  >
-                    <Wand2 className="w-3.5 h-3.5" />
-                    Generate ulang dengan desain berbeda
-                  </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           <div ref={chatEndRef} />
         </div>
 
         <button
           type="button"
           onClick={() => setMobilePreviewOpen(true)}
-          className="absolute bottom-6 right-5 z-30 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-extrabold text-slate-950 shadow-[0_14px_35px_rgba(0,0,0,0.28)] transition-all active:scale-95 md:hidden"
+          className="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
         >
-          <Eye className="h-4 w-4 text-slate-500" />
+          <Eye className="h-3.5 w-3.5 text-slate-500" />
           {previewState === "loading" ? "Progress" : "Preview"}
-          <span className={`h-2 w-2 rounded-full ${previewState === "result" ? "bg-emerald-500" : previewState === "loading" ? "bg-amber-500" : "bg-sky-500"}`} />
+          <span className={`h-1.5 w-1.5 rounded-full ${previewState === "result" ? "bg-emerald-500" : previewState === "loading" ? "bg-amber-500" : "bg-sky-500"}`} />
         </button>
 
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
-        {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
-          <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        {chatStage !== "type" && chatStage !== "done" && chatStage !== "confirm" && (
+          <div className="shrink-0 px-4 pb-12 pt-2 md:py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
                 ref={inputRef}
@@ -1557,6 +1424,25 @@ export function SiteWizard({
             <MessageCircle className="h-4 w-4" />
           </button>
 
+          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+            <button
+              type="button"
+              onClick={() => setPreviewDevice("desktop")}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${previewDevice === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              aria-label="Preview desktop"
+            >
+              <Monitor className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPreviewDevice("mobile")}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${previewDevice === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              aria-label="Preview mobile"
+            >
+              <Smartphone className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
           {/* Tab favicon + url */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="w-4 h-4 rounded-sm bg-emerald-500 shrink-0 flex items-center justify-center">
@@ -1582,18 +1468,6 @@ export function SiteWizard({
             </div>
           </div>
 
-          {/* Right browser controls */}
-          <div className="flex items-center gap-2 shrink-0">
-            {previewState === "result" && (
-              <button
-                onClick={handleGoToEditor}
-                className="flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-[#7c3aed] to-violet-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
-              >
-                <Pencil className="w-3 h-3" />
-                Pratinjau Penuh ↗
-              </button>
-            )}
-          </div>
         </div>
 
         {/* ── Browser Content Area ─────────────────────────────────────────── */}
@@ -1641,7 +1515,7 @@ export function SiteWizard({
                   style={{
                     ...skeletonPanel,
                     height: 260,
-                    border: chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
+                    border: chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
                       ? "1px solid rgba(124,58,237,0.35)"
                       : "1px solid rgba(255,255,255,0.055)",
                     boxShadow: chatStage === "confirm" || chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
@@ -1686,15 +1560,15 @@ export function SiteWizard({
 
                     <div className="h-5 w-2/3 rounded-full animate-pulse" style={skeletonSoft} />
 
-                    {/* CTA button — shows mood color when mood selected */}
+                    {/* CTA button */}
                     <div
                       className="h-11 w-36 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-500"
-                      style={mood
+                      style={chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
                         ? { background: "rgba(124,58,237,0.7)", color: "#fff", border: "1px solid rgba(124,58,237,0.8)" }
                         : { ...skeletonStrong }
                       }
                     >
-                      {mood ? "Pesan Sekarang →" : ""}
+                      {chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done" ? "Pesan Sekarang →" : ""}
                     </div>
                   </div>
                   <div className="absolute right-0 inset-y-0 w-2/5" style={skeletonSubtle} />
@@ -1730,7 +1604,7 @@ export function SiteWizard({
                 </section>
 
                 {/* Scanning line effect when stage changes */}
-                {(chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
+                {(chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
                   <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
                     <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
                     <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>
@@ -1844,14 +1718,30 @@ export function SiteWizard({
           {/* Result state */}
           {resultPreviewContent}
 
+          {previewState === "result" && (
+            <button
+              type="button"
+              onClick={handleGoToEditor}
+              className="absolute bottom-4 left-4 z-40 flex h-11 max-w-[calc(100%-2rem)] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95 md:bottom-6 md:left-auto md:right-6 md:h-auto md:max-w-none md:gap-2 md:px-5 md:py-3 md:text-sm md:shadow-[0_14px_35px_rgba(91,33,182,0.35)]"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+            >
+              <Pencil className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Edit & Publish</span>
+              <span className="sm:hidden">Edit & Publish</span>
+              <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => setMobilePreviewOpen(false)}
-            className="absolute bottom-6 right-5 z-40 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-extrabold text-slate-950 shadow-[0_14px_35px_rgba(0,0,0,0.28)] transition-all active:scale-95 md:hidden"
+            className="absolute bottom-4 right-4 z-40 flex h-11 max-w-[calc(100%-2rem)] items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
           >
-            <MessageCircle className="h-4 w-4 text-slate-500" />
-            Chat
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
+            <span className="min-w-0 max-w-32 truncate leading-tight">
+              {shouldPromptDetails ? "Lengkapi data" : "Chat"}
+            </span>
+            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${shouldPromptDetails ? "bg-amber-500" : "bg-emerald-500"}`} />
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import React from "react";
 import { ArrowRight, MapPin, Phone, Mail, ChevronDown, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
+  NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
   ContactSection,
@@ -317,7 +317,8 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between gap-4 relative border-b" style={{ background: `${surface}F0`, borderColor: zinc200, backdropFilter: "blur(8px)" }}>
-            <span className="flex items-center gap-3 text-sm font-medium tracking-widest uppercase" style={{ color: zinc900 }}>
+            <span className="flex shrink-0 items-center gap-3 text-sm font-medium tracking-widest uppercase" style={{ color: zinc900 }}>
+              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={ImageIcon} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
                 {h.tagline && <span className="block text-[9px] font-light uppercase tracking-widest" style={{ color: zinc500 }}>{h.tagline}</span>}

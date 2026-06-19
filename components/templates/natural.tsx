@@ -4,7 +4,7 @@ import React from "react";
 import { Leaf, ArrowRight, Sparkles, MapPin, Phone, Mail, Utensils, Image as ImageIcon, Star } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
+  NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
   ContactSection,
@@ -318,8 +318,8 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative border-b font-sans" style={{ background: `${cream}e0`, borderColor: border }}>
-            <span className="flex items-center gap-2 text-base font-bold" style={{ color: sage }}>
-              <span>🌿</span>
+            <span className="flex shrink-0 items-center gap-2 text-base font-bold" style={{ color: sage }}>
+              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Leaf} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
                 {h.tagline && <span className="block text-[10px] font-normal" style={{ color: brownMuted }}>{h.tagline}</span>}

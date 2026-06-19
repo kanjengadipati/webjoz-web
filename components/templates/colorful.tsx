@@ -4,7 +4,7 @@ import React from "react";
 import { Sparkles, ArrowRight, MapPin, Phone, Mail, ChevronDown, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LeadForm, TestimonialsSection, MenuCatalogCard,
+  NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
   ContactSection,
@@ -344,8 +344,8 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 border-b-4 border-black px-6 py-3 flex items-center justify-between gap-4 relative" style={{ background: yellow }}>
-            <span className="flex items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: black }}>
-              <span className="w-8 h-8 border-2 border-black flex items-center justify-center font-black text-sm" style={{ background: black, color: yellow }}>{h.brand_name?.charAt(0)}</span>
+            <span className="flex shrink-0 items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: black }}>
+              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Sparkles} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 border-2 border-black object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
                 {h.tagline && <span className="block text-[10px] font-bold uppercase tracking-widest" style={{ color: "#5D4037" }}>{h.tagline}</span>}

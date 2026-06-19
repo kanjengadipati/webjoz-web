@@ -316,8 +316,8 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}f0`, borderBottom: `2px solid ${border}`, backdropFilter: "blur(8px)" }}>
-            <span className="flex items-center gap-2 font-black uppercase tracking-tighter text-white text-lg">
-              <Flame className="w-5 h-5" style={{ color: red }} />
+            <span className="flex shrink-0 items-center gap-2 font-black uppercase tracking-tighter text-white text-lg">
+              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Flame} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
                 {h.tagline && <span className="block text-[9px] font-bold uppercase tracking-widest" style={{ color: "rgba(220,38,38,0.7)" }}>{h.tagline}</span>}

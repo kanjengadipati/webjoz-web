@@ -282,8 +282,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 url={headerData.logo_url}
                 icon={headerData.icon}
                 defaultIcon={Utensils}
-                iconClass="w-5 h-5 text-cyan-400 fill-cyan-400/20"
-                imgClass="h-8 w-auto object-contain"
+                iconClass="w-5 h-5 shrink-0 text-cyan-400 fill-cyan-400/20"
+                imgClass="h-8 w-auto shrink-0 object-contain"
               />
               <span className="min-w-0">
                 <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
