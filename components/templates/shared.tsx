@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
-import { WhatsAppIcon } from "@/components/icons";
+
 import type { TestimonialItem, FaqItem } from "./types";
 
 // ─── Nav Menu ─────────────────────────────────────────────────────────────────
@@ -540,6 +540,7 @@ interface ContactSectionProps {
   phone?: string | null;
   email?: string | null;
   mapsUrl?: string | null;
+  align?: "left" | "center" | "right" | null;
   showLeadForm?: boolean | null;
   onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<void>) | null;
   leadSubmitting?: boolean | null;
@@ -552,8 +553,6 @@ interface ContactSectionProps {
   accentColor?: string;
   textClass?: string;
   textStyle?: React.CSSProperties;
-  phoneBtnClass?: string;
-  phoneBtnStyle?: React.CSSProperties;
   leadCardClass?: string;
   leadCardStyle?: React.CSSProperties;
   leadTitleClass?: string;
@@ -569,12 +568,12 @@ interface ContactSectionProps {
 
 const ContactSection: React.FC<ContactSectionProps> = ({
   title, address, phone, email, mapsUrl,
+  align = "center",
   showLeadForm, onSubmitLead, leadSubmitting, leadSuccess, leadError,
   wrapperClass = "py-16 px-6", wrapperStyle,
   titleClass = "text-2xl font-bold", titleStyle,
   accentColor = "currentColor",
   textClass = "text-sm", textStyle,
-  phoneBtnClass, phoneBtnStyle,
   leadCardClass, leadCardStyle,
   leadTitleClass, leadTitleStyle, leadTitleText = "Hubungi Kami",
   leadFormBtnClass, leadFormBtnStyle,
@@ -582,21 +581,29 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   mapsLinkClass, mapsLinkStyle,
 }) => {
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
+  const effectiveAlign = align || "center";
+  const textAlignClass = effectiveAlign === "left" ? "text-left" : effectiveAlign === "right" ? "text-right" : "text-center";
+  const alignItemsClass = effectiveAlign === "left" ? "items-start" : effectiveAlign === "right" ? "items-end" : "items-center";
+  const justifyClass = effectiveAlign === "left" ? "justify-start" : effectiveAlign === "right" ? "justify-end" : "justify-center";
+  const isCenter = effectiveAlign === "center";
+  const containerWidthClass = hasLeadForm ? "max-w-5xl" : isCenter ? "max-w-xl" : "max-w-5xl";
+  const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
   const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
     ...(address && address !== "area sekitar" ? [{ icon: MapPin, text: address }] : []),
-    ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email }] : []),
+    ...(phone ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
+    ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email, href: `mailto:${email}` }] : []),
   ];
 
   return (
     <section id="contact" className={wrapperClass} style={wrapperStyle}>
-      <div className={`mx-auto ${hasLeadForm ? "max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14" : "max-w-xl text-center"}`}>
+      <div className={`${containerWidthClass} ${containerMarginClass} ${hasLeadForm ? "grid md:grid-cols-2 gap-10 md:gap-14" : textAlignClass}`}>
         {/* Contact info */}
-        <div className="space-y-6">
+        <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
           <h2 className={titleClass} style={titleStyle}>{title}</h2>
           <div className="space-y-4">
             {infoItems.map(({ icon: Icon, text, href }) => {
               const content = (
-                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : "items-center justify-center"}`}>
+                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
@@ -612,24 +619,11 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             })}
           </div>
 
-          {/* Phone as prominent CTA */}
-          {phone && phoneBtnClass && (
-            <a
-              href={`https://wa.me/${phone.replace(/\D/g, "")}`}
-              target="_blank" rel="noopener noreferrer"
-              className={`inline-flex max-w-full items-center justify-center gap-2.5 px-6 py-3 font-bold text-sm transition-all hover:brightness-110 ${phoneBtnClass}`}
-              style={phoneBtnStyle}
-            >
-              <WhatsAppIcon size="sm" className="shrink-0" />
-              <span>WhatsApp</span>
-            </a>
-          )}
-
           {mapsUrl && (
             <a
               href={mapsUrl}
               target="_blank" rel="noopener noreferrer"
-              className={`inline-flex items-center gap-2 text-sm font-semibold hover:underline transition-colors ${mapsLinkClass || ""}`}
+              className={`inline-flex items-center ${justifyClass} gap-2 text-sm font-semibold hover:underline transition-colors ${mapsLinkClass || ""}`}
               style={{ color: accentColor, ...mapsLinkStyle }}
             >
               <Globe className="w-4 h-4" />

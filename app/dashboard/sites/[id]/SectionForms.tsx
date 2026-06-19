@@ -865,6 +865,32 @@ export default function SectionForms({
       {activeTab === "contact" && (
         <div className="space-y-3">
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Rata Konten</label>
+            <div className="grid grid-cols-3 gap-1 rounded-lg border border-white/10 bg-white/[0.03] p-1">
+              {[
+                { value: "left", label: "Kiri" },
+                { value: "center", label: "Tengah" },
+                { value: "right", label: "Kanan" },
+              ].map((option) => {
+                const active = (content.contact.align || "center") === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateField("contact", "align", option.value)}
+                    className={`rounded-md px-2 py-1.5 text-[11px] font-semibold transition ${
+                      active
+                        ? "bg-violet-600 text-white"
+                        : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
             </label>

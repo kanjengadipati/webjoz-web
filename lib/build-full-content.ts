@@ -102,6 +102,7 @@ export function buildFullContent(
       address: c.contact?.address || "",
       phone: c.contact?.phone || whatsapp || "",
       email: c.contact?.email || "",
+      align: c.contact?.align || "center",
     },
     footer: {
       ...c.footer,

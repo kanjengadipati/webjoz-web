@@ -285,6 +285,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             phone={c.phone}
             email={c.email}
             mapsUrl={c.maps_url}
+            align={c.align}
             showLeadForm={c.show_lead_form}
             onSubmitLead={onSubmitLead}
             leadSubmitting={leadSubmitting}
@@ -302,8 +303,6 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             leadTitleText=""
             leadFormBtnClass="bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest"
             leadFormInputClass="w-full border border-zinc-200 p-3 text-sm font-light focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white"
-            phoneBtnClass="font-semibold text-sm rounded-sm"
-            phoneBtnStyle={{ background: "#18181b", color: "#ffffff" }}
           />
         )} />
       </MemoPreviewSectionWrapper>

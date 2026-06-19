@@ -128,6 +128,7 @@ export interface TemplateProps {
       phone: string;
       email: string;
       maps_url?: string | null;
+      align?: "left" | "center" | "right" | null;
       show_lead_form?: boolean;
     };
     footer?: {
