@@ -7,7 +7,9 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronLeft,
+  Eye,
   Loader2,
+  MessageCircle,
   Pencil,
   Sparkles,
   Wand2,
@@ -46,7 +48,7 @@ type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "advantage-chips" | "detail-inputs" | "mood-chips";
+  widget?: "type-chips" | "detail-inputs" | "mood-chips";
 };
 
 // content + design_token returned from public generate-preview endpoint
@@ -194,159 +196,6 @@ const MOODS = [
   { value: "Bold & Tegas", emoji: "🔥", desc: "Kuat & impactful" },
 ];
 
-const ADVANTAGE_SUGGESTIONS: Record<string, string[]> = {
-  // Broad types
-  "Kuliner": [
-    "Menu andalan dibuat fresh setiap hari dengan resep khas keluarga.",
-    "Tempat nyaman untuk makan bersama, reservasi, dan acara kecil.",
-    "Bahan pilihan, rasa konsisten, dan pelayanan cepat.",
-  ],
-  "Toko & UMKM": [
-    "Produk lengkap, harga bersaing, dan bisa konsultasi sebelum membeli.",
-    "Stok ready, kualitas terjamin, dan pengiriman cepat.",
-    "Pilihan produk lokal berkualitas dengan layanan ramah.",
-  ],
-  "Jasa": [
-    "Tim berpengalaman, proses kerja jelas, dan hasil rapi tepat waktu.",
-    "Konsultasi mudah, rekomendasi transparan, dan support setelah pekerjaan selesai.",
-    "Solusi dibuat sesuai kebutuhan, bukan paket yang kaku.",
-  ],
-  "Company": [
-    "Tim profesional, standar kerja tinggi, dan dipercaya banyak klien.",
-    "Proses produksi terukur, kualitas konsisten, dan layanan responsif.",
-    "Pengalaman industri kuat dengan solusi yang bisa disesuaikan.",
-  ],
-  // Sub-types — Kuliner
-  "Restoran": [
-    "Resep autentik yang tidak berubah sejak pertama kali buka.",
-    "Bahan segar dari supplier pilihan, dimasak setiap hari.",
-    "Suasana hangat untuk makan bersama keluarga atau rekan bisnis.",
-  ],
-  "Kafe": [
-    "Single origin beans pilihan, diseduh dengan metode yang tepat.",
-    "Tempat kerja dan ngobrol yang nyaman dengan WiFi cepat.",
-    "Menu minuman unik yang tidak ada di tempat lain.",
-  ],
-  "Bakery & Pastry": [
-    "Dipanggang setiap pagi — tidak ada produk dari hari sebelumnya.",
-    "Bahan-bahan premium: butter asli, tepung pilihan, tanpa pengawet.",
-    "Menerima custom order untuk acara dan hampers.",
-  ],
-  "Catering": [
-    "Menu bisa disesuaikan dengan selera dan budget acara Anda.",
-    "Tim terlatih untuk acara dari 20 orang hingga ribuan tamu.",
-    "Kebersihan dan keamanan pangan jadi prioritas utama.",
-  ],
-  "Warung Makan": [
-    "Masakan rumahan yang terasa seperti dimasak sendiri.",
-    "Harga terjangkau dengan porsi yang mengenyangkan.",
-    "Buka setiap hari, cocok untuk sarapan sampai makan malam.",
-  ],
-  "Minuman & Bubble Tea": [
-    "Bahan premium: teh asli, susu segar, tanpa sirup murahan.",
-    "Ratusan variasi rasa dan level kemanisan sesuai selera.",
-    "Sistem antrian digital yang membuat proses order lebih cepat.",
-  ],
-  // Sub-types — Toko & UMKM
-  "Fashion & Pakaian": [
-    "Desain eksklusif yang tidak dijual di toko lain.",
-    "Ukuran lengkap dari S hingga XL, bisa custom ukuran.",
-    "Material berkualitas yang nyaman dipakai seharian.",
-  ],
-  "Elektronik": [
-    "Produk bergaransi resmi, bukan barang rekondisi.",
-    "Teknisi tersedia untuk instalasi dan konsultasi teknis.",
-    "Harga transparan, tidak ada biaya tersembunyi.",
-  ],
-  "Produk Lokal Handmade": [
-    "Setiap produk dibuat tangan — tidak ada dua yang sama persis.",
-    "Bahan lokal berkelanjutan yang mendukung pengrajin setempat.",
-    "Bisa custom nama, warna, atau ukuran sesuai permintaan.",
-  ],
-  "Toko Online": [
-    "Pengiriman ke seluruh Indonesia dalam 1-2 hari kerja.",
-    "Foto produk akurat, tidak ada perbedaan dengan aslinya.",
-    "Proses komplain dan return yang mudah tanpa ribet.",
-  ],
-  "Minimarket": [
-    "Stok lengkap, jarang kosong, buka dari pagi hingga malam.",
-    "Harga bersaing dengan minimarket besar, tanpa antrian panjang.",
-    "Lokasi strategis dan mudah dijangkau dari mana saja.",
-  ],
-  "Perabot & Furnitur": [
-    "Dibuat dari kayu solid pilihan, bukan partikel board.",
-    "Desain bisa dikustomisasi sesuai ukuran dan selera ruangan.",
-    "Pengiriman dan pemasangan termasuk dalam harga.",
-  ],
-  // Sub-types — Jasa
-  "Salon & Kecantikan": [
-    "Stylist berpengalaman yang memahami karakter rambut Anda.",
-    "Produk perawatan premium yang tidak merusak rambut.",
-    "Sistem booking online yang mudah, tidak perlu antri lama.",
-  ],
-  "Barbershop": [
-    "Barber bersertifikat dengan teknik cutting terkini.",
-    "Suasana maskulin yang nyaman, dilengkapi WiFi dan minuman.",
-    "Booking slot tersedia online, tidak perlu datang duluan.",
-  ],
-  "Laundry": [
-    "Pakaian bersih, harum, dan dilipat rapi — siap pakai langsung.",
-    "Antar-jemput tersedia, tidak perlu keluar rumah.",
-    "Mesin cuci modern yang aman untuk semua jenis kain.",
-  ],
-  "Otomotif & Bengkel": [
-    "Mekanik bersertifikat dengan pengalaman lebih dari 5 tahun.",
-    "Harga transparan — estimasi diberikan sebelum pengerjaan dimulai.",
-    "Spare part original, tidak ada barang KW tanpa persetujuan.",
-  ],
-  "Klinik & Kesehatan": [
-    "Dokter berpengalaman dengan jadwal yang fleksibel.",
-    "Alat diagnostik modern untuk hasil pemeriksaan yang akurat.",
-    "Antrian teratur, tidak ada waktu tunggu yang berlebihan.",
-  ],
-  "Konsultan": [
-    "Analisis mendalam sebelum memberikan rekomendasi.",
-    "Laporan yang jelas dan bisa langsung diimplementasikan.",
-    "Tersedia untuk sesi tindak lanjut setelah konsultasi selesai.",
-  ],
-  "Fotografer": [
-    "Editing profesional — hasil foto siap pakai dalam 3 hari kerja.",
-    "Memahami momen — tidak perlu banyak arahan untuk hasil terbaik.",
-    "Paket fleksibel untuk berbagai jenis acara dan kebutuhan.",
-  ],
-  // Sub-types — Company
-  "Properti & Real Estate": [
-    "Database properti terlengkap di area yang kami layani.",
-    "Agen bersertifikat dengan pengetahuan pasar yang mendalam.",
-    "Proses legal yang transparan dan pendampingan sampai akad.",
-  ],
-  "Konstruksi": [
-    "RAB detail dan transparan sebelum proyek dimulai.",
-    "Tim arsitek dan kontraktor berpengalaman dalam satu atap.",
-    "Garansi pengerjaan — kami perbaiki jika ada yang kurang.",
-  ],
-  "Pendidikan & Kursus": [
-    "Kurikulum berbasis industri, bukan sekadar teori.",
-    "Instruktur praktisi yang masih aktif di bidangnya.",
-    "Program mentoring hingga peserta benar-benar bisa mandiri.",
-  ],
-  "Travel & Wisata": [
-    "Itinerari yang fleksibel — bisa disesuaikan kapan saja.",
-    "Pemandu lokal berpengalaman yang tahu tempat terbaik.",
-    "All-inclusive yang jelas, tidak ada biaya kejutan di perjalanan.",
-  ],
-  "Hotel & Penginapan": [
-    "Kamar bersih dan nyaman dengan standar hotel yang ketat.",
-    "Sarapan buatan sendiri — bukan dari paket frozen.",
-    "Lokasi strategis dekat pusat kota atau objek wisata utama.",
-  ],
-  "Manufaktur": [
-    "Kapasitas produksi yang bisa disesuaikan dengan kebutuhan order.",
-    "Quality control ketat di setiap tahap produksi.",
-    "Lead time yang konsisten dan bisa diprediksi.",
-  ],
-};
-
 // preserveUserBrand & buildFullContent dipindah ke lib/build-full-content.ts
 // supaya bisa dipakai juga di app/create/page.tsx (auto-save setelah login),
 // bukan cuma di preview wizard ini.
@@ -364,8 +213,8 @@ export function SiteWizard({
   const { pushToast } = useToast();
 
   // Chat state
-  const [chatStage, setChatStage] = useState<"name" | "type" | "advantage" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
-  // Stage order: name → type → advantage → service_area → whatsapp → mood → confirm
+  const [chatStage, setChatStage] = useState<"name" | "type" | "mood" | "whatsapp" | "service_area" | "confirm" | "done">("name");
+  // Stage order: name → type → service_area → whatsapp → mood → confirm
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "init",
@@ -384,7 +233,6 @@ export function SiteWizard({
     switch (chatStage) {
       case "name": return 15;
       case "type": return 28;
-      case "advantage": return 40;
       case "service_area": return 55;
       case "whatsapp": return 70;
       case "mood": return 85;
@@ -398,7 +246,6 @@ export function SiteWizard({
     switch (chatStage) {
       case "name": return 1;
       case "type": return 2;
-      case "advantage": return 3;
       case "service_area": return 3;
       case "whatsapp": return 4;
       case "mood": return 5;
@@ -430,11 +277,6 @@ export function SiteWizard({
   const [confirmDraftWA, setConfirmDraftWA] = useState("");
   const [confirmDraftServiceArea, setConfirmDraftServiceArea] = useState("");
   const [mood, setMood] = useState("");
-  const [matra, setMatra] = useState("");
-  const [selectedAdvantages, setSelectedAdvantages] = useState<string[]>([]);
-  const [storyInput, setStoryInput] = useState("");
-  const [taglineInput, setTaglineInput] = useState("");
-  const [proofInput, setProofInput] = useState("");
 
   // Right panel state: wireframe → loading → result
   const [previewState, setPreviewState] = useState<"wireframe" | "loading" | "result">("wireframe");
@@ -448,6 +290,7 @@ export function SiteWizard({
   // History for undo/redo — stores up to 5 past previews
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
 
   // Loading animation state
   const [loadingStep, setLoadingStep] = useState(0);
@@ -561,7 +404,7 @@ export function SiteWizard({
   }, []);
 
   useEffect(() => {
-    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "advantage" || chatStage === "whatsapp" || chatStage === "service_area")) {
+    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "whatsapp" || chatStage === "service_area")) {
       window.setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [isInitialTyping, isAiTyping, chatStage]);
@@ -629,32 +472,18 @@ export function SiteWizard({
         });
       }, 500);
 
-    } else if (chatStage === "advantage") {
-      setDescription(val);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), sender: "user", text: val },
-      ]);
-      setTimeout(() => {
-        const serviceAreaReply = "Mantap! Jangkauan bisnis Anda? (atau Enter untuk lewati)";
-        typeMessage(serviceAreaReply, () => {
-          setInputValue("");
-          setChatStage("service_area");
-          window.setTimeout(() => inputRef.current?.focus(), 0);
-        });
-      }, 500);
-
     } else if (chatStage === "whatsapp") {
       // WA is optional
       const digits = val.replace(/\D/g, "");
+      let normalizedWhatsapp = "";
       if (digits) {
-        const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
-        setWhatsapp(normalized);
+        normalizedWhatsapp = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
+        setWhatsapp(normalizedWhatsapp);
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
       } else {
+        setWhatsapp("");
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
       }
-      // Advance to the final visual style step.
       setTimeout(() => {
         typeMessage("Sip. Sekarang gong-nya: pilih gaya visual untuk website-nya.", () => {
           setMessages((prev) => [
@@ -690,11 +519,7 @@ export function SiteWizard({
   const handleSelectType = (type: string) => {
     setBusinessType(type);
     setBusinessSubType(""); // reset sub-type when main type changes
-    setSelectedAdvantages([]);
     setDescription("");
-    setStoryInput("");
-    setTaglineInput("");
-    setProofInput("");
     setInputValue("");
     // Scroll to sub-type section after render
     setTimeout(() => {
@@ -704,11 +529,7 @@ export function SiteWizard({
 
   const handleSelectSubType = (subType: string) => {
     setBusinessSubType(subType);
-    setSelectedAdvantages([]);
     setDescription("");
-    setStoryInput("");
-    setTaglineInput("");
-    setProofInput("");
     setInputValue("");
     setChatStage("service_area");
 
@@ -723,25 +544,13 @@ export function SiteWizard({
     }, 400);
   };
 
-  const toggleAdvantageSuggestion = (suggestion: string) => {
-    setSelectedAdvantages((current) => {
-      const next = current.includes(suggestion)
-        ? current.filter((item) => item !== suggestion)
-        : [...current, suggestion];
-
-      setInputValue(next.join(" "));
-      return next;
-    });
-    inputRef.current?.focus();
-  };
-
   // ── Generate (public, no login needed) ──────────────────────────────────
 
   const handleGenerate = async (
     bName = businessName,
     bType = businessType,
     bMood = mood,
-    bDescription = description,
+    _bDescription = description,
     regen = regenCount
   ) => {
     setStreamedSections({});
@@ -756,18 +565,12 @@ export function SiteWizard({
     const effectiveType = businessSubType || bType;
     const selectedTemplateId = selectAlternateTemplate(effectiveType, bMood, regen);
 
-    const enrichedDesc = [
-      bDescription,
-      serviceArea ? `jangkauan bisnis ${serviceArea}` : null,
-    ].filter(Boolean).join(". ");
-
     localStorage.setItem(
       PENDING_KEY,
       JSON.stringify({
         businessName: bName,
         businessType: bType,
         businessSubType,
-        description: bDescription,
         whatsapp: whatsapp || "",
         service_area: serviceArea || "",
         mood: bMood,
@@ -779,7 +582,6 @@ export function SiteWizard({
       business_name: bName,
       business_type: bType,
       business_sub_type: businessSubType || undefined,
-      description: enrichedDesc,
       whatsapp: whatsapp || "",
       service_area: serviceArea || "",
       mood: bMood,
@@ -1057,7 +859,7 @@ export function SiteWizard({
           </div>
           {/* CTA strip — only when all sections arrived (done event) */}
           {hasPreviewData && (
-          <div className="shrink-0 px-6 py-4 flex items-center justify-between gap-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <div className="shrink-0 px-3 py-3 flex items-center justify-between gap-3 md:px-6 md:py-4" style={{ background: "#111318", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <div className="flex items-center gap-2 min-w-0">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <p className="text-xs font-semibold text-slate-300 truncate">
@@ -1065,10 +867,11 @@ export function SiteWizard({
               </p>
             </div>
             <button onClick={handleGoToEditor}
-              className="shrink-0 flex items-center gap-2 py-2.5 px-5 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
+              className="shrink-0 flex items-center gap-2 py-2.5 px-3 rounded-xl text-white text-xs font-bold shadow-md transition-all whitespace-nowrap md:px-5"
               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}>
               <Pencil className="w-3.5 h-3.5" />
-              Kustomisasi & Publish →
+              <span className="hidden sm:inline">Kustomisasi & Publish →</span>
+              <span className="sm:hidden">Publish →</span>
             </button>
           </div>
           )}
@@ -1085,10 +888,15 @@ export function SiteWizard({
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex w-screen h-screen overflow-hidden bg-[#0d0f14]">
+    <div className="relative flex w-screen h-[100dvh] overflow-hidden bg-[#0d0f14] md:h-screen">
 
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
-      <div className="w-[380px] shrink-0 flex flex-col bg-[#111318] border-r h-full overflow-hidden shadow-xl z-10" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
+      <div
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
+          mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
+        }`}
+        style={{ borderColor: "rgba(255,255,255,0.07)" }}
+      >
 
         {/* ── Sidebar Header ──────────────────────────────────────────────── */}
         <div className="px-5 pt-4 pb-5 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
@@ -1133,7 +941,7 @@ export function SiteWizard({
         </div>
 
         {/* ── Chat messages ────────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-4 py-5 pb-8 space-y-4">
+        <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
           {messages.map((m) => (
             (() => {
               // ── Inline widget messages ──
@@ -1200,87 +1008,6 @@ export function SiteWizard({
                           })}
                         </div>
                       </div>
-                    )}
-                  </div>
-                );
-              }
-
-              if (m.widget === "advantage-chips") {
-                const isLocked = chatStage !== "advantage";
-                const handleSubmitAdvantages = () => {
-                  const combined = selectedAdvantages.join(". ") || inputValue.trim();
-                  if (!combined) return;
-                  setDescription(combined);
-                  setInputValue("");
-                  setSelectedAdvantages([]);
-                  // Format as checklist for the user bubble
-                  const displayText = selectedAdvantages.length > 0
-                    ? selectedAdvantages.map(s => `✓ ${s}`).join("\n")
-                    : combined;
-                  setMessages((prev) => [
-                    ...prev,
-                    { id: Date.now().toString(), sender: "user", text: displayText },
-                  ]);
-                  setTimeout(() => {
-                    typeMessage("Mantap! Jangkauan bisnis Anda? (atau Enter untuk lewati)", () => {
-                      setInputValue("");
-                      setChatStage("service_area");
-                      window.setTimeout(() => inputRef.current?.focus(), 0);
-                    });
-                  }, 400);
-                };
-                return (
-                  <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-                    {!isLocked && (
-                      <p className="text-[11px] font-semibold text-slate-500 px-1">
-                        Pilih satu atau lebih:
-                      </p>
-                    )}
-                    {/* Chips grid */}
-                    <div className="flex flex-col gap-2">
-                      {(ADVANTAGE_SUGGESTIONS[businessSubType] || ADVANTAGE_SUGGESTIONS[businessType] || ADVANTAGE_SUGGESTIONS.Company).map((suggestion) => {
-                        const selected = !isLocked && selectedAdvantages.includes(suggestion);
-                        return (
-                          <button
-                            key={suggestion}
-                            type="button"
-                            disabled={isLocked}
-                            onClick={() => !isLocked && toggleAdvantageSuggestion(suggestion)}
-                            className={`flex items-start gap-2.5 w-full px-3.5 py-2.5 rounded-xl border text-left text-sm leading-snug transition-all cursor-pointer active:scale-[0.98] ${selected
-                                ? "text-violet-100 border-violet-500/50"
-                                : isLocked
-                                  ? "opacity-30 cursor-default text-slate-400 border-white/8"
-                                  : "text-slate-300 border-white/10 hover:border-violet-400/40 hover:text-white"
-                              }`}
-                            style={selected
-                              ? { background: "rgba(124,58,237,0.18)" }
-                              : { background: "rgba(255,255,255,0.04)" }}
-                          >
-                            {/* Checkbox circle */}
-                            <span className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded-full border flex items-center justify-center transition-all ${selected ? "bg-violet-500 border-violet-400" : "border-slate-600"
-                              }`}>
-                              {selected && (
-                                <svg viewBox="0 0 10 8" className="w-2.5 h-2 fill-white">
-                                  <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </span>
-                            <span>{suggestion}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {/* Lanjut button — appears when something is selected */}
-                    {!isLocked && selectedAdvantages.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={handleSubmitAdvantages}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] cursor-pointer"
-                        style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-                      >
-                        Lanjut dengan {selectedAdvantages.length} keunggulan
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
                     )}
                   </div>
                 );
@@ -1399,11 +1126,7 @@ export function SiteWizard({
             const editBtn = { color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" };
 
             const clearWizardCopyContext = () => {
-              setSelectedAdvantages([]);
               setDescription("");
-              setStoryInput("");
-              setTaglineInput("");
-              setProofInput("");
               setHasUnsavedEdits(true);
             };
 
@@ -1721,7 +1444,7 @@ export function SiteWizard({
                     <span className="text-emerald-400 font-bold text-xs">Website siap!</span>
                   </div>
                   <p className="text-slate-300 text-xs leading-relaxed">
-                    Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat. Lihat preview di panel kanan, lalu kustomisasi dan publish kapan saja.
+                    Website <strong className="text-white">{businessName}</strong> sudah selesai dibuat. Buka preview, lalu kustomisasi dan publish kapan saja.
                   </p>
                 </div>
 
@@ -1762,6 +1485,16 @@ export function SiteWizard({
           <div ref={chatEndRef} />
         </div>
 
+        <button
+          type="button"
+          onClick={() => setMobilePreviewOpen(true)}
+          className="absolute bottom-6 right-5 z-30 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-extrabold text-slate-950 shadow-[0_14px_35px_rgba(0,0,0,0.28)] transition-all active:scale-95 md:hidden"
+        >
+          <Eye className="h-4 w-4 text-slate-500" />
+          {previewState === "loading" ? "Progress" : "Preview"}
+          <span className={`h-2 w-2 rounded-full ${previewState === "result" ? "bg-emerald-500" : previewState === "loading" ? "bg-amber-500" : "bg-sky-500"}`} />
+        </button>
+
         {/* ── Chat Input ───────────────────────────────────────────────────── */}
         {chatStage !== "type" && chatStage !== "mood" && chatStage !== "done" && chatStage !== "confirm" && (
           <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
@@ -1777,9 +1510,7 @@ export function SiteWizard({
                     ? "cth. 08123456789 — atau Enter untuk lewati"
                     : chatStage === "service_area"
                       ? "cth. Jogja, Sleman-Bantul, Jabodetabek, seluruh Indonesia, online"
-                      : chatStage === "advantage"
-                        ? "cth: roti dipanggang tiap pagi sejak 2018, 200+ pelanggan setia, bahan lokal pilihan..."
-                        : "Ketik nama bisnis Anda..."
+                      : "Ketik nama bisnis Anda..."
                 }
                 autoFocus
                 disabled={isInitialTyping || isAiTyping}
@@ -1809,10 +1540,23 @@ export function SiteWizard({
       </div>
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#0d0f14]">
+      <div
+        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
+          mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
 
         {/* ── Browser Top Bar ──────────────────────────────────────────────── */}
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+          <button
+            type="button"
+            onClick={() => setMobilePreviewOpen(false)}
+            aria-label="Kembali ke chat"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
+          >
+            <MessageCircle className="h-4 w-4" />
+          </button>
+
           {/* Tab favicon + url */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="w-4 h-4 rounded-sm bg-emerald-500 shrink-0 flex items-center justify-center">
@@ -1897,7 +1641,7 @@ export function SiteWizard({
                   style={{
                     ...skeletonPanel,
                     height: 260,
-                    border: chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
+                    border: chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm" || chatStage === "done"
                       ? "1px solid rgba(124,58,237,0.35)"
                       : "1px solid rgba(255,255,255,0.055)",
                     boxShadow: chatStage === "confirm" || chatStage === "done" ? "0 0 30px rgba(124,58,237,0.15)" : "none",
@@ -1956,7 +1700,7 @@ export function SiteWizard({
                   <div className="absolute right-0 inset-y-0 w-2/5" style={skeletonSubtle} />
                 </section>
 
-                {/* Benefits skeleton — reacts when advantage submitted */}
+                {/* Benefits skeleton */}
                 <section className="grid grid-cols-4 gap-4 mb-10">
                   {[0, 1, 2, 3].map((i) => (
                     <div
@@ -1986,7 +1730,7 @@ export function SiteWizard({
                 </section>
 
                 {/* Scanning line effect when stage changes */}
-                {(chatStage === "advantage" || chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
+                {(chatStage === "mood" || chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
                   <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
                     <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
                     <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>
@@ -2099,6 +1843,16 @@ export function SiteWizard({
 
           {/* Result state */}
           {resultPreviewContent}
+
+          <button
+            type="button"
+            onClick={() => setMobilePreviewOpen(false)}
+            className="absolute bottom-6 right-5 z-40 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-extrabold text-slate-950 shadow-[0_14px_35px_rgba(0,0,0,0.28)] transition-all active:scale-95 md:hidden"
+          >
+            <MessageCircle className="h-4 w-4 text-slate-500" />
+            Chat
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          </button>
         </div>
       </div>
     </div>
