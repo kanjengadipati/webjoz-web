@@ -46,7 +46,7 @@ function PublicWizardContent() {
     if (tenantLoading) return;
 
     // Clean up the URL immediately so refresh doesn't re-trigger
-    router.replace("/create", { scroll: false });
+    window.history.replaceState(null, "", "/create");
 
     const raw = localStorage.getItem(PENDING_KEY);
     if (!raw) {
@@ -103,7 +103,7 @@ function PublicWizardContent() {
             headers: { "X-Tenant-ID": tenantId.toString() },
             body: JSON.stringify({
               name: pending.businessName,
-              template_id: "TEMPLATE_DYNAMIC",
+              template_id: pending.templateId || "TEMPLATE_DYNAMIC",
               subdomain,
             }),
           },

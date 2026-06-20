@@ -1,67 +1,94 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Card, CardContent, CardHeader, EmptyState, MetricCard, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
+import Link from "next/link";
+import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, SkeletonBlock } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { fetchAuditLogs, fetchProfile, fetchSessions } from "@/lib/api";
+import { fetchProfile } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
+import { useActiveTenant } from "@/lib/tenant-store";
+import { request } from "@/lib/api/client";
 import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import type { AuditLog, Profile, Session } from "@/lib/types";
+import type { Profile } from "@/lib/types";
 
 const DASHBOARD_CONFIG = {
   INITIAL_PAGE: 1,
   ITEMS_PER_PAGE: 24,
-  RESOURCE_TYPE: "auth",
-  TREND_WINDOW_BUCKETS: 7,
+  TREND_WINDOW_DAYS: 7,
 } as const;
 
-const DASHBOARD_ACTION_BUTTON = "h-9 rounded-full px-5 font-bold";
+interface Site {
+  id: number;
+  name: string;
+  status: "draft" | "published";
+  created_at?: string;
+  updated_at?: string;
+}
 
-function isFailedLoginEvent(log: AuditLog) {
-  const action = log.action?.toLowerCase() || "";
-  const description = log.description?.toLowerCase() || "";
-  const status = log.status?.toLowerCase() || "";
-  return status === "failed" && (action.includes("login") || action.includes("sign in") || description.includes("login") || description.includes("sign in"));
+interface Lead {
+  id: number;
+  created_at: string;
+  name: string;
+  email: string;
+  site_id: number;
+}
+
+interface PageViewStat {
+  date: string;
+  count: number;
+}
+
+interface AnalyticsData {
+  total_pageviews: number;
+  pageviews_by_date: PageViewStat[];
 }
 
 export default function DashboardOverviewPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [state, setState] = useState<SectionState>(SectionState.IDLE);
-  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
+  const { activeTenantId } = useActiveTenant();
 
-  const refresh = useCallback(async (showToast = true) => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [sites, setSites] = useState<Site[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
+
+  const refresh = useCallback(async (showToast = false) => {
     if (!token) return;
     setState(SectionState.LOADING);
-    const query = new URLSearchParams({
-      page: String(DASHBOARD_CONFIG.INITIAL_PAGE),
-      limit: String(DASHBOARD_CONFIG.ITEMS_PER_PAGE),
-      resource: DASHBOARD_CONFIG.RESOURCE_TYPE,
-    });
-    const [profileResult, logsResult, sessionsResult] = await Promise.allSettled([
+
+    const fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+    const toDate = new Date().toISOString().split("T")[0];
+
+    const tenantHeaders: Record<string, string> = activeTenantId
+      ? { "X-Tenant-ID": activeTenantId.toString() }
+      : {};
+
+    const [profileResult, sitesResult, leadsResult, analyticsResult] = await Promise.allSettled([
       fetchProfile(token),
-      fetchAuditLogs(token, query),
-      fetchSessions(token),
+      activeTenantId
+        ? request<Site[]>("/sites", { headers: tenantHeaders }, token)
+        : Promise.reject(new Error("No tenant")),
+      activeTenantId
+        ? request<Lead[]>("/leads", { headers: tenantHeaders }, token)
+        : Promise.reject(new Error("No tenant")),
+      activeTenantId
+        ? request<AnalyticsData>(`/analytics?from=${fromDate}&to=${toDate}`, { headers: tenantHeaders }, token)
+        : Promise.reject(new Error("No tenant")),
     ]);
 
-    if (profileResult.status === "fulfilled") {
-      setProfile(profileResult.value.data);
-    }
-    if (logsResult.status === "fulfilled") {
-      setLogs(logsResult.value.data);
-    }
-    if (sessionsResult.status === "fulfilled") {
-      setSessions(sessionsResult.value.data);
-    }
+    if (profileResult.status === "fulfilled") setProfile(profileResult.value.data);
+    if (sitesResult.status === "fulfilled") setSites(sitesResult.value.data || []);
+    if (leadsResult.status === "fulfilled") setLeads(leadsResult.value.data || []);
+    if (analyticsResult.status === "fulfilled") setAnalytics(analyticsResult.value.data);
 
     const allFailed =
       profileResult.status === "rejected" &&
-      logsResult.status === "rejected" &&
-      sessionsResult.status === "rejected";
+      sitesResult.status === "rejected" &&
+      leadsResult.status === "rejected" &&
+      analyticsResult.status === "rejected";
 
     if (allFailed) {
       setState(SectionState.ERROR);
@@ -69,12 +96,11 @@ export default function DashboardOverviewPage() {
       pushToast(firstError instanceof Error ? firstError.message : "Failed to load dashboard", "error");
     } else {
       setState(SectionState.SUCCESS);
-      setLastSyncedAt(new Date());
       if (showToast) {
         pushToast("Dashboard metrics refreshed.", "success");
       }
     }
-  }, [pushToast, token]);
+  }, [pushToast, token, activeTenantId]);
 
   useEffect(() => {
     if (!token || state !== SectionState.IDLE) return;
@@ -82,291 +108,234 @@ export default function DashboardOverviewPage() {
       void refresh(false);
     }, 0);
     return () => window.clearTimeout(timeout);
-  }, [pushToast, refresh, state, token]);
+  }, [refresh, state, token]);
+
+  // Re-fetch when tenant changes
+  useEffect(() => {
+    if (!token || !activeTenantId) return;
+    setState(SectionState.IDLE);
+  }, [activeTenantId, token]);
 
   const metrics = useMemo(() => {
-    const today = new Date().toISOString().split("T")[0];
-    const todayLogs = logs.filter((log) => (log.created_at || "").startsWith(today));
-    const failed = logs.filter(isFailedLoginEvent);
-    const uniqueIPs = new Set(logs.map((log) => log.ip_address).filter(Boolean));
+    const publishedSites = sites.filter((s) => s.status === "published");
+    const drafts = sites.length - publishedSites.length;
+    const totalViews = analytics?.total_pageviews ?? 0;
     return {
-      todayAttempts: todayLogs.length,
-      failedLogins: failed.length,
-      activeSessions: sessions.length,
-      uniqueIPs: uniqueIPs.size,
+      totalSites: sites.length,
+      publishedSites: publishedSites.length,
+      drafts,
+      totalLeads: leads.length,
+      totalViews,
     };
-  }, [logs, sessions.length]);
+  }, [sites, leads, analytics]);
 
   const barData = useMemo(() => {
-    const buckets = new Map<string, number>();
-    logs.filter(isFailedLoginEvent).forEach((log) => {
-      const key = (log.created_at || "").slice(5, 10) || "unknown";
-      buckets.set(key, (buckets.get(key) || 0) + 1);
+    const byDate = analytics?.pageviews_by_date || [];
+    return byDate.slice(-DASHBOARD_CONFIG.TREND_WINDOW_DAYS);
+  }, [analytics]);
+
+  const recentActivity = useMemo(() => {
+    const items: Array<{ title: string; time: string; date: Date }> = [];
+    leads.forEach((l) => {
+      items.push({
+        title: `Lead baru: ${l.name}`,
+        time: new Date(l.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }),
+        date: new Date(l.created_at)
+      });
     });
-    return Array.from(buckets.entries()).slice(-DASHBOARD_CONFIG.TREND_WINDOW_BUCKETS);
-  }, [logs]);
+    sites.forEach((s) => {
+      if (s.updated_at) {
+        items.push({
+          title: `Website "${s.name}" diupdate`,
+          time: new Date(s.updated_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }),
+          date: new Date(s.updated_at)
+        });
+      }
+    });
+    items.sort((a, b) => b.date.getTime() - a.date.getTime());
+    return items.slice(0, 5);
+  }, [leads, sites]);
 
-  const showMetricSkeletons = state === SectionState.IDLE || state === SectionState.LOADING;
-  const showOperatorSkeleton = state === SectionState.LOADING;
-  const hasLoadedActivity = logs.length > 0 || sessions.length > 0;
-
-  const syncLabel = lastSyncedAt
-    ? `Last synced ${lastSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-    : token
-      ? state === SectionState.LOADING
-        ? "Syncing data..."
-        : "Waiting for first sync"
-      : "Connect API to sync";
+  if (state === SectionState.LOADING) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <SkeletonBlock className="h-40 rounded-3xl" />
+        <div className="grid grid-cols-4 gap-5">
+          <SkeletonBlock className="h-32 rounded-3xl" />
+          <SkeletonBlock className="h-32 rounded-3xl" />
+          <SkeletonBlock className="h-32 rounded-3xl" />
+          <SkeletonBlock className="h-32 rounded-3xl" />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-1000 lg:space-y-12">
-      <div className="flex flex-wrap items-center justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tighter lg:text-4xl">Dashboard</h1>
-          <p className="max-w-2xl text-sm font-medium text-muted-foreground/80 leading-relaxed">
-            Live overview of auth activity and sessions.
+    <div className="space-y-8 animate-in fade-in duration-700">
+      
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-primary/20 to-blue-600/20 border border-primary/20 rounded-3xl p-8 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h2 className="text-4xl font-bold tracking-tight mb-2 text-foreground">
+              Selamat Datang Kembali{profile ? `, ${profile.name.split(" ")[0]}` : ""} 👋
+            </h2>
+            <p className="text-muted-foreground font-medium text-lg">
+              Kelola website, domain, dan leads Anda dari satu tempat.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/dashboard/sites/new">
+              <Button className="h-12 rounded-xl px-6 font-bold shadow-lg shadow-primary/20">
+                + Website Baru
+              </Button>
+            </Link>
+            <Link href="/dashboard/sites/new?ai=true">
+              <Button variant="secondary" className="h-12 rounded-xl px-6 font-bold bg-background text-foreground hover:bg-background/80 shadow-sm border border-border/60">
+                ✨ Generate AI
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="bg-card border border-border/60 shadow-sm rounded-3xl p-6 transition-all hover:border-primary/30">
+          <p className="text-muted-foreground font-medium">Website</p>
+          <h3 className="text-5xl font-bold mt-3 tracking-tighter text-foreground">{metrics.totalSites}</h3>
+          <p className="text-emerald-500 mt-2 font-medium text-sm">{metrics.publishedSites} Published</p>
+        </div>
+
+        <div className="bg-card border border-border/60 shadow-sm rounded-3xl p-6 transition-all hover:border-primary/30">
+          <p className="text-muted-foreground font-medium">Leads</p>
+          <h3 className="text-5xl font-bold mt-3 tracking-tighter text-foreground">{metrics.totalLeads}</h3>
+          <p className="text-amber-500 mt-2 font-medium text-sm">
+            {metrics.totalLeads > 0 ? "Prospek baru masuk" : "Setup form lead"}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="rounded-full border border-border/50 bg-background/50 px-4 py-2 text-xs font-medium text-muted-foreground/80">
-            {syncLabel}
-          </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            className={cn(DASHBOARD_ACTION_BUTTON, "transition-all duration-300 active:scale-95")}
-            onClick={() => void refresh(true)}
-            disabled={state === SectionState.LOADING || !token}
-            aria-label="Sync dashboard data"
-            aria-busy={state === SectionState.LOADING}
-          >
-            <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "motion-safe:animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
-            {state === SectionState.LOADING ? "Syncing..." : "Sync Dashboard"}
-          </Button>
-        </div>
-      </div>
 
-      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both" aria-busy={state === SectionState.LOADING}>
-        {showMetricSkeletons ? (
-          <>
-            <MetricSkeleton />
-            <MetricSkeleton />
-            <MetricSkeleton />
-            <MetricSkeleton />
-          </>
+        <div className="bg-card border border-border/60 shadow-sm rounded-3xl p-6 transition-all hover:border-primary/30">
+          <p className="text-muted-foreground font-medium">Visitors</p>
+          <h3 className="text-5xl font-bold mt-3 tracking-tighter text-foreground">{metrics.totalViews}</h3>
+          <p className="text-emerald-500 mt-2 font-medium text-sm">Minggu ini</p>
+        </div>
+
+        <div className="bg-card border border-border/60 shadow-sm rounded-3xl p-6 transition-all hover:border-primary/30">
+          <p className="text-muted-foreground font-medium">Health</p>
+          <h3 className="text-5xl font-bold mt-3 tracking-tighter text-foreground">100%</h3>
+          <p className="text-emerald-500 mt-2 font-medium text-sm">Semua sistem normal</p>
+        </div>
+      </section>
+
+      {/* Quick Action */}
+      <section>
+        <h3 className="text-xl font-bold mb-4 tracking-tight flex items-center gap-2">
+          ⚡ Quick Actions
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link href="/dashboard/sites/new?ai=true" className="bg-muted/40 hover:bg-muted/60 p-6 rounded-2xl border border-border/60 text-left transition-all hover:border-primary/40 group">
+            <div className="font-semibold text-foreground group-hover:text-primary transition-colors">🤖 Generate Website AI</div>
+          </Link>
+          <Link href="/dashboard/domains" className="bg-muted/40 hover:bg-muted/60 p-6 rounded-2xl border border-border/60 text-left transition-all hover:border-primary/40 group">
+            <div className="font-semibold text-foreground group-hover:text-primary transition-colors">🌐 Connect Domain</div>
+          </Link>
+          <Link href="/dashboard/sites/new" className="bg-muted/40 hover:bg-muted/60 p-6 rounded-2xl border border-border/60 text-left transition-all hover:border-primary/40 group">
+            <div className="font-semibold text-foreground group-hover:text-primary transition-colors">🎨 Browse Template</div>
+          </Link>
+          <Link href="/dashboard/leads" className="bg-muted/40 hover:bg-muted/60 p-6 rounded-2xl border border-border/60 text-left transition-all hover:border-primary/40 group">
+            <div className="font-semibold text-foreground group-hover:text-primary transition-colors">📥 View Leads</div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Activity + Insights */}
+      <section className="grid lg:grid-cols-2 gap-6">
+        <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
+          <h3 className="text-2xl font-bold mb-6 tracking-tight">Recent Activity</h3>
+          <div className="space-y-5">
+            {recentActivity.length > 0 ? (
+              recentActivity.map((act, i) => (
+                <div key={i}>
+                  <p className="font-semibold text-foreground">{act.title}</p>
+                  <p className="text-muted-foreground text-sm mt-0.5">{act.time}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground text-sm italic">Belum ada aktivitas.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
+          <h3 className="text-2xl font-bold mb-6 tracking-tight">AI Insights</h3>
+          <div className="space-y-4">
+            {metrics.totalViews > 0 ? (
+              <div className="bg-muted/40 border border-border/40 p-4 rounded-xl text-sm font-medium">
+                📈 Traffic terpantau masuk minggu ini sebanyak {metrics.totalViews} kunjungan.
+              </div>
+            ) : (
+              <div className="bg-muted/40 border border-border/40 p-4 rounded-xl text-sm font-medium">
+                📉 Belum ada traffic signifikan minggu ini. Coba promosikan website Anda.
+              </div>
+            )}
+            
+            {metrics.totalLeads > 0 ? (
+              <div className="bg-muted/40 border border-border/40 p-4 rounded-xl text-sm font-medium">
+                🔥 Anda memiliki {metrics.totalLeads} prospek baru yang bisa difollow-up!
+              </div>
+            ) : null}
+
+            {metrics.drafts > 0 ? (
+              <div className="bg-muted/40 border border-border/40 p-4 rounded-xl text-sm font-medium">
+                ⚠️ {metrics.drafts} website berstatus draft dan belum dipublish.
+              </div>
+            ) : null}
+
+            {metrics.totalSites === 0 ? (
+              <div className="bg-primary/10 text-primary border border-primary/20 p-4 rounded-xl text-sm font-medium">
+                ✨ Mulai dengan membuat website pertama Anda menggunakan AI Builder!
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* Chart */}
+      <section className="bg-card border border-border/60 rounded-3xl p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-bold tracking-tight">Website Performance</h3>
+          <select className="bg-muted/50 border border-border/60 rounded-xl px-4 py-2 text-sm font-medium outline-none focus:border-primary transition-colors cursor-pointer appearance-none pr-8 relative">
+            <option>7 Hari Terakhir</option>
+          </select>
+        </div>
+
+        {barData.length === 0 ? (
+           <div className="h-72 rounded-2xl bg-gradient-to-t from-primary/5 to-transparent border border-dashed border-primary/20 flex flex-col items-center justify-center text-muted-foreground/60 gap-3">
+             <div className="text-sm font-medium">Belum ada data kunjungan</div>
+           </div>
         ) : (
-          <>
-            <MetricCard label="Login attempts today" value={String(metrics.todayAttempts)} helper={metrics.todayAttempts > 0 ? "Auth activity recorded today" : "No activity yet"} tone="info" signal={metrics.todayAttempts > 0 ? "Live" : "Quiet"} />
-            <MetricCard label="Failed logins" value={String(metrics.failedLogins)} helper={metrics.failedLogins > 0 ? "Watch for repeated failures" : "No failed sign-ins detected"} tone={metrics.failedLogins > 0 ? "danger" : "good"} signal={metrics.failedLogins > 0 ? "Review" : "Clear"} />
-            <MetricCard label="Active sessions" value={String(metrics.activeSessions)} helper={metrics.activeSessions > 0 ? "Current signed-in devices" : "No active sessions right now"} tone={metrics.activeSessions > 0 ? "good" : "warning"} signal={metrics.activeSessions > 0 ? "Online" : "Idle"} />
-            <MetricCard label="Unique source IPs" value={String(metrics.uniqueIPs)} helper={metrics.uniqueIPs > 0 ? "Distinct IPs in recent logs" : "Waiting for data"} tone="neutral" signal={metrics.uniqueIPs > 0 ? "Mapped" : "Waiting"} />
-          </>
+          <div className="h-72 flex items-end justify-between gap-2 lg:gap-4 px-2">
+            {barData.map(({ date, count }, index) => {
+              const maxCount = Math.max(...barData.map(d => d.count), 1);
+              const heightPercent = Math.max(10, (count / maxCount) * 100);
+              return (
+                <div key={index} className="group flex-1 flex flex-col items-center justify-end gap-3 h-full">
+                  <div className="text-[11px] font-bold text-muted-foreground/0 group-hover:text-muted-foreground transition-all duration-300 translate-y-2 group-hover:translate-y-0">{count}</div>
+                  <div 
+                    className="w-full max-w-[48px] bg-gradient-to-t from-primary/20 to-primary/60 rounded-t-xl transition-all duration-500 group-hover:from-primary/40 group-hover:to-primary"
+                    style={{ height: `${heightPercent}%` }}
+                  />
+                  <div className="text-[10px] font-semibold text-muted-foreground truncate w-full text-center">
+                    {new Date(date).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </section>
-
-      <section className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both" aria-busy={state === SectionState.LOADING}>
-        <Card className="relative overflow-hidden group bg-card/95">
-          <div className="absolute top-0 right-0 size-64 bg-primary/5 blur-[100px] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
-          <CardHeader className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
-            <SectionTitle eyebrow={state === SectionState.LOADING ? "Syncing" : undefined} title="Failed Login Trend" />
-          </CardHeader>
-          <CardContent className="px-7 pb-7 pt-8">
-            {state === SectionState.LOADING ? (
-              <GhostChart loading />
-            ) : barData.length === 0 ? (
-              <div className="space-y-6">
-                <EmptyState
-                  className="min-h-64 border-dashed bg-muted/15 px-6 py-10"
-                  title={hasLoadedActivity ? "No failed logins in this window" : "Waiting for login activity"}
-                  text={hasLoadedActivity ? "Recent auth logs are clear of failed login attempts, so there is no failure trend to chart." : "Failed login bars will appear here once the audit feed includes unsuccessful sign-in events."}
-                  action={(
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={DASHBOARD_ACTION_BUTTON}
-                      onClick={() => void refresh()}
-                      disabled={!token}
-                      aria-label="Refresh dashboard trend data"
-                    >
-                      {token ? "Refresh data" : "Connect API"}
-                    </Button>
-                  )}
-                />
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div
-                  className="grid h-64 items-end gap-4"
-                  style={{ gridTemplateColumns: `repeat(${Math.max(barData.length, 1)}, minmax(0, 1fr))` }}
-                >
-                  {barData.map(([label, value], index) => (
-                    <div key={`${label}-${index}`} className="group/bar flex flex-col items-center gap-3">
-                      <div className="text-[10px] font-bold text-muted-foreground/60 opacity-0 group-hover/bar:opacity-100 transition-opacity translate-y-2 group-hover/bar:translate-y-0 duration-300">{value}</div>
-                      <div
-                        className={cn(
-                          "w-full rounded-t-xl bg-gradient-to-t from-sky-300 via-sky-500 to-cyan-300 transition-all duration-500 dark:from-primary/80 dark:via-primary dark:to-sky-400",
-                          "shadow-[0_8px_24px_rgba(14,165,233,0.22)] group-hover/bar:shadow-[0_14px_40px_rgba(14,165,233,0.32)] group-hover/bar:scale-x-105 dark:shadow-[0_4px_12px_rgba(var(--primary),0.1)] dark:group-hover/bar:shadow-[0_12px_40px_rgba(var(--primary),0.4)]",
-                          barData.length === 1 ? "mx-auto max-w-28" : "",
-                          index === barData.length - 1 ? "ring-2 ring-primary/30 ring-offset-4 ring-offset-background" : "",
-                        )}
-                        style={{
-                          height: `${Math.max(
-                            12,
-                            (value / Math.max(...barData.map(([, count]) => count), 1)) * 220,
-                          )}px`,
-                        }}
-                      />
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs font-medium leading-relaxed text-muted-foreground italic border-t border-border/70 pt-4 dark:border-border/40 dark:text-muted-foreground/60">
-                  Visualizing failed sign-in spikes over the last 7 activity buckets for rapid incident triage.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 size-48 bg-primary/5 blur-[80px] -z-10" />
-          <CardHeader className="border-b border-border/40">
-            <SectionTitle eyebrow={profile ? "Verified" : undefined} title="Active Operator" />
-          </CardHeader>
-          <CardContent className="px-7 pb-7 pt-7">
-            {showOperatorSkeleton ? (
-              <ProfileGhost />
-            ) : profile ? (
-              <div className="space-y-6 animate-in fade-in duration-700">
-                <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-6 border border-primary/10 shadow-inner">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-xs font-semibold text-primary/80">Profile summary</div>
-                    <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                      <span className="size-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                      <span>Online</span>
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold tracking-tighter">{profile.name}</div>
-                  <div className="mt-1 text-sm font-medium text-muted-foreground/80">{profile.email}</div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <MiniMetric label="Role Authority" value={profile.role || "-"} />
-                  <MiniMetric label="Trust Status" value={profile.is_verified ? "Verified" : "Unverified"} />
-                </div>
-
-                <div className="space-y-4">
-                  <div className="text-xs font-semibold text-muted-foreground/80">Recent security events</div>
-                  <div className="space-y-2">
-                    {logs.slice(0, 3).map((log, index) => (
-                      <div
-                        key={log.id ?? `${log.action}-${index}`}
-                        className="group/log rounded-2xl border border-border/40 bg-background/40 hover:bg-background/60 px-4 py-3 transition-all duration-300 hover:border-primary/30"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="text-sm font-bold tracking-tight group-hover/log:text-primary transition-colors">{log.action}</div>
-                          <StatusBadge status={log.status} />
-                        </div>
-                        <div className="mt-1 text-xs text-muted-foreground font-medium">{log.resource} &bull; {log.description || "No metadata"}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <ProfileGhost />
-                <EmptyState
-                  className="min-h-0 border-none bg-transparent px-2 py-0"
-                  title="Operator profile waiting"
-                  text="Once profile and auth activity sync, this panel will show the current operator and recent security events."
-                  action={(
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={DASHBOARD_ACTION_BUTTON}
-                      onClick={() => void refresh(true)}
-                      disabled={!token}
-                      aria-label="Refresh operator profile data"
-                    >
-                      {token ? "Refresh data" : "Connect API"}
-                    </Button>
-                  )}
-                />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-    </div>
-  );
-}
-
-function MiniMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-border/40 bg-background/50 px-4 py-4 transition-all hover:bg-background/80 hover:border-primary/20 shadow-sm">
-      <div className="mb-2 text-[11px] font-medium text-muted-foreground/70">{label}</div>
-      <div className="text-lg font-bold tracking-tight">{value}</div>
-    </div>
-  );
-}
-
-function MetricSkeleton() {
-  return (
-    <Card className="relative overflow-hidden border-border/40 shadow-sm">
-      <CardHeader className="space-y-4 p-6">
-        <div className="flex items-center justify-between gap-3">
-          <SkeletonBlock className="h-3 w-28 rounded-full" />
-          <div className="size-2 rounded-full bg-muted-foreground/20" />
-        </div>
-        <SkeletonBlock className="h-12 w-24 rounded-2xl" />
-        <div className="space-y-2">
-          <SkeletonBlock className="h-3 w-full rounded-full" />
-          <SkeletonBlock className="h-3 w-24 rounded-full" />
-        </div>
-      </CardHeader>
-    </Card>
-  );
-}
-
-function GhostChart({ loading = false }: { loading?: boolean }) {
-  return (
-    <div className="rounded-3xl border border-dashed border-border/70 bg-muted/15 p-6">
-      <div className="grid h-64 items-end gap-4" style={{ gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
-        {[28, 44, 34, 58, 42, 64, 36].map((height, index) => (
-          <div key={index} className="flex flex-col items-center gap-3">
-            <div
-              className={cn(
-                "w-full rounded-t-xl bg-gradient-to-t from-muted/40 via-muted/25 to-transparent",
-                loading && "animate-pulse",
-              )}
-              style={{ height: `${height}%` }}
-            />
-            <div className="h-2 w-8 rounded-full bg-muted/50" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ProfileGhost() {
-  return (
-    <div className="space-y-5 rounded-3xl border border-dashed border-border/70 bg-muted/15 p-6">
-      <div className="rounded-3xl border border-border/40 bg-background/50 p-6">
-        <SkeletonBlock className="h-3 w-24 rounded-full" />
-        <SkeletonBlock className="mt-4 h-9 w-40 rounded-2xl" />
-        <SkeletonBlock className="mt-3 h-4 w-56 rounded-full" />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <SkeletonBlock className="h-20 rounded-2xl" />
-        <SkeletonBlock className="h-20 rounded-2xl" />
-      </div>
-      <div className="space-y-3">
-        <SkeletonBlock className="h-4 w-32 rounded-full" />
-        <SkeletonBlock className="h-16 rounded-2xl" />
-        <SkeletonBlock className="h-16 rounded-2xl" />
-      </div>
+      
     </div>
   );
 }

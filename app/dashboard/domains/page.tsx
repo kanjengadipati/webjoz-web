@@ -224,32 +224,32 @@ export default function DomainsPage() {
               </div>
 
               {/* Instructions container */}
-              <div className="p-4 bg-slate-50 border rounded-2xl space-y-2.5">
-                <h4 className="text-xs font-bold flex items-center gap-1.5 text-slate-700">
-                  <Server className="w-3.5 h-3.5" />
+              <div className="p-4 bg-slate-950/40 border border-white/10 rounded-2xl space-y-2.5">
+                <h4 className="text-xs font-bold flex items-center gap-1.5 text-slate-200">
+                  <Server className="w-3.5 h-3.5 text-primary" />
                   Instruksi Pengaturan CNAME Registrar DNS
                 </h4>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                <p className="text-[10px] text-slate-400 leading-relaxed">
                   Buka dashboard registrar domain Anda (cth. Niagahoster, GoDaddy, dll), cari menu kelola DNS, lalu tambahkan record berikut:
                 </p>
-                <div className="grid grid-cols-3 gap-2 text-[10px] font-mono border-t pt-2.5">
-                  <div>
-                    <span className="font-sans block font-semibold text-slate-400">TIPE</span>
+                <div className="grid grid-cols-3 gap-2 text-[10px] font-mono border-t border-white/10 pt-2.5">
+                  <div className="text-slate-200">
+                    <span className="font-sans block font-semibold text-slate-500">TIPE</span>
                     CNAME
                   </div>
-                  <div>
-                    <span className="font-sans block font-semibold text-slate-400">HOST/NAME</span>
+                  <div className="text-slate-200">
+                    <span className="font-sans block font-semibold text-slate-500">HOST/NAME</span>
                     @ atau www
                   </div>
-                  <div className="flex items-center justify-between col-span-1">
+                  <div className="flex items-center justify-between col-span-1 text-slate-200">
                     <div>
-                      <span className="font-sans block font-semibold text-slate-400">TARGET/VALUE</span>
+                      <span className="font-sans block font-semibold text-slate-500">TARGET/VALUE</span>
                       sites.webjoz.com
                     </div>
                     <button 
                       type="button" 
                       onClick={handleCopyCNAME}
-                      className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500"
+                      className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400"
                     >
                       {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>

@@ -620,7 +620,9 @@ export function SiteWizard({
           businessType,
           businessSubType,
           description,
+          whatsapp,
           service_area: serviceArea || "",
+          templateId: previewData?.template_id,
           previewContent: previewData?.content,
           previewDesignToken: previewData?.design_token,
         })
