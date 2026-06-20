@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+import Link from "next/link";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
@@ -9,7 +11,7 @@ import {
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send
+  Eye, EyeOff, Pencil, Send, Rocket
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -90,6 +92,8 @@ export default function SiteEditorPage() {
   const [customTemplates, setCustomTemplates] = useState<any[]>([]);
   const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [publishing, setPublishing] = useState(false);
 
   const fetchCustomTemplates = async (reset = false) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -191,6 +195,42 @@ export default function SiteEditorPage() {
       pushToast(err.message || "Gagal memuat situs", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePublishWithSubdomain = async (subdomain: string) => {
+    if (!siteDetails || !token || !activeTenantId) return;
+    try {
+      setPublishing(true);
+      // 1. Update subdomain
+      await request(`/sites/${siteDetails.id}`, {
+        method: "PATCH",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({
+          name: siteDetails.name,
+          template_id: siteDetails.template_id,
+          subdomain: subdomain,
+        })
+      }, token);
+
+      // 2. Publish
+      const publishRes = await request<any>(`/sites/${siteDetails.id}/publish`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() }
+      }, token);
+
+      pushToast("Website berhasil dipublikasikan! 🚀", "success");
+      setPublishModalOpen(false);
+
+      if (publishRes.data) {
+        setSiteDetails(publishRes.data);
+      } else {
+        fetchData();
+      }
+    } catch (err: any) {
+      pushToast(err.message || "Gagal memublikasikan website", "error");
+    } finally {
+      setPublishing(false);
     }
   };
 
@@ -1858,7 +1898,7 @@ export default function SiteEditorPage() {
           <div className="absolute bottom-6 left-4 right-4 z-40 flex items-center gap-3 md:hidden">
             <button
               type="button"
-              onClick={() => router.push(`/dashboard/domains?site_id=${siteId}`)}
+              onClick={() => setPublishModalOpen(true)}
               className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
             >
@@ -1878,7 +1918,7 @@ export default function SiteEditorPage() {
           {/* Desktop floating publish button */}
           <button
             type="button"
-            onClick={() => router.push(`/dashboard/domains?site_id=${siteId}`)}
+            onClick={() => setPublishModalOpen(true)}
             className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(124,58,237,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
             style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
           >
@@ -1888,6 +1928,146 @@ export default function SiteEditorPage() {
         </div>
 
       </div>
+
+      {publishModalOpen && siteDetails && (
+        <PublishModal
+          site={siteDetails}
+          onConfirm={handlePublishWithSubdomain}
+          onCancel={() => setPublishModalOpen(false)}
+          loading={publishing}
+        />
+      )}
     </div>
+  );
+}
+
+/* ── Publish Modal (Dialog) Helper ─────────────────────────────────────── */
+interface PublishModalProps {
+  site: {
+    name: string;
+    subdomain: string;
+  };
+  onConfirm: (subdomain: string) => void;
+  onCancel: () => void;
+  loading: boolean;
+}
+
+function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+  const [subdomain, setSubdomain] = useState(() => {
+    if (site.subdomain.startsWith("draft-")) return "";
+    return site.subdomain;
+  });
+
+  const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
+
+  const handleSubdomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cleaned = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    setSubdomain(cleaned);
+  };
+
+  const isInputValid = subdomainRegex.test(subdomain);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isInputValid) return;
+    onConfirm(subdomain);
+  };
+
+  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.webjoz.com` : "";
+
+  return (
+    <Dialog
+      open={!!site}
+      onOpenChange={(open) => {
+        if (!open && !loading) onCancel();
+      }}
+      title="Publikasikan Website"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <p className="text-xs text-[#9b9ba5]">
+          Pilih subdomain untuk <span className="text-white font-medium">{site.name}</span>
+        </p>
+
+        {/* Subdomain input */}
+        <div className="space-y-2">
+          <label className="text-xs font-semibold text-[#8fa8ff]">Nama Subdomain</label>
+          <div
+            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-colors ${
+              subdomain && !isInputValid
+                ? "border-[#ff8a8a]"
+                : "border-white/15 focus-within:border-[#6f6fff]"
+            }`}
+          >
+            <input
+              type="text"
+              value={subdomain}
+              onChange={handleSubdomainChange}
+              disabled={loading}
+              placeholder="namaanda"
+              maxLength={30}
+              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0"
+              autoFocus
+            />
+            <span className="px-3 py-2.5 text-[13px] text-[#6b6b75] font-mono shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+              .webjoz.com
+            </span>
+          </div>
+
+          {previewDomain && (
+            <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${isInputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
+              {isInputValid
+                ? `✓ Subdomain tersedia: ${previewDomain}`
+                : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+            </p>
+          )}
+
+          <p className="text-xs text-[#65656f] leading-relaxed">
+            Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.
+          </p>
+        </div>
+
+        {/* Custom domain info */}
+        <div className="flex items-start gap-2.5 bg-[#6f6fff]/5 border border-[#6f6fff]/20 rounded-xl px-3.5 py-3">
+          <Globe className="w-3.5 h-3.5 text-[#8fa8ff] shrink-0 mt-0.5" />
+          <p className="text-[11.5px] text-[#8fa8ff] leading-relaxed m-0">
+            Ingin menggunakan domain pribadi?{" "}
+            <Link href="/dashboard/domains" className="underline underline-offset-2 font-semibold hover:text-white transition-colors" onClick={onCancel}>
+              Kunjungi Pengaturan Domain
+            </Link>
+            {" "}setelah website Anda dipublikasikan.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 rounded-xl h-10 text-sm border-white/10 hover:bg-white/[0.04]"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Batal
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 rounded-xl h-10 text-sm bg-[#6f6fff] hover:bg-[#5a5ae8] text-white border-0 cursor-pointer gap-1.5"
+            disabled={loading || !isInputValid}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Memproses...
+              </>
+            ) : (
+              <>
+                <Rocket className="w-4 h-4" />
+                Publikasikan
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

@@ -270,6 +270,18 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </p>
         </div>
 
+        {/* Custom domain info */}
+        <div className="flex items-start gap-2.5 bg-[#6f6fff]/5 border border-[#6f6fff]/20 rounded-xl px-3.5 py-3">
+          <Globe className="w-3.5 h-3.5 text-[#8fa8ff] shrink-0 mt-0.5" />
+          <p className="text-[11.5px] text-[#8fa8ff] leading-relaxed m-0">
+            Ingin menggunakan domain pribadi?{" "}
+            <Link href="/dashboard/domains" className="underline underline-offset-2 font-semibold hover:text-white transition-colors" onClick={onCancel}>
+              Kunjungi Pengaturan Domain
+            </Link>
+            {" "}setelah website Anda dipublikasikan.
+          </p>
+        </div>
+
         {/* Actions */}
         <div className="flex gap-3 pt-1">
           <Button
