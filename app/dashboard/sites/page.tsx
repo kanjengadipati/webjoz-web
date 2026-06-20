@@ -204,7 +204,6 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
   const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 
   const handleSubdomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow lowercase letters, numbers, and hyphens (same as domains page filter)
     const cleaned = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
     setSubdomain(cleaned);
   };
@@ -227,19 +226,35 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
       }}
       title="Publikasikan Website"
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <p className="text-xs text-[#9b9ba5]">
-          Pilih subdomain untuk <span className="text-white font-medium">{site.name}</span>
-        </p>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Celebration Header Banner */}
+        <div className="bg-gradient-to-tr from-[#6f6fff]/10 to-[#a855f7]/10 border border-[#6f6fff]/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#6f6fff]/10 blur-2xl rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#6f6fff] to-[#a855f7] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(111,111,255,0.3)]">
+            <Rocket className="w-6 h-6 text-white animate-pulse" />
+          </div>
+          <div>
+            <h4 className="text-[13.5px] font-bold text-white leading-snug">
+              Satu Langkah Lagi! 🚀
+            </h4>
+            <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
+              Website <span className="text-[#a9bcff] font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
+            </p>
+          </div>
+        </div>
 
-        {/* Subdomain input */}
+        {/* Subdomain Input Field */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold text-[#8fa8ff]">Nama Subdomain</label>
+          <label className="text-[12px] font-bold text-[#c8c8d4] tracking-wide block">
+            Nama Subdomain
+          </label>
           <div
-            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-colors ${
+            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${
               subdomain && !isInputValid
-                ? "border-[#ff8a8a]"
-                : "border-white/15 focus-within:border-[#6f6fff]"
+                ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
+                : subdomain && isInputValid
+                  ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
+                  : "border-white/10 hover:border-white/20 focus-within:border-[#6f6fff] focus-within:shadow-[0_0_12px_rgba(111,111,255,0.2)]"
             }`}
           >
             <input
@@ -249,37 +264,58 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               disabled={loading}
               placeholder="namaanda"
               maxLength={30}
-              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0"
+              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-[#6b6b75] font-mono shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-[#8fa8ff] font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
               .webjoz.com
             </span>
           </div>
 
           {previewDomain && (
-            <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${isInputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
-              {isInputValid
-                ? `✓ Subdomain tersedia: ${previewDomain}`
-                : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
-            </p>
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${
+                isInputValid
+                  ? "bg-[#3ddc84]/8 text-[#5fe3a0] border border-[#3ddc84]/20"
+                  : "bg-red-500/8 text-[#ff8a8a] border border-red-500/20"
+              }`}
+            >
+              <span className="shrink-0 text-[14px]">{isInputValid ? "✓" : "⚠"}</span>
+              <span className="truncate leading-none">
+                {isInputValid
+                  ? `Tersedia: https://${previewDomain}`
+                  : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+              </span>
+            </div>
           )}
 
-          <p className="text-xs text-[#65656f] leading-relaxed">
+          <p className="text-[11px] text-[#6b6b75] leading-relaxed mx-0.5">
             Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.
           </p>
         </div>
 
-        {/* Custom domain info */}
-        <div className="flex items-start gap-2.5 bg-[#6f6fff]/5 border border-[#6f6fff]/20 rounded-xl px-3.5 py-3">
-          <Globe className="w-3.5 h-3.5 text-[#8fa8ff] shrink-0 mt-0.5" />
-          <p className="text-[11.5px] text-[#8fa8ff] leading-relaxed m-0">
-            Ingin menggunakan domain pribadi?{" "}
-            <Link href="/dashboard/domains" className="underline underline-offset-2 font-semibold hover:text-white transition-colors" onClick={onCancel}>
-              Kunjungi Pengaturan Domain
-            </Link>
-            {" "}setelah website Anda dipublikasikan.
-          </p>
+        {/* Custom Domain premium upselling banner */}
+        <div className="bg-[#15151c] border border-white/[0.06] hover:border-white/10 rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-[#6f6fff]/10 to-transparent blur-xl pointer-events-none" />
+          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-[#8fa8ff] group-hover:text-white transition-colors">
+            <Globe className="w-4.5 h-4.5" />
+          </div>
+          <div className="space-y-1">
+            <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
+              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-[#6f6fff] text-white rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
+            </h5>
+            <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
+              Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}
+              <Link
+                href="/dashboard/domains"
+                className="text-[#8fa8ff] font-semibold hover:text-white underline underline-offset-2 transition-colors"
+                onClick={onCancel}
+              >
+                Pengaturan Domain
+              </Link>{" "}
+              setelah website Anda live.
+            </p>
+          </div>
         </div>
 
         {/* Actions */}
@@ -287,7 +323,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-10 text-sm border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-sm border-white/10 hover:bg-white/[0.04]"
             onClick={onCancel}
             disabled={loading}
           >
@@ -295,18 +331,22 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </Button>
           <Button
             type="submit"
-            className="flex-1 rounded-xl h-10 text-sm bg-[#6f6fff] hover:bg-[#5a5ae8] text-white border-0 cursor-pointer gap-1.5"
+            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              !isInputValid || loading
+                ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                : "bg-gradient-to-r from-[#6f6fff] to-[#8c8cff] hover:from-[#5a5ae8] hover:to-[#7a7aff] text-white shadow-[0_4px_14px_rgba(111,111,255,0.25)] hover:shadow-[0_4px_18px_rgba(111,111,255,0.35)] transform hover:scale-[1.02] active:scale-[0.98]"
+            }`}
             disabled={loading || !isInputValid}
           >
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Memproses...
+                Meluncurkan...
               </>
             ) : (
               <>
-                <Rocket className="w-4 h-4" />
-                Publikasikan
+                <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.5s" }} />
+                Luncurkan Website
               </>
             )}
           </Button>
@@ -367,6 +407,17 @@ interface Site {
   subdomain: string;
 }
 
+interface Domain {
+  id: number;
+  created_at: string;
+  tenant_id: number;
+  site_id: number;
+  domain: string;
+  type: string;
+  status: "pending" | "verified" | "failed";
+  verified_at?: string;
+}
+
 export default function SitesPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
@@ -375,6 +426,7 @@ export default function SitesPage() {
   } = useActiveTenant();
 
   const [sites, setSites] = useState<Site[]>([]);
+  const [domains, setDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
@@ -382,6 +434,7 @@ export default function SitesPage() {
   const [deleteTarget, setDeleteTarget] = useState<Site | null>(null);
   const [renameTarget, setRenameTarget] = useState<Site | null>(null);
   const [publishTarget, setPublishTarget] = useState<Site | null>(null);
+  const [publishedSiteTarget, setPublishedSiteTarget] = useState<Site | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -398,11 +451,16 @@ export default function SitesPage() {
     if (!token || !activeTenantId) return;
     try {
       setLoading(true);
-      const res = await request<Site[]>("/sites", {
-        headers: { "X-Tenant-ID": activeTenantId.toString() }
-      }, token);
-      // Server already orders updated_at desc; just use as-is
-      setSites(res.data || []);
+      const [sitesRes, domainsRes] = await Promise.all([
+        request<Site[]>("/sites", {
+          headers: { "X-Tenant-ID": activeTenantId.toString() }
+        }, token),
+        request<Domain[]>("/domains", {
+          headers: { "X-Tenant-ID": activeTenantId.toString() }
+        }, token)
+      ]);
+      setSites(sitesRes.data || []);
+      setDomains(domainsRes.data || []);
     } catch (err: any) {
       pushToast(err.message || "Failed to load sites", "error");
     } finally {
@@ -417,6 +475,21 @@ export default function SitesPage() {
       setSites([]);
     }
   }, [activeTenantId]);
+
+  // Observer for congratulatory redirect from editor
+  useEffect(() => {
+    if (sites.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const pubId = params.get("published_id");
+      if (pubId) {
+        const found = sites.find(s => s.id.toString() === pubId);
+        if (found) {
+          setPublishedSiteTarget(found);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    }
+  }, [sites]);
 
   // Click outside to close dropdowns
   useEffect(() => {
@@ -450,7 +523,9 @@ export default function SitesPage() {
       }, token);
 
       pushToast("Website berhasil dipublikasikan! 🚀", "success");
+      const tempSite = { ...publishTarget, subdomain, status: "published" as const };
       setPublishTarget(null);
+      setPublishedSiteTarget(tempSite);
       fetchSites();
     } catch (err: any) {
       pushToast(err.message || "Gagal mempublikasikan website", "error");
@@ -567,7 +642,7 @@ export default function SitesPage() {
 
   const handleCopyLink = (site: Site) => {
     if (isTemporarySubdomain(site.subdomain)) return;
-    const url = getSiteUrl(site.subdomain);
+    const url = getSiteUrl(site, true);
     navigator.clipboard.writeText(url);
     setCopiedId(site.id);
     setTimeout(() => setCopiedId(null), 1500);
@@ -575,14 +650,34 @@ export default function SitesPage() {
 
   const isTemporarySubdomain = (subdomain: string) => subdomain.startsWith("draft-");
 
-  const getSiteUrl = (subdomain: string) => {
+  const getFriendlyDisplayDomain = (site: Site) => {
+    const customDom = domains.find(d => d.site_id === site.id);
+    if (customDom) {
+      return customDom.domain;
+    }
+    const host = typeof window !== "undefined" ? window.location.host : "";
+    let domainPart = "webjoz.com";
+    if (host && !host.includes("localhost") && !host.includes("127.0.0.1")) {
+      domainPart = host.substring(host.indexOf(".") + 1) || "webjoz.com";
+    }
+    return `${site.subdomain}.${domainPart}`;
+  };
+
+  const getSiteUrl = (site: Site, forceProduction = false) => {
+    const customDom = domains.find(d => d.site_id === site.id);
+    if (customDom) {
+      return `https://${customDom.domain}`;
+    }
+    const subdomain = site.subdomain;
     if (typeof window === "undefined") return `http://localhost:3000/s/${subdomain}`;
     const host = window.location.host;
-    if (host.includes("localhost") || host.includes("127.0.0.1")) {
+    if (!forceProduction && (host.includes("localhost") || host.includes("127.0.0.1"))) {
       return `http://localhost:3000/s/${subdomain}`;
     }
-    const domainPart = host.substring(host.indexOf(".") + 1);
-    return `https://${subdomain}.${domainPart || "webjoz.com"}`;
+    const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
+      ? "webjoz.com"
+      : (host.substring(host.indexOf(".") + 1) || "webjoz.com");
+    return `https://${subdomain}.${domainPart}`;
   };
 
   const getFriendlyDate = (site: Site) => {
@@ -661,6 +756,15 @@ export default function SitesPage() {
           onConfirm={handlePublishWithSubdomain}
           onCancel={() => setPublishTarget(null)}
           loading={actionLoading === publishTarget.id}
+        />
+      )}
+
+      {publishedSiteTarget && (
+        <CongratsModal
+          site={publishedSiteTarget}
+          onClose={() => setPublishedSiteTarget(null)}
+          displayDomain={getFriendlyDisplayDomain(publishedSiteTarget)}
+          siteUrl={getSiteUrl(publishedSiteTarget)}
         />
       )}
 
@@ -858,7 +962,7 @@ export default function SitesPage() {
                         </span>
                       ) : (
                         <span className="text-[12.5px] text-[#f5f5f7] font-mono truncate select-all">
-                          {getSiteUrl(site.subdomain).replace("https://", "").replace("http://", "")}
+                          {getFriendlyDisplayDomain(site)}
                         </span>
                       )}
                     </div>
@@ -890,7 +994,7 @@ export default function SitesPage() {
 
                     {isLive ? (
                       <button
-                        onClick={() => window.open(getSiteUrl(site.subdomain), "_blank")}
+                        onClick={() => window.open(getSiteUrl(site), "_blank")}
                         className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-white hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> Lihat Web
@@ -930,5 +1034,104 @@ export default function SitesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/* ── Congrats Celebration Modal (Dialog) ─────────────────────────────────── */
+interface CongratsModalProps {
+  site: {
+    name: string;
+  };
+  onClose: () => void;
+  displayDomain: string;
+  siteUrl: string;
+}
+
+function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(siteUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Dialog
+      open={true}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      title="🎉 Selamat! Website Anda Telah Live"
+    >
+      <div className="space-y-6 text-center py-4">
+        {/* Celebration Anim/Icon */}
+        <div className="flex justify-center">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-[#6f6fff] flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
+            <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
+            <Rocket className="w-10 h-10 text-white animate-bounce" style={{ animationDuration: "2.5s" }} />
+          </div>
+        </div>
+
+        <div className="space-y-2 max-w-sm mx-auto">
+          <h3 className="text-xl font-bold text-white tracking-tight">Website Anda Resmi Mengudara!</h3>
+          <p className="text-sm text-[#9b9ba5] leading-relaxed">
+            Selamat! Halaman web <span className="text-[#8fa8ff] font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
+          </p>
+        </div>
+
+        {/* Clickable Subdomain Link Box */}
+        <div className="bg-[#15151c] border border-white/[0.08] rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
+          
+          <div className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-white/10 rounded-xl px-4 py-3">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
+              <a
+                href={siteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[14px] text-white font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
+                title="Buka Website"
+              >
+                {displayDomain}
+              </a>
+            </div>
+            
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="p-2 bg-white/[0.04] border border-white/10 text-[#9b9ba5] hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
+              title="Salin Link"
+            >
+              {copied ? <Check className="w-4 h-4 text-[#3ddc84]" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+
+          <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed m-0 text-left">
+            💡 <strong>Ingin mengecek?</strong> Klik link di atas untuk membuka website live Anda di tab baru.
+          </p>
+        </div>
+
+        {/* CTA Buttons */}
+        <div className="flex gap-3 max-w-sm mx-auto pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+            onClick={onClose}
+          >
+            Selesai
+          </Button>
+          <Button
+            type="button"
+            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-[#6f6fff] hover:bg-[#5a5ae8] text-white border-0 cursor-pointer shadow-[0_4px_14px_rgba(111,111,255,0.3)] flex items-center justify-center gap-2"
+            onClick={() => window.open(siteUrl, "_blank")}
+          >
+            <Globe className="w-4 h-4" /> Buka Website
+          </Button>
+        </div>
+      </div>
+    </Dialog>
   );
 }
