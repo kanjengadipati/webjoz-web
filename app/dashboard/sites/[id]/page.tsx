@@ -9,7 +9,7 @@ import {
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw,
-  Eye, EyeOff
+  Eye, EyeOff, Pencil, Send
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -58,6 +58,7 @@ export default function SiteEditorPage() {
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -627,7 +628,10 @@ export default function SiteEditorPage() {
     }
   }, [activeTenantId, aiInstructions, pushToast, siteId, token]);
 
-  const handlePreviewSelectSection = useCallback((section: string) => selectSection(section, false), [selectSection]);
+  const handlePreviewSelectSection = useCallback((section: string) => {
+    selectSection(section, false);
+    setMobileView("edit");
+  }, [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
 
@@ -792,10 +796,15 @@ export default function SiteEditorPage() {
   return (
     <div className="flex w-screen h-screen overflow-hidden bg-[#0d0f14] text-slate-100">
       {/* ── Main editor split ── */}
-      <div className="flex flex-1 min-h-0 overflow-hidden">
+      <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
         {/* ════ LEFT SIDEBAR ════ */}
-        <div className="w-[380px] flex-shrink-0 border-r flex flex-col overflow-hidden bg-[#111318]" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
+        <div
+          className={`absolute inset-0 z-20 flex h-full w-full flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
+            mobileView === "preview" ? "-translate-x-full" : "translate-x-0"
+          }`}
+          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+        >
 
           {/* Site identity */}
           <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
@@ -1632,13 +1641,28 @@ export default function SiteEditorPage() {
               </>
             )}
           </div>
+
+          {/* Mobile Preview Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setMobileView("preview")}
+            className="absolute bottom-6 right-4 z-30 flex items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
+          >
+            <Eye className="h-3.5 w-3.5 text-slate-500" />
+            Preview
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          </button>
         </div>
 
         {/* ════ RIGHT CANVAS ════ */}
-        <div className="flex-1 min-h-0 flex flex-col overflow-hidden min-w-0">
+        <div
+          className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
+            mobileView === "preview" ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
 
           {/* Canvas topbar */}
-          <div className="flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
+          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
               <button
@@ -1829,6 +1853,38 @@ export default function SiteEditorPage() {
               </div>
             )}
           </div>
+
+          {/* Mobile floating bottom bar */}
+          <div className="absolute bottom-6 left-4 right-4 z-40 flex items-center gap-3 md:hidden">
+            <button
+              type="button"
+              onClick={() => router.push(`/dashboard/domains?site_id=${siteId}`)}
+              className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+            >
+              <Send className="w-3.5 h-3.5" />
+              Publish
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileView("edit")}
+              className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
+            >
+              <Pencil className="h-3.5 w-3.5 text-slate-500" />
+              Edit
+            </button>
+          </div>
+
+          {/* Desktop floating publish button */}
+          <button
+            type="button"
+            onClick={() => router.push(`/dashboard/domains?site_id=${siteId}`)}
+            className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(124,58,237,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+          >
+            <Send className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+            Publish Website
+          </button>
         </div>
 
       </div>

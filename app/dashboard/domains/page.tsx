@@ -59,7 +59,14 @@ export default function DomainsPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
       setSites(sitesRes.data || []);
-      if (sitesRes.data && sitesRes.data.length > 0) {
+      
+      // Handle pre-selecting site from URL search params
+      const params = new URLSearchParams(window.location.search);
+      const querySiteId = params.get("site_id");
+      if (querySiteId && sitesRes.data && sitesRes.data.some(s => s.id.toString() === querySiteId)) {
+        setTargetSiteId(querySiteId);
+        setShowAddForm(true);
+      } else if (sitesRes.data && sitesRes.data.length > 0) {
         setTargetSiteId(sitesRes.data[0].id.toString());
       }
     } catch (err: any) {
