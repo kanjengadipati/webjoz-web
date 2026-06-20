@@ -100,57 +100,59 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-6 left-6 right-6 z-50 lg:hidden">
-        <div className="flex items-center justify-around rounded-3xl border border-border/70 bg-card/95 px-4 py-3 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:bg-background/80 dark:shadow-primary/10">
-          {filteredNavItems.slice(0, 5).map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-label={item.label}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2",
-                  MOTION.standard,
-                  active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
-                )}
-              >
-                <div className={cn(
-                  "size-1.5 rounded-full mb-1",
-                  MOTION.standard,
-                  active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
-                )} aria-hidden="true" />
-                <span className="text-[9px] font-bold leading-none">{item.label}</span>
-              </Link>
-            );
-          })}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-primary/5"
-            aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
-            aria-pressed={!isMonochrome}
-            onClick={toggleAccent}
-          >
-            <div className={cn(
-              "size-3.5 rounded-full border-2",
-              MOTION.slow,
-              accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300"
-            )} aria-hidden="true" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-primary/5"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            aria-pressed={theme === "dark"}
-            onClick={toggleTheme}
-          >
-            <ThemeIcon mode={theme} />
-          </Button>
-        </div>
-      </nav>
+      {!isFullscreenWorkspace && (
+        <nav className="fixed bottom-6 left-6 right-6 z-50 lg:hidden">
+          <div className="flex items-center justify-around rounded-3xl border border-border/70 bg-card/95 px-4 py-3 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:bg-background/80 dark:shadow-primary/10">
+            {filteredNavItems.slice(0, 5).map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-label={item.label}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex flex-col items-center gap-1 p-2",
+                    MOTION.standard,
+                    active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <div className={cn(
+                    "size-1.5 rounded-full mb-1",
+                    MOTION.standard,
+                    active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
+                  )} aria-hidden="true" />
+                  <span className="text-[9px] font-bold leading-none">{item.label}</span>
+                </Link>
+              );
+            })}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-primary/5"
+              aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
+              aria-pressed={!isMonochrome}
+              onClick={toggleAccent}
+            >
+              <div className={cn(
+                "size-3.5 rounded-full border-2",
+                MOTION.slow,
+                accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300"
+              )} aria-hidden="true" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-primary/5"
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              aria-pressed={theme === "dark"}
+              onClick={toggleTheme}
+            >
+              <ThemeIcon mode={theme} />
+            </Button>
+          </div>
+        </nav>
+      )}
 
       <div className={cn(
         "mx-auto grid min-h-screen",

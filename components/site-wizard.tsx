@@ -82,7 +82,7 @@ function DevicePreviewFrame({
     doc.head.appendChild(viewport);
 
     const baseStyle = doc.createElement("style");
-    baseStyle.textContent = `html,body{margin:0;min-height:100%;background:#fff;} body{overflow:${device === "desktop" ? "hidden" : "auto"};}`;
+    baseStyle.textContent = "html,body{margin:0;min-height:100%;background:#fff;width:100%;} body{overflow:auto;}";
     doc.head.appendChild(baseStyle);
 
     document
@@ -105,52 +105,10 @@ function DevicePreviewFrame({
       title={device === "desktop" ? "Preview desktop" : "Preview mobile"}
       onLoad={syncFrameDocument}
       srcDoc="<!doctype html><html><head></head><body></body></html>"
-      className={device === "desktop" ? "h-[1400px] w-[1440px] max-w-none bg-white" : "h-full w-full bg-white"}
+      className={device === "desktop" ? "block h-full w-full border-0 bg-white" : "h-full w-full bg-white"}
     >
       {mountNode ? createPortal(children, mountNode) : null}
     </iframe>
-  );
-}
-
-function DesktopMonitorPreview({ children }: { children: React.ReactNode }) {
-  const screenRef = useRef<HTMLDivElement>(null);
-  const [screenWidth, setScreenWidth] = useState(0);
-  const scale = screenWidth > 0 ? Math.min(screenWidth / 1440, 0.8) : 0.45;
-  const screenHeight = Math.max(430, Math.min(620, Math.round(1180 * scale)));
-
-  useEffect(() => {
-    const node = screenRef.current;
-    if (!node) return;
-
-    const update = () => setScreenWidth(node.clientWidth);
-    update();
-
-    const observer = new ResizeObserver(update);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col items-center justify-center pb-6">
-      <div className="w-full rounded-[18px] border-[8px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 md:rounded-[22px] md:border-[12px]">
-        <div ref={screenRef} className="w-full overflow-hidden rounded-[10px] bg-white" style={{ height: screenHeight }}>
-          <div
-            style={{
-              width: 1440,
-              height: 1400,
-              transform: `scale(${scale})`,
-              transformOrigin: "top left",
-            }}
-          >
-            <DevicePreviewFrame device="desktop">
-              {children}
-            </DevicePreviewFrame>
-          </div>
-        </div>
-      </div>
-      <div className="h-5 w-16 bg-slate-900 shadow-xl md:h-6 md:w-20" />
-      <div className="h-3 w-36 rounded-t-xl bg-slate-900 shadow-xl md:w-44" />
-    </div>
   );
 }
 
@@ -374,6 +332,7 @@ export function SiteWizard({
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
   const historyIndexRef = useRef(historyIndex);
   const hasPromptedDetailsRef = useRef(false);
+  const previewScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     historyIndexRef.current = historyIndex;
@@ -384,6 +343,12 @@ export function SiteWizard({
       setPreviewDevice("mobile");
     }
   }, []);
+
+  useEffect(() => {
+    if (previewDevice === "desktop") {
+      previewScrollRef.current?.scrollTo({ top: 0, left: 0 });
+    }
+  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex]);
 
   const { startStream, cancelStream } = useGenerateStream({
     onDesignToken: (token) => {
@@ -901,10 +866,10 @@ export function SiteWizard({
               </div>
             </div>
           ) : (
-            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-2 pb-24 md:p-6" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
-              <DesktopMonitorPreview>
+            <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
+              <DevicePreviewFrame device="desktop">
                 {templatePreview}
-              </DesktopMonitorPreview>
+              </DevicePreviewFrame>
             </div>
           )}
         </div>
