@@ -45,7 +45,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl relative z-10 space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-955 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-amber-950 leading-tight">
                 {hero.headline}
               </h1>
               <p className="text-lg md:text-xl text-[#6D5D50] max-w-2xl mx-auto leading-relaxed">
@@ -77,7 +77,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-5 sm:px-6 py-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
             <div className="space-y-6">
               <span className="text-amber-800 font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
-              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{about.title}</h2>
               <p className="text-[#6D5D50] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
             </div>
             <div className="relative">
@@ -111,7 +111,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Keunggulan</span>
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{benefits.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{benefits.title}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {benefits.items?.map((item, idx) => (
@@ -119,7 +119,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                     <div className="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
                       <DynamicIcon name={item.icon} defaultIcon={Star} className="w-6 h-6 fill-amber-500 stroke-amber-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-amber-955 mb-3">{item.title}</h3>
+                    <h3 className="text-xl font-bold text-amber-950 mb-3">{item.title}</h3>
                     <p className="text-[#6D5D50] text-sm leading-relaxed">{item.description}</p>
                   </div>
                 ))}
@@ -135,7 +135,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-6 py-20 max-w-4xl mx-auto space-y-12" id="faq">
             <div className="text-center space-y-2">
               <span className="text-amber-800 font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
-              <h2 className="text-3xl font-bold font-serif text-amber-955">{faq.title}</h2>
+              <h2 className="text-3xl font-bold font-serif text-amber-950">{faq.title}</h2>
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -153,7 +153,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="bg-[#FAF7F2] border border-[#EADFCB] p-8 md:p-16 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-gradient-to-tr from-amber-50 to-orange-50 opacity-40"></div>
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-955">{cta.headline}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-serif text-amber-950">{cta.headline}</h2>
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
@@ -186,12 +186,12 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             leadError={data.leadError}
             wrapperClass="px-6 py-20 border-t border-[#EADFCB]"
             wrapperStyle={{ background: "#F4EEE0" }}
-            titleClass="text-3xl font-bold font-serif text-amber-955"
+            titleClass="text-3xl font-bold font-serif text-amber-950"
             accentColor="#b45309"
             textClass="text-amber-900"
-            mapsLinkClass="text-amber-800 underline hover:text-amber-955 font-medium"
+            mapsLinkClass="text-amber-800 underline hover:text-amber-950 font-medium"
             leadCardClass="bg-white p-8 rounded-3xl border border-[#EADFCB] shadow-sm"
-            leadTitleClass="text-lg font-bold font-serif text-amber-955"
+            leadTitleClass="text-lg font-bold font-serif text-amber-950"
             leadTitleText="Hubungi Kami / Reservasi"
             leadFormBtnClass="bg-amber-800 hover:bg-amber-900 text-white rounded-xl shadow-sm hover:shadow"
             leadFormInputClass="w-full px-4 py-2.5 bg-amber-50/50 border border-[#EADFCB] focus:border-amber-600 focus:ring-1 focus:ring-amber-600 rounded-xl outline-none text-sm transition-all"
@@ -203,11 +203,11 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass="text-amber-955 font-serif"
+          headingClass="text-amber-950 font-serif"
           eyebrowClass="text-amber-800"
           cardClass="bg-white border border-[#EADFCB]"
           quoteClass="text-[#6D5D50]"
-          nameClass="text-amber-955"
+          nameClass="text-amber-950"
           roleClass="text-amber-700/60"
           bgClass="bg-[#F4EEE0] border-y border-[#EADFCB] py-20 px-5 sm:px-6"
         />
@@ -275,7 +275,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
-            <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-955 tracking-wide flex items-center gap-2">
+            <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-950 tracking-wide flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
                 icon={headerData.icon}
@@ -311,7 +311,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Kuliner Kami";
           const displayTagline = footerData.tagline || "Cita rasa autentik untuk kebersamaan keluarga Anda";
           return (
-            <footer className="bg-amber-955 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
+            <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
               <p className="text-sm font-bold text-amber-100">{displayBrand}</p>
               <p className="text-amber-100/50">{displayTagline}</p>
               <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>

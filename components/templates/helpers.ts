@@ -51,7 +51,7 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
   const primaryFg = isPrimaryDark ? "#ffffff" : "#1e293b";
   const ctaText = isPrimaryDark ? "#ffffff" : "#1e293b";
   const ctaBtnBg = isPrimaryDark ? "#ffffff" : "#1e293b";
-  const ctaBtnText = isPrimaryDark ? "var(--dt-primary)" : "#ffffff";
+  const ctaBtnText = isPrimaryDark ? primaryColor : "#ffffff";
 
   return {
     "--dt-primary": primaryColor,

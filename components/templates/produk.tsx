@@ -157,10 +157,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
-                    className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-955 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                    className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-950 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                   >
                     {cta.button_text}
-                    <ArrowRight className="w-4 h-4 text-slate-955" />
+                    <ArrowRight className="w-4 h-4 text-slate-950" />
                   </a>
                 </div>
               </div>
@@ -193,8 +193,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             leadCardClass="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm"
             leadTitleClass="text-lg font-bold text-white"
             leadTitleText="Hubungi Kami Langsung"
-            leadFormBtnClass="bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-xl"
-            leadFormInputClass="w-full px-4 py-2.5 bg-slate-955/50 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl outline-none text-sm text-slate-100 transition-all"
+            leadFormBtnClass="bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 rounded-xl"
+            leadFormInputClass="w-full px-4 py-2.5 bg-slate-950/50 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl outline-none text-sm text-slate-100 transition-all"
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -209,7 +209,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           quoteClass="text-slate-300"
           nameClass="text-white"
           roleClass="text-slate-500"
-          bgClass="bg-slate-955 border-y border-slate-800 py-24 px-6"
+          bgClass="bg-slate-950 border-y border-slate-800 py-24 px-6"
         />
       </MemoPreviewSectionWrapper>
     ) : null,
@@ -272,10 +272,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
-    <div className="bg-slate-955 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
+    <div className="bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-955/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
             <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 tracking-wider flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
@@ -295,7 +295,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               linkClass="text-slate-300"
               drawerStyle={{ background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.08)" }}
             />
-            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-955 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] inline-flex items-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-950">
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -312,7 +312,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Produk Kami";
           const displayTagline = footerData.tagline || "Kualitas produk terbaik untuk memenuhi kenyamanan Anda";
           return (
-            <footer className="bg-slate-955 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
+            <footer className="bg-slate-950 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
               <p className="text-sm font-bold text-slate-400">{displayBrand}</p>
               <p className="text-slate-650">{displayTagline}</p>
               <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>

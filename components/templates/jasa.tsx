@@ -93,7 +93,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
             <div className="space-y-6">
               <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">Profil</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-955 tracking-tight">{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight">{about.title}</h2>
               <p className="text-slate-600 leading-relaxed text-justify whitespace-pre-line">{about.body}</p>
             </div>
           </section>
@@ -139,7 +139,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-14">
               <div className="text-center space-y-3">
                 {catalogData.eyebrow && <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
-                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-955 tracking-tight">{catalogData.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight">{catalogData.title}</h2>
                 {catalogData.subtitle && <p className="text-slate-600 max-w-2xl mx-auto">{catalogData.subtitle}</p>}
               </div>
               {catalogData.categories?.map((cat, ci) => (
@@ -269,7 +269,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
-            <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-955 tracking-wider flex items-center gap-2">
+            <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
                 icon={headerData.icon}
