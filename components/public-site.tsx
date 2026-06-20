@@ -8,6 +8,7 @@ import { getTemplate } from "@/lib/template-registry";
 interface PublicSiteProps {
   subdomain?: string;
   host?: string;
+  siteId?: number;
 }
 
 const stripRegeneratedMarkers = (value: any): any => {
@@ -25,7 +26,7 @@ const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export default function PublicSite({ subdomain, host }: PublicSiteProps) {
+export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [siteData, setSiteData] = useState<any>(null);
@@ -61,12 +62,16 @@ export default function PublicSite({ subdomain, host }: PublicSiteProps) {
   const targetHost = resolveHost();
 
   useEffect(() => {
-    if (!targetHost) return;
+    if (!targetHost && !siteId) return;
 
     const fetchSite = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${API_BASE_URL}/public/sites?host=${targetHost}`);
+        const endpoint = siteId 
+          ? `${API_BASE_URL}/public/sites?site_id=${siteId}`
+          : `${API_BASE_URL}/public/sites?host=${targetHost}`;
+          
+        const res = await fetch(endpoint);
         if (!res.ok) {
           throw new Error("Situs tidak ditemukan atau belum dipublikasi.");
         }

@@ -1,20 +1,18 @@
 "use client";
+import { Dialog } from "@/components/ui/dialog";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { 
-  Globe, Plus, Loader2, RefreshCw, Eye, Edit3, Trash2, 
-  Check, Copy, Info, CheckCircle2, FileText, ChevronRight, AlertCircle, 
-  ArrowRight, ShieldAlert, Search, TriangleAlert, X, MoreVertical, EyeOff, Layout
+import {
+  Globe, Plus, Loader2, RefreshCw, Edit3, Trash2,
+  Check, Copy, Info, CheckCircle2, AlertCircle,
+  Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket
 } from "lucide-react";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Badge } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import TemplateThumbnail from "./[id]/TemplateThumbnail";
-import { getTemplate } from "@/lib/template-registry";
-import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -40,7 +38,6 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteMo
 
       {/* Panel */}
       <div className="relative z-10 w-full max-w-md bg-[#13131a] border border-red-500/20 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6 space-y-5">
-        {/* Close button */}
         {!loading && (
           <button
             onClick={onCancel}
@@ -74,8 +71,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteMo
         <div className="flex items-start gap-2.5 bg-red-950/20 border border-red-500/20 rounded-xl px-4 py-3">
           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-red-300 leading-relaxed">
-            Semua konten, pengaturan, dan data website ini akan dihapus. 
-            Subdomain akan dibebaskan dan tidak bisa dipulihkan.
+            Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.
           </p>
         </div>
 
@@ -122,7 +118,7 @@ interface RenameModalProps {
 
 function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalProps) {
   const [name, setName] = useState(currentName);
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && name.trim() !== currentName) {
@@ -191,11 +187,129 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
   );
 }
 
-interface IframePreviewProps {
-  subdomain: string;
+/* ── Publish Modal (Dialog) ─────────────────────────────────────── */
+interface PublishModalProps {
+  site: Site;
+  onConfirm: (subdomain: string) => void;
+  onCancel: () => void;
+  loading: boolean;
 }
 
-function IframePreview({ subdomain }: IframePreviewProps) {
+function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+  const [subdomain, setSubdomain] = useState(() => {
+    if (site.subdomain.startsWith("draft-")) return "";
+    return site.subdomain;
+  });
+
+  const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
+
+  const handleSubdomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow lowercase letters, numbers, and hyphens (same as domains page filter)
+    const cleaned = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    setSubdomain(cleaned);
+  };
+
+  const isInputValid = subdomainRegex.test(subdomain);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isInputValid) return;
+    onConfirm(subdomain);
+  };
+
+  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.webjoz.com` : "";
+
+  return (
+    <Dialog
+      open={!!site}
+      onOpenChange={(open) => {
+        if (!open && !loading) onCancel();
+      }}
+      title="Publikasikan Website"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <p className="text-xs text-[#9b9ba5]">
+          Pilih subdomain untuk <span className="text-white font-medium">{site.name}</span>
+        </p>
+
+        {/* Subdomain input */}
+        <div className="space-y-2">
+          <label className="text-xs font-semibold text-[#8fa8ff]">Nama Subdomain</label>
+          <div
+            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-colors ${
+              subdomain && !isInputValid
+                ? "border-[#ff8a8a]"
+                : "border-white/15 focus-within:border-[#6f6fff]"
+            }`}
+          >
+            <input
+              type="text"
+              value={subdomain}
+              onChange={handleSubdomainChange}
+              disabled={loading}
+              placeholder="namaanda"
+              maxLength={30}
+              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0"
+              autoFocus
+            />
+            <span className="px-3 py-2.5 text-[13px] text-[#6b6b75] font-mono shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+              .webjoz.com
+            </span>
+          </div>
+
+          {previewDomain && (
+            <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${isInputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
+              {isInputValid
+                ? `✓ Subdomain tersedia: ${previewDomain}`
+                : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+            </p>
+          )}
+
+          <p className="text-xs text-[#65656f] leading-relaxed">
+            Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 rounded-xl h-10 text-sm border-white/10 hover:bg-white/[0.04]"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Batal
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 rounded-xl h-10 text-sm bg-[#6f6fff] hover:bg-[#5a5ae8] text-white border-0 cursor-pointer gap-1.5"
+            disabled={loading || !isInputValid}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Memproses...
+              </>
+            ) : (
+              <>
+                <Rocket className="w-4 h-4" />
+                Publikasikan
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
+  );
+}
+
+/* ── Iframe Preview ─────────────────────────────────────── */
+interface IframePreviewProps {
+  siteId: number;
+}
+
+function IframePreview({ siteId }: IframePreviewProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.25);
 
@@ -204,7 +318,6 @@ function IframePreview({ subdomain }: IframePreviewProps) {
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const { width } = entry.contentRect;
-        // Base width is 1200px
         setScale(width / 1200);
       }
     });
@@ -215,7 +328,7 @@ function IframePreview({ subdomain }: IframePreviewProps) {
   return (
     <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-[#0d0f14]">
       <iframe
-        src={`/s/${subdomain}`}
+        src={`/preview/${siteId}`}
         loading="lazy"
         className="absolute top-0 left-0 border-0 pointer-events-none origin-top-left"
         style={{
@@ -224,7 +337,7 @@ function IframePreview({ subdomain }: IframePreviewProps) {
           transform: `scale(${scale})`,
         }}
       />
-      {/* Overlay to catch clicks and prevent interaction with iframe content */}
+      {/* Overlay to catch clicks */}
       <div className="absolute inset-0 z-10 cursor-pointer bg-transparent" />
     </div>
   );
@@ -245,7 +358,7 @@ interface Site {
 export default function SitesPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { 
+  const {
     activeTenantId, loading: tenantLoading
   } = useActiveTenant();
 
@@ -256,6 +369,7 @@ export default function SitesPage() {
   // Modals & action targets
   const [deleteTarget, setDeleteTarget] = useState<Site | null>(null);
   const [renameTarget, setRenameTarget] = useState<Site | null>(null);
+  const [publishTarget, setPublishTarget] = useState<Site | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -275,12 +389,8 @@ export default function SitesPage() {
       const res = await request<Site[]>("/sites", {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
-      const sortedSites = (res.data || []).sort((a, b) => {
-        const timeA = new Date(a.updated_at || a.created_at || 0).getTime();
-        const timeB = new Date(b.updated_at || b.created_at || 0).getTime();
-        return timeB - timeA;
-      });
-      setSites(sortedSites);
+      // Server already orders updated_at desc; just use as-is
+      setSites(res.data || []);
     } catch (err: any) {
       pushToast(err.message || "Failed to load sites", "error");
     } finally {
@@ -305,17 +415,47 @@ export default function SitesPage() {
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  const handlePublishToggle = async (site: Site) => {
-    if (!token || !activeTenantId) return;
+  const handlePublishWithSubdomain = async (subdomain: string) => {
+    if (!publishTarget || !token || !activeTenantId) return;
     try {
-      setActionLoading(site.id);
-      const action = site.status === "published" ? "unpublish" : "publish";
-      await request<Site>(`/sites/${site.id}/${action}`, {
+      setActionLoading(publishTarget.id);
+
+      // 1. Update subdomain
+      await request(`/sites/${publishTarget.id}`, {
+        method: "PATCH",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({
+          name: publishTarget.name,
+          template_id: publishTarget.template_id,
+          subdomain: subdomain,
+        })
+      }, token);
+
+      // 2. Publish
+      await request<Site>(`/sites/${publishTarget.id}/publish`, {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
-      
-      pushToast(`Website berhasil di-${action === "publish" ? "publikasi" : "draft"}!`, "success");
+
+      pushToast("Website berhasil dipublikasikan! 🚀", "success");
+      setPublishTarget(null);
+      fetchSites();
+    } catch (err: any) {
+      pushToast(err.message || "Gagal mempublikasikan website", "error");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleUnpublish = async (site: Site) => {
+    if (!token || !activeTenantId) return;
+    try {
+      setActionLoading(site.id);
+      await request<Site>(`/sites/${site.id}/unpublish`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() }
+      }, token);
+      pushToast("Website berhasil di-draft kembali.", "success");
       fetchSites();
     } catch (err: any) {
       pushToast(err.message || "Gagal mengubah status publikasi", "error");
@@ -376,18 +516,15 @@ export default function SitesPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
 
-      // Generate a random 4-char suffix for subdomain uniqueness
-      const randSuffix = Math.random().toString(36).substring(2, 6);
-      const newSubdomain = `${site.subdomain}-copy-${randSuffix}`.substring(0, 30);
-
-      // 2. Create the duplicated site
+      // 2. Create the duplicated site with a new temporary subdomain
+      const tempSubdomain = `draft-${Date.now()}`;
       const createRes = await request<any>("/sites", {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
         body: JSON.stringify({
           name: `${site.name} (Copy)`,
           template_id: site.template_id,
-          subdomain: newSubdomain
+          subdomain: tempSubdomain
         })
       }, token);
 
@@ -397,7 +534,7 @@ export default function SitesPage() {
 
       const newSite = createRes.data;
 
-      // 3. Put content to new site
+      // 3. Copy content to new site
       await request(`/sites/${newSite.id}/content`, {
         method: "PUT",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
@@ -416,12 +553,15 @@ export default function SitesPage() {
     }
   };
 
-  const handleCopyLink = (subdomain: string, siteId: number) => {
-    const url = getSiteUrl(subdomain);
+  const handleCopyLink = (site: Site) => {
+    if (isTemporarySubdomain(site.subdomain)) return;
+    const url = getSiteUrl(site.subdomain);
     navigator.clipboard.writeText(url);
-    setCopiedId(siteId);
+    setCopiedId(site.id);
     setTimeout(() => setCopiedId(null), 1500);
   };
+
+  const isTemporarySubdomain = (subdomain: string) => subdomain.startsWith("draft-");
 
   const getSiteUrl = (subdomain: string) => {
     if (typeof window === "undefined") return `http://localhost:3000/s/${subdomain}`;
@@ -503,6 +643,15 @@ export default function SitesPage() {
         />
       )}
 
+      {publishTarget && (
+        <PublishModal
+          site={publishTarget}
+          onConfirm={handlePublishWithSubdomain}
+          onCancel={() => setPublishTarget(null)}
+          loading={actionLoading === publishTarget.id}
+        />
+      )}
+
       {/* Panel / Header Card */}
       <div className="bg-[#13131a] border border-white/[0.08] rounded-[20px] p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
@@ -519,16 +668,16 @@ export default function SitesPage() {
       {/* Search Input bar */}
       <div className="relative">
         <Search className="absolute left-[18px] top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#65656f] pointer-events-none" />
-        <input 
-          type="text" 
-          placeholder="Cari website berdasarkan nama atau subdomain..." 
+        <input
+          type="text"
+          placeholder="Cari website berdasarkan nama..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-[#1a1a23] border border-white/[0.08] hover:border-white/15 focus:border-[#5b7cf8]/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
         />
         {searchQuery && (
-          <button 
-            onClick={() => setSearchQuery("")} 
+          <button
+            onClick={() => setSearchQuery("")}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#9b9ba5] hover:text-white cursor-pointer"
           >
             Reset
@@ -538,35 +687,35 @@ export default function SitesPage() {
 
       {/* Filter Tabs */}
       <div className="flex gap-2 flex-wrap">
-        <button 
+        <button
           onClick={() => setCurrentFilter("all")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-            currentFilter === "all" 
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]" 
+            currentFilter === "all"
+              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
           }`}
         >
-          Semua <span className={`count text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
+          Semua <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
         </button>
-        <button 
+        <button
           onClick={() => setCurrentFilter("draft")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-            currentFilter === "draft" 
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]" 
+            currentFilter === "draft"
+              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
           }`}
         >
-          Draft <span className={`count text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
+          Draft <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
         </button>
-        <button 
+        <button
           onClick={() => setCurrentFilter("published")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-            currentFilter === "published" 
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]" 
+            currentFilter === "published"
+              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
           }`}
         >
-          Dipublikasikan <span className={`count text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
+          Dipublikasikan <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
         </button>
       </div>
 
@@ -596,32 +745,26 @@ export default function SitesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayedSites.map((site) => {
               const isLive = site.status === "published";
-              const isWj = site.subdomain;
-              const tplDef = getTemplate(site.template_id);
-              const dToken = getTemplateDefaultDesignToken(site.template_id);
-              const friendlyUrl = getSiteUrl(site.subdomain).replace("https://", "").replace("http://", "");
+              const isDraftSubdomain = isTemporarySubdomain(site.subdomain);
 
               return (
                 <div key={site.id} className="bg-[#13131a] border border-white/[0.08] hover:border-white/[0.14] rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
-                  {/* Real website preview iframe */}
+                  {/* Preview iframe */}
                   <div className="w-full aspect-video rounded-lg relative overflow-hidden select-none bg-[#19191f]">
-                    <IframePreview subdomain={site.subdomain} />
+                    <IframePreview siteId={site.id} />
                   </div>
 
                   {/* Header / Info Row */}
                   <div className="flex justify-between items-start gap-2">
                     <div className="min-w-0">
                       <h3 className="text-[16px] font-semibold text-white m-0 truncate leading-tight group-hover:text-primary transition-colors">{site.name}</h3>
-                      <span className="inline-block text-[11px] bg-[#1a1a23] text-[#9b9ba5] px-2.5 py-0.5 rounded mt-1 font-mono">
-                        {tplDef?.name || site.template_id}
-                      </span>
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0 relative">
                       {/* Status badge */}
                       <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${
-                        isLive 
-                          ? "bg-[#34c77b]/12 text-[#34c77b] border border-[#34c77b]/35 flex items-center gap-1" 
+                        isLive
+                          ? "bg-[#34c77b]/12 text-[#34c77b] border border-[#34c77b]/35 flex items-center gap-1"
                           : "bg-[#1a1a23] text-[#9b9ba5]"
                       }`}>
                         {isLive && <span className="w-1.5 h-1.5 rounded-full bg-[#34c77b]" />}
@@ -630,7 +773,7 @@ export default function SitesPage() {
 
                       {/* 3-dots Dropdown Trigger */}
                       <div className="relative">
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setActiveDropdown(activeDropdown === site.id ? null : site.id);
@@ -641,13 +784,12 @@ export default function SitesPage() {
                           <MoreVertical className="w-4.5 h-4.5" />
                         </button>
 
-                        {/* Interactive Dropdown Menu */}
                         {activeDropdown === site.id && (
-                          <div 
-                            onClick={(e) => e.stopPropagation()} 
+                          <div
+                            onClick={(e) => e.stopPropagation()}
                             className="absolute top-8 right-0 z-20 bg-[#1a1a23] border border-white/[0.14] rounded-lg p-1.5 min-w-[170px] shadow-2xl flex flex-col gap-0.5 animate-in fade-in slide-in-from-top-1 duration-150"
                           >
-                            <button 
+                            <button
                               onClick={() => {
                                 handleDuplicateSite(site);
                                 setActiveDropdown(null);
@@ -657,7 +799,7 @@ export default function SitesPage() {
                             >
                               <Copy className="w-3.5 h-3.5 text-[#9b9ba5]" /> Duplikat
                             </button>
-                            <button 
+                            <button
                               onClick={() => {
                                 setRenameTarget(site);
                                 setActiveDropdown(null);
@@ -667,9 +809,9 @@ export default function SitesPage() {
                               <Edit3 className="w-3.5 h-3.5 text-[#9b9ba5]" /> Ganti nama
                             </button>
                             {isLive && (
-                              <button 
+                              <button
                                 onClick={() => {
-                                  handlePublishToggle(site);
+                                  handleUnpublish(site);
                                   setActiveDropdown(null);
                                 }}
                                 disabled={actionLoading === site.id}
@@ -678,7 +820,7 @@ export default function SitesPage() {
                                 <EyeOff className="w-3.5 h-3.5 text-[#9b9ba5]" /> Batalkan publikasi
                               </button>
                             )}
-                            <button 
+                            <button
                               onClick={() => {
                                 setDeleteTarget(site);
                                 setActiveDropdown(null);
@@ -694,19 +836,29 @@ export default function SitesPage() {
                     </div>
                   </div>
 
-                  {/* Subdomain URL Row */}
+                  {/* URL / Subdomain Row */}
                   <div className="bg-[#1a1a23] rounded-lg px-3 py-2 flex items-center justify-between gap-2 border border-white/[0.02]">
                     <div className="flex items-center gap-2 min-w-0">
                       <Globe className="w-3.5 h-3.5 text-[#65656f] shrink-0" />
-                      <span className="text-[12.5px] text-[#f5f5f7] font-mono truncate select-all">{friendlyUrl}</span>
+                      {(!isLive || isDraftSubdomain) ? (
+                        <span className="text-[12px] text-[#65656f] italic truncate">
+                          Domain belum diatur
+                        </span>
+                      ) : (
+                        <span className="text-[12.5px] text-[#f5f5f7] font-mono truncate select-all">
+                          {getSiteUrl(site.subdomain).replace("https://", "").replace("http://", "")}
+                        </span>
+                      )}
                     </div>
-                    <button 
-                      onClick={() => handleCopyLink(site.subdomain, site.id)}
-                      className={`p-1 text-[#9b9ba5] hover:text-white hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
-                      aria-label="Salin tautan"
-                    >
-                      {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
+                    {isLive && !isDraftSubdomain && (
+                      <button
+                        onClick={() => handleCopyLink(site)}
+                        className={`p-1 text-[#9b9ba5] hover:text-white hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
+                        aria-label="Salin tautan"
+                      >
+                        {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    )}
                   </div>
 
                   {/* Modification Time Row */}
@@ -717,23 +869,23 @@ export default function SitesPage() {
 
                   {/* Primary card actions */}
                   <div className="flex gap-2 border-t border-white/[0.08] pt-3.5 mt-1">
-                    <Link 
-                      href={`/dashboard/sites/${site.id}`} 
+                    <Link
+                      href={`/dashboard/sites/${site.id}`}
                       className="flex-1 py-2 px-1 rounded-xl border border-white/10 text-white hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> Edit & Preview
                     </Link>
 
                     {isLive ? (
-                      <button 
+                      <button
                         onClick={() => window.open(getSiteUrl(site.subdomain), "_blank")}
                         className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-white hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> Lihat Web
                       </button>
                     ) : (
-                      <button 
-                        onClick={() => handlePublishToggle(site)}
+                      <button
+                        onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
                         className="flex-1 py-2 px-1 rounded-xl bg-[#5b7cf8]/12 text-[#a9bcff] border border-[#5b7cf8]/40 hover:bg-[#5b7cf8]/20 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
                       >
@@ -755,7 +907,7 @@ export default function SitesPage() {
           {/* Load More Button */}
           {filteredSites.length > limit && (
             <div className="flex justify-center pt-4">
-              <button 
+              <button
                 onClick={() => setLimit(prev => prev + 10)}
                 className="bg-transparent border border-white/[0.14] hover:bg-white/[0.04] text-white font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
               >
