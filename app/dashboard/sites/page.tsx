@@ -1009,7 +1009,7 @@ export default function SitesPage() {
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Publikasikan
+                            <Rocket className="w-3.5 h-3.5" /> Publikasikan
                           </>
                         )}
                       </button>

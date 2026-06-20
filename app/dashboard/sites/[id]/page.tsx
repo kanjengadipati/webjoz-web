@@ -1902,8 +1902,8 @@ export default function SiteEditorPage() {
                 className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
               >
-                <Send className="w-3.5 h-3.5" />
-                Publish
+                <Rocket className="w-3.5 h-3.5" />
+                Publikasikan
               </button>
             )}
             <button
@@ -1924,8 +1924,8 @@ export default function SiteEditorPage() {
               className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(124,58,237,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
             >
-              <Send className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-              Publish Website
+              <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+              Publikasikan Website
             </button>
           )}
         </div>
