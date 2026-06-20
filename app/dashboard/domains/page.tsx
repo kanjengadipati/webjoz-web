@@ -10,6 +10,7 @@ import {
   Link2, ChevronUp,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
+import { Dialog } from "@/components/ui/dialog";
 
 interface Domain {
   id: number;
@@ -45,18 +46,13 @@ export default function DomainsPage() {
   const [loading,       setLoading]       = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
-  // ── Webjoz subdomain form ────────────────────────────────
-  const [wjSiteId,      setWjSiteId]      = useState("");
-  const [wjPrefix,      setWjPrefix]      = useState("");   // just the prefix part
-  const [wjFormOpen,    setWjFormOpen]    = useState(false);
-  const [wjSubmitting,  setWjSubmitting]  = useState(false);
-
-  // ── Custom domain form ───────────────────────────────────
-  const [cdSiteId,      setCdSiteId]      = useState("");
-  const [cdDomain,      setCdDomain]      = useState("");
-  const [cdFormOpen,    setCdFormOpen]    = useState(false);
-  const [cdSubmitting,  setCdSubmitting]  = useState(false);
+  // Consolidated Form States
+  const [siteId,        setSiteId]        = useState("");
+  const [isCustom,      setIsCustom]      = useState(false);
+  const [domainInput,   setDomainInput]   = useState("");
+  const [submitting,    setSubmitting]    = useState(false);
   const [copied,        setCopied]        = useState(false);
+  const [showUpsellModal, setShowUpsellModal] = useState(false);
 
   // ────────────────────────────────────────────────────────
   const fetchData = async () => {
@@ -70,13 +66,18 @@ export default function DomainsPage() {
       setDomains(dr.data || []);
       const list = sr.data || [];
       setSites(list);
-      if (list.length > 0) { setWjSiteId(list[0].id.toString()); setCdSiteId(list[0].id.toString()); }
 
       const params      = new URLSearchParams(window.location.search);
       const qSiteId     = params.get("site_id");
       if (qSiteId && list.some(s => s.id.toString() === qSiteId)) {
-        setCdSiteId(qSiteId);
-        setCdFormOpen(true);
+        setSiteId(qSiteId);
+        const selectedSite = list.find(s => s.id.toString() === qSiteId);
+        if (selectedSite) {
+          setDomainInput(selectedSite.subdomain);
+        }
+      } else if (list.length > 0) {
+        setSiteId(list[0].id.toString());
+        setDomainInput(list[0].subdomain);
       }
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat data domain", "error");
@@ -88,48 +89,47 @@ export default function DomainsPage() {
   useEffect(() => { if (activeTenantId) fetchData(); }, [activeTenantId]);
 
   // ── Submit helpers ────────────────────────────────────────
-  const submitDomain = async (domain: string, siteId: string, onSuccess: () => void) => {
-    await request<Domain>("/domains", {
-      method: "POST",
-      headers: { "X-Tenant-ID": activeTenantId!.toString() },
-      body: JSON.stringify({ site_id: Number(siteId), domain }),
-    }, token!);
-    onSuccess();
-    fetchData();
-  };
-
-  const handleAddWebjoz = async (e: React.FormEvent) => {
+  const handleAddDomain = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!wjPrefix || !wjSiteId) return;
-    try {
-      setWjSubmitting(true);
-      const domain = `${wjPrefix.toLowerCase().trim()}${WEBJOZ_SUFFIX}`;
-      await submitDomain(domain, wjSiteId, () => {
-        pushToast("Subdomain berhasil ditautkan!", "success");
-        setWjPrefix("");
-        setWjFormOpen(false);
-      });
-    } catch (err: any) {
-      pushToast(err.message || "Gagal menambahkan subdomain", "error");
-    } finally {
-      setWjSubmitting(false);
+    if (!token || !activeTenantId || !domainInput || !siteId) return;
+
+    const trimmed = domainInput.toLowerCase().trim();
+    const finalDomain = isCustom ? trimmed : `${trimmed}${WEBJOZ_SUFFIX}`;
+
+    // Validate
+    if (isCustom) {
+      if (!customDomainRegex.test(trimmed)) {
+        pushToast("Format domain tidak valid. Contoh: domainanda.com", "error");
+        return;
+      }
+    } else {
+      if (!subdomainRegex.test(trimmed)) {
+        pushToast("Format subdomain tidak valid. Gunakan huruf kecil, angka, atau tanda hubung (-)", "error");
+        return;
+      }
     }
-  };
 
-  const handleAddCustom = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!cdDomain || !cdSiteId) return;
     try {
-      setCdSubmitting(true);
-      await submitDomain(cdDomain.toLowerCase().trim(), cdSiteId, () => {
-        pushToast("Domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.", "success");
-        setCdDomain("");
-        setCdFormOpen(false);
-      });
+      setSubmitting(true);
+      await request<Domain>("/domains", {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ site_id: Number(siteId), domain: finalDomain }),
+      }, token);
+
+      if (isCustom) {
+        pushToast("Custom domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.", "success");
+        setDomainInput("");
+      } else {
+        pushToast("Subdomain berhasil ditautkan!", "success");
+        const selectedSite = sites.find(s => s.id.toString() === siteId);
+        setDomainInput(selectedSite ? selectedSite.subdomain : "");
+      }
+      fetchData();
     } catch (err: any) {
       pushToast(err.message || "Gagal menambahkan domain", "error");
     } finally {
-      setCdSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -171,12 +171,22 @@ export default function DomainsPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const selectSubdomain = () => {
+    setIsCustom(false);
+    const selectedSite = sites.find(s => s.id.toString() === siteId);
+    setDomainInput(selectedSite ? selectedSite.subdomain : "");
+  };
+
+  const selectCustom = () => {
+    if (!isCustom) {
+      setDomainInput("");
+      setShowUpsellModal(true);
+    }
+  };
+
   // ── Derived ───────────────────────────────────────────────
-  const wjDomains  = domains.filter(d => d.domain.endsWith(WEBJOZ_SUFFIX));
-  const cdDomains  = domains.filter(d => !d.domain.endsWith(WEBJOZ_SUFFIX));
-  const wjValid    = subdomainRegex.test(wjPrefix.trim());
-  const cdValid    = customDomainRegex.test(cdDomain.trim());
-  const wjPreview  = wjPrefix.trim() ? `${wjPrefix.trim().toLowerCase()}${WEBJOZ_SUFFIX}` : "";
+  const inputValid = isCustom ? customDomainRegex.test(domainInput.trim()) : subdomainRegex.test(domainInput.trim());
+  const previewDomain = !isCustom && domainInput.trim() ? `${domainInput.trim().toLowerCase()}${WEBJOZ_SUFFIX}` : "";
 
   // ────────────────────────────────────────────────────────
   if (loading && domains.length === 0) {
@@ -191,6 +201,7 @@ export default function DomainsPage() {
   // ── Shared domain row ─────────────────────────────────────
   const DomainRow = ({ dom }: { dom: Domain }) => {
     const site = sites.find(s => s.id === dom.site_id);
+    const isWj  = dom.domain.endsWith(WEBJOZ_SUFFIX);
     const ok   = dom.status === "verified";
     const busy = actionLoading === dom.id;
     return (
@@ -199,17 +210,23 @@ export default function DomainsPage() {
           {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{dom.domain}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{dom.domain}</p>
+            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${isWj ? "bg-white/10 text-[#c8c8d4]" : "bg-[#6f6fff]/20 text-[#8fa8ff]"}`}>
+              {isWj ? "Subdomain" : "Custom Domain"}
+            </span>
+          </div>
           <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5 truncate">
             → {site?.name || `Site #${dom.site_id}`}
-            {!ok && " · menunggu propagasi DNS"}
+            {!ok && !isWj && " · menunggu propagasi DNS"}
+            {!ok && isWj && " · menunggu aktivasi"}
           </p>
         </div>
         <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
           {ok ? "Aktif" : "Pending"}
         </span>
         <div className="flex items-center gap-1.5">
-          {!ok && (
+          {!ok && !isWj && (
             <button onClick={() => handleVerify(dom.id)} disabled={busy}
               className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title="Cek DNS">
               {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
@@ -224,246 +241,235 @@ export default function DomainsPage() {
     );
   };
 
-  // ── Section header helper ────────────────────────────────
-  const SectionHeader = ({
-    title, badge, count, subtitle, action,
-  }: {
-    title: string; badge?: React.ReactNode; count?: number;
-    subtitle: string; action?: React.ReactNode;
-  }) => (
-    <div className="flex items-start justify-between mb-3">
-      <div>
-        <h2 className="text-[15px] font-bold m-0 text-[#f3f3f4] flex items-center gap-2 flex-wrap">
-          {title}
-          {count !== undefined && count > 0 && <span className="text-[#6b6b75] font-normal">({count})</span>}
-          {badge}
-        </h2>
-        <p className="text-[13px] text-[#6b6b75] m-0 mt-0.5">{subtitle}</p>
-      </div>
-      {action}
+  // ── Upselling Modal Footer ───────────────────────────────
+  const upsellFooter = (
+    <div className="flex w-full gap-3">
+      <button
+        type="button"
+        onClick={() => {
+          setIsCustom(true);
+          setShowUpsellModal(false);
+        }}
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
+      >
+        Lanjutkan Hubungkan
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          pushToast("Upgrade Premium sedang dikembangkan! Anda tetap bisa menggunakan custom domain secara gratis untuk saat ini.", "info");
+          setIsCustom(true);
+          setShowUpsellModal(false);
+        }}
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-[#6f6fff] text-white hover:bg-[#5a5ae8] transition-all hover:shadow-[0_0_12px_rgba(111,111,255,0.4)] cursor-pointer"
+      >
+        Upgrade Sekarang
+      </button>
     </div>
   );
 
-  // ────────────────────────────────────────────────────────────
   return (
-    <div className="max-w-3xl text-[#f3f3f4] font-sans space-y-10">
+    <div className="max-w-3xl text-[#f3f3f4] font-sans space-y-8">
+      {/* ═══════════════════════════════════════════════
+          SECTION 1 — Connected Domains List
+      ══════════════════════════════════════════════ */}
+      {domains.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
+            Domain & Subdomain Terhubung ({domains.length})
+          </h2>
+          <div className="flex flex-col gap-2">
+            {domains.map(dom => <DomainRow key={dom.id} dom={dom} />)}
+          </div>
+        </section>
+      )}
 
       {/* ═══════════════════════════════════════════════
-          SECTION 1 — Subdomain Webjoz
+          SECTION 2 — Simplified Form Card
       ══════════════════════════════════════════════ */}
-      <section>
-        <SectionHeader
-          title="Subdomain Webjoz"
-          count={wjDomains.length}
-          subtitle={`Domain gratis — format: namaanda${WEBJOZ_SUFFIX}`}
-          action={
-            wjDomains.length > 0 && !wjFormOpen ? (
-              <button onClick={() => setWjFormOpen(true)}
-                className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold bg-white/[0.07] text-[#f3f3f4] border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
-                + Tambah
-              </button>
-            ) : null
-          }
-        />
+      <section className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
+        <div>
+          <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
+            <Globe className="w-4.5 h-4.5 text-[#8fa8ff]" /> Tautkan Alamat Website Baru
+          </h2>
+          <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
+            Pilih website Anda dan gunakan subdomain gratis atau domain kustom Anda sendiri.
+          </p>
+        </div>
 
-        {/* List */}
-        {wjDomains.length > 0 && (
-          <div className="flex flex-col gap-2 mb-3">
-            {wjDomains.map(dom => <DomainRow key={dom.id} dom={dom} />)}
+        <form onSubmit={handleAddDomain} className="space-y-5">
+          {/* Website Selection */}
+          <div>
+            <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Pilih Website</label>
+            <select
+              value={siteId}
+              onChange={e => {
+                const val = e.target.value;
+                setSiteId(val);
+                const selectedSite = sites.find(s => s.id.toString() === val);
+                if (selectedSite && !isCustom) {
+                  setDomainInput(selectedSite.subdomain);
+                }
+              }}
+              className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] cursor-pointer"
+            >
+              {sites.map(s => <option key={s.id} value={s.id}>{s.name} ({s.subdomain})</option>)}
+              {sites.length === 0 && <option disabled value="">Belum ada website</option>}
+            </select>
           </div>
-        )}
 
-        {/* Form — collapsible */}
-        {wjFormOpen ? (
-          <form onSubmit={handleAddWebjoz} className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-6 py-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[14px] font-bold text-[#f3f3f4]">Pilih nama subdomain</span>
-              <button type="button" onClick={() => { setWjFormOpen(false); setWjPrefix(""); }}
-                className="text-[#6b6b75] hover:text-[#9a9aa3] transition-colors cursor-pointer">
-                <ChevronUp className="w-4 h-4" />
+          {/* Selector / Switcher */}
+          <div>
+            <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Pilihan Tipe Alamat</label>
+            <div className="grid grid-cols-2 gap-1.5 bg-[#0b0b0d] border border-white/10 rounded-xl p-1">
+              <button
+                type="button"
+                onClick={selectSubdomain}
+                className={`py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${!isCustom ? "bg-white/[0.08] text-white" : "text-[#6b6b75] hover:text-[#9a9aa3]"}`}
+              >
+                Subdomain Gratis (.webjoz.com)
+              </button>
+              <button
+                type="button"
+                onClick={selectCustom}
+                className={`py-2 rounded-lg text-[13px] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${isCustom ? "bg-[#6f6fff] text-white" : "text-[#6b6b75] hover:text-[#9a9aa3]"}`}
+              >
+                Custom Domain (Premium)
               </button>
             </div>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Website</label>
-                <select value={wjSiteId} onChange={e => setWjSiteId(e.target.value)}
-                  className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] cursor-pointer">
-                  {sites.map(s => <option key={s.id} value={s.id}>{s.name} ({s.subdomain})</option>)}
-                  {sites.length === 0 && <option disabled value="">Belum ada website</option>}
-                </select>
+          {/* Conditional Inputs */}
+          <div>
+            <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">
+              {isCustom ? "Alamat Custom Domain" : "Nama Subdomain"}
+            </label>
+
+            {isCustom ? (
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={domainInput}
+                  onChange={e => setDomainInput(e.target.value)}
+                  placeholder="cth. tokokamu.com"
+                  className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] placeholder:text-[#6b6b75]"
+                />
+                {domainInput.trim() !== "" && (
+                  <p className={`text-[11px] mt-1 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
+                    {inputValid ? "✓ Format domain valid" : "Format tidak valid — masukkan domain tanpa http:// atau www."}
+                  </p>
+                )}
+
+                {/* DNS instructions card */}
+                <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Server className="w-4 h-4 text-[#8fa8ff]" />
+                    <span className="text-[13px] font-semibold text-[#c8c8d4]">Instruksi CNAME DNS</span>
+                  </div>
+                  <p className="text-[12px] text-[#6b6b75] m-0 leading-relaxed">
+                    Buka penyedia domain Anda (Niagahoster, GoDaddy, dll) → Kelola DNS → tambahkan record CNAME berikut:
+                  </p>
+                  <div className="grid grid-cols-[60px_85px_1fr_32px] gap-2 text-[10px] uppercase tracking-wider text-[#6b6b75] pb-2 border-b border-white/[0.06]">
+                    <span>Tipe</span><span>Host</span><span>Value/Target</span><span />
+                  </div>
+                  <div className="grid grid-cols-[60px_85px_1fr_32px] gap-2 items-center pt-1 font-mono text-[13px] text-[#c8c8d4]">
+                    <span>CNAME</span>
+                    <span>www</span>
+                    <span className="truncate">{CNAME_TARGET}</span>
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      className="w-7 h-7 rounded-lg border border-white/10 bg-white/[0.04] text-[#9a9aa3] flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-[#5fe3a0]" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-[#6b6b75] m-0 pt-1 flex items-start gap-1.5 leading-relaxed">
+                    <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                    <span>Propagasi DNS biasanya memakan waktu 5 menit hingga 24 jam.</span>
+                  </p>
+                </div>
               </div>
+            ) : (
               <div>
-                <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Nama subdomain</label>
-                {/* Input with inline suffix */}
-                <div className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-colors ${wjPrefix && !wjValid ? "border-[#ff8a8a]" : "border-white/15 focus-within:border-[#6f6fff]"}`}>
+                <div className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-colors ${domainInput && !inputValid ? "border-[#ff8a8a]" : "border-white/15 focus-within:border-[#6f6fff]"}`}>
                   <input
                     type="text"
-                    value={wjPrefix}
-                    onChange={e => setWjPrefix(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                    value={domainInput}
+                    onChange={e => setDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
                     placeholder="namaanda"
                     maxLength={30}
                     className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0"
                   />
-                  <span className="px-3 py-2.5 text-[13px] text-[#6b6b75] font-mono shrink-0 border-l border-white/[0.06] bg-white/[0.02]">.webjoz.com</span>
+                  <span className="px-3 py-2.5 text-[13px] text-[#6b6b75] font-mono shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+                    .webjoz.com
+                  </span>
                 </div>
-                {wjPreview && (
-                  <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${wjValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
-                    {wjValid ? `✓ ${wjPreview}` : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+                {previewDomain && (
+                  <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
+                    {inputValid ? `✓ Subdomain tersedia: ${previewDomain}` : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
                   </p>
                 )}
               </div>
-            </div>
-
-            <div className="flex gap-2.5 pt-1">
-              <button type="button" onClick={() => { setWjFormOpen(false); setWjPrefix(""); }}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer">
-                Batal
-              </button>
-              <button type="submit" disabled={!wjValid || wjSubmitting}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-white text-[#0b0b0d] hover:bg-[#e6e6e6] disabled:bg-[#2a2a2a] disabled:text-[#6b6b75] disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                {wjSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Tautkan Subdomain"}
-              </button>
-            </div>
-          </form>
-        ) : wjDomains.length === 0 ? (
-          /* Empty state + inline CTA */
-          <div className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
-            <p className="text-[13px] text-[#6b6b75] m-0">
-              Belum ada subdomain. Buat subdomain gratis untuk website Anda.
-            </p>
-            <button onClick={() => setWjFormOpen(true)}
-              className="shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold bg-white/[0.07] text-[#f3f3f4] border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
-              + Buat Subdomain
-            </button>
+            )}
           </div>
-        ) : null}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={!inputValid || submitting}
+            className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              !inputValid || submitting
+                ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                : isCustom
+                  ? "bg-[#6f6fff] text-white hover:bg-[#5a5ae8]"
+                  : "bg-white text-[#0b0b0d] hover:bg-[#e6e6e6]"
+            }`}
+          >
+            {submitting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : isCustom ? (
+              "Tautkan Custom Domain"
+            ) : (
+              "Tautkan Subdomain"
+            )}
+          </button>
+        </form>
       </section>
 
-      {/* ═══════════════════════════════════════════════
-          SECTION 2 — Custom Domain (Premium)
-      ══════════════════════════════════════════════ */}
-      <section>
-        <SectionHeader
-          title="Custom Domain"
-          count={cdDomains.length}
-          badge={<span className="bg-[#6f6fff]/15 text-[#8fa8ff] text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider font-bold">Premium</span>}
-          subtitle={`Domain sendiri (mis. tokokamu.com) — tampil lebih profesional`}
-          action={
-            cdDomains.length > 0 && !cdFormOpen ? (
-              <button onClick={() => setCdFormOpen(true)}
-                className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold bg-[#6f6fff] text-white hover:bg-[#5a5ae8] transition-colors cursor-pointer">
-                <Link2 className="w-3.5 h-3.5" /> Tambah
-              </button>
-            ) : null
-          }
-        />
-
-        {/* List */}
-        {cdDomains.length > 0 && (
-          <div className="flex flex-col gap-2 mb-3">
-            {cdDomains.map(dom => <DomainRow key={dom.id} dom={dom} />)}
-          </div>
-        )}
-
-        {/* Upsell banner — only when no custom domain yet and form closed */}
-        {cdDomains.length === 0 && !cdFormOpen && (
-          <div className="relative overflow-hidden rounded-2xl border border-[#6f6fff]/25 bg-gradient-to-br from-[#191930] to-[#15151a] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-[#6f6fff]/10 blur-2xl pointer-events-none" />
-            <div className="w-10 h-10 rounded-xl bg-[#6f6fff]/15 flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-[#8fa8ff]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-[14px] m-0 text-[#f3f3f4]">Punya domain sendiri?</p>
-              <p className="text-[13px] text-[#9a9aa3] mt-1 m-0 leading-relaxed">
-                Tampil lebih profesional dengan domain milik Anda — pelanggan lebih mudah mengingat dan mempercayai brand Anda.
+      {/* Upselling Dialog */}
+      <Dialog
+        open={showUpsellModal}
+        onOpenChange={setShowUpsellModal}
+        title="✨ Tingkatkan Kredibilitas Bisnis Anda"
+        footer={upsellFooter}
+      >
+        <div className="space-y-4">
+          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+            Custom Domain adalah fitur <strong>Premium</strong> yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).
+          </p>
+          <div className="bg-[#1b1b21] border border-white/10 rounded-xl p-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
+              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+                <strong>Branding Profesional:</strong> Gunakan domain milik Anda (cth. <code>tokomu.com</code>) tanpa embel-embel <code>.webjoz.com</code>.
               </p>
             </div>
-            <button onClick={() => setCdFormOpen(true)}
-              className="relative z-10 shrink-0 flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-semibold bg-[#6f6fff] text-white hover:bg-[#5a5ae8] transition-colors cursor-pointer">
-              Tautkan Domain <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
-
-        {/* Custom domain form — collapsible */}
-        {cdFormOpen && (
-          <form onSubmit={handleAddCustom} className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-6 py-5 space-y-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Link2 className="w-4 h-4 text-[#8fa8ff]" />
-                <h3 className="m-0 text-[14px] font-bold text-[#f3f3f4]">Tautkan Custom Domain</h3>
-              </div>
-              <button type="button" onClick={() => { setCdFormOpen(false); setCdDomain(""); }}
-                className="text-[#6b6b75] hover:text-[#9a9aa3] transition-colors cursor-pointer">
-                <ChevronUp className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Website</label>
-                <select value={cdSiteId} onChange={e => setCdSiteId(e.target.value)}
-                  className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] cursor-pointer">
-                  {sites.map(s => <option key={s.id} value={s.id}>{s.name} ({s.subdomain})</option>)}
-                  {sites.length === 0 && <option disabled value="">Belum ada website</option>}
-                </select>
-              </div>
-              <div>
-                <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">Alamat domain</label>
-                <input type="text" value={cdDomain} onChange={e => setCdDomain(e.target.value)}
-                  placeholder="cth. tokokamu.com"
-                  className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] placeholder:text-[#6b6b75]" />
-                {cdDomain.trim() !== "" && (
-                  <p className={`text-[11px] mt-1 mx-0.5 ${cdValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
-                    {cdValid ? "Format valid" : "Format tidak valid — tanpa https:// atau www."}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* DNS instruction card */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Server className="w-4 h-4 text-[#8fa8ff]" />
-                <span className="text-[13px] font-semibold text-[#c8c8d4]">Instruksi CNAME DNS</span>
-              </div>
-              <p className="text-[12px] text-[#6b6b75] m-0 mb-3 leading-relaxed">
-                Buka registrar domain Anda (Niagahoster, GoDaddy, dll) → Kelola DNS → tambahkan record:
+            <div className="flex items-start gap-3">
+              <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
+              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+                <strong>SEO Lebih Baik:</strong> Google memprioritaskan domain utama untuk mendapatkan posisi teratas di hasil pencarian.
               </p>
-              <div className="grid grid-cols-[60px_80px_1fr_32px] gap-2 text-[10px] uppercase tracking-wider text-[#6b6b75] pb-2 border-b border-white/[0.06]">
-                <span>Tipe</span><span>Host</span><span>Value/Target</span><span />
-              </div>
-              <div className="grid grid-cols-[60px_80px_1fr_32px] gap-2 items-center pt-2.5 font-mono text-[13px] text-[#c8c8d4]">
-                <span>CNAME</span>
-                <span>www</span>
-                <span className="truncate">{CNAME_TARGET}</span>
-                <button type="button" onClick={handleCopy}
-                  className="w-7 h-7 rounded-lg border border-white/10 bg-white/[0.04] text-[#9a9aa3] flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
-                  {copied ? <Check className="w-3.5 h-3.5 text-[#5fe3a0]" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-              {copied && <p className="text-[11px] text-[#5fe3a0] mt-2 m-0">Disalin!</p>}
             </div>
-
-            <div className="flex items-start gap-2 text-[12px] text-[#6b6b75]">
-              <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              <span>Propagasi DNS bisa memakan waktu 5 menit–24 jam. Status otomatis berubah ke "Aktif" setelah terdeteksi.</span>
+            <div className="flex items-start gap-3">
+              <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
+              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+                <strong>SSL/HTTPS Otomatis:</strong> Keamanan data terjamin dengan enkripsi SSL gratis yang dipasang langsung ke domain Anda.
+              </p>
             </div>
-
-            <div className="flex gap-2.5 pt-1">
-              <button type="button" onClick={() => { setCdFormOpen(false); setCdDomain(""); }}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer">
-                Batal
-              </button>
-              <button type="submit" disabled={!cdValid || cdSubmitting}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-[#6f6fff] text-white hover:bg-[#5a5ae8] disabled:bg-[#2a2a4a] disabled:text-[#6b6baa] disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                {cdSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Tautkan Domain"}
-              </button>
-            </div>
-          </form>
-        )}
-      </section>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

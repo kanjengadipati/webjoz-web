@@ -19,8 +19,8 @@ export function Dialog({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 p-4 opacity-0 pointer-events-none transition-opacity",
-        open && "opacity-100 pointer-events-auto",
+        "fixed inset-0 z-50 bg-black/50 p-4 transition-opacity",
+        open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
       )}
       onClick={() => onOpenChange(false)}
       role="presentation"
