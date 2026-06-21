@@ -21,7 +21,7 @@ import { useToast } from "@/components/toast-provider";
 import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
-import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, LOADING_CHECKLIST } from "./constants";
+import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES } from "./constants";
 import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -808,27 +808,8 @@ export function SiteWizard({
 
       {/* ══ MOBILE LOADING SCREEN ══════════════════════════════════════════ */}
       {isMobile && mobileScreen === "loading" && (
-        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#0d0f14]" style={{marginTop: "20px"}}>
-          <div className="w-10 h-10 rounded-full border-[3px] border-[#1e293b] border-t-[#7c3aed] animate-spin mb-5" />
-          <p className="text-sm font-semibold text-[#a78bfa] mb-6 text-center">AI sedang membuat website kamu...</p>
-          <div className="flex flex-col gap-2.5 w-48">
-            {LOADING_CHECKLIST.map((item, i) => {
-              const isDone = i < loadingStep;
-              const isCurrent = i === loadingStep;
-              return (
-                <div key={item.label} className={`flex items-center gap-2 text-xs ${isDone ? "text-emerald-400" : isCurrent ? "text-[#a78bfa]" : "text-slate-600"}`}>
-                  {isDone ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  ) : isCurrent ? (
-                    <div className="w-3.5 h-3.5 rounded-full border-2 border-[#7c3aed] border-t-transparent animate-spin shrink-0" />
-                  ) : (
-                    <div className="w-3.5 h-3.5 rounded-full border border-slate-600 shrink-0" />
-                  )}
-                  {item.label}
-                </div>
-              );
-            })}
-          </div>
+        <div className="absolute inset-0 z-40 bg-[#0d0f14]">
+          <LoadingModal loadingStep={loadingStep} businessType={businessType} center />
         </div>
       )}
 

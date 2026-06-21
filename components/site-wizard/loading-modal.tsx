@@ -7,6 +7,7 @@ import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
 interface LoadingModalProps {
   loadingStep: number;
   businessType: string;
+  center?: boolean;
 }
 
 function getInsight(businessType: string): string {
@@ -22,10 +23,10 @@ function getInsight(businessType: string): string {
   }
 }
 
-export function LoadingModal({ loadingStep, businessType }: LoadingModalProps) {
+export function LoadingModal({ loadingStep, businessType, center }: LoadingModalProps) {
   return (
-    <div className="absolute inset-0 z-30 flex items-center justify-end pr-8">
-      <div className="backdrop-blur-xl rounded-3xl w-full max-w-sm p-7 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-right-4 zoom-in-95 duration-500" style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}>
+    <div className={`absolute inset-0 z-30 flex items-center ${center ? "justify-center" : "justify-end pr-8"}`}>
+      <div className={`backdrop-blur-xl rounded-3xl w-full max-w-sm p-7 shadow-2xl flex flex-col gap-5 animate-in ${center ? "zoom-in-95" : "slide-in-from-right-4 zoom-in-95"} duration-500`} style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
