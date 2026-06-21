@@ -1173,121 +1173,69 @@ export default function SiteEditorPage() {
             </div>
           )}
 
-          {/* Visual section selector dropdown */}
-          {editorTab === "content" && (
-            <div ref={sectionDropdownRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
-              <div className="mb-1.5 flex items-center justify-between">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Edit Section</p>
-                <span className="text-[9px] font-semibold text-slate-600">Drag urutan · Eye hide</span>
-              </div>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => !pendingDiff && setSectionDropdownOpen((open) => !open)}
-                  disabled={!!pendingDiff}
-                  className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-haspopup="listbox"
-                  aria-expanded={sectionDropdownOpen}
-                >
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const activeSec = SECTIONS.find(s => s.key === activeTab);
-                      if (activeSec) {
-                        const Icon = activeSec.icon;
-                        return (
-                          <>
-                            <Icon className="w-4 h-4 text-violet-400" />
-                            <span className="text-[13px] font-medium text-slate-200">{activeSec.label}</span>
-                            {hiddenSections.includes(activeTab) && (
-                              <EyeOff className="w-3 h-3 text-slate-500" />
-                            )}
-                          </>
-                        );
-                      }
-                      return <span className="text-[13px] font-medium text-slate-200">{activeTab}</span>;
-                    })()}
-                  </div>
-                  <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${sectionDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
-
-                {sectionDropdownOpen && (
-                  <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-white/10 bg-[#111318] p-1 shadow-lg space-y-0.5" role="listbox">
-                    {SECTIONS.map(({ key, label, icon: Icon, num }) => (
-                      <button
-                        key={key}
-                        type="button"
-                        draggable={BODY_SECTION_KEYS.includes(key)}
-                        onDragStart={(event) => {
-                          if (!BODY_SECTION_KEYS.includes(key)) return;
-                          setDraggingSection(key);
-                          event.dataTransfer.effectAllowed = "move";
-                          event.dataTransfer.setData("text/plain", key);
-                        }}
-                        onDragOver={(event) => {
-                          if (!draggingSection || !BODY_SECTION_KEYS.includes(key)) return;
-                          event.preventDefault();
-                          event.dataTransfer.dropEffect = "move";
-                        }}
-                        onDrop={(event) => {
-                          event.preventDefault();
-                          const source = event.dataTransfer.getData("text/plain") || draggingSection;
-                          if (source) handleReorderSection(source, key);
-                          setDraggingSection(null);
-                        }}
-                        onDragEnd={() => setDraggingSection(null)}
-                        onClick={() => {
-                          selectSection(key, true);
-                          setSectionDropdownOpen(false);
-                        }}
-                        className={`group/item w-full flex items-center justify-between px-2.5 py-2 rounded-md text-left transition-colors ${activeTab === key
-                            ? "bg-violet-600 text-white font-semibold shadow-sm"
-                            : draggingSection === key
-                              ? "bg-violet-500/20 text-violet-100"
-                              : hiddenSections.includes(key)
-                                ? "text-slate-600 hover:bg-white/5"
-                                : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
-                          }`}
-                        role="option"
-                        aria-selected={activeTab === key}
-                      >
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <GripVertical className={`h-3.5 w-3.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-500" : "text-slate-700"}`} />
-                          <Icon className={`w-4 h-4 shrink-0 ${activeTab === key ? "text-white" : hiddenSections.includes(key) ? "text-slate-600" : "text-slate-400"}`} />
-                          <span className={`text-[13px] truncate ${hiddenSections.includes(key) ? "line-through text-slate-600" : ""}`}>{label}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {/* Visibility toggle — not for header/footer/seo */}
-                          {!["header", "footer", "seo"].includes(key) && (
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleSectionVisibility(key);
-                              }}
-                              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
-                              title={hiddenSections.includes(key) ? "Tampilkan section" : "Sembunyikan section"}
-                              className={`p-1 rounded transition-colors cursor-pointer ${hiddenSections.includes(key)
-                                  ? "text-slate-600 hover:text-slate-300"
-                                  : "text-slate-500 hover:text-slate-200 opacity-0 group-hover/item:opacity-100"
-                                }`}
-                            >
-                              {hiddenSections.includes(key)
-                                ? <EyeOff className="w-3.5 h-3.5" />
-                                : <Eye className="w-3.5 h-3.5" />
-                              }
-                            </div>
-                          )}
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${activeTab === key ? "bg-violet-700 text-white" : "bg-white/5 text-slate-500"
-                            }`}>{num}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+          {/* Section nav — persistent list */}
+          <div className="flex-shrink-0 border-b border-white/10 hidden md:block">
+            <div className="px-3 py-1.5">
+              <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">Bagian halaman</p>
             </div>
-          )}
+            <div className="flex flex-col max-h-[180px] overflow-y-auto scrollbar-none">
+              {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+                <div
+                  key={key}
+                  draggable={BODY_SECTION_KEYS.includes(key) && !pendingDiff}
+                  onDragStart={(event) => {
+                    if (!BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
+                    setDraggingSection(key);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", key);
+                  }}
+                  onDragOver={(event) => {
+                    if (!draggingSection || !BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    const source = event.dataTransfer.getData("text/plain") || draggingSection;
+                    if (source) handleReorderSection(source, key);
+                    setDraggingSection(null);
+                  }}
+                  onDragEnd={() => setDraggingSection(null)}
+                  onClick={() => { if (!pendingDiff) selectSection(key, true); }}
+                  className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${
+                    activeTab === key
+                      ? "bg-violet-500/15"
+                      : hiddenSections.includes(key)
+                        ? "opacity-40 hover:opacity-60"
+                        : "hover:bg-white/[0.03]"
+                  }`}
+                >
+                  <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
+                  <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-violet-300" : "text-slate-500"}`} />
+                  <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
+                    {label}
+                  </span>
+                  {!["header", "footer", "seo"].includes(key) && (
+                    <div
+                      role="button" tabIndex={0}
+                      onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
+                      title={hiddenSections.includes(key) ? "Tampilkan" : "Sembunyikan"}
+                      className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
+                    >
+                      {hiddenSections.includes(key)
+                        ? <EyeOff className="w-3 h-3 text-slate-600" />
+                        : <Eye className="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      }
+                    </div>
+                  )}
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
+                    activeTab === key ? "bg-violet-600/30 text-violet-200" : "bg-white/5 text-slate-500"
+                  }`}>{num}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* ── Field Panel (scrollable) ── */}
           <div
@@ -1636,98 +1584,77 @@ export default function SiteEditorPage() {
                 </div>
 
                 {/* ── AI Prompt bar inside field panel ── */}
-                <div className="border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col">
-                  {/* Header Toggle */}
-                  <button
-                    type="button"
-                    onClick={() => setAiPanelOpen(!aiPanelOpen)}
-                    className="flex items-center justify-between w-full px-3.5 py-2.5 text-left hover:bg-white/[0.02] transition-colors outline-none"
-                  >
+                <div className="border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 py-2.5 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <Sparkles className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
-                      <span className="truncate text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      <span className="truncate text-[10px] font-bold uppercase tracking-widest text-violet-300">
                         AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {undoStack.length > 0 && !aiPanelOpen && (
-                        <span className="text-[9px] font-bold text-violet-400 bg-violet-400/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
-                          Ada Undo
-                        </span>
-                      )}
-                      <ChevronDown className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-200 ${aiPanelOpen ? "rotate-180" : ""}`} />
-                    </div>
-                  </button>
-
-                  {aiPanelOpen && (
-                    <div className="px-3.5 pb-3.5 space-y-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">
-                          Rekomendasi instruksi
-                        </span>
-                        {undoStack.length > 0 && (
-                          <button
-                            type="button"
-                            onClick={undoLastRegen}
-                            className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
-                          >
-                            <RotateCcw className="h-3 w-3" />
-                            Undo
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {activeSuggestions.slice(0, 3).map((suggestion) => (
-                          <button
-                            key={suggestion}
-                            type="button"
-                            onClick={() => setAiInstructions(suggestion)}
-                            disabled={!!pendingDiff}
-                            className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
-                      {recentInstructions.length > 0 && (
-                        <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
-                          {recentInstructions.slice(0, 5).map((instruction) => (
-                            <button
-                              key={instruction}
-                              type="button"
-                              onClick={() => setAiInstructions(instruction)}
-                              disabled={!!pendingDiff}
-                              className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
-                              title={instruction}
-                            >
-                              {instruction}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      <input
-                        type="text"
-                        value={aiInstructions}
-                        onChange={(e) => setAiInstructions(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
-                        placeholder={aiPlaceholder}
-                        disabled={aiLoading || !!pendingDiff}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[12px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
-                      />
+                    {undoStack.length > 0 && (
                       <button
-                        onClick={handleAiRegenerateSection}
-                        disabled={aiLoading || !!pendingDiff}
-                        className="w-full h-9 px-3 flex items-center justify-center gap-1.5 rounded-md bg-violet-50 text-violet-700 text-[12px] font-medium hover:bg-violet-100 transition-colors disabled:opacity-50 whitespace-nowrap"
+                        type="button"
+                        onClick={undoLastRegen}
+                        className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
                       >
-                        {aiLoading ? (
-                          <Loader2 className="w-3.5 h-3.5 flex-shrink-0 animate-spin" />
-                        ) : (
-                          <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
-                        )}
-                        <span className="truncate">{aiLoading ? "Memproses..." : "Regenerate dengan AI"}</span>
+                        <RotateCcw className="h-3 w-3" />
+                        Undo
                       </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {activeSuggestions.slice(0, 3).map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => setAiInstructions(suggestion)}
+                        disabled={!!pendingDiff}
+                        className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                  {recentInstructions.length > 0 && (
+                    <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
+                      {recentInstructions.slice(0, 5).map((instruction) => (
+                        <button
+                          key={instruction}
+                          type="button"
+                          onClick={() => setAiInstructions(instruction)}
+                          disabled={!!pendingDiff}
+                          className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
+                          title={instruction}
+                        >
+                          {instruction}
+                        </button>
+                      ))}
                     </div>
                   )}
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={aiInstructions}
+                      onChange={(e) => setAiInstructions(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                      placeholder={aiPlaceholder}
+                      disabled={aiLoading || !!pendingDiff}
+                      className="flex-1 h-8 px-2.5 border border-violet-500/25 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
+                    />
+                    <button
+                      onClick={handleAiRegenerateSection}
+                      disabled={aiLoading || !!pendingDiff}
+                      className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-[#7c3aed] text-white text-[11px] font-semibold hover:bg-violet-600 transition-colors disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {aiLoading ? (
+                        <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
+                      ) : (
+                        <Sparkles className="w-3 h-3 flex-shrink-0" />
+                      )}
+                      Regen
+                    </button>
+                  </div>
                 </div>
               </>
             )}
@@ -1848,6 +1775,18 @@ export default function SiteEditorPage() {
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               Simpan
             </button>
+            {/* Publish button */}
+            {siteDetails?.status !== "published" && (
+              <button
+                type="button"
+                onClick={() => setPublishModalOpen(true)}
+                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-white transition-colors hover:brightness-110"
+                style={{ background: "#7c3aed" }}
+              >
+                <Rocket className="w-3.5 h-3.5" />
+                Publikasikan
+              </button>
+            )}
           </div>
 
           {pendingDiff && (
