@@ -894,7 +894,6 @@ export default function SiteEditorPage() {
             <div className="h-5 w-px bg-white/10 flex-shrink-0" />
             <div className="min-w-0 flex-1">
               <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
-              <p className="truncate text-[10px] text-slate-500">{siteDetails.subdomain}.webjoz.com</p>
             </div>
           </div>
 

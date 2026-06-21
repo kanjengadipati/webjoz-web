@@ -157,7 +157,7 @@ export default function AdminPlansPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <CreditCard className="size-5 text-primary" />
@@ -167,7 +167,7 @@ export default function AdminPlansPage() {
             Define and manage subscription plans for tenants.
           </p>
         </div>
-        <Button onClick={openCreate} className="gap-2">
+        <Button onClick={openCreate} className="gap-2 self-start sm:self-auto">
           <Plus className="size-4" />
           New Plan
         </Button>
@@ -192,81 +192,119 @@ export default function AdminPlansPage() {
               <Button variant="outline" size="sm" onClick={openCreate}>Create your first plan</Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                    <th className="px-6 py-4">Plan</th>
-                    <th className="px-6 py-4">Price</th>
-                    <th className="px-6 py-4 text-center">Sites</th>
-                    <th className="px-6 py-4 text-center">AI Gen</th>
-                    <th className="px-6 py-4 text-center">Members</th>
-                    <th className="px-6 py-4 text-center">Domains</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {plans.map((p) => (
-                    <tr key={p.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="font-semibold">{p.name}</div>
-                        <div className="text-xs text-muted-foreground">{p.slug}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1 font-medium">
-                          <DollarSign className="size-3 text-muted-foreground" />
-                          {p.price_monthly.toLocaleString("id-ID")}/mo
-                        </span>
-                        {p.price_yearly > 0 && (
-                          <div className="text-xs text-muted-foreground">
-                            {p.price_yearly.toLocaleString("id-ID")}/yr
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <Globe className="size-3.5" />
-                          {p.max_sites}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <Zap className="size-3.5" />
-                          {p.max_ai_generates}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <Users className="size-3.5" />
-                          {p.max_members}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-muted-foreground">{p.max_custom_domain}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${
-                          p.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
-                        }`}>
-                          {p.active ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(p)}>
-                            <Pencil className="size-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="size-8 text-destructive" onClick={() => handleDelete(p.id)}>
-                            <Trash2 className="size-3.5" />
-                          </Button>
-                        </div>
-                      </td>
+            <>
+              {/* Mobile: Card layout */}
+              <div className="grid gap-3 sm:hidden p-4">
+                {plans.map((p) => (
+                  <div key={p.id} className="rounded-xl border border-border/30 bg-card p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="font-semibold text-sm">{p.name}</div>
+                        <div className="text-[10px] text-muted-foreground">{p.slug}</div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" className="size-7" onClick={() => openEdit(p)}>
+                          <Pencil className="size-3" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="size-7 text-destructive" onClick={() => handleDelete(p.id)}>
+                          <Trash2 className="size-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs">
+                      <span className="font-semibold">Rp {p.price_monthly.toLocaleString("id-ID")}/mo</span>
+                      <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize ${
+                        p.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
+                      }`}>
+                        {p.active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 mt-2.5 text-[10px] text-muted-foreground">
+                      <span>🌐 {p.max_sites} sites</span>
+                      <span>⚡ {p.max_ai_generates} AI</span>
+                      <span>👥 {p.max_members} members</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop: Table layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                      <th className="px-6 py-4">Plan</th>
+                      <th className="px-6 py-4">Price</th>
+                      <th className="px-6 py-4 text-center">Sites</th>
+                      <th className="px-6 py-4 text-center hidden lg:table-cell">AI Gen</th>
+                      <th className="px-6 py-4 text-center hidden md:table-cell">Members</th>
+                      <th className="px-6 py-4 text-center hidden lg:table-cell">Domains</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4"></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {plans.map((p) => (
+                      <tr key={p.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-semibold">{p.name}</div>
+                          <div className="text-xs text-muted-foreground">{p.slug}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center gap-1 font-medium">
+                            <DollarSign className="size-3 text-muted-foreground" />
+                            {p.price_monthly.toLocaleString("id-ID")}/mo
+                          </span>
+                          {p.price_yearly > 0 && (
+                            <div className="text-xs text-muted-foreground">
+                              {p.price_yearly.toLocaleString("id-ID")}/yr
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center gap-1 text-muted-foreground">
+                            <Globe className="size-3.5" />
+                            {p.max_sites}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center hidden lg:table-cell">
+                          <span className="inline-flex items-center gap-1 text-muted-foreground">
+                            <Zap className="size-3.5" />
+                            {p.max_ai_generates}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center hidden md:table-cell">
+                          <span className="inline-flex items-center gap-1 text-muted-foreground">
+                            <Users className="size-3.5" />
+                            {p.max_members}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center hidden lg:table-cell">
+                          <span className="text-muted-foreground">{p.max_custom_domain}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${
+                            p.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
+                          }`}>
+                            {p.active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(p)}>
+                              <Pencil className="size-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="size-8 text-destructive" onClick={() => handleDelete(p.id)}>
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
@@ -297,7 +335,7 @@ export default function AdminPlansPage() {
             </FormField>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormField label="Max Sites">
               <Input type="number" value={form.max_sites} onChange={(e) => setNum("max_sites", e.target.value)} />
             </FormField>
