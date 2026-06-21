@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -8,19 +8,22 @@ import {
   CheckCircle2,
   ChevronLeft,
   Eye,
+  EyeOff,
   Loader2,
+  MapPin,
   MessageCircle,
   Monitor,
+  Phone,
   Pencil,
+  Plus,
   Smartphone,
   Sparkles,
-  Wand2,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
-import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES } from "./constants";
+import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, LOADING_CHECKLIST } from "./constants";
 import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -78,8 +81,14 @@ export function SiteWizard({
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [isAiTyping, setIsAiTyping] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileScreen, setMobileScreen] = useState<"chat" | "loading" | "preview">("chat");
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [waDraft, setWaDraft] = useState("");
+  const [areaDraft, setAreaDraft] = useState("");
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
+  const isMobileRef = useRef(false);
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
   const historyIndexRef = useRef(historyIndex);
   const hasPromptedDetailsRef = useRef(false);
@@ -149,6 +158,22 @@ export function SiteWizard({
       });
       setPreviewData(mergedPreview);
       setPreviewState("result");
+      localStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({
+          businessName, businessType, businessSubType, description,
+          whatsapp: whatsapp || "",
+          service_area: serviceArea || "",
+          templateId: mergedPreview.template_id,
+          previewContent: mergedPreview.content,
+          previewDesignToken: mergedPreview.design_token,
+        })
+      );
+      if (isMobileRef.current) {
+        setPreviewDevice("mobile");
+        setMobileScreen("preview");
+        return;
+      }
       if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
         setPreviewDevice("mobile");
       }
@@ -163,17 +188,6 @@ export function SiteWizard({
           }
         );
       }
-      localStorage.setItem(
-        PENDING_KEY,
-        JSON.stringify({
-          businessName, businessType, businessSubType, description,
-          whatsapp: whatsapp || "",
-          service_area: serviceArea || "",
-          templateId: mergedPreview.template_id,
-          previewContent: mergedPreview.content,
-          previewDesignToken: mergedPreview.design_token,
-        })
-      );
     },
     onError: (message) => {
       pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
@@ -215,6 +229,19 @@ export function SiteWizard({
       return () => clearInterval(interval);
     }
   }, [previewState]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    isMobileRef.current = mq.matches;
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      isMobileRef.current = e.matches;
+      setIsMobile(e.matches);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     return () => { cancelStream(); };
@@ -318,6 +345,7 @@ export function SiteWizard({
       { id: Date.now().toString(), sender: "user", text: subType },
     ]);
     void handleGenerate(businessName, businessType, { businessSubType: subType });
+    if (isMobileRef.current) setMobileScreen("loading");
   };
 
   const handleGenerate = async (
@@ -481,7 +509,9 @@ export function SiteWizard({
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
         className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
-          mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
+          isMobile
+            ? mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
+            : mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
         }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
@@ -693,7 +723,9 @@ export function SiteWizard({
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
         className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
-          mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
+          isMobile
+            ? mobileScreen === "preview" ? "translate-x-0" : "translate-x-full"
+            : mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
@@ -783,30 +815,138 @@ export function SiteWizard({
             </button>
           )}
 
-          {/* Mobile: stacked Lengkapi Data + Edit & Publikasikan */}
-          <div className="absolute bottom-6 left-4 right-4 z-40 flex flex-col gap-2 md:hidden">
-            <button
-              type="button"
-              onClick={() => setMobilePreviewOpen(false)}
-              className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
-            >
-              <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
-              Lengkapi Data
-            </button>
-            {previewState === "result" && (
-              <button
-                type="button"
-                onClick={handleGoToEditor}
-                className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-                Edit & Publikasikan
-              </button>
-            )}
-          </div>
         </div>
       </div>
+
+      {/* ══ MOBILE LOADING SCREEN ══════════════════════════════════════════ */}
+      {isMobile && mobileScreen === "loading" && (
+        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#0d0f14]" style={{marginTop: "20px"}}>
+          <div className="w-10 h-10 rounded-full border-[3px] border-[#1e293b] border-t-[#7c3aed] animate-spin mb-5" />
+          <p className="text-sm font-semibold text-[#a78bfa] mb-6 text-center">AI sedang membuat website kamu...</p>
+          <div className="flex flex-col gap-2.5 w-48">
+            {LOADING_CHECKLIST.map((item, i) => {
+              const isDone = i < loadingStep;
+              const isCurrent = i === loadingStep;
+              return (
+                <div key={item.label} className={`flex items-center gap-2 text-xs ${isDone ? "text-emerald-400" : isCurrent ? "text-[#a78bfa]" : "text-slate-600"}`}>
+                  {isDone ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  ) : isCurrent ? (
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-[#7c3aed] border-t-transparent animate-spin shrink-0" />
+                  ) : (
+                    <div className="w-3.5 h-3.5 rounded-full border border-slate-600 shrink-0" />
+                  )}
+                  {item.label}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
+      {isMobile && mobileScreen === "preview" && previewState === "result" && (
+        <>
+          {/* Bottom action bar */}
+          <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
+            <button
+              type="button"
+              onClick={() => setSheetOpen(true)}
+              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
+            >
+              <Plus className="h-3.5 w-3.5 text-slate-400" />
+              Lengkapi Data
+            </button>
+            <button
+              type="button"
+              onClick={handleGoToEditor}
+              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit & Publikasikan
+            </button>
+          </div>
+
+          {/* Sheet overlay */}
+          {sheetOpen && (
+            <div className="absolute inset-0 z-50 flex flex-col justify-end bg-black/60" onClick={() => setSheetOpen(false)}>
+              <div className="rounded-t-2xl bg-[#111318] px-5 pb-8 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()} style={{boxShadow: "0 -8px 30px rgba(0,0,0,0.5)"}}>
+                <div className="w-8 h-1 rounded-full bg-slate-700 mx-auto mb-4" />
+                <p className="text-sm font-semibold text-slate-100 mb-1">Lengkapi data bisnis</p>
+                <p className="text-xs text-slate-500 mb-4 leading-relaxed">Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.</p>
+                <div className="flex gap-2 mb-3 flex-wrap">
+                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${waDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+                    <Phone className="w-3 h-3" />
+                    {waDraft ? "WA tersimpan" : "WA belum diisi"}
+                  </span>
+                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${areaDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+                    <MapPin className="w-3 h-3" />
+                    {areaDraft ? areaDraft : "Area belum diisi"}
+                  </span>
+                </div>
+                <div className="space-y-3 mb-4">
+                  <div>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Nomor WhatsApp</label>
+                    <input
+                      type="tel"
+                      value={waDraft}
+                      onChange={(e) => setWaDraft(e.target.value)}
+                      placeholder="cth. 081234567890"
+                      className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
+                    />
+                    <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
+                    <input
+                      type="text"
+                      value={areaDraft}
+                      onChange={(e) => setAreaDraft(e.target.value)}
+                      placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
+                      className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
+                    />
+                    <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSheetOpen(false)}
+                    className="h-9 px-4 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
+                  >
+                    Nanti saja
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
+                      setServiceArea(areaDraft || serviceArea);
+                      setSheetOpen(false);
+                      if (waDraft || areaDraft) {
+                        setHasUnsavedEdits(true);
+                        setRegenCount((c) => c + 1);
+                        setPreviewState("loading");
+                        setMobileScreen("loading");
+                        hasPromptedDetailsRef.current = false;
+                        void handleGenerate(businessName, businessType, {
+                          whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
+                          serviceArea: areaDraft || serviceArea,
+                        });
+                      }
+                    }}
+                    className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95"
+                    style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Re-generate
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
