@@ -78,7 +78,7 @@ export default function SiteEditorPage() {
   const designTokenRef = useRef<any>(null);
   const [latestAiDesignToken, setLatestAiDesignToken] = useState<any>(null);
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
-  const [colorUndo, setColorUndo] = useState<Record<string, string>>({});
+  const [colorUndo, setColorUndo] = useState<Record<string, string[]>>({});
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
     before: any;
@@ -814,21 +814,29 @@ export default function SiteEditorPage() {
   const handleColorChange = (colorKey: string, value: string) => {
     const oldValue = designToken?.palette?.[colorKey] || "";
     if (oldValue && oldValue !== value) {
-      setColorUndo(prev => ({ ...prev, [colorKey]: oldValue }));
+      setColorUndo(prev => {
+        const stack = prev[colorKey] || [];
+        return { ...prev, [colorKey]: [...stack, oldValue].slice(-3) };
+      });
     }
     updateDesignTokenField("palette", colorKey, value);
   };
 
   const undoColor = (colorKey: string) => {
-    const oldValue = colorUndo[colorKey];
-    if (oldValue) {
-      updateDesignTokenField("palette", colorKey, oldValue);
-      setColorUndo(prev => {
-        const next = { ...prev };
+    const stack = colorUndo[colorKey];
+    if (!stack || stack.length === 0) return;
+    const oldValue = stack[stack.length - 1];
+    updateDesignTokenField("palette", colorKey, oldValue);
+    setColorUndo(prev => {
+      const next = { ...prev };
+      const remaining = next[colorKey].slice(0, -1);
+      if (remaining.length === 0) {
         delete next[colorKey];
-        return next;
-      });
-    }
+      } else {
+        next[colorKey] = remaining;
+      }
+      return next;
+    });
   };
 
   if (loading) {
@@ -1298,15 +1306,15 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                         placeholder="#4F46E5"
                       />
-                      {colorUndo["primary"] && (
+                      {colorUndo["primary"]?.length ? (
                         <button type="button" onClick={() => undoColor("primary")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
                         </button>
-                      )}
-                      </div>
+                      ) : null}
                     </div>
+                  </div>
 
-                    {/* Accent Color */}
+                  {/* Accent Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Aksen (Accent)</label>
                       <div className="flex items-center gap-2">
@@ -1328,15 +1336,15 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                         placeholder="#7C3AED"
                       />
-                      {colorUndo["accent"] && (
+                      {colorUndo["accent"]?.length ? (
                         <button type="button" onClick={() => undoColor("accent")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
                         </button>
-                      )}
-                      </div>
+                      ) : null}
                     </div>
+                  </div>
 
-                    {/* Background Color */}
+                  {/* Background Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Latar (Background)</label>
                       <div className="flex items-center gap-2">
@@ -1358,15 +1366,15 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                         placeholder="#FAF7F2"
                       />
-                      {colorUndo["background"] && (
+                      {colorUndo["background"]?.length ? (
                         <button type="button" onClick={() => undoColor("background")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
                         </button>
-                      )}
-                      </div>
+                      ) : null}
                     </div>
+                  </div>
 
-                    {/* Surface Color */}
+                  {/* Surface Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Permukaan (Surface)</label>
                       <div className="flex items-center gap-2">
@@ -1388,15 +1396,15 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                         placeholder="#FFFFFF"
                       />
-                      {colorUndo["surface"] && (
+                      {colorUndo["surface"]?.length ? (
                         <button type="button" onClick={() => undoColor("surface")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
                         </button>
-                      )}
-                      </div>
+                      ) : null}
                     </div>
+                  </div>
 
-                    {/* Text Color */}
+                  {/* Text Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Teks (Text)</label>
                       <div className="flex items-center gap-2">
@@ -1418,13 +1426,13 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                         placeholder="#2C2C2A"
                       />
-                      {colorUndo["text"] && (
+                      {colorUndo["text"]?.length ? (
                         <button type="button" onClick={() => undoColor("text")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
                         </button>
-                      )}
-                      </div>
+                      ) : null}
                     </div>
+                  </div>
                   </div>
 
                   <div className="border-t border-white/10 my-2" />
@@ -2097,11 +2105,11 @@ export default function SiteEditorPage() {
                         onChange={(e) => handleColorChange(colorKey, e.target.value)}
                         onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
                         className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 cursor-pointer" />
-                      {colorUndo[colorKey] && (
+                      {colorUndo[colorKey]?.length ? (
                         <button type="button" onClick={() => undoColor(colorKey)} className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3 w-3 text-slate-400" />
                         </button>
-                      )}
+                      ) : null}
                     </div>
                   ))}
                   {/* Typography */}
