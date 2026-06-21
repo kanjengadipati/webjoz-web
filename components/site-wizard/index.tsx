@@ -794,7 +794,9 @@ export function SiteWizard({
                   <div className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full" style={{ background: "radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%)" }} />
                 </div>
               </div>
-              <LoadingModal loadingStep={loadingStep} businessType={businessType} />
+              {(!isMobile || mobileScreen !== "loading") && (
+                <LoadingModal loadingStep={loadingStep} businessType={businessType} />
+              )}
             </div>
           )}
 
