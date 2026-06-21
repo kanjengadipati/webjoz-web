@@ -197,10 +197,11 @@ export function SiteWizard({
       const lower = (message || "").toLowerCase();
       if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
         setTooManyRequests(true);
+        setTimeout(() => setTooManyRequests(false), 5000);
       } else {
         pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
-        setPreviewState("wireframe");
       }
+      setPreviewState("wireframe");
     },
   });
 
@@ -836,30 +837,23 @@ export function SiteWizard({
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
       {/* ══ TOO MANY REQUESTS TOOLTIP ════════════════════════════════════ */}
       {tooManyRequests && (
-        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => setTooManyRequests(false)}>
+        <div className="absolute top-3 right-3 z-[100] animate-in slide-in-from-top-2 fade-in duration-300" onClick={() => setTooManyRequests(false)}>
           <div
-            className="mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-300"
-            style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}
-            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-2.5 rounded-xl px-4 py-3 shadow-2xl"
+            style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)" }}
           >
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20">
-                <AlertTriangle className="h-7 w-7 text-amber-400" />
-              </div>
-              <h3 className="text-base font-bold text-slate-100 mb-2">Terlalu cepat!</h3>
-              <p className="text-xs text-slate-400 leading-relaxed mb-6">
-                Kamu sudah membuat website beberapa kali dalam waktu singkat. 
-                Tunggu sekitar 30 detik, lalu coba lagi ya — biar hasilnya tetap optimal. 
-                Sabar dikit, hasilnya maksimal! 😊
-              </p>
-              <button
-                type="button"
-                onClick={() => setTooManyRequests(false)}
-                className="w-full h-10 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-xs font-bold text-white transition-all active:scale-95"
-              >
-                Mengerti, tunggu dulu
-              </button>
+            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-amber-300 leading-tight">Terlalu cepat</p>
+              <p className="text-[10px] text-amber-400/70 leading-tight mt-0.5">Tunggu 30 detik, lalu coba lagi</p>
             </div>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setTooManyRequests(false); }}
+              className="ml-1 h-5 w-5 rounded-full flex items-center justify-center hover:bg-amber-500/20 shrink-0"
+            >
+              <span className="text-amber-400/60 text-xs font-bold">&times;</span>
+            </button>
           </div>
         </div>
       )}
