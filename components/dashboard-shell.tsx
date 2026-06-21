@@ -1,10 +1,10 @@
 "use client";
 
+import React, { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
-import { ChevronLeft, Plus } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -105,15 +105,30 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const isNewSitePage = pathname === "/dashboard/sites/new";
   const isFullscreenWorkspace = isEditPage || isNewSitePage;
 
+  const NAV_ICON_MAP: Record<string, React.ElementType> = {
+    layout: LayoutDashboard,
+    bell: Bell,
+    globe: Globe,
+    link: Link2,
+    inbox: Inbox,
+    chart: BarChart2,
+    settings: Settings,
+    "credit-card": CreditCard,
+    activity: Activity,
+    megaphone: Megaphone,
+    building: Building2,
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-6 left-6 right-6 z-50 lg:hidden">
-          <div className="flex items-center justify-around rounded-3xl border border-border/70 bg-card/95 px-4 py-3 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:bg-background/80 dark:shadow-primary/10">
+        <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label="Main navigation">
+          <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-card/95 px-2 py-2 backdrop-blur-xl shadow-2xl shadow-black/20 dark:bg-background/85 dark:border-border/30 dark:shadow-black/40">
             {filteredNavItems.slice(0, 5).map((item) => {
               const active = pathname === item.href;
               const showBadge = item.id === "notifications" && unreadCount > 0;
+              const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
               return (
                 <Link
                   key={item.href}
@@ -121,43 +136,78 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   aria-label={item.label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex flex-col items-center gap-1 p-2 relative",
+                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl",
                     MOTION.standard,
-                    active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
+                    active
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <div className={cn(
-                    "size-1.5 rounded-full mb-1",
-                    MOTION.standard,
-                    active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
-                  )} aria-hidden="true" />
-                  <span className="text-[9px] font-bold leading-none">{item.label}</span>
-                  {showBadge && (
-                    <span className="absolute -top-0.5 -right-1 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-lg">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
+                  {/* Active pill background */}
+                  {active && (
+                    <span
+                      className={cn(
+                        "absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15",
+                        MOTION.standard
+                      )}
+                      aria-hidden="true"
+                    />
                   )}
+
+                  {/* Icon */}
+                  <div className="relative">
+                    <Icon
+                      className={cn(
+                        "size-5 shrink-0",
+                        MOTION.standard,
+                        active ? "stroke-[2.5]" : "stroke-[1.75]"
+                      )}
+                      aria-hidden="true"
+                    />
+                    {showBadge && (
+                      <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-md">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Label */}
+                  <span className={cn(
+                    "text-[9px] font-semibold leading-none tracking-tight truncate w-full text-center",
+                    active ? "text-primary" : "text-muted-foreground"
+                  )}>
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}
+
+            {/* Divider */}
+            <div className="h-8 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+            {/* Accent toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full hover:bg-primary/5"
+              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
               aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
               aria-pressed={!isMonochrome}
               onClick={toggleAccent}
             >
               <div className={cn(
-                "size-3.5 rounded-full border-2",
+                "size-3.5 rounded-full border-2 shrink-0",
                 MOTION.slow,
-                accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300"
+                accent === "monochrome"
+                  ? "bg-slate-500 border-slate-400"
+                  : "bg-indigo-500 border-indigo-300 shadow-[0_0_6px_rgba(99,102,241,0.6)]"
               )} aria-hidden="true" />
             </Button>
+
+            {/* Theme toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full hover:bg-primary/5"
+              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={theme === "dark"}
               onClick={toggleTheme}
