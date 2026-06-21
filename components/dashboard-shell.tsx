@@ -13,6 +13,7 @@ import { DASHBOARD_NAVIGATION } from "@/lib/navigation";
 import { MOTION } from "@/lib/ui-tokens";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/components/toast-provider";
 import { logoutCurrentSession } from "@/lib/api";
@@ -25,6 +26,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
+  const { unreadCount } = useUnreadNotifications();
   const isAuthenticated = Boolean(token);
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-around rounded-3xl border border-border/70 bg-card/95 px-4 py-3 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:bg-background/80 dark:shadow-primary/10">
             {filteredNavItems.slice(0, 5).map((item) => {
               const active = pathname === item.href;
+              const showBadge = item.id === "notifications" && unreadCount > 0;
               return (
                 <Link
                   key={item.href}
@@ -118,7 +121,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   aria-label={item.label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex flex-col items-center gap-1 p-2",
+                    "flex flex-col items-center gap-1 p-2 relative",
                     MOTION.standard,
                     active ? "text-primary scale-110" : "text-muted-foreground hover:text-primary"
                   )}
@@ -129,6 +132,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     active ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)] scale-100" : "bg-transparent scale-0"
                   )} aria-hidden="true" />
                   <span className="text-[9px] font-bold leading-none">{item.label}</span>
+                  {showBadge && (
+                    <span className="absolute -top-0.5 -right-1 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-lg">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -221,6 +229,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         <div className="grid gap-1">
                           {sectionItems.map((item) => {
                             const active = pathname === item.href;
+                            const showBadge = item.id === "notifications" && unreadCount > 0;
                             return (
                               <Link
                                 key={item.href}
@@ -236,7 +245,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
                                   {item.label}
                                 </span>
-                                {active && (
+                                {showBadge && (
+                                  <span className="ml-auto mr-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary/15 text-primary text-[10px] font-bold leading-none">
+                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                  </span>
+                                )}
+                                {active && !showBadge && (
                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" aria-hidden="true" />
                                 )}
                               </Link>
