@@ -86,7 +86,7 @@ export default function LoginPage() {
     } else if (pendingWizard) {
       router.replace("/create?action=save");
     } else {
-      router.replace("/dashboard/sites");
+      router.replace("/dashboard");
     }
   }, [authReady, token, router]);
 
@@ -106,7 +106,7 @@ export default function LoginPage() {
     } else if (pendingWizard) {
       router.push("/create?action=save");
     } else {
-      router.push("/dashboard/sites");
+      router.push("/dashboard");
     }
   }
 

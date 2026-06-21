@@ -279,7 +279,7 @@ export function SocialAuthButtons({
                 } else if (pendingWizard) {
                   router.push("/create");
                 } else {
-                  router.push("/dashboard/sites");
+                  router.push("/dashboard");
                 }
               })
               .catch((error: unknown) => {
@@ -338,7 +338,7 @@ export function SocialAuthButtons({
                 } else if (pendingWizard) {
                   router.push("/create");
                 } else {
-                  router.push("/dashboard/sites");
+                  router.push("/dashboard");
                 }
               })
               .catch((error: unknown) => {
