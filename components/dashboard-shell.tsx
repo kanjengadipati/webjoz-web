@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -289,7 +289,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           {!isFullscreenWorkspace && (
             <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   <div className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
                     {pathname === "/dashboard/sites/new" && (
                       <Link
@@ -302,8 +302,25 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     )}
                     <span>{activeLabel}</span>
                   </div>
+                  {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings") && (
+                    <p className="text-xs text-muted-foreground">
+                      {pathname === "/dashboard" && "Pantau ringkasan performa dan aktivitas website Anda."}
+                      {pathname === "/dashboard/sites" && "Kelola dan kustomisasi seluruh website Anda."}
+                      {pathname === "/dashboard/domains" && "Hubungkan dan kelola domain kustom Anda agar situs tampil lebih profesional."}
+                      {pathname === "/dashboard/leads" && "Inkuiri kontak dan prospek dari pengunjung situs publik Anda."}
+                      {pathname === "/dashboard/analytics" && "Pantau volume kunjungan, asal lalu lintas, dan halaman paling populer."}
+                      {pathname === "/dashboard/settings" && "Kelola profil, keamanan akun, hak akses pengguna, dan log audit sistem."}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
+                  {pathname === "/dashboard/sites" && (
+                    <Link href="/dashboard/sites/new">
+                      <button className="flex items-center gap-2 bg-[#5b7cf8] text-white hover:brightness-105 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-[0_4px_16px_rgba(91,124,248,0.2)]">
+                        <Plus className="w-4 h-4" /> Website AI Baru
+                      </button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </header>

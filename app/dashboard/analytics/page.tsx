@@ -242,47 +242,40 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
-        <div>
-          <h1 className="text-lg font-bold tracking-tight">Analytics Dashboard</h1>
-          <p className="text-xs text-muted-foreground">Pantau volume kunjungan, asal lalu lintas, dan halaman paling populer.</p>
+      {/* Filter toolbar */}
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Site Filter */}
+        <div className="flex items-center gap-1.5">
+          <Filter className="w-3.5 h-3.5 text-slate-500" />
+          <select 
+            value={selectedSiteId} 
+            onChange={(e) => setSelectedSiteId(e.target.value)}
+            className="px-3 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+          >
+            <option value="all">Semua Website</option>
+            {sites.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Site Filter */}
-          <div className="flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-slate-500" />
-            <select 
-              value={selectedSiteId} 
-              onChange={(e) => setSelectedSiteId(e.target.value)}
-              className="px-3 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
-            >
-              <option value="all">Semua Website</option>
-              {sites.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date filters */}
-          <div className="flex items-center gap-2">
-            <input 
-              type="date" 
-              value={fromStr}
-              onChange={(e) => setFromStr(e.target.value)}
-              className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
-            />
-            <span className="text-xs font-semibold text-slate-400">s/d</span>
-            <input 
-              type="date" 
-              value={toStr}
-              onChange={(e) => setToStr(e.target.value)}
-              className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
-            />
-          </div>
+        {/* Date filters */}
+        <div className="flex items-center gap-2">
+          <input 
+            type="date" 
+            value={fromStr}
+            onChange={(e) => setFromStr(e.target.value)}
+            className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+          />
+          <span className="text-xs font-semibold text-slate-400">s/d</span>
+          <input 
+            type="date" 
+            value={toStr}
+            onChange={(e) => setToStr(e.target.value)}
+            className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+          />
         </div>
       </div>
 

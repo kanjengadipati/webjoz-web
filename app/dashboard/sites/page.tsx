@@ -7,7 +7,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import {
-  Globe, Plus, Loader2, RefreshCw, Edit3, Trash2,
+  Globe, Loader2, RefreshCw, Edit3, Trash2,
   Check, Copy, Info, CheckCircle2, AlertCircle,
   Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket
 } from "lucide-react";
@@ -768,18 +768,6 @@ export default function SitesPage() {
         />
       )}
 
-      {/* Panel / Header Card */}
-      <div className="bg-[#13131a] border border-white/[0.08] rounded-[20px] p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-semibold m-0 tracking-tight text-white">My Websites</h1>
-          <p className="text-sm text-[#9b9ba5] m-0 mt-1.5">Kelola dan kustomisasi seluruh website Anda.</p>
-        </div>
-        <Link href="/dashboard/sites/new">
-          <button className="flex items-center gap-2 bg-[#5b7cf8] text-white hover:brightness-105 active:scale-98 transition-all px-5 py-3 rounded-full font-medium text-[14.5px] cursor-pointer shadow-[0_4px_16px_rgba(91,124,248,0.2)]">
-            <Plus className="w-4 h-4" /> Website AI Baru
-          </button>
-        </Link>
-      </div>
 
       {/* Search Input bar */}
       <div className="relative">

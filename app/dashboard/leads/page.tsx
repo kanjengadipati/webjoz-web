@@ -100,32 +100,25 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header control */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
-        <div>
-          <h1 className="text-lg font-bold tracking-tight">Customer Leads</h1>
-          <p className="text-xs text-muted-foreground">Inkuiri kontak dan prospek yang dikirimkan oleh pengunjung situs publik Anda.</p>
+      {/* Filter toolbar */}
+      {leads.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Filter:</span>
+          <select 
+            value={selectedSiteId} 
+            onChange={(e) => setSelectedSiteId(e.target.value)}
+            className="px-3.5 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+          >
+            <option value="all">Semua Website</option>
+            {sites.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
         </div>
-
-        {/* Filter dropdown */}
-        {leads.length > 0 && (
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <select 
-              value={selectedSiteId} 
-              onChange={(e) => setSelectedSiteId(e.target.value)}
-              className="px-3.5 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
-            >
-              <option value="all">Semua Website</option>
-              {sites.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-      </div>
+      )}
 
       {leads.length === 0 ? (
         <Card className="border-dashed border-border/70 p-12 text-center max-w-lg mx-auto">
