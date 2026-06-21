@@ -223,7 +223,7 @@ export function SiteWizard({
       setLoadingStep(0);
       const interval = setInterval(() => {
         setLoadingStep((prev) => prev < 5 ? prev + 1 : prev);
-      }, 1500);
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [previewState]);
