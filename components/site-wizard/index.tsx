@@ -769,29 +769,42 @@ export function SiteWizard({
 
           {resultPreviewContent}
 
+          {/* Desktop: single Edit & Publish button */}
           {previewState === "result" && (
             <button
               type="button"
               onClick={handleGoToEditor}
-              className="absolute bottom-4 left-4 z-40 flex h-11 max-w-[calc(100%-2rem)] items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95 md:bottom-6 md:left-auto md:right-6 md:h-auto md:max-w-none md:gap-2 md:px-5 md:py-3 md:text-sm md:shadow-[0_14px_35px_rgba(91,33,182,0.35)]"
+              className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(91,33,182,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
             >
-              <Pencil className="h-3.5 w-3.5 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">Edit & Publish</span>
-              <span className="sm:hidden">Edit & Publish</span>
-              <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              <Pencil className="h-4 w-4" />
+              Edit & Publikasikan
+              <ArrowRight className="h-4 w-4" />
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={() => setMobilePreviewOpen(false)}
-            className="absolute bottom-4 right-4 z-40 flex h-11 max-w-[calc(100%-2rem)] items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
-          >
-            <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
-            <span className="min-w-0 max-w-32 truncate leading-tight">{shouldPromptDetails ? "Lengkapi data" : "Chat"}</span>
-            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${shouldPromptDetails ? "bg-amber-500" : "bg-emerald-500"}`} />
-          </button>
+          {/* Mobile: stacked Lengkapi Data + Edit & Publikasikan */}
+          <div className="absolute bottom-6 left-4 right-4 z-40 flex flex-col gap-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => setMobilePreviewOpen(false)}
+              className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
+            >
+              <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
+              Lengkapi Data
+            </button>
+            {previewState === "result" && (
+              <button
+                type="button"
+                onClick={handleGoToEditor}
+                className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Edit & Publikasikan
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
