@@ -68,6 +68,7 @@ export default function SiteEditorPage() {
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
   const sectionDropdownRef = useRef<HTMLDivElement | null>(null);
+  const colorRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   // Site details & content
   const [siteDetails, setSiteDetails] = useState<any>(null);
@@ -1263,6 +1264,7 @@ export default function SiteEditorPage() {
                             type="color"
                             value={designToken?.palette?.primary || "#4F46E5"}
                             onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
+                            ref={(el) => { colorRefs.current["primary"] = el; }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                           />
                           <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
@@ -1271,7 +1273,8 @@ export default function SiteEditorPage() {
                           type="text"
                           value={designToken?.palette?.primary || ""}
                           onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          onClick={() => colorRefs.current["primary"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                           placeholder="#4F46E5"
                         />
                       </div>
@@ -1286,6 +1289,7 @@ export default function SiteEditorPage() {
                             type="color"
                             value={designToken?.palette?.accent || "#7C3AED"}
                             onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
+                            ref={(el) => { colorRefs.current["accent"] = el; }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                           />
                           <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
@@ -1294,7 +1298,8 @@ export default function SiteEditorPage() {
                           type="text"
                           value={designToken?.palette?.accent || ""}
                           onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          onClick={() => colorRefs.current["accent"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                           placeholder="#7C3AED"
                         />
                       </div>
@@ -1309,6 +1314,7 @@ export default function SiteEditorPage() {
                             type="color"
                             value={designToken?.palette?.background || "#FAF7F2"}
                             onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
+                            ref={(el) => { colorRefs.current["background"] = el; }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                           />
                           <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
@@ -1317,7 +1323,8 @@ export default function SiteEditorPage() {
                           type="text"
                           value={designToken?.palette?.background || ""}
                           onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          onClick={() => colorRefs.current["background"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                           placeholder="#FAF7F2"
                         />
                       </div>
@@ -1332,6 +1339,7 @@ export default function SiteEditorPage() {
                             type="color"
                             value={designToken?.palette?.surface || "#FFFFFF"}
                             onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
+                            ref={(el) => { colorRefs.current["surface"] = el; }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                           />
                           <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
@@ -1340,7 +1348,8 @@ export default function SiteEditorPage() {
                           type="text"
                           value={designToken?.palette?.surface || ""}
                           onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          onClick={() => colorRefs.current["surface"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                           placeholder="#FFFFFF"
                         />
                       </div>
@@ -1355,6 +1364,7 @@ export default function SiteEditorPage() {
                             type="color"
                             value={designToken?.palette?.text || "#2C2C2A"}
                             onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
+                            ref={(el) => { colorRefs.current["text"] = el; }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                           />
                           <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
@@ -1363,7 +1373,8 @@ export default function SiteEditorPage() {
                           type="text"
                           value={designToken?.palette?.text || ""}
                           onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                          onClick={() => colorRefs.current["text"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
                           placeholder="#2C2C2A"
                         />
                       </div>
@@ -2032,12 +2043,14 @@ export default function SiteEditorPage() {
                       <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
                         <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
                           onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
+                          ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
                           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
                         <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
                       </div>
                       <input type="text" value={designToken?.palette?.[colorKey] || ""}
                         onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
-                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400" />
+                        onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
+                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 cursor-pointer" />
                     </div>
                   ))}
                   {/* Typography */}
