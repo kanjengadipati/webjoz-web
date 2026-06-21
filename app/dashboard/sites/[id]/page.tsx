@@ -1947,7 +1947,7 @@ export default function SiteEditorPage() {
                 style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />
-                Edit & Publikasikan
+                Publikasikan
               </button>
             )}
           </div>
