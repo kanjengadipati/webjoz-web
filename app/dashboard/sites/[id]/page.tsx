@@ -1930,26 +1930,26 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Mobile floating bottom bar */}
-          <div className="absolute bottom-6 left-4 right-4 z-40 flex items-center gap-3 md:hidden">
+          <div className="absolute bottom-6 left-4 right-4 z-40 flex flex-col gap-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileView("edit")}
+              className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
+            >
+              <Pencil className="h-3.5 w-3.5 text-slate-500" />
+              Lengkapi Data
+            </button>
             {siteDetails?.status !== "published" && (
               <button
                 type="button"
                 onClick={() => setPublishModalOpen(true)}
-                className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
+                className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />
-                Publikasikan
+                Edit & Publikasikan
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => setMobileView("edit")}
-              className="flex-1 flex h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
-            >
-              <Pencil className="h-3.5 w-3.5 text-slate-500" />
-              Edit
-            </button>
           </div>
 
           {/* Desktop floating publish button */}
