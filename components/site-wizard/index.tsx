@@ -851,7 +851,7 @@ export function SiteWizard({
           <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
             <button
               type="button"
-              onClick={() => setSheetOpen(true)}
+              onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
               className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
             >
               <Plus className="h-3.5 w-3.5 text-slate-400" />
@@ -919,7 +919,7 @@ export function SiteWizard({
                   </button>
                   <button
                     type="button"
-                    disabled={!waDraft && !areaDraft}
+                    disabled={waDraft === (whatsapp || "") && areaDraft === (serviceArea || "")}
                     onClick={() => {
                       setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
                       setServiceArea(areaDraft || serviceArea);
