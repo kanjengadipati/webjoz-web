@@ -1,6 +1,6 @@
 export const DASHBOARD_NAVIGATION = [
   { id: "overview", href: "/dashboard", label: "Overview", permission: "", icon: "layout", section: "Dashboard", groupStart: false },
-  { id: "notifications", href: "/dashboard/notifications", label: "Messages", permission: "", icon: "bell", section: "Dashboard", groupStart: false },
+  { id: "notifications", href: "/dashboard/notifications", label: "Notifications", permission: "", icon: "bell", section: "Dashboard", groupStart: false },
   { id: "plans", href: "/dashboard/admin/plans", label: "Plan Management", permission: "tenant:manage", icon: "credit-card", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "health", href: "/dashboard/admin/health", label: "System Health", permission: "tenant:manage", icon: "activity", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "announcements", href: "/dashboard/admin/announcements", label: "Announcements", permission: "tenant:manage", icon: "megaphone", section: "Dashboard", groupStart: false, adminOnly: true },
