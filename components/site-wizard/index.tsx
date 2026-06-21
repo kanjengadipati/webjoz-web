@@ -837,23 +837,39 @@ export function SiteWizard({
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
       {/* ══ TOO MANY REQUESTS TOOLTIP ════════════════════════════════════ */}
       {tooManyRequests && (
-        <div className="absolute top-3 right-3 z-[100] animate-in slide-in-from-top-2 fade-in duration-300" onClick={() => setTooManyRequests(false)}>
+        <div className="absolute top-3 right-3 z-[100] animate-in slide-in-from-top-2 fade-in duration-300">
           <div
-            className="flex items-center gap-2.5 rounded-xl px-4 py-3 shadow-2xl"
+            className="rounded-xl p-4 shadow-2xl w-64"
             style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)" }}
           >
-            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-amber-300 leading-tight">Terlalu cepat</p>
-              <p className="text-[10px] text-amber-400/70 leading-tight mt-0.5">Tunggu 30 detik, lalu coba lagi</p>
+            <div className="flex items-start gap-2.5 mb-3">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-amber-300 leading-tight">Terlalu cepat</p>
+                <p className="text-[10px] text-amber-400/70 leading-tight mt-0.5">Tunggu 30 detik, lalu coba lagi</p>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setTooManyRequests(false); }}
-              className="ml-1 h-5 w-5 rounded-full flex items-center justify-center hover:bg-amber-500/20 shrink-0"
-            >
-              <span className="text-amber-400/60 text-xs font-bold">&times;</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setTooManyRequests(false);
+                  setMobileScreen("loading");
+                  void handleGenerate();
+                }}
+                className="flex-1 h-8 rounded-lg text-[11px] font-bold text-white transition-all active:scale-95"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+              >
+                Coba lagi
+              </button>
+              <button
+                type="button"
+                onClick={() => setTooManyRequests(false)}
+                className="h-8 px-3 rounded-lg bg-slate-800 text-[11px] font-semibold text-slate-300 transition-all active:scale-95"
+              >
+                Batal
+              </button>
+            </div>
           </div>
         </div>
       )}
