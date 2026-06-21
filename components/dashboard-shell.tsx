@@ -88,7 +88,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     );
   }
 
-  const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => hasPermission(item.permission) || !item.permission);
+  const isAdmin = userRole === "superadmin" || userRole === "admin";
+  const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => {
+    if ("adminOnly" in item && item.adminOnly && !isAdmin) return false;
+    if (!item.permission) return true;
+    if (isAdmin) return true;
+    return hasPermission(item.permission);
+  });
   const activeLabel = pathname === "/dashboard/sites/new"
     ? "Create Website"
     : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
