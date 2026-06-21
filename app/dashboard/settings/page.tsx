@@ -54,8 +54,29 @@ export default function SettingsPage() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] items-start">
-      {/* Sidebar Tab Navigation */}
-      <nav className="sticky top-24 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 space-y-4 shadow-sm" aria-label="Settings navigation">
+      {/* Mobile: Horizontal Scroll Tabs */}
+      <div className="lg:hidden -mx-1 overflow-x-auto scrollbar-none">
+        <div className="flex gap-1.5 px-1 pb-1 min-w-max">
+          {visibleTabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200",
+                activeTab === tab.id
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop: Sidebar Tab Navigation */}
+      <nav className="hidden lg:block sticky top-24 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 space-y-4 shadow-sm" aria-label="Settings navigation">
         {/* Personal */}
         <div className="space-y-1">
           <div className="px-3 pb-1 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/50">Akun</div>

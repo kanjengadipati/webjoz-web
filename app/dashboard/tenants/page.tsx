@@ -73,62 +73,84 @@ export default function AdminTenantsPage() {
               <p className="text-sm">No tenants found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                    <th className="px-6 py-4">Tenant</th>
-                    <th className="px-6 py-4">Plan</th>
-                    <th className="px-6 py-4 text-center">Members</th>
-                    <th className="px-6 py-4 text-center">Sites</th>
-                    <th className="px-6 py-4">Created</th>
-                    <th className="px-6 py-4"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tenants.map((t) => (
-                    <tr key={t.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="font-semibold">{t.name}</div>
-                        <div className="text-xs text-muted-foreground">{t.slug}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center rounded-full border border-border/40 px-2.5 py-0.5 text-xs font-medium capitalize">
-                          {t.plan}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                          <Users className="size-3.5" />
-                          {t.member_count}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                          <Globe className="size-3.5" />
-                          {t.site_count}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Calendar className="size-3" />
-                          {new Date(t.created_at).toLocaleDateString("id-ID", {
-                            year: "numeric", month: "short", day: "numeric"
-                          })}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Link href={`/dashboard/tenants/${t.id}`}>
-                          <Button variant="ghost" size="sm" className="text-xs">
-                            Manage
-                          </Button>
-                        </Link>
-                      </td>
+            <>
+              {/* Mobile: Card layout */}
+              <div className="grid gap-3 sm:hidden p-4">
+                {tenants.map((t) => (
+                  <Link key={t.id} href={`/dashboard/tenants/${t.id}`} className="rounded-xl border border-border/30 bg-card p-4 hover:border-primary/30 transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="font-semibold text-sm">{t.name}</div>
+                      <span className="inline-flex items-center rounded-full border border-border/40 px-2 py-0.5 text-[10px] font-medium capitalize">
+                        {t.plan}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1"><Users className="size-3" />{t.member_count}</span>
+                      <span className="flex items-center gap-1"><Globe className="size-3" />{t.site_count}</span>
+                      <span className="flex items-center gap-1"><Calendar className="size-3" />{new Date(t.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "short", day: "numeric" })}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Desktop: Table layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                      <th className="px-6 py-4">Tenant</th>
+                      <th className="px-6 py-4">Plan</th>
+                      <th className="px-6 py-4 text-center">Members</th>
+                      <th className="px-6 py-4 text-center">Sites</th>
+                      <th className="px-6 py-4">Created</th>
+                      <th className="px-6 py-4"></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {tenants.map((t) => (
+                      <tr key={t.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-semibold">{t.name}</div>
+                          <div className="text-xs text-muted-foreground">{t.slug}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center rounded-full border border-border/40 px-2.5 py-0.5 text-xs font-medium capitalize">
+                            {t.plan}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                            <Users className="size-3.5" />
+                            {t.member_count}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                            <Globe className="size-3.5" />
+                            {t.site_count}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1.5">
+                            <Calendar className="size-3" />
+                            {new Date(t.created_at).toLocaleDateString("id-ID", {
+                              year: "numeric", month: "short", day: "numeric"
+                            })}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <Link href={`/dashboard/tenants/${t.id}`}>
+                            <Button variant="ghost" size="sm" className="text-xs">
+                              Manage
+                            </Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

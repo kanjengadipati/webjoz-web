@@ -231,8 +231,8 @@ export default function DashboardOverviewPage() {
   if (isAdmin) {
     return (
       <div className="space-y-8 animate-in fade-in duration-700">
-        <section className="bg-gradient-to-br from-primary/15 via-primary/5 to-blue-600/10 border border-primary/15 rounded-3xl p-8 shadow-sm">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <section className="bg-gradient-to-br from-primary/15 via-primary/5 to-blue-600/10 border border-primary/15 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
             <div className="flex items-center gap-5">
               <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/20 to-blue-600/20 flex items-center justify-center">
                 <LayoutDashboard className="size-8 text-primary" />
@@ -405,8 +405,8 @@ export default function DashboardOverviewPage() {
   // Regular user view
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      <section className="bg-gradient-to-r from-primary/20 to-blue-600/20 border border-primary/20 rounded-3xl p-8 shadow-sm">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <section className="bg-gradient-to-r from-primary/20 to-blue-600/20 border border-primary/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
           <div>
             <h2 className="text-4xl font-bold tracking-tight mb-2 text-foreground">
               Selamat Datang{profile ? `, ${profile.name.split(" ")[0]}` : ""}
