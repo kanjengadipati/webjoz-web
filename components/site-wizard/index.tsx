@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
+  AlertTriangle,
   ArrowRight,
   CheckCircle2,
   ChevronLeft,
@@ -84,6 +85,7 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [waDraft, setWaDraft] = useState("");
   const [areaDraft, setAreaDraft] = useState("");
+  const [tooManyRequests, setTooManyRequests] = useState(false);
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const isMobileRef = useRef(false);
@@ -192,8 +194,13 @@ export function SiteWizard({
       }
     },
     onError: (message) => {
-      pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
-      setPreviewState("wireframe");
+      const lower = (message || "").toLowerCase();
+      if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
+        setTooManyRequests(true);
+      } else {
+        pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
+        setPreviewState("wireframe");
+      }
     },
   });
 
@@ -827,6 +834,36 @@ export function SiteWizard({
       )}
 
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
+      {/* ══ TOO MANY REQUESTS TOOLTIP ════════════════════════════════════ */}
+      {tooManyRequests && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => setTooManyRequests(false)}>
+          <div
+            className="mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-300"
+            style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20">
+                <AlertTriangle className="h-7 w-7 text-amber-400" />
+              </div>
+              <h3 className="text-base font-bold text-slate-100 mb-2">Terlalu cepat!</h3>
+              <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                Kamu sudah membuat website beberapa kali dalam waktu singkat. 
+                Tunggu sekitar 30 detik, lalu coba lagi ya — biar hasilnya tetap optimal. 
+                Sabar dikit, hasilnya maksimal! 😊
+              </p>
+              <button
+                type="button"
+                onClick={() => setTooManyRequests(false)}
+                className="w-full h-10 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-xs font-bold text-white transition-all active:scale-95"
+              >
+                Mengerti, tunggu dulu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isMobile && mobileScreen === "preview" && previewState === "result" && (
         <>
           {/* Bottom action bar */}
