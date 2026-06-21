@@ -9,7 +9,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "sites", href: "/dashboard/sites", label: "Website Saya", permission: "site:view", icon: "globe", section: "Website Builder", groupStart: false },
   { id: "domains", href: "/dashboard/domains", label: "Pengaturan Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },
-  { id: "analytics", href: "/dashboard/analytics", label: "Site Analytics", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
+  { id: "analytics", href: "/dashboard/analytics", label: "Web Statistik", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
 
   { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;
