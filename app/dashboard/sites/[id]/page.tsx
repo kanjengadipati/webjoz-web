@@ -847,6 +847,9 @@ export default function SiteEditorPage() {
       icon: SECTION_META[key]?.icon ?? Layout,
       num: idx + 1,
     }));
+  const pageOrderSections = SECTIONS.slice().sort(
+    (a, b) => EDITOR_SECTION_KEYS.indexOf(a.key) - EDITOR_SECTION_KEYS.indexOf(b.key)
+  );
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
   const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
@@ -1909,7 +1912,7 @@ export default function SiteEditorPage() {
               const centerY = scrollTop + containerHeight / 2;
               let bestSection = activeTab;
               let bestDistance = Infinity;
-              for (const sec of SECTIONS) {
+              for (const sec of pageOrderSections) {
                 const el = document.querySelector(`[id^="section-preview-${sec.key}"]`) as HTMLElement | null;
                 if (el) {
                   const rect = el.getBoundingClientRect();
@@ -2005,7 +2008,7 @@ export default function SiteEditorPage() {
 
             {/* Section pills row */}
             <div id="mobile-section-pills" className="flex gap-1.5 px-3.5 py-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
-              {SECTIONS.map((sec) => (
+              {pageOrderSections.map((sec) => (
                 <button
                   key={sec.key}
                   data-section-key={sec.key}
