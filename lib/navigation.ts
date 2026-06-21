@@ -11,7 +11,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },
   { id: "analytics", href: "/dashboard/analytics", label: "Site Analytics", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
 
-  { id: "settings", href: "/dashboard/settings", label: "Settings", permission: "", icon: "settings", section: "System", groupStart: false },
+  { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;
 
 export type NavigationItemId = typeof DASHBOARD_NAVIGATION[number]["id"];
