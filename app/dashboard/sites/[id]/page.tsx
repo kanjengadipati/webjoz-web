@@ -60,7 +60,10 @@ export default function SiteEditorPage() {
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
-  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const [mobileView, setMobileView] = useState<"edit" | "preview">(
+    typeof window !== "undefined" && window.innerWidth < 768 ? "preview" : "edit"
+  );
+  const [sheetExpanded, setSheetExpanded] = useState(false);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -1717,16 +1720,6 @@ export default function SiteEditorPage() {
             )}
           </div>
 
-          {/* Mobile Preview Trigger Button */}
-          <button
-            type="button"
-            onClick={() => setMobileView("preview")}
-            className="absolute bottom-6 right-4 z-30 flex items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
-          >
-            <Eye className="h-3.5 w-3.5 text-slate-500" />
-            Preview
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          </button>
         </div>
 
         {/* ════ RIGHT CANVAS ════ */}
@@ -1735,6 +1728,41 @@ export default function SiteEditorPage() {
             mobileView === "preview" ? "translate-x-0" : "translate-x-full"
           }`}
         >
+          {/* Mobile topbar */}
+          <div className="flex md:hidden h-[52px] flex-shrink-0 items-center gap-2.5 border-b border-white/10 bg-[#111318] px-3 pt-2">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/sites")}
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95"
+              aria-label="Kembali"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="h-4 w-px bg-white/10" />
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails?.name}</h1>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {autosaveStatus !== "idle" && (
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${autosaveStatus === "saving" ? "text-amber-300" : autosaveStatus === "saved" ? "text-emerald-400" : "text-red-300"}`}>
+                  {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                  {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
+                  {autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal"}
+                </span>
+              )}
+              {siteDetails?.status !== "published" && (
+                <button
+                  type="button"
+                  onClick={() => setPublishModalOpen(true)}
+                  className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-white"
+                  style={{ background: "#7c3aed" }}
+                >
+                  <Rocket className="w-3 h-3" />
+                  Publish
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Canvas topbar */}
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
@@ -1859,7 +1887,7 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center">
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-0">
             {pendingDiff && (
               <style dangerouslySetInnerHTML={{
                 __html: `
@@ -1929,27 +1957,185 @@ export default function SiteEditorPage() {
             )}
           </div>
 
-          {/* Mobile floating bottom bar */}
-          <div className="absolute bottom-6 left-4 right-4 z-40 flex flex-col gap-2 md:hidden">
-            <button
-              type="button"
-              onClick={() => setMobileView("edit")}
-              className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
+          {/* Mobile bottom sheet */}
+          <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out"
+            style={{ maxHeight: sheetExpanded ? "88%" : "48%" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center pt-2.5 pb-1 flex-shrink-0 cursor-grab active:cursor-grabbing"
+              onClick={() => setSheetExpanded(!sheetExpanded)}
             >
-              <Pencil className="h-3.5 w-3.5 text-slate-500" />
-              Edit
-            </button>
-            {siteDetails?.status !== "published" && (
+              <div className="w-9 h-1 rounded-full bg-white/20" />
+            </div>
+
+            {/* Section pills row */}
+            <div className="flex gap-1.5 px-3.5 py-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
+              {SECTIONS.map((sec) => (
+                <button
+                  key={sec.key}
+                  type="button"
+                  onClick={() => selectSection(sec.key)}
+                  className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${
+                    activeTab === sec.key
+                      ? "bg-violet-500/15 border-violet-500/30 text-violet-200"
+                      : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-bold"
+                    style={{
+                      background: activeTab === sec.key ? "#7c3aed" : "rgba(255,255,255,0.08)",
+                      color: activeTab === sec.key ? "white" : "#64748b"
+                    }}
+                  >
+                    {sec.num}
+                  </span>
+                  <span>{sec.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Tab switcher */}
+            <div className="flex mx-3.5 mt-1 rounded-[10px] p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.04)" }}>
               <button
                 type="button"
-                onClick={() => setPublishModalOpen(true)}
-                className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(124,58,237,0.3)] transition-all active:scale-95"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                onClick={() => setEditorTab("content")}
+                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
+                  editorTab === "content" ? "bg-[#7c3aed] text-white" : "text-slate-400"
+                }`}
               >
-                <Rocket className="w-3.5 h-3.5" />
-                Publikasikan
+                Konten
               </button>
+              <button
+                type="button"
+                onClick={() => setEditorTab("design")}
+                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
+                  editorTab === "design" ? "bg-[#7c3aed] text-white" : "text-slate-400"
+                }`}
+              >
+                Desain
+              </button>
+            </div>
+
+            {/* Quality bar (Konten tab only) */}
+            {editorTab === "content" && quality.issues.length > 0 && (
+              <div className="flex items-center gap-2 mx-3.5 mt-2 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+                style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}
+              >
+                <span className="text-[10px] font-bold text-amber-400">{quality.score}%</span>
+                <span className="flex-1 text-[9px] text-amber-200/80">{quality.issues.length} field perlu diisi</span>
+                <div className="flex gap-1">
+                  {quality.issues.slice(0, 4).map((_, i) => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-amber-400/40" />
+                  ))}
+                </div>
+              </div>
             )}
+
+            {/* Form scrollable area */}
+            <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-2.5 scrollbar-none">
+              {editorTab === "content" ? (
+                <SectionForms
+                  activeTab={activeTab}
+                  content={content}
+                  updateField={updateField}
+                  needsAttention={needsAttention}
+                  fieldClass={fieldClass}
+                  token={token}
+                  activeTenantId={activeTenantId}
+                  siteId={siteId}
+                />
+              ) : (
+                <div className="space-y-3 pb-2">
+                  {/* Palette */}
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
+                  {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
+                    <div key={colorKey} className="flex items-center gap-2">
+                      <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-20 shrink-0">
+                        {colorKey === "primary" ? "Primary" : colorKey === "accent" ? "Accent" : colorKey === "background" ? "Latar" : colorKey === "surface" ? "Surface" : "Teks"}
+                      </label>
+                      <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
+                        <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
+                          onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                        <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
+                      </div>
+                      <input type="text" value={designToken?.palette?.[colorKey] || ""}
+                        onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
+                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400" />
+                    </div>
+                  ))}
+                  {/* Typography */}
+                  <div className="border-t border-white/10 my-2" />
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tipografi</p>
+                  <div className="space-y-2">
+                    <select value={designToken?.typography?.heading_font || "Inter"}
+                      onChange={(e) => updateDesignTokenField("typography", "heading_font", e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f} className="bg-[#111318]">{f}</option>)}
+                    </select>
+                    <select value={designToken?.typography?.body_font || "Inter"}
+                      onChange={(e) => updateDesignTokenField("typography", "body_font", e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f} className="bg-[#111318]">{f}</option>)}
+                    </select>
+                    <select value={designToken?.typography?.heading_weight || "700"}
+                      onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      {["400", "500", "600", "700", "800"].map((w) => <option key={w} value={w} className="bg-[#111318]">Weight {w}</option>)}
+                    </select>
+                  </div>
+                  {/* Layout */}
+                  <div className="border-t border-white/10 my-2" />
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tata Letak</p>
+                  <select value={designToken?.layout?.corner_radius || "soft"}
+                    onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
+                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                    <option value="sharp">Tajam (0px)</option><option value="soft">Lembut (8px)</option><option value="rounded">Bulat (20px)</option>
+                  </select>
+                  <select value={designToken?.layout?.section_spacing || "normal"}
+                    onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
+                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                    <option value="compact">Rapat</option><option value="normal">Normal</option><option value="relaxed">Longgar</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {/* AI bar sticky bottom */}
+            <div className="flex-shrink-0 px-3.5 pb-3 pt-2 border-t border-white/10 bg-[#111318] space-y-1.5">
+              {activeSuggestions.length > 0 && (
+                <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+                  {activeSuggestions.slice(0, 3).map((chip) => (
+                    <button
+                      key={chip} type="button"
+                      onClick={() => setAiInstructions(chip)}
+                      disabled={!!pendingDiff}
+                      className="flex-shrink-0 px-2 py-1 rounded-full border border-violet-400/20 bg-violet-400/10 text-[9px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="text" value={aiInstructions}
+                  onChange={(e) => setAiInstructions(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                  placeholder={aiPlaceholder}
+                  disabled={aiLoading || !!pendingDiff}
+                  className="flex-1 h-9 px-3 border border-violet-500/25 bg-[#05070b] text-slate-100 rounded-[10px] text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                />
+                <button
+                  type="button"
+                  onClick={handleAiRegenerateSection}
+                  disabled={aiLoading || !!pendingDiff}
+                  className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-[#7c3aed] text-white disabled:opacity-50"
+                >
+                  {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Desktop floating publish button */}
