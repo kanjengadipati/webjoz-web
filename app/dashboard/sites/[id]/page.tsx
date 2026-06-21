@@ -78,6 +78,7 @@ export default function SiteEditorPage() {
   const designTokenRef = useRef<any>(null);
   const [latestAiDesignToken, setLatestAiDesignToken] = useState<any>(null);
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
+  const [colorUndo, setColorUndo] = useState<Record<string, string>>({});
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
     before: any;
@@ -810,6 +811,26 @@ export default function SiteEditorPage() {
     setDesignToken(nextToken);
   };
 
+  const handleColorChange = (colorKey: string, value: string) => {
+    const oldValue = designToken?.palette?.[colorKey] || "";
+    if (oldValue && oldValue !== value) {
+      setColorUndo(prev => ({ ...prev, [colorKey]: oldValue }));
+    }
+    updateDesignTokenField("palette", colorKey, value);
+  };
+
+  const undoColor = (colorKey: string) => {
+    const oldValue = colorUndo[colorKey];
+    if (oldValue) {
+      updateDesignTokenField("palette", colorKey, oldValue);
+      setColorUndo(prev => {
+        const next = { ...prev };
+        delete next[colorKey];
+        return next;
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-3">
@@ -1260,23 +1281,28 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Utama (Primary)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.primary || "#4F46E5"}
-                            onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
-                            ref={(el) => { colorRefs.current["primary"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
-                        </div>
                         <input
-                          type="text"
-                          value={designToken?.palette?.primary || ""}
-                          onChange={(e) => updateDesignTokenField("palette", "primary", e.target.value)}
-                          onClick={() => colorRefs.current["primary"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
-                          placeholder="#4F46E5"
+                          type="color"
+                          value={designToken?.palette?.primary || "#4F46E5"}
+                          onChange={(e) => handleColorChange("primary", e.target.value)}
+                          ref={(el) => { colorRefs.current["primary"] = el; }}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         />
+                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
+                      </div>
+                      <input
+                        type="text"
+                        value={designToken?.palette?.primary || ""}
+                        onChange={(e) => handleColorChange("primary", e.target.value)}
+                        onClick={() => colorRefs.current["primary"]?.click()}
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        placeholder="#4F46E5"
+                      />
+                      {colorUndo["primary"] && (
+                        <button type="button" onClick={() => undoColor("primary")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                        </button>
+                      )}
                       </div>
                     </div>
 
@@ -1285,23 +1311,28 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Aksen (Accent)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.accent || "#7C3AED"}
-                            onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
-                            ref={(el) => { colorRefs.current["accent"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
-                        </div>
                         <input
-                          type="text"
-                          value={designToken?.palette?.accent || ""}
-                          onChange={(e) => updateDesignTokenField("palette", "accent", e.target.value)}
-                          onClick={() => colorRefs.current["accent"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
-                          placeholder="#7C3AED"
+                          type="color"
+                          value={designToken?.palette?.accent || "#7C3AED"}
+                          onChange={(e) => handleColorChange("accent", e.target.value)}
+                          ref={(el) => { colorRefs.current["accent"] = el; }}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         />
+                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
+                      </div>
+                      <input
+                        type="text"
+                        value={designToken?.palette?.accent || ""}
+                        onChange={(e) => handleColorChange("accent", e.target.value)}
+                        onClick={() => colorRefs.current["accent"]?.click()}
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        placeholder="#7C3AED"
+                      />
+                      {colorUndo["accent"] && (
+                        <button type="button" onClick={() => undoColor("accent")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                        </button>
+                      )}
                       </div>
                     </div>
 
@@ -1310,23 +1341,28 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Latar (Background)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.background || "#FAF7F2"}
-                            onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
-                            ref={(el) => { colorRefs.current["background"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
-                        </div>
                         <input
-                          type="text"
-                          value={designToken?.palette?.background || ""}
-                          onChange={(e) => updateDesignTokenField("palette", "background", e.target.value)}
-                          onClick={() => colorRefs.current["background"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
-                          placeholder="#FAF7F2"
+                          type="color"
+                          value={designToken?.palette?.background || "#FAF7F2"}
+                          onChange={(e) => handleColorChange("background", e.target.value)}
+                          ref={(el) => { colorRefs.current["background"] = el; }}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         />
+                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
+                      </div>
+                      <input
+                        type="text"
+                        value={designToken?.palette?.background || ""}
+                        onChange={(e) => handleColorChange("background", e.target.value)}
+                        onClick={() => colorRefs.current["background"]?.click()}
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        placeholder="#FAF7F2"
+                      />
+                      {colorUndo["background"] && (
+                        <button type="button" onClick={() => undoColor("background")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                        </button>
+                      )}
                       </div>
                     </div>
 
@@ -1335,23 +1371,28 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Permukaan (Surface)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.surface || "#FFFFFF"}
-                            onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
-                            ref={(el) => { colorRefs.current["surface"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
-                        </div>
                         <input
-                          type="text"
-                          value={designToken?.palette?.surface || ""}
-                          onChange={(e) => updateDesignTokenField("palette", "surface", e.target.value)}
-                          onClick={() => colorRefs.current["surface"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
-                          placeholder="#FFFFFF"
+                          type="color"
+                          value={designToken?.palette?.surface || "#FFFFFF"}
+                          onChange={(e) => handleColorChange("surface", e.target.value)}
+                          ref={(el) => { colorRefs.current["surface"] = el; }}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         />
+                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
+                      </div>
+                      <input
+                        type="text"
+                        value={designToken?.palette?.surface || ""}
+                        onChange={(e) => handleColorChange("surface", e.target.value)}
+                        onClick={() => colorRefs.current["surface"]?.click()}
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        placeholder="#FFFFFF"
+                      />
+                      {colorUndo["surface"] && (
+                        <button type="button" onClick={() => undoColor("surface")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                        </button>
+                      )}
                       </div>
                     </div>
 
@@ -1360,23 +1401,28 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Teks (Text)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.text || "#2C2C2A"}
-                            onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
-                            ref={(el) => { colorRefs.current["text"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
-                        </div>
                         <input
-                          type="text"
-                          value={designToken?.palette?.text || ""}
-                          onChange={(e) => updateDesignTokenField("palette", "text", e.target.value)}
-                          onClick={() => colorRefs.current["text"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
-                          placeholder="#2C2C2A"
+                          type="color"
+                          value={designToken?.palette?.text || "#2C2C2A"}
+                          onChange={(e) => handleColorChange("text", e.target.value)}
+                          ref={(el) => { colorRefs.current["text"] = el; }}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         />
+                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
+                      </div>
+                      <input
+                        type="text"
+                        value={designToken?.palette?.text || ""}
+                        onChange={(e) => handleColorChange("text", e.target.value)}
+                        onClick={() => colorRefs.current["text"]?.click()}
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        placeholder="#2C2C2A"
+                      />
+                      {colorUndo["text"] && (
+                        <button type="button" onClick={() => undoColor("text")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                        </button>
+                      )}
                       </div>
                     </div>
                   </div>
@@ -2042,15 +2088,20 @@ export default function SiteEditorPage() {
                       </label>
                       <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
                         <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
-                          onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
+                          onChange={(e) => handleColorChange(colorKey, e.target.value)}
                           ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
                           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
                         <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
                       </div>
                       <input type="text" value={designToken?.palette?.[colorKey] || ""}
-                        onChange={(e) => updateDesignTokenField("palette", colorKey, e.target.value)}
+                        onChange={(e) => handleColorChange(colorKey, e.target.value)}
                         onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
                         className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 cursor-pointer" />
+                      {colorUndo[colorKey] && (
+                        <button type="button" onClick={() => undoColor(colorKey)} className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
+                          <RotateCcw className="h-3 w-3 text-slate-400" />
+                        </button>
+                      )}
                     </div>
                   ))}
                   {/* Typography */}
