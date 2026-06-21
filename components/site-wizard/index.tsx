@@ -7,8 +7,6 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronLeft,
-  Eye,
-  EyeOff,
   Loader2,
   MapPin,
   MessageCircle,
@@ -672,16 +670,6 @@ export function SiteWizard({
 
           <div ref={chatEndRef} />
         </div>
-
-        <button
-          type="button"
-          onClick={() => setMobilePreviewOpen(true)}
-          className="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95 md:hidden"
-        >
-          <Eye className="h-3.5 w-3.5 text-slate-500" />
-          {previewState === "loading" ? "Progress" : "Preview"}
-          <span className={`h-1.5 w-1.5 rounded-full ${previewState === "result" ? "bg-emerald-500" : previewState === "loading" ? "bg-amber-500" : "bg-sky-500"}`} />
-        </button>
 
         {/* Chat Input */}
         {chatStage !== "type" && chatStage !== "done" && chatStage !== "confirm" && (
