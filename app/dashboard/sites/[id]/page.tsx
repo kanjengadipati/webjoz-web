@@ -493,6 +493,14 @@ export default function SiteEditorPage() {
     };
   }, [content, designToken, siteDetails, loading]);
 
+  // Scroll active pill into center view
+  useEffect(() => {
+    const pill = document.querySelector(`[data-section-key="${activeTab}"]`) as HTMLElement | null;
+    if (pill) {
+      pill.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [activeTab]);
+
   const handleSaveContent = async () => {
     if (!token || !activeTenantId || !siteId || !content || !siteDetails) return;
 
@@ -1996,10 +2004,11 @@ export default function SiteEditorPage() {
             </div>
 
             {/* Section pills row */}
-            <div className="flex gap-1.5 px-3.5 py-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
+            <div id="mobile-section-pills" className="flex gap-1.5 px-3.5 py-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
               {SECTIONS.map((sec) => (
                 <button
                   key={sec.key}
+                  data-section-key={sec.key}
                   type="button"
                   onClick={() => selectSection(sec.key)}
                   className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${
