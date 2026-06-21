@@ -91,8 +91,11 @@ export function SiteWizard({
   const historyIndexRef = useRef(historyIndex);
   const hasPromptedDetailsRef = useRef(false);
   const previewScrollRef = useRef<HTMLDivElement>(null);
+  const streamDoneRef = useRef(false);
+  const loadingStepRef = useRef(0);
 
   useEffect(() => { historyIndexRef.current = historyIndex; }, [historyIndex]);
+  useEffect(() => { loadingStepRef.current = loadingStep; }, [loadingStep]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
@@ -155,7 +158,8 @@ export function SiteWizard({
         return next;
       });
       setPreviewData(mergedPreview);
-      setPreviewState("result");
+      streamDoneRef.current = true;
+      if (loadingStepRef.current >= 5) setPreviewState("result");
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
@@ -221,8 +225,15 @@ export function SiteWizard({
   useEffect(() => {
     if (previewState === "loading") {
       setLoadingStep(0);
+      streamDoneRef.current = false;
       const interval = setInterval(() => {
-        setLoadingStep((prev) => prev < 5 ? prev + 1 : prev);
+        setLoadingStep((prev) => {
+          if (prev >= 5 && streamDoneRef.current) {
+            setPreviewState("result");
+            return prev;
+          }
+          return prev < 5 ? prev + 1 : prev;
+        });
       }, 3000);
       return () => clearInterval(interval);
     }
