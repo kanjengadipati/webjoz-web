@@ -7,7 +7,7 @@ import {
   Bell, Megaphone, Inbox, ArrowRight, CheckCheck, Loader2,
   MessageSquare, Info, AlertTriangle, AlertCircle
 } from "lucide-react";
-import { Button, Card, CardContent } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import {
   fetchNotifications,
@@ -114,24 +114,22 @@ export default function NotificationsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="size-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <Bell className="size-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Notifikasi</h2>
-            <p className="text-xs text-muted-foreground">
-              {unreadCount > 0
-                ? `${unreadCount} notifikasi belum dibaca`
-                : "Tidak ada notifikasi baru"}
-            </p>
-          </div>
+            Notifikasi
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {unreadCount > 0
+              ? `${unreadCount} notifikasi belum dibaca`
+              : "Tidak ada notifikasi baru"}
+          </p>
         </div>
         {unreadCount > 0 && (
           <Button
             variant="secondary"
             size="sm"
-            className="rounded-xl text-xs gap-2"
+            className="gap-2"
             onClick={() => void handleMarkAllRead()}
             disabled={markingAll}
           >
@@ -156,20 +154,29 @@ export default function NotificationsPage() {
           </p>
         </Card>
       ) : (
-        <div className="space-y-2">
-          {notifications.map((n) => {
-            const meta = TYPE_META[n.type] || TYPE_META.system;
-            const Icon = meta.icon;
-            const link = getNavLink(n);
-            return (
-              <Card
-                key={n.id}
-                className={`border-border/40 transition-all duration-200 hover:border-primary/30 ${
-                  !n.is_read ? "bg-primary/5 border-l-primary border-l-2" : "opacity-80"
-                }`}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
+        <Card className="border-border/40 shadow-sm">
+          <CardHeader className="border-b border-border/20 pb-4">
+            <CardTitle className="text-base font-bold tracking-tight flex items-center gap-3">
+              <Bell className="size-4 text-primary" />
+              Semua Notifikasi
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-border/30">
+              {notifications.map((n) => {
+                const meta = TYPE_META[n.type] || TYPE_META.system;
+                const Icon = meta.icon;
+                const link = getNavLink(n);
+                return (
+                  <div
+                    key={n.id}
+                    className={`p-4 flex items-start gap-4 transition-colors hover:bg-muted/30 ${
+                      !n.is_read ? "bg-primary/5" : ""
+                    }`}
+                  >
+                    {!n.is_read && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-8 bg-primary rounded-r" />
+                    )}
                     <div className={`size-10 rounded-xl ${meta.bg} flex items-center justify-center shrink-0 mt-0.5`}>
                       <Icon className={`size-5 ${meta.color}`} />
                     </div>
@@ -181,7 +188,7 @@ export default function NotificationsPage() {
                           </p>
                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.message}</p>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           {!n.is_read && (
                             <button
                               onClick={() => void handleMarkRead(n.id)}
@@ -210,11 +217,11 @@ export default function NotificationsPage() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
