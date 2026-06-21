@@ -709,7 +709,11 @@ export default function SiteEditorPage() {
 
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
-    setMobileView("edit");
+    if (window.innerWidth < 768) {
+      setSheetExpanded(true);
+    } else {
+      setMobileView("edit");
+    }
   }, [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
@@ -1887,7 +1891,30 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-0">
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-0"
+            onScroll={() => {
+              if (sheetExpanded) { setSheetExpanded(false); return; }
+              const container = document.getElementById("preview-scroll-container");
+              if (!container) return;
+              const scrollTop = container.scrollTop;
+              const containerHeight = container.clientHeight;
+              const centerY = scrollTop + containerHeight / 2;
+              let bestSection = activeTab;
+              let bestDistance = Infinity;
+              for (const sec of SECTIONS) {
+                const el = document.querySelector(`[id^="section-preview-${sec.key}"]`) as HTMLElement | null;
+                if (el) {
+                  const rect = el.getBoundingClientRect();
+                  const elCenter = rect.top + rect.height / 2;
+                  const dist = Math.abs(elCenter - containerHeight / 2);
+                  if (dist < bestDistance) { bestDistance = dist; bestSection = sec.key; }
+                }
+              }
+              if (bestSection !== activeTab && bestDistance < containerHeight * 0.6) {
+                setActiveTab(bestSection);
+              }
+            }}
+          >
             {pendingDiff && (
               <style dangerouslySetInnerHTML={{
                 __html: `
