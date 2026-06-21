@@ -836,7 +836,7 @@ export function SiteWizard({
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
       {/* ══ TOO MANY REQUESTS POPUP ════════════════════════════════════ */}
       {tooManyRequests && (
-        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => setTooManyRequests(false)}>
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => { setTooManyRequests(false); if (window.history.length > 1) { router.back(); return; } router.push("/"); }}>
           <div
             className="mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-300"
             style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}
@@ -853,7 +853,11 @@ export function SiteWizard({
               <div className="flex gap-3 w-full">
                 <button
                   type="button"
-                  onClick={() => setTooManyRequests(false)}
+                  onClick={() => {
+                    setTooManyRequests(false);
+                    if (window.history.length > 1) { router.back(); return; }
+                    router.push("/");
+                  }}
                   className="flex-1 h-10 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
                 >
                   Batal
