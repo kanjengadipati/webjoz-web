@@ -197,7 +197,6 @@ export function SiteWizard({
       const lower = (message || "").toLowerCase();
       if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
         setTooManyRequests(true);
-        setTimeout(() => setTooManyRequests(false), 5000);
       } else {
         pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
       }
@@ -835,40 +834,43 @@ export function SiteWizard({
       )}
 
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
-      {/* ══ TOO MANY REQUESTS TOOLTIP ════════════════════════════════════ */}
+      {/* ══ TOO MANY REQUESTS POPUP ════════════════════════════════════ */}
       {tooManyRequests && (
-        <div className="absolute top-3 right-3 z-[100] animate-in slide-in-from-top-2 fade-in duration-300">
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => setTooManyRequests(false)}>
           <div
-            className="rounded-xl p-4 shadow-2xl w-64"
-            style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)" }}
+            className="mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-300"
+            style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start gap-2.5 mb-3">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-amber-300 leading-tight">Terlalu cepat</p>
-                <p className="text-[10px] text-amber-400/70 leading-tight mt-0.5">Tunggu 30 detik, lalu coba lagi</p>
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20">
+                <AlertTriangle className="h-7 w-7 text-amber-400" />
               </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setTooManyRequests(false);
-                  setMobileScreen("loading");
-                  void handleGenerate();
-                }}
-                className="flex-1 h-8 rounded-lg text-[11px] font-bold text-white transition-all active:scale-95"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-              >
-                Coba lagi
-              </button>
-              <button
-                type="button"
-                onClick={() => setTooManyRequests(false)}
-                className="h-8 px-3 rounded-lg bg-slate-800 text-[11px] font-semibold text-slate-300 transition-all active:scale-95"
-              >
-                Batal
-              </button>
+              <h3 className="text-base font-bold text-slate-100 mb-2">Terlalu cepat!</h3>
+              <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.
+              </p>
+              <div className="flex gap-3 w-full">
+                <button
+                  type="button"
+                  onClick={() => setTooManyRequests(false)}
+                  className="flex-1 h-10 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTooManyRequests(false);
+                    setMobileScreen("loading");
+                    void handleGenerate();
+                  }}
+                  className="flex-1 h-10 rounded-xl text-xs font-bold text-white transition-all active:scale-95"
+                  style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                >
+                  Coba lagi
+                </button>
+              </div>
             </div>
           </div>
         </div>
