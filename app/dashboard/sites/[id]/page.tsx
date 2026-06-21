@@ -1937,7 +1937,7 @@ export default function SiteEditorPage() {
               className="flex w-full h-11 items-center justify-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-extrabold text-slate-950 shadow-[0_14px_30px_rgba(0,0,0,0.24)] transition-all active:scale-95"
             >
               <Pencil className="h-3.5 w-3.5 text-slate-500" />
-              Lengkapi Data
+              Edit
             </button>
             {siteDetails?.status !== "published" && (
               <button
