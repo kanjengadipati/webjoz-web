@@ -919,23 +919,22 @@ export function SiteWizard({
                   </button>
                   <button
                     type="button"
+                    disabled={!waDraft && !areaDraft}
                     onClick={() => {
                       setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
                       setServiceArea(areaDraft || serviceArea);
                       setSheetOpen(false);
-                      if (waDraft || areaDraft) {
-                        setHasUnsavedEdits(true);
-                        setRegenCount((c) => c + 1);
-                        setPreviewState("loading");
-                        setMobileScreen("loading");
-                        hasPromptedDetailsRef.current = false;
-                        void handleGenerate(businessName, businessType, {
-                          whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
-                          serviceArea: areaDraft || serviceArea,
-                        });
-                      }
+                      setHasUnsavedEdits(true);
+                      setRegenCount((c) => c + 1);
+                      setPreviewState("loading");
+                      setMobileScreen("loading");
+                      hasPromptedDetailsRef.current = false;
+                      void handleGenerate(businessName, businessType, {
+                        whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
+                        serviceArea: areaDraft || serviceArea,
+                      });
                     }}
-                    className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95"
+                    className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95 disabled:opacity-40"
                     style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
