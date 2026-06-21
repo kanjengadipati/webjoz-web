@@ -847,9 +847,7 @@ export default function SiteEditorPage() {
       icon: SECTION_META[key]?.icon ?? Layout,
       num: idx + 1,
     }));
-  const pageOrderSections = SECTIONS.slice().sort(
-    (a, b) => EDITOR_SECTION_KEYS.indexOf(a.key) - EDITOR_SECTION_KEYS.indexOf(b.key)
-  );
+  const pageOrderSections = SECTIONS;
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
   const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
