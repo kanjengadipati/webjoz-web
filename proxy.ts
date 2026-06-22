@@ -3,13 +3,20 @@ import type { NextRequest } from 'next/server'
 
 const DASHBOARD_HOST = 'app.webjoz.com'
 const BASE_DOMAIN = 'webjoz.com'
+const MARKETING_HOSTS = new Set([BASE_DOMAIN, `www.${BASE_DOMAIN}`])
 
 export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
   // Pass dashboard or local development requests through normally, unless they are local subdomains
   const isVercelApp = host === 'webjoz.vercel.app' || host.endsWith('.vercel.app')
-  if (host === DASHBOARD_HOST || isVercelApp || host === 'localhost:3000' || host === '127.0.0.1:3000') {
+  if (
+    host === DASHBOARD_HOST ||
+    MARKETING_HOSTS.has(host) ||
+    isVercelApp ||
+    host === 'localhost:3000' ||
+    host === '127.0.0.1:3000'
+  ) {
     return NextResponse.next()
   }
 
@@ -31,6 +38,9 @@ export function proxy(request: NextRequest) {
   // Production Subdomain check (e.g. cafe-jogja.webjoz.com)
   if (host.endsWith(`.${BASE_DOMAIN}`)) {
     const subdomain = host.replace(`.${BASE_DOMAIN}`, '')
+    if (subdomain === 'app' || subdomain === 'www') {
+      return NextResponse.next()
+    }
     return NextResponse.rewrite(
       new URL(`/site/${subdomain}${request.nextUrl.pathname}`, request.url)
     )
