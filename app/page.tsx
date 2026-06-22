@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { HealthPing } from "@/components/health-ping";
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 
 // ─── How it works steps ────────────────────────────────────────────────────────
@@ -13,25 +13,21 @@ const STEPS = [
     num: "01",
     title: "Ceritakan Bisnis Anda",
     desc: "Chat singkat dengan AI — nama bisnis, jenis usaha, dan area layanan. Kurang dari 2 menit.",
-    icon: "💬",
   },
   {
     num: "02",
     title: "Pilih Mood Visual",
     desc: "Pilih nuansa yang cocok: modern, elegan, playful, atau natural. AI sesuaikan desain otomatis.",
-    icon: "🎨",
   },
   {
     num: "03",
     title: "AI Generate Website",
     desc: "Konten, layout, warna, dan template dipilihkan otomatis oleh AI berdasarkan bisnis Anda.",
-    icon: "⚡",
   },
   {
     num: "04",
     title: "Luncurkan Sekarang",
     desc: "Review, kustomisasi seperlunya, lalu publish. Website aktif di subdomain Anda dalam hitungan menit.",
-    icon: "🚀",
   },
 ];
 
@@ -76,34 +72,31 @@ export default function LandingPage() {
   const router = useRouter();
 
   function startWizard(templateId?: string) {
-    if (templateId) {
-      router.push(`/create?template=${templateId}`);
-    } else {
-      router.push("/create");
-    }
+    router.push(templateId ? `/create?template=${templateId}` : "/create");
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pb-20">
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
             <Image
               src="/logo.png"
               alt="Webjoz"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-lg object-contain"
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-lg object-contain"
               priority
             />
             <span className="text-sm font-semibold tracking-tight text-foreground">
               Webjoz
             </span>
+            <Badge variant="outline" className="border-border/60 bg-card/60 text-muted-foreground tracking-wider px-1.5 py-0.5 text-[10px]">
+              v1.0
+            </Badge>
           </Link>
 
-          {/* Nav actions */}
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -111,70 +104,47 @@ export default function LandingPage() {
             >
               Masuk
             </Link>
-            <button
-              onClick={() => startWizard()}
-              className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500 active:scale-95"
-            >
-              Mulai Gratis ⚡
-            </button>
+            <Button onClick={() => startWizard()} className="rounded-full px-4 py-2 text-sm shadow-lg shadow-primary/20">
+              Mulai Gratis
+            </Button>
           </div>
         </div>
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 pb-24 pt-20 sm:px-6 lg:px-8 lg:pb-32 lg:pt-28">
-        {/* Glow blobs */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
-          <div className="absolute -right-40 top-32 h-[400px] w-[500px] rounded-full bg-indigo-500/8 blur-[100px]" />
-          <div className="absolute -left-20 top-48 h-[300px] w-[400px] rounded-full bg-cyan-500/6 blur-[80px]" />
-        </div>
+      <section className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-6 lg:px-10 lg:pt-20">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
 
-        <div className="mx-auto max-w-5xl text-center">
-          {/* Eyebrow badge */}
-          <div className="mb-8 flex flex-wrap justify-center gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-4 py-2 text-sm font-medium text-primary">
-              <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-              AI Website Builder untuk Bisnis Indonesia
-            </div>
-            <HealthPing />
-          </div>
+        <div className="mx-auto max-w-5xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <Badge
+            variant="outline"
+            className="border-primary/20 bg-primary/5 text-primary shadow-lg shadow-primary/5 px-4 py-2 animate-pulse"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
+            AI Website Builder untuk Bisnis Indonesia
+          </Badge>
 
-          {/* Headline */}
-          <h1 className="mb-6 text-5xl font-bold leading-[1.1] tracking-tighter text-balance sm:text-6xl md:text-7xl lg:text-8xl">
-            <span className="bg-gradient-to-br from-foreground via-foreground to-foreground/50 bg-clip-text text-transparent">
-              Website Bisnis
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-primary via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              Siap dalam 5 Menit
-            </span>
+          <h1 className="text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl md:text-7xl lg:text-8xl">
+            Website Bisnis<br />Siap dalam 5 Menit
           </h1>
 
-          {/* Subtitle */}
-          <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
             Chat singkat dengan AI, pilih gaya visual, dan website bisnis Anda siap dipublish.{" "}
             <strong className="text-foreground font-semibold">Tanpa coding, tanpa form panjang.</strong>
           </p>
 
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <button
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Button
               onClick={() => startWizard()}
-              className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-indigo-600/25 transition hover:-translate-y-0.5 hover:bg-indigo-500 hover:shadow-indigo-500/35 active:scale-95"
+              size="lg"
+              className="rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20"
             >
-              Buat Website Sekarang ⚡
-            </button>
-            <a
-              href="#templates"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition hover:bg-card hover:border-border/80"
-            >
-              Lihat Template →
-            </a>
+              Buat Website Sekarang
+            </Button>
+
           </div>
 
-          {/* Social proof */}
-          <p className="mt-8 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             ✅ Gratis dicoba &nbsp;·&nbsp; 💬 Chat AI, bukan form &nbsp;·&nbsp; 🚀 Aktif dalam menit
           </p>
         </div>
@@ -244,7 +214,7 @@ export default function LandingPage() {
                   <div className="h-14 rounded-xl bg-foreground/5 border border-border/30" />
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center px-3">
-                  <span className="text-[9px] font-semibold text-emerald-400">✓ Preview siap di kanan →</span>
+                  <span className="text-[9px] font-semibold text-emerald-400">✓ Preview siap di kanan &rarr;</span>
                 </div>
               </div>
             </div>
@@ -252,11 +222,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── How It Works ───────────────────────────────────────────────────── */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
+      {/* ── How It Works (Pleco-style numbered cards) ──────────────────────── */}
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <div className="mb-12 text-center space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               CARA KERJANYA
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -265,51 +235,101 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="relative">
-            {/* Connector line (desktop) */}
-            <div className="absolute top-12 left-0 right-0 hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
-
-            <div className="grid gap-8 md:grid-cols-4 md:gap-6">
-              {STEPS.map((step, i) => (
-                <div key={step.num} className="relative flex flex-col items-center text-center md:items-start md:text-left">
-                  {/* Number circle */}
-                  <div className="relative z-10 mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary/20 bg-card shadow-xl shadow-primary/5">
-                    <div className="text-3xl">{step.icon}</div>
-                    <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                      {i + 1}
-                    </div>
-                  </div>
-                  <h3 className="mb-2 text-lg font-bold text-foreground">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
+          <div className="grid gap-6 md:grid-cols-4">
+            {STEPS.map((step) => (
+              <div
+                key={step.num}
+                className="group relative rounded-2xl border border-border/50 bg-card/60 p-6 transition hover:border-primary/20 hover:bg-card/80"
+              >
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary">
+                  {step.num}
                 </div>
-              ))}
-            </div>
+                <h3 className="mb-2 text-lg font-bold text-foreground">{step.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
+              </div>
+            ))}
           </div>
 
-          {/* CTA under steps */}
-          <div className="mt-16 text-center">
-            <button
+          <div className="mt-12 text-center">
+            <Button
               onClick={() => startWizard()}
-              className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-indigo-600/25 transition hover:-translate-y-0.5 hover:bg-indigo-500 active:scale-95"
+              size="lg"
+              className="rounded-full px-8 shadow-lg shadow-primary/20"
             >
-              Coba Sekarang — Gratis ⚡
-            </button>
+              Coba Sekarang &mdash; Gratis
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* ── Template Showcase ───────────────────────────────────────────────── */}
-      <section id="templates" className="px-4 py-24 sm:px-6 lg:px-8">
+      {/* ── Key Feature: AI Investigator style ──────────────────────────────── */}
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+            <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="p-8 lg:p-12 xl:p-14">
+                <div className="max-w-2xl space-y-7">
+                  <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+                    Key Feature
+                  </Badge>
+                  <div className="space-y-4">
+                    <h2 className="text-4xl font-bold tracking-tighter text-balance lg:text-5xl">
+                      <span className="text-primary">AI</span> yang paham bisnis Indonesia.
+                    </h2>
+                    <p className="text-base leading-8 text-muted-foreground lg:text-lg">
+                      Bukan template kaku. AI Webjoz mendengar cerita bisnis Anda, menyesuaikan konten dan desain &mdash; bukan sekadar ganti-ganti warna.
+                    </p>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <SpotlightStat title="Obrolan alami" text="Cukup chat seperti ngobrol dengan teman. AI menggali kebutuhan bisnis Anda." featured />
+                    <SpotlightStat title="Desain cerdas" text="Template, font, dan warna dipilih berdasarkan industri dan preferensi visual Anda." />
+                    <SpotlightStat title="Langsung online" text="Setelah review, website Anda aktif di subdomain Webjoz dalam hitungan menit." />
+                  </div>
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
+                      <Badge className="border-rose-500/20 bg-rose-500/10 text-rose-500 shrink-0">Detected</Badge>
+                      <div className="text-sm font-medium">Pelanggan potensial meninggalkan website karena loading lambat dan tidak mobile-friendly.</div>
+                    </div>
+                    <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
+                      <Badge className="border-emerald-500/20 bg-emerald-500/10 text-emerald-500 shrink-0">Recommended</Badge>
+                      <div className="text-sm font-medium">Website Webjoz ringan, mobile-first, dan siap diindex Google. Pelanggan tidak akan kabur lagi.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="hidden lg:flex flex-col justify-center p-8 lg:p-12 xl:p-14 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="rounded-xl border border-border/30 bg-card/60 p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    <span className="text-xs font-medium text-foreground">AI Mempersiapkan Website Anda...</span>
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    {["Menganalisis jenis bisnis", "Memilih template terbaik", "Menulis konten relevan", "Menyiapkan preview"].map((step, i) => (
+                      <div key={step} className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[8px] text-primary">{i + 1}</span>
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* ── Template Showcase ───────────────────────────────────────────────── */}
+      <section id="templates" className="px-4 py-16 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               CONTOH HASIL AI
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               Website yang dihasilkan{" "}
               <span className="text-primary">untuk berbagai bisnis</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
+            <p className="mx-auto max-w-2xl text-base text-muted-foreground">
               AI memilih template dan menulis konten secara otomatis. Ini contoh hasil untuk beberapa jenis bisnis.
             </p>
           </div>
@@ -319,10 +339,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features Grid ──────────────────────────────────────────────────── */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <div className="mb-12 text-center space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               KENAPA WEBJOZ
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -335,9 +355,9 @@ export default function LandingPage() {
             {FEATURES.map((f, i) => (
               <div
                 key={i}
-                className="rounded-[1.5rem] border border-border/50 bg-card/60 p-6 transition hover:border-primary/20 hover:bg-card"
+                className="rounded-2xl border border-border/50 bg-card/60 p-6 transition hover:border-primary/20 hover:bg-card"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
                   {f.icon}
                 </div>
                 <h3 className="mb-2 font-bold text-foreground">{f.title}</h3>
@@ -348,58 +368,64 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Stats Banner ───────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl rounded-[2rem] border border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 p-8 shadow-2xl shadow-primary/8 lg:p-12">
-          <div className="grid gap-8 text-center md:grid-cols-3">
-            {[
-              { value: "< 5 menit", label: "Waktu generate website" },
-              { value: "3 template", label: "Siap pakai & teruji konversi" },
-              { value: "100%", label: "Self-serve, tanpa coding" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <div className="text-4xl font-bold tracking-tighter text-primary lg:text-5xl">{stat.value}</div>
-                <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+      {/* ── Stats Banner (Pleco-style) ──────────────────────────────────────── */}
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-5xl">
+          <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { value: "< 5 menit", label: "Waktu generate" },
+                { value: "3 template", label: "Siap pakai" },
+                { value: "100%", label: "Self-serve" },
+                { value: "AI", label: "Powered" },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl">{stat.value}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
       </section>
 
       {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-gradient-to-br from-background via-card/80 to-primary/5 px-8 py-16 shadow-2xl shadow-primary/5">
-            {/* Background glow */}
+          <div className="relative overflow-hidden rounded-[28px] border border-border/40 bg-gradient-to-br from-background via-card/70 to-primary/5 px-8 py-12 shadow-xl shadow-primary/5">
             <div className="pointer-events-none absolute inset-0 -z-10">
               <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[80px]" />
             </div>
 
-            <h2 className="mb-4 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-              Siap buat website bisnis Anda?
-            </h2>
-            <p className="mx-auto mb-10 max-w-xl text-lg text-muted-foreground">
-              Mulai gratis sekarang. Tidak perlu kartu kredit — cukup chat singkat dengan AI dan website Anda siap.
-            </p>
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
+                Siap buat website bisnis Anda?
+              </h2>
+              <p className="mx-auto max-w-xl text-base leading-8 text-muted-foreground">
+                Mulai gratis sekarang. Tidak perlu kartu kredit &mdash; cukup chat singkat dengan AI dan website Anda siap.
+              </p>
+            </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <button
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+              <Button
                 onClick={() => startWizard()}
-                className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-10 py-4 text-lg font-bold text-white shadow-xl shadow-indigo-600/25 transition hover:-translate-y-0.5 hover:bg-indigo-500 hover:shadow-indigo-500/35 active:scale-95"
+                size="lg"
+                className="rounded-full px-10 text-lg font-bold shadow-xl shadow-primary/20"
               >
-                Mulai Gratis Sekarang ⚡
-              </button>
+                Mulai Gratis Sekarang
+              </Button>
               <a
                 href="https://wa.me/6282298870033?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition hover:bg-card"
               >
-                💬 Konsultasi via WhatsApp
+                <Button variant="outline" size="lg" className="rounded-full px-8">
+                  Konsultasi via WhatsApp
+                </Button>
               </a>
             </div>
 
-            <p className="mt-8 text-sm text-muted-foreground">
+            <p className="mt-6 text-sm text-muted-foreground">
               Butuh custom design atau company profile?{" "}
               <a
                 href="https://wa.me/6282298870033"
@@ -422,7 +448,7 @@ export default function LandingPage() {
             <span className="text-sm font-semibold text-foreground">Webjoz</span>
           </div>
           <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} Webjoz. AI Website Builder untuk Bisnis Indonesia.
+            &copy; {new Date().getFullYear()} Webjoz. AI Website Builder untuk Bisnis Indonesia.
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <Link href="/login" className="hover:text-foreground transition">Masuk</Link>
@@ -431,16 +457,35 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* ── Persistent floating CTA (mobile) ──────────────────────────────── */}
+      {/* ── Floating CTA (mobile) ──────────────────────────────────────────── */}
       <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
-        <button
+        <Button
           onClick={() => startWizard()}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-indigo-600 py-4 text-sm font-bold text-white shadow-2xl shadow-indigo-600/30 transition hover:bg-indigo-500 active:scale-95"
+          className="w-full rounded-full py-4 text-sm font-bold shadow-2xl shadow-primary/30"
         >
-          Buat Website Sekarang ⚡
-        </button>
+          Buat Website Sekarang
+        </Button>
       </div>
-
     </main>
+  );
+}
+
+function SpotlightStat({ title, text, featured = false }: { title: string; text: string; featured?: boolean }) {
+  return (
+    <div
+      className={[
+        "rounded-2xl border p-4 text-left transition-colors",
+        featured
+          ? "border-primary/30 bg-primary/10 shadow-lg shadow-primary/10"
+          : "border-border/40 bg-background/55",
+      ].join(" ")}
+    >
+      <div className={featured ? "text-sm font-semibold tracking-tight text-foreground" : "text-sm font-semibold tracking-tight"}>
+        {title}
+      </div>
+      <div className={featured ? "mt-2 text-sm leading-6 text-foreground/80" : "mt-2 text-sm leading-6 text-muted-foreground"}>
+        {text}
+      </div>
+    </div>
   );
 }

@@ -54,15 +54,12 @@ const themeScript = `
       document.documentElement.classList.remove('dark');
     }
 
-    // Handle Accent Mode (Monochrome vs Blue)
-    if (!accent || accent === 'monochrome') {
-      document.documentElement.classList.add('theme-monochrome');
-    } else {
-      document.documentElement.classList.remove('theme-monochrome');
+    // Handle Accent Mode (Blue vs Monochrome)
+    if (accent && accent !== 'monochrome') {
+      document.documentElement.classList.add('theme-blue');
     }
   } catch (e) {
     document.documentElement.classList.add('dark');
-    document.documentElement.classList.add('theme-monochrome');
   }
 })();
 `;

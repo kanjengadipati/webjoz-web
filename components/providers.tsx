@@ -14,7 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("theme-monochrome", accent === "monochrome");
+    document.documentElement.classList.toggle("theme-blue", accent !== "monochrome");
   }, [accent]);
 
   return <ToastProvider>{children}</ToastProvider>;
