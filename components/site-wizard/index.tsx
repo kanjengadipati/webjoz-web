@@ -4,11 +4,9 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
-  AlertTriangle,
   ArrowRight,
   CheckCircle2,
   ChevronLeft,
-  Loader2,
   MapPin,
   MessageCircle,
   Monitor,
@@ -29,6 +27,7 @@ import { Wireframe } from "./wireframe";
 import { ConfirmCard } from "./confirm-card";
 import { LoadingCard } from "./loading-card";
 import { LoadingModal } from "./loading-modal";
+import { WizardErrorModal } from "./error-modal";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 
@@ -86,6 +85,7 @@ export function SiteWizard({
   const [waDraft, setWaDraft] = useState("");
   const [areaDraft, setAreaDraft] = useState("");
   const [tooManyRequests, setTooManyRequests] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
   const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
   const hasAskedNameConfirmRef = useRef(false);
@@ -191,9 +191,10 @@ export function SiteWizard({
       if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
         setTooManyRequests(true);
       } else {
-        pushToast(message || "Terjadi kesalahan saat membuat preview.", "error");
+        setGenerationError(message || "Terjadi kesalahan saat membuat preview.");
       }
       setPreviewState("wireframe");
+      setMobileScreen("chat");
     },
   });
 
@@ -259,6 +260,21 @@ export function SiteWizard({
   const handleBack = () => {
     if (window.history.length > 1) { router.back(); return; }
     router.push("/");
+  };
+
+  const handleCancelGenerationError = () => {
+    cancelStream();
+    setTooManyRequests(false);
+    setGenerationError(null);
+    setPreviewState("wireframe");
+    setMobileScreen("chat");
+  };
+
+  const handleRetryGeneration = () => {
+    setTooManyRequests(false);
+    setGenerationError(null);
+    setMobileScreen("loading");
+    void handleGenerate();
   };
 
   const handleSendText = (e: React.FormEvent) => {
@@ -890,51 +906,22 @@ export function SiteWizard({
       )}
 
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
-      {/* ══ TOO MANY REQUESTS POPUP ════════════════════════════════════ */}
-      {tooManyRequests && (
-        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60" onClick={() => { setTooManyRequests(false); if (window.history.length > 1) { router.back(); return; } router.push("/"); }}>
-          <div
-            className="mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-300"
-            style={{ background: "rgba(17,19,24,0.97)", border: "1px solid rgba(255,255,255,0.1)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20">
-                <AlertTriangle className="h-7 w-7 text-amber-400" />
-              </div>
-              <h3 className="text-base font-bold text-slate-100 mb-2">Terlalu cepat!</h3>
-              <p className="text-xs text-slate-400 leading-relaxed mb-6">
-                Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.
-              </p>
-              <div className="flex gap-3 w-full">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTooManyRequests(false);
-                    if (window.history.length > 1) { router.back(); return; }
-                    router.push("/");
-                  }}
-                  className="flex-1 h-10 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
-                >
-                  Batal
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTooManyRequests(false);
-                    setMobileScreen("loading");
-                    void handleGenerate();
-                  }}
-                  className="flex-1 h-10 rounded-xl text-xs font-bold text-white transition-all active:scale-95"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-                >
-                  Coba lagi
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <WizardErrorModal
+        open={tooManyRequests}
+        title="Terlalu cepat!"
+        message="Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya."
+        variant="warning"
+        onCancel={handleCancelGenerationError}
+        onRetry={handleRetryGeneration}
+      />
+
+      <WizardErrorModal
+        open={!!generationError}
+        title="Generate belum berhasil"
+        message={generationError || "Terjadi kesalahan saat membuat preview."}
+        onCancel={handleCancelGenerationError}
+        onRetry={handleRetryGeneration}
+      />
 
        {isMobile && mobileScreen === "preview" && previewState === "result" && (
          <>
