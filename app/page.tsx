@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { HealthPing } from "@/components/health-ping";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 
 // ─── How it works steps ────────────────────────────────────────────────────────
@@ -131,11 +132,12 @@ export default function LandingPage() {
 
         <div className="mx-auto max-w-5xl text-center">
           {/* Eyebrow badge */}
-          <div className="mb-8 flex justify-center">
+          <div className="mb-8 flex flex-wrap justify-center gap-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-4 py-2 text-sm font-medium text-primary">
               <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
               AI Website Builder untuk Bisnis Indonesia
             </div>
+            <HealthPing />
           </div>
 
           {/* Headline */}
