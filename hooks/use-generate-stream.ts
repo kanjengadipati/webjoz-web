@@ -9,6 +9,9 @@
 import { useRef, useCallback } from "react";
 import { API_BASE_URL } from "@/lib/config";
 
+const MAX_STREAM_RETRIES = 2;
+const STREAM_RETRY_DELAYS_MS = [700, 1600];
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type StreamSection =
@@ -51,6 +54,32 @@ export interface UseGenerateStreamOptions {
   onError: (message: string) => void;
 }
 
+async function waitBeforeRetry(ms: number, signal: AbortSignal) {
+  if (signal.aborted) return;
+
+  await new Promise<void>((resolve) => {
+    const timeoutId = window.setTimeout(resolve, ms);
+    signal.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeoutId);
+        resolve();
+      },
+      { once: true },
+    );
+  });
+}
+
+function shouldRetryResponse(response: Response) {
+  if (response.status === 429) return false;
+  if (response.status >= 400 && response.status < 500) return false;
+  return response.status >= 500 || !response.body;
+}
+
+function retryDelay(attempt: number) {
+  return STREAM_RETRY_DELAYS_MS[attempt] ?? STREAM_RETRY_DELAYS_MS[STREAM_RETRY_DELAYS_MS.length - 1];
+}
+
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useGenerateStream(options: UseGenerateStreamOptions) {
@@ -91,27 +120,39 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      let response: Response;
-      try {
-        response = await fetch(`${API_BASE_URL}/ai/public/generate-preview-stream`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(req),
-          signal: controller.signal,
-          // Tidak pakai credentials: "include" karena ini public endpoint
-        });
-      } catch (err: any) {
-        if (err?.name === "AbortError") return;
-        onErrorRef.current(err?.message || "Gagal menghubungi server.");
-        return;
+      let response: Response | null = null;
+
+      for (let attempt = 0; attempt <= MAX_STREAM_RETRIES; attempt += 1) {
+        try {
+          response = await fetch(`${API_BASE_URL}/ai/public/generate-preview-stream`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(req),
+            signal: controller.signal,
+            // Tidak pakai credentials: "include" karena ini public endpoint
+          });
+
+          if (!shouldRetryResponse(response) || attempt === MAX_STREAM_RETRIES) {
+            break;
+          }
+        } catch (err: any) {
+          if (err?.name === "AbortError") return;
+          if (attempt === MAX_STREAM_RETRIES) {
+            onErrorRef.current(err?.message || "Gagal menghubungi server.");
+            return;
+          }
+        }
+
+        await waitBeforeRetry(retryDelay(attempt), controller.signal);
+        if (controller.signal.aborted) return;
       }
 
-      if (!response.ok || !response.body) {
+      if (!response?.ok || !response.body) {
         try {
-          const json = await response.json();
-          onErrorRef.current(json?.message || `HTTP ${response.status}`);
+          const json = await response?.json();
+          onErrorRef.current(json?.message || `HTTP ${response?.status || 0}`);
         } catch {
-          onErrorRef.current(`HTTP ${response.status}`);
+          onErrorRef.current(`HTTP ${response?.status || 0}`);
         }
         return;
       }
@@ -121,6 +162,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       readerRef.current = reader;
       const decoder = new TextDecoder();
       let buffer = "";
+      let hasReceivedEvent = false;
 
       try {
         while (true) {
@@ -148,6 +190,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
             } catch {
               continue;
             }
+            hasReceivedEvent = true;
 
             switch (event.type) {
               case "design_token":
@@ -172,6 +215,10 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
+        if (!hasReceivedEvent) {
+          onErrorRef.current("Koneksi terputus sebelum generate dimulai. Silakan coba lagi.");
+          return;
+        }
         onErrorRef.current(err?.message || "Koneksi terputus.");
       } finally {
         readerRef.current = null;
