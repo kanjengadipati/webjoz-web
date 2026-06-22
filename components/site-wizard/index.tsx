@@ -22,8 +22,8 @@ import { useToast } from "@/components/toast-provider";
 import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
-import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES } from "./constants";
-import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber } from "./helpers";
+import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS } from "./constants";
+import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
 import { ConfirmCard } from "./confirm-card";
@@ -86,6 +86,9 @@ export function SiteWizard({
   const [waDraft, setWaDraft] = useState("");
   const [areaDraft, setAreaDraft] = useState("");
   const [tooManyRequests, setTooManyRequests] = useState(false);
+  const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
+  const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
+  const hasAskedNameConfirmRef = useRef(false);
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const isMobileRef = useRef(false);
@@ -182,16 +185,6 @@ export function SiteWizard({
         setPreviewDevice("mobile");
       }
       setMobilePreviewOpen(true);
-      if (!hasPromptedDetailsRef.current) {
-        hasPromptedDetailsRef.current = true;
-        typeMessage(
-          "Preview awal sudah siap. Supaya website lebih siap dipublish, lengkapi jangkauan bisnis dan nomor WhatsApp: jangkauan membantu AI menulis konten yang lebih relevan untuk area pelanggan, sedangkan WhatsApp membuat tombol kontak langsung bisa dipakai.\n\nJangkauan bisnis Anda? (atau Enter untuk lewati)",
-          () => {
-            setChatStage("service_area");
-            window.setTimeout(() => inputRef.current?.focus(), 0);
-          }
-        );
-      }
     },
     onError: (message) => {
       const lower = (message || "").toLowerCase();
@@ -277,10 +270,50 @@ export function SiteWizard({
 
     if (chatStage === "name") {
       const capitalized = capitalizeWords(val);
+
+      // If we are currently awaiting a confirm (we already asked once), accept any reply and continue
+      if (awaitingNameConfirm) {
+        // Treat 'ya' / 'yes' as confirmation; otherwise use the provided text as the corrected name
+        const lower = val.toLowerCase();
+        const isConfirm = ["ya", "y", "yes", "oke", "ok"].includes(lower);
+        if (!isConfirm) setBusinessName(capitalized);
+        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+        setAwaitingNameConfirm(false);
+        // Acknowledge and move to type selection
+        setTimeout(() => {
+          typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
+            setMessages((prev) => [
+              ...prev,
+              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
+            ]);
+            setChatStage("type");
+          });
+        }, 500);
+        return;
+      }
+
+      // New submission: check for likely gibberish to optionally ask confirmation
       setBusinessName(capitalized);
       setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+
+      const flagged = isLikelyGibberish(val);
+      const hint = suggestTypeFromName(capitalized);
+      setSuggestedHint(hint);
+
+      if (flagged && !hasAskedNameConfirmRef.current) {
+        hasAskedNameConfirmRef.current = true;
+        setAwaitingNameConfirm(true);
+        setTimeout(() => {
+          typeMessage(pickVariant(NAME_CONFIRM_VARIANTS), () => {
+            // wait for user's next reply; do not advance stage here
+          });
+        }, 500);
+        return;
+      }
+
+      // Normal path: praise + move to type
       setTimeout(() => {
-        typeMessage("Nama yang profesional dan mudah dipercaya. 👍 Sekarang, pilih jenis bisnis Anda:", () => {
+        typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
           setMessages((prev) => [
             ...prev,
             { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
@@ -574,10 +607,10 @@ export function SiteWizard({
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {BUSINESS_TYPES.map((t) => {
-                      const isSelected = businessType === t.value;
-                      return (
-                        <button
+                {BUSINESS_TYPES.map((t) => {
+                  const isSelected = businessType === t.value;
+                  return (
+                    <button
                           key={t.value}
                           onClick={() => !isLocked && handleSelectType(t.value)}
                           disabled={isLocked}
@@ -585,7 +618,12 @@ export function SiteWizard({
                           style={isSelected ? { background: "rgba(124,58,237,0.15)", borderColor: "rgba(124,58,237,0.5)" } : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
                         >
                           <span className="text-lg">{t.emoji}</span>
-                          <span className={`text-xs font-bold ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{t.label}</span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-bold ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{t.label}</span>
+                            {suggestedHint?.type === t.value && (
+                              <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">✨ Disarankan</span>
+                            )}
+                          </div>
                           <span className="text-[10px] text-slate-500">{t.desc}</span>
                           {isSelected && !businessSubType && <span className="text-[9px] font-bold text-[#7c3aed] mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
                           {isSelected && businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {businessSubType}</span>}
@@ -611,6 +649,9 @@ export function SiteWizard({
                             >
                               <span>{st.emoji}</span>
                               <span>{st.label}</span>
+                              {suggestedHint?.subType === st.value && (
+                                <span className="text-[10px] text-amber-300">✨</span>
+                              )}
                               {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
                             </button>
                           );
@@ -699,7 +740,12 @@ export function SiteWizard({
                 inputMode={chatStage === "whatsapp" ? "tel" : undefined}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={chatStage === "whatsapp" ? "cth. 08123456789 — atau Enter untuk lewati" : chatStage === "service_area" ? "cth. Jogja, Sleman-Bantul, Jabodetabek, seluruh Indonesia, online" : "Ketik nama bisnis Anda..."}
+                placeholder={
+                  chatStage === "whatsapp" ? "cth. 08123456789 — atau Enter untuk lewati" :
+                  chatStage === "service_area" ? "cth. Jogja, Sleman-Bantul, Jabodetabek, seluruh Indonesia, online" :
+                  awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
+                  "Ketik nama bisnis Anda..."
+                }
                 autoFocus
                 disabled={isInitialTyping || isAiTyping}
                 className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
@@ -809,18 +855,28 @@ export function SiteWizard({
 
           {resultPreviewContent}
 
-          {/* Desktop: single Edit & Publish button */}
+          {/* Desktop: Lengkapi Data + Edit & Publish buttons */}
           {previewState === "result" && (
-            <button
-              type="button"
-              onClick={handleGoToEditor}
-              className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(91,33,182,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-            >
-              <Pencil className="h-4 w-4" />
-              Edit & Publikasikan
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <div className="hidden md:flex absolute bottom-6 right-6 z-40 gap-2">
+              <button
+                type="button"
+                onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white/10 border border-white/20 text-slate-200 shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95 backdrop-blur-sm"
+              >
+                <Plus className="h-4 w-4" />
+                Lengkapi Data
+              </button>
+              <button
+                type="button"
+                onClick={handleGoToEditor}
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(91,33,182,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+              >
+                <Pencil className="h-4 w-4" />
+                Edit & Publikasikan
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           )}
 
         </div>
@@ -880,107 +936,107 @@ export function SiteWizard({
         </div>
       )}
 
-      {isMobile && mobileScreen === "preview" && previewState === "result" && (
-        <>
-          {/* Bottom action bar */}
-          <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
-            <button
-              type="button"
-              onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
-              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
-            >
-              <Plus className="h-3.5 w-3.5 text-slate-400" />
-              Lengkapi Data
-            </button>
-            <button
-              type="button"
-              onClick={handleGoToEditor}
-              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Edit & Publikasikan
-            </button>
-          </div>
+       {isMobile && mobileScreen === "preview" && previewState === "result" && (
+         <>
+           {/* Bottom action bar */}
+           <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
+             <button
+               type="button"
+               onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
+               className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
+             >
+               <Plus className="h-3.5 w-3.5 text-slate-400" />
+               Lengkapi Data
+             </button>
+             <button
+               type="button"
+               onClick={handleGoToEditor}
+               className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
+               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+             >
+               <Pencil className="h-3.5 w-3.5" />
+               Edit & Publikasikan
+             </button>
+           </div>
+         </>
+       )}
 
-          {/* Sheet overlay */}
-          {sheetOpen && (
-            <div className="absolute inset-0 z-50 flex flex-col justify-end bg-black/60" onClick={() => setSheetOpen(false)}>
-              <div className="rounded-t-2xl bg-[#111318] px-5 pb-8 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()} style={{boxShadow: "0 -8px 30px rgba(0,0,0,0.5)"}}>
-                <div className="w-8 h-1 rounded-full bg-slate-700 mx-auto mb-4" />
-                <p className="text-sm font-semibold text-slate-100 mb-1">Lengkapi data bisnis</p>
-                <p className="text-xs text-slate-500 mb-4 leading-relaxed">Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.</p>
-                <div className="flex gap-2 mb-3 flex-wrap">
-                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${waDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
-                    <Phone className="w-3 h-3" />
-                    {waDraft ? "WA tersimpan" : "WA belum diisi"}
-                  </span>
-                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${areaDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
-                    <MapPin className="w-3 h-3" />
-                    {areaDraft ? areaDraft : "Area belum diisi"}
-                  </span>
-                </div>
-                <div className="space-y-3 mb-4">
-                  <div>
-                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Nomor WhatsApp</label>
-                    <input
-                      type="tel"
-                      value={waDraft}
-                      onChange={(e) => setWaDraft(e.target.value)}
-                      placeholder="cth. 081234567890"
-                      className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
-                    />
-                    <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
-                    <input
-                      type="text"
-                      value={areaDraft}
-                      onChange={(e) => setAreaDraft(e.target.value)}
-                      placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
-                      className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
-                    />
-                    <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSheetOpen(false)}
-                    className="h-9 px-4 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
-                  >
-                    Nanti saja
-                  </button>
-                  <button
-                    type="button"
-                    disabled={waDraft === (whatsapp || "") && areaDraft === (serviceArea || "")}
-                    onClick={() => {
-                      setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
-                      setServiceArea(areaDraft || serviceArea);
-                      setSheetOpen(false);
-                      setHasUnsavedEdits(true);
-                      setRegenCount((c) => c + 1);
-                      setPreviewState("loading");
-                      setMobileScreen("loading");
-                      hasPromptedDetailsRef.current = false;
-                      void handleGenerate(businessName, businessType, {
-                        whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
-                        serviceArea: areaDraft || serviceArea,
-                      });
-                    }}
-                    className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95 disabled:opacity-40"
-                    style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Re-generate
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
+       {/* Sheet overlay - visible on both mobile and desktop */}
+       {sheetOpen && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center md:items-end md:justify-center bg-black/60" onClick={() => setSheetOpen(false)}>
+           <div className="rounded-t-2xl md:rounded-2xl bg-[#111318] px-5 pb-8 pt-3 md:pt-5 border-t md:border border-white/10 md:max-w-sm md:w-full md:mx-4 md:mb-6" onClick={(e) => e.stopPropagation()} style={{boxShadow: "0 -8px 30px rgba(0,0,0,0.5)"}}>
+             <div className="w-8 h-1 rounded-full bg-slate-700 mx-auto mb-4 md:hidden" />
+             <p className="text-sm font-semibold text-slate-100 mb-1">Lengkapi data bisnis</p>
+             <p className="text-xs text-slate-500 mb-4 leading-relaxed">Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.</p>
+             <div className="flex gap-2 mb-3 flex-wrap">
+               <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${waDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+                 <Phone className="w-3 h-3" />
+                 {waDraft ? "WA tersimpan" : "WA belum diisi"}
+               </span>
+               <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${areaDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+                 <MapPin className="w-3 h-3" />
+                 {areaDraft ? areaDraft : "Area belum diisi"}
+               </span>
+             </div>
+             <div className="space-y-3 mb-4">
+               <div>
+                 <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Nomor WhatsApp</label>
+                 <input
+                   type="tel"
+                   value={waDraft}
+                   onChange={(e) => setWaDraft(e.target.value)}
+                   placeholder="cth. 081234567890"
+                   className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
+                 />
+                 <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
+               </div>
+               <div>
+                 <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
+                 <input
+                   type="text"
+                   value={areaDraft}
+                   onChange={(e) => setAreaDraft(e.target.value)}
+                   placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
+                   className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
+                 />
+                 <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
+               </div>
+             </div>
+             <div className="flex gap-2">
+               <button
+                 type="button"
+                 onClick={() => setSheetOpen(false)}
+                 className="h-9 px-4 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
+               >
+                 Nanti saja
+               </button>
+               <button
+                 type="button"
+                 disabled={waDraft === (whatsapp || "") && areaDraft === (serviceArea || "")}
+                 onClick={() => {
+                   setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
+                   setServiceArea(areaDraft || serviceArea);
+                   setSheetOpen(false);
+                   setHasUnsavedEdits(true);
+                   setRegenCount((c) => c + 1);
+                   setPreviewState("loading");
+                   setMobileScreen("loading");
+                   hasPromptedDetailsRef.current = false;
+                   void handleGenerate(businessName, businessType, {
+                     whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
+                     serviceArea: areaDraft || serviceArea,
+                   });
+                 }}
+                 className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95 disabled:opacity-40"
+                 style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+               >
+                 <Sparkles className="w-3.5 h-3.5" />
+                 Re-generate
+               </button>
+             </div>
+           </div>
+         </div>
+       )}
     </div>
   );
 }

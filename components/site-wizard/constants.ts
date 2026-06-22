@@ -81,3 +81,43 @@ export const LOADING_CHECKLIST = [
 export const LOADING_STEPS_PERCENT = [15, 30, 45, 60, 75, 100];
 
 export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
+
+// Variants for name acknowledgement / confirmation
+export const NAME_ACK_VARIANTS = [
+  "Bagus! Nama tersebut bisa jadi identitas yang kuat.",
+  "Sip, nama yang profesional dan mudah diingat. 👍",
+  "Keren — nama yang sederhana dan mudah dipercaya.",
+  "Oke, kami catat namanya. Selanjutnya pilih jenis bisnisnya ya."
+];
+
+export const NAME_CONFIRM_VARIANTS = [
+  "Itu nama bisnis aslinya, atau masih nama sementara? Kalau sudah pas, ketik lagi untuk lanjut, atau ganti nama yang Anda mau pakai 😊",
+  "Apakah itu nama sebenarnya? Ketik 'ya' untuk lanjut, atau masukkan nama lain jika ingin diganti.",
+  "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Ketik 'ya' untuk lanjut, atau masukkan nama baru."
+];
+
+// Mapping keyword -> suggested type/subtype
+export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }> = {
+  "kopi": { type: "Kuliner", subType: "Kafe" },
+  "kafe": { type: "Kuliner", subType: "Kafe" },
+  "cafe": { type: "Kuliner", subType: "Kafe" },
+  "restoran": { type: "Kuliner", subType: "Restoran" },
+  "warung": { type: "Kuliner", subType: "Warung Makan" },
+  "bakery": { type: "Kuliner", subType: "Bakery & Pastry" },
+  "roti": { type: "Kuliner", subType: "Bakery & Pastry" },
+  "klinik": { type: "Jasa", subType: "Klinik & Kesehatan" },
+  "dokter": { type: "Jasa", subType: "Klinik & Kesehatan" },
+  "salon": { type: "Jasa", subType: "Salon & Kecantikan" },
+  "barbershop": { type: "Jasa", subType: "Barbershop" },
+  "travel": { type: "Company", subType: "Travel & Wisata" },
+  "hotel": { type: "Company", subType: "Hotel & Penginapan" },
+  "toko": { type: "Toko & UMKM", subType: "Toko Online" },
+  "toko online": { type: "Toko & UMKM", subType: "Toko Online" },
+  "fashion": { type: "Toko & UMKM", subType: "Fashion & Pakaian" },
+  "bengkel": { type: "Jasa", subType: "Otomotif & Bengkel" },
+  "laundry": { type: "Jasa", subType: "Laundry" },
+  "konsultan": { type: "Jasa", subType: "Konsultan" },
+  "fotogra": { type: "Jasa", subType: "Fotografer" }, // partial to catch fotografer/photographer
+  "minuman": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
+  "bubble": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
+};

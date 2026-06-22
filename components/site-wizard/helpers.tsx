@@ -109,3 +109,80 @@ export function getStageNumber(chatStage: string): number {
     default: return 1;
   }
 }
+
+// Pick random variant from array
+export function pickVariant<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Heuristic to detect likely gibberish / keyboard-mashing names.
+export function isLikelyGibberish(input: string): boolean {
+  const s = (input || "").toLowerCase().trim();
+  if (!s) return false;
+
+  // Layered, easy-to-understand rules:
+  // 1) Immediate rejects: contains common keyboard-mash tokens or has no letters.
+  // 2) If input is multi-word and reasonably short, accept (very likely a real name).
+  // 3) For single-word inputs, apply stricter checks: vowel ratio, distinct-letter ratio,
+  //    and long consonant runs. These are conservative signals of nonsense.
+  // 4) Fallback scoring for other repeated patterns (repeated char, repeated bigrams).
+
+  const words = s.split(/\s+/).filter(Boolean);
+
+  // 1) Immediate rejects
+  const mashPatterns = ["asdf", "qwer", "qwerty", "zxcv", "zzxx", "kjhg", "sfas", "sfasf", "asdfg"];
+  for (const p of mashPatterns) if (s.includes(p)) return true;
+
+  const letters = s.replace(/[^a-z]/g, "");
+  if (letters.length === 0) return true; // e.g. "12345"
+
+  // 2) Multi-word short names are probably fine: accept early
+  if (words.length > 1 && letters.length >= 2) return false;
+
+  const vowelCount = (letters.match(/[aeiou]/g) || []).length;
+  const vowelRatio = vowelCount / Math.max(1, letters.length);
+  const distinctLetters = new Set(letters.split(""));
+  const distinctRatio = distinctLetters.size / Math.max(1, letters.length);
+
+  // 3) Strong single-word heuristics
+  if (words.length === 1 && letters.length >= 7) {
+    // too few vowels for the length
+    if (vowelRatio < 0.38) return true;
+    // too few distinct letters (repetitive)
+    if (distinctRatio < 0.48) return true;
+    // long consonant runs are suspicious
+    if (/[bcdfghjklmnpqrstvwxyz]{4,}/.test(letters)) return true;
+  }
+
+  // 4) Moderate signals aggregated
+  let score = 0;
+  if (vowelRatio <= 0.28) score += 1;
+  if (/(.)\1\1/.test(s)) score += 1; // repeated char 3x+
+  if (letters.length >= 6 && distinctRatio <= 0.45) score += 1;
+
+  if (letters.length >= 4) {
+    const bigrams: Record<string, number> = {};
+    for (let i = 0; i < letters.length - 1; i++) {
+      const b = letters.slice(i, i + 2);
+      bigrams[b] = (bigrams[b] || 0) + 1;
+      if (bigrams[b] >= 2) {
+        score += 1;
+        break;
+      }
+    }
+  }
+
+  return score >= 2;
+}
+
+// Suggest business type/subtype from name keywords. Uses NAME_TYPE_HINTS from constants.
+import { NAME_TYPE_HINTS } from "./constants";
+
+export function suggestTypeFromName(name: string): { type?: string; subType?: string } | null {
+  const s = (name || "").toLowerCase();
+  if (!s) return null;
+  for (const key of Object.keys(NAME_TYPE_HINTS)) {
+    if (s.includes(key)) return NAME_TYPE_HINTS[key];
+  }
+  return null;
+}
