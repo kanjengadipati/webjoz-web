@@ -1113,7 +1113,8 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
           </Button>
           <Button
             type="button"
-            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-[#6f6fff] hover:bg-[#5a5ae8] text-white border-0 cursor-pointer shadow-[0_4px_14px_rgba(111,111,255,0.3)] flex items-center justify-center gap-2"
+            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-[#6f6fff] hover:bg-[#5a5ae8] border-0 cursor-pointer shadow-[0_4px_14px_rgba(111,111,255,0.3)] flex items-center justify-center gap-2"
+            style={{ color: "#fff" }}
             onClick={() => window.open(siteUrl, "_blank")}
           >
             <Globe className="w-4 h-4" /> Buka Website
