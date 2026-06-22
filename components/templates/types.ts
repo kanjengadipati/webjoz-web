@@ -64,12 +64,20 @@ export interface DesignToken {
     corner_radius?: "sharp" | "soft" | "rounded";
     section_order?: string[];
     hidden_sections?: string[];
+    engine?: "default" | "storytelling" | "showcase" | "minimal";
   };
   mood?: string;
 }
 
+export interface ContentSection {
+  type: string;
+  variant?: string;
+  data: Record<string, any>;
+}
+
 export interface TemplateProps {
   content: {
+    sections?: ContentSection[];
     header: {
       brand_name: string;
       nav_cta_text: string;
