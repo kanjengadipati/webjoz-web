@@ -29,11 +29,11 @@ export function AuthShell({
   footer,
 }: AuthShellProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-4 sm:px-6 sm:py-10 lg:px-10">
+    <main className="relative min-h-screen overflow-hidden px-3 py-3 max-[400px]:px-2 max-[400px]:py-2 sm:px-6 sm:py-10 lg:px-10">
       {/* Radial top glow — matches the home hero */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-md items-center gap-8 sm:min-h-[calc(100vh-5rem)] lg:max-w-6xl lg:grid-cols-[1fr_0.9fr]">
+      <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-md items-center gap-8 sm:min-h-[calc(100vh-5rem)] lg:max-w-6xl lg:grid-cols-[1fr_0.9fr]">
         <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
           {/* Badge — same pulsing primary style as home hero */}
           <div className="flex items-center gap-3">
@@ -71,13 +71,13 @@ export function AuthShell({
           ) : null}
         </div>
 
-        <Card className="bg-card/90 backdrop-blur animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
-          <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8 px-5 py-5 sm:px-6">
-            <CardDescription>{cardEyebrow}</CardDescription>
-            <CardTitle>{cardTitle}</CardTitle>
-            <CardDescription>{cardDescription}</CardDescription>
-          </CardHeader>
-          <CardContent className="px-5 pt-5 sm:px-6 sm:pt-6">
+          <Card className="bg-card/90 backdrop-blur animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
+            <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8 px-4 py-4 max-[400px]:px-3 max-[400px]:py-3 sm:px-6 sm:py-5">
+              <CardDescription>{cardEyebrow}</CardDescription>
+              <CardTitle>{cardTitle}</CardTitle>
+              <CardDescription>{cardDescription}</CardDescription>
+            </CardHeader>
+            <CardContent className="px-4 pt-4 max-[400px]:px-3 max-[400px]:pt-3 sm:px-6 sm:pt-6">
             {children}
             <div className="mt-5 text-sm text-muted-foreground sm:mt-6">
               {footer || <Link href="/" className="font-medium text-primary hover:opacity-80">Back to overview</Link>}
