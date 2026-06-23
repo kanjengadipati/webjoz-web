@@ -90,7 +90,6 @@ export function calculateProgress(chatStage: string): number {
   switch (chatStage) {
     case "name": return 15;
     case "type": return 40;
-    case "confirm": return 100;
     case "done": return 100;
     default: return 100;
   }
@@ -100,8 +99,7 @@ export function getStageNumber(chatStage: string): number {
   switch (chatStage) {
     case "name": return 1;
     case "type": return 2;
-    case "confirm": return 3;
-    case "done": return 3;
+    case "done": return 2;
     default: return 1;
   }
 }

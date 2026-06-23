@@ -24,7 +24,7 @@ import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIA
 import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
-import { ConfirmCard } from "./confirm-card";
+
 import { LoadingCard } from "./loading-card";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
@@ -60,10 +60,6 @@ export function SiteWizard({
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
-  const [confirmEditingField, setConfirmEditingField] = useState<string | null>(null);
-  const [confirmDraftName, setConfirmDraftName] = useState("");
-  const [confirmDraftWA, setConfirmDraftWA] = useState("");
-  const [confirmDraftServiceArea, setConfirmDraftServiceArea] = useState("");
 
   const [previewState, setPreviewState] = useState<PreviewState>("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
@@ -178,8 +174,8 @@ export function SiteWizard({
       );
       if (isMobileRef.current) {
         setPreviewDevice("mobile");
-        // Only redirect to preview screen automatically if user is done or confirming
-        if (chatStage === "confirm" || chatStage === "done") {
+        // Only redirect to preview screen automatically if user is done
+        if (chatStage === "done") {
           setMobileScreen("preview");
         }
         return;
@@ -372,10 +368,6 @@ export function SiteWizard({
     setBusinessSubType(subType);
     setDescription("");
     setInputValue("");
-    setConfirmDraftName(businessName);
-    setConfirmDraftWA(whatsapp);
-    setConfirmDraftServiceArea(serviceArea);
-    setConfirmEditingField(null);
     setRegenCount(0);
     setHasUnsavedEdits(false);
     hasPromptedDetailsRef.current = false;
@@ -388,12 +380,12 @@ export function SiteWizard({
     // Start generating preview in the background
     void handleGenerate(businessName, businessType, { businessSubType: subType });
 
-    // Transition to confirm step
+    // Transition to done
     setTimeout(() => {
       typeMessage(
         "Keren! AI sedang merakit website bisnis Anda. Sebentar ya...",
         () => {
-          setChatStage("confirm");
+          setChatStage("done");
         }
       );
     }, 600);
@@ -601,7 +593,7 @@ export function SiteWizard({
           </div>
 
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 3</span>
+            <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 2</span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
           </div>
           <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
@@ -700,40 +692,6 @@ export function SiteWizard({
             );
           })}
 
-          {/* Confirm step */}
-          {chatStage === "confirm" && (
-            <ConfirmCard
-              businessName={businessName}
-              businessType={businessType}
-              businessSubType={businessSubType}
-              whatsapp={whatsapp}
-              serviceArea={serviceArea}
-              draftName={confirmDraftName}
-              draftWA={confirmDraftWA}
-              draftServiceArea={confirmDraftServiceArea}
-              editingField={confirmEditingField}
-              previewState={previewState}
-              hasUnsavedEdits={hasUnsavedEdits}
-              isLoading={previewState === "loading"}
-              onSetDraftName={setConfirmDraftName}
-              onSetDraftWA={setConfirmDraftWA}
-              onSetDraftServiceArea={setConfirmDraftServiceArea}
-              onSetEditingField={setConfirmEditingField}
-              onSetBusinessType={setBusinessType}
-              onSetBusinessSubType={setBusinessSubType}
-              onSetBusinessName={setBusinessName}
-              onSetWhatsapp={setWhatsapp}
-              onSetServiceArea={setServiceArea}
-              onSetHasUnsavedEdits={setHasUnsavedEdits}
-              onSetDescription={setDescription}
-              onGenerate={() => {
-                const nextRegen = previewState === "result" ? regenCount + 1 : 0;
-                setRegenCount(nextRegen);
-                setHasUnsavedEdits(false);
-                handleGenerate(businessName, businessType);
-              }}
-            />
-          )}
 
           {/* Loading card (in chat) */}
           {previewState === "loading" && (
@@ -744,7 +702,7 @@ export function SiteWizard({
         </div>
 
         {/* Chat Input */}
-        {chatStage !== "type" && chatStage !== "done" && chatStage !== "confirm" && (
+        {chatStage !== "type" && chatStage !== "done" && (
           <div className="shrink-0 px-4 pb-12 pt-2 md:py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input

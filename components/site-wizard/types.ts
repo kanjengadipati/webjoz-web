@@ -22,7 +22,7 @@ export type PreviewData = {
   template_id?: string;
 };
 
-export type ChatStage = "name" | "type" | "confirm" | "done";
+export type ChatStage = "name" | "type" | "done";
 
 export type PreviewState = "wireframe" | "loading" | "result";
 
