@@ -57,12 +57,12 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteMo
 
         {/* Text */}
         <div className="text-center space-y-2">
-          <h2 id="delete-modal-title" className="text-lg font-bold text-white">
+          <h2 id="delete-modal-title" className="text-lg font-bold text-foreground">
             Hapus Website?
           </h2>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
             Anda akan menghapus website{" "}
-            <span className="text-white font-semibold">"{siteName}"</span> secara permanen.
+              <span className="text-foreground font-semibold">"{siteName}"</span> secara permanen.
             Tindakan ini tidak dapat dibatalkan.
           </p>
         </div>
@@ -86,7 +86,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteMo
             Batal
           </Button>
           <Button
-            className="flex-1 rounded-xl h-10 text-sm bg-red-600 hover:bg-red-700 text-white border-0 gap-2 cursor-pointer"
+            className="flex-1 rounded-xl h-10 text-sm bg-red-600 hover:bg-red-700 text-foreground border-0 gap-2 cursor-pointer"
             onClick={onConfirm}
             disabled={loading}
           >
@@ -151,7 +151,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
         )}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <h2 className="text-lg font-bold text-white">Ganti Nama Website</h2>
+            <h2 className="text-lg font-bold text-foreground">Ganti Nama Website</h2>
             <p className="text-xs text-[#9b9ba5]">Masukkan nama baru untuk website Anda.</p>
           </div>
           <input
@@ -230,11 +230,11 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
         {/* Celebration Header Banner */}
         <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shrink-0 shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_30%,transparent)]">
-            <Rocket className="w-6 h-6 text-white animate-pulse" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shrink-0 shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_30%,transparent)]">
+            <Rocket className="w-6 h-6 text-foreground animate-pulse" />
           </div>
           <div>
-            <h4 className="text-[13.5px] font-bold text-white leading-snug">
+            <h4 className="text-[13.5px] font-bold text-foreground leading-snug">
               Satu Langkah Lagi! 🚀
             </h4>
             <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
@@ -301,18 +301,18 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">
-            <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
+              <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
               Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
               Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}
-              <Link
-                href="/dashboard/domains"
-                className="text-primary font-semibold hover:text-white underline underline-offset-2 transition-colors"
-                onClick={onCancel}
-              >
-                Pengaturan Domain
-              </Link>{" "}
+                <Link
+                  href="/dashboard/domains"
+                  className="text-primary font-semibold hover:text-foreground underline underline-offset-2 transition-colors"
+                  onClick={onCancel}
+                >
+                  Pengaturan Domain
+                </Link>{" "}
               setelah website Anda live.
             </p>
           </div>
@@ -334,7 +334,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
               !isInputValid || loading
                 ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
-                : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
+            : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
             disabled={loading || !isInputValid}
           >
@@ -834,7 +834,7 @@ export default function SitesPage() {
           <div className="w-12 h-12 bg-white/[0.03] border border-white/[0.08] rounded-full flex items-center justify-center text-[#65656f]">
             <Search className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-lg text-white m-0">Tidak ada website yang cocok</h3>
+            <h3 className="font-bold text-lg text-foreground m-0">Tidak ada website yang cocok</h3>
           <p className="text-sm text-[#9b9ba5] m-0 max-w-sm leading-relaxed">
             Coba kata kunci pencarian lain, filter status yang berbeda, atau buat website baru.
           </p>
@@ -861,7 +861,7 @@ export default function SitesPage() {
                   {/* Header / Info Row */}
                   <div className="flex justify-between items-start gap-2">
                     <div className="min-w-0">
-                      <h3 className="text-[16px] font-semibold text-white m-0 truncate leading-tight group-hover:text-primary transition-colors">{site.name}</h3>
+                      <h3 className="text-[16px] font-semibold text-foreground m-0 truncate leading-tight group-hover:text-primary transition-colors">{site.name}</h3>
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0 relative">
@@ -957,7 +957,7 @@ export default function SitesPage() {
                     {isLive && !isDraftSubdomain && (
                       <button
                         onClick={() => handleCopyLink(site)}
-                        className={`p-1 text-[#9b9ba5] hover:text-white hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
+                          className={`p-1 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
                         aria-label="Salin tautan"
                       >
                         {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
@@ -975,7 +975,7 @@ export default function SitesPage() {
                   <div className="flex gap-2 border-t border-white/[0.08] pt-3.5 mt-1">
                     <Link
                       href={`/dashboard/sites/${site.id}`}
-                      className="flex-1 py-2 px-1 rounded-xl border border-white/10 text-white hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                      className="flex-1 py-2 px-1 rounded-xl border border-white/10 text-foreground hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> Edit & Preview
                     </Link>
@@ -983,7 +983,7 @@ export default function SitesPage() {
                     {isLive ? (
                       <button
                         onClick={() => window.open(getSiteUrl(site), "_blank")}
-                        className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-white hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-foreground hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> Lihat Web
                       </button>
@@ -992,7 +992,7 @@ export default function SitesPage() {
                         type="button"
                         onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
-                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-white flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
+                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-foreground flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
                       >
                         {actionLoading === site.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1014,7 +1014,7 @@ export default function SitesPage() {
             <div className="flex justify-center pt-4">
               <button
                 onClick={() => setLimit(prev => prev + 10)}
-                className="bg-transparent border border-white/[0.14] hover:bg-white/[0.04] text-white font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
+                className="bg-transparent border border-white/[0.14] hover:bg-white/[0.04] text-foreground font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Muat Lebih Banyak
               </button>
@@ -1058,12 +1058,12 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
         <div className="flex justify-center">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_color-mix(in_srgb,var(--primary)_30%,transparent)] relative">
             <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
-            <Rocket className="w-10 h-10 text-white animate-bounce" style={{ animationDuration: "2.5s" }} />
+            <Rocket className="w-10 h-10 text-foreground animate-bounce" style={{ animationDuration: "2.5s" }} />
           </div>
         </div>
 
         <div className="space-y-2 max-w-sm mx-auto">
-          <h3 className="text-xl font-bold text-white tracking-tight">Website Anda Resmi Mengudara!</h3>
+          <h3 className="text-xl font-bold text-foreground tracking-tight">Website Anda Resmi Mengudara!</h3>
             <p className="text-sm text-[#9b9ba5] leading-relaxed">
               Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
             </p>
@@ -1080,7 +1080,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
                 href={siteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[14px] text-white font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
+                className="text-[14px] text-foreground font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
                 title="Buka Website"
               >
                 {displayDomain}
