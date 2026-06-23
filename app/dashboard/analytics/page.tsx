@@ -238,26 +238,7 @@ export default function AnalyticsPage() {
     );
   };
 
-  // On mount, animate the chart stroke drawing once
-  useLayoutEffect(() => {
-    if (!pathRef.current) return;
-    try {
-      const pathEl = pathRef.current;
-      const length = pathEl.getTotalLength();
-      pathEl.style.strokeDasharray = `${length}`;
-      pathEl.style.strokeDashoffset = `${length}`;
-      // trigger layout then animate
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          pathEl.style.transition = "stroke-dashoffset 700ms ease-out";
-          pathEl.style.strokeDashoffset = "0";
-          setPathAnimated(true);
-        });
-      });
-    } catch (e) {
-      // ignore if SVG path measurement fails in some environments
-    }
-  }, [data?.pageviews_by_date]);
+  
 
   return (
     <div className="space-y-6">

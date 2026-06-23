@@ -408,10 +408,10 @@ export default function DashboardOverviewPage() {
       <section className="bg-gradient-to-r from-primary/20 to-blue-600/20 border border-primary/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
           <div>
-            <h2 className="text-4xl font-bold tracking-tight mb-2 text-foreground">
+            <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl">
               Selamat Datang{profile ? `, ${profile.name.split(" ")[0]}` : ""}
             </h2>
-            <p className="text-muted-foreground font-medium text-lg">
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
               Kelola website, domain, dan leads Anda dari satu tempat.
             </p>
           </div>
