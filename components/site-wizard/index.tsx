@@ -143,6 +143,7 @@ export function SiteWizard({
       streamedSectionsRef.current = { ...streamedSectionsRef.current, [section]: data };
       setStreamedSections((prev) => ({ ...prev, [section]: data }));
       setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
+      setPreviewState((prev) => prev === "loading" ? "result" : prev);
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
