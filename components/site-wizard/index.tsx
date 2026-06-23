@@ -159,12 +159,6 @@ export function SiteWizard({
   }, [loadingStep, previewState, scrollPreviewPct]);
 
   useEffect(() => {
-    if (previewState === "result") {
-      scrollPreviewToTop();
-    }
-  }, [previewState, scrollPreviewToTop]);
-
-  useEffect(() => {
     if (previewDevice === "desktop") {
       scrollPreviewToTop();
     }
@@ -298,12 +292,29 @@ export function SiteWizard({
     }
   }, [previewState]);
 
-  // Progressive blur: starts strong during early loading, fades as progress increases
+  // Keep blur during result scroll‑up; clear only after reaching top
+  const [resultClear, setResultClear] = useState(false);
+
+  useEffect(() => {
+    if (previewState === "result") {
+      setResultClear(false);
+      scrollPreviewToTop();
+      const t = setTimeout(() => setResultClear(true), 600);
+      return () => clearTimeout(t);
+    } else {
+      setResultClear(true);
+    }
+  }, [previewState, scrollPreviewToTop]);
+
+  // Progressive blur: starts strong during loading, retains ~2px on last step
+  // and during result scroll‑up, then clears when scroll reaches top
   const previewBlurPx = useMemo(() => {
-    if (previewState === "result") return 0;
+    if (previewState === "result" && resultClear) return 0;
+    if (previewState === "result") return 2;
     const pct = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
-    return Math.round(8 * (1 - pct / 100) * 10) / 10;
-  }, [previewState, loadingStep]);
+    const blur = Math.round(8 * (1 - pct / 100) * 10) / 10;
+    return Math.max(blur, 1.5);
+  }, [previewState, loadingStep, resultClear]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -797,7 +808,7 @@ export function SiteWizard({
       <div
         className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
           isMobile
-            ? mobileScreen === "preview" ? "translate-x-0" : "translate-x-full"
+            ? mobileScreen === "preview" || mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
             : mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -849,7 +860,7 @@ export function SiteWizard({
 
 
         <div className="flex-1 overflow-hidden relative bg-white">
-          {previewState === "wireframe" && (
+          {previewState === "wireframe" || (previewState === "loading" && !hasLiveData && !hasPreviewData) ? (
             <Wireframe
               businessName={businessName}
               businessType={businessType}
@@ -857,9 +868,7 @@ export function SiteWizard({
               description={description}
               chatStage={chatStage}
             />
-          )}
-
-          {previewState !== "wireframe" && (
+          ) : (
             <div className="h-full" style={{
               filter: `blur(${previewBlurPx}px)`,
               transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -868,12 +877,17 @@ export function SiteWizard({
             </div>
           )}
 
-          {/* Loading overlay on top of preview — semi-transparent so sections appear behind */}
-          {previewState === "loading" && (
+          {/* Loading overlay on top of preview */}
+          {previewState === "loading" && !isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-              {(!isMobile || mobileScreen !== "loading") && (
-                <LoadingModal loadingStep={loadingStep} businessType={businessType} />
-              )}
+              <LoadingModal loadingStep={loadingStep} businessType={businessType} />
+            </div>
+          )}
+
+          {/* Mobile loading overlay — covers full screen */}
+          {previewState === "loading" && isMobile && (
+            <div className="absolute inset-0 z-40 bg-black/10">
+              <LoadingModal loadingStep={loadingStep} businessType={businessType} center />
             </div>
           )}
 
@@ -883,7 +897,7 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
-                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white/10 border border-white/20 text-slate-200 shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95 backdrop-blur-sm"
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               >
                 <Plus className="h-4 w-4" />
                 Lengkapi Data
@@ -903,13 +917,6 @@ export function SiteWizard({
 
         </div>
       </div>
-
-      {/* ══ MOBILE LOADING SCREEN ══════════════════════════════════════════ */}
-      {isMobile && mobileScreen === "loading" && (
-        <div className="absolute inset-0 z-40 flex items-end pb-4 bg-black/10">
-          <LoadingModal loadingStep={loadingStep} businessType={businessType} center />
-        </div>
-      )}
 
       {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
       <WizardErrorModal

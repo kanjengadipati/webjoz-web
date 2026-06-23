@@ -75,7 +75,7 @@ export const LOADING_CHECKLIST = [
   { label: "Menulis headline", desc: "Membuat copywriting yang menarik" },
   { label: "Membuat SEO", desc: "Optimasi SEO on-page & keyword" },
   { label: "Mendesain halaman", desc: "Menyusun desain & komponen halaman" },
-  { label: "Publish website", desc: "Mempersiapkan hosting & domain" },
+  { label: "Merakit halaman", desc: "Menyusun layout & komponen halaman" },
 ];
 
 export const LOADING_STEPS_PERCENT = [15, 30, 45, 60, 75, 100];
