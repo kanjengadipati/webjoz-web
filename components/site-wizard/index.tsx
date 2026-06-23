@@ -89,6 +89,7 @@ export function SiteWizard({
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const isMobileRef = useRef(false);
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
+  const didGenerateRef = useRef(false);
   const historyIndexRef = useRef(historyIndex);
   const hasPromptedDetailsRef = useRef(false);
   const previewScrollRef = useRef<HTMLDivElement>(null);
@@ -174,8 +175,7 @@ export function SiteWizard({
       );
       if (isMobileRef.current) {
         setPreviewDevice("mobile");
-        // Only redirect to preview screen automatically if user is done
-        if (chatStage === "done") {
+        if (didGenerateRef.current) {
           setMobileScreen("preview");
         }
         return;
@@ -288,6 +288,7 @@ export function SiteWizard({
     setTooManyRequests(false);
     setGenerationError(null);
     setMobileScreen("loading");
+    didGenerateRef.current = true;
     void handleGenerate();
   };
 
@@ -378,6 +379,7 @@ export function SiteWizard({
     ]);
     
     // Start generating preview in the background
+    didGenerateRef.current = true;
     void handleGenerate(businessName, businessType, { businessSubType: subType });
 
     // Transition to done
