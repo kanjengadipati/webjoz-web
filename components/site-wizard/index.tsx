@@ -21,11 +21,11 @@ import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stre
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
 import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS } from "./constants";
-import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, calculateProgress, getStageNumber, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
+import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
 
-import { LoadingCard } from "./loading-card";
+
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 
@@ -587,20 +587,6 @@ export function SiteWizard({
             </div>
           </div>
 
-          {!isMobile && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 2</span>
-                <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
-              </div>
-              <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700"
-                  style={{ width: `${calculateProgress(chatStage)}%` }}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
@@ -691,11 +677,6 @@ export function SiteWizard({
             );
           })}
 
-
-          {/* Loading card (in chat) */}
-          {previewState === "loading" && (
-            <LoadingCard loadingStep={loadingStep} businessType={businessType} />
-          )}
 
           <div ref={chatEndRef} />
         </div>
