@@ -18,7 +18,7 @@ const skeletonStrong = { background: "rgba(255,255,255,0.08)" };
 const skeletonPanel = { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.055)" };
 
 function isHighlighted(stage: ChatStage): boolean {
-  return stage === "whatsapp" || stage === "service_area" || stage === "confirm" || stage === "done";
+  return stage === "confirm" || stage === "done";
 }
 
 export function Wireframe({ businessName, businessType, businessSubType, description, chatStage }: WireframeProps) {
@@ -141,7 +141,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           <div className="w-40 h-40 rounded-xl shrink-0 animate-pulse" style={skeletonSoft} />
         </section>
 
-        {(chatStage === "whatsapp" || chatStage === "service_area" || chatStage === "confirm") && (
+        {(chatStage === "confirm") && (
           <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
             <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
             <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>

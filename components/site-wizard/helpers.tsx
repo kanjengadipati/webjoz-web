@@ -89,9 +89,7 @@ export function generateSlug(name: string): string {
 export function calculateProgress(chatStage: string): number {
   switch (chatStage) {
     case "name": return 15;
-    case "type": return 28;
-    case "service_area": return 55;
-    case "whatsapp": return 70;
+    case "type": return 40;
     case "confirm": return 100;
     case "done": return 100;
     default: return 100;
@@ -102,10 +100,8 @@ export function getStageNumber(chatStage: string): number {
   switch (chatStage) {
     case "name": return 1;
     case "type": return 2;
-    case "service_area": return 3;
-    case "whatsapp": return 4;
-    case "confirm": return 5;
-    case "done": return 5;
+    case "confirm": return 3;
+    case "done": return 3;
     default: return 1;
   }
 }

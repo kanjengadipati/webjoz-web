@@ -221,7 +221,7 @@ export function SiteWizard({
   }, []);
 
   useEffect(() => {
-    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "whatsapp" || chatStage === "service_area")) {
+    if (!isInitialTyping && !isAiTyping && chatStage === "name") {
       window.setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [isInitialTyping, isAiTyping, chatStage]);
@@ -298,7 +298,7 @@ export function SiteWizard({
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim() && chatStage !== "whatsapp" && chatStage !== "service_area") return;
+    if (!inputValue.trim()) return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -355,48 +355,6 @@ export function SiteWizard({
           setChatStage("type");
         });
       }, 500);
-    } else if (chatStage === "whatsapp") {
-      const digits = val.replace(/\D/g, "");
-      let normalizedWhatsapp = "";
-      if (digits) {
-        normalizedWhatsapp = normalizeWhatsapp(val);
-        setWhatsapp(normalizedWhatsapp);
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-      } else {
-        setWhatsapp("");
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
-      }
-      if (previewState === "result") setHasUnsavedEdits(true);
-      setTimeout(() => {
-        setConfirmDraftName(businessName);
-        setConfirmDraftWA(normalizedWhatsapp);
-        setConfirmDraftServiceArea(serviceArea);
-        setConfirmEditingField(null);
-        typeMessage(previewState === "result"
-          ? "Sip. Cek data tambahan ini, lalu terapkan agar preview diperbarui."
-          : "Hampir selesai! Cek dulu data website-nya sebelum dibuat.", () => {
-          setChatStage("confirm");
-        });
-      }, 400);
-    } else if (chatStage === "service_area") {
-      if (val.trim()) {
-        setServiceArea(val.trim());
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-      } else {
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lewati" }]);
-      }
-      if (previewState === "result") setHasUnsavedEdits(true);
-      setTimeout(() => {
-        setConfirmDraftServiceArea(val.trim() || serviceArea);
-        const serviceAreaReply = val.trim()
-          ? `Oke, jangkauan bisnisnya ${val.trim()}. Saya pakai info ini supaya website terasa lebih relevan untuk calon pelanggan di area tersebut.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)`
-          : "Oke, jangkauan bisnis bisa dilengkapi nanti di editor. Nomor WhatsApp tetap berguna agar tombol kontak di website langsung mengarah ke chat pelanggan.\n\nNomor WhatsApp untuk tombol kontak? (atau Enter untuk lewati)";
-        typeMessage(serviceAreaReply, () => {
-          setInputValue("");
-          setChatStage("whatsapp");
-          window.setTimeout(() => inputRef.current?.focus(), 0);
-        });
-      }, 400);
     }
   };
 
@@ -430,13 +388,12 @@ export function SiteWizard({
     // Start generating preview in the background
     void handleGenerate(businessName, businessType, { businessSubType: subType });
 
-    // Transition to the next conversational questions: service_area (Step 3)
+    // Transition to confirm step
     setTimeout(() => {
       typeMessage(
-        "Bagus! AI mulai merakit website bisnis Anda.\n\nSambil menunggu, di mana area jangkauan layanan bisnis Anda? (contoh: Jogja, Jakarta, seluruh Indonesia, atau ketik/klik Lewati)",
+        "Keren! AI sedang merakit website bisnis Anda. Sebentar ya...",
         () => {
-          setChatStage("service_area");
-          window.setTimeout(() => inputRef.current?.focus(), 0);
+          setChatStage("confirm");
         }
       );
     }, 600);
@@ -538,9 +495,6 @@ export function SiteWizard({
       pushToast(err.message || "Terjadi kesalahan. Silakan coba lagi.", "error");
     }
   };
-
-  // Derived values
-  const shouldPromptDetails = previewState === "result" && (!serviceArea || !whatsapp);
 
   // History nav
   const TEMPLATE_NAMES: Record<string, string> = {
@@ -647,7 +601,7 @@ export function SiteWizard({
           </div>
 
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 5</span>
+            <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 3</span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
           </div>
           <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
@@ -795,13 +749,10 @@ export function SiteWizard({
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
                 ref={inputRef}
-                type={chatStage === "whatsapp" ? "tel" : "text"}
-                inputMode={chatStage === "whatsapp" ? "tel" : undefined}
+                type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
-                  chatStage === "whatsapp" ? "cth. 08123456789 — atau Enter untuk lewati" :
-                  chatStage === "service_area" ? "cth. Jogja, Sleman-Bantul, Jabodetabek, seluruh Indonesia, online" :
                   awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
                   "Ketik nama bisnis Anda..."
                 }
