@@ -428,7 +428,7 @@ export default function LoginPage() {
                     <LockIcon className="size-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-foreground">Masuk dengan password</p>
+                    <p className="text-sm font-bold text-foreground">Login dengan password</p>
                     <p className="text-xs text-muted-foreground">Gunakan email dan password akun kamu.</p>
                   </div>
                 </div>
@@ -483,7 +483,7 @@ export default function LoginPage() {
                   </div>
                 </div>
                 <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg">
-                  {state === "loading" ? <LoginLoadingIndicator label="Masuk" /> : "Masuk dengan password"}
+                  {state === "loading" ? <LoginLoadingIndicator label="Login" /> : "Login dengan password"}
                 </Button>
               </form>
             </>
@@ -616,8 +616,8 @@ export default function LoginPage() {
         { label: "AI Builder", value: "Chat-Based", helper: "Cukup chat dengan AI, website langsung jadi." },
         { label: "Mobile-First", value: "Optimized", helper: "Semua template dioptimalkan untuk tampilan mobile dan siap iklan." },
       ]}
-      cardEyebrow="Masuk untuk melanjutkan"
-      cardTitle="Masuk"
+      cardEyebrow="Login untuk melanjutkan"
+      cardTitle="Login"
       cardDescription="Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard."
       footer={
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
