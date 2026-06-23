@@ -32,7 +32,7 @@ export function DevicePreviewFrame({
     doc.head.appendChild(viewport);
 
     const baseStyle = doc.createElement("style");
-    baseStyle.textContent = "html,body{margin:0;min-height:100%;background:#fff;width:100%;} body{overflow:auto;}";
+    baseStyle.textContent = "html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%} body{overflow:visible;background:#fff}";
     doc.head.appendChild(baseStyle);
 
     document

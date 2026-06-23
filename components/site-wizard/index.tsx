@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -20,7 +20,7 @@ import { useToast } from "@/components/toast-provider";
 import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
-import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS } from "./constants";
+import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, LOADING_STEPS_PERCENT } from "./constants";
 import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -107,46 +107,68 @@ export function SiteWizard({
   }, []);
 
   // Scroll helpers — content lives inside an iframe via DevicePreviewFrame
-  const scrollPreview = useCallback((top: number, behavior?: ScrollBehavior) => {
-    const doc = previewIframeRef.current?.contentDocument ?? previewIframeRef.current?.contentWindow?.document;
-    if (doc) {
-      doc.documentElement?.scrollTo({ top, left: 0, behavior });
-      doc.body?.scrollTo({ top, left: 0, behavior });
+  const scrollPreviewPct = useCallback((pct: number) => {
+    const iframe = previewIframeRef.current;
+    if (iframe) {
+      const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
+      if (doc?.body) {
+        const sh = Math.max(doc.documentElement?.scrollHeight ?? 0, doc.body.scrollHeight ?? 0);
+        const ch = doc.documentElement?.clientHeight ?? doc.body.clientHeight ?? 0;
+        if (sh > ch) {
+          const target = Math.max(0, (sh - ch) * Math.min(pct / 100, 1));
+          doc.documentElement?.scrollTo({ top: target, left: 0, behavior: "smooth" });
+          doc.body?.scrollTo({ top: target, left: 0, behavior: "smooth" });
+        }
+      }
+    }
+    const el = previewScrollRef.current;
+    if (el && el.scrollHeight > el.clientHeight) {
+      const target = Math.max(0, (el.scrollHeight - el.clientHeight) * Math.min(pct / 100, 1));
+      el.scrollTo({ top: target, left: 0, behavior: "smooth" });
     }
   }, []);
 
-  const scrollPreviewToBottom = useCallback((behavior?: ScrollBehavior) => {
-    const doc = previewIframeRef.current?.contentDocument ?? previewIframeRef.current?.contentWindow?.document;
-    if (doc) {
-      const height = Math.max(
-        doc.documentElement?.scrollHeight ?? 0,
-        doc.body?.scrollHeight ?? 0
-      );
-      doc.documentElement?.scrollTo({ top: height, left: 0, behavior });
-      doc.body?.scrollTo({ top: height, left: 0, behavior });
-    }
+  const scrollPreviewToTop = useCallback(() => {
+    requestAnimationFrame(() => {
+      const iframe = previewIframeRef.current;
+      if (iframe) {
+        const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
+        if (doc?.body) {
+          doc.documentElement?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+          doc.body?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        }
+      }
+      const el = previewScrollRef.current;
+      if (el) el.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    });
   }, []);
 
-  // Auto-scroll preview as sections stream in, then back to top when done
-  const prevArrivedRef = useRef(0);
+  // Auto-scroll preview in sync with loading step progress (every ~3s)
+  // Step 0-3: proportional scroll (15-60%), step 4: 95% (near bottom), step 5: 100%
+  const prevStepRef = useRef(0);
   useEffect(() => {
-    if (previewState === "loading" && arrivedSections.length > prevArrivedRef.current) {
-      prevArrivedRef.current = arrivedSections.length;
-      scrollPreviewToBottom("smooth");
+    if (previewState === "loading" && loadingStep > prevStepRef.current) {
+      prevStepRef.current = loadingStep;
+      const pct = loadingStep === 4 ? 95 : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          scrollPreviewPct(pct);
+        });
+      });
     }
-  }, [arrivedSections, previewState, scrollPreviewToBottom]);
+  }, [loadingStep, previewState, scrollPreviewPct]);
 
   useEffect(() => {
     if (previewState === "result") {
-      scrollPreview(0, "smooth");
+      scrollPreviewToTop();
     }
-  }, [previewState, scrollPreview]);
+  }, [previewState, scrollPreviewToTop]);
 
   useEffect(() => {
     if (previewDevice === "desktop") {
-      scrollPreview(0);
+      scrollPreviewToTop();
     }
-  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreview]);
+  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
   const typeMessage = (fullText: string, onComplete: () => void) => {
     let idx = 0;
@@ -275,6 +297,13 @@ export function SiteWizard({
       return () => clearInterval(interval);
     }
   }, [previewState]);
+
+  // Progressive blur: starts strong during early loading, fades as progress increases
+  const previewBlurPx = useMemo(() => {
+    if (previewState === "result") return 0;
+    const pct = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
+    return Math.round(8 * (1 - pct / 100) * 10) / 10;
+  }, [previewState, loadingStep]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -745,9 +774,18 @@ export function SiteWizard({
         )}
 
         <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <span className="text-[11px] text-slate-500 flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            Draft tersimpan otomatis
+          <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
+            <div
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${
+                previewState === "loading" ? "bg-[#7c3aed] animate-pulse" : "bg-emerald-400"
+              }`}
+            />
+            <span className="transition-all duration-300">
+              {previewState === "wireframe" && (chatStage === "name" || chatStage === "type") && "Menunggu input..."}
+              {previewState === "loading" && "AI sedang generate..."}
+              {previewState === "result" && "Preview siap ✓"}
+              {previewState === "wireframe" && chatStage === "done" && "Menyiapkan AI..."}
+            </span>
           </span>
           <span className="text-[11px] text-slate-500">
             {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
@@ -793,11 +831,8 @@ export function SiteWizard({
           </div>
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-4 h-4 rounded-sm bg-emerald-500 shrink-0 flex items-center justify-center">
-              <span className="text-[7px] text-white font-bold">W</span>
-            </div>
             <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 flex-1 max-w-xs" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${businessName ? "bg-emerald-400" : "bg-slate-600"}`} />
+              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${previewState === "loading" ? "bg-amber-400" : previewState === "result" ? "bg-emerald-400" : businessName ? "bg-slate-500" : "bg-slate-600"}`} />
               <span className="text-xs text-slate-400 truncate font-medium transition-all duration-300">
                 {businessName ? `${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com` : "preview.webjoz.com"}
               </span>
@@ -811,6 +846,8 @@ export function SiteWizard({
           </div>
         </div>
 
+
+
         <div className="flex-1 overflow-hidden relative bg-white">
           {previewState === "wireframe" && (
             <Wireframe
@@ -822,11 +859,18 @@ export function SiteWizard({
             />
           )}
 
-          {previewState !== "wireframe" && resultPreviewContent}
+          {previewState !== "wireframe" && (
+            <div className="h-full" style={{
+              filter: `blur(${previewBlurPx}px)`,
+              transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}>
+              {resultPreviewContent}
+            </div>
+          )}
 
           {/* Loading overlay on top of preview — semi-transparent so sections appear behind */}
           {previewState === "loading" && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
               {(!isMobile || mobileScreen !== "loading") && (
                 <LoadingModal loadingStep={loadingStep} businessType={businessType} />
               )}
@@ -862,7 +906,7 @@ export function SiteWizard({
 
       {/* ══ MOBILE LOADING SCREEN ══════════════════════════════════════════ */}
       {isMobile && mobileScreen === "loading" && (
-        <div className="absolute inset-0 z-40 bg-[#0d0f14]">
+        <div className="absolute inset-0 z-40 flex items-end pb-4 bg-black/10">
           <LoadingModal loadingStep={loadingStep} businessType={businessType} center />
         </div>
       )}
