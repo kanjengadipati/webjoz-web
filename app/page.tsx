@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -70,6 +71,20 @@ const FEATURES = [
 
 export default function LandingPage() {
   const router = useRouter();
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show floating CTA after scrolling past the main hero action button (approx 400px)
+      if (window.scrollY > 400) {
+        setShowFloatingCta(true);
+      } else {
+        setShowFloatingCta(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   function startWizard(templateId?: string) {
     router.push(templateId ? `/create?template=${templateId}` : "/create");
@@ -112,45 +127,54 @@ export default function LandingPage() {
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 pb-16 pt-16 sm:px-6 lg:px-10 lg:pt-20">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
+      <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-10 flex items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
 
-        <div className="mx-auto max-w-5xl text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          <Badge
-            variant="outline"
-            className="border-primary/20 bg-primary/5 text-primary shadow-lg shadow-primary/5 px-4 py-2 animate-pulse"
-          >
-            <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
-            AI Website Builder untuk Bisnis Indonesia
-          </Badge>
+        <div className="mx-auto max-w-7xl w-full grid gap-12 lg:grid-cols-2 items-center">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
+            <Badge
+              variant="outline"
+              className="border-primary/20 bg-primary/5 text-primary shadow-lg shadow-primary/5 px-4 py-2 animate-pulse w-fit"
+            >
+              <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
+              AI Website Builder untuk Bisnis Indonesia
+            </Badge>
 
-          <h1 className="text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl md:text-7xl lg:text-8xl">
+          <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl w-full">
             Website Bisnis<br />Siap dalam 5 Menit
           </h1>
 
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
+          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
             Chat singkat dengan AI, pilih gaya visual, dan website bisnis Anda siap dipublish.{" "}
             <strong className="text-foreground font-semibold">Tanpa coding, tanpa form panjang.</strong>
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 w-full">
             <Button
               onClick={() => startWizard()}
               size="lg"
-              className="rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20"
+              className="w-full sm:w-auto rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20"
             >
               Buat Website Sekarang
             </Button>
-
           </div>
 
-          <p className="text-sm text-muted-foreground">
-            ✅ Gratis dicoba &nbsp;·&nbsp; 💬 Chat AI, bukan form &nbsp;·&nbsp; 🚀 Aktif dalam menit
-          </p>
-        </div>
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground w-full">
+            <span className="flex items-center gap-1.5">
+              <span className="shrink-0">✅</span> Gratis dicoba
+            </span>
+            <span className="text-muted-foreground/30 hidden sm:inline">·</span>
+            <span className="flex items-center gap-1.5">
+              <span className="shrink-0">💬</span> Chat AI, bukan form
+            </span>
+            <span className="text-muted-foreground/30 hidden sm:inline">·</span>
+            <span className="flex items-center gap-1.5">
+              <span className="shrink-0">🚀</span> Aktif dalam menit
+            </span>
+          </div>
+          </div>
 
-        {/* Hero mockup */}
-        <div className="mx-auto mt-16 max-w-4xl">
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
           <div className="relative rounded-[2rem] border border-border/60 bg-card/40 p-1.5 shadow-[0_40px_120px_rgba(0,0,0,0.2)] backdrop-blur-sm ring-1 ring-white/5">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40">
               <div className="flex gap-1.5">
@@ -218,6 +242,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>
@@ -458,7 +483,7 @@ export default function LandingPage() {
       </footer>
 
       {/* ── Floating CTA (mobile) ──────────────────────────────────────────── */}
-      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+      <div className={`fixed bottom-4 left-4 right-4 z-40 md:hidden transition-all duration-300 transform ${showFloatingCta ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"}`}>
         <Button
           onClick={() => startWizard()}
           className="w-full rounded-full py-4 text-sm font-bold shadow-2xl shadow-primary/30"
