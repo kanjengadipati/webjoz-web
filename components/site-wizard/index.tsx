@@ -592,43 +592,9 @@ export function SiteWizard({
               </div>
             </div>
           ) : (
-            <>
-              {previewState === "loading" && (
-                <div className="shrink-0" style={{ background: "#0d0f14", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="flex items-stretch px-3 py-1.5">
-                    {PROGRESS_SECTIONS.map((sec, i) => {
-                      const done = i < lastArrivedIndex;
-                      const active = i === lastArrivedIndex;
-                      return (
-                        <div key={sec.key} className="flex-1 flex flex-col items-center gap-1 py-1 px-0.5 relative" style={{ borderRight: i < PROGRESS_SECTIONS.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-                          <div
-                            className="w-4 h-4 rounded-full flex items-center justify-center transition-all duration-400"
-                            style={{
-                              border: `1.5px solid ${done ? "#22c55e" : active ? "#7c3aed" : "rgba(255,255,255,0.15)"}`,
-                              background: done ? "rgba(34,197,94,0.15)" : active ? "rgba(124,58,237,0.12)" : "transparent",
-                            }}
-                          >
-                            {done && <span className="text-[7px] text-emerald-400 font-bold">✓</span>}
-                          </div>
-                          <span className="text-[8px] font-semibold whitespace-nowrap transition-all duration-400" style={{ color: active ? "#a78bfa" : "rgba(148,163,184,0.6)" }}>
-                            {sec.label}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="h-[2px] bg-white/5 overflow-hidden">
-                    <div
-                      className="h-full transition-all duration-600 ease-out"
-                      style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg, #7c3aed, #a78bfa)" }}
-                    />
-                  </div>
-                </div>
-              )}
-              <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
-                <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
-              </div>
-            </>
+            <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
+              <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
+            </div>
           )}
         </div>
       );
@@ -872,7 +838,7 @@ export function SiteWizard({
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-white">
+        <div className="flex-1 flex flex-col overflow-hidden relative bg-white">
           {previewState === "wireframe" && (
             <Wireframe
               businessName={businessName}
@@ -883,7 +849,46 @@ export function SiteWizard({
             />
           )}
 
-          {previewState !== "wireframe" && resultPreviewContent}
+          {/* Progress strip — only on desktop during loading */}
+          {previewState === "loading" && !isMobile && (
+            <div className="shrink-0" style={{ background: "#0d0f14", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="flex items-stretch px-3 py-1.5">
+                {PROGRESS_SECTIONS.map((sec, i) => {
+                  const done = i < lastArrivedIndex;
+                  const active = i === lastArrivedIndex;
+                  return (
+                    <div key={sec.key} className="flex-1 flex flex-col items-center gap-1 py-1 px-0.5 relative" style={{ borderRight: i < PROGRESS_SECTIONS.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+                      <div
+                        className="w-4 h-4 rounded-full flex items-center justify-center transition-all duration-400"
+                        style={{
+                          border: `1.5px solid ${done ? "#22c55e" : active ? "#7c3aed" : "rgba(255,255,255,0.15)"}`,
+                          background: done ? "rgba(34,197,94,0.15)" : active ? "rgba(124,58,237,0.12)" : "transparent",
+                        }}
+                      >
+                        {done && <span className="text-[7px] text-emerald-400 font-bold">✓</span>}
+                        {active && <div className="w-1.5 h-1.5 rounded-full bg-[#7c3aed] animate-pulse" />}
+                      </div>
+                      <span className="text-[8px] font-semibold whitespace-nowrap transition-all duration-400" style={{ color: active ? "#a78bfa" : "rgba(148,163,184,0.6)" }}>
+                        {sec.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="h-[2px] bg-white/5 overflow-hidden">
+                <div
+                  className="h-full transition-all duration-600 ease-out"
+                  style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg, #7c3aed, #a78bfa)" }}
+                />
+              </div>
+            </div>
+          )}
+
+          {previewState !== "wireframe" && (
+            <div className="flex-1 min-h-0">
+              {resultPreviewContent}
+            </div>
+          )}
 
           {/* Loading overlay on top of preview — right-aligned, fades out on done */}
           <div
