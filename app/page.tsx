@@ -131,7 +131,7 @@ export default function LandingPage() {
                   href="/login"
                   className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
                 >
-                  Masuk
+                  Login
                 </Link>
               )
             )}
@@ -425,7 +425,7 @@ export default function LandingPage() {
             &copy; {new Date().getFullYear()} Webjoz. AI Website Builder untuk Bisnis Indonesia.
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link href="/login" className="hover:text-foreground transition">Masuk</Link>
+            <Link href="/login" className="hover:text-foreground transition">Login</Link>
             <a href="https://wa.me/6282298870033" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Kontak</a>
           </div>
         </div>
