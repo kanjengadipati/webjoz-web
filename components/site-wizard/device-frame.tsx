@@ -23,7 +23,7 @@ export function DevicePreviewFrame({
 
   const syncFrameDocument = () => {
     const doc = iframeRef.current?.contentDocument;
-    if (!doc) return;
+    if (!doc?.head) return;
 
     doc.head.innerHTML = "";
     const viewport = doc.createElement("meta");
