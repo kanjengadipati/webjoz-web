@@ -143,7 +143,6 @@ export function SiteWizard({
       streamedSectionsRef.current = { ...streamedSectionsRef.current, [section]: data };
       setStreamedSections((prev) => ({ ...prev, [section]: data }));
       setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
-      setPreviewState((prev) => prev === "loading" ? "result" : prev);
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
@@ -497,12 +496,11 @@ export function SiteWizard({
   };
   const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
 
-  // Template preview content
+  // Template preview content — render as soon as sections start arriving
   let resultPreviewContent: React.ReactNode = null;
-  if (previewState === "result") {
-    const hasLiveData = Object.keys(streamedSections).length > 0;
-    const hasPreviewData = !!previewData;
-    if (hasLiveData || hasPreviewData) {
+  const hasLiveData = Object.keys(streamedSections).length > 0;
+  const hasPreviewData = !!previewData;
+  if (hasLiveData || hasPreviewData) {
       const isStreamingLive = hasLiveData && (!streamedTemplateId || !hasPreviewData);
       const liveContent = isStreamingLive ? streamedSections : previewData!.content;
       const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : previewData!.design_token;
@@ -536,7 +534,6 @@ export function SiteWizard({
           )}
         </div>
       );
-    }
   }
 
   return (
@@ -788,21 +785,16 @@ export function SiteWizard({
             />
           )}
 
+          {previewState !== "wireframe" && resultPreviewContent}
+
+          {/* Loading overlay on top of preview */}
           {previewState === "loading" && (
-            <div className="h-full relative flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-hidden filter blur-[12px] opacity-20 select-none pointer-events-none" style={{ background: "#0d0f14" }}>
-                <div className="h-full w-full" style={{ background: "linear-gradient(135deg, #1a1040 0%, #0d0f14 50%, #0a1628 100%)" }}>
-                  <div className="absolute top-12 left-1/4 w-64 h-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%)" }} />
-                  <div className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full" style={{ background: "radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%)" }} />
-                </div>
-              </div>
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0d0f14]/80">
               {(!isMobile || mobileScreen !== "loading") && (
                 <LoadingModal loadingStep={loadingStep} businessType={businessType} />
               )}
             </div>
           )}
-
-          {resultPreviewContent}
 
           {/* Desktop: Lengkapi Data + Edit & Publish buttons */}
           {previewState === "result" && (
