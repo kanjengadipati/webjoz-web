@@ -824,9 +824,9 @@ export function SiteWizard({
 
           {previewState !== "wireframe" && resultPreviewContent}
 
-          {/* Loading overlay on top of preview */}
+          {/* Loading overlay on top of preview — semi-transparent so sections appear behind */}
           {previewState === "loading" && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0d0f14]/80">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20">
               {(!isMobile || mobileScreen !== "loading") && (
                 <LoadingModal loadingStep={loadingStep} businessType={businessType} />
               )}
