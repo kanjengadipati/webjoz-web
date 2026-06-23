@@ -988,10 +988,11 @@ export default function SitesPage() {
                         <Globe className="w-3.5 h-3.5" /> Lihat Web
                       </button>
                     ) : (
-                      <button
+                      <Button
+                        type="button"
                         onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
-                        className="flex-1 py-2 px-1 rounded-xl bg-primary/12 text-primary border border-primary/40 hover:bg-primary/20 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
+                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-white flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
                       >
                         {actionLoading === site.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1000,7 +1001,7 @@ export default function SitesPage() {
                             <Rocket className="w-3.5 h-3.5" /> Publikasikan
                           </>
                         )}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
