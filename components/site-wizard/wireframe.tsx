@@ -32,7 +32,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
             {businessName ? (
               <div
                 className="h-7 px-3 flex items-center rounded-md text-sm font-bold text-white animate-in fade-in slide-in-from-left-2 duration-400"
-                style={{ background: "rgba(124,58,237,0.25)", border: "1px solid rgba(124,58,237,0.4)" }}
+                style={{ background: "color-mix(in srgb, var(--primary) 25%, transparent)", border: "1px solid color-mix(in srgb, var(--primary) 40%, transparent)" }}
               >
                 {businessName}
               </div>
@@ -63,15 +63,15 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           style={{
             ...skeletonPanel,
             height: 260,
-            border: highlight ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(255,255,255,0.055)",
-            boxShadow: highlight ? "0 0 30px rgba(124,58,237,0.15)" : "none",
+            border: highlight ? "1px solid color-mix(in srgb, var(--primary) 35%, transparent)" : "1px solid rgba(255,255,255,0.055)",
+            boxShadow: highlight ? "0 0 30px color-mix(in srgb, var(--primary) 15%, transparent)" : "none",
           }}
         >
           <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
             {businessType ? (
               <div
                 className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400"
-                style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.3)" }}
+                style={{ background: "color-mix(in srgb, var(--primary) 20%, transparent)", color: "var(--primary)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}
               >
                 {businessSubType || businessType}
               </div>
@@ -107,7 +107,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
             <div
               className="h-11 w-36 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-500"
               style={highlight
-                ? { background: "rgba(124,58,237,0.7)", color: "#fff", border: "1px solid rgba(124,58,237,0.8)" }
+                ? { background: "color-mix(in srgb, var(--primary) 70%, transparent)", color: "var(--primary-foreground)", border: "1px solid color-mix(in srgb, var(--primary) 80%, transparent)" }
                 : { ...skeletonStrong }
               }
             >

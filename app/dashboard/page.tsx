@@ -285,7 +285,7 @@ export default function DashboardOverviewPage() {
             value={stats?.total_sites ?? 0}
             icon={Globe}
             href="/dashboard/sites"
-            color="text-violet-500"
+            color="text-primary"
           />
           <StatCard
             label="Active Plans"
@@ -427,7 +427,7 @@ export default function DashboardOverviewPage() {
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <StatCard label="Website" value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-violet-500" sub={`${metrics.publishedSites} published`} />
+        <StatCard label="Website" value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-primary" sub={`${metrics.publishedSites} published`} />
         <StatCard label="Leads" value={metrics.totalLeads} icon={Activity} href="/dashboard/leads" color="text-amber-500" sub={metrics.totalLeads > 0 ? "New prospects" : "Setup lead form"} />
         <StatCard label="Visitors" value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-emerald-500" sub="This week" />
         <StatCard label="Health" value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub="All systems normal" />

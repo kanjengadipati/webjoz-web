@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
@@ -46,6 +46,10 @@ export default function AnalyticsPage() {
   const [sites, setSites] = useState<Site[]>([]);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  // Accessibility & animation state for the chart
+  const [activePoint, setActivePoint] = useState<number | null>(null);
+  const pathRef = useRef<SVGPathElement | null>(null);
+  const [pathAnimated, setPathAnimated] = useState(false);
 
   // Filters
   const [selectedSiteId, setSelectedSiteId] = useState("");
@@ -114,125 +118,119 @@ export default function AnalyticsPage() {
     }
 
     const maxCount = Math.max(...chartData.map(d => d.count), 10);
-    const height = 200;
-    const width = 600;
-    const paddingLeft = 40;
+    const height = 220;
+    const width = 720; // viewBox width
+    const paddingLeft = 44;
     const paddingRight = 20;
     const paddingTop = 20;
-    const paddingBottom = 30;
+    const paddingBottom = 36;
 
     const graphHeight = height - paddingTop - paddingBottom;
     const graphWidth = width - paddingLeft - paddingRight;
 
-    // Generate points
+    // Generate points in viewbox coordinates
     const points = chartData.map((d, idx) => {
       const x = paddingLeft + (idx / (chartData.length - 1 || 1)) * graphWidth;
       const y = paddingTop + graphHeight - (d.count / maxCount) * graphHeight;
       return { x, y, label: d.date, value: d.count };
     });
 
-    const pathD = points.reduce((acc, p, idx) => {
-      return idx === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`;
-    }, "");
-
-    const areaD = points.length > 0 
-      ? `${pathD} L ${points[points.length - 1].x} ${paddingTop + graphHeight} L ${points[0].x} ${paddingTop + graphHeight} Z`
-      : "";
+    const pathD = points.reduce((acc, p, idx) => (idx === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`), "");
+    const areaD = points.length > 0 ? `${pathD} L ${points[points.length - 1].x} ${paddingTop + graphHeight} L ${points[0].x} ${paddingTop + graphHeight} Z` : "";
 
     return (
       <div className="relative w-full overflow-hidden">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible" preserveAspectRatio="none" role="img" aria-label="Grafik kunjungan harian">
           <defs>
             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgb(99, 102, 241)" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="rgb(99, 102, 241)" stopOpacity="0.0" />
+              <stop offset="0%" style={{ stopColor: 'var(--primary)', stopOpacity: 0.22 }} />
+              <stop offset="100%" style={{ stopColor: 'var(--primary)', stopOpacity: 0 }} />
             </linearGradient>
           </defs>
 
           {/* Grid lines */}
-          <line 
-            x1={paddingLeft} y1={paddingTop} 
-            x2={width - paddingRight} y2={paddingTop} 
-            className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="1" strokeDasharray="4"
-          />
-          <line 
-            x1={paddingLeft} y1={paddingTop + graphHeight / 2} 
-            x2={width - paddingRight} y2={paddingTop + graphHeight / 2} 
-            className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="1" strokeDasharray="4"
-          />
-          <line 
-            x1={paddingLeft} y1={paddingTop + graphHeight} 
-            x2={width - paddingRight} y2={paddingTop + graphHeight} 
-            className="stroke-slate-300 dark:stroke-slate-700" strokeWidth="1"
-          />
+          <line x1={paddingLeft} y1={paddingTop} x2={width - paddingRight} y2={paddingTop} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
+          <line x1={paddingLeft} y1={paddingTop + graphHeight / 2} x2={width - paddingRight} y2={paddingTop + graphHeight / 2} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
+          <line x1={paddingLeft} y1={paddingTop + graphHeight} x2={width - paddingRight} y2={paddingTop + graphHeight} className="stroke-slate-300" strokeWidth="1" />
 
           {/* Y Axis Labels */}
-          <text x={paddingLeft - 10} y={paddingTop + 4} textAnchor="end" className="fill-slate-400 text-[9px] font-mono">
-            {maxCount}
-          </text>
-          <text x={paddingLeft - 10} y={paddingTop + graphHeight / 2 + 4} textAnchor="end" className="fill-slate-400 text-[9px] font-mono">
-            {Math.round(maxCount / 2)}
-          </text>
-          <text x={paddingLeft - 10} y={paddingTop + graphHeight + 4} textAnchor="end" className="fill-slate-400 text-[9px] font-mono">
-            0
-          </text>
+          <text x={paddingLeft - 12} y={paddingTop + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{maxCount}</text>
+          <text x={paddingLeft - 12} y={paddingTop + graphHeight / 2 + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{Math.round(maxCount / 2)}</text>
+          <text x={paddingLeft - 12} y={paddingTop + graphHeight + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">0</text>
 
           {/* Area fill */}
           {areaD && <path d={areaD} fill="url(#chartGradient)" />}
 
-          {/* Line path */}
+          {/* Line path (use currentColor for easy theming) with animation */}
           {pathD && (
-            <path 
-              d={pathD} 
-              fill="none" 
-              className="stroke-indigo-500" 
-              strokeWidth="2.5" 
-              strokeLinecap="round" 
+            <path
+              ref={(el) => { pathRef.current = el; }}
+              d={pathD}
+              fill="none"
+              strokeWidth="2.5"
+              strokeLinecap="round"
               strokeLinejoin="round"
+              stroke="var(--primary)"
+              style={{ transition: pathAnimated ? "stroke-dashoffset 700ms ease-out" : undefined }}
             />
           )}
 
-          {/* Data Points & Tooltips */}
-          {points.map((p, idx) => (
-            <g key={idx} className="group/point cursor-pointer">
-              <circle 
-                cx={p.x} cy={p.y} r="4" 
-                className="fill-indigo-500 stroke-white dark:stroke-slate-900 shadow-sm transition-all group-hover/point:r-6 group-hover/point:fill-indigo-600" 
-                strokeWidth="1.5"
-              />
-              {/* Tooltip Overlay */}
-              <g className="opacity-0 group-hover/point:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <rect 
-                  x={p.x - 30} y={p.y - 32} width="60" height="22" rx="6" 
-                  className="fill-slate-900 shadow-xl"
+          {/* Data Points & Accessible Tooltips */}
+          {points.map((p, idx) => {
+            const isActive = activePoint === idx;
+            const tooltipId = `pv-tooltip-${idx}`;
+            return (
+              <g key={idx} className="group/point">
+                {/* Make the circle keyboard focusable */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={isActive ? 6 : 5}
+                  fill="var(--primary)"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  className="transition-all"
+                  tabIndex={0}
+                  role="button"
+                  aria-describedby={tooltipId}
+                  onFocus={() => setActivePoint(idx)}
+                  onBlur={() => setActivePoint((cur) => (cur === idx ? null : cur))}
+                  onMouseEnter={() => setActivePoint(idx)}
+                  onMouseLeave={() => setActivePoint((cur) => (cur === idx ? null : cur))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActivePoint((cur) => (cur === idx ? null : idx));
+                    } else if (e.key === "ArrowRight") {
+                      setActivePoint((cur) => (cur === null ? 0 : Math.min(points.length - 1, cur + 1)));
+                    } else if (e.key === "ArrowLeft") {
+                      setActivePoint((cur) => (cur === null ? 0 : Math.max(0, cur - 1)));
+                    }
+                  }}
                 />
-                <text 
-                  x={p.x} y={p.y - 18} textAnchor="middle" 
-                  className="fill-white text-[10px] font-bold font-sans"
+
+                {/* Tooltip: visible when focused/hovered */}
+                <g
+                  id={tooltipId}
+                  className={`pointer-events-none transition-opacity duration-150 ${isActive ? "opacity-100" : "opacity-0"}`}
                 >
-                  {p.value} PVs
-                </text>
+                  {/* Accessible focus ring behind the tooltip for keyboard users */}
+                  {isActive && (
+                    <circle cx={p.x} cy={p.y} r={12} fill="none" stroke="var(--primary-foreground)" strokeWidth={2} opacity={0.18} />
+                  )}
+                  <rect x={p.x - 36} y={p.y - 44} width="72" height="28" rx="6" fill="#0b1220" opacity={0.96} />
+                  <text x={p.x} y={p.y - 26} textAnchor="middle" className="fill-white text-[11px] font-bold font-sans">{p.value} PVs</text>
+                </g>
               </g>
-            </g>
-          ))}
+            );
+          })}
 
           {/* X Axis Labels */}
           {points.filter((_, i) => i % Math.max(Math.round(points.length / 5), 1) === 0 || i === points.length - 1).map((p, idx) => {
-            // Shorten date format for axis (e.g. 2026-06-01 -> 01 Jun)
             let shortDate = p.label;
-            try {
-              const d = new Date(p.label);
-              shortDate = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
-            } catch {}
-
+            try { shortDate = new Date(p.label).toLocaleDateString("id-ID", { day: "numeric", month: "short" }); } catch {}
             return (
-              <text 
-                key={idx} x={p.x} y={paddingTop + graphHeight + 18} 
-                textAnchor="middle" 
-                className="fill-slate-400 text-[9px] font-mono font-medium"
-              >
-                {shortDate}
-              </text>
+              <text key={idx} x={p.x} y={paddingTop + graphHeight + 20} textAnchor="middle" className="fill-slate-400 text-[10px] font-mono font-medium">{shortDate}</text>
             );
           })}
         </svg>
@@ -240,17 +238,43 @@ export default function AnalyticsPage() {
     );
   };
 
+  // On mount, animate the chart stroke drawing once
+  useLayoutEffect(() => {
+    if (!pathRef.current) return;
+    try {
+      const pathEl = pathRef.current;
+      const length = pathEl.getTotalLength();
+      pathEl.style.strokeDasharray = `${length}`;
+      pathEl.style.strokeDashoffset = `${length}`;
+      // trigger layout then animate
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          pathEl.style.transition = "stroke-dashoffset 700ms ease-out";
+          pathEl.style.strokeDashoffset = "0";
+          setPathAnimated(true);
+        });
+      });
+    } catch (e) {
+      // ignore if SVG path measurement fails in some environments
+    }
+  }, [data?.pageviews_by_date]);
+
   return (
     <div className="space-y-6">
+      {/* Announce active point for screen readers */}
+      <div aria-live="polite" className="sr-only">
+        {activePoint !== null ? `Tanggal ${data?.pageviews_by_date?.[activePoint]?.date || ''}, ${data?.pageviews_by_date?.[activePoint]?.count || 0} pageviews` : ''}
+      </div>
       {/* Filter toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Site Filter */}
-        <div className="flex items-center gap-1.5">
-          <Filter className="w-3.5 h-3.5 text-slate-500" />
-          <select 
-            value={selectedSiteId} 
+        <div className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-slate-500" />
+          <select
+            value={selectedSiteId}
             onChange={(e) => setSelectedSiteId(e.target.value)}
-            className="px-3 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
+            aria-label="Pilih website"
           >
             <option value="all">Semua Website</option>
             {sites.map((s) => (
@@ -263,18 +287,20 @@ export default function AnalyticsPage() {
 
         {/* Date filters */}
         <div className="flex items-center gap-2">
-          <input 
-            type="date" 
+          <input
+            type="date"
             value={fromStr}
             onChange={(e) => setFromStr(e.target.value)}
-            className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
+            aria-label="Dari tanggal"
           />
-          <span className="text-xs font-semibold text-slate-400">s/d</span>
-          <input 
-            type="date" 
+          <span className="text-sm font-semibold text-slate-400">s/d</span>
+          <input
+            type="date"
             value={toStr}
             onChange={(e) => setToStr(e.target.value)}
-            className="px-3 py-1 border rounded-xl text-xs outline-none focus:border-primary bg-card"
+            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
+            aria-label="Sampai tanggal"
           />
         </div>
       </div>
@@ -286,9 +312,9 @@ export default function AnalyticsPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Kunjungan (Pageviews)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-slate-900">{data?.total_pageviews || 0}</div>
-            <div className="text-[10px] text-green-600 font-bold flex items-center gap-0.5">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <div className="text-3xl font-black text-foreground">{data?.total_pageviews || 0}</div>
+            <div className="text-[10px] text-primary font-bold flex items-center gap-1">
+              <TrendingUp className="w-3.5 h-3.5 text-primary" />
               Tumbuh Positif
             </div>
           </CardContent>
@@ -298,7 +324,7 @@ export default function AnalyticsPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Kunjungan Unik (Est.)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-slate-900">{Math.round((data?.total_pageviews || 0) * 0.72)}</div>
+            <div className="text-3xl font-black text-foreground">{Math.round((data?.total_pageviews || 0) * 0.72)}</div>
             <div className="text-[10px] text-slate-400">Estimasi rasio pengunjung unik 72%</div>
           </CardContent>
         </Card>
@@ -307,7 +333,7 @@ export default function AnalyticsPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Rata-Rata Durasi</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-slate-900">2m 14s</div>
+            <div className="text-3xl font-black text-foreground">2m 14s</div>
             <div className="text-[10px] text-slate-400">Rata-rata waktu keterlibatan sesi</div>
           </CardContent>
         </Card>
@@ -319,7 +345,7 @@ export default function AnalyticsPage() {
         <Card className="border-border/40 shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-bold flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-indigo-500" />
+              <BarChart3 className="w-5 h-5 text-primary" />
               Statistik Kunjungan Harian
             </CardTitle>
             <CardDescription className="text-xs">Visualisasi pergerakan volume pengunjung harian.</CardDescription>
@@ -335,7 +361,7 @@ export default function AnalyticsPage() {
           <Card className="border-border/40 shadow-sm">
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                <MousePointerClick className="w-4 h-4 text-indigo-600" />
+                <MousePointerClick className="w-4 h-4 text-primary" />
                 Halaman Teratas
               </CardTitle>
             </CardHeader>
@@ -359,7 +385,7 @@ export default function AnalyticsPage() {
           <Card className="border-border/40 shadow-sm">
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                <ArrowUpRight className="w-4 h-4 text-indigo-600" />
+                <ArrowUpRight className="w-4 h-4 text-primary" />
                 Sumber Pengunjung (Referrers)
               </CardTitle>
             </CardHeader>

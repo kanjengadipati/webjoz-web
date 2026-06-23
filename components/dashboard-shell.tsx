@@ -199,7 +199,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 MOTION.slow,
                 accent === "monochrome"
                   ? "bg-slate-500 border-slate-400"
-                  : "bg-indigo-500 border-indigo-300 shadow-[0_0_6px_rgba(99,102,241,0.6)]"
+                  : "bg-primary border-primary/80 shadow-[0_0_6px_color-mix(in_srgb,var(--primary)_60%,transparent)]"
               )} aria-hidden="true" />
             </Button>
 
@@ -329,7 +329,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         <div className={cn(
                           "size-4 rounded-full border-2",
                           MOTION.slow,
-                          accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                          accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
                         )} aria-hidden="true" />
                       </Button>
                       <Button
@@ -386,7 +386,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <div className="flex flex-wrap items-center gap-3">
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
-                      <button className="flex items-center gap-2 bg-[#5b7cf8] text-white hover:brightness-105 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-[0_4px_16px_rgba(91,124,248,0.2)]">
+                      <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
                         <Plus className="w-4 h-4" /> Website AI Baru
                       </button>
                     </Link>

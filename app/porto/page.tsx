@@ -54,16 +54,16 @@ const experience = [
       "Automated operational processes reducing manual reconciliation tasks.",
     ],
   },
-  {
-    role: "Web Developer",
-    company: "WEBARQ",
-    period: "2014 - 2016",
-    tone: "bg-violet-500/10 text-violet-500 border-violet-500/20",
-    points: [
-      "Developed enterprise websites, e-commerce platforms, and custom web portals.",
-      "Built scalable applications using PHP and Laravel.",
-    ],
-  },
+    {
+     role: "Web Developer",
+     company: "WEBARQ",
+     period: "2014 - 2016",
+     tone: "bg-primary/10 text-primary border-primary/20",
+     points: [
+       "Developed enterprise websites, e-commerce platforms, and custom web portals.",
+       "Built scalable applications using PHP and Laravel.",
+     ],
+   },
   {
     role: "PHP Programmer",
     company: "PT Natasolusi Pratama",
@@ -98,7 +98,7 @@ export default function PortoPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_420px]">
           <div className="space-y-8 text-center lg:text-left">
             <div className="flex justify-center lg:justify-start">
-              <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur sm:flex-nowrap sm:gap-3">
+                <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur sm:flex-nowrap sm:gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full border border-primary/20 bg-background/70 text-sm font-black text-foreground">
                   H
                 </div>

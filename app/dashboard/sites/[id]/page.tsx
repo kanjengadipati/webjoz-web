@@ -948,7 +948,7 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
-                  ? "bg-violet-600 text-white shadow-sm font-bold"
+                  ? "bg-primary text-white shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
                 }`}
             >
@@ -957,7 +957,7 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("design")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "design"
-                  ? "bg-violet-600 text-white shadow-sm font-bold"
+                  ? "bg-primary text-white shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
                 }`}
             >
@@ -970,7 +970,7 @@ export default function SiteEditorPage() {
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
-                {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-300" />}
+                {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
               </div>
               <button
                 type="button"
@@ -1002,7 +1002,7 @@ export default function SiteEditorPage() {
                         onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
-                            ? "border-violet-400 bg-violet-500/15"
+                            ? "border-primary bg-primary/15"
                             : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
@@ -1018,13 +1018,13 @@ export default function SiteEditorPage() {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
                               <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
-                              <span className="bg-violet-500/25 text-violet-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
+                              <span className="bg-primary/25 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
                             </div>
                             <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
                               Gaya visual unik buatan AI terbaru untuk website Anda.
                             </p>
                           </div>
-                          {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                          {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
                         </div>
                       </button>
                     );
@@ -1040,7 +1040,7 @@ export default function SiteEditorPage() {
                         onClick={() => void handleTemplateChange(template.id)}
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
-                            ? "border-violet-400 bg-violet-500/15"
+                            ? "border-primary bg-primary/15"
                             : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
@@ -1057,7 +1057,7 @@ export default function SiteEditorPage() {
                             <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
                             <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">{template.description}</p>
                           </div>
-                          {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                          {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
                         </div>
                       </button>
                     );
@@ -1088,7 +1088,7 @@ export default function SiteEditorPage() {
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
-                                  ? "border-violet-400 bg-violet-500/15"
+                                  ? "border-primary bg-primary/15"
                                   : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                                 }`}
                               role="option"
@@ -1112,7 +1112,7 @@ export default function SiteEditorPage() {
                                     Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
                                   </p>
                                 </div>
-                                {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-violet-300" />}
+                                {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
                               </div>
                             </button>
                           );
@@ -1128,7 +1128,7 @@ export default function SiteEditorPage() {
                               void fetchCustomTemplates(false);
                             }}
                             disabled={loadingTemplates}
-                            className="w-full py-2.5 text-center text-[11px] font-bold text-violet-400 hover:text-violet-300 transition-colors border border-dashed border-white/10 hover:border-violet-500/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
+                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-white/10 hover:border-primary/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
                           >
                             {loadingTemplates ? (
                               <>
@@ -1155,15 +1155,15 @@ export default function SiteEditorPage() {
                       type="button"
                       onClick={() => setAiDesignPromptOpen(true)}
                       disabled={aiLoading || !!pendingDiff}
-                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-300 text-[11px] font-semibold hover:bg-violet-500/20 transition disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
                     >
                       <Sparkles className="h-3 w-3" />
                       Regenerate dengan AI
                     </button>
                   ) : (
-                    <div className="space-y-1.5 rounded-lg border border-violet-500/20 bg-violet-500/5 p-2">
+                    <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-violet-400">AI Design Prompt</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary">AI Design Prompt</span>
                         <button
                           type="button"
                           onClick={() => setAiDesignPromptOpen(false)}
@@ -1180,14 +1180,14 @@ export default function SiteEditorPage() {
                           if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
                         }}
                         placeholder="cth: tema kopi vintage hangat..."
-                        className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                        className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
                         disabled={aiLoading || !!pendingDiff}
                       />
                       <button
                         type="button"
                         onClick={() => void handleAiRegenerateDesign()}
                         disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
-                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-violet-600 text-white text-[11px] font-semibold hover:bg-violet-500 transition disabled:opacity-50"
+                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-white text-[11px] font-semibold hover:bg-primary/90 transition disabled:opacity-50"
                       >
                         {aiLoading ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -1234,14 +1234,14 @@ export default function SiteEditorPage() {
                   onClick={() => { if (!pendingDiff) selectSection(key, true); }}
                   className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${
                     activeTab === key
-                      ? "bg-violet-500/15"
+                      ? "bg-primary/15"
                       : hiddenSections.includes(key)
                         ? "opacity-40 hover:opacity-60"
                         : "hover:bg-white/[0.03]"
                   }`}
                 >
                   <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-violet-300" : "text-slate-500"}`} />
+                  <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
                   <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
                     {label}
                   </span>
@@ -1260,7 +1260,7 @@ export default function SiteEditorPage() {
                     </div>
                   )}
                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
-                    activeTab === key ? "bg-violet-600/30 text-violet-200" : "bg-white/5 text-slate-500"
+                    activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
                   }`}>{num}</span>
                 </div>
               ))}
@@ -1303,7 +1303,7 @@ export default function SiteEditorPage() {
                         value={designToken?.palette?.primary || ""}
                         onChange={(e) => handleColorChange("primary", e.target.value)}
                         onClick={() => colorRefs.current["primary"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#4F46E5"
                       />
                       {colorUndo["primary"]?.length ? (
@@ -1333,7 +1333,7 @@ export default function SiteEditorPage() {
                         value={designToken?.palette?.accent || ""}
                         onChange={(e) => handleColorChange("accent", e.target.value)}
                         onClick={() => colorRefs.current["accent"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#7C3AED"
                       />
                       {colorUndo["accent"]?.length ? (
@@ -1363,7 +1363,7 @@ export default function SiteEditorPage() {
                         value={designToken?.palette?.background || ""}
                         onChange={(e) => handleColorChange("background", e.target.value)}
                         onClick={() => colorRefs.current["background"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#FAF7F2"
                       />
                       {colorUndo["background"]?.length ? (
@@ -1393,7 +1393,7 @@ export default function SiteEditorPage() {
                         value={designToken?.palette?.surface || ""}
                         onChange={(e) => handleColorChange("surface", e.target.value)}
                         onClick={() => colorRefs.current["surface"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#FFFFFF"
                       />
                       {colorUndo["surface"]?.length ? (
@@ -1423,7 +1423,7 @@ export default function SiteEditorPage() {
                         value={designToken?.palette?.text || ""}
                         onChange={(e) => handleColorChange("text", e.target.value)}
                         onClick={() => colorRefs.current["text"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400 cursor-pointer"
+                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#2C2C2A"
                       />
                       {colorUndo["text"]?.length ? (
@@ -1446,7 +1446,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.typography?.heading_font || "Inter"}
                         onChange={(e) => updateDesignTokenField("typography", "heading_font", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         {GOOGLE_FONTS_WHITELIST.map((font) => (
                           <option key={font} value={font} className="bg-[#111318]">
@@ -1461,7 +1461,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.typography?.body_font || "Inter"}
                         onChange={(e) => updateDesignTokenField("typography", "body_font", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         {GOOGLE_FONTS_WHITELIST.map((font) => (
                           <option key={font} value={font} className="bg-[#111318]">
@@ -1476,7 +1476,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.typography?.heading_weight || "700"}
                         onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="400" className="bg-[#111318]">Regular (400)</option>
                         <option value="500" className="bg-[#111318]">Medium (500)</option>
@@ -1491,7 +1491,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.typography?.heading_size_hero || "3rem"}
                         onChange={(e) => updateDesignTokenField("typography", "heading_size_hero", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="2rem" className="bg-[#111318]">Kecil (2rem)</option>
                         <option value="2.5rem" className="bg-[#111318]">Sedang (2.5rem)</option>
@@ -1513,7 +1513,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.corner_radius || "soft"}
                         onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="sharp" className="bg-[#111318]">Tajam (0px)</option>
                         <option value="soft" className="bg-[#111318]">Lembut (8px)</option>
@@ -1526,7 +1526,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.section_spacing || "normal"}
                         onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="compact" className="bg-[#111318]">Rapat (Compact)</option>
                         <option value="normal" className="bg-[#111318]">Normal</option>
@@ -1539,7 +1539,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.hero_style || "centered"}
                         onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-violet-400"
+                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="centered" className="bg-[#111318]">Centered</option>
                         <option value="split" className="bg-[#111318]">Split Screen</option>
@@ -1574,13 +1574,13 @@ export default function SiteEditorPage() {
                 <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
                   {pendingDiff ? (
                     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
-                      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400">
+                      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <Sparkles className="h-6 w-6 animate-pulse" />
                       </div>
                       <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
                       <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
                         Silakan gunakan atau kembalikan perubahan AI pada seksi{" "}
-                        <span className="font-bold text-violet-300">
+                        <span className="font-bold text-primary">
                           {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
                         </span>{" "}
                         di bagian atas halaman preview terlebih dahulu.
@@ -1652,8 +1652,8 @@ export default function SiteEditorPage() {
                 <div className="border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 py-2.5 space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <Sparkles className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
-                      <span className="truncate text-[10px] font-bold uppercase tracking-widest text-violet-300">
+                      <Sparkles className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                      <span className="truncate text-[10px] font-bold uppercase tracking-widest text-primary">
                         AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
                     </div>
@@ -1675,7 +1675,7 @@ export default function SiteEditorPage() {
                         type="button"
                         onClick={() => setAiInstructions(suggestion)}
                         disabled={!!pendingDiff}
-                        className="rounded-full border border-violet-400/20 bg-violet-400/10 px-2 py-1 text-left text-[10px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50 disabled:pointer-events-none"
+                        className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-left text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50 disabled:pointer-events-none"
                       >
                         {suggestion}
                       </button>
@@ -1705,12 +1705,12 @@ export default function SiteEditorPage() {
                       onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
                       placeholder={aiPlaceholder}
                       disabled={aiLoading || !!pendingDiff}
-                      className="flex-1 h-8 px-2.5 border border-violet-500/25 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700 disabled:opacity-50"
+                      className="flex-1 h-8 px-2.5 border border-primary bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700 disabled:opacity-50"
                     />
                     <button
                       onClick={handleAiRegenerateSection}
                       disabled={aiLoading || !!pendingDiff}
-                      className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-[#7c3aed] text-white text-[11px] font-semibold hover:bg-violet-600 transition-colors disabled:opacity-50 whitespace-nowrap"
+                      className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 whitespace-nowrap"
                     >
                       {aiLoading ? (
                         <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
@@ -1760,7 +1760,7 @@ export default function SiteEditorPage() {
                   type="button"
                   onClick={() => setPublishModalOpen(true)}
                   className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-white"
-                  style={{ background: "#7c3aed" }}
+                  style={{ background: "var(--primary)" }}
                 >
                   <Rocket className="w-3 h-3" />
                   Publish
@@ -1846,7 +1846,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => setPublishModalOpen(true)}
                 className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-white transition-colors hover:brightness-110"
-                style={{ background: "#7c3aed" }}
+                style={{ background: "var(--primary)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />
                 Publikasikan
@@ -1855,15 +1855,15 @@ export default function SiteEditorPage() {
           </div>
 
           {pendingDiff && (
-            <div className="flex-shrink-0 border-b border-violet-400/20 bg-[#0b0f1a] px-3 py-2">
+            <div className="flex-shrink-0 border-b border-primary/20 bg-[#0b0f1a] px-3 py-2">
               <div className="flex items-start gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-3.5 w-3.5 text-violet-300" />
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
                     <p className="text-[12px] font-bold text-slate-100">
                       Diff AI: {SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section}
                     </p>
-                    <span className="rounded-full bg-violet-400/10 px-2 py-0.5 text-[10px] font-semibold text-violet-200">
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
                       {pendingDiff.rows.length || 0} perubahan
                     </span>
                   </div>
@@ -1942,9 +1942,9 @@ export default function SiteEditorPage() {
                 }
                 #preview-scroll-container div[id="section-preview-${pendingDiff.section}"] {
                   position: relative;
-                  outline: 3px solid #7c3aed;
+                  outline: 3px solid var(--primary);
                   outline-offset: -3px;
-                  box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+                  box-shadow: 0 0 25px color-mix(in srgb, var(--primary) 35%, transparent);
                   z-index: 10;
                 }
               `}} />
@@ -2018,13 +2018,13 @@ export default function SiteEditorPage() {
                   onClick={() => selectSection(sec.key)}
                   className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${
                     activeTab === sec.key
-                      ? "bg-violet-500/15 border-violet-500/30 text-violet-200"
+                      ? "bg-primary/15 border-primary/30 text-primary"
                       : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200"
                   }`}
                 >
                   <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-bold"
                     style={{
-                      background: activeTab === sec.key ? "#7c3aed" : "rgba(255,255,255,0.08)",
+                      background: activeTab === sec.key ? "var(--primary)" : "rgba(255,255,255,0.08)",
                       color: activeTab === sec.key ? "white" : "#64748b"
                     }}
                   >
@@ -2041,7 +2041,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => setEditorTab("content")}
                 className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
-                  editorTab === "content" ? "bg-[#7c3aed] text-white" : "text-slate-400"
+                  editorTab === "content" ? "bg-primary text-primary-foreground" : "text-slate-400"
                 }`}
               >
                 Konten
@@ -2050,7 +2050,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => setEditorTab("design")}
                 className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
-                  editorTab === "design" ? "bg-[#7c3aed] text-white" : "text-slate-400"
+                  editorTab === "design" ? "bg-primary text-primary-foreground" : "text-slate-400"
                 }`}
               >
                 Desain
@@ -2104,7 +2104,7 @@ export default function SiteEditorPage() {
                       <input type="text" value={designToken?.palette?.[colorKey] || ""}
                         onChange={(e) => handleColorChange(colorKey, e.target.value)}
                         onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
-                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400 cursor-pointer" />
+                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
                       {colorUndo[colorKey]?.length ? (
                         <button type="button" onClick={() => undoColor(colorKey)} className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
                           <RotateCcw className="h-3 w-3 text-slate-400" />
@@ -2118,17 +2118,17 @@ export default function SiteEditorPage() {
                   <div className="space-y-2">
                     <select value={designToken?.typography?.heading_font || "Inter"}
                       onChange={(e) => updateDesignTokenField("typography", "heading_font", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f} className="bg-[#111318]">{f}</option>)}
                     </select>
                     <select value={designToken?.typography?.body_font || "Inter"}
                       onChange={(e) => updateDesignTokenField("typography", "body_font", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f} className="bg-[#111318]">{f}</option>)}
                     </select>
                     <select value={designToken?.typography?.heading_weight || "700"}
                       onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       {["400", "500", "600", "700", "800"].map((w) => <option key={w} value={w} className="bg-[#111318]">Weight {w}</option>)}
                     </select>
                   </div>
@@ -2137,12 +2137,12 @@ export default function SiteEditorPage() {
                   <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tata Letak</p>
                   <select value={designToken?.layout?.corner_radius || "soft"}
                     onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                     <option value="sharp">Tajam (0px)</option><option value="soft">Lembut (8px)</option><option value="rounded">Bulat (20px)</option>
                   </select>
                   <select value={designToken?.layout?.section_spacing || "normal"}
                     onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-violet-400">
+                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                     <option value="compact">Rapat</option><option value="normal">Normal</option><option value="relaxed">Longgar</option>
                   </select>
                 </div>
@@ -2158,7 +2158,7 @@ export default function SiteEditorPage() {
                       key={chip} type="button"
                       onClick={() => setAiInstructions(chip)}
                       disabled={!!pendingDiff}
-                      className="flex-shrink-0 px-2 py-1 rounded-full border border-violet-400/20 bg-violet-400/10 text-[9px] font-medium text-violet-100 hover:bg-violet-400/20 disabled:opacity-50"
+                      className="flex-shrink-0 px-2 py-1 rounded-full border border-primary/20 bg-primary/10 text-[9px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
                     >
                       {chip}
                     </button>
@@ -2172,13 +2172,13 @@ export default function SiteEditorPage() {
                   onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
                   placeholder={aiPlaceholder}
                   disabled={aiLoading || !!pendingDiff}
-                  className="flex-1 h-9 px-3 border border-violet-500/25 bg-[#05070b] text-slate-100 rounded-[10px] text-[11px] outline-none focus:border-violet-400 placeholder:text-slate-700"
+                  className="flex-1 h-9 px-3 border border-primary/25 bg-[#05070b] text-slate-100 rounded-[10px] text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
                 />
                 <button
                   type="button"
                   onClick={handleAiRegenerateSection}
                   disabled={aiLoading || !!pendingDiff}
-                  className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-[#7c3aed] text-white disabled:opacity-50"
+                  className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-primary text-primary-foreground disabled:opacity-50"
                 >
                   {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                 </button>
@@ -2191,8 +2191,8 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={() => setPublishModalOpen(true)}
-              className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(124,58,237,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+              className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
             >
               <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
               Publikasikan Website
@@ -2268,9 +2268,9 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Celebration Header Banner */}
-        <div className="bg-gradient-to-tr from-[#6f6fff]/10 to-[#a855f7]/10 border border-[#6f6fff]/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#6f6fff]/10 blur-2xl rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#6f6fff] to-[#a855f7] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(111,111,255,0.3)]">
+        <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shrink-0 shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_30%,transparent)]">
             <Rocket className="w-6 h-6 text-white animate-pulse" />
           </div>
           <div>
@@ -2278,7 +2278,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               Satu Langkah Lagi! 🚀
             </h4>
             <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
-              Website <span className="text-[#a9bcff] font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
+              Website <span className="text-primary font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
             </p>
           </div>
         </div>
@@ -2294,7 +2294,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
-                  : "border-white/10 hover:border-white/20 focus-within:border-[#6f6fff] focus-within:shadow-[0_0_12px_rgba(111,111,255,0.2)]"
+                  : "border-white/10 hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
             }`}
           >
             <input
@@ -2307,7 +2307,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-[#8fa8ff] font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
               .webjoz.com
             </span>
           </div>
@@ -2336,19 +2336,19 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
 
         {/* Custom Domain premium upselling banner */}
         <div className="bg-[#15151c] border border-white/[0.06] hover:border-white/10 rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-[#6f6fff]/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-[#8fa8ff] group-hover:text-white transition-colors">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
+          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-[#6f6fff] text-white rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
+              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
               Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}
               <Link
                 href="/dashboard/domains"
-                className="text-[#8fa8ff] font-semibold hover:text-white underline underline-offset-2 transition-colors"
+                className="text-primary font-semibold hover:text-white underline underline-offset-2 transition-colors"
                 onClick={onCancel}
               >
                 Pengaturan Domain
@@ -2374,7 +2374,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
               !isInputValid || loading
                 ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
-                : "bg-gradient-to-r from-[#6f6fff] to-[#8c8cff] hover:from-[#5a5ae8] hover:to-[#7a7aff] text-white shadow-[0_4px_14px_rgba(111,111,255,0.25)] hover:shadow-[0_4px_18px_rgba(111,111,255,0.35)] transform hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_4px_18px_color-mix(in_srgb,var(--primary)_35%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
             disabled={loading || !isInputValid}
           >
@@ -2445,7 +2445,7 @@ function CongratsModal({ site, onClose }: CongratsModalProps) {
       <div className="space-y-6 text-center py-4">
         {/* Celebration Anim/Icon */}
         <div className="flex justify-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-[#6f6fff] flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
             <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
             <Rocket className="w-10 h-10 text-white animate-bounce" style={{ animationDuration: "2.5s" }} />
           </div>
@@ -2454,7 +2454,7 @@ function CongratsModal({ site, onClose }: CongratsModalProps) {
         <div className="space-y-2 max-w-sm mx-auto">
           <h3 className="text-xl font-bold text-white tracking-tight">Website Anda Resmi Mengudara!</h3>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
-            Selamat! Halaman web <span className="text-[#8fa8ff] font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
+              Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
           </p>
         </div>
 
@@ -2503,8 +2503,7 @@ function CongratsModal({ site, onClose }: CongratsModalProps) {
           </Button>
           <Button
             type="button"
-            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-[#6f6fff] hover:bg-[#5a5ae8] border-0 cursor-pointer shadow-[0_4px_14px_rgba(111,111,255,0.3)] flex items-center justify-center gap-2"
-            style={{ color: "#fff" }}
+            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary text-primary-foreground hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)] flex items-center justify-center gap-2"
             onClick={() => window.open(siteUrl, "_blank")}
           >
             <Globe className="w-4 h-4" /> Buka Website

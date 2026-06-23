@@ -88,7 +88,7 @@ export function InteractiveMockup() {
           transformStyle: "preserve-3d",
           transition: isHovered ? "none" : "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)",
         }}
-        className="relative rounded-[2rem] border border-border/60 bg-card/45 p-1.5 shadow-[0_40px_120px_rgba(0,0,0,0.3)] backdrop-blur-md ring-1 ring-white/5 transition-shadow duration-500 hover:shadow-[0_50px_140px_rgba(99,102,241,0.15)]"
+        className="relative rounded-[2rem] border border-border/60 bg-card/45 p-1.5 shadow-[0_40px_120px_rgba(0,0,0,0.3)] backdrop-blur-md ring-1 ring-white/5 transition-shadow duration-500 hover:shadow-[0_50px_140px_color-mix(in_srgb,var(--primary)_15%,transparent)]"
       >
         {/* Browser Top Bar */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 select-none">
@@ -192,7 +192,7 @@ export function InteractiveMockup() {
           {/* Right Live-Generating Preview Column */}
           <div className="relative hidden md:block bg-muted/15 overflow-hidden">
             {/* Ambient Background Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.1),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--primary)_10%,transparent),transparent_60%)]" />
             
             {/* Loading Grid Scan Line */}
             {flowStep === 5 && (

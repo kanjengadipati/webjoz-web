@@ -178,7 +178,7 @@ export default function DomainsPage() {
           setShowUpsellModal(false);
           proceedAddDomain(domainInput.toLowerCase().trim());
         }}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-[#6f6fff] text-white hover:bg-[#5a5ae8] transition-all hover:shadow-[0_0_12px_rgba(111,111,255,0.4)] cursor-pointer"
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
       >
         Upgrade Sekarang
       </button>
@@ -219,7 +219,7 @@ export default function DomainsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{dom.domain}</p>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-[#6f6fff]/20 text-[#8fa8ff]">
+                      <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-primary/20 text-primary">
                         Custom Domain
                       </span>
                     </div>
@@ -256,7 +256,7 @@ export default function DomainsPage() {
       <section className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
         <div>
           <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
-            <Link2 className="w-4 h-4 text-[#8fa8ff]" /> Hubungkan Custom Domain
+            <Link2 className="w-4 h-4 text-primary" /> Hubungkan Custom Domain
           </h2>
           <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
             Gunakan domain milik Anda sendiri untuk tampil lebih profesional.
@@ -273,7 +273,7 @@ export default function DomainsPage() {
               </p>
               <p className="text-[12px] text-[#9a9aa3] m-0 leading-relaxed">
                 Custom domain hanya bisa dihubungkan ke website yang sudah live. Publikasikan website Anda terlebih dahulu melalui halaman{" "}
-                <Link href="/dashboard/sites" className="text-[#8fa8ff] underline underline-offset-2 hover:text-white transition-colors">
+                <Link href="/dashboard/sites" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
                   My Websites
                 </Link>
                 .
@@ -284,13 +284,13 @@ export default function DomainsPage() {
           <form onSubmit={handleAddDomain} className="space-y-5">
             {/* Website Selection */}
             <div>
-              <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">
+              <label className="block text-[12px] font-semibold text-primary mb-1.5">
                 Tautkan ke Website
               </label>
               <select
                 value={siteId}
                 onChange={e => setSiteId(e.target.value)}
-                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] cursor-pointer"
+                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary cursor-pointer"
               >
                 {publishedSites.map(s => (
                   <option key={s.id} value={s.id}>
@@ -302,7 +302,7 @@ export default function DomainsPage() {
 
             {/* Custom Domain Input */}
             <div>
-              <label className="block text-[12px] font-semibold text-[#8fa8ff] mb-1.5">
+              <label className="block text-[12px] font-semibold text-primary mb-1.5">
                 Alamat Custom Domain
               </label>
               <input
@@ -310,7 +310,7 @@ export default function DomainsPage() {
                 value={domainInput}
                 onChange={e => setDomainInput(e.target.value)}
                 placeholder="cth. tokokamu.com atau toko.domainanda.com"
-                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] placeholder:text-[#6b6b75]"
+                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary placeholder:text-[#6b6b75]"
               />
               {domainInput.trim() !== "" && (
                 <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
@@ -322,7 +322,7 @@ export default function DomainsPage() {
             {/* DNS instructions card */}
             <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-5 py-5 space-y-4">
               <div className="flex items-center gap-2">
-                <Server className="w-4 h-4 text-[#8fa8ff]" />
+                <Server className="w-4 h-4 text-primary" />
                 <span className="text-[13px] font-semibold text-[#c8c8d4]">Petunjuk Konfigurasi DNS di Provider Domain</span>
               </div>
 
@@ -354,7 +354,7 @@ export default function DomainsPage() {
                         <span>Target / Value</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2 items-center font-mono text-[12px] text-[#c8c8d4]">
-                        <span className="text-[#8fa8ff] font-semibold">CNAME</span>
+                        <span className="text-primary font-semibold">CNAME</span>
                         <span>www</span>
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span className="truncate" title={CNAME_TARGET}>{CNAME_TARGET}</span>
@@ -382,7 +382,7 @@ export default function DomainsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 bg-[#6f6fff]/5 border border-[#6f6fff]/20 rounded-xl px-3.5 py-3 text-[11px] text-[#8fa8ff] leading-relaxed">
+              <div className="flex items-start gap-2 bg-primary/5 border border-primary/20 rounded-xl px-3.5 py-3 text-[11px] text-primary leading-relaxed">
                 <Info className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>Setelah menyimpan konfigurasi DNS di atas, kembali ke dashboard dan klik tombol <strong>"Cek DNS" (ikon Refresh)</strong> pada daftar domain Anda untuk memverifikasi.</span>
               </div>
@@ -395,7 +395,7 @@ export default function DomainsPage() {
               className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
                 !inputValid || submitting || !siteId
                   ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
-                  : "bg-[#6f6fff] text-white hover:bg-[#5a5ae8]"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
               }`}
             >
               {submitting ? (

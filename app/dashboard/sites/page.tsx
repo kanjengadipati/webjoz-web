@@ -159,7 +159,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={loading}
-            className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-[#6f6fff] placeholder:text-[#6b6b75]"
+            className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary/60 placeholder:text-[#6b6b75]"
             required
             autoFocus
           />
@@ -228,9 +228,9 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Celebration Header Banner */}
-        <div className="bg-gradient-to-tr from-[#6f6fff]/10 to-[#a855f7]/10 border border-[#6f6fff]/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#6f6fff]/10 blur-2xl rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#6f6fff] to-[#a855f7] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(111,111,255,0.3)]">
+        <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shrink-0 shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_30%,transparent)]">
             <Rocket className="w-6 h-6 text-white animate-pulse" />
           </div>
           <div>
@@ -238,7 +238,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               Satu Langkah Lagi! 🚀
             </h4>
             <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
-              Website <span className="text-[#a9bcff] font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
+              Website <span className="text-primary font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
             </p>
           </div>
         </div>
@@ -253,8 +253,8 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               subdomain && !isInputValid
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
-                  ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
-                  : "border-white/10 hover:border-white/20 focus-within:border-[#6f6fff] focus-within:shadow-[0_0_12px_rgba(111,111,255,0.2)]"
+                  ? "border-[#3ddc84]/50 shadow-[0_0_10px_color-mix(in_srgb,#3ddc84_15%,transparent)] bg-[#3ddc84]/[0.01]"
+                  : "border-white/10 hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
             }`}
           >
             <input
@@ -267,7 +267,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-[#8fa8ff] font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
               .webjoz.com
             </span>
           </div>
@@ -296,19 +296,19 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
 
         {/* Custom Domain premium upselling banner */}
         <div className="bg-[#15151c] border border-white/[0.06] hover:border-white/10 rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-[#6f6fff]/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-[#8fa8ff] group-hover:text-white transition-colors">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
+          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-[#6f6fff] text-white rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
+              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
               Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}
               <Link
                 href="/dashboard/domains"
-                className="text-[#8fa8ff] font-semibold hover:text-white underline underline-offset-2 transition-colors"
+                className="text-primary font-semibold hover:text-white underline underline-offset-2 transition-colors"
                 onClick={onCancel}
               >
                 Pengaturan Domain
@@ -334,7 +334,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
               !isInputValid || loading
                 ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
-                : "bg-gradient-to-r from-[#6f6fff] to-[#8c8cff] hover:from-[#5a5ae8] hover:to-[#7a7aff] text-white shadow-[0_4px_14px_rgba(111,111,255,0.25)] hover:shadow-[0_4px_18px_rgba(111,111,255,0.35)] transform hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
             disabled={loading || !isInputValid}
           >
@@ -777,7 +777,7 @@ export default function SitesPage() {
           placeholder="Cari website berdasarkan nama..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#1a1a23] border border-white/[0.08] hover:border-white/15 focus:border-[#5b7cf8]/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
+          className="w-full bg-[#1a1a23] border border-white/[0.08] hover:border-white/15 focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
         />
         {searchQuery && (
           <button
@@ -991,7 +991,7 @@ export default function SitesPage() {
                       <button
                         onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
-                        className="flex-1 py-2 px-1 rounded-xl bg-[#5b7cf8]/12 text-[#a9bcff] border border-[#5b7cf8]/40 hover:bg-[#5b7cf8]/20 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
+                        className="flex-1 py-2 px-1 rounded-xl bg-primary/12 text-primary border border-primary/40 hover:bg-primary/20 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
                       >
                         {actionLoading === site.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1055,7 +1055,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
       <div className="space-y-6 text-center py-4">
         {/* Celebration Anim/Icon */}
         <div className="flex justify-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-[#6f6fff] flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_color-mix(in_srgb,var(--primary)_30%,transparent)] relative">
             <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
             <Rocket className="w-10 h-10 text-white animate-bounce" style={{ animationDuration: "2.5s" }} />
           </div>
@@ -1063,9 +1063,9 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
 
         <div className="space-y-2 max-w-sm mx-auto">
           <h3 className="text-xl font-bold text-white tracking-tight">Website Anda Resmi Mengudara!</h3>
-          <p className="text-sm text-[#9b9ba5] leading-relaxed">
-            Selamat! Halaman web <span className="text-[#8fa8ff] font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
-          </p>
+            <p className="text-sm text-[#9b9ba5] leading-relaxed">
+              Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
+            </p>
         </div>
 
         {/* Clickable Subdomain Link Box */}
@@ -1113,7 +1113,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
           </Button>
           <Button
             type="button"
-            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-[#6f6fff] hover:bg-[#5a5ae8] border-0 cursor-pointer shadow-[0_4px_14px_rgba(111,111,255,0.3)] flex items-center justify-center gap-2"
+            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] flex items-center justify-center gap-2"
             style={{ color: "#fff" }}
             onClick={() => window.open(siteUrl, "_blank")}
           >

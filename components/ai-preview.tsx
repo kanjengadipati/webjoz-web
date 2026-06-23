@@ -14,7 +14,7 @@ export function AIPreview() {
   }, []);
 
   return (
-    <div className="relative flex min-h-[400px] overflow-hidden border-l border-border/30 bg-[radial-gradient(circle_at_top,_rgba(120,119,198,0.12),_transparent_45%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0))] p-6 sm:p-8 lg:min-h-full lg:p-10">
+    <div className="relative flex min-h-[400px] overflow-hidden border-l border-border/30 bg-[radial-gradient(circle_at_top,_color-mix(in_srgb,var(--primary)_12%,transparent),_transparent_45%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0))] p-6 sm:p-8 lg:min-h-full lg:p-10">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[grid-white/5] [mask-image:linear-gradient(to_bottom,transparent,black,transparent)] z-0 pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background/20 to-transparent pointer-events-none" />

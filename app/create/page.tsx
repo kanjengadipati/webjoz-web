@@ -181,10 +181,10 @@ function PublicWizardContent() {
         style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
       >
         <div className="relative">
-          <div className="w-20 h-20 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
-            <Loader2 className="w-9 h-9 text-indigo-400 animate-spin" />
+          <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+            <Loader2 className="w-9 h-9 text-primary animate-spin" />
           </div>
-          <div className="absolute -inset-2 rounded-3xl border border-indigo-500/20 animate-ping opacity-30" />
+          <div className="absolute -inset-2 rounded-3xl border border-primary/20 animate-ping opacity-30" />
         </div>
         <div className="text-center space-y-2">
           <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
@@ -252,11 +252,11 @@ export default function PublicWizardPage() {
           className="min-h-screen text-white flex flex-col items-center justify-center gap-8"
           style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
         >
-          <div className="relative">
-            <div className="w-20 h-20 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
-              <Loader2 className="w-9 h-9 text-indigo-400 animate-spin" />
+            <div className="relative">
+            <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+              <Loader2 className="w-9 h-9 text-primary animate-spin" />
             </div>
-            <div className="absolute -inset-2 rounded-3xl border border-indigo-500/20 animate-ping opacity-30" />
+            <div className="absolute -inset-2 rounded-3xl border border-primary/20 animate-ping opacity-30" />
           </div>
           <div className="text-center space-y-2">
             <p className="text-white font-semibold text-lg">Memuat halaman...</p>

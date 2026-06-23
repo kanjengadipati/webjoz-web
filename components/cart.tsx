@@ -109,7 +109,7 @@ export function CartFab({ colorStyle }: { colorStyle?: React.CSSProperties }) {
       aria-label={`Lihat keranjang (${totalQty} item)`}
       className="fixed bottom-6 right-6 z-[200] flex items-center gap-2 px-4 py-3 rounded-full shadow-2xl font-bold text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2"
       style={{
-        background: "var(--dt-primary, #7c3aed)",
+        background: "var(--dt-primary, var(--primary))",
         color: "var(--dt-primary-foreground, #fff)",
         ...colorStyle,
       }}

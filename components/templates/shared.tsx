@@ -173,7 +173,7 @@ interface TestimonialsSectionProps {
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
-  testimonials, headingClass = "text-slate-900", eyebrowClass = "text-violet-600",
+  testimonials, headingClass = "text-slate-900", eyebrowClass = "text-primary",
   eyebrowStyle, quoteStyle, roleStyle,
   cardClass = "bg-white border border-slate-200", quoteClass = "text-slate-700",
   nameClass = "text-slate-900", roleClass = "text-slate-500",
@@ -195,7 +195,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               <div className="flex items-center gap-3 pt-2" style={{ borderTop: cardStyle ? "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" : undefined }}>
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                  style={{ background: t.avatar_color || "#7c3aed" }}
+                  style={{ background: t.avatar_color || "var(--primary)" }}
                 >
                   {t.avatar_initials}
                 </div>
