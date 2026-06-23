@@ -27,6 +27,16 @@ function PublicWizardContent() {
   const [autoSaving, setAutoSaving] = useState(false);
   const [autoSaveError, setAutoSaveError] = useState("");
 
+  useEffect(() => {
+    document.documentElement.classList.add("webjoz-wizard-active");
+    document.body.classList.add("webjoz-wizard-active");
+
+    return () => {
+      document.documentElement.classList.remove("webjoz-wizard-active");
+      document.body.classList.remove("webjoz-wizard-active");
+    };
+  }, []);
+
   // Whenever the URL changes to include ?action=save, trigger the save intent
   useEffect(() => {
     if (isSaveAction) {
@@ -216,7 +226,10 @@ function PublicWizardContent() {
 
   // ── Main wizard page ──────────────────────────────────────────────────────
   return (
-    <div className="w-screen h-screen overflow-hidden bg-slate-100">
+    <div
+      className="fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14]"
+      style={{ height: "var(--webjoz-app-height, 100dvh)" }}
+    >
       <SiteWizard
         mode="public"
         token={token}

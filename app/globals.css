@@ -153,6 +153,27 @@ body {
   min-height: 100vh;
 }
 
+html.webjoz-wizard-active,
+body.webjoz-wizard-active {
+  height: var(--webjoz-app-height, 100dvh);
+  min-height: var(--webjoz-app-height, 100dvh);
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #0d0f14;
+}
+
+/* Hide scrollbar on mobile */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
 /* Premium ambient glow background */
 body::before {
   content: "";

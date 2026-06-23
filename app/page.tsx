@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
+import { InteractiveMockup } from "@/components/interactive-mockup";
+import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 
 // ─── How it works steps ────────────────────────────────────────────────────────
 
@@ -71,6 +73,9 @@ const FEATURES = [
 
 export default function LandingPage() {
   const router = useRouter();
+  const token = useAuthToken();
+  const authReady = useAuthReady();
+  const isLoggedIn = authReady && !!token;
   const [showFloatingCta, setShowFloatingCta] = useState(false);
 
   useEffect(() => {
@@ -113,14 +118,25 @@ export default function LandingPage() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
-            >
-              Masuk
-            </Link>
+            {authReady && (
+              isLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  className="rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
+                >
+                  Masuk
+                </Link>
+              )
+            )}
             <Button onClick={() => startWizard()} className="rounded-full px-4 py-2 text-sm shadow-lg shadow-primary/20">
-              Mulai Gratis
+              {isLoggedIn ? "Buat Website Baru" : "Mulai Gratis"}
             </Button>
           </div>
         </div>
@@ -174,75 +190,8 @@ export default function LandingPage() {
           </div>
           </div>
 
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
-          <div className="relative rounded-[2rem] border border-border/60 bg-card/40 p-1.5 shadow-[0_40px_120px_rgba(0,0,0,0.2)] backdrop-blur-sm ring-1 ring-white/5">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40">
-              <div className="flex gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-red-400/60" />
-                <div className="h-3 w-3 rounded-full bg-yellow-400/60" />
-                <div className="h-3 w-3 rounded-full bg-green-400/60" />
-              </div>
-              <div className="flex-1 rounded-full bg-muted/60 px-4 py-1.5 text-center text-xs text-muted-foreground">
-                webjoz.com/create
-              </div>
-            </div>
-            <div className="grid min-h-[280px] gap-0 md:grid-cols-2 sm:min-h-[320px] overflow-hidden rounded-b-[1.8rem]">
-              {/* Chat panel */}
-              <div className="flex flex-col gap-3 p-5 border-r border-border/30">
-                <div className="flex flex-col gap-2.5">
-                  {/* AI bubble */}
-                  <div className="flex gap-2 items-end">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] shrink-0">✨</div>
-                    <div className="rounded-2xl rounded-bl-sm bg-card border border-border/50 px-3 py-2 text-xs text-foreground max-w-[80%]">
-                      Halo! Apa nama bisnis Anda?
-                    </div>
-                  </div>
-                  {/* User bubble */}
-                  <div className="flex justify-end">
-                    <div className="rounded-2xl rounded-br-sm bg-primary/15 border border-primary/20 px-3 py-2 text-xs text-foreground max-w-[75%]">
-                      Toko Kopi Nusantara
-                    </div>
-                  </div>
-                  {/* AI bubble */}
-                  <div className="flex gap-2 items-end">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] shrink-0">✨</div>
-                    <div className="rounded-2xl rounded-bl-sm bg-card border border-border/50 px-3 py-2 text-xs text-foreground max-w-[80%]">
-                      Nama yang keren! 👍 Sekarang, pilih jenis bisnis Anda:
-                    </div>
-                  </div>
-                  {/* Type chips */}
-                  <div className="flex flex-wrap gap-1.5 ml-8">
-                    {["Kuliner", "Jasa", "Produk"].map((t, i) => (
-                      <div key={t} className={`rounded-full px-2.5 py-1 text-[10px] font-semibold border ${i === 0 ? "bg-primary/15 border-primary/30 text-primary" : "bg-card border-border/50 text-muted-foreground"}`}>{t}</div>
-                    ))}
-                  </div>
-                  {/* Progress */}
-                  <div className="mt-1 ml-8">
-                    <div className="h-1 rounded-full bg-muted overflow-hidden w-32">
-                      <div className="h-1 w-1/3 rounded-full bg-primary" />
-                    </div>
-                    <p className="mt-1 text-[9px] text-muted-foreground">Langkah 2 dari 5</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Preview panel */}
-              <div className="relative hidden md:block bg-muted/30">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.12),transparent_50%)]" />
-                <div className="absolute left-4 top-4 right-4 h-8 rounded-xl bg-primary/10 border border-primary/20" />
-                <div className="absolute left-4 top-16 right-4 h-3 rounded-full bg-foreground/15" />
-                <div className="absolute left-4 top-22 right-12 h-3 rounded-full bg-foreground/8" />
-                <div className="absolute left-4 top-28 w-20 h-3 rounded-full bg-foreground/8" />
-                <div className="absolute left-4 top-36 right-4 grid grid-cols-2 gap-2">
-                  <div className="h-14 rounded-xl bg-primary/8 border border-primary/15" />
-                  <div className="h-14 rounded-xl bg-foreground/5 border border-border/30" />
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center px-3">
-                  <span className="text-[9px] font-semibold text-emerald-400">✓ Preview siap di kanan &rarr;</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex items-center justify-center">
+            <InteractiveMockup />
           </div>
         </div>
       </section>

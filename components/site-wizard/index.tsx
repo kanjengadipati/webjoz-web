@@ -178,7 +178,10 @@ export function SiteWizard({
       );
       if (isMobileRef.current) {
         setPreviewDevice("mobile");
-        setMobileScreen("preview");
+        // Only redirect to preview screen automatically if user is done or confirming
+        if (chatStage === "confirm" || chatStage === "done") {
+          setMobileScreen("preview");
+        }
         return;
       }
       if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
@@ -242,6 +245,16 @@ export function SiteWizard({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const setAppHeight = () => {
+      const height = window.visualViewport?.height || window.innerHeight;
+      document.documentElement.style.setProperty("--webjoz-app-height", `${height}px`);
+    };
+
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    window.visualViewport?.addEventListener("resize", setAppHeight);
+
     const mq = window.matchMedia("(max-width: 767px)");
     isMobileRef.current = mq.matches;
     setIsMobile(mq.matches);
@@ -250,7 +263,12 @@ export function SiteWizard({
       setIsMobile(e.matches);
     };
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      mq.removeEventListener("change", handler);
+      window.removeEventListener("resize", setAppHeight);
+      window.visualViewport?.removeEventListener("resize", setAppHeight);
+      document.documentElement.style.removeProperty("--webjoz-app-height");
+    };
   }, []);
 
   useEffect(() => {
@@ -396,7 +414,6 @@ export function SiteWizard({
     setBusinessSubType(subType);
     setDescription("");
     setInputValue("");
-    setChatStage("done");
     setConfirmDraftName(businessName);
     setConfirmDraftWA(whatsapp);
     setConfirmDraftServiceArea(serviceArea);
@@ -409,8 +426,20 @@ export function SiteWizard({
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
     ]);
+    
+    // Start generating preview in the background
     void handleGenerate(businessName, businessType, { businessSubType: subType });
-    if (isMobileRef.current) setMobileScreen("loading");
+
+    // Transition to the next conversational questions: service_area (Step 3)
+    setTimeout(() => {
+      typeMessage(
+        "Bagus! AI mulai merakit website bisnis Anda.\n\nSambil menunggu, di mana area jangkauan layanan bisnis Anda? (contoh: Jogja, Jakarta, seluruh Indonesia, atau ketik/klik Lewati)",
+        () => {
+          setChatStage("service_area");
+          window.setTimeout(() => inputRef.current?.focus(), 0);
+        }
+      );
+    }, 600);
   };
 
   const handleGenerate = async (
@@ -569,7 +598,10 @@ export function SiteWizard({
   }
 
   return (
-    <div className="relative flex w-screen h-[100dvh] overflow-hidden bg-[#0d0f14] md:h-screen">
+    <div
+      className="relative flex w-screen overflow-hidden bg-[#0d0f14] md:h-screen"
+      style={{ height: "var(--webjoz-app-height, 100dvh)" }}
+    >
 
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
@@ -580,7 +612,7 @@ export function SiteWizard({
         }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
-        <div className="px-5 pt-4 pb-5 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
+        <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
           <div className="flex items-start gap-3 mb-4">
             <button
               type="button"
@@ -598,18 +630,29 @@ export function SiteWizard({
                   </div>
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
                 </div>
-                <span className="shrink-0 text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  {isMobile && previewState === "result" && (
+                    <button
+                      type="button"
+                      onClick={() => setMobileScreen("preview")}
+                      className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse"
+                    >
+                      Preview &rarr;
+                    </button>
+                  )}
+                  <span className="text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 5</span>
             <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
           </div>
-          <div className="h-[5px] bg-white/5 rounded-full overflow-hidden w-full">
+          <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700 rounded-full"
+              className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700"
               style={{ width: `${calculateProgress(chatStage)}%` }}
             />
           </div>
@@ -799,7 +842,7 @@ export function SiteWizard({
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <button
             type="button"
-            onClick={() => setMobilePreviewOpen(false)}
+            onClick={() => setMobileScreen("chat")}
             aria-label="Kembali ke chat"
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
           >
