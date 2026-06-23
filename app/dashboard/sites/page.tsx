@@ -730,7 +730,7 @@ export default function SitesPage() {
   const countPublished = sites.filter(s => s.status === "published").length;
 
   return (
-    <div className="wrap max-w-[1080px] mx-auto text-[#f5f5f7] font-sans pb-20 space-y-6">
+    <div className="wrap max-w-[1080px] mx-auto text-foreground font-sans pb-20 space-y-6">
       {/* Modals */}
       {deleteTarget && (
         <DeleteConfirmModal
