@@ -7,12 +7,19 @@ import type { PreviewDevice } from "./types";
 export function DevicePreviewFrame({
   device,
   children,
+  iframeRef: externalRef,
 }: {
   device: PreviewDevice;
   children: React.ReactNode;
+  iframeRef?: React.RefObject<HTMLIFrameElement | null>;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
+
+  // Sync external ref with internal ref
+  useEffect(() => {
+    if (externalRef) externalRef.current = iframeRef.current;
+  });
 
   const syncFrameDocument = () => {
     const doc = iframeRef.current?.contentDocument;

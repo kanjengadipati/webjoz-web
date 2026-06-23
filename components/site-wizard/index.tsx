@@ -93,6 +93,7 @@ export function SiteWizard({
   const historyIndexRef = useRef(historyIndex);
   const hasPromptedDetailsRef = useRef(false);
   const previewScrollRef = useRef<HTMLDivElement>(null);
+  const previewIframeRef = useRef<HTMLIFrameElement>(null);
   const streamDoneRef = useRef(false);
   const loadingStepRef = useRef(0);
 
@@ -105,26 +106,47 @@ export function SiteWizard({
     }
   }, []);
 
+  // Scroll helpers — content lives inside an iframe via DevicePreviewFrame
+  const scrollPreview = useCallback((top: number, behavior?: ScrollBehavior) => {
+    const doc = previewIframeRef.current?.contentDocument ?? previewIframeRef.current?.contentWindow?.document;
+    if (doc) {
+      doc.documentElement?.scrollTo({ top, left: 0, behavior });
+      doc.body?.scrollTo({ top, left: 0, behavior });
+    }
+  }, []);
+
+  const scrollPreviewToBottom = useCallback((behavior?: ScrollBehavior) => {
+    const doc = previewIframeRef.current?.contentDocument ?? previewIframeRef.current?.contentWindow?.document;
+    if (doc) {
+      const height = Math.max(
+        doc.documentElement?.scrollHeight ?? 0,
+        doc.body?.scrollHeight ?? 0
+      );
+      doc.documentElement?.scrollTo({ top: height, left: 0, behavior });
+      doc.body?.scrollTo({ top: height, left: 0, behavior });
+    }
+  }, []);
+
   // Auto-scroll preview as sections stream in, then back to top when done
   const prevArrivedRef = useRef(0);
   useEffect(() => {
     if (previewState === "loading" && arrivedSections.length > prevArrivedRef.current) {
       prevArrivedRef.current = arrivedSections.length;
-      previewScrollRef.current?.scrollTo({ top: previewScrollRef.current.scrollHeight, behavior: "smooth" });
+      scrollPreviewToBottom("smooth");
     }
-  }, [arrivedSections, previewState]);
+  }, [arrivedSections, previewState, scrollPreviewToBottom]);
 
   useEffect(() => {
     if (previewState === "result") {
-      previewScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      scrollPreview(0, "smooth");
     }
-  }, [previewState]);
+  }, [previewState, scrollPreview]);
 
   useEffect(() => {
     if (previewDevice === "desktop") {
-      previewScrollRef.current?.scrollTo({ top: 0, left: 0 });
+      scrollPreview(0);
     }
-  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex]);
+  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreview]);
 
   const typeMessage = (fullText: string, onComplete: () => void) => {
     let idx = 0;
@@ -537,14 +559,14 @@ export function SiteWizard({
               <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
                 <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
                 <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
-                  <DevicePreviewFrame device="mobile">{templatePreview}</DevicePreviewFrame>
+                  <DevicePreviewFrame device="mobile" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
                 </div>
                 <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
               </div>
             </div>
           ) : (
             <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
-              <DevicePreviewFrame device="desktop">{templatePreview}</DevicePreviewFrame>
+              <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
             </div>
           )}
         </div>
