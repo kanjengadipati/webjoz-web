@@ -34,8 +34,8 @@ interface ConfirmCardProps {
 
 const rowBorder = { borderColor: "rgba(255,255,255,0.06)" };
 const chipDefault = { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#64748b" };
-const chipActive = { background: "rgba(124,58,237,0.15)", borderColor: "#7c3aed", color: "#c4b5fd" };
-const editBtn = { color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" };
+const chipActive = { background: "color-mix(in srgb, var(--primary) 15%, transparent)", borderColor: "var(--primary)", color: "var(--primary)" };
+const editBtn = { color: "var(--primary)", background: "color-mix(in srgb, var(--primary) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--primary) 20%, transparent)" };
 
 function saveField(
   field: string,
@@ -77,9 +77,9 @@ function InlineEditInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") onSave(); if (e.key === "Escape") onCancel(); }}
         className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5"
-        style={{ borderColor: "#7c3aed" }}
+        style={{ borderColor: "var(--primary)" }}
       />
-      <button onClick={onSave} className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0" style={{ background: "#7c3aed", color: "#fff" }}>✓</button>
+      <button onClick={onSave} className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0" style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}>✓</button>
       <button onClick={onCancel} className="text-[10px] text-slate-500 shrink-0">✕</button>
     </div>
   );
@@ -91,12 +91,12 @@ export function ConfirmCard(props: ConfirmCardProps) {
 
   return (
     <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-        <Sparkles className="w-3 h-3 text-white" />
+      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+        <Sparkles className="w-3 h-3 text-primary-foreground" />
       </div>
       <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="px-3 pt-2.5 pb-1.5 flex items-center justify-between">
-          <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#7c3aed" }}>Hampir jadi — cek dan lengkapi</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Hampir jadi — cek dan lengkapi</p>
         </div>
 
         {/* NAMA */}
@@ -217,8 +217,8 @@ export function ConfirmCard(props: ConfirmCardProps) {
             <button
               onClick={props.onGenerate}
               disabled={!!editingField || props.isLoading}
-              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
-              style={{ background: props.hasUnsavedEdits ? "linear-gradient(135deg, #059669, #047857)" : "linear-gradient(135deg, #7c3aed, #5b21b6)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(5,150,105,0.3)" : "0 4px 16px rgba(124,58,237,0.3)" }}
+              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
+              style={{ background: props.hasUnsavedEdits ? "linear-gradient(135deg, #059669, #047857)" : "var(--primary)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(5,150,105,0.3)" : "none", color: props.hasUnsavedEdits ? "#fff" : "var(--primary-foreground)" }}
             >
               <Wand2 className="w-4 h-4" />
               {editingField ? "Selesai edit dulu ↑"

@@ -679,18 +679,17 @@ export function SiteWizard({
                           key={t.value}
                           onClick={() => !isLocked && handleSelectType(t.value)}
                           disabled={isLocked}
-                          className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-[#7c3aed]/70" : isLocked ? "opacity-30 cursor-default" : "hover:border-[#7c3aed]/50 active:scale-[0.97] cursor-pointer"}`}
-                          style={isSelected ? { background: "rgba(124,58,237,0.15)", borderColor: "rgba(124,58,237,0.5)" } : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}
+                          className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-white/[0.04] border-white/[0.07]"}`}
                         >
                           <span className="text-lg">{t.emoji}</span>
                           <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold ${isSelected ? "text-[#a78bfa]" : "text-slate-200"}`}>{t.label}</span>
+                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{t.label}</span>
                             {suggestedHint?.type === t.value && (
                               <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">✨ Disarankan</span>
                             )}
                           </div>
                           <span className="text-[10px] text-slate-500">{t.desc}</span>
-                          {isSelected && !businessSubType && <span className="text-[9px] font-bold text-[#7c3aed] mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
+                          {isSelected && !businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
                           {isSelected && businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {businessSubType}</span>}
                         </button>
                       );
@@ -709,7 +708,7 @@ export function SiteWizard({
                               type="button"
                               onClick={() => !isLocked && handleSelectSubType(st.value)}
                               disabled={isLocked}
-                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-white/10 hover:border-violet-400/50 hover:text-white"}`}
+                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white"}`}
                               style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
                             >
                               <span>{st.emoji}</span>
@@ -735,12 +734,12 @@ export function SiteWizard({
             return (
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <Sparkles className="w-3 h-3 text-white" />
+                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+                    <Sparkles className="w-3 h-3 text-primary-foreground" />
                   </div>
                 )}
                 <div
-                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user" ? "bg-[#7c3aed] text-white rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
+                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
                   style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
                   {formatText(messageText, m.sender === "user")}
@@ -776,7 +775,7 @@ export function SiteWizard({
               <button
                 type="submit"
                 disabled={isInitialTyping || isAiTyping || (chatStage === "name" && !inputValue.trim())}
-                className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#7c3aed] text-white transition-all disabled:opacity-30 hover:bg-[#6d28d9] shrink-0"
+                className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -788,7 +787,7 @@ export function SiteWizard({
           <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <div
               className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${
-                previewState === "loading" ? "bg-[#7c3aed] animate-pulse" : "bg-emerald-400"
+                previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"
               }`}
             />
             <span className="transition-all duration-300">
@@ -950,8 +949,7 @@ export function SiteWizard({
              <button
                type="button"
                onClick={handleGoToEditor}
-               className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold text-white shadow-[0_14px_30px_rgba(91,33,182,0.32)] transition-all active:scale-95"
-               style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold bg-primary text-primary-foreground shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
              >
                <Pencil className="h-3.5 w-3.5" />
                Edit & Publikasikan
@@ -984,19 +982,19 @@ export function SiteWizard({
                    type="tel"
                    value={waDraft}
                    onChange={(e) => setWaDraft(e.target.value)}
-                   placeholder="cth. 081234567890"
-                   className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
-                 />
-                 <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
-               </div>
-               <div>
-                 <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
-                 <input
-                   type="text"
-                   value={areaDraft}
-                   onChange={(e) => setAreaDraft(e.target.value)}
-                   placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
-                   className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-violet-500"
+                    placeholder="cth. 081234567890"
+                    className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
+                  />
+                  <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
+                  <input
+                    type="text"
+                    value={areaDraft}
+                    onChange={(e) => setAreaDraft(e.target.value)}
+                    placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
+                    className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
                  />
                  <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
                </div>
@@ -1026,8 +1024,7 @@ export function SiteWizard({
                      serviceArea: areaDraft || serviceArea,
                    });
                  }}
-                 className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold text-white transition-all active:scale-95 disabled:opacity-40"
-                 style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                  className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95 disabled:opacity-40"
                >
                  <Sparkles className="w-3.5 h-3.5" />
                  Re-generate

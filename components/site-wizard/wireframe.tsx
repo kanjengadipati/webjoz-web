@@ -121,7 +121,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`p-4 rounded-xl space-y-3 transition-all duration-300 ${description && i === 0 ? "ring-1 ring-violet-500/30" : ""}`}
+              className={`p-4 rounded-xl space-y-3 transition-all duration-300 ${description && i === 0 ? "ring-1 ring-primary/30" : ""}`}
               style={{ ...skeletonPanel, animationDelay: `${i * 80}ms` }}
             >
               <div className="w-8 h-8 rounded-full animate-pulse" style={skeletonStrong} />

@@ -56,8 +56,7 @@ export function WizardErrorModal({
             <button
               type="button"
               onClick={onRetry}
-              className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-bold text-white transition-all active:scale-95"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+              className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               {retryLabel}
