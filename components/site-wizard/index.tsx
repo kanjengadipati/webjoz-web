@@ -376,21 +376,14 @@ export function SiteWizard({
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
+      { id: `ai-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
     ]);
-    
-    // Start generating preview in the background
+
+    setChatStage("done");
+    if (isMobile) setMobileScreen("loading");
+
     didGenerateRef.current = true;
     void handleGenerate(businessName, businessType, { businessSubType: subType });
-
-    // Transition to done
-    setTimeout(() => {
-      typeMessage(
-        "Keren! AI sedang merakit website bisnis Anda. Sebentar ya...",
-        () => {
-          setChatStage("done");
-        }
-      );
-    }, 600);
   };
 
   const handleGenerate = async (
@@ -594,16 +587,20 @@ export function SiteWizard({
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 2</span>
-            <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
-          </div>
-          <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700"
-              style={{ width: `${calculateProgress(chatStage)}%` }}
-            />
-          </div>
+          {!isMobile && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] text-slate-500 font-medium">Langkah {getStageNumber(chatStage)} dari 2</span>
+                <span className="text-[11px] font-bold text-[#7c3aed]">{calculateProgress(chatStage)}%</span>
+              </div>
+              <div className="-mx-5 h-[3px] bg-white/5 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-700"
+                  style={{ width: `${calculateProgress(chatStage)}%` }}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
