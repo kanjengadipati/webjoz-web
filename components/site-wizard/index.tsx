@@ -70,7 +70,6 @@ export function SiteWizard({
   const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
-  const [overlayVisible, setOverlayVisible] = useState(false);
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
@@ -127,15 +126,6 @@ export function SiteWizard({
       doc.body?.scrollTo({ top: height, left: 0, behavior });
     }
   }, []);
-
-  // Overlay visibility: show during loading, fade out on done
-  useEffect(() => {
-    if (previewState === "loading") setOverlayVisible(true);
-    if (previewState === "result") {
-      const t = setTimeout(() => setOverlayVisible(false), 700);
-      return () => clearTimeout(t);
-    }
-  }, [previewState]);
 
   // Auto-scroll preview as sections stream in, then back to top when done
   const prevArrivedRef = useRef(0);
@@ -543,23 +533,6 @@ export function SiteWizard({
   };
   const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
 
-  // Preview progress strip definition
-  const PROGRESS_SECTIONS = [
-    { key: "header", label: "Header" },
-    { key: "hero", label: "Hero" },
-    { key: "about", label: "Tentang" },
-    { key: "benefits", label: "Fitur" },
-    { key: "testimonials", label: "Testimoni" },
-    { key: "cta", label: "CTA" },
-    { key: "footer", label: "Footer" },
-  ];
-  const lastArrivedIndex = arrivedSections.length > 0
-    ? Math.max(...arrivedSections.map(s => PROGRESS_SECTIONS.findIndex(p => p.key === s)).filter(i => i >= 0), -1)
-    : -1;
-  const progressPercent = arrivedSections.length > 0
-    ? Math.round((Math.min(lastArrivedIndex + 1, PROGRESS_SECTIONS.length) / PROGRESS_SECTIONS.length) * 100)
-    : 0;
-
   // Template preview content — render as soon as sections start arriving
   let resultPreviewContent: React.ReactNode = null;
   const hasLiveData = Object.keys(streamedSections).length > 0;
@@ -592,43 +565,9 @@ export function SiteWizard({
               </div>
             </div>
           ) : (
-            <>
-              {previewState === "loading" && (
-                <div className="shrink-0" style={{ background: "#0d0f14", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="flex items-stretch px-3 py-1.5">
-                    {PROGRESS_SECTIONS.map((sec, i) => {
-                      const done = i < lastArrivedIndex;
-                      const active = i === lastArrivedIndex;
-                      return (
-                        <div key={sec.key} className="flex-1 flex flex-col items-center gap-1 py-1 px-0.5 relative" style={{ borderRight: i < PROGRESS_SECTIONS.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-                          <div
-                            className="w-4 h-4 rounded-full flex items-center justify-center transition-all duration-400"
-                            style={{
-                              border: `1.5px solid ${done ? "#22c55e" : active ? "#7c3aed" : "rgba(255,255,255,0.15)"}`,
-                              background: done ? "rgba(34,197,94,0.15)" : active ? "rgba(124,58,237,0.12)" : "transparent",
-                            }}
-                          >
-                            {done && <span className="text-[7px] text-emerald-400 font-bold">✓</span>}
-                          </div>
-                          <span className="text-[8px] font-semibold whitespace-nowrap transition-all duration-400" style={{ color: active ? "#a78bfa" : "rgba(148,163,184,0.6)" }}>
-                            {sec.label}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="h-[2px] bg-white/5 overflow-hidden">
-                    <div
-                      className="h-full transition-all duration-600 ease-out"
-                      style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg, #7c3aed, #a78bfa)" }}
-                    />
-                  </div>
-                </div>
-              )}
-              <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
-                <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
-              </div>
-            </>
+            <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${liveTemplateId}-${regenCount}-${historyIndex}`}>
+              <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
+            </div>
           )}
         </div>
       );
@@ -885,17 +824,14 @@ export function SiteWizard({
 
           {previewState !== "wireframe" && resultPreviewContent}
 
-          {/* Loading overlay on top of preview — right-aligned, fades out on done */}
-          <div
-            className="absolute inset-0 z-10 flex items-start justify-end p-4 pt-8 transition-opacity duration-700 ease-out pointer-events-none"
-            style={{ background: overlayVisible && previewState === "loading" ? "rgba(0,0,0,0.15)" : "transparent", opacity: overlayVisible ? 1 : 0 }}
-          >
-            {(!isMobile || mobileScreen !== "loading") && (
-              <div className="pointer-events-auto">
+          {/* Loading overlay on top of preview — semi-transparent so sections appear behind */}
+          {previewState === "loading" && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20">
+              {(!isMobile || mobileScreen !== "loading") && (
                 <LoadingModal loadingStep={loadingStep} businessType={businessType} />
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Desktop: Lengkapi Data + Edit & Publish buttons */}
           {previewState === "result" && (
