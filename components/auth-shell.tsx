@@ -29,12 +29,12 @@ export function AuthShell({
   footer,
 }: AuthShellProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+    <main className="relative min-h-screen overflow-hidden px-4 py-4 sm:px-6 sm:py-10 lg:px-10">
       {/* Radial top glow — matches the home hero */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1fr_0.9fr]">
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-md items-center gap-8 sm:min-h-[calc(100vh-5rem)] lg:max-w-6xl lg:grid-cols-[1fr_0.9fr]">
+        <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
           {/* Badge — same pulsing primary style as home hero */}
           <div className="flex items-center gap-3">
             <Image
@@ -72,14 +72,14 @@ export function AuthShell({
         </div>
 
         <Card className="bg-card/90 backdrop-blur animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150">
-          <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8">
+          <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8 px-5 py-5 sm:px-6">
             <CardDescription>{cardEyebrow}</CardDescription>
             <CardTitle>{cardTitle}</CardTitle>
             <CardDescription>{cardDescription}</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="px-5 pt-5 sm:px-6 sm:pt-6">
             {children}
-            <div className="mt-6 text-sm text-muted-foreground">
+            <div className="mt-5 text-sm text-muted-foreground sm:mt-6">
               {footer || <Link href="/" className="font-medium text-primary hover:opacity-80">Back to overview</Link>}
             </div>
           </CardContent>

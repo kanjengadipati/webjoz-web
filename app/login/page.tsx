@@ -8,7 +8,7 @@ import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-
 import { Button, Checkbox, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
-import { checkPasswordlessIdentity, login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
+import { login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
 import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 import { AuthShell } from "@/components/auth-shell";
@@ -68,7 +68,8 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordlessFieldErrors, setPasswordlessFieldErrors] = useState<FieldErrors<PasswordlessField>>({});
   const handledExpiredToastRef = useRef(false);
-  const [isDeviceTrusted, setIsDeviceTrusted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   // If already authenticated, skip the login page and go straight to the dashboard or resume wizard
   useEffect(() => {
@@ -124,11 +125,11 @@ export default function LoginPage() {
       })
         .then((response) => {
           finishLogin("", response.data.access_token);
-          pushToast("Login successful. Welcome back.", "success");
+          pushToast("Berhasil masuk. Selamat datang kembali.", "success");
         })
         .catch((error: unknown) => {
           setState("error");
-          const message = getFormErrorMessage(error, "Invalid or expired magic link", {});
+          const message = getFormErrorMessage(error, "Link masuk tidak valid atau kedaluwarsa", {});
           setErrorMessage(message);
 
           const apiError = error as import("@/lib/api").ApiError;
@@ -143,8 +144,8 @@ export default function LoginPage() {
     }
     if (params.get("expired") === "true" && !handledExpiredToastRef.current) {
       handledExpiredToastRef.current = true;
-      pushToast("Session Expired", "error", {
-        message: "Your session has expired. Please sign in again to continue.",
+      pushToast("Sesi Kedaluwarsa", "error", {
+        message: "Sesi Anda telah kedaluwarsa. Silakan masuk kembali untuk melanjutkan.",
         actionLabel: "Dismiss",
         autoClose: false,
         position: "top-center",
@@ -155,24 +156,36 @@ export default function LoginPage() {
     }
   }, [pushToast, router]);
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
+
   function validatePasswordlessTarget() {
     const target = passwordlessTarget;
     if (otpChannel === "email" && (!target || !EMAIL_PATTERN.test(target))) {
-      const nextErrors = { email: "Enter a valid email address." };
+      const nextErrors = { email: "Masukkan alamat email yang valid." };
       setPasswordlessStep("delivery");
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Please fix the highlighted fields.");
-      pushToast("Please fix the highlighted fields.", "error");
+      setErrorMessage("Perbaiki field yang ditandai.");
       return "";
     }
     if (otpChannel === "whatsapp" && !isValidPhoneNumber(target)) {
-      const nextErrors = { phone: "Enter a valid WhatsApp number." };
+      const nextErrors = { phone: "Masukkan nomor WhatsApp yang valid." };
       setPasswordlessStep("delivery");
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Please fix the highlighted fields.");
-      pushToast("Please fix the highlighted fields.", "error");
+      setErrorMessage("Perbaiki field yang ditandai.");
       return "";
     }
     return target;
@@ -192,62 +205,50 @@ export default function LoginPage() {
     });
   }
 
-  function handlePasswordlessCheck(event: FormEvent<HTMLFormElement>) {
+  function handlePasswordlessCheck(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     const target = validatePasswordlessTarget();
     if (!target) return;
-
     if (otpChannel === "email") setPasswordlessEmail(target);
     if (otpChannel === "whatsapp") setPasswordlessPhone(target);
-    setState("loading");
-    setErrorMessage("");
-    setPasswordlessFieldErrors({});
-    checkPasswordlessIdentity(otpChannel, target)
-      .then((response) => {
-        setIsDeviceTrusted(!!response.data?.is_trusted_device);
-        setPasswordlessStep("confirm");
-      })
-      .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
-      .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
+    sendPasswordlessCode();
   }
 
-  function handlePasswordlessStart(event?: FormEvent<HTMLFormElement>) {
-    event?.preventDefault();
-    const target = validatePasswordlessTarget();
+  function sendPasswordlessCode() {
+    const target = passwordlessTarget;
     if (!target) return;
-
     setState("loading");
     setErrorMessage("");
     setPasswordlessFieldErrors({});
-      startPasswordless(otpChannel, target)
-        .then((response) => {
-          const nextStep = response.data.next_step;
-          if (nextStep === "magic_link" && response.data.magic_link_url) {
-            const currentRedirect = new URLSearchParams(window.location.search).get("redirect");
-            const hasPendingWizard = !!localStorage.getItem("webjoz_pending_wizard_data");
-            if (currentRedirect) {
-              localStorage.setItem("webjoz_login_redirect", currentRedirect);
-            } else if (hasPendingWizard) {
-              localStorage.setItem("webjoz_login_redirect", "/create?action=save");
-            }
-            window.location.href = response.data.magic_link_url;
-            return;
+    startPasswordless(otpChannel, target)
+      .then((response) => {
+        const nextStep = response.data.next_step;
+        if (nextStep === "magic_link" && response.data.magic_link_url) {
+          const currentRedirect = new URLSearchParams(window.location.search).get("redirect");
+          const hasPendingWizard = !!localStorage.getItem("webjoz_pending_wizard_data");
+          if (currentRedirect) {
+            localStorage.setItem("webjoz_login_redirect", currentRedirect);
+          } else if (hasPendingWizard) {
+            localStorage.setItem("webjoz_login_redirect", "/create?action=save");
           }
-          setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
-          pushToast("Check your messages.", "success");
-        })
-      .catch((error: unknown) => handlePasswordlessError(error, "Unable to continue passwordless login"))
+          window.location.href = response.data.magic_link_url;
+          return;
+        }
+        setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
+        setResendCooldown(30);
+        pushToast("Kode terkirim. Silakan cek pesan Anda.", "success");
+      })
+      .catch((error: unknown) => handlePasswordlessError(error, "Gagal mengirim kode. Coba lagi."))
       .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
   }
 
   function handleOTPVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!/^\d{6}$/.test(otp)) {
-      const nextErrors = { otp: "Enter the 6-digit OTP code." };
+      const nextErrors = { otp: "Masukkan kode OTP 6 digit." };
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Please fix the highlighted fields.");
-      pushToast("Please fix the highlighted fields.", "error");
+      setErrorMessage("Perbaiki field yang ditandai.");
       return;
     }
 
@@ -264,9 +265,9 @@ export default function LoginPage() {
     })
       .then((response) => {
         finishLogin(otpChannel === "email" ? target : "", response.data.access_token);
-        pushToast("OTP verified. Welcome back.", "success");
+        pushToast("Kode OTP terverifikasi. Selamat datang kembali.", "success");
       })
-      .catch((error: unknown) => handlePasswordlessError(error, "Invalid or expired OTP"));
+      .catch((error: unknown) => handlePasswordlessError(error, "Kode OTP tidak valid atau kedaluwarsa"));
   }
 
   function handlePasswordLogin(event: FormEvent<HTMLFormElement>) {
@@ -275,7 +276,6 @@ export default function LoginPage() {
     if (!EMAIL_PATTERN.test(email) || password.length < 1) {
       setState("error");
       setErrorMessage("Masukkan email dan password yang valid.");
-      pushToast("Masukkan email dan password yang valid.", "error");
       return;
     }
 
@@ -284,7 +284,7 @@ export default function LoginPage() {
     login(email, password)
       .then((response) => {
         finishLogin(email, response.data.access_token);
-        pushToast("Login berhasil. Selamat datang kembali.", "success");
+        pushToast("Berhasil masuk. Selamat datang kembali.", "success");
       })
       .catch((error: unknown) => {
         setState("error");
@@ -305,54 +305,13 @@ export default function LoginPage() {
     setState("idle");
   }
 
-  const handleWhatsAppButtonClick = () => {
-    if (!passwordlessPhone.trim()) {
-      const inputEl = document.getElementById("passwordless-phone");
-      if (inputEl) {
-        inputEl.focus();
-      }
-      pushToast("Silakan masukkan nomor WhatsApp Anda di bawah.", "info");
-    } else {
-      handlePasswordlessStart();
-    }
-  };
-
   const formContent = (
     <div className="min-h-[18rem]">
       {passwordlessStep === "delivery" ? (
         <div className="space-y-5">
           {authMethod === "whatsapp" ? (
             <>
-              <button
-                type="button"
-                onClick={handleWhatsAppButtonClick}
-                disabled={state === "loading"}
-                className="w-full h-11 flex items-center justify-center gap-2.5 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-sm font-semibold transition cursor-pointer shadow-sm shadow-[#25D366]/20 disabled:opacity-50"
-              >
-                <WhatsAppIcon size="md" className="fill-current text-white" />
-                Masuk dengan WhatsApp
-              </button>
-
-              <SocialAuthButtons
-                mode="login"
-                layout="grid"
-                showSeparator={false}
-                onLoadingStateChange={(loading) => {
-                  setState(loading ? "loading" : "idle");
-                }}
-                onErrorMessageChange={(message) => {
-                  if (message) setState("error");
-                  setErrorMessage(message);
-                }}
-              />
-
-              <div className="relative flex items-center my-5">
-                <div className="flex-grow border-t border-border/80"></div>
-                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau masuk dengan nomor</span>
-                <div className="flex-grow border-t border-border/80"></div>
-              </div>
-
-              <form className="space-y-4" onSubmit={handlePasswordlessStart}>
+              <form className="space-y-4" onSubmit={handlePasswordlessCheck}>
                 <PhoneNumberInput
                   id="passwordless-phone"
                   value={passwordlessPhone}
@@ -373,18 +332,35 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={state === "loading"}
-                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
+                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-sm transition disabled:opacity-50 shadow-sm shadow-[#25D366]/20"
                 >
+                  <WhatsAppIcon size="md" className="fill-current text-white" />
                   {state === "loading" ? (
-                    <LoginLoadingIndicator label="Memeriksa" />
+                    <LoginLoadingIndicator label="Mengirim kode..." />
                   ) : (
-                    <>
-                      Lanjutkan
-                      <span className="text-base" aria-hidden="true">&rarr;</span>
-                    </>
+                    <>Kirim Kode OTP via WhatsApp</>
                   )}
                 </button>
               </form>
+
+              <div className="relative flex items-center my-5">
+                <div className="flex-grow border-t border-border/80"></div>
+                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau lanjutkan dengan</span>
+                <div className="flex-grow border-t border-border/80"></div>
+              </div>
+
+              <SocialAuthButtons
+                mode="login"
+                layout="grid"
+                showSeparator={false}
+                onLoadingStateChange={(loading) => {
+                  setState(loading ? "loading" : "idle");
+                }}
+                onErrorMessageChange={(message) => {
+                  if (message) setState("error");
+                  setErrorMessage(message);
+                }}
+              />
             </>
           ) : authMethod === "email" ? (
             <>
@@ -407,7 +383,7 @@ export default function LoginPage() {
                 <div className="flex-grow border-t border-border/80"></div>
               </div>
 
-              <form className="space-y-4" onSubmit={handlePasswordlessStart}>
+              <form className="space-y-4" onSubmit={handlePasswordlessCheck}>
                 <div className="space-y-2">
                   <Label htmlFor="passwordless-email" className="sr-only">Alamat email</Label>
                   <Input
@@ -437,12 +413,9 @@ export default function LoginPage() {
                   className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
                 >
                   {state === "loading" ? (
-                    <LoginLoadingIndicator label="Memeriksa" />
+                    <LoginLoadingIndicator label="Mengirim kode..." />
                   ) : (
-                    <>
-                      Lanjutkan
-                      <span className="text-base" aria-hidden="true">&rarr;</span>
-                    </>
+                    <>Kirim Kode OTP</>
                   )}
                 </button>
               </form>
@@ -483,17 +456,31 @@ export default function LoginPage() {
                       Lupa password?
                     </Link>
                   </div>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    value={password}
-                    onChange={(event) => {
-                      setPassword(event.target.value);
-                      setErrorMessage("");
-                    }}
-                    placeholder="Password akun"
-                    className="h-11 text-base bg-background"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="login-password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                        setErrorMessage("");
+                      }}
+                      placeholder="Password akun"
+                      className="h-11 text-base bg-background pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground transition"
+                      aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg">
                   {state === "loading" ? <LoginLoadingIndicator label="Masuk" /> : "Masuk dengan password"}
@@ -502,47 +489,6 @@ export default function LoginPage() {
             </>
           )}
         </div>
-      ) : null}
-
-      {passwordlessStep === "confirm" ? (
-        <form className="space-y-4" onSubmit={handlePasswordlessStart}>
-          <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
-            {isDeviceTrusted ? (
-              <>
-                Kami akan mengirimkan link masuk ke{" "}
-                <span className="break-all font-semibold">{passwordlessTarget}</span>.
-              </>
-            ) : (
-              <>
-                Kami akan mengirim kode masuk ke{" "}
-                <span className="break-all font-semibold">{passwordlessTarget}</span>.
-              </>
-            )}
-          </div>
-          <div className="grid gap-3 grid-cols-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setPasswordlessStep("delivery");
-                setErrorMessage("");
-                setState("idle");
-                setIsDeviceTrusted(false);
-              }}
-            >
-              Kembali
-            </Button>
-            <Button type="submit" disabled={state === "loading"}>
-              {state === "loading" ? (
-                <LoginLoadingIndicator label="Mengirim" />
-              ) : isDeviceTrusted ? (
-                "Kirim link"
-              ) : (
-                "Kirim kode"
-              )}
-            </Button>
-          </div>
-        </form>
       ) : null}
 
       {passwordlessStep === "code" ? (
@@ -567,6 +513,7 @@ export default function LoginPage() {
               }}
               placeholder="000000"
               className="h-14 text-center text-2xl tracking-[0.4em] font-bold"
+              autoFocus
               error={passwordlessFieldErrors.otp}
             />
           </div>
@@ -593,11 +540,16 @@ export default function LoginPage() {
           </div>
           <button
             type="button"
-            className="w-full text-center text-sm font-medium text-primary hover:opacity-80 transition pt-2"
-            disabled={state === "loading"}
-            onClick={() => handlePasswordlessStart()}
+            className="w-full text-center text-sm font-medium text-primary hover:opacity-80 transition pt-2 disabled:opacity-40"
+            disabled={state === "loading" || resendCooldown > 0}
+            onClick={() => {
+              handlePasswordlessCheck();
+              setResendCooldown(30);
+            }}
           >
-            Tidak menerima kode? Kirim ulang
+            {resendCooldown > 0
+              ? `Kirim ulang (${resendCooldown}s)`
+              : "Tidak menerima kode? Kirim ulang"}
           </button>
         </form>
       ) : null}
@@ -629,39 +581,26 @@ export default function LoginPage() {
       ) : null}
 
       {passwordlessStep === "delivery" && (
-        <div className="mt-5 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">Opsi lain</p>
-          <div className="grid grid-cols-3 gap-2">
-            {authMethod !== "whatsapp" && (
-              <button
-                type="button"
-                onClick={() => switchAuthMethod("whatsapp")}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
-              >
-                <WhatsAppIcon size="sm" className="text-[#25D366]" />
-                WhatsApp
-              </button>
-            )}
-            {authMethod !== "email" && (
-              <button
-                type="button"
-                onClick={() => switchAuthMethod("email")}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
-              >
-                <MailIcon size="sm" />
-                Email OTP
-              </button>
-            )}
-            {authMethod !== "password" && (
-              <button
-                type="button"
-                onClick={() => switchAuthMethod("password")}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card/60 px-3 py-2.5 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
-              >
-                <LockIcon size="sm" />
-                Password
-              </button>
-            )}
+        <div className="mt-5 space-y-2.5 border-t border-border/50 pt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60">Opsi lain</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { method: "whatsapp" as const, icon: <WhatsAppIcon size="sm" className="text-[#25D366]" />, label: "WhatsApp" },
+              { method: "email" as const, icon: <MailIcon size="sm" />, label: "Email OTP" },
+              { method: "password" as const, icon: <LockIcon size="sm" />, label: "Password" },
+            ]
+              .filter(({ method }) => method !== authMethod)
+              .map(({ method, icon, label }) => (
+                <button
+                  key={method}
+                  type="button"
+                  onClick={() => switchAuthMethod(method)}
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border/70 bg-card/60 px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:bg-primary/5"
+                >
+                  {icon}
+                  {label}
+                </button>
+              ))}
           </div>
         </div>
       )}
@@ -671,8 +610,8 @@ export default function LoginPage() {
   return (
     <AuthShell
       badge="Webjoz Console"
-      title="Buat website impian dalam 5 menit."
-      description="Login untuk mengelola website bisnis Anda, edit konten, lihat analytics, dan pantau performa — semua dari satu dashboard."
+      title="Lanjutkan kelola website bisnis Anda."
+      description="Login untuk mengelola website, edit konten, lihat analytics, dan pantau performa — semua dari satu dashboard."
       stats={[
         { label: "AI Builder", value: "Chat-Based", helper: "Cukup chat dengan AI, website langsung jadi." },
         { label: "Mobile-First", value: "Optimized", helper: "Semua template dioptimalkan untuk tampilan mobile dan siap iklan." },
@@ -681,8 +620,8 @@ export default function LoginPage() {
       cardTitle="Masuk"
       cardDescription="Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard."
       footer={
-        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-x-5">
-          <Link href="/" className="font-medium text-primary hover:opacity-80">Kembali ke beranda</Link>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link href="/" className="font-medium text-primary hover:opacity-80">Beranda</Link>
           <Link href="/register" className="font-medium text-primary hover:opacity-80">Buat akun</Link>
           <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">Lupa password</Link>
         </div>
