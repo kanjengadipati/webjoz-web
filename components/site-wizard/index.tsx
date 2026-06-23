@@ -105,6 +105,21 @@ export function SiteWizard({
     }
   }, []);
 
+  // Auto-scroll preview as sections stream in, then back to top when done
+  const prevArrivedRef = useRef(0);
+  useEffect(() => {
+    if (previewState === "loading" && arrivedSections.length > prevArrivedRef.current) {
+      prevArrivedRef.current = arrivedSections.length;
+      previewScrollRef.current?.scrollTo({ top: previewScrollRef.current.scrollHeight, behavior: "smooth" });
+    }
+  }, [arrivedSections, previewState]);
+
+  useEffect(() => {
+    if (previewState === "result") {
+      previewScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [previewState]);
+
   useEffect(() => {
     if (previewDevice === "desktop") {
       previewScrollRef.current?.scrollTo({ top: 0, left: 0 });
