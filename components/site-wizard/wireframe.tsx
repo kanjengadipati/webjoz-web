@@ -142,8 +142,8 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
         </section>
 
         {(chatStage === "done") && (
-          <div className="mt-6 flex items-center gap-2 text-[11px] text-violet-400/70">
-            <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
+          <div className="mt-6 flex items-center gap-2 text-[11px] text-muted-foreground/70">
+            <div className="w-2 h-2 rounded-full bg-muted-foreground animate-pulse" />
             <span>AI sedang mempersiapkan desain untuk {businessName || "bisnis Anda"}...</span>
           </div>
         )}

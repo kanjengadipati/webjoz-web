@@ -25,8 +25,8 @@ function getInsight(businessType: string): string {
 export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
   return (
     <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-        <Sparkles className="w-3 h-3 text-white" />
+      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+        <Sparkles className="w-3 h-3 text-primary-foreground" />
       </div>
       <div
         className="flex-1 min-w-0 rounded-2xl rounded-tl-sm px-3.5 py-3 space-y-3"
@@ -34,15 +34,12 @@ export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
       >
         <div className="flex items-center gap-2">
           <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
-            <div
-              className="h-full rounded-full transition-all duration-1000 ease-out"
-              style={{
-                width: `${LOADING_STEPS_PERCENT[loadingStep] ?? 15}%`,
-                background: "linear-gradient(90deg, #7c3aed, #38bdf8)",
-              }}
-            />
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-1000 ease-out"
+                style={{ width: `${LOADING_STEPS_PERCENT[loadingStep] ?? 15}%` }}
+              />
           </div>
-          <span className="text-[10px] font-bold shrink-0" style={{ color: "#a78bfa" }}>
+          <span className="text-[10px] font-bold text-primary shrink-0">
             {LOADING_STEPS_PERCENT[loadingStep] ?? 15}%
           </span>
         </div>
@@ -70,24 +67,24 @@ export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
                     done
                       ? { background: "rgba(52,211,153,0.2)", border: "1px solid rgba(52,211,153,0.4)" }
                       : active
-                        ? { background: "rgba(124,58,237,0.2)", border: "1px solid rgba(124,58,237,0.5)" }
+                        ? { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)" }
                         : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
                   }
                 >
                   {done ? (
                     <span className="text-[8px] text-emerald-400 font-bold">✓</span>
                   ) : active ? (
-                    <Loader2 className="w-2.5 h-2.5 text-[#7c3aed] animate-spin" />
+                    <Loader2 className="w-2.5 h-2.5 text-primary animate-spin" />
                   ) : null}
                 </div>
                 <span
                   className="text-[11px] font-medium leading-tight"
-                  style={{ color: done ? "#86efac" : active ? "#a78bfa" : "rgba(148,163,184,1)" }}
+                  style={{ color: done ? "#86efac" : active ? "var(--primary)" : "rgba(148,163,184,1)" }}
                 >
                   {label}
                 </span>
                 {active && (
-                  <span className="ml-auto text-[9px] font-mono shrink-0" style={{ color: "#7c3aed" }}>
+                  <span className="ml-auto text-[9px] font-mono text-primary shrink-0">
                     {String(idx + 2).padStart(2, "0")}s
                   </span>
                 )}
@@ -97,10 +94,10 @@ export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
         </div>
 
         {loadingStep >= 3 && (
-          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500" style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}>
+          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
             <div className="flex items-center gap-1.5 mb-1.5">
-              <Sparkles className="w-3 h-3 text-[#7c3aed]" />
-              <span className="text-[11px] font-bold text-violet-400">AI Insight</span>
+              <Sparkles className="w-3 h-3 text-primary" />
+              <span className="text-[11px] font-bold text-primary">AI Insight</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType)}</p>
           </div>

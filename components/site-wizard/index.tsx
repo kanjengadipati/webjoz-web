@@ -634,15 +634,15 @@ export function SiteWizard({
               type="button"
               onClick={handleBack}
               aria-label="Kembali"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white active:scale-95"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-[18px] h-[18px] text-white" />
+                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                    <Sparkles className="w-[18px] h-[18px] text-primary-foreground" />
                   </div>
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
                 </div>
@@ -656,7 +656,7 @@ export function SiteWizard({
                       Preview &rarr;
                     </button>
                   )}
-                  <span className="text-[10px] font-semibold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">BETA</span>
+                  <span className="text-[10px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">BETA</span>
                 </div>
               </div>
             </div>
@@ -905,8 +905,7 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={handleGoToEditor}
-                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(91,33,182,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #5b21b6)" }}
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-primary text-primary-foreground shadow-[0_14px_35px_rgba(0,0,0,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               >
                 <Pencil className="h-4 w-4" />
                 Edit & Publikasikan

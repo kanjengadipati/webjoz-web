@@ -30,8 +30,8 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
         {/* Header row: icon + title + percentage */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <div className={`rounded-xl bg-gradient-to-br from-[#7c3aed] to-indigo-600 flex items-center justify-center ${center ? "w-6 h-6" : "w-8 h-8"}`}>
-              <Sparkles className={`text-white ${center ? "w-3 h-3" : "w-4 h-4"}`} />
+            <div className={`rounded-xl bg-primary flex items-center justify-center ${center ? "w-6 h-6" : "w-8 h-8"}`}>
+              <Sparkles className={`text-primary-foreground ${center ? "w-3 h-3" : "w-4 h-4"}`} />
             </div>
             <div className="min-w-0">
               <h3 className={`font-extrabold text-white m-0 leading-tight ${center ? "text-[12px]" : "text-sm"}`}>
@@ -40,7 +40,7 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
               {!center && <p className="text-[11px] text-slate-400 mt-0.5">Mohon tunggu sebentar...</p>}
             </div>
           </div>
-          {!center && <span className="text-xs font-bold text-[#7c3aed] shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
+          {!center && <span className="text-xs font-bold text-primary shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
         </div>
 
         {/* Progress bar */}
@@ -48,11 +48,11 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
           <div className="flex items-center gap-2 mb-1">
             <div className={`rounded-full overflow-hidden flex-1 ${center ? "h-2" : "h-2.5"}`} style={{ background: "rgba(255,255,255,0.06)" }}>
               <div
-                className="h-full bg-gradient-to-r from-[#7c3aed] to-[#38bdf8] transition-all duration-1000 ease-out rounded-full"
+                className="h-full bg-primary transition-all duration-1000 ease-out rounded-full"
                 style={{ width: `${LOADING_STEPS_PERCENT[loadingStep] ?? 15}%` }}
               />
             </div>
-            {center && <span className="text-[11px] font-bold text-[#7c3aed] shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
+            {center && <span className="text-[11px] font-bold text-primary shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
           </div>
         </div>
 
@@ -66,16 +66,16 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
             if (center && done && idx < loadingStep - 2) return null;
             return (
               <div key={idx} className={`flex items-center gap-1.5 transition-all duration-300 ${active || done ? "opacity-100" : center ? "opacity-50" : "opacity-40"}`}>
-                <div className={`rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${done ? "border-[#7c3aed] bg-[#7c3aed]" : active ? "border-[#7c3aed]" : "border-slate-600"} ${center ? "w-3.5 h-3.5" : "w-5 h-5"}`} style={!done ? { background: "rgba(255,255,255,0.04)" } : {}}>
-                  {done ? <span className={`text-white font-bold ${center ? "text-[7px]" : "text-[10px]"}`}>✓</span>
-                  : active ? <Loader2 className={`text-[#7c3aed] animate-spin ${center ? "w-2 h-2" : "w-2.5 h-2.5"}`} />
+                <div className={`rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${done ? "border-primary bg-primary" : active ? "border-primary" : "border-slate-600"} ${center ? "w-3.5 h-3.5" : "w-5 h-5"}`} style={!done ? { background: "rgba(255,255,255,0.04)" } : {}}>
+                  {done ? <span className={`text-primary-foreground font-bold ${center ? "text-[7px]" : "text-[10px]"}`}>✓</span>
+                  : active ? <Loader2 className={`text-primary animate-spin ${center ? "w-2 h-2" : "w-2.5 h-2.5"}`} />
                   : null}
                 </div>
-                <span className={`font-semibold leading-tight truncate ${done ? "text-slate-300" : active ? "text-[#7c3aed]" : "text-slate-500"} ${center ? "text-[10px]" : "text-xs"}`}>
+                <span className={`font-semibold leading-tight truncate ${done ? "text-slate-300" : active ? "text-primary" : "text-slate-500"} ${center ? "text-[10px]" : "text-xs"}`}>
                   {label}
                 </span>
                 {!center && (
-                  <span className={`font-mono shrink-0 ml-auto ${active ? "text-[#7c3aed]" : "text-slate-300"} text-[10px]`}>
+                  <span className={`font-mono shrink-0 ml-auto ${active ? "text-primary" : "text-slate-300"} text-[10px]`}>
                     {active ? `00:${String(idx + 3).padStart(2, "0")}` : done ? `00:0${idx + 3}` : "00:00"}
                   </span>
                 )}
@@ -86,10 +86,10 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
 
         {/* AI Insight — only on desktop */}
         {!center && loadingStep >= 3 && (
-          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500" style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)" }}>
+          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
             <div className="flex items-center gap-1.5 mb-1.5">
-              <Sparkles className="w-3 h-3 text-[#7c3aed]" />
-              <span className="text-[11px] font-bold text-violet-400">AI Insight</span>
+              <Sparkles className="w-3 h-3 text-primary" />
+              <span className="text-[11px] font-bold text-primary">AI Insight</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType)}</p>
           </div>
