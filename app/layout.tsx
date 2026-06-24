@@ -46,20 +46,36 @@ const themeScript = `
   try {
     var theme = localStorage.getItem('webjoz_theme');
     var accent = localStorage.getItem('webjoz_accent');
+    var html = document.documentElement;
 
     // Handle Light/Dark Mode
     if (!theme || theme === 'dark') {
-      document.documentElement.classList.add('dark');
+      html.classList.add('dark');
+      // Prevent white flash: force dark background before CSS is parsed
+      html.style.backgroundColor = '#0f0f17';
+      html.style.color = '#f5f5f7';
     } else {
-      document.documentElement.classList.remove('dark');
+      html.classList.remove('dark');
+      html.style.backgroundColor = '#f9f9fb';
+      html.style.color = '#1a1a2e';
     }
 
     // Handle Accent Mode (Blue vs Monochrome)
     if (accent && accent !== 'monochrome') {
-      document.documentElement.classList.add('theme-blue');
+      html.classList.add('theme-blue');
     }
+
+    // Clean up inline style after CSS loads
+    // Remove the forced background/color after a small delay
+    // so the CSS variable values take over seamlessly
+    setTimeout(function() {
+      html.style.backgroundColor = '';
+      html.style.color = '';
+    }, 1);
   } catch (e) {
     document.documentElement.classList.add('dark');
+    document.documentElement.style.backgroundColor = '#0f0f17';
+    setTimeout(function() { document.documentElement.style.backgroundColor = ''; }, 1);
   }
 })();
 `;
