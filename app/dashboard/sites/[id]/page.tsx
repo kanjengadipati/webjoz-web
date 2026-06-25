@@ -66,6 +66,7 @@ export default function SiteEditorPage() {
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [sheetCollapsed, setSheetCollapsed] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
+  const [aiPromptCollapsed, setAiPromptCollapsed] = useState(true);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -100,6 +101,7 @@ export default function SiteEditorPage() {
   const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [confirmPublishOpen, setConfirmPublishOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [showCongrats, setShowCongrats] = useState(false);
 
@@ -1668,77 +1670,102 @@ export default function SiteEditorPage() {
                 </div>
 
                 {/* ── AI Prompt bar inside field panel ── */}
-                <div className="border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 py-2.5 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
+                <div className={`border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 transition-all duration-300 ${aiPromptCollapsed ? 'py-2' : 'py-2.5 space-y-2'}`}>
+                  <div 
+                    onClick={aiPromptCollapsed ? () => setAiPromptCollapsed(false) : undefined}
+                    className={`flex items-center justify-between gap-2 ${aiPromptCollapsed ? 'cursor-pointer select-none' : ''}`}
+                  >
                     <div className="flex items-center gap-1.5 min-w-0">
                       <Sparkles className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                       <span className="truncate text-[10px] font-bold uppercase tracking-widest text-primary">
                         AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
                     </div>
-                    {undoStack.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={undoLastRegen}
-                        className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
-                      >
-                        <RotateCcw className="h-3 w-3" />
-                        Undo
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {activeSuggestions.slice(0, 3).map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => setAiInstructions(suggestion)}
-                        disabled={!!pendingDiff}
-                        className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-left text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50 disabled:pointer-events-none"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                  {recentInstructions.length > 0 && (
-                    <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
-                      {recentInstructions.slice(0, 5).map((instruction) => (
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      {undoStack.length > 0 && !aiPromptCollapsed && (
                         <button
-                          key={instruction}
                           type="button"
-                          onClick={() => setAiInstructions(instruction)}
-                          disabled={!!pendingDiff}
-                          className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
-                          title={instruction}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            undoLastRegen();
+                          }}
+                          className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300 hover:bg-white/5"
                         >
-                          {instruction}
+                          <RotateCcw className="h-3 w-3" />
+                          Undo
                         </button>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1.5">
-                    <input
-                      type="text"
-                      value={aiInstructions}
-                      onChange={(e) => setAiInstructions(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
-                      placeholder={aiPlaceholder}
-                      disabled={aiLoading || !!pendingDiff}
-                      className="flex-1 h-8 px-2.5 border border-primary bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700 disabled:opacity-50"
-                    />
-                    <button
-                      onClick={handleAiRegenerateSection}
-                      disabled={aiLoading || !!pendingDiff}
-                      className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 whitespace-nowrap"
-                    >
-                      {aiLoading ? (
-                        <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3 h-3 flex-shrink-0" />
                       )}
-                      Regen
-                    </button>
+                      {!aiPromptCollapsed && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAiPromptCollapsed(true);
+                          }}
+                          title="Sembunyikan AI Prompt"
+                          className="flex items-center justify-center w-6 h-6 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300"
+                        >
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
+                  {!aiPromptCollapsed && (
+                    <>
+                      <div className="flex flex-wrap gap-1">
+                        {activeSuggestions.slice(0, 3).map((suggestion) => (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            onClick={() => setAiInstructions(suggestion)}
+                            disabled={!!pendingDiff}
+                            className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-left text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50 disabled:pointer-events-none"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                      {recentInstructions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 border-t border-white/10 pt-2">
+                          {recentInstructions.slice(0, 5).map((instruction) => (
+                            <button
+                              key={instruction}
+                              type="button"
+                              onClick={() => setAiInstructions(instruction)}
+                              disabled={!!pendingDiff}
+                              className="max-w-full truncate rounded-full bg-white/[0.04] px-2 py-1 text-[10px] text-slate-400 hover:bg-white/[0.08] hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none"
+                              title={instruction}
+                            >
+                              {instruction}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          value={aiInstructions}
+                          onChange={(e) => setAiInstructions(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                          placeholder={aiPlaceholder}
+                          disabled={aiLoading || !!pendingDiff}
+                          className="flex-1 h-8 px-2.5 border border-primary bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700 disabled:opacity-50"
+                        />
+                        <button
+                          onClick={handleAiRegenerateSection}
+                          disabled={aiLoading || !!pendingDiff}
+                          className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 whitespace-nowrap"
+                        >
+                          {aiLoading ? (
+                            <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3 h-3 flex-shrink-0" />
+                          )}
+                          Regen
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
@@ -1846,9 +1873,9 @@ export default function SiteEditorPage() {
               </span>
             )}
 
-            {/* Preview link */}
+            {/* Preview link — opens draft content */}
             <a
-              href={`/s/${siteDetails.subdomain}`}
+              href={`/preview/${siteId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-7 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
@@ -1861,26 +1888,32 @@ export default function SiteEditorPage() {
             <button
               onClick={handleSaveContent}
               disabled={saving}
-              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-white transition-colors hover:brightness-110 disabled:opacity-60"
-              style={{ background: "#1D9E75" }}
+              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-60"
+              style={{ background: "var(--primary)" }}
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               Simpan
             </button>
-            {/* Publish button / Live badge */}
+            {/* Publish button / Live badge — right side */}
             {siteDetails?.status === "published" ? (
-              <a
-                href={`/s/${siteDetails.subdomain}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-7 items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 text-[11px] font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/20"
+              <button
+                type="button"
+                onClick={() => {
+                  if (!siteDetails?.subdomain) return;
+                  const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
+                  const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
+                    ? "webjoz.com"
+                    : host.substring(host.indexOf(".") + 1);
+                  window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
+                }}
+                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
               >
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
-                Live — klik untuk buka
-              </a>
+                Live
+              </button>
             ) : (
               <button
                 type="button"
@@ -1891,6 +1924,47 @@ export default function SiteEditorPage() {
                 <Rocket className="w-3.5 h-3.5" />
                 Publikasikan
               </button>
+            )}
+
+            {/* Confirm apply to live modal */}
+            {confirmPublishOpen && siteDetails && (
+              <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+                <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
+                      <Rocket className="h-5 w-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-[14px] font-bold text-slate-100">Terapkan Perubahan ke Live?</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Pengunjung situs akan segera melihat versi terbaru.</p>
+                    </div>
+                  </div>
+                  <p className="text-[12px] text-slate-300 leading-relaxed">
+                    Semua perubahan draf yang sudah disimpan akan diterapkan ke website live{" "}
+                    <span className="font-semibold text-emerald-400">{siteDetails.subdomain}.webjoz.com</span>.
+                  </p>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setConfirmPublishOpen(false)}
+                      className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="button"
+                      disabled={publishing}
+                      onClick={async () => {
+                        setConfirmPublishOpen(false);
+                        await handlePublishWithSubdomain(siteDetails.subdomain);
+                      }}
+                      className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
+                    >
+                      {publishing ? "Menerapkan..." : "Ya, Terapkan"}
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
@@ -2262,8 +2336,26 @@ export default function SiteEditorPage() {
 
       </div>
 
-      {/* Desktop floating publish button — placed outside any transformed container so fixed works */}
-      {siteDetails?.status !== "published" && (
+      {/* Desktop floating publish / apply button — placed outside any transformed container so fixed works */}
+      {siteDetails?.status === "published" ? (
+        <button
+          type="button"
+          onClick={() => setConfirmPublishOpen(true)}
+          disabled={publishing}
+          className="hidden md:flex fixed bottom-6 right-6 z-50 items-center gap-2.5 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95 disabled:opacity-70"
+          style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+        >
+          {publishing ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+            </span>
+          )}
+          {publishing ? "Menerapkan..." : "Terapkan ke Live"}
+        </button>
+      ) : (
         <button
           type="button"
           onClick={() => setPublishModalOpen(true)}

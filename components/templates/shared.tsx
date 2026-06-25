@@ -466,7 +466,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass }: {
 
 // ─── SEO Editor Preview ───────────────────────────────────────────────────────
 
-const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string } }) => (
+const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string; keywords?: string[]; og_type?: string; twitter_card?: string; robots?: string; canonical_path?: string } }) => (
   <section className="bg-[#0d0f14] px-5 py-8 border-t border-white/5">
     <div className="max-w-2xl mx-auto space-y-6">
 
@@ -521,12 +521,26 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
               </div>
           }
           <div className="px-3 py-2.5 space-y-0.5" style={{ background: "rgba(255,255,255,0.03)" }}>
-            <p className="text-[10px] uppercase tracking-widest text-slate-500">webjoz.id</p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500">{seo?.og_type || "website"}</p>
             <p className="text-[12px] font-semibold text-slate-200 leading-tight truncate">{seo?.title || "–"}</p>
             <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">{seo?.description || "–"}</p>
           </div>
         </div>
       </div>
+
+      {/* Keywords Preview */}
+      {(seo?.keywords?.length || 0) > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Keywords</p>
+          <div className="flex flex-wrap gap-1.5">
+            {(seo?.keywords || []).map((kw, idx) => (
+              <span key={idx} className="px-2 py-0.5 rounded-full text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.15)", color: "rgb(165, 180, 252)" }}>
+                {kw}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   </section>

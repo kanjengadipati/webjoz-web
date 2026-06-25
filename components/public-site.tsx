@@ -88,6 +88,12 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
 
         // Apply dynamic SEO meta from content
         const seo = envelope.data?.content?.seo;
+        const siteInfo = envelope.data?.site;
+        const siteName = siteInfo?.name || "";
+        const subdomain = siteInfo?.subdomain || "";
+        const templateId = envelope.data?.template_id || "";
+
+        // Favicon
         if (seo?.favicon_url) {
           let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
           if (!link) {
@@ -97,11 +103,90 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           }
           link.href = seo.favicon_url;
         }
+
+        // Title
         if (seo?.title) {
           document.title = seo.title;
-        } else if (envelope.data?.site?.name) {
-          document.title = envelope.data.site.name;
+        } else if (siteName) {
+          document.title = siteName;
         }
+
+        // Meta description
+        const desc = seo?.description || "";
+        let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement;
+        if (!metaDesc) {
+          metaDesc = document.createElement("meta");
+          metaDesc.name = "description";
+          document.head.appendChild(metaDesc);
+        }
+        metaDesc.content = desc;
+
+        // OG tags
+        const setMeta = (prop: string, name: string, content: string) => {
+          if (!content) return;
+          let el = document.querySelector(`meta[${prop}="${name}"]`) as HTMLMetaElement;
+          if (!el) {
+            el = document.createElement("meta");
+            el.setAttribute(prop, name);
+            document.head.appendChild(el);
+          }
+          el.content = content;
+        };
+        setMeta("property", "og:title", seo?.title || siteName);
+        setMeta("property", "og:description", desc);
+        setMeta("property", "og:image", seo?.og_image_url || "");
+        setMeta("property", "og:type", seo?.og_type || "website");
+        setMeta("property", "og:locale", seo?.og_locale || "id_ID");
+        setMeta("property", "og:site_name", seo?.og_site_name || siteName);
+        setMeta("property", "og:url", window.location.href);
+
+        setMeta("name", "twitter:card", seo?.twitter_card || "summary_large_image");
+        setMeta("name", "twitter:title", seo?.title || siteName);
+        setMeta("name", "twitter:description", desc);
+        setMeta("name", "twitter:image", seo?.og_image_url || "");
+
+        // Robots
+        setMeta("name", "robots", seo?.robots || "index, follow");
+
+        // Canonical
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        const canonicalPath = seo?.canonical_path || "/";
+        if (canonical) {
+          canonical.href = window.location.origin + canonicalPath;
+        } else {
+          canonical = document.createElement("link");
+          canonical.rel = "canonical";
+          canonical.href = window.location.origin + canonicalPath;
+          document.head.appendChild(canonical);
+        }
+
+        // JSON-LD structured data
+        const header = envelope.data?.content?.header || {};
+        const hero = envelope.data?.content?.hero || {};
+        const contact = envelope.data?.content?.contact || {};
+        const brandName = header?.brand_name || siteName;
+        const businessDesc = seo?.description || hero?.subheadline || "";
+        const schemaType = templateId?.toLowerCase().includes("kuliner") || envelope.data?.content?.menu ? "Restaurant" : "LocalBusiness";
+
+        const jsonLd = {
+          "@context": "https://schema.org",
+          "@type": schemaType,
+          name: brandName,
+          url: window.location.href,
+          ...(seo?.og_image_url ? { image: seo.og_image_url } : {}),
+          ...(businessDesc ? { description: businessDesc } : {}),
+          ...(contact?.phone ? { telephone: contact.phone } : {}),
+          ...(contact?.email ? { email: contact.email } : {}),
+          ...(contact?.address ? { address: { "@type": "PostalAddress", streetAddress: contact.address } } : {}),
+        };
+
+        let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
+        if (!script) {
+          script = document.createElement("script");
+          script.type = "application/ld+json";
+          document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify(jsonLd);
 
         // Track pageview on success
         try {

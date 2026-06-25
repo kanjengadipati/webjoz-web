@@ -118,6 +118,13 @@ export function buildFullContent(
       description: c.seo?.description || description,
       favicon_url: c.seo?.favicon_url || logoUrl,
       og_image_url: c.seo?.og_image_url || "",
+      keywords: c.seo?.keywords ?? [],
+      og_type: c.seo?.og_type || "website",
+      og_locale: c.seo?.og_locale || "id_ID",
+      og_site_name: c.seo?.og_site_name || businessName,
+      twitter_card: c.seo?.twitter_card || "summary_large_image",
+      robots: c.seo?.robots || "index, follow",
+      canonical_path: c.seo?.canonical_path || "/",
     },
   };
 }

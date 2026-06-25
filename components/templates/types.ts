@@ -162,6 +162,13 @@ export interface TemplateProps {
       description?: string;
       favicon_url?: string;
       og_image_url?: string;
+      keywords?: string[];
+      og_type?: string;
+      og_locale?: string;
+      og_site_name?: string;
+      twitter_card?: string;
+      robots?: string;
+      canonical_path?: string;
     };
   };
   design_token?: DesignToken | null;

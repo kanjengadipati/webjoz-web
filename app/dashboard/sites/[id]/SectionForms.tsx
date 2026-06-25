@@ -139,6 +139,77 @@ function getUnsplashPool(businessType: string): string[] {
   return UNSPLASH_POOLS.business;
 }
 
+// ─── Keywords Input ────────────────────────────────────────────────────────────
+interface KeywordsInputProps {
+  keywords: string[];
+  onChange: (keywords: string[]) => void;
+  aiLoading?: boolean;
+  onAiGenerate?: () => Promise<void>;
+}
+
+function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate }: KeywordsInputProps) {
+  const [input, setInput] = useState("");
+
+  const addKeyword = (kw: string) => {
+    const trimmed = kw.trim().toLowerCase();
+    if (!trimmed || keywords.includes(trimmed)) return;
+    onChange([...keywords, trimmed]);
+  };
+
+  const removeKeyword = (idx: number) => {
+    onChange(keywords.filter((_, i) => i !== idx));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addKeyword(input);
+      setInput("");
+    }
+  };
+
+  return (
+    <div className="space-y-1">
+      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+        <span>Keywords</span>
+        {onAiGenerate && (
+          <AiFieldButton
+            loading={!!aiLoading}
+            onGenerate={onAiGenerate}
+            title="AI: generate keywords"
+          />
+        )}
+      </label>
+      <div className="flex flex-wrap gap-1.5 min-h-[32px] px-2 py-1.5 border rounded-md bg-transparent">
+        {keywords.map((kw, idx) => (
+          <span
+            key={idx}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium"
+            style={{ background: "rgba(99,102,241,0.15)", color: "rgb(165, 180, 252)" }}
+          >
+            {kw}
+            <button
+              type="button"
+              onClick={() => removeKeyword(idx)}
+              className="hover:text-red-400 cursor-pointer"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={keywords.length === 0 ? "Ketik keyword lalu Enter..." : "Tambah keyword..."}
+          className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-slate-200 placeholder-slate-600"
+        />
+      </div>
+    </div>
+  );
+}
+
 // ─── AI Field Button ──────────────────────────────────────────────────────────
 interface AiFieldButtonProps {
   onGenerate: () => Promise<void>;
@@ -1014,6 +1085,8 @@ export default function SectionForms({
               Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.
             </p>
           </div>
+
+          {/* Meta Title + Char Count */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1">
@@ -1032,7 +1105,14 @@ export default function SectionForms({
               onChange={(e) => updateField("seo", "title", e.target.value)} 
               className={fieldClass("seo.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
+            <div className="flex justify-end">
+              <span className={`text-[10px] font-mono ${(content.seo?.title?.length || 0) > 60 ? "text-red-500" : "text-slate-500"}`}>
+                {(content.seo?.title?.length || 0)}/60
+              </span>
+            </div>
           </div>
+
+          {/* Meta Description + Char Count */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1">
@@ -1051,9 +1131,120 @@ export default function SectionForms({
               onChange={(e) => updateField("seo", "description", e.target.value)} 
               className={fieldClass("seo.description", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")} 
             />
+            <div className="flex justify-end">
+              <span className={`text-[10px] font-mono ${(content.seo?.description?.length || 0) > 155 ? "text-red-500" : "text-slate-500"}`}>
+                {(content.seo?.description?.length || 0)}/155
+              </span>
+            </div>
           </div>
+
+          {/* Keywords Tags */}
+          <KeywordsInput
+            keywords={content.seo?.keywords || []}
+            onChange={(keywords) => updateField("seo", "keywords", keywords)}
+            aiLoading={aiLoadingField === "seo.keywords"}
+            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.")}
+          />
+
+          {/* Favicon + OG Image row */}
           <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
           <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+
+          {/* OG Type Dropdown */}
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>OG Type</span>
+              <AiFieldButton
+                loading={aiLoadingField === "seo.og_type"}
+                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.")}
+                title="AI: suggest OG type"
+              />
+            </label>
+            <select
+              value={content.seo?.og_type || "website"}
+              onChange={(e) => updateField("seo", "og_type", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+            >
+              <option value="website">Website</option>
+              <option value="article">Article</option>
+              <option value="product">Product</option>
+              <option value="profile">Profile</option>
+              <option value="business.business">Business</option>
+            </select>
+          </div>
+
+          {/* Twitter Card Dropdown */}
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Twitter Card</span>
+              <AiFieldButton
+                loading={aiLoadingField === "seo.twitter_card"}
+                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.")}
+                title="AI: suggest Twitter card"
+              />
+            </label>
+            <select
+              value={content.seo?.twitter_card || "summary_large_image"}
+              onChange={(e) => updateField("seo", "twitter_card", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+            >
+              <option value="summary_large_image">summary_large_image</option>
+              <option value="summary">summary</option>
+              <option value="app">app</option>
+              <option value="player">player</option>
+            </select>
+          </div>
+
+          {/* Robots Dropdown */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Robots</label>
+            <select
+              value={content.seo?.robots || "index, follow"}
+              onChange={(e) => updateField("seo", "robots", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+            >
+              <option value="index, follow">index, follow</option>
+              <option value="noindex, follow">noindex, follow</option>
+              <option value="index, nofollow">index, nofollow</option>
+              <option value="noindex, nofollow">noindex, nofollow</option>
+            </select>
+          </div>
+
+          {/* OG Locale */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Locale</label>
+            <input
+              type="text"
+              value={content.seo?.og_locale || "id_ID"}
+              onChange={(e) => updateField("seo", "og_locale", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              placeholder="id_ID"
+            />
+          </div>
+
+          {/* OG Site Name */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Site Name</label>
+            <input
+              type="text"
+              value={content.seo?.og_site_name || ""}
+              onChange={(e) => updateField("seo", "og_site_name", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              placeholder="Nama bisnis"
+            />
+          </div>
+
+          {/* Canonical Path */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Canonical Path</label>
+            <input
+              type="text"
+              value={content.seo?.canonical_path || "/"}
+              onChange={(e) => updateField("seo", "canonical_path", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              placeholder="/"
+            />
+          </div>
         </div>
       )}
 
