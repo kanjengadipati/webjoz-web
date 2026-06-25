@@ -107,27 +107,6 @@ export function SiteWizard({
   }, []);
 
   // Scroll helpers — content lives inside an iframe via DevicePreviewFrame
-  const scrollPreviewPct = useCallback((pct: number) => {
-    const iframe = previewIframeRef.current;
-    if (iframe) {
-      const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
-      if (doc?.body) {
-        const sh = Math.max(doc.documentElement?.scrollHeight ?? 0, doc.body.scrollHeight ?? 0);
-        const ch = doc.documentElement?.clientHeight ?? doc.body.clientHeight ?? 0;
-        if (sh > ch) {
-          const target = Math.max(0, (sh - ch) * Math.min(pct / 100, 1));
-          doc.documentElement?.scrollTo({ top: target, left: 0, behavior: "smooth" });
-          doc.body?.scrollTo({ top: target, left: 0, behavior: "smooth" });
-        }
-      }
-    }
-    const el = previewScrollRef.current;
-    if (el && el.scrollHeight > el.clientHeight) {
-      const target = Math.max(0, (el.scrollHeight - el.clientHeight) * Math.min(pct / 100, 1));
-      el.scrollTo({ top: target, left: 0, behavior: "smooth" });
-    }
-  }, []);
-
   const scrollPreviewToTop = useCallback(() => {
     requestAnimationFrame(() => {
       const iframe = previewIframeRef.current;
@@ -142,21 +121,6 @@ export function SiteWizard({
       if (el) el.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     });
   }, []);
-
-  // Auto-scroll preview in sync with loading step progress (every ~3s)
-  // Step 0-3: proportional scroll (15-60%), step 4: 95% (near bottom), step 5: 100%
-  const prevStepRef = useRef(0);
-  useEffect(() => {
-    if (previewState === "loading" && loadingStep > prevStepRef.current) {
-      prevStepRef.current = loadingStep;
-      const pct = loadingStep === 4 ? 95 : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          scrollPreviewPct(pct);
-        });
-      });
-    }
-  }, [loadingStep, previewState, scrollPreviewPct]);
 
   useEffect(() => {
     if (previewDevice === "desktop") {
@@ -306,14 +270,14 @@ export function SiteWizard({
     }
   }, [previewState, scrollPreviewToTop]);
 
-  // Progressive blur: starts strong during loading, retains ~2px on last step
-  // and during result scroll‑up, then clears when scroll reaches top
+  // Progressive blur: lighter after section slide-up animation fix
+  // max 4px (section animations handle progressive reveal), min 0px (clears fully after loading)
   const previewBlurPx = useMemo(() => {
     if (previewState === "result" && resultClear) return 0;
     if (previewState === "result") return 2;
     const pct = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
-    const blur = Math.round(8 * (1 - pct / 100) * 10) / 10;
-    return Math.max(blur, 1.5);
+    const blur = Math.round(4 * (1 - pct / 100) * 10) / 10;
+    return Math.max(blur, 0);
   }, [previewState, loadingStep, resultClear]);
 
   useEffect(() => {
@@ -797,7 +761,7 @@ export function SiteWizard({
               {previewState === "wireframe" && chatStage === "done" && "Menyiapkan AI..."}
             </span>
           </span>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-slate-500" suppressHydrationWarning>
             {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
           </span>
         </div>
