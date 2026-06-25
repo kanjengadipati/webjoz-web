@@ -14,23 +14,23 @@ import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 const STEPS = [
   {
     num: "01",
-    title: "Ceritakan Bisnis Anda",
-    desc: "Chat singkat dengan AI — nama bisnis, jenis usaha, dan area layanan. Kurang dari 2 menit.",
+    title: "Chat dengan AI",
+    desc: "Ceritakan bisnis Anda — nama, jenis usaha, dan area layanan. Cukup ngobrol santai, tidak perlu isi form.",
   },
   {
     num: "02",
-    title: "Pilih Mood Visual",
-    desc: "Pilih nuansa yang cocok: modern, elegan, playful, atau natural. AI sesuaikan desain otomatis.",
+    title: "Pilih Template",
+    desc: "Pilih mood visual yang cocok. AI langsung mencocokkan template terbaik dari 9 pilihan sesuai bisnis Anda.",
   },
   {
     num: "03",
-    title: "AI Generate Website",
-    desc: "Konten, layout, warna, dan template dipilihkan otomatis oleh AI berdasarkan bisnis Anda.",
+    title: "Review & Edit",
+    desc: "Preview hasilnya, edit per section, atur SEO, ganti desain token — semuanya tanpa coding.",
   },
   {
     num: "04",
-    title: "Luncurkan Sekarang",
-    desc: "Review, kustomisasi seperlunya, lalu publish. Website aktif di subdomain Anda dalam hitungan menit.",
+    title: "Publikasikan",
+    desc: "Langsung aktif di subdomain Webjoz, atau hubungkan domain sendiri. Website live dalam hitungan menit.",
   },
 ];
 
@@ -39,33 +39,43 @@ const STEPS = [
 const FEATURES = [
   {
     icon: "🤖",
-    title: "Chat, Bukan Form",
-    desc: "Tidak perlu isi form panjang. Cukup chat singkat dengan AI dan semua konten dibuat otomatis.",
+    title: "Chat AI, Bukan Form",
+    desc: "Tidak perlu isi form panjang. Cukup chat dengan AI, semua konten dan desain dibuat otomatis.",
   },
   {
     icon: "🎨",
-    title: "Template Auto-Match",
-    desc: "AI memilih dan menyesuaikan template berdasarkan jenis bisnis dan mood yang Anda pilih.",
+    title: "9 Template Siap Pakai",
+    desc: "Dari kuliner, jasa, produk, hingga perusahaan — AI memilihkan template yang paling cocok untuk bisnis Anda.",
   },
   {
-    icon: "🌐",
-    title: "Subdomain Langsung Aktif",
-    desc: "Setiap website aktif di subdomain Webjoz dalam detik. Hubungkan domain sendiri kapan saja.",
+    icon: "🔗",
+    title: "Custom Domain",
+    desc: "Hubungkan domain sendiri dengan panduan CNAME. Cocok untuk branding profesional perusahaan Anda.",
   },
   {
-    icon: "📱",
-    title: "Mobile-First & Siap Iklan",
-    desc: "Setiap template dioptimalkan untuk tampil sempurna di mobile dan siap dipakai untuk kampanye iklan.",
+    icon: "📊",
+    title: "Analytics & Leads",
+    desc: "Pantau pengunjung website dan kumpulkan leads langsung dari form kontak — semuanya di satu dashboard.",
   },
   {
     icon: "✏️",
-    title: "Edit Setelah Generate",
-    desc: "Tidak puas dengan bagian tertentu? Regenerate per section atau edit langsung di dashboard.",
+    title: "Edit Per Section",
+    desc: "Tidak puas dengan bagian tertentu? Regenerate per section dengan AI, atau edit manual di editor.",
   },
   {
     icon: "💬",
-    title: "WhatsApp CTA Otomatis",
-    desc: "Tombol WhatsApp langsung terintegrasi dengan nomor bisnis Anda di setiap template.",
+    title: "WhatsApp Terintegrasi",
+    desc: "Tombol WhatsApp otomatis terpasang di setiap website. Pelanggan bisa langsung chat dalam satu klik.",
+  },
+  {
+    icon: "🔍",
+    title: "SEO Siap Pakai",
+    desc: "Title, description, OG tags, JSON-LD structured data, dan sitemap — semua sudah diurus oleh AI.",
+  },
+  {
+    icon: "🚀",
+    title: "Subdomain Instan",
+    desc: "Setiap website langsung aktif di subdomain Webjoz. Tidak perlu setup server atau DNS manual.",
   },
 ];
 
@@ -205,7 +215,7 @@ export default function LandingPage() {
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               Dari chat ke website dalam{" "}
-              <span className="text-primary">4 langkah</span>
+              <span className="text-primary">4 langkah mudah</span>
             </h2>
           </div>
 
@@ -236,59 +246,70 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Key Feature: AI Investigator style ──────────────────────────────── */}
+      {/* ── Key Features: Two real feature highlights ──────────────────────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-6xl">
-          <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
-            <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="p-8 lg:p-12 xl:p-14">
-                <div className="max-w-2xl space-y-7">
+        <div className="mx-auto max-w-6xl space-y-8">
+          <div className="text-center space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+              FITUR UNGGULAN
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              Lebih dari sekadar{" "}
+              <span className="text-primary">website biasa</span>
+            </h2>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+              <div className="p-8 lg:p-10">
+                <div className="space-y-5">
                   <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
-                    Key Feature
+                    Dashboard
                   </Badge>
-                  <div className="space-y-4">
-                    <h2 className="text-4xl font-bold tracking-tighter text-balance lg:text-5xl">
-                      <span className="text-primary">AI</span> yang paham bisnis Indonesia.
-                    </h2>
-                    <p className="text-base leading-8 text-muted-foreground lg:text-lg">
-                      Bukan template kaku. AI Webjoz mendengar cerita bisnis Anda, menyesuaikan konten dan desain &mdash; bukan sekadar ganti-ganti warna.
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
+                      Pantau & kembangkan bisnis Anda
+                    </h3>
+                    <p className="text-base leading-7 text-muted-foreground">
+                      Dashboard lengkap dengan analytics pengunjung, manajemen leads, dan daftar website dalam satu tempat.
                     </p>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-3">
-                    <SpotlightStat title="Obrolan alami" text="Cukup chat seperti ngobrol dengan teman. AI menggali kebutuhan bisnis Anda." featured />
-                    <SpotlightStat title="Desain cerdas" text="Template, font, dan warna dipilih berdasarkan industri dan preferensi visual Anda." />
-                    <SpotlightStat title="Langsung online" text="Setelah review, website Anda aktif di subdomain Webjoz dalam hitungan menit." />
-                  </div>
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
-                      <Badge className="border-rose-500/20 bg-rose-500/10 text-rose-500 shrink-0">Detected</Badge>
-                      <div className="text-sm font-medium">Pelanggan potensial meninggalkan website karena loading lambat dan tidak mobile-friendly.</div>
-                    </div>
-                    <div className="flex items-center gap-4 rounded-2xl border border-border/50 bg-background/60 px-4 py-4">
-                      <Badge className="border-emerald-500/20 bg-emerald-500/10 text-emerald-500 shrink-0">Recommended</Badge>
-                      <div className="text-sm font-medium">Website Webjoz ringan, mobile-first, dan siap diindex Google. Pelanggan tidak akan kabur lagi.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="hidden lg:flex flex-col justify-center p-8 lg:p-12 xl:p-14 bg-gradient-to-br from-primary/5 to-transparent">
-                <div className="rounded-xl border border-border/30 bg-card/60 p-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-xs font-medium text-foreground">AI Mempersiapkan Website Anda...</span>
-                  </div>
-                  <div className="mt-3 space-y-2">
-                    {["Menganalisis jenis bisnis", "Memilih template terbaik", "Menulis konten relevan", "Menyiapkan preview"].map((step, i) => (
-                      <div key={step} className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[8px] text-primary">{i + 1}</span>
-                        {step}
-                      </div>
+                  <div className="flex flex-wrap gap-3">
+                    {["Analytics real-time", "Manajemen leads", "Daftar website"].map((tag) => (
+                      <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+                        {tag}
+                      </span>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+              <div className="p-8 lg:p-10">
+                <div className="space-y-5">
+                  <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+                    Domain & SEO
+                  </Badge>
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
+                      Domain sendiri & SEO otomatis
+                    </h3>
+                    <p className="text-base leading-7 text-muted-foreground">
+                      Hubungkan domain custom Anda, SEO title/description, OG tags, JSON-LD, sitemap &mdash; semuanya diurus oleh AI.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {["Custom domain", "SEO otomatis", "Structured data", "Sitemap"].map((tag) => (
+                      <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -349,8 +370,8 @@ export default function LandingPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { value: "< 5 menit", label: "Waktu generate" },
-                { value: "3 template", label: "Siap pakai" },
-                { value: "100%", label: "Self-serve" },
+                { value: "9 template", label: "Siap pakai" },
+                { value: "8 fitur", label: "Satu dashboard" },
                 { value: "AI", label: "Powered" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
@@ -444,22 +465,4 @@ export default function LandingPage() {
   );
 }
 
-function SpotlightStat({ title, text, featured = false }: { title: string; text: string; featured?: boolean }) {
-  return (
-    <div
-      className={[
-        "rounded-2xl border p-4 text-left transition-colors",
-        featured
-          ? "border-primary/30 bg-primary/10 shadow-lg shadow-primary/10"
-          : "border-border/40 bg-background/55",
-      ].join(" ")}
-    >
-      <div className={featured ? "text-sm font-semibold tracking-tight text-foreground" : "text-sm font-semibold tracking-tight"}>
-        {title}
-      </div>
-      <div className={featured ? "mt-2 text-sm leading-6 text-foreground/80" : "mt-2 text-sm leading-6 text-muted-foreground"}>
-        {text}
-      </div>
-    </div>
-  );
-}
+
