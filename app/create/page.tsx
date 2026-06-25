@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -26,6 +26,7 @@ function PublicWizardContent() {
   const [pendingSave, setPendingSave] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
   const [autoSaveError, setAutoSaveError] = useState("");
+  const isSavingRef = useRef(false);
 
   useEffect(() => {
     document.documentElement.classList.add("webjoz-wizard-active");
@@ -85,6 +86,8 @@ function PublicWizardContent() {
     }
 
     const doSave = async () => {
+      if (isSavingRef.current) return; // prevent double execution
+      isSavingRef.current = true;
       setAutoSaving(true);
       setAutoSaveError("");
       try {
@@ -160,6 +163,7 @@ function PublicWizardContent() {
         setAutoSaveError(msg);
         setAutoSaving(false);
         setPendingSave(false);
+        isSavingRef.current = false; // allow retry
       }
     };
 
