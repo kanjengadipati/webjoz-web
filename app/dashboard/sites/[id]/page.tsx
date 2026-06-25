@@ -10,7 +10,7 @@ import { request } from "@/lib/api/client";
 import {
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
-  Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, Check, GripVertical, RotateCcw,
+  Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
   Eye, EyeOff, Pencil, Send, Rocket, Copy
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
@@ -64,6 +64,7 @@ export default function SiteEditorPage() {
     typeof window !== "undefined" && window.innerWidth < 768 ? "preview" : "edit"
   );
   const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [sheetCollapsed, setSheetCollapsed] = useState(false);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -720,6 +721,7 @@ export default function SiteEditorPage() {
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
     if (window.innerWidth < 768) {
+      setSheetCollapsed(false);
       setSheetExpanded(true);
     } else {
       setMobileView("edit");
@@ -1905,6 +1907,15 @@ export default function SiteEditorPage() {
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
           <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-0"
+            onClick={(e) => {
+              // Collapse sheet when user taps the preview area on mobile
+              const target = e.target as HTMLElement;
+              const isSheet = target.closest('[data-mobile-sheet]');
+              if (!isSheet && window.innerWidth < 768 && !sheetCollapsed) {
+                setSheetCollapsed(true);
+                setSheetExpanded(false);
+              }
+            }}
             onScroll={() => {
               if (sheetExpanded) { setSheetExpanded(false); return; }
               const container = document.getElementById("preview-scroll-container");
@@ -1998,14 +2009,37 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Mobile bottom sheet */}
-          <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out"
-            style={{ maxHeight: sheetExpanded ? "88%" : "48%" }}
+          <div
+            data-mobile-sheet
+            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden"
+            style={{ maxHeight: sheetCollapsed ? "52px" : sheetExpanded ? "88%" : "48%" }}
           >
-            {/* Drag handle */}
-            <div className="flex justify-center pt-2.5 pb-1 flex-shrink-0 cursor-grab active:cursor-grabbing"
-              onClick={() => setSheetExpanded(!sheetExpanded)}
+            {/* Drag handle / collapse bar — also shows section title when collapsed */}
+            <div
+              className="flex items-center justify-between px-4 pt-2.5 pb-2 flex-shrink-0 cursor-pointer select-none"
+              onClick={() => {
+                if (sheetCollapsed) {
+                  setSheetCollapsed(false);
+                } else {
+                  setSheetExpanded(!sheetExpanded);
+                }
+              }}
             >
-              <div className="w-9 h-1 rounded-full bg-white/20" />
+              {sheetCollapsed ? (
+                <>
+                  <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">
+                    {pageOrderSections.find(s => s.key === activeTab)?.label ?? activeTab}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-9 h-1 rounded-full bg-white/20" />
+                    <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
+                  </div>
+                </>
+              ) : (
+                <div className="flex w-full justify-center">
+                  <div className="w-9 h-1 rounded-full bg-white/20" />
+                </div>
+              )}
             </div>
 
             {/* Section pills row */}
