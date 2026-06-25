@@ -102,8 +102,8 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                 {a.image_url
                   ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `2px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `2px solid ${border}` }}>
-                      <Flame className="w-16 h-16 opacity-20" style={{ color: red }} />
-                    </div>
+                    <Flame className="w-16 h-16 opacity-20" style={{ color: red }} />
+                  </div>
                 }
               </div>
             </div>
@@ -310,48 +310,48 @@ export const TemplateBold: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
-    <div style={{ background: bg, color: "#f5f5f5", fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
-      {/* Header */}
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
-          <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}f0`, borderBottom: `2px solid ${border}`, backdropFilter: "blur(8px)" }}>
-            <span className="flex shrink-0 items-center gap-2 font-black uppercase tracking-tighter text-white text-lg">
-              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Flame} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
-              <span className="min-w-0">
-                <span className="block truncate">{h.brand_name}</span>
-                {h.tagline && <span className="block text-[9px] font-bold uppercase tracking-widest" style={{ color: "rgba(220,38,38,0.7)" }}>{h.tagline}</span>}
+      <div style={{ background: bg, color: "#f5f5f5", fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+        {/* Header */}
+        <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
+            <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}f0`, borderBottom: `2px solid ${border}`, backdropFilter: "blur(8px)" }}>
+              <span className="flex shrink-0 items-center gap-2 font-black uppercase tracking-tighter text-white text-lg">
+                <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Flame} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
+                <span className="min-w-0">
+                  <span className="block truncate">{h.brand_name}</span>
+                  {h.tagline && <span className="block text-[9px] font-bold uppercase tracking-widest" style={{ color: "rgba(220,38,38,0.7)" }}>{h.tagline}</span>}
+                </span>
               </span>
-            </span>
-            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-neutral-400 text-xs font-bold uppercase tracking-wider hover:text-red-400 transition-colors" drawerStyle={{ background: surface, borderTop: `2px solid ${border}` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-black text-[10px] uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: red }}>
-              {h.nav_cta_text || "Hubungi Kami"}
-            </a>
-          </header>
-        )} />
-      </MemoPreviewSectionWrapper>
+              <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-neutral-400 text-xs font-bold uppercase tracking-wider hover:text-red-400 transition-colors" drawerStyle={{ background: surface, borderTop: `2px solid ${border}` }} />
+              <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-black text-[10px] uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: red }}>
+                {h.nav_cta_text || "Hubungi Kami"}
+              </a>
+            </header>
+          )} />
+        </MemoPreviewSectionWrapper>
 
-      {/* Sections */}
-      {sectionOrder
-        .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
-        .filter(k => !arrivedSections || arrivedSections.includes(k))
-        .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
+        {/* Sections */}
+        {sectionOrder
+          .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
+          .filter(k => !arrivedSections || arrivedSections.includes(k))
+          .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
 
-      {/* Footer */}
-      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text, tagline: footer?.tagline }} render={(f) => (
-          <footer className="py-8 px-6 text-center" style={{ background: surface, borderTop: `2px solid ${border}` }}>
-            <p className="font-black text-xs uppercase tracking-widest text-white mb-1">{f.brand}</p>
-            {f.tagline && <p className="text-[10px] font-light mb-2" style={{ color: textMuted }}>{f.tagline}</p>}
-            <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: textMuted }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
-          </footer>
-        )} />
-      </MemoPreviewSectionWrapper>
+        {/* Footer */}
+        <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text, tagline: footer?.tagline }} render={(f) => (
+            <footer className="py-8 px-6 text-center" style={{ background: surface, borderTop: `2px solid ${border}` }}>
+              <p className="font-black text-xs uppercase tracking-widest text-white mb-1">{f.brand}</p>
+              {f.tagline && <p className="text-[10px] font-light mb-2" style={{ color: textMuted }}>{f.tagline}</p>}
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: textMuted }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
+            </footer>
+          )} />
+        </MemoPreviewSectionWrapper>
 
-      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      {!isEditorMode && <CartFab colorStyle={{ background: red, color: "#fff" }} />}
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
-      <BackToTop isEditorMode={isEditorMode} />
-    </div>
+        {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
+        {!isEditorMode && <CartFab colorStyle={{ background: red, color: "#fff" }} />}
+        <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+        <BackToTop isEditorMode={isEditorMode} />
+      </div>
     </CartProvider>
   );
 };

@@ -240,8 +240,6 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
               className={isStreaming ? "animate-slide-up" : ""}
               style={isStreaming ? {
                 animationDelay: `${arrivedIndex * 60}ms`,
-                opacity: 0,
-                animationFillMode: "forwards",
               } : undefined}
             >
               {renderSectionFromContent(sec)}
