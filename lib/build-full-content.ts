@@ -51,12 +51,19 @@ function hashStr(s: string): number {
   return h >>> 0;
 }
 
-function generateLogoSVG(brandName: string, color?: string): string {
+const LOGO_FONTS: Record<string, string> = {
+  kuliner: `system-ui,-apple-system,sans-serif`,
+  jasa: `Georgia,"Times New Roman",serif`,
+  produk: `"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif`,
+};
+
+function generateLogoSVG(brandName: string, color?: string, businessType?: string): string {
   const words = (brandName || "A").trim().split(/\s+/).slice(0, 3);
   const initials = words.map(w => w[0].toUpperCase()).join("");
   const bg = color || LOGO_COLORS[hashStr(brandName) % LOGO_COLORS.length];
   const fontSize = initials.length > 2 ? 80 : initials.length > 1 ? 100 : 120;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="${bg}"/><text x="128" y="164" font-family="system-ui,-apple-system,sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff" text-anchor="middle">${initials}</text></svg>`;
+  const font = LOGO_FONTS[businessType || ""] || `system-ui,-apple-system,sans-serif`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="${bg}"/><text x="128" y="164" font-family="${font}" font-size="${fontSize}" font-weight="700" fill="#fff" text-anchor="middle">${initials}</text></svg>`;
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
@@ -69,7 +76,7 @@ export function buildFullContent(
   matraValue?: string
 ) {
   const c = preserveUserBrand(data.content as Record<string, any>, businessName);
-  const logoUrl = generateLogoSVG(businessName);
+  const logoUrl = generateLogoSVG(businessName, undefined, businessType);
 
   const waUrl = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : null;
 

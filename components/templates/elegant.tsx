@@ -324,7 +324,23 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       {sectionOrder
         .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
         .filter(k => !arrivedSections || arrivedSections.includes(k))
-        .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
+        .map((k) => {
+          const arrivedIndex = arrivedSections?.indexOf(k) ?? -1;
+          const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+          return (
+            <div
+              key={k}
+              className={isStreaming ? "animate-slide-up" : ""}
+              style={isStreaming ? {
+                animationDelay: `${arrivedIndex * 60}ms`,
+                opacity: 0,
+                animationFillMode: "forwards",
+              } : undefined}
+            >
+              {sectionNodes[k] ?? null}
+            </div>
+          );
+        })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand: header?.brand_name }} render={(f) => (

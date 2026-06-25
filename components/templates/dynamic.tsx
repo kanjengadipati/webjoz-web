@@ -231,7 +231,23 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       {resolvedSections
         .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
         .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type))
-        .map((sec) => <div key={sec.type} className="animate-slide-up">{renderSectionFromContent(sec)}</div>)}
+        .map((sec) => {
+          const arrivedIndex = arrivedSections?.indexOf(sec.type) ?? -1;
+          const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+          return (
+            <div
+              key={sec.type}
+              className={isStreaming ? "animate-slide-up" : ""}
+              style={isStreaming ? {
+                animationDelay: `${arrivedIndex * 60}ms`,
+                opacity: 0,
+                animationFillMode: "forwards",
+              } : undefined}
+            >
+              {renderSectionFromContent(sec)}
+            </div>
+          );
+        })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {

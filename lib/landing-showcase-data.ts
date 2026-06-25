@@ -111,7 +111,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Artha Legal",
         nav_cta_text: "Konsultasi Gratis",
         tagline: "Business Legal Consulting",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzRGNDZFNSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFMPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzRGNDZFNSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iR2VvcmdpYSwmcXVvdDtUaW1lcyBOZXcgUm9tYW4mcXVvdDssc2VyaWYiIGZvbnQtc2l6ZT0iMTAwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BTDwvdGV4dD48L3N2Zz4=",
       },
       hero: {
         headline: "Bisnis Anda Aman Secara Hukum, Dari Awal",
@@ -278,7 +278,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Noir Spa",
         nav_cta_text: "Book Sekarang",
         tagline: "Luxury Wellness Experience",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0M5QTg0QyIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5TPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0M5QTg0QyIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iR2VvcmdpYSwmcXVvdDtUaW1lcyBOZXcgUm9tYW4mcXVvdDssc2VyaWYiIGZvbnQtc2l6ZT0iMTAwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5OUzwvdGV4dD48L3N2Zz4=",
       },
       hero: {
         headline: "Kemewahan yang Anda Layak Dapatkan",
@@ -357,7 +357,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Dapur Herbal",
         nav_cta_text: "Pesan Sekarang",
         tagline: "Jamu & Herbal Organik",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzNENUE0NSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRIPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzNENUE0NSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iJnF1b3Q7U0YgUHJvIERpc3BsYXkmcXVvdDssJnF1b3Q7SGVsdmV0aWNhIE5ldWUmcXVvdDssSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ESDwvdGV4dD48L3N2Zz4=",
       },
       hero: {
         headline: "Kesehatan dari Alam, Langsung ke Pintu Anda",
@@ -448,7 +448,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Studio Forma",
         nav_cta_text: "Konsultasi",
         tagline: "Interior & Architecture Studio",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzE4MTgxQiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNGPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzE4MTgxQiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iR2VvcmdpYSwmcXVvdDtUaW1lcyBOZXcgUm9tYW4mcXVvdDssc2VyaWYiIGZvbnQtc2l6ZT0iMTAwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TRjwvdGV4dD48L3N2Zz4=",
       },
       hero: {
         headline: "Ruang yang Berbicara Tanpa Kata",
@@ -527,7 +527,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Garuda Motor",
         nav_cta_text: "Booking Servis",
         tagline: "Motor Sport Specialist",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0RDMjYyNiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdNPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0RDMjYyNiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iJnF1b3Q7U0YgTW9ubyZxdW90OyxNb25hY28sJnF1b3Q7Q291cmllciBOZXcmcXVvdDssbW9ub3NwYWNlIiBmb250LXNpemU9IjEwMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R008L3RleHQ+PC9zdmc+",
       },
       hero: {
         headline: "Bengkel Motor Sport Terpercaya di Kota",
@@ -606,7 +606,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Smile Care",
         nav_cta_text: "Booking Konsultasi",
         tagline: "Klinik Gigi Modern",
-        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzdDM0FFRCIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNDPC90ZXh0Pjwvc3ZnPg==",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzdDM0FFRCIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0iJnF1b3Q7U0YgTW9ubyZxdW90OyxNb25hY28sJnF1b3Q7Q291cmllciBOZXcmcXVvdDssbW9ub3NwYWNlIiBmb250LXNpemU9IjEwMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0M8L3RleHQ+PC9zdmc+",
       },
       hero: {
         headline: "Senyum Sempurna Dimulai di Sini",
