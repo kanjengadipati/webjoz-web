@@ -32,9 +32,7 @@ export function DevicePreviewFrame({
     doc.head.appendChild(viewport);
 
     const baseStyle = doc.createElement("style");
-    baseStyle.textContent = `html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%} body{overflow:visible;background:#fff}
-.animate-slide-up{animation:slide-up .5s ease-out both}
-@keyframes slide-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`;
+    baseStyle.textContent = "html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%} body{overflow:visible;background:#fff}";
     doc.head.appendChild(baseStyle);
 
     document

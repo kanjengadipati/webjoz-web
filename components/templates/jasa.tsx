@@ -265,65 +265,65 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
-      <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
-        <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
-            <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
-              <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
-                <LogoImage
-                  url={headerData.logo_url}
-                  icon={headerData.icon}
-                  defaultIcon={Globe}
-                  iconClass="w-5 h-5 shrink-0 text-indigo-600"
-                  imgClass="h-8 w-auto shrink-0 object-contain"
-                />
-                <span className="min-w-0">
-                  <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
-                  {headerData.tagline && <span className="block text-[10px] font-normal text-indigo-400 tracking-wide truncate">{headerData.tagline}</span>}
-                </span>
-              </span>
-              <NavMenu
-                sectionOrder={sectionOrder}
-                hiddenSections={dt?.layout?.hidden_sections}
-                linkClass="text-slate-700"
-                drawerStyle={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}
+    <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-50/80 border-b border-slate-200/80 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
+            <span className="min-w-0 text-base sm:text-lg font-extrabold text-indigo-950 tracking-wider flex items-center gap-2">
+              <LogoImage
+                url={headerData.logo_url}
+                icon={headerData.icon}
+                defaultIcon={Globe}
+                iconClass="w-5 h-5 shrink-0 text-indigo-600"
+                imgClass="h-8 w-auto shrink-0 object-contain"
               />
-              <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
-                {headerData.nav_cta_text || "Hubungi Kami"}
-              </a>
-            </header>
+              <span className="min-w-0">
+                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
+                {headerData.tagline && <span className="block text-[10px] font-normal text-indigo-400 tracking-wide truncate">{headerData.tagline}</span>}
+              </span>
+            </span>
+            <NavMenu
+              sectionOrder={sectionOrder}
+              hiddenSections={dt?.layout?.hidden_sections}
+              linkClass="text-slate-700"
+              drawerStyle={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}
+            />
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-slate-50">
+              {headerData.nav_cta_text || "Hubungi Kami"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder
+        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
+        .filter((key) => !arrivedSections || arrivedSections.includes(key))
+        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
+          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Layanan Bisnis Kami";
+          const displayTagline = footerData.tagline || "Solusi profesional dan terpercaya untuk bisnis Anda";
+          return (
+            <footer className="bg-slate-900 text-slate-400 text-center py-10 text-xs border-t border-slate-200 space-y-1">
+              <p className="text-sm font-bold text-slate-200">{displayBrand}</p>
+              <p className="text-slate-505" style={{ color: "var(--slate-500, #94a3b8)" }}>{displayTagline}</p>
+              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
+            </footer>
+          );
+        }} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && (
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoSectionContent content={seo} render={(seoData) => (
+            <SeoEditorPreview seo={seoData} />
           )} />
         </MemoPreviewSectionWrapper>
-
-        {sectionOrder
-          .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-          .filter((key) => !arrivedSections || arrivedSections.includes(key))
-          .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
-
-        <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
-            const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Layanan Bisnis Kami";
-            const displayTagline = footerData.tagline || "Solusi profesional dan terpercaya untuk bisnis Anda";
-            return (
-              <footer className="bg-slate-900 text-slate-400 text-center py-10 text-xs border-t border-slate-200 space-y-1">
-                <p className="text-sm font-bold text-slate-200">{displayBrand}</p>
-                <p className="text-slate-505" style={{ color: "var(--slate-500, #94a3b8)" }}>{displayTagline}</p>
-                <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
-              </footer>
-            );
-          }} />
-        </MemoPreviewSectionWrapper>
-        {isEditorMode && (
-          <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-            <MemoSectionContent content={seo} render={(seoData) => (
-              <SeoEditorPreview seo={seoData} />
-            )} />
-          </MemoPreviewSectionWrapper>
-        )}
-        {!isEditorMode && <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />}
-        <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
-        <BackToTop isEditorMode={isEditorMode} />
-      </div>
+      )}
+      {!isEditorMode && <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <BackToTop isEditorMode={isEditorMode} />
+    </div>
     </CartProvider>
   );
 };

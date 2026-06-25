@@ -271,65 +271,65 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
-      <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
-        <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
-            <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
-              <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-950 tracking-wide flex items-center gap-2">
-                <LogoImage
-                  url={headerData.logo_url}
-                  icon={headerData.icon}
-                  defaultIcon={Utensils}
-                  iconClass="w-5 h-5 shrink-0 text-amber-700"
-                  imgClass="h-8 w-auto shrink-0 object-contain"
-                />
-                <span className="min-w-0">
-                  <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
-                  {headerData.tagline && <span className="block text-[10px] font-normal text-amber-700/70 tracking-wide truncate">{headerData.tagline}</span>}
-                </span>
-              </span>
-              <NavMenu
-                sectionOrder={sectionOrder}
-                hiddenSections={dt?.layout?.hidden_sections}
-                linkClass="text-amber-900"
-                drawerStyle={{ background: "#FAF7F2", borderTop: "1px solid #EADFCB" }}
+    <div className="bg-[#FAF7F2] text-[#2C2620] font-sans selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden min-h-screen">
+      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FAF7F2]/80 border-b border-[#EADFCB] px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
+            <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-amber-950 tracking-wide flex items-center gap-2">
+              <LogoImage
+                url={headerData.logo_url}
+                icon={headerData.icon}
+                defaultIcon={Utensils}
+                iconClass="w-5 h-5 shrink-0 text-amber-700"
+                imgClass="h-8 w-auto shrink-0 object-contain"
               />
-              <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
-                {headerData.nav_cta_text || "Hubungi Kami"}
-              </a>
-            </header>
+              <span className="min-w-0">
+                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
+                {headerData.tagline && <span className="block text-[10px] font-normal text-amber-700/70 tracking-wide truncate">{headerData.tagline}</span>}
+              </span>
+            </span>
+            <NavMenu
+              sectionOrder={sectionOrder}
+              hiddenSections={dt?.layout?.hidden_sections}
+              linkClass="text-amber-900"
+              drawerStyle={{ background: "#FAF7F2", borderTop: "1px solid #EADFCB" }}
+            />
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-amber-800 text-white rounded-full text-sm font-medium hover:bg-amber-900 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-700 focus:ring-offset-2 focus:ring-offset-[#FAF7F2]">
+              {headerData.nav_cta_text || "Hubungi Kami"}
+            </a>
+          </header>
+        )} />
+      </MemoPreviewSectionWrapper>
+
+      {sectionOrder
+        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
+        .filter((key) => !arrivedSections || arrivedSections.includes(key))
+        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
+          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Kuliner Kami";
+          const displayTagline = footerData.tagline || "Cita rasa autentik untuk kebersamaan keluarga Anda";
+          return (
+            <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
+              <p className="text-sm font-bold text-amber-100">{displayBrand}</p>
+              <p className="text-amber-100/50">{displayTagline}</p>
+              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
+            </footer>
+          );
+        }} />
+      </MemoPreviewSectionWrapper>
+      {isEditorMode && (
+        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoSectionContent content={seo} render={(seoData) => (
+            <SeoEditorPreview seo={seoData} />
           )} />
         </MemoPreviewSectionWrapper>
-
-        {sectionOrder
-          .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-          .filter((key) => !arrivedSections || arrivedSections.includes(key))
-          .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
-
-        <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
-            const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Kuliner Kami";
-            const displayTagline = footerData.tagline || "Cita rasa autentik untuk kebersamaan keluarga Anda";
-            return (
-              <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
-                <p className="text-sm font-bold text-amber-100">{displayBrand}</p>
-                <p className="text-amber-100/50">{displayTagline}</p>
-                <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
-              </footer>
-            );
-          }} />
-        </MemoPreviewSectionWrapper>
-        {isEditorMode && (
-          <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-            <MemoSectionContent content={seo} render={(seoData) => (
-              <SeoEditorPreview seo={seoData} />
-            )} />
-          </MemoPreviewSectionWrapper>
-        )}
-        {!isEditorMode && <CartFab colorStyle={{ background: "#92400e", color: "#fff" }} />}
-        {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />}
-        {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
-      </div>
+      )}
+      {!isEditorMode && <CartFab colorStyle={{ background: "#92400e", color: "#fff" }} />}
+      {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />}
+      {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
+    </div>
     </CartProvider>
   );
 };
