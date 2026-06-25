@@ -44,7 +44,7 @@ export function CardDescription({ children, className, ...props }: HTMLAttribute
 }
 
 export function CardContent({ children, className, ...props }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
-  return <div className={cn("p-6 pt-0", className)} {...props}>{children}</div>;
+  return <div className={cn("p-6", className)} {...props}>{children}</div>;
 }
 
 export function CardFooter({ children, className, ...props }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {

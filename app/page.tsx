@@ -15,22 +15,22 @@ const STEPS = [
   {
     num: "01",
     title: "Chat dengan AI",
-    desc: "Ceritakan bisnis Anda — nama, jenis usaha, dan area layanan. Cukup ngobrol santai, tidak perlu isi form.",
+    desc: "Ceritakan bisnis Anda — nama, jenis usaha, dan area layanan. Cukup ngobrol santai seperti chatting dengan teman.",
   },
   {
     num: "02",
-    title: "Pilih Template",
-    desc: "Pilih mood visual yang cocok. AI langsung mencocokkan template terbaik dari 9 pilihan sesuai bisnis Anda.",
+    title: "Pilih Jenis Usaha",
+    desc: "Pilih kategori bisnis dari 4 pilihan utama. AI otomatis mencocokkan template terbaik untuk usaha Anda.",
   },
   {
     num: "03",
-    title: "Review & Edit",
-    desc: "Preview hasilnya, edit per section, atur SEO, ganti desain token — semuanya tanpa coding.",
+    title: "AI Generate",
+    desc: "Konten, layout, dan desain dibuat otomatis oleh AI. Hasilnya langsung bisa dilihat dalam hitungan detik.",
   },
   {
     num: "04",
-    title: "Publikasikan",
-    desc: "Langsung aktif di subdomain Webjoz, atau hubungkan domain sendiri. Website live dalam hitungan menit.",
+    title: "Review & Publikasikan",
+    desc: "Edit per section, atur SEO, lalu publish. Website aktif di subdomain Webjoz, bisa hubungkan domain sendiri.",
   },
 ];
 
@@ -41,11 +41,6 @@ const FEATURES = [
     icon: "🤖",
     title: "Chat AI, Bukan Form",
     desc: "Tidak perlu isi form panjang. Cukup chat dengan AI, semua konten dan desain dibuat otomatis.",
-  },
-  {
-    icon: "🎨",
-    title: "9 Template Siap Pakai",
-    desc: "Dari kuliner, jasa, produk, hingga perusahaan — AI memilihkan template yang paling cocok untuk bisnis Anda.",
   },
   {
     icon: "🔗",
@@ -61,6 +56,11 @@ const FEATURES = [
     icon: "✏️",
     title: "Edit Per Section",
     desc: "Tidak puas dengan bagian tertentu? Regenerate per section dengan AI, atau edit manual di editor.",
+  },
+  {
+    icon: "📄",
+    title: "Kustomisasi Penuh",
+    desc: "Hero, profil, layanan, testimoni, menu, FAQ, footer, hingga SEO — semua konten bisa diedit dan disesuaikan sendiri kapan saja.",
   },
   {
     icon: "💬",
@@ -370,7 +370,7 @@ export default function LandingPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { value: "< 5 menit", label: "Waktu generate" },
-                { value: "9 template", label: "Siap pakai" },
+                { value: "100%", label: "Online otomatis" },
                 { value: "8 fitur", label: "Satu dashboard" },
                 { value: "AI", label: "Powered" },
               ].map((stat) => (

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
 import type { DesignToken } from "@/lib/template-registry";
 
-// Design token for TEMPLATE_DYNAMIC showcase (Klinik Gigi — violet)
 const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
   palette: {
     primary: "#7C3AED",
@@ -32,116 +31,99 @@ const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
 
 function getDesignToken(templateId: string): DesignToken {
   if (templateId === "TEMPLATE_DYNAMIC") return DYNAMIC_SHOWCASE_TOKEN;
-  return TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] ?? TEMPLATE_DEFAULT_DESIGN_TOKENS["TEMPLATE_JASA02"];
+  return (TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] || TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02)!;
 }
 
-export function LandingTemplateShowcase({ onStart }: { onStart: () => void }) {
-  const [active, setActive] = useState(0);
+function getCategoryLabel(businessType: string): string {
+  const map: Record<string, string> = {
+    kuliner: "Kuliner",
+    jasa: "Jasa",
+    produk: "Produk",
+  };
+  return map[businessType] || businessType;
+}
+
+function TemplatePreview({ templateId, content, designToken }: { templateId: string; content: any; designToken: DesignToken }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0.38);
+  const [scale, setScale] = useState(0.2);
+  const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === templateId)?.component;
 
-  const item = SHOWCASE_ITEMS[active];
-  const templateDef = TEMPLATE_REGISTRY.find((t) => t.id === item.templateId);
-  const designToken = getDesignToken(item.templateId);
-  const TemplateComponent = templateDef?.component;
-
-  // Compute scale to fit container width
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || !TemplateComponent) return;
     const obs = new ResizeObserver(() => {
       setScale(el.offsetWidth / 1280);
     });
     obs.observe(el);
     setScale(el.offsetWidth / 1280);
     return () => obs.disconnect();
-  }, []);
+  }, [TemplateComponent]);
+
+  if (!TemplateComponent) return null;
 
   return (
-    <div className="space-y-6">
-      {/* Tab switcher — scrollable on mobile */}
-      <div className="flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center scrollbar-none">
-        {SHOWCASE_ITEMS.map((s, i) => (
-          <button
-            key={s.templateId}
-            onClick={() => setActive(i)}
-            className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-              active === i
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/25"
-                : "border border-border bg-card/60 text-muted-foreground hover:text-foreground hover:bg-card"
-            }`}
+    <div ref={containerRef} className="relative w-full h-full overflow-hidden bg-white rounded-t-2xl">
+      <div
+        style={{
+          width: 1280,
+          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      >
+        <TemplateComponent content={content} design_token={designToken} isEditorMode={false} />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/80 pointer-events-none" />
+    </div>
+  );
+}
+
+export function LandingTemplateShowcase({ onStart }: { onStart: () => void }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {SHOWCASE_ITEMS.map((item) => {
+        const templateDef = TEMPLATE_REGISTRY.find((t) => t.id === item.templateId);
+        const token = getDesignToken(item.templateId);
+        const category = templateDef?.category || getCategoryLabel(item.businessType);
+        const tags = templateDef?.tags;
+
+        return (
+          <div
+            key={item.templateId}
+            className="group relative rounded-2xl border border-border/50 bg-card/60 overflow-hidden transition hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5"
           >
-            {s.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Template preview */}
-      <div className="relative rounded-[2rem] border border-border/60 bg-card/40 shadow-[0_40px_120px_rgba(0,0,0,0.2)] ring-1 ring-white/5 overflow-hidden">
-        {/* Browser chrome */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-card/60 backdrop-blur">
-          <div className="flex gap-1.5">
-            <div className="h-3 w-3 rounded-full bg-red-400/60" />
-            <div className="h-3 w-3 rounded-full bg-yellow-400/60" />
-            <div className="h-3 w-3 rounded-full bg-green-400/60" />
-          </div>
-          <div className="flex-1 rounded-full bg-muted/60 px-4 py-1.5 text-center text-xs text-muted-foreground truncate">
-            {item.businessName.toLowerCase().replace(/\s+/g, "")}.webjoz.com
-          </div>
-          <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-[10px] font-semibold text-emerald-400 shrink-0">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Live
-          </div>
-        </div>
-
-        {/* Template render area */}
-        <div
-          ref={containerRef}
-          className="relative overflow-hidden bg-white"
-          style={{ height: `${Math.round(scale * 900)}px` }}
-        >
-          {TemplateComponent && (
-            <div
-              style={{
-                width: 1280,
-                transformOrigin: "top left",
-                transform: `scale(${scale})`,
-                pointerEvents: "none",
-                userSelect: "none",
-              }}
-            >
-              <TemplateComponent
-                content={item.content as any}
-                design_token={designToken as any}
-                isEditorMode={false}
+            {/* Template preview (scaled down) */}
+            <div className="relative h-44 overflow-hidden bg-white">
+              <TemplatePreview
+                templateId={item.templateId}
+                content={item.content}
+                designToken={token}
               />
+              {/* Gradient overlay at bottom of preview */}
+              <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-card/90 to-transparent pointer-events-none" />
             </div>
-          )}
 
-          {/* Gradient fade at bottom */}
-          <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-card/90 to-transparent pointer-events-none" />
-
-          {/* CTA overlay at bottom */}
-          <div className="absolute bottom-4 inset-x-0 flex justify-center pointer-events-none">
-            <button
-              onClick={onStart}
-              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-xl shadow-indigo-600/30 transition hover:bg-indigo-500 active:scale-95"
-            >
-              Buat website seperti ini ⚡
-            </button>
+            {/* Info bar */}
+            <div className="p-4 flex items-center justify-between gap-2">
+              <div className="min-w-0 space-y-0.5">
+                <p className="text-sm font-bold text-foreground truncate leading-tight">
+                  {item.businessName}
+                </p>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  {templateDef?.name ?? "Website"}
+                </p>
+              </div>
+              <button
+                onClick={onStart}
+                className="shrink-0 rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold text-primary-foreground transition hover:brightness-110 active:scale-95"
+              >
+                Buat
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Template info */}
-      <div className="text-center">
-        <p className="text-xs text-muted-foreground">
-          Contoh hasil generate AI untuk bisnis{" "}
-          <strong className="text-foreground">{item.businessName}</strong>
-          {" · "}
-          <span className="text-primary">{templateDef?.name}</span>
-        </p>
-      </div>
+        );
+      })}
     </div>
   );
 }
