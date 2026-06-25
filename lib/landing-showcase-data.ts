@@ -14,7 +14,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Kopi Rempah Nusantara",
         nav_cta_text: "Reservasi",
         tagline: "Authentic Indonesian Coffee",
-        logo_url: "https://ui-avatars.com/api/?name=Kopi+Rempah&background=78350F&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzc4MzUwRiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+S1JOPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Cita Rasa Rempah yang Tak Terlupakan",
@@ -111,7 +111,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Artha Legal",
         nav_cta_text: "Konsultasi Gratis",
         tagline: "Business Legal Consulting",
-        logo_url: "https://ui-avatars.com/api/?name=Artha+Legal&background=4F46E5&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzRGNDZFNSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFMPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Bisnis Anda Aman Secara Hukum, Dari Awal",
@@ -188,7 +188,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Boba Rasa",
         nav_cta_text: "Order Sekarang",
         tagline: "Bubble Tea Premium",
-        logo_url: "https://ui-avatars.com/api/?name=Boba+Rasa&background=FF3CAC&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0ZGM0NBQyIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJSPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Boba Paling Hits di Kotamu!",
@@ -278,7 +278,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Noir Spa",
         nav_cta_text: "Book Sekarang",
         tagline: "Luxury Wellness Experience",
-        logo_url: "https://ui-avatars.com/api/?name=Noir+Spa&background=C9A84C&color=0D0D0B&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0M5QTg0QyIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5TPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Kemewahan yang Anda Layak Dapatkan",
@@ -357,7 +357,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Dapur Herbal",
         nav_cta_text: "Pesan Sekarang",
         tagline: "Jamu & Herbal Organik",
-        logo_url: "https://ui-avatars.com/api/?name=Dapur+Herbal&background=3D5A45&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzNENUE0NSIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRIPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Kesehatan dari Alam, Langsung ke Pintu Anda",
@@ -448,7 +448,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Studio Forma",
         nav_cta_text: "Konsultasi",
         tagline: "Interior & Architecture Studio",
-        logo_url: "https://ui-avatars.com/api/?name=Studio+Forma&background=18181B&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzE4MTgxQiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNGPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Ruang yang Berbicara Tanpa Kata",
@@ -527,7 +527,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Garuda Motor",
         nav_cta_text: "Booking Servis",
         tagline: "Motor Sport Specialist",
-        logo_url: "https://ui-avatars.com/api/?name=Garuda+Motor&background=DC2626&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iI0RDMjYyNiIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdNPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Bengkel Motor Sport Terpercaya di Kota",
@@ -606,7 +606,7 @@ export const SHOWCASE_ITEMS = [
         brand_name: "Smile Care",
         nav_cta_text: "Booking Konsultasi",
         tagline: "Klinik Gigi Modern",
-        logo_url: "https://ui-avatars.com/api/?name=Smile+Care&background=7C3AED&color=fff&size=256&format=png",
+        logo_url: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHJ4PSI1MiIgZmlsbD0iIzdDM0FFRCIvPjx0ZXh0IHg9IjEyOCIgeT0iMTY0IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNDPC90ZXh0Pjwvc3ZnPg==",
       },
       hero: {
         headline: "Senyum Sempurna Dimulai di Sini",

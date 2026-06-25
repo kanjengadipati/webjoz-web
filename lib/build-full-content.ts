@@ -36,6 +36,30 @@ export function preserveUserBrand(content: Record<string, any>, businessName: st
   };
 }
 
+const LOGO_COLORS = [
+  "#4F46E5", "#7C3AED", "#2563EB", "#0891B2",
+  "#059669", "#65A30D", "#D97706", "#DC2626",
+  "#DB2777", "#9333EA", "#0EA5E5", "#14B8A6",
+];
+
+function hashStr(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function generateLogoSVG(brandName: string, color?: string): string {
+  const words = (brandName || "A").trim().split(/\s+/).slice(0, 3);
+  const initials = words.map(w => w[0].toUpperCase()).join("");
+  const bg = color || LOGO_COLORS[hashStr(brandName) % LOGO_COLORS.length];
+  const fontSize = initials.length > 2 ? 80 : initials.length > 1 ? 100 : 120;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="${bg}"/><text x="128" y="164" font-family="system-ui,-apple-system,sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff" text-anchor="middle">${initials}</text></svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
 export function buildFullContent(
   data: { content: Record<string, any>; [key: string]: any },
   businessName: string,
@@ -45,7 +69,7 @@ export function buildFullContent(
   matraValue?: string
 ) {
   const c = preserveUserBrand(data.content as Record<string, any>, businessName);
-  const logoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=random&color=fff&size=256&format=png`;
+  const logoUrl = generateLogoSVG(businessName);
 
   const waUrl = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : null;
 
