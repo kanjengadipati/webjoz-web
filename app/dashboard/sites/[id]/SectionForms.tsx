@@ -331,7 +331,7 @@ function LinkTypeInput({
             onClick={() => handleTypeChange("whatsapp")}
             className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
               linkType === "whatsapp"
-                ? "bg-primary text-white font-bold"
+                ? "bg-primary text-primary-foreground font-bold"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -342,7 +342,7 @@ function LinkTypeInput({
             onClick={() => handleTypeChange("custom")}
             className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
               linkType === "custom"
-                ? "bg-primary text-white font-bold"
+                ? "bg-primary text-primary-foreground font-bold"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -880,7 +880,7 @@ export default function SectionForms({
                     onClick={() => updateField("contact", "align", option.value)}
                     className={`rounded-md px-2 py-1.5 text-[11px] font-semibold transition ${
                       active
-                        ? "bg-primary text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
                     }`}
                   >

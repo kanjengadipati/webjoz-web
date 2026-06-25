@@ -948,7 +948,7 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
-                  ? "bg-primary text-white shadow-sm font-bold"
+                  ? "bg-primary text-primary-foreground shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
                 }`}
             >
@@ -957,7 +957,7 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("design")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "design"
-                  ? "bg-primary text-white shadow-sm font-bold"
+                  ? "bg-primary text-primary-foreground shadow-sm font-bold"
                   : "text-slate-400 hover:text-slate-200"
                 }`}
             >
@@ -1187,7 +1187,7 @@ export default function SiteEditorPage() {
                         type="button"
                         onClick={() => void handleAiRegenerateDesign()}
                         disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
-                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-white text-[11px] font-semibold hover:bg-primary/90 transition disabled:opacity-50"
+                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition disabled:opacity-50"
                       >
                         {aiLoading ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -1845,7 +1845,7 @@ export default function SiteEditorPage() {
               <button
                 type="button"
                 onClick={() => setPublishModalOpen(true)}
-                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-white transition-colors hover:brightness-110"
+                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110"
                 style={{ background: "var(--primary)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />

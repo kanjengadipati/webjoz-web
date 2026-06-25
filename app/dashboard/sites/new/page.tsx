@@ -30,7 +30,7 @@ export default function NewSiteWizardPage() {
         </p>
         <button
           onClick={() => router.push("/dashboard/sites")}
-          className="mt-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
+          className="mt-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-colors"
         >
           Kembali ke Dashboard
         </button>

@@ -175,7 +175,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
             </Button>
             <Button
               type="submit"
-              className="flex-1 rounded-xl h-10 text-sm bg-primary text-white border-0 cursor-pointer"
+              className="flex-1 rounded-xl h-10 text-sm bg-primary text-primary-foreground border-0 cursor-pointer"
               disabled={loading || !name.trim() || name.trim() === currentName}
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
@@ -334,7 +334,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
               !isInputValid || loading
                 ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
-            : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
+            : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
             disabled={loading || !isInputValid}
           >
@@ -992,7 +992,7 @@ export default function SitesPage() {
                         type="button"
                         onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
-                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-foreground flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
+                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-primary-foreground flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
                       >
                         {actionLoading === site.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
