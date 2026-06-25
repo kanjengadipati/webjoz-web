@@ -65,6 +65,7 @@ export default function SiteEditorPage() {
   );
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [sheetCollapsed, setSheetCollapsed] = useState(false);
+  const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -1210,7 +1211,10 @@ export default function SiteEditorPage() {
             <div className="px-3 py-1.5">
               <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">Bagian halaman</p>
             </div>
-            <div className="flex flex-col max-h-[180px] overflow-y-auto scrollbar-none">
+            <div
+              className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
+              style={{ maxHeight: sectionNavCollapsed ? 0 : 180, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
+            >
               {SECTIONS.map(({ key, label, icon: Icon, num }) => (
                 <div
                   key={key}
@@ -1558,20 +1562,33 @@ export default function SiteEditorPage() {
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
                     Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                   </p>
-                  {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
+                  <div className="flex items-center gap-1">
+                    {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
+                      <button
+                        type="button"
+                        onClick={() => toggleSectionVisibility(activeTab)}
+                        title={hiddenSections.includes(activeTab) ? "Tampilkan section" : "Sembunyikan section"}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                        style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
+                      >
+                        {hiddenSections.includes(activeTab)
+                          ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
+                          : <><Eye className="w-3 h-3" /> Sembunyikan</>
+                        }
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => toggleSectionVisibility(activeTab)}
-                      title={hiddenSections.includes(activeTab) ? "Tampilkan section" : "Sembunyikan section"}
-                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
-                      style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
+                      onClick={() => setSectionNavCollapsed(v => !v)}
+                      title={sectionNavCollapsed ? "Tampilkan Bagian Halaman" : "Perluas area edit"}
+                      className="flex items-center justify-center w-6 h-6 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300"
                     >
-                      {hiddenSections.includes(activeTab)
-                        ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
-                        : <><Eye className="w-3 h-3" /> Sembunyikan</>
+                      {sectionNavCollapsed
+                        ? <ChevronDown className="w-3.5 h-3.5" />
+                        : <ChevronUp className="w-3.5 h-3.5" />
                       }
                     </button>
-                  )}
+                  </div>
                 </div>
                 <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
                   {pendingDiff ? (
@@ -1757,7 +1774,15 @@ export default function SiteEditorPage() {
                   {autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal"}
                 </span>
               )}
-              {siteDetails?.status !== "published" && (
+              {siteDetails?.status === "published" ? (
+                <span className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  Live
+                </span>
+              ) : (
                 <button
                   type="button"
                   onClick={() => setPublishModalOpen(true)}
@@ -1842,8 +1867,21 @@ export default function SiteEditorPage() {
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               Simpan
             </button>
-            {/* Publish button */}
-            {siteDetails?.status !== "published" && (
+            {/* Publish button / Live badge */}
+            {siteDetails?.status === "published" ? (
+              <a
+                href={`/s/${siteDetails.subdomain}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-7 items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 text-[11px] font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/20"
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                </span>
+                Live — klik untuk buka
+              </a>
+            ) : (
               <button
                 type="button"
                 onClick={() => setPublishModalOpen(true)}
@@ -2220,21 +2258,22 @@ export default function SiteEditorPage() {
             </div>
           </div>
 
-          {/* Desktop floating publish button */}
-          {siteDetails?.status !== "published" && (
-            <button
-              type="button"
-              onClick={() => setPublishModalOpen(true)}
-              className="hidden md:flex absolute bottom-6 right-6 z-40 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-            >
-              <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-              Publikasikan Website
-            </button>
-          )}
         </div>
 
       </div>
+
+      {/* Desktop floating publish button — placed outside any transformed container so fixed works */}
+      {siteDetails?.status !== "published" && (
+        <button
+          type="button"
+          onClick={() => setPublishModalOpen(true)}
+          className="hidden md:flex fixed bottom-6 right-6 z-50 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+          style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+        >
+          <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+          Publikasikan Website
+        </button>
+      )}
 
       {publishModalOpen && siteDetails && (
         <PublishModal

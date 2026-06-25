@@ -12,7 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md",
+  default: "btn-primary",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline: "border border-border bg-background/50 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground hover:border-accent",
   ghost: "hover:bg-accent hover:text-accent-foreground",

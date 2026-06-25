@@ -904,10 +904,10 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={handleGoToEditor}
-                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-primary text-primary-foreground shadow-[0_14px_35px_rgba(0,0,0,0.35)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+                className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
               >
                 <Pencil className="h-4 w-4" />
-                Edit & Publikasikan
+                Edit &amp; Publikasikan
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -949,7 +949,7 @@ export function SiteWizard({
              <button
                type="button"
                onClick={handleGoToEditor}
-                className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold bg-primary text-primary-foreground shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
+               className="btn-primary flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
              >
                <Pencil className="h-3.5 w-3.5" />
                Edit & Publikasikan

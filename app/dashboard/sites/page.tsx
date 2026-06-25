@@ -988,11 +988,11 @@ export default function SitesPage() {
                         <Globe className="w-3.5 h-3.5" /> Lihat Web
                       </button>
                     ) : (
-                      <Button
+                      <button
                         type="button"
                         onClick={() => setPublishTarget(site)}
                         disabled={actionLoading === site.id}
-                        className="flex-1 rounded-xl h-11 text-[12px] font-bold border-0 text-primary-foreground flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap bg-primary hover:bg-primary/90"
+                        className="btn-primary flex-1 rounded-xl h-9 text-[12px] font-bold flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
                       >
                         {actionLoading === site.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1001,7 +1001,7 @@ export default function SitesPage() {
                             <Rocket className="w-3.5 h-3.5" /> Publikasikan
                           </>
                         )}
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -1112,14 +1112,13 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
           >
             Selesai
           </Button>
-          <Button
+          <button
             type="button"
-            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] flex items-center justify-center gap-2"
-            style={{ color: "#fff" }}
+            className="btn-primary flex-1 rounded-xl h-11 text-[13.5px] font-bold flex items-center justify-center gap-2"
             onClick={() => window.open(siteUrl, "_blank")}
           >
             <Globe className="w-4 h-4" /> Buka Website
-          </Button>
+          </button>
         </div>
       </div>
     </Dialog>
