@@ -104,6 +104,23 @@ export function getStageNumber(chatStage: string): number {
   }
 }
 
+export const MOOD_TEMPLATE_POOLS: Record<string, string[]> = {
+  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST"],
+  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_KULINER01"],
+  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_PRODUK03", "TEMPLATE_KULINER01"],
+  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_JASA02"],
+  "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
+  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
+};
+
+export function getTemplatePool(mood: string): string[] {
+  const lm = mood.toLowerCase();
+  for (const [key, pool] of Object.entries(MOOD_TEMPLATE_POOLS)) {
+    if (lm.includes(key)) return pool;
+  }
+  return ["TEMPLATE_DYNAMIC"];
+}
+
 // Pick random variant from array
 export function pickVariant<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];

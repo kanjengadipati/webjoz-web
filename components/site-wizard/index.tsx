@@ -13,6 +13,7 @@ import {
   Phone,
   Pencil,
   Plus,
+  RefreshCw,
   Smartphone,
   Sparkles,
 } from "lucide-react";
@@ -21,7 +22,7 @@ import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stre
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
 import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, LOADING_STEPS_PERCENT } from "./constants";
-import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, pickVariant, isLikelyGibberish, suggestTypeFromName } from "./helpers";
+import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, pickVariant, isLikelyGibberish, suggestTypeFromName, getTemplatePool } from "./helpers";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
 
@@ -68,6 +69,8 @@ export function SiteWizard({
   const [streamedDesignToken, setStreamedDesignToken] = useState<Record<string, any> | null>(null);
   const [streamedTemplateId, setStreamedTemplateId] = useState<string>("");
   const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
+  const [templatePool, setTemplatePool] = useState<string[]>([]);
+  const [templatePoolIndex, setTemplatePoolIndex] = useState(0);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
@@ -199,6 +202,14 @@ export function SiteWizard({
     },
     onDone: (templateId, _qualityScore) => {
       setStreamedTemplateId(templateId);
+
+      // Determine template pool for "Coba Template Lain"
+      const mood = (streamedTokenRef.current as any)?.mood ?? "";
+      const pool = getTemplatePool(mood);
+      const activeIndex = pool.indexOf(templateId);
+      setTemplatePool(pool);
+      setTemplatePoolIndex(activeIndex >= 0 ? activeIndex : 0);
+
       const finalContent = streamedSectionsRef.current;
       const finalToken = streamedTokenRef.current ?? {};
       const mergedPreview: PreviewData = {
@@ -491,6 +502,14 @@ export function SiteWizard({
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
     });
   };
+
+  const handleSwitchTemplate = useCallback(() => {
+    if (templatePool.length <= 1) return;
+    const nextIndex = (templatePoolIndex + 1) % templatePool.length;
+    const nextTemplateId = templatePool[nextIndex];
+    setTemplatePoolIndex(nextIndex);
+    setPreviewData(prev => prev ? { ...prev, template_id: nextTemplateId } : prev);
+  }, [templatePool, templatePoolIndex]);
 
   const handleGoToEditor = async () => {
     if (!token) {
@@ -839,6 +858,17 @@ export function SiteWizard({
               <Smartphone className="h-3.5 w-3.5" />
             </button>
           </div>
+
+          {templatePool.length > 1 && previewState === "result" && (
+            <button
+              type="button"
+              onClick={handleSwitchTemplate}
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-white/10 bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
+            >
+              <RefreshCw size={11} />
+              Coba Template Lain ({templatePoolIndex + 1}/{templatePool.length})
+            </button>
+          )}
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 flex-1 max-w-xs" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
