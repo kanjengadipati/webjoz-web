@@ -12,6 +12,8 @@ import {
   TemplateColorful,
   TemplateMinimalist,
   TemplateBold,
+  TemplateRetro,
+  TemplateFuturistic,
 } from "@/components/templates";
 
 export type { DesignToken };
@@ -119,6 +121,26 @@ export const TEMPLATE_REGISTRY: TemplateDefinition[] = [
     component: TemplateBold,
     previewType: "service",
     tags: ["bold", "tegas", "bengkel", "otomotif", "gym", "olahraga", "kuat", "agresif", "hitam", "merah"],
+  },
+  {
+    id: "TEMPLATE_RETRO",
+    name: "Neon Rewind",
+    category: "Retro & Vintage",
+    description: "Synthwave gelap dengan neon pink dan cyan. Penuh karakter dan nostalgia. Cocok untuk brand kreatif, musik, seni, studio, dan bisnis vintage.",
+    accent: "#ff2a6d",
+    component: TemplateRetro,
+    previewType: "brand",
+    tags: ["retro", "vintage", "musik", "seni", "studio", "kreatif", "nostalgia", "neon", "synthwave"],
+  },
+  {
+    id: "TEMPLATE_FUTURISTIC",
+    name: "Aether Quantum",
+    category: "Futuristic & Tech",
+    description: "Dark cyber dengan grid biru dan aksen cyan. Bersih, teknologis, dan futuristik. Cocok untuk startup tech, digital agency, SaaS, dan brand yang ingin tampil canggih.",
+    accent: "#00d4ff",
+    component: TemplateFuturistic,
+    previewType: "service",
+    tags: ["futuristic", "tech", "startup", "digital", "saas", "cyber", "modern", "canggih", "ai", "teknologi"],
   },
 ];
 

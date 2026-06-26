@@ -189,6 +189,50 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
         },
         mood: "bold-dark",
     },
+    TEMPLATE_RETRO: {
+        palette: {
+            primary: "#ff2a6d",
+            accent: "#05d9e8",
+            background: "#120826",
+            surface: "#1a0a30",
+            text: "#e8e0f0",
+        },
+        typography: {
+            heading_font: "Outfit",
+            body_font: "Inter",
+            heading_weight: "900",
+            heading_size_hero: "3.5rem",
+        },
+        layout: {
+            hero_style: "centered",
+            corner_radius: "soft",
+            section_spacing: "normal",
+            section_order: ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"],
+        },
+        mood: "retro",
+    },
+    TEMPLATE_FUTURISTIC: {
+        palette: {
+            primary: "#00d4ff",
+            accent: "#0066ff",
+            background: "#060d1a",
+            surface: "#0a1530",
+            text: "#e0f0ff",
+        },
+        typography: {
+            heading_font: "Inter",
+            body_font: "Inter",
+            heading_weight: "700",
+            heading_size_hero: "3.5rem",
+        },
+        layout: {
+            hero_style: "full-bleed",
+            corner_radius: "sharp",
+            section_spacing: "normal",
+            section_order: ["hero", "benefits", "about", "testimonials", "cta", "faq", "contact"],
+        },
+        mood: "futuristic",
+    },
 };
 
 /**
