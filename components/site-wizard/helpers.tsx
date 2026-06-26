@@ -9,6 +9,8 @@ import {
   TemplateColorful,
   TemplateMinimalist,
   TemplateBold,
+  TemplateRetro,
+  TemplateFuturistic,
   type TemplateProps,
 } from "@/components/templates";
 
@@ -40,6 +42,8 @@ export function getTemplateComponent(templateId: string): React.ComponentType<Te
     case "TEMPLATE_COLORFUL": return TemplateColorful;
     case "TEMPLATE_MINIMALIST": return TemplateMinimalist;
     case "TEMPLATE_BOLD": return TemplateBold;
+    case "TEMPLATE_RETRO": return TemplateRetro;
+    case "TEMPLATE_FUTURISTIC": return TemplateFuturistic;
     default: return TemplateDynamicWithCart;
   }
 }
@@ -105,12 +109,14 @@ export function getStageNumber(chatStage: string): number {
 }
 
 export const MOOD_TEMPLATE_POOLS: Record<string, string[]> = {
-  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST"],
-  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_KULINER01"],
-  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_PRODUK03", "TEMPLATE_KULINER01"],
-  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_JASA02"],
+  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
+  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01"],
+  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_PRODUK03", "TEMPLATE_KULINER01"],
+  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_DYNAMIC", "TEMPLATE_JASA02"],
   "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
   "profesional": ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
+  "retro":       ["TEMPLATE_RETRO", "TEMPLATE_DYNAMIC", "TEMPLATE_BOLD"],
+  "futuristic":  ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST"],
 };
 
 export function getTemplatePool(mood: string): string[] {

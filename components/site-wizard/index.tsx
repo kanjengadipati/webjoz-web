@@ -589,6 +589,8 @@ export function SiteWizard({
     "TEMPLATE_COLORFUL": "Pop Riot 🎨",
     "TEMPLATE_MINIMALIST": "White Space ⚡",
     "TEMPLATE_DYNAMIC": "AI Design ✨",
+    "TEMPLATE_RETRO": "Neon Wave 🌆",
+    "TEMPLATE_FUTURISTIC": "Cyber Core 🤖",
   };
   const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
 

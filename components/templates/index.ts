@@ -9,3 +9,5 @@ export { TemplateNatural } from "./natural";
 export { TemplateColorful } from "./colorful";
 export { TemplateMinimalist } from "./minimalist";
 export { TemplateBold } from "./bold";
+export { TemplateRetro } from "./retro";
+export { TemplateFuturistic } from "./futuristic";

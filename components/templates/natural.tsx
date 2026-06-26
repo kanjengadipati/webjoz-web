@@ -18,9 +18,8 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
   const dt = design_token ?? null;
   const sectionOrder = (() => {
-    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const base: string[] = ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
     const order = [...base];
-    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
     if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
     if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
     return order;
