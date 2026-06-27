@@ -560,7 +560,7 @@ export function SiteWizard({
 
       if (previewData) {
         const enrichedContent = buildFullContent(
-          { content: previewData.content },
+          { content: previewData.content, design_token: previewData.design_token },
           businessName, businessSubType || businessType, description, whatsapp
         );
         await request(

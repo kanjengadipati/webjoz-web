@@ -131,7 +131,7 @@ function PublicWizardContent() {
         // preview di wizard, supaya site yang baru dibuat tidak kosong di Editor.
         if (pending.previewContent) {
           const enrichedContent = buildFullContent(
-            { content: pending.previewContent },
+            { content: pending.previewContent, design_token: pending.previewDesignToken },
             pending.businessName,
             pending.businessSubType || pending.businessType,
             pending.description || "",
