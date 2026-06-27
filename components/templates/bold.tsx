@@ -68,7 +68,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                 )}
               </div>
               {h.badge_text && (
-                <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: "rgba(220,38,38,0.7)" }}>{h.badge_text}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: "#f87171" }}>{h.badge_text}</p>
               )}
             </div>
           </section>
@@ -348,7 +348,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
               <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Flame} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
-                {h.tagline && <span className="block text-[9px] font-bold uppercase tracking-widest" style={{ color: "rgba(220,38,38,0.7)" }}>{h.tagline}</span>}
+                {h.tagline && <span className="block text-[9px] font-bold uppercase tracking-widest" style={{ color: "#f87171" }}>{h.tagline}</span>}
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-neutral-400 text-xs font-bold uppercase tracking-wider hover:text-red-400 transition-colors" drawerStyle={{ background: surface, borderTop: `2px solid ${border}` }} />
