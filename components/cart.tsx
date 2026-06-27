@@ -272,11 +272,13 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
     return () => document.removeEventListener("keydown", escHandler);
   }, [open, setOpen]);
 
+  const isWaEmpty = !waPhone || waPhone.trim() === "" || waPhone.trim() === "0" || waPhone.trim() === "62";
+
   const handleCheckout = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (items.length === 0) return;
 
-    if (!waPhone && onSubmitLead) {
+    if (isWaEmpty) {
       if (!showForm) {
         setShowForm(true);
         return;
@@ -291,12 +293,17 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
         const cartMessage = buildWAMessage(items, brandName);
         const fullMessage = `${cartMessage}\n\n*Catatan/Alamat Tambahan:*\n${customerNotes.trim() || "-"}`;
 
-        await onSubmitLead({
-          name: customerName,
-          email: "",
-          phone: customerPhone,
-          message: fullMessage,
-        });
+        if (onSubmitLead) {
+          await onSubmitLead({
+            name: customerName,
+            email: "",
+            phone: customerPhone,
+            message: fullMessage,
+          });
+        } else {
+          // Simulate submission for preview modes (e.g. site wizard preview)
+          await new Promise((resolve) => setTimeout(resolve, 800));
+        }
 
         setIsSuccess(true);
         clear();
@@ -567,7 +574,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
               style={{ borderTop: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 8%, transparent)" }}
             >
               <p className="text-[10px] text-center leading-relaxed opacity-50">
-                {waPhone ? "Pesanan dikirim ke WhatsApp untuk konfirmasi harga & ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
+                {!isWaEmpty ? "Pesanan dikirim ke WhatsApp untuk konfirmasi harga & ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
               </p>
               <button
                 type="button"
@@ -575,8 +582,8 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
                 disabled={leadLoading}
                 className="w-full min-h-10 py-2.5 font-bold flex items-center justify-center gap-2 cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{
-                  background: waPhone ? "linear-gradient(135deg, #25D366, #128C7E)" : primaryColor,
-                  color: waPhone ? "#fff" : primaryFg,
+                  background: !isWaEmpty ? "linear-gradient(135deg, #25D366, #128C7E)" : primaryColor,
+                  color: !isWaEmpty ? "#fff" : primaryFg,
                   borderRadius: "0.75rem",
                   border: "none",
                 }}
@@ -586,7 +593,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
                 ) : (
                   <MessageSquare className="w-4 h-4" />
                 )}
-                <span className="text-sm">{leadLoading ? "Mengirim..." : waPhone ? "Pesan via WhatsApp" : "Kirim Pesanan"}</span>
+                <span className="text-sm">{leadLoading ? "Mengirim..." : !isWaEmpty ? "Pesan via WhatsApp" : "Kirim Pesanan"}</span>
               </button>
             </div>
           )}
