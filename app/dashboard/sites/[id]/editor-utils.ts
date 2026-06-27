@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star
+  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera
 } from "lucide-react";
 
 export const stripRegeneratedMarkers = (value: any): any => {
@@ -17,11 +17,11 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo"];
 
 // Sections that are only shown in the sidebar when content actually has that key
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
   header:       { label: "Header",       icon: Layout },
@@ -31,6 +31,7 @@ export const SECTION_META: Record<string, { label: string; icon: any }> = {
   testimonials: { label: "Testimoni",    icon: Star },
   menu:         { label: "Menu",         icon: UtensilsCrossed },
   catalog:      { label: "Katalog",      icon: ShoppingBag },
+  gallery:      { label: "Galeri",       icon: Camera },
   faq:          { label: "FAQ",          icon: HelpCircle },
   cta:          { label: "CTA",          icon: Sparkles },
   contact:      { label: "Kontak",       icon: Mail },
@@ -49,6 +50,7 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   faq:          ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
   cta:          ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Tambahkan trust signal yang mengurangi friction"],
   contact:      ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
+  gallery:      ["Tambahkan foto suasana dan interior", "Gunakan foto asli untuk membangun kepercayaan", "Pilih foto dengan pencahayaan yang baik"],
   footer:       ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
 };

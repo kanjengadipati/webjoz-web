@@ -9,19 +9,21 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
   ContactSection,
 } from "./shared";
+import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
 export const TemplateBold: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
   const sectionOrder = (() => {
     const base: string[] = ["hero", "benefits", "about", "testimonials", "cta", "faq", "contact"];
     const order = [...base];
     if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
     if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
     return order;
   })();
 
@@ -335,6 +337,14 @@ export const TemplateBold: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
     ),
+    gallery: gallery ? (
+      <MemoPreviewSectionWrapper section="gallery" label="Galeri" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ gallery, dt }} render={(data) => {
+          const { gallery: g, dt: d } = data;
+          return <GallerySection gallery={g} design_token={d} />;
+        }} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
   };
 
   return (

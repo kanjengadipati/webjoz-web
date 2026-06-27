@@ -145,6 +145,7 @@ export function buildFullContent(
     },
     ...(c.menu ? { menu: c.menu } : {}),
     ...(c.catalog ? { catalog: c.catalog } : {}),
+    ...(c.gallery ? { gallery: c.gallery } : {}),
     seo: {
       ...c.seo,
       title: c.seo?.title || businessName,

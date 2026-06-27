@@ -9,13 +9,14 @@ import {
   WAFloatingButton, BackToTop, navCtaHref, FaqAccordion, SeoEditorPreview,
   ContactSection,
 } from "./shared";
+import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
 export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, catalog } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, catalog, gallery } = content;
   const dt = design_token ?? null;
   const sectionOrder = (() => {
     const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
@@ -27,6 +28,10 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     if (catalog && !order.includes("catalog")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "catalog");
+    }
+    if (gallery && !order.includes("gallery")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "gallery");
     }
     return order;
   })();
@@ -269,6 +274,14 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           roleClass="text-slate-500"
           bgClass="bg-slate-100 border-y border-slate-200 py-24 px-6"
         />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    gallery: gallery ? (
+      <MemoPreviewSectionWrapper section="gallery" label="Galeri" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ gallery, dt }} render={(data) => {
+          const { gallery: g, dt: d } = data;
+          return <GallerySection gallery={g} design_token={d} />;
+        }} />
       </MemoPreviewSectionWrapper>
     ) : null,
   } as Record<string, React.ReactNode>;

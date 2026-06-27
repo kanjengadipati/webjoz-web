@@ -1,4 +1,4 @@
-import type { ContentSection, MenuItem, CatalogItem } from "@/components/templates/types";
+import type { ContentSection, MenuItem, CatalogItem, GalleryItem } from "@/components/templates/types";
 
 const SZ = "w=400&q=80";
 
@@ -162,6 +162,19 @@ export const MOCK_CONTENT: Record<string, ContentSection["data"]> = {
           { name: "Chicken Wrap", description: "Wrap ayam panggang dengan sayuran segar.", price: "Rp 35.000" },
         ]),
       },
+    ],
+  },
+  gallery: {
+    title: "Galeri Kami",
+    eyebrow: "DOKUMENTASI",
+    layout: "grid",
+    items: [
+      { image_url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80", caption: "Suasana hangat di dalam kafe", alt_text: "Interior kafe" },
+      { image_url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80", caption: "Barista menyajikan kopi pilihan", alt_text: "Barista" },
+      { image_url: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=600&q=80", caption: "Area outdoor yang nyaman", alt_text: "Area outdoor" },
+      { image_url: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80", caption: "Menu spesial andalan", alt_text: "Menu spesial" },
+      { image_url: "https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=600&q=80", caption: "Sudut baca dan coworking", alt_text: "Sudut baca" },
+      { image_url: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80", caption: "Tampilan dari luar kafe", alt_text: "Tampilan luar" },
     ],
   },
   catalog: {

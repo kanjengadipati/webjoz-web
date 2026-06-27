@@ -1409,6 +1409,190 @@ export default function SectionForms({
         </>
       )}
 
+      {/* GALLERY FORM */}
+      {activeTab === "gallery" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
+            <p className="font-semibold text-primary">📸 Section Galeri Foto</p>
+            <p className="mt-1 text-primary/80">
+              Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}
+            </label>
+            <input
+              id="field-gallery.title"
+              type="text" value={content.gallery?.title || ""}
+              onChange={(e) => updateField("gallery", "title", e.target.value)}
+              className={fieldClass("gallery.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+              placeholder="Galeri Kami"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+            <input
+              id="field-gallery.eyebrow"
+              type="text" value={content.gallery?.eyebrow || ""}
+              onChange={(e) => updateField("gallery", "eyebrow", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              placeholder="DOKUMENTASI"
+            />
+          </div>
+
+          {/* Layout Picker */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tata Letak</label>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { value: "grid", label: "Grid", desc: "Kotak seragam" },
+                { value: "masonry", label: "Masonry", desc: "Tinggi bervariasi" },
+                { value: "carousel", label: "Carousel", desc: "Slide bergilir" },
+              ] as const).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => updateField("gallery", "layout", opt.value)}
+                  className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                    (content.gallery?.layout || "grid") === opt.value
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-white/10 text-slate-400 hover:border-white/20"
+                  }`}
+                >
+                  <div className="text-[11px] font-semibold">{opt.label}</div>
+                  <div className="text-[9px] opacity-60">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Carousel config (only when carousel selected) */}
+          {(content.gallery?.layout || "grid") === "carousel" && (
+            <div className="space-y-3 p-3 rounded-xl border border-white/5 bg-white/[0.02]">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Pengaturan Carousel</span>
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kecepatan Putar (ms)</label>
+                <input
+                  type="number" min={1000} max={15000} step={500}
+                  value={content.gallery?.autoplay_speed ?? 4000}
+                  onChange={(e) => updateField("gallery", "autoplay_speed", parseInt(e.target.value) || 4000)}
+                  className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={content.gallery?.show_dots ?? true}
+                  onChange={(e) => updateField("gallery", "show_dots", e.target.checked)}
+                  className="rounded border-white/20"
+                />
+                <span className="text-[11px] font-medium text-slate-400">Tampilkan indikator titik</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={content.gallery?.show_arrows ?? true}
+                  onChange={(e) => updateField("gallery", "show_arrows", e.target.checked)}
+                  className="rounded border-white/20"
+                />
+                <span className="text-[11px] font-medium text-slate-400">Tampilkan tombol navigasi</span>
+              </label>
+            </div>
+          )}
+
+          {/* Gallery Items */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Foto ({content.gallery?.items?.length || 0})</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = [...(content.gallery?.items || []), { image_url: "", caption: "", alt_text: "" }];
+                  updateField("gallery", "items", next);
+                }}
+                className="text-[12px] py-1.5 px-3 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Foto
+              </button>
+            </div>
+            {(content.gallery?.items || []).map((item: any, idx: number) => (
+              <div key={idx} className="mb-3 p-4 rounded-xl border border-white/5 bg-white/[0.02] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500 font-medium">Foto #{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = (content.gallery?.items || []).filter((_: any, i: number) => i !== idx);
+                      updateField("gallery", "items", next);
+                    }}
+                    className="text-red-400 hover:text-red-300 transition-colors p-1"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">URL Gambar</label>
+                  <div className="flex gap-2">
+                    <input
+                      id={`field-gallery.items.${idx}.image_url`}
+                      type="text" value={item.image_url || ""}
+                      onChange={(e) => {
+                        const next = [...(content.gallery?.items || [])];
+                        next[idx] = { ...next[idx], image_url: e.target.value };
+                        updateField("gallery", "items", next);
+                      }}
+                      className="flex-1 px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono"
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+                  {item.image_url && (
+                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+                      <img src={item.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Caption</label>
+                  <input
+                    type="text" value={item.caption || ""}
+                    onChange={(e) => {
+                      const next = [...(content.gallery?.items || [])];
+                      next[idx] = { ...next[idx], caption: e.target.value };
+                      updateField("gallery", "items", next);
+                    }}
+                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    placeholder="Suasana nyaman di dalam"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Alt</label>
+                  <input
+                    type="text" value={item.alt_text || ""}
+                    onChange={(e) => {
+                      const next = [...(content.gallery?.items || [])];
+                      next[idx] = { ...next[idx], alt_text: e.target.value };
+                      updateField("gallery", "items", next);
+                    }}
+                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    placeholder="Deskripsi singkat gambar"
+                  />
+                </div>
+              </div>
+            ))}
+            {(!content.gallery?.items || content.gallery.items.length === 0) && (
+              <button
+                type="button"
+                onClick={() => updateField("gallery", "items", [{ image_url: "", caption: "", alt_text: "" }])}
+                className="w-full text-[12px] py-2 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Foto Pertama
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* CATALOG FORM */}
       {activeTab === "catalog" && (
         <>

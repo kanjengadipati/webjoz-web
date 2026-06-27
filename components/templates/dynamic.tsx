@@ -24,13 +24,14 @@ import ContactSectionInner from "../sections/contact";
 import MenuSectionInner from "../sections/menu";
 import CatalogSectionInner from "../sections/catalog";
 import TestimonialsSectionInner from "../sections/testimonials";
+import GallerySection from "../sections/gallery";
 
 // Phase 3: Dual-schema support — normalize flat content to sections[] format
 // Phase 4: Layout engine defaults
 const ENGINE_ORDER: Record<string, string[]> = {
-  default: ["hero", "about", "benefits", "cta", "faq", "contact"],
-  storytelling: ["hero", "about", "testimonials", "faq", "cta", "contact"],
-  showcase: ["hero", "benefits", "catalog", "menu", "testimonials", "cta", "contact"],
+  default: ["hero", "about", "benefits", "gallery", "cta", "faq", "contact"],
+  storytelling: ["hero", "about", "testimonials", "gallery", "faq", "cta", "contact"],
+  showcase: ["hero", "benefits", "catalog", "menu", "gallery", "testimonials", "cta", "contact"],
   minimal: ["hero", "contact"],
 };
 
@@ -41,7 +42,7 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 
   const engine = dt?.layout?.engine || "default";
   const baseOrder: string[] = dt?.layout?.section_order ?? ENGINE_ORDER[engine] ?? ENGINE_ORDER.default;
-  const extras = (["menu", "catalog", "testimonials"] as const).filter(
+  const extras = (["menu", "catalog", "testimonials", "gallery"] as const).filter(
     (key) => content[key] && !baseOrder.includes(key)
   );
   const order = (() => {
@@ -91,6 +92,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       hero: "Hero", about: "Tentang", benefits: "Keunggulan",
       faq: "FAQ", cta: "CTA", contact: "Kontak",
       testimonials: "Testimoni", menu: "Menu", catalog: "Katalog",
+      gallery: "Galeri",
     };
     const label = labelMap[key] || key;
 
@@ -189,6 +191,17 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             <MemoSectionContent content={c} render={(catalogData) => (
               <CatalogSectionInner catalog={catalogData} />
             )} />
+          </MemoPreviewSectionWrapper>
+        );
+      }
+      case "gallery": {
+        const g = sec.data as TemplateProps["content"]["gallery"];
+        return (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ gallery: g, dt }} render={(data) => {
+              const { gallery: gg } = data;
+              return <GallerySection gallery={gg} design_token={dt} />;
+            }} />
           </MemoPreviewSectionWrapper>
         );
       }

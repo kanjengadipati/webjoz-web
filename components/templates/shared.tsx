@@ -19,6 +19,7 @@ const NAV_LABELS: Record<string, string> = {
   benefits: "Keunggulan",
   menu:     "Menu",
   catalog:  "Katalog",
+  gallery:  "Galeri",
   faq:      "FAQ",
   cta:      "Promo",
   contact:  "Kontak",

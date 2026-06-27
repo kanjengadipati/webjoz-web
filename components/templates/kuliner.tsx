@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref,
   ContactSection,
 } from "./shared";
+import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont } from "./helpers";
 import type { TemplateProps } from "./types";
 
@@ -16,7 +17,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery } = content;
   const dt = design_token ?? null;
   const cssVars = buildCssVars(dt);
 
@@ -34,6 +35,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     if (testimonials && !order.includes("testimonials")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "testimonials");
+    }
+    if (gallery && !order.includes("gallery")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "gallery");
     }
     return order;
   })();
@@ -270,6 +275,14 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             </div>
           </section>
         )} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    gallery: gallery ? (
+      <MemoPreviewSectionWrapper section="gallery" label="Galeri" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ gallery, dt }} render={(data) => {
+          const { gallery: g, dt: d } = data;
+          return <GallerySection gallery={g} design_token={d} />;
+        }} />
       </MemoPreviewSectionWrapper>
     ) : null,
   } as Record<string, React.ReactNode>;

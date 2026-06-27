@@ -44,6 +44,14 @@ export interface CatalogCategory {
   items: CatalogItem[];
 }
 
+export interface GalleryItem {
+  image_url: string;
+  caption?: string;
+  alt_text?: string;
+}
+
+export type GalleryLayout = "grid" | "masonry" | "carousel";
+
 export interface DesignToken {
   palette?: {
     primary?: string;
@@ -156,6 +164,15 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       categories: CatalogCategory[];
+    };
+    gallery?: {
+      title: string;
+      eyebrow?: string;
+      items: GalleryItem[];
+      layout?: "grid" | "masonry" | "carousel";
+      autoplay_speed?: number;
+      show_dots?: boolean;
+      show_arrows?: boolean;
     };
     seo?: {
       title?: string;
