@@ -1794,9 +1794,25 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                           )}
                         </div>
 
-                        <div>
+                        {hasBadge && (
+                          <div>
+                            <label className={inputLabel}>Badge</label>
+                            <input
+                              type="text"
+                              value={item.badge ?? ""}
+                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
+                              placeholder="cth. Best Seller"
+                              className={inputBase}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Deskripsi spans full-width at the bottom */}
+                      <div className="col-span-full space-y-1 mt-1">
+                        <div className="flex items-center justify-between mb-1">
                           <label className={inputLabel}>Deskripsi</label>
-                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5 mt-1 bg-white/[0.03] border border-white/5 rounded-md p-1.5">
+                          <div className="flex items-center gap-1.5 text-[10px]">
                             <button
                               type="button"
                               onClick={() => {
@@ -1836,27 +1852,14 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                               ))}
                             </div>
                           </div>
-                          <textarea
-                            rows={3}
-                            value={item.description ?? ""}
-                            onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-                            placeholder="Deskripsi singkat, list menu, info porsi, dll..."
-                            className={`${inputBase} resize-y min-h-[60px]`}
-                          />
                         </div>
-
-                        {hasBadge && (
-                          <div>
-                            <label className={inputLabel}>Badge</label>
-                            <input
-                              type="text"
-                              value={item.badge ?? ""}
-                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
-                              placeholder="cth. Best Seller"
-                              className={inputBase}
-                            />
-                          </div>
-                        )}
+                        <textarea
+                          rows={4}
+                          value={item.description ?? ""}
+                          onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+                          placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
+                          className={`${inputBase} w-full resize-y min-h-[80px]`}
+                        />
                       </div>
                     </div>
                   </div>
