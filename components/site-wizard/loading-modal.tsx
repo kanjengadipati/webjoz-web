@@ -25,8 +25,8 @@ function getInsight(businessType: string): string {
 
 export function LoadingModal({ loadingStep, businessType, center }: LoadingModalProps) {
   return (
-    <div className={`absolute inset-0 z-30 flex ${center ? "items-end pb-6 px-4 justify-center" : "items-center justify-end pr-8"}`}>
-      <div className={`backdrop-blur-xl rounded-3xl w-full shadow-2xl flex flex-col animate-in ${center ? "max-w-full p-3 gap-2 slide-in-from-bottom-4 max-h-[55vh] overflow-y-auto" : "max-w-sm p-7 gap-5 slide-in-from-right-4 zoom-in-95"} duration-500`} style={{ background: "rgba(17,19,24,0.95)", border: "1px solid rgba(255,255,255,0.1)" }}>
+    <div className={`absolute inset-0 z-30 flex ${center ? "items-end pb-6 px-4 justify-center" : "items-center justify-center px-4"}`}>
+      <div className={`backdrop-blur-xl rounded-3xl w-full shadow-2xl flex flex-col animate-in ${center ? "max-w-full p-3 gap-2 slide-in-from-bottom-4 max-h-[55vh] overflow-y-auto" : "max-w-sm p-7 gap-5 slide-in-from-bottom-4 zoom-in-95"} duration-500`} style={{ background: "rgba(17,19,24,0.95)", border: "1px solid rgba(255,255,255,0.1)" }}>
         {/* Header row: icon + title + percentage */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
