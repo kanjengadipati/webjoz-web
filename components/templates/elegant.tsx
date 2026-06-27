@@ -326,7 +326,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
   };
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ background: darkBg, color: "#f5e6c0", fontFamily: "Georgia, serif", minHeight: "100vh", overflowX: "hidden" }}>
       <div className="py-2 text-center text-[10px] uppercase tracking-widest font-sans" style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
         {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
@@ -377,7 +377,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      {!isEditorMode && <CartFab colorStyle={{ background: gold, color: "#0a0a0a" }} />}
+      <CartFab colorStyle={{ background: gold, color: "#0a0a0a" }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

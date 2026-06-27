@@ -287,7 +287,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   } as Record<string, React.ReactNode>;
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div className="bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden min-h-screen">
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
@@ -343,7 +343,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
-      {!isEditorMode && <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />}
+      <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

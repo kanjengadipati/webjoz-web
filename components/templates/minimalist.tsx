@@ -327,7 +327,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
   };
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ background: bg, color: zinc900, fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -379,7 +379,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      {!isEditorMode && <CartFab colorStyle={{ background: zinc900, color: "#fff" }} />}
+      <CartFab colorStyle={{ background: zinc900, color: "#fff" }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

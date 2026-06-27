@@ -339,7 +339,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
   };
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ background: cream, color: brown, fontFamily: "Georgia, 'Playfair Display', serif", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
@@ -372,7 +372,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      {!isEditorMode && <CartFab colorStyle={{ background: sage, color: "white" }} />}
+      <CartFab colorStyle={{ background: sage, color: "white" }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

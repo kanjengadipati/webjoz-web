@@ -290,7 +290,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   const waPhone = contact?.phone ?? "";
 
   return (
-    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"}>
     <div
       className="font-sans selection:bg-[var(--dt-primary-soft-strong)] selection:text-[var(--dt-text)] overflow-x-hidden min-h-screen"
       style={{ ...cssVars, background: "var(--dt-bg)", color: "var(--dt-text)", fontFamily: "var(--dt-body-font)" }}
@@ -358,7 +358,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
-      {!isEditorMode && <CartFab colorStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }} />}
+      <CartFab colorStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }} />
       {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />}
       {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
     </div>

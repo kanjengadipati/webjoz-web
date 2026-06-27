@@ -296,7 +296,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   const waPhone = contact?.phone ?? "";
 
   return (
-    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode}>
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
     <div className="bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200 overflow-x-hidden min-h-screen">
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
@@ -352,7 +352,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           )} />
         </MemoPreviewSectionWrapper>
       )}
-      {!isEditorMode && <CartFab colorStyle={{ background: "#06b6d4", color: "#0f172a" }} />}
+      <CartFab colorStyle={{ background: "#06b6d4", color: "#0f172a" }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

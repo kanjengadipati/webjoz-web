@@ -297,7 +297,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           }} />
         </MemoPreviewSectionWrapper>
       )}
-      {!isEditorMode && <CartFab />}
+      <CartFab />
       <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
@@ -307,8 +307,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 export function TemplateDynamicWithCart(props: TemplateProps & { previewMode?: boolean }) {
   const waPhone = props.content?.contact?.phone ?? "";
   const brandName = props.content?.header?.brand_name;
+  const { onSubmitLead } = props;
   return (
-    <CartProvider waPhone={waPhone} brandName={brandName} previewMode={props.previewMode}>
+    <CartProvider waPhone={waPhone} brandName={brandName} previewMode={props.previewMode} onSubmitLead={onSubmitLead} primaryColor={props.design_token?.palette?.primary ?? "#4F46E5"}>
       <TemplateDynamic {...props} />
     </CartProvider>
   );
