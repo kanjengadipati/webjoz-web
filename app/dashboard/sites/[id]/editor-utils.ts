@@ -108,7 +108,7 @@ export const collectQualityIssues = (content: any) => {
     { path: "cta.button_text", label: "Teks tombol CTA", value: content?.cta?.button_text, required: true },
     { path: "cta.button_url", label: "URL tombol CTA", value: content?.cta?.button_url, required: true },
     { path: "contact.title", label: "Judul kontak", value: content?.contact?.title, required: true },
-    { path: "contact.phone", label: "Nomor WhatsApp", value: content?.contact?.phone, required: true },
+    { path: "contact.phone", label: "Nomor WhatsApp", value: content?.contact?.phone },
     // address and email are optional — never flag them
     { path: "seo.title", label: "SEO title", value: content?.seo?.title },
     { path: "seo.description", label: "SEO description", value: content?.seo?.description },

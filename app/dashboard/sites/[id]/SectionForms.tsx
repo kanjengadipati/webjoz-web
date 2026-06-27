@@ -987,7 +987,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Nomor WhatsApp {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
+              Nomor WhatsApp <span className="text-slate-600 normal-case font-normal">(opsional)</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input 
               id="field-contact.phone"
@@ -1015,6 +1015,9 @@ export default function SectionForms({
               }} 
               className={fieldClass("contact.phone", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
+            <p className="text-[10px] text-slate-500 leading-relaxed">
+              Jika kosong, pesanan dari keranjang masuk ke <strong className="text-slate-400">Kotak Masuk Pesan</strong> di dashboard.
+            </p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
