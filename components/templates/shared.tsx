@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useId, useState, useEffect } from "react";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
   Sparkles, MapPin, Phone, Mail, Globe,
@@ -9,6 +9,47 @@ import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 
 import type { TestimonialItem, FaqItem } from "./types";
+
+// ─── Image Lightbox ───────────────────────────────────────────────────────────
+
+function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-[fadeIn_0.15s_ease]"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Preview: ${alt}`}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer z-10"
+        aria-label="Tutup preview"
+      >
+        <X className="w-5 h-5" />
+      </button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        onClick={(e) => e.stopPropagation()}
+        className="max-w-[92vw] max-h-[88vh] object-contain rounded-xl shadow-2xl animate-[scaleIn_0.15s_ease]"
+        style={{ boxShadow: "0 25px 80px rgba(0,0,0,0.6)" }}
+      />
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.93) } to { opacity: 1; transform: scale(1) } }
+      `}</style>
+    </div>
+  );
+}
 
 // ─── Nav Menu ─────────────────────────────────────────────────────────────────
 
@@ -258,9 +299,23 @@ function MenuCatalogCard({
   badgeStyle, buttonClassName, buttonStyle,
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
+
   const imageNode = image_url ? (
-    <img src={image_url} alt={itemName} className={imageClassName} style={imageStyle} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+    <>
+      <img
+        src={image_url}
+        alt={itemName}
+        className={imageClassName}
+        style={{ ...imageStyle, cursor: "zoom-in" }}
+        onClick={() => setLightboxOpen(true)}
+        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+      />
+      {lightboxOpen && (
+        <ImageLightbox src={image_url} alt={itemName} onClose={() => setLightboxOpen(false)} />
+      )}
+    </>
   ) : (
     <div className={placeholderClassName} style={placeholderStyle}>
       {React.createElement(icon, { className: placeholderIconClassName, style: placeholderIconStyle })}
