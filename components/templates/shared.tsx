@@ -279,11 +279,11 @@ function MenuCatalogCard({
 
   const isLong = itemDescription && itemDescription.length > 90;
   const displayDescription = isLong && !isExpanded 
-    ? itemDescription.substring(0, 80).trim() + "..." 
+    ? itemDescription.replace(/\n+/g, " ").substring(0, 80).trim() + "..." 
     : itemDescription;
 
   const descriptionElement = itemDescription && (
-    <p className={descriptionClassName} style={descriptionStyle}>
+    <p className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }}>
       {displayDescription}
       {isLong && (
         <button

@@ -1795,13 +1795,53 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                         </div>
 
                         <div>
-                          <label className={inputLabel}>Deskripsi</label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className={inputLabel}>Deskripsi</label>
+                            <div className="flex items-center gap-1.5 text-[10px]">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const cur = item.description ?? "";
+                                  updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
+                                }}
+                                className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-350 font-semibold cursor-pointer active:scale-95 transition-all"
+                                title="Tambah List Bulat"
+                              >
+                                • List
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const cur = item.description ?? "";
+                                  updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
+                                }}
+                                className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-350 font-semibold cursor-pointer active:scale-95 transition-all"
+                                title="Tambah List Angka"
+                              >
+                                1. List
+                              </button>
+                              <span className="text-slate-700 select-none">|</span>
+                              {["✨", "🔥", "✅", "⭐", "📍", "📦"].map((emoji) => (
+                                <button
+                                  key={emoji}
+                                  type="button"
+                                  onClick={() => {
+                                    const cur = item.description ?? "";
+                                    updateItem(catIdx, itemIdx, "description", cur + emoji);
+                                  }}
+                                  className="hover:scale-120 active:scale-90 transition-transform cursor-pointer"
+                                >
+                                  {emoji}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                           <textarea
-                            rows={2}
+                            rows={3}
                             value={item.description ?? ""}
                             onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-                            placeholder="Deskripsi singkat..."
-                            className={`${inputBase} resize-none`}
+                            placeholder="Deskripsi singkat, list menu, info porsi, dll..."
+                            className={`${inputBase} resize-y min-h-[60px]`}
                           />
                         </div>
 
