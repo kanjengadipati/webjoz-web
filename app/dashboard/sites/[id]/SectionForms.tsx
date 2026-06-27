@@ -1795,32 +1795,32 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                         </div>
 
                         <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className={inputLabel}>Deskripsi</label>
-                            <div className="flex items-center gap-1.5 text-[10px]">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const cur = item.description ?? "";
-                                  updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
-                                }}
-                                className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-350 font-semibold cursor-pointer active:scale-95 transition-all"
-                                title="Tambah List Bulat"
-                              >
-                                • List
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const cur = item.description ?? "";
-                                  updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
-                                }}
-                                className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-350 font-semibold cursor-pointer active:scale-95 transition-all"
-                                title="Tambah List Angka"
-                              >
-                                1. List
-                              </button>
-                              <span className="text-slate-700 select-none">|</span>
+                          <label className={inputLabel}>Deskripsi</label>
+                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5 mt-1 bg-white/[0.03] border border-white/5 rounded-md p-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const cur = item.description ?? "";
+                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
+                              }}
+                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1"
+                              title="Tambah List Bulat"
+                            >
+                              <span>•</span> List
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const cur = item.description ?? "";
+                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
+                              }}
+                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px]"
+                              title="Tambah List Angka"
+                            >
+                              1. List
+                            </button>
+                            <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
+                            <div className="flex items-center gap-1.5 flex-wrap">
                               {["✨", "🔥", "✅", "⭐", "📍", "📦"].map((emoji) => (
                                 <button
                                   key={emoji}
@@ -1829,7 +1829,7 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                                     const cur = item.description ?? "";
                                     updateItem(catIdx, itemIdx, "description", cur + emoji);
                                   }}
-                                  className="hover:scale-120 active:scale-90 transition-transform cursor-pointer"
+                                  className="hover:scale-120 active:scale-90 transition-transform cursor-pointer text-xs p-0.5"
                                 >
                                   {emoji}
                                 </button>
