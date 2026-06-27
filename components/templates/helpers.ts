@@ -50,8 +50,11 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
   const isPrimaryDark = isDarkColor(primaryColor);
   const primaryFg = isPrimaryDark ? "#ffffff" : "#1e293b";
   const ctaText = isPrimaryDark ? "#ffffff" : "#1e293b";
-  const ctaBtnBg = isPrimaryDark ? "#ffffff" : "#1e293b";
-  const ctaBtnText = isPrimaryDark ? primaryColor : "#ffffff";
+  // CTA button sits on a dark gradient background (primary→accent),
+  // so we always want a high-contrast button: white bg + dark text, or
+  // a subtle semi-transparent white for dark primaries.
+  const ctaBtnBg = "#ffffff";
+  const ctaBtnText = isDarkColor(primaryColor) ? primaryColor : "#1e293b";
 
   return {
     "--dt-primary": primaryColor,
