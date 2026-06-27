@@ -257,6 +257,7 @@ function MenuCatalogCard({
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
   badgeStyle, buttonClassName, buttonStyle,
 }: MenuCatalogCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
   const imageNode = image_url ? (
     <img src={image_url} alt={itemName} className={imageClassName} style={imageStyle} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
@@ -276,6 +277,26 @@ function MenuCatalogCard({
     </div>
   );
 
+  const isLong = itemDescription && itemDescription.length > 90;
+  const displayDescription = isLong && !isExpanded 
+    ? itemDescription.substring(0, 80).trim() + "..." 
+    : itemDescription;
+
+  const descriptionElement = itemDescription && (
+    <p className={descriptionClassName} style={descriptionStyle}>
+      {displayDescription}
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
+        >
+          {isExpanded ? "Sembunyikan" : "Selengkapnya"}
+        </button>
+      )}
+    </p>
+  );
+
   if (layout === "compact") {
     return (
       <div className={className} style={style}>
@@ -283,7 +304,7 @@ function MenuCatalogCard({
           <div className="flex-shrink-0">{imageNode}</div>
           <div className="min-w-0 flex-1" style={contentStyle}>
             {header}
-            {itemDescription && <p className={descriptionClassName} style={descriptionStyle}>{itemDescription}</p>}
+            {descriptionElement}
             <AddToCartButton
               itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
               category={category} className={buttonClassName} style={buttonStyle}
@@ -299,7 +320,7 @@ function MenuCatalogCard({
       {imageNode}
       <div className={contentClassName} style={contentStyle}>
         {header}
-        {itemDescription && <p className={descriptionClassName} style={descriptionStyle}>{itemDescription}</p>}
+        {descriptionElement}
         <AddToCartButton
           itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
           category={category} className={buttonClassName} style={buttonStyle}
