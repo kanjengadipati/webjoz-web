@@ -1785,6 +1785,7 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                         maxWidth={800}
                         maxHeight={600}
                         quality={0.8}
+                        previewSize="sm"
                       />
 
                       <div className="space-y-3">

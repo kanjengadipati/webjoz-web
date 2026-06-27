@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Upload, Loader2, Link2, Check, AlertCircle } from "lucide-react";
+import { Upload, Loader2, Link2, Check, AlertCircle, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui";
 
 interface FileUploadProps {
@@ -13,6 +13,7 @@ interface FileUploadProps {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number;
+  previewSize?: "sm" | "md" | "lg";
 }
 
 // Client-side image compression helper using Canvas
@@ -87,11 +88,13 @@ export default function FileUpload({
   maxWidth = 1600,
   maxHeight = 1600,
   quality = 0.8,
+  previewSize = "md",
 }: FileUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [imgError, setImgError] = useState(false);
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
@@ -102,6 +105,7 @@ export default function FileUpload({
 
     setError(null);
     setStatus("idle");
+    setImgError(false);
 
     if (!cloudName || !uploadPreset) {
       setError("Konfigurasi Cloudinary belum lengkap di env.");
@@ -139,6 +143,7 @@ export default function FileUpload({
 
       onChange(body.secure_url);
       setStatus("success");
+      setImgError(false);
 
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err: any) {
@@ -155,6 +160,9 @@ export default function FileUpload({
   const triggerSelectFile = () => {
     fileInputRef.current?.click();
   };
+
+  const previewHeightClass = previewSize === "sm" ? "h-20" : previewSize === "lg" ? "h-48" : "h-32";
+  const hasPreview = value && value.startsWith("http") && !imgError;
 
   return (
     <div className="space-y-1.5 w-full">
@@ -180,13 +188,55 @@ export default function FileUpload({
         )}
       </div>
 
+      {/* Image Preview Thumbnail */}
+      {hasPreview ? (
+        <div className={`relative group w-full ${previewHeightClass} rounded-xl overflow-hidden border border-slate-200 bg-slate-50`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={value}
+            alt="Preview"
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-75"
+          />
+          {/* Overlay buttons on hover */}
+          <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button
+              type="button"
+              onClick={triggerSelectFile}
+              disabled={uploading}
+              className="flex items-center gap-1.5 bg-white/90 hover:bg-white text-slate-700 text-[11px] font-semibold px-3 py-1.5 rounded-lg shadow-md transition-all cursor-pointer"
+            >
+              {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+              Ganti Foto
+            </button>
+            <button
+              type="button"
+              onClick={() => { onChange(""); setImgError(false); }}
+              className="flex items-center gap-1 bg-red-500/90 hover:bg-red-500 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-lg shadow-md transition-all cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+              Hapus
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* Empty state placeholder */
+        <div
+          onClick={triggerSelectFile}
+          className={`relative w-full ${previewHeightClass} rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:border-primary/50 hover:bg-slate-100 transition-all group`}
+        >
+          <ImageIcon className="w-6 h-6 text-slate-300 group-hover:text-primary/50 transition-colors" />
+          <span className="text-[11px] text-slate-400 group-hover:text-slate-500 font-medium transition-colors">Klik untuk pilih foto</span>
+        </div>
+      )}
+
       <div className="flex gap-2 items-center">
         <div className="relative flex-1 flex items-center">
           <Link2 className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => { onChange(e.target.value); setImgError(false); }}
             placeholder={placeholder}
             className="w-full pl-9 pr-3 py-2 border rounded-xl text-xs outline-none focus:border-primary transition-all bg-white text-slate-800"
           />
