@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Cpu, ArrowRight, MapPin, Phone, Mail, ChevronDown } from "lucide-react";
+import { Cpu, Zap, ArrowRight, MapPin, Phone, Mail, ChevronDown } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
@@ -167,23 +167,33 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
           <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{m.title}</h2>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "6px", border: `1px solid ${glow}` }}>Menu</span>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{m.title}</h2>
+                <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
+              </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest pb-2" style={{ color: cyan, borderBottom: `1px solid ${glow}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${glow})` }} />
+                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "6px", border: `1px solid ${glow}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${glow}, transparent)` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 p-4 transition-all hover:border-cyan-500/30" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}>
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                      <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center" style={{ background: `${cyan}10`, borderRadius: "8px" }}><Zap className="w-6 h-6" style={{ color: `${cyan}50` }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex justify-between gap-2">
-                            <p className="font-semibold text-sm text-white">{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-semibold text-sm shrink-0" style={{ color: cyan }}>{item.price}</span>}
+                          <div className="flex justify-between gap-2 items-start">
+                            <p className="font-semibold text-sm text-white group-hover:text-cyan-200 transition-colors">{item.name}</p>
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="text-xs font-semibold shrink-0 px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})` }}>{item.price}</span>}
                           </div>
-                          {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
+                          {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all hover:brightness-110"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110 hover:shadow-lg"
                             style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }} />
                         </div>
                       </div>
@@ -201,22 +211,34 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{c.title}</h2>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "6px", border: `1px solid ${glow}` }}>Katalog</span>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{c.title}</h2>
+                <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
+              </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest pb-2" style={{ color: cyan, borderBottom: `1px solid ${glow}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${glow})` }} />
+                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "6px", border: `1px solid ${glow}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${glow}, transparent)` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 p-4 transition-all hover:translate-y-[-4px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}>
-                        {item.badge && <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 text-white" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "4px" }}>{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="font-semibold text-sm text-white">{item.name}</p>
-                        {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-semibold" style={{ color: cyan }}>{item.price}</p>}
-                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all hover:brightness-110"
-                          style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }} />
+                      <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
+                        {item.badge && <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "4px" }}>{item.badge}</span>}
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-full h-36 flex items-center justify-center" style={{ background: `${cyan}08`, borderRadius: "8px" }}><Cpu className="w-10 h-10" style={{ color: `${cyan}30` }} /></div>}
+                        <p className="font-semibold text-sm text-white group-hover:text-cyan-200 transition-colors">{item.name}</p>
+                        {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
+                        {!isPlaceholderPrice(item.price) && item.price && <span className="inline-block text-xs font-semibold px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "4px" }}>{item.price}</span>}
+                        <div className="pt-1">
+                          <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110 hover:shadow-lg"
+                            style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }} />
+                        </div>
                       </div>
                     ))}
                   </div>

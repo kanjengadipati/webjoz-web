@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Flame, Zap, Shield, Target, ArrowRight, MapPin, Phone, Mail, ChevronDown } from "lucide-react";
+import { Flame, Sparkles, Zap, Shield, Target, ArrowRight, MapPin, Phone, Mail, ChevronDown } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
@@ -168,25 +168,39 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{m.title}</h2>
+          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${borderRed}` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] px-3 py-1.5" style={{ color: "#fff", background: red, border: `2px solid ${borderRed}` }}>Menu</span>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{m.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${red})` }} />
+                  <span className="w-2 h-2" style={{ background: red, transform: "rotate(45deg)" }} />
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, ${red}, transparent)` }} />
+                </div>
+              </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-black uppercase tracking-widest pb-2" style={{ color: red, borderBottom: `1px solid ${borderRed}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: borderRed }} />
+                    <span className="text-xs font-black uppercase tracking-widest px-4 py-1.5" style={{ color: red, border: `2px solid ${borderRed}`, background: `${red}10` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: borderRed }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 p-4 transition-all hover:border-red-600" style={{ background: card, border: `2px solid ${border}` }}>
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                      <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-16 h-16 flex-shrink-0 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-6 h-6" style={{ color: `${red}50` }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex justify-between gap-2">
-                            <p className="font-black text-sm uppercase text-white">{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-sm shrink-0" style={{ color: red }}>{item.price}</span>}
+                          <div className="flex justify-between gap-2 items-start">
+                            <p className="font-black text-sm uppercase text-white group-hover:text-red-300 transition-colors">{item.name}</p>
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-xs shrink-0 px-2 py-0.5" style={{ color: "#fff", background: red }}>{item.price}</span>}
                           </div>
-                          {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
+                          {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
-                            style={{ background: red }} />
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110"
+                            style={{ background: red, boxShadow: `2px 2px 0 ${borderRed}` }} />
                         </div>
                       </div>
                     ))}
@@ -202,23 +216,39 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{c.title}</h2>
+          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${borderRed}` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] px-3 py-1.5" style={{ color: "#fff", background: red, border: `2px solid ${borderRed}` }}>Katalog</span>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{c.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${red})` }} />
+                  <span className="w-2 h-2" style={{ background: red, transform: "rotate(45deg)" }} />
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, ${red}, transparent)` }} />
+                </div>
+              </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-black uppercase tracking-widest pb-2" style={{ color: red, borderBottom: `1px solid ${borderRed}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: borderRed }} />
+                    <span className="text-xs font-black uppercase tracking-widest px-4 py-1.5" style={{ color: red, border: `2px solid ${borderRed}`, background: `${red}10` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: borderRed }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 p-4 transition-all hover:border-red-600" style={{ background: card, border: `2px solid ${border}` }}>
-                        {item.badge && <span className="inline-block text-[9px] font-black uppercase tracking-wider px-2 py-0.5 text-white" style={{ background: red }}>{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="font-black text-sm uppercase text-white">{item.name}</p>
-                        {item.description && <p className="text-[11px] font-light" style={{ color: textMuted }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-black" style={{ color: red }}>{item.price}</p>}
-                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all hover:brightness-110"
-                          style={{ background: red }} />
+                      <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
+                        {item.badge && <span className="inline-block text-[9px] font-black uppercase tracking-wider px-2 py-0.5" style={{ color: "#fff", background: red }}>{item.badge}</span>}
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-full h-36 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-10 h-10" style={{ color: `${red}40` }} /></div>}
+                        <p className="font-black text-sm uppercase text-white group-hover:text-red-300 transition-colors">{item.name}</p>
+                        {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
+                        {!isPlaceholderPrice(item.price) && item.price && <span className="inline-block font-black text-xs px-2 py-0.5" style={{ color: "#fff", background: red }}>{item.price}</span>}
+                        <div className="pt-1">
+                          <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110"
+                            style={{ background: red, boxShadow: `2px 2px 0 ${borderRed}` }} />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -333,7 +363,24 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       {sectionOrder
         .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
         .filter(k => !arrivedSections || arrivedSections.includes(k))
-        .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
+        .map((k) => {
+          const arrivedIndex = arrivedSections?.indexOf(k) ?? -1;
+          const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+          return (
+            <div
+              key={k}
+              id={`section-${k}`}
+              className={isStreaming ? "animate-slide-up" : ""}
+              style={isStreaming ? {
+                animationDelay: `${arrivedIndex * 60}ms`,
+                opacity: 0,
+                animationFillMode: "forwards",
+              } : undefined}
+            >
+              {sectionNodes[k] ?? null}
+            </div>
+          );
+        })}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>

@@ -216,18 +216,25 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(catalogData) => (
-          <section className="relative px-5 sm:px-6 py-24 border-y border-slate-800 bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900/70 overflow-hidden" id="catalog" style={{ backgroundImage: "radial-gradient(circle at top right, rgba(34,211,238,0.16), transparent 35%), radial-gradient(circle at bottom left, rgba(20,184,166,0.12), transparent 30%)" }}>
-            <div className="max-w-7xl mx-auto space-y-10 relative">
+          <section className="relative px-5 sm:px-6 py-24 border-y border-slate-800 overflow-hidden" id="catalog" style={{ background: "linear-gradient(180deg, #0f172a, #0f172a, rgba(15,23,42,0.9))", backgroundImage: "radial-gradient(circle at top right, rgba(34,211,238,0.16), transparent 35%), radial-gradient(circle at bottom left, rgba(20,184,166,0.12), transparent 30%)" }}>
+            <div className="max-w-7xl mx-auto space-y-12 relative">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-cyan-300">Koleksi Produk</span>
                 <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white max-w-3xl mx-auto leading-tight">{catalogData.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-px w-12" style={{ background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.5))" }} />
+                  <span className="w-2 h-2 rotate-45" style={{ background: "#06b6d4", boxShadow: "0 0 8px rgba(34,211,238,0.5)" }} />
+                  <span className="h-px w-12" style={{ background: "linear-gradient(90deg, rgba(34,211,238,0.5), transparent)" }} />
+                </div>
               </div>
               {catalogData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} className="space-y-5">
                   <div className="flex items-center gap-3">
-                    <span className="h-px flex-1 bg-slate-800" />
-                    <h3 className="px-4 py-2 rounded-full bg-slate-900/80 border border-slate-800 text-cyan-300 text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap">{cat.name}</h3>
-                    <span className="h-px flex-1 bg-slate-800" />
+                    <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.3))" }} />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#06b6d4", boxShadow: "0 0 6px rgba(34,211,238,0.6)" }} />
+                    <h3 className="px-4 py-2 rounded-full text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap" style={{ background: "rgba(34,211,238,0.08)", border: "1px solid rgba(34,211,238,0.2)", color: "#22d3ee" }}>{cat.name}</h3>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#06b6d4", boxShadow: "0 0 6px rgba(34,211,238,0.6)" }} />
+                    <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(34,211,238,0.3), transparent)" }} />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {cat.items?.map((item, itemIdx) => {
@@ -243,18 +250,23 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                           image_url={item.image_url}
                           badge={item.badge}
                           icon={ImageIcon}
-                          className="group rounded-[1.5rem] overflow-hidden bg-slate-900 border border-slate-800 hover:border-cyan-400/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,211,238,0.14)]"
-                          imageClassName="w-full h-56 object-cover"
-                          placeholderClassName="w-full h-56 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center"
-                          placeholderIconClassName="w-12 h-12 text-slate-600"
+                          className="group rounded-[1.5rem] overflow-hidden transition-all duration-300 hover:translate-y-[-3px]"
+                          style={{ background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.8)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}
+                          imageClassName="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
+                          placeholderClassName="w-full h-56 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
+                          placeholderStyle={{ background: "linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8))" }}
+                          placeholderIconClassName="w-12 h-12"
+                          placeholderIconStyle={{ color: "rgba(34,211,238,0.25)" }}
                           contentClassName="p-5 space-y-3 flex flex-col flex-1"
                           headerClassName="flex items-start justify-between gap-3"
-                          titleClassName="font-bold text-white text-sm leading-tight"
-                          descriptionClassName="text-slate-400 text-sm leading-relaxed flex-1"
+                          titleClassName="font-bold text-white text-sm leading-tight group-hover:text-cyan-200 transition-colors"
+                          descriptionClassName="text-sm leading-relaxed flex-1"
+                          descriptionStyle={{ color: "rgba(148,163,184,0.8)" }}
                           priceClassName="text-cyan-300 font-black text-sm whitespace-nowrap"
-                          badgeClassName="text-[10px] font-black text-cyan-950 bg-cyan-300 border border-cyan-200 px-2 py-0.5 rounded-full whitespace-nowrap uppercase tracking-wide"
-                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl text-xs font-black bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-1 focus:ring-offset-slate-900"
-                          buttonStyle={{ background: "#06b6d4", color: "#0f172a" }}
+                          badgeClassName="text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap"
+                          badgeStyle={{ color: "#0f172a", background: "#22d3ee", border: "1px solid rgba(34,211,238,0.5)" }}
+                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl text-xs font-black transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-1"
+                          buttonStyle={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", color: "#0f172a", boxShadow: "0 2px 10px rgba(34,211,238,0.2)" }}
                         />
                       );
                     })}

@@ -135,14 +135,18 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
           <section id="menu" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
-            <div className="max-w-5xl mx-auto space-y-10">
+            <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Menu</p>
                 <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{m.title}</h2>
+                <div className="w-12 h-px" style={{ background: zinc200 }} />
               </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
-                  <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: zinc200 }} />
+                  </div>
                   <div className="divide-y" style={{ borderColor: zinc200 }}>
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -155,9 +159,9 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         icon={Utensils}
                         layout="compact"
-                        className="py-4 flex items-center justify-between gap-4 group"
-                        imageClassName="w-16 h-16 object-cover flex-shrink-0"
-                        placeholderClassName="w-16 h-16 flex items-center justify-center flex-shrink-0"
+                        className="py-4 flex items-center justify-between gap-4 group transition-all duration-200 hover:opacity-80"
+                        imageClassName="w-16 h-16 object-cover flex-shrink-0 rounded-lg transition-transform duration-300 group-hover:scale-105"
+                        placeholderClassName="w-16 h-16 flex items-center justify-center flex-shrink-0 rounded-lg"
                         placeholderStyle={{ background: zinc100 }}
                         placeholderIconClassName="w-6 h-6"
                         placeholderIconStyle={{ color: zinc500 }}
@@ -165,11 +169,11 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         headerClassName="flex items-start justify-between gap-4"
                         titleClassName="text-sm font-medium"
                         titleStyle={{ color: zinc900 }}
-                        descriptionClassName="text-xs font-light mt-0.5"
+                        descriptionClassName="text-xs font-light mt-0.5 leading-relaxed"
                         descriptionStyle={{ color: zinc500 }}
-                        priceClassName="text-sm font-light whitespace-nowrap"
-                        priceStyle={{ color: zinc900 }}
-                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900"
+                        priceClassName="text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                        priceStyle={{ color: zinc500, background: zinc100 }}
+                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all duration-200 hover:bg-zinc-900 hover:text-white hover:border-zinc-900 rounded-lg"
                         buttonStyle={{ borderColor: zinc200, color: zinc500 }}
                       />
                     ))}
@@ -185,14 +189,18 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
-            <div className="max-w-5xl mx-auto space-y-10">
+            <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Katalog</p>
                 <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+                <div className="w-12 h-px" style={{ background: zinc200 }} />
               </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
-                  <h3 className="text-[10px] font-semibold uppercase tracking-widest border-b pb-2" style={{ color: zinc500, borderColor: zinc200 }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: zinc200 }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-px" style={{ background: zinc200 }}>
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -205,9 +213,9 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         badge={item.badge}
                         icon={ImageIcon}
-                        className="p-6 space-y-3 hover:bg-zinc-50 transition-colors group"
+                        className="p-6 space-y-3 hover:bg-zinc-50 transition-all duration-300 group"
                         style={{ background: surface }}
-                        imageClassName="w-full h-44 object-cover"
+                        imageClassName="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
                         placeholderClassName="w-full h-44 flex items-center justify-center"
                         placeholderStyle={{ background: zinc100 }}
                         placeholderIconClassName="w-10 h-10"
@@ -216,13 +224,13 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         headerClassName="flex items-start justify-between gap-2"
                         titleClassName="text-sm font-medium"
                         titleStyle={{ color: zinc900 }}
-                        descriptionClassName="text-xs font-light"
+                        descriptionClassName="text-xs font-light leading-relaxed"
                         descriptionStyle={{ color: zinc500 }}
-                        priceClassName="text-sm font-light"
-                        priceStyle={{ color: zinc900 }}
-                        badgeClassName="text-[9px] font-semibold uppercase tracking-widest"
-                        badgeStyle={{ color: zinc500 }}
-                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900"
+                        priceClassName="text-xs font-medium px-2 py-0.5 rounded-full"
+                        priceStyle={{ color: zinc500, background: zinc100 }}
+                        badgeClassName="text-[9px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                        badgeStyle={{ color: zinc500, background: zinc100 }}
+                        buttonClassName="flex items-center gap-1.5 px-3 py-1.5 border text-[10px] font-medium uppercase tracking-wider transition-all duration-200 hover:bg-zinc-900 hover:text-white hover:border-zinc-900 rounded-lg"
                         buttonStyle={{ borderColor: zinc200, color: zinc500 }}
                       />
                     ))}

@@ -167,10 +167,19 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <div className="text-center space-y-3">
                 <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Menu</span>
                 <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{m.title}</h2>
+                <div className="flex items-center justify-center gap-1">
+                  <span className="w-2 h-2" style={{ background: black }} />
+                  <span className="w-2 h-2" style={{ background: black }} />
+                  <span className="w-2 h-2" style={{ background: black }} />
+                </div>
               </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
-                  <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 border-t-4" style={{ borderColor: black }} />
+                    <span className="font-black uppercase text-sm px-3 py-1" style={{ color: black, background: yellow }}>{cat.name}</span>
+                    <span className="flex-1 border-t-4" style={{ borderColor: black }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -182,9 +191,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         category={cat.name}
                         image_url={item.image_url}
                         icon={Utensils}
-                        className={`border-2 border-black p-4 flex gap-3 transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        className={`group border-2 border-black p-4 flex gap-3 transition-all duration-200 ${shadowBlock} ${shadowBlockHover}`}
                         style={{ background: surface }}
-                        imageClassName="w-20 h-20 object-cover border-2 border-black flex-shrink-0"
+                        imageClassName="w-20 h-20 object-cover border-2 border-black flex-shrink-0 group-hover:scale-105 transition-transform duration-300"
                         placeholderClassName="w-20 h-20 border-2 border-black flex items-center justify-center flex-shrink-0"
                         placeholderStyle={{ background: yellow }}
                         placeholderIconClassName="w-8 h-8"
@@ -193,10 +202,10 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         headerClassName="flex justify-between items-start gap-2"
                         titleClassName="font-black text-sm uppercase"
                         titleStyle={{ color: black }}
-                        descriptionClassName="text-[11px] font-semibold mt-1"
+                        descriptionClassName="text-[11px] font-semibold mt-1 leading-relaxed"
                         descriptionStyle={{ color: "#555" }}
-                        priceClassName="font-black text-sm whitespace-nowrap"
-                        priceStyle={{ color: pink }}
+                        priceClassName="font-black text-xs px-2 py-0.5 whitespace-nowrap"
+                        priceStyle={{ color: yellow, background: black }}
                         buttonClassName={`mt-2 flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
                         buttonStyle={{ background: yellow, color: black }}
                       />
@@ -217,10 +226,19 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <div className="text-center space-y-3">
                 <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Katalog</span>
                 <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{c.title}</h2>
+                <div className="flex items-center justify-center gap-1">
+                  <span className="w-2 h-2" style={{ background: black }} />
+                  <span className="w-2 h-2" style={{ background: black }} />
+                  <span className="w-2 h-2" style={{ background: black }} />
+                </div>
               </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-4">
-                  <h3 className="font-black uppercase text-sm border-b-4 border-black pb-1" style={{ color: black }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 border-t-4" style={{ borderColor: black }} />
+                    <span className="font-black uppercase text-sm px-3 py-1" style={{ color: black, background: yellow }}>{cat.name}</span>
+                    <span className="flex-1 border-t-4" style={{ borderColor: black }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -233,9 +251,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         badge={item.badge}
                         icon={ImageIcon}
-                        className={`border-2 border-black p-4 space-y-2 transition-all ${shadowBlock} ${shadowBlockHover}`}
+                        className={`group border-2 border-black p-4 space-y-2 transition-all duration-200 ${shadowBlock} ${shadowBlockHover}`}
                         style={{ background: surface }}
-                        imageClassName="w-full h-40 object-cover border-2 border-black"
+                        imageClassName="w-full h-40 object-cover border-2 border-black group-hover:scale-[1.02] transition-transform duration-300"
                         placeholderClassName="w-full h-40 border-2 border-black flex items-center justify-center"
                         placeholderStyle={{ background: yellow }}
                         placeholderIconClassName="w-10 h-10"
@@ -244,9 +262,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         headerClassName="flex items-start justify-between gap-2"
                         titleClassName="font-black text-sm uppercase"
                         titleStyle={{ color: black }}
-                        descriptionClassName="text-[11px] font-semibold"
+                        descriptionClassName="text-[11px] font-semibold leading-relaxed"
                         descriptionStyle={{ color: "#555" }}
-                        priceClassName="font-black"
+                        priceClassName="font-black text-xs"
                         priceStyle={{ color: pink }}
                         badgeClassName="inline-block bg-black text-yellow-300 text-[9px] font-black uppercase px-2 py-0.5"
                         buttonClassName={`w-full flex items-center justify-center gap-1.5 py-2 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
@@ -358,7 +376,24 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       {sectionOrder
         .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
         .filter(k => !arrivedSections || arrivedSections.includes(k))
-        .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}
+        .map((k) => {
+          const arrivedIndex = arrivedSections?.indexOf(k) ?? -1;
+          const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+          return (
+            <div
+              key={k}
+              id={`section-${k}`}
+              className={isStreaming ? "animate-slide-up" : ""}
+              style={isStreaming ? {
+                animationDelay: `${arrivedIndex * 60}ms`,
+                opacity: 0,
+                animationFillMode: "forwards",
+              } : undefined}
+            >
+              {sectionNodes[k] ?? null}
+            </div>
+          );
+        })}
 
       {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>

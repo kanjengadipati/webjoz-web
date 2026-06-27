@@ -146,14 +146,23 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(menuData) => (
           <section className="py-16 px-6 border-y" id="menu" style={{ background: cream, borderColor: border }}>
-            <div className="max-w-5xl mx-auto space-y-10">
+            <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Menu Pilihan</span>
                 <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{menuData.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="w-8 h-px" style={{ background: sage }} />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: sage, opacity: 0.6 }} />
+                  <span className="w-8 h-px" style={{ background: sage }} />
+                </div>
               </div>
               {menuData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: border }} />
+                    <span className="text-xs font-bold uppercase tracking-wider font-sans px-4 py-1 rounded-full" style={{ color: sage, background: sageLight, border: `1px solid ${border}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: border }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -165,10 +174,10 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         category={cat.name}
                         image_url={item.image_url}
                         icon={Utensils}
-                        className="rounded-3xl border overflow-hidden flex flex-col transition-all hover:shadow-md"
+                        className="group rounded-3xl border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]"
                         style={{ background: "white", borderColor: border }}
-                        imageClassName="w-full h-44 object-cover"
-                        placeholderClassName="w-full h-44 flex items-center justify-center"
+                        imageClassName="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
+                        placeholderClassName="w-full h-44 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
                         placeholderStyle={{ background: sageLight }}
                         placeholderIconClassName="w-10 h-10"
                         placeholderIconStyle={{ color: sage, opacity: 0.45 }}
@@ -176,11 +185,11 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         headerClassName="flex items-start justify-between gap-2"
                         titleClassName="text-sm font-bold font-sans"
                         titleStyle={{ color: brown }}
-                        descriptionClassName="text-xs italic flex-1"
+                        descriptionClassName="text-xs italic flex-1 leading-relaxed"
                         descriptionStyle={{ color: brownMuted }}
-                        priceClassName="text-xs font-bold px-2 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
+                        priceClassName="text-xs font-bold px-2.5 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
                         priceStyle={{ background: sageLight, color: sageDark }}
-                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-xs font-bold cursor-pointer transition-all duration-200 hover:opacity-90 hover:shadow-md text-white font-sans"
                         buttonStyle={{ background: sage }}
                       />
                     ))}
@@ -196,14 +205,23 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(catalogData) => (
           <section className="py-16 px-6 border-y" id="catalog" style={{ background: cream, borderColor: border }}>
-            <div className="max-w-5xl mx-auto space-y-10">
+            <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Koleksi Pilihan</span>
                 <h2 className="text-2xl md:text-3xl font-medium" style={{ color: "#233527", fontFamily: "Georgia, serif" }}>{catalogData.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="w-8 h-px" style={{ background: sage }} />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: sage, opacity: 0.6 }} />
+                  <span className="w-8 h-px" style={{ background: sage }} />
+                </div>
               </div>
               {catalogData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2 font-sans" style={{ color: sage, borderColor: border }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: border }} />
+                    <span className="text-xs font-bold uppercase tracking-wider font-sans px-4 py-1 rounded-full" style={{ color: sage, background: sageLight, border: `1px solid ${border}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: border }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -216,10 +234,10 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         badge={item.badge}
                         icon={ImageIcon}
-                        className="rounded-3xl border overflow-hidden flex flex-col transition-all hover:shadow-md"
+                        className="group rounded-3xl border overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]"
                         style={{ background: "white", borderColor: border }}
-                        imageClassName="w-full h-44 object-cover"
-                        placeholderClassName="w-full h-44 flex items-center justify-center"
+                        imageClassName="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
+                        placeholderClassName="w-full h-44 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
                         placeholderStyle={{ background: sageLight }}
                         placeholderIconClassName="w-10 h-10"
                         placeholderIconStyle={{ color: sage, opacity: 0.45 }}
@@ -227,13 +245,13 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         headerClassName="flex items-start justify-between gap-2"
                         titleClassName="text-sm font-bold font-sans"
                         titleStyle={{ color: brown }}
-                        descriptionClassName="text-xs italic flex-1"
+                        descriptionClassName="text-xs italic flex-1 leading-relaxed"
                         descriptionStyle={{ color: brownMuted }}
                         priceClassName="text-sm font-bold font-sans"
                         priceStyle={{ color: sage }}
-                        badgeClassName="text-[10px] font-bold px-2 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
+                        badgeClassName="text-[10px] font-bold px-2.5 py-0.5 rounded-full font-sans whitespace-nowrap shrink-0"
                         badgeStyle={{ background: sageLight, color: sageDark }}
-                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2 px-3 rounded-full text-xs font-bold cursor-pointer transition-all hover:opacity-90 text-white font-sans"
+                        buttonClassName="mt-auto flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-xs font-bold cursor-pointer transition-all duration-200 hover:opacity-90 hover:shadow-md text-white font-sans"
                         buttonStyle={{ background: sage }}
                       />
                     ))}

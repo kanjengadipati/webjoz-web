@@ -167,24 +167,38 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">{m.title}</h2>
+          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-full" style={{ color: pink, background: `${pink}15`, border: `1px solid ${pink}30` }}>Menu</span>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">{m.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${cyan})` }} />
+                  <span className="w-2 h-2 rotate-45" style={{ background: pink }} />
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, ${cyan}, transparent)` }} />
+                </div>
+              </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] pb-2" style={{ color: cyan, borderBottom: `1px solid ${cyanGlow}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${cyanGlow})` }} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full" style={{ color: cyan, background: `${cyan}10`, border: `1px solid ${cyanGlow}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${cyanGlow}, transparent)` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 p-4 rounded-xl transition-all" style={{ background: card, border: `1px solid ${border}` }}>
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                      <div key={ii} className="flex gap-4 p-4 rounded-xl transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-lg flex-shrink-0 ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center ring-1 ring-white/10" style={{ background: `${pink}10` }}><Music className="w-6 h-6" style={{ color: pink }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex justify-between gap-2">
-                            <p className="font-black text-sm uppercase text-white">{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-sm shrink-0" style={{ color: pink }}>{item.price}</span>}
+                          <div className="flex justify-between gap-2 items-start">
+                            <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="font-black text-xs shrink-0 px-2 py-0.5 rounded-full" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.price}</span>}
                           </div>
-                          {item.description && <p className="text-[11px]" style={{ color: textMuted }}>{item.description}</p>}
+                          {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all hover:brightness-110"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all duration-200 hover:brightness-110 hover:shadow-lg"
                             style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }} />
                         </div>
                       </div>
@@ -201,23 +215,39 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">{c.title}</h2>
+          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
+                <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-full" style={{ color: pink, background: `${pink}15`, border: `1px solid ${pink}30` }}>Katalog</span>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">{c.title}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${cyan})` }} />
+                  <span className="w-2 h-2 rotate-45" style={{ background: pink }} />
+                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, ${cyan}, transparent)` }} />
+                </div>
+              </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] pb-2" style={{ color: cyan, borderBottom: `1px solid ${cyanGlow}` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${cyanGlow})` }} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full" style={{ color: cyan, background: `${cyan}10`, border: `1px solid ${cyanGlow}` }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${cyanGlow}, transparent)` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 p-4 rounded-xl transition-all hover:scale-[1.02]" style={{ background: card, border: `1px solid ${border}` }}>
-                        {item.badge && <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 text-white rounded" style={{ background: pink }}>{item.badge}</span>}
-                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-lg" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-                        <p className="font-black text-sm uppercase text-white">{item.name}</p>
-                        {item.description && <p className="text-[11px]" style={{ color: textMuted }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-black" style={{ color: pink }}>{item.price}</p>}
-                        <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all hover:brightness-110"
-                          style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }} />
+                      <div key={ii} className="space-y-3 p-4 rounded-xl transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
+                        {item.badge && <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.badge}</span>}
+                        {item.image_url
+                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-lg ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-full h-36 rounded-lg flex items-center justify-center" style={{ background: `${pink}10` }}><Music className="w-10 h-10" style={{ color: `${pink}40` }} /></div>}
+                        <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
+                        {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
+                        {!isPlaceholderPrice(item.price) && item.price && <p className="font-black text-xs inline-block px-2 py-0.5 rounded-full" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.price}</p>}
+                        <div className="pt-1">
+                          <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all duration-200 hover:brightness-110 hover:shadow-lg"
+                            style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }} />
+                        </div>
                       </div>
                     ))}
                   </div>

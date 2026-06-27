@@ -146,14 +146,21 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
           <section id="menu" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center space-y-2">
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Menu Pilihan</span>
                 <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{m.title}</h2>
+                <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
               </div>
               {m.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-sm uppercase tracking-[0.22em] font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
+                    <h3 className="text-xs uppercase tracking-[0.22em] font-sans" style={{ color: gold }}>{cat.name}</h3>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
+                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-5">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -165,9 +172,10 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         category={cat.name}
                         image_url={item.image_url}
                         icon={Utensils}
-                        className="transition-all hover:brightness-110"
-                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem" }}
-                        imageStyle={{ width: "100%", height: "10rem", objectFit: "cover", borderRadius: "12px" }}
+                        className="group transition-all duration-300 hover:translate-y-[-2px]"
+                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem", boxShadow: "0 4px 24px rgba(0,0,0,0.2)" }}
+                        imageClassName="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+                        imageStyle={{ borderRadius: "12px" }}
                         placeholderStyle={{ height: "10rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
                         placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
                         contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
@@ -175,7 +183,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.85rem", fontWeight: 700 }}
-                        buttonStyle={{ padding: "0.45rem 0.75rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -190,14 +198,21 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center space-y-2">
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Koleksi Eksklusif</span>
                 <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.title}</h2>
+                <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
               </div>
               {c.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
-                  <h3 className="text-sm uppercase tracking-[0.22em] font-sans border-b pb-2" style={{ color: gold, borderColor: `${gold}25` }}>{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
+                    <h3 className="text-xs uppercase tracking-[0.22em] font-sans" style={{ color: gold }}>{cat.name}</h3>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
+                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
+                  </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -210,9 +225,10 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         badge={item.badge}
                         icon={ImageIcon}
-                        className="transition-all hover:brightness-110"
-                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem" }}
-                        imageStyle={{ width: "100%", height: "11rem", objectFit: "cover", borderRadius: "12px" }}
+                        className="group transition-all duration-300 hover:translate-y-[-2px]"
+                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem", boxShadow: "0 4px 24px rgba(0,0,0,0.2)" }}
+                        imageClassName="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
+                        imageStyle={{ borderRadius: "12px" }}
                         placeholderStyle={{ height: "11rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
                         placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
                         contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
@@ -220,8 +236,8 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.9rem", fontWeight: 700 }}
-                        badgeStyle={{ color: "#0a0a0a", background: gold, borderRadius: "999px", padding: "0.15rem 0.5rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
-                        buttonStyle={{ padding: "0.55rem 0.75rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        badgeStyle={{ color: "#0a0a0a", background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -330,6 +346,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
           return (
             <div
               key={k}
+              id={`section-${k}`}
               className={isStreaming ? "animate-slide-up" : ""}
               style={isStreaming ? {
                 animationDelay: `${arrivedIndex * 60}ms`,

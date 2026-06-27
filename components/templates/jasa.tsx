@@ -141,10 +141,19 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 {catalogData.eyebrow && <span className="text-indigo-600 font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
                 <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight">{catalogData.title}</h2>
                 {catalogData.subtitle && <p className="text-slate-600 max-w-2xl mx-auto">{catalogData.subtitle}</p>}
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <span className="w-6 h-0.5 rounded-full" style={{ background: "#4f46e5" }} />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#4f46e5", opacity: 0.6 }} />
+                  <span className="w-6 h-0.5 rounded-full" style={{ background: "#4f46e5" }} />
+                </div>
               </div>
               {catalogData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-6">
-                  <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-3">{cat.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="flex-1 h-px" style={{ background: "#e2e8f0" }} />
+                    <span className="text-xs font-extrabold uppercase tracking-wider px-4 py-1 rounded-full" style={{ color: "#4f46e5", background: "#eef2ff", border: "1px solid #e0e7ff" }}>{cat.name}</span>
+                    <span className="flex-1 h-px" style={{ background: "#e2e8f0" }} />
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {cat.items?.map((item, ii) => (
                       <MenuCatalogCard
@@ -157,8 +166,9 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         badge={item.badge}
                         icon={Sparkles}
-                        className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all"
-                        imageClassName="w-full h-40 object-cover rounded-xl border border-slate-200"
+                        className="group bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                        imageClassName="w-full h-40 object-cover rounded-xl border border-slate-200 transition-transform duration-500 group-hover:scale-105"
+                        imageStyle={{ borderRadius: "12px" }}
                         placeholderClassName="w-full h-40 rounded-xl border border-indigo-100 bg-indigo-50 flex items-center justify-center"
                         placeholderIconClassName="w-10 h-10 text-indigo-500"
                         contentClassName="space-y-3"
@@ -166,8 +176,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                         titleClassName="font-extrabold text-slate-900 text-base leading-snug"
                         descriptionClassName="text-sm text-slate-600 leading-relaxed"
                         priceClassName="font-bold text-indigo-600 text-sm whitespace-nowrap"
-                        badgeClassName="inline-block mb-2 text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full"
-                        buttonClassName="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all"
+                        badgeClassName="inline-block mb-2 text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-full"
+                        buttonClassName="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 hover:shadow-md transition-all duration-200"
                       />
                     ))}
                   </div>

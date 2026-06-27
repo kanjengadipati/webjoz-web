@@ -72,6 +72,16 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-spacing": spacingMap[la?.section_spacing ?? "normal"] ?? "5rem",
     "--dt-radius": radiusMap[la?.corner_radius ?? "soft"] ?? "8px",
     "--dt-radius-lg": la?.corner_radius === "sharp" ? "0px" : la?.corner_radius === "rounded" ? "32px" : "16px",
+    // Soft tints / hover shade — for fixed (non-Dynamic) templates that want to
+    // recolor light backgrounds, badges, and hover states using the AI palette
+    // without fighting contrast. Mixed toward --dt-bg so they always sit
+    // naturally on the page regardless of light/dark palette.
+    "--dt-primary-soft": "color-mix(in srgb, var(--dt-primary) 10%, var(--dt-bg))",
+    "--dt-primary-soft-strong": "color-mix(in srgb, var(--dt-primary) 20%, var(--dt-bg))",
+    "--dt-primary-hover": isPrimaryDark
+      ? "color-mix(in srgb, var(--dt-primary) 85%, white)"
+      : "color-mix(in srgb, var(--dt-primary) 85%, black)",
+    "--dt-accent-soft": "color-mix(in srgb, var(--dt-accent) 10%, var(--dt-bg))",
   };
 }
 
