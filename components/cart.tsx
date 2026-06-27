@@ -389,6 +389,25 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
 
           {/* Form Body */}
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+            {/* Ringkasan Pesanan */}
+            <div className="p-2.5 rounded-lg text-xs space-y-1.5"
+              style={{
+                background: "color-mix(in srgb, var(--dt-primary, var(--primary, #4F46E5)) 8%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--dt-primary, var(--primary, #4F46E5)) 15%, transparent)"
+              }}
+            >
+              <span className="font-bold block opacity-80" style={{ color: "var(--dt-primary, var(--primary, #4F46E5))" }}>
+                Ringkasan Pesanan ({totalQty} item):
+              </span>
+              <div className="space-y-1 max-h-[80px] overflow-y-auto pr-1">
+                {items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-center opacity-90">
+                    <span className="truncate max-w-[180px]">• {item.name}</span>
+                    <span className="font-semibold">{item.qty}x</span>
+                  </div>
+                ))}
+              </div>
+            </div>
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Nama Lengkap *</label>
               <input
