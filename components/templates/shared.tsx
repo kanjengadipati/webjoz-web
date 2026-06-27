@@ -221,7 +221,6 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
 const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }> = ({ phone, isEditorMode, onSubmitLead }) => {
   const [showModal, setShowModal] = useState(false);
-  if (isEditorMode) return null;
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8;
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
