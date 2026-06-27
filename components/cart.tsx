@@ -6,11 +6,11 @@
  * Usage:
  *   Wrap your template root with <CartProvider waPhone="628xxx">.
  *   Use useCart() anywhere inside to access cart state and actions.
- *   Render <CartDrawer /> once at the bottom of the template.
+ *   Renders a popover at the top-right corner when the cart button is clicked.
  */
 
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ChevronUp } from "lucide-react";
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
+import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ interface CartContextValue {
   remove: (id: string) => void;
   clear: () => void;
   open: boolean;
-  setOpen: (v: boolean) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   previewMode: boolean;
 }
 
@@ -51,10 +51,11 @@ interface CartProviderProps {
   children: React.ReactNode;
   waPhone: string;
   brandName?: string;
-  previewMode?: boolean; // when true, FAB uses absolute positioning inside container
+  previewMode?: boolean;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
 }
 
-export function CartProvider({ children, waPhone, brandName, previewMode }: CartProviderProps) {
+export function CartProvider({ children, waPhone, brandName, previewMode, onSubmitLead }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -68,7 +69,6 @@ export function CartProvider({ children, waPhone, brandName, previewMode }: Cart
       }
       return [...prev, { ...item, qty: 1 }];
     });
-    setOpen(true);
   }, []);
 
   const increment = useCallback((id: string) => {
@@ -76,9 +76,11 @@ export function CartProvider({ children, waPhone, brandName, previewMode }: Cart
   }, []);
 
   const decrement = useCallback((id: string) => {
-    setItems((prev) =>
-      prev.map((i) => i.id === id ? { ...i, qty: Math.max(1, i.qty - 1) } : i)
-    );
+    setItems((prev) => {
+      const target = prev.find((i) => i.id === id);
+      if (!target || target.qty <= 1) return prev.filter((i) => i.id !== id);
+      return prev.map((i) => i.id === id ? { ...i, qty: i.qty - 1 } : i);
+    });
   }, []);
 
   const remove = useCallback((id: string) => {
@@ -90,7 +92,7 @@ export function CartProvider({ children, waPhone, brandName, previewMode }: Cart
   return (
     <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, clear, open, setOpen, previewMode: !!previewMode }}>
       {children}
-      <CartDrawer waPhone={waPhone} brandName={brandName} />
+      <CartPopover waPhone={waPhone} brandName={brandName} onSubmitLead={onSubmitLead} />
     </CartContext.Provider>
   );
 }
@@ -98,24 +100,30 @@ export function CartProvider({ children, waPhone, brandName, previewMode }: Cart
 // ─── Floating Cart Button ─────────────────────────────────────────────────────
 
 export function CartFab({ colorStyle }: { colorStyle?: React.CSSProperties }) {
-  const { totalQty, setOpen, previewMode } = useCart();
-  // Never show FAB in preview/editor mode — cart is for public visitors only
-  if (totalQty === 0 || previewMode) return null;
+  const { totalQty, setOpen } = useCart();
+  if (totalQty === 0) return null;
 
   return (
     <button
       type="button"
-      onClick={() => setOpen(true)}
+      onClick={() => setOpen((v) => !v)}
       aria-label={`Lihat keranjang (${totalQty} item)`}
-      className="fixed bottom-6 right-6 z-[200] flex items-center gap-2 px-4 py-3 rounded-full shadow-2xl font-bold text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2"
+      className="fixed top-20 right-4 z-[200] flex items-center justify-center w-11 h-11 rounded-full shadow-lg cursor-pointer transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2"
       style={{
         background: "var(--dt-primary, var(--primary))",
         color: "var(--dt-primary-foreground, #fff)",
         ...colorStyle,
       }}
     >
-      <ShoppingCart className="w-4 h-4" />
-      <span>{totalQty} item</span>
+      <ShoppingCart className="w-5 h-5" />
+      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center px-1 rounded-full text-[10px] font-bold leading-none shadow-md"
+        style={{
+          background: "var(--dt-accent, #ef4444)",
+          color: "#fff",
+        }}
+      >
+        {totalQty > 99 ? "99+" : totalQty}
+      </span>
     </button>
   );
 }
@@ -191,14 +199,13 @@ export function AddToCartButton({
   );
 }
 
-// ─── Cart Drawer ──────────────────────────────────────────────────────────────
+// ─── Cart Popover ─────────────────────────────────────────────────────────────
 
 function buildWAMessage(items: CartItem[], brandName?: string): string {
   const lines: string[] = [];
   lines.push(`Halo${brandName ? " *" + brandName + "*" : ""}! Saya ingin memesan:`);
   lines.push("");
 
-  // Group by category
   const byCategory: Record<string, CartItem[]> = {};
   items.forEach((item) => {
     if (!byCategory[item.category]) byCategory[item.category] = [];
@@ -214,7 +221,7 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
   });
 
   lines.push("");
-  lines.push("Mohon konfirmasi ketersediaan dan total harga. Terima kasih! 🙏");
+  lines.push("Mohon konfirmasi ketersediaan dan total harga. Terima kasih!");
   return lines.join("\n");
 }
 
@@ -225,138 +232,187 @@ function normalizePhone(raw: string): string {
   return "62" + digits;
 }
 
-function CartDrawer({ waPhone, brandName }: { waPhone: string; brandName?: string }) {
-  const { items, open, setOpen, increment, decrement, remove, clear, totalQty, previewMode } = useCart();
+function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; brandName?: string; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }) {
+  const { items, open, setOpen, increment, decrement, remove, clear, totalQty } = useCart();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [leadLoading, setLeadLoading] = useState(false);
 
-  if (!open || previewMode) return null;
+  useEffect(() => {
+    if (!open) return;
+    const escHandler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", escHandler);
+    return () => document.removeEventListener("keydown", escHandler);
+  }, [open, setOpen]);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (items.length === 0) return;
-    const phone = normalizePhone(waPhone);
     const message = buildWAMessage(items, brandName);
+    if (!waPhone && onSubmitLead) {
+      setLeadLoading(true);
+      try {
+        await onSubmitLead({ name: "", email: "", phone: "", message });
+      } finally {
+        setLeadLoading(false);
+      }
+      setOpen(false);
+      return;
+    }
+    const phone = normalizePhone(waPhone);
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  if (!open) return null;
+
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-[300] bg-black/50 backdrop-blur-sm"
-        onClick={() => setOpen(false)}
-        aria-hidden
-      />
-
-      {/* Drawer */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-[400] bg-white rounded-t-3xl shadow-2xl flex flex-col max-h-[85vh]"
-        role="dialog"
-        aria-modal
-        aria-label="Keranjang Pesanan"
+    <div
+      ref={panelRef}
+      className="fixed top-20 right-4 z-[400] w-80 max-h-[70vh] flex flex-col shadow-2xl"
+      role="dialog"
+      aria-modal
+      aria-label="Keranjang Pesanan"
+      style={{
+        background: "var(--dt-bg, #fff)",
+        color: "var(--dt-text, #1e293b)",
+        borderRadius: "var(--dt-radius, 0.75rem)",
+        border: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)",
+        maxWidth: "calc(100vw - 2rem)",
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 shrink-0"
+        style={{ borderBottom: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 8%, transparent)" }}
       >
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 bg-slate-200 rounded-full" />
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="w-4 h-4" style={{ color: "var(--dt-primary, var(--primary))" }} />
+          <span className="font-semibold text-sm">Keranjang</span>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+            style={{
+              background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 15%, transparent)",
+              color: "var(--dt-primary, var(--primary))",
+            }}
+          >
+            {totalQty}
+          </span>
         </div>
-
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <ShoppingCart className="w-5 h-5 text-slate-700" />
-            <h2 className="font-bold text-slate-900 text-base">Keranjang</h2>
-            <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{totalQty} item</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {items.length > 0 && (
-              <button
-                type="button"
-                onClick={clear}
-                className="text-[11px] text-red-400 hover:text-red-600 font-medium cursor-pointer transition-colors"
-              >
-                Hapus semua
-              </button>
-            )}
+        <div className="flex items-center gap-2">
+          {items.length > 0 && (
             <button
               type="button"
-              onClick={() => setOpen(false)}
-              className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 cursor-pointer transition-colors"
-              aria-label="Tutup keranjang"
+              onClick={clear}
+              className="text-[10px] font-medium cursor-pointer transition-colors hover:opacity-70"
+              style={{ color: "var(--dt-text, #1e293b)" }}
             >
-              <X className="w-4 h-4" />
+              Hapus semua
             </button>
-          </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="p-1 rounded-full cursor-pointer transition-colors hover:opacity-70"
+            aria-label="Tutup keranjang"
+            style={{ color: "var(--dt-text, #1e293b)" }}
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
+      </div>
 
-        {/* Items */}
-        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-3">
-          {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-slate-400 gap-3">
-              <ShoppingCart className="w-12 h-12 opacity-20" />
-              <p className="text-sm">Keranjang masih kosong</p>
-            </div>
-          ) : (
-            items.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 py-2">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 leading-tight truncate">{item.name}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{item.category}</p>
-                  {item.price && !isPlaceholderPrice(item.price) && (
-                    <p className="text-xs font-bold text-slate-600 mt-0.5">{item.price}</p>
-                  )}
-                </div>
-
-                {/* Qty controls */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => decrement(item.id)}
-                    className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
-                    aria-label="Kurangi"
+      {/* Items */}
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1">
+        {items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 gap-2">
+            <ShoppingCart className="w-8 h-8 opacity-20" />
+            <p className="text-xs opacity-50">Keranjang masih kosong</p>
+          </div>
+        ) : (
+          items.map((item) => (
+            <div key={item.id} className="flex items-center gap-2 py-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium leading-tight truncate">{item.name}</p>
+                <p className="text-[11px] opacity-50 mt-0.5">{item.category}</p>
+                {item.price && !isPlaceholderPrice(item.price) && (
+                  <p className="text-[11px] font-semibold mt-0.5"
+                    style={{ color: "var(--dt-primary, var(--primary))" }}
                   >
-                    <Minus className="w-3.5 h-3.5 text-slate-600" />
-                  </button>
-                  <span className="w-5 text-center text-sm font-bold tabular-nums text-slate-800">{item.qty}</span>
-                  <button
-                    type="button"
-                    onClick={() => increment(item.id)}
-                    className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
-                    aria-label="Tambah"
-                  >
-                    <Plus className="w-3.5 h-3.5 text-slate-600" />
-                  </button>
-                </div>
+                    {item.price}
+                  </p>
+                )}
+              </div>
 
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
-                  onClick={() => remove(item.id)}
-                  className="p-1 text-slate-300 hover:text-red-400 cursor-pointer transition-colors shrink-0"
-                  aria-label={`Hapus ${item.name}`}
+                  onClick={() => decrement(item.id)}
+                  className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all hover:opacity-70"
+                  style={{
+                    background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 12%, transparent)",
+                    color: "var(--dt-primary, var(--primary))",
+                  }}
+                  aria-label="Kurangi"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-4 text-center text-xs font-bold tabular-nums">{item.qty}</span>
+                <button
+                  type="button"
+                  onClick={() => increment(item.id)}
+                  className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all hover:opacity-70"
+                  style={{
+                    background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 12%, transparent)",
+                    color: "var(--dt-primary, var(--primary))",
+                  }}
+                  aria-label="Tambah"
+                >
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
-            ))
-          )}
-        </div>
 
-        {/* Footer: checkout */}
-        {items.length > 0 && (
-          <div className="px-5 py-4 border-t border-slate-100 space-y-3">
-            <p className="text-[11px] text-slate-400 text-center leading-relaxed">
-              Pesanan akan dikirim ke WhatsApp pemilik bisnis untuk konfirmasi harga &amp; ketersediaan.
-            </p>
-            <button
-              type="button"
-              onClick={handleCheckout}
-              className="w-full min-h-12 py-3 rounded-2xl font-bold text-white flex items-center justify-center gap-2 cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 shadow-lg shadow-green-500/20"
-              style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}
-            >
-              <MessageSquare className="w-4 h-4" />
-              Pesan via WhatsApp
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => remove(item.id)}
+                className="p-1 cursor-pointer transition-colors hover:opacity-50"
+                style={{ color: "var(--dt-text, #1e293b)" }}
+                aria-label={`Hapus ${item.name}`}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))
         )}
       </div>
-    </>
+
+      {/* Footer */}
+      {items.length > 0 && (
+        <div className="px-4 py-3 shrink-0 space-y-2"
+          style={{ borderTop: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 8%, transparent)" }}
+        >
+          <p className="text-[10px] text-center leading-relaxed opacity-50">
+            {waPhone ? "Pesanan dikirim ke WhatsApp untuk konfirmasi harga & ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
+          </p>
+          <button
+            type="button"
+            onClick={handleCheckout}
+            disabled={leadLoading}
+            className="w-full min-h-10 py-2.5 font-bold flex items-center justify-center gap-2 cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{
+              background: waPhone ? "linear-gradient(135deg, #25D366, #128C7E)" : "var(--dt-primary, var(--primary, #4F46E5))",
+              color: "#fff",
+              borderRadius: "var(--dt-radius, 0.75rem)",
+              border: "none",
+            }}
+          >
+            {leadLoading ? (
+              <span className="w-4 h-4 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(255,255,255,0.3)", borderTopColor: "#fff" }} />
+            ) : (
+              <MessageSquare className="w-4 h-4" />
+            )}
+            <span className="text-sm">{leadLoading ? "Mengirim..." : waPhone ? "Pesan via WhatsApp" : "Kirim Pesanan"}</span>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
