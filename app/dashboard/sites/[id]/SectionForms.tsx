@@ -66,6 +66,25 @@ function IconPicker({ value, onChange }: { value?: string; onChange: (name: stri
   );
 }
 
+const EMOJI_GROUPS = [
+  {
+    name: "Populer & Bisnis",
+    emojis: ["✨", "🔥", "✅", "⭐", "📍", "📦", "💬", "📞", "⏰", "🚀", "💯", "💡", "📢"]
+  },
+  {
+    name: "Makanan & Minuman",
+    emojis: ["🍕", "🍔", "🍟", "🌭", "🍳", "🍜", "🍣", "🍱", "🧁", "🎂", "🍎", "☕", "🥤", "🍺"]
+  },
+  {
+    name: "Jasa, Belanja & Produk",
+    emojis: ["🛠️", "🧹", "💈", "💇", "💅", "🧼", "🔑", "🚗", "🏠", "🏢", "🏷️", "🎁", "🛍️", "👕", "👟", "👜", "⌚", "💻", "📱"]
+  },
+  {
+    name: "Simbol & Panah",
+    emojis: ["✔️", "❌", "➕", "➖", "➜", "➔", "⚡", "✦", "❖", "💚", "❤️", "💙", "👍"]
+  }
+];
+
 // ─── Unsplash image pool (mirrors the API backend pool) ───────────────────────
 const UNSPLASH_POOLS: Record<string, string[]> = {
   food: [
@@ -1634,6 +1653,7 @@ interface MenuCatalogFormProps {
 
 function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField }: MenuCatalogFormProps) {
   const [expandedCat, setExpandedCat] = React.useState<number | null>(0);
+  const [activeEmojiPicker, setActiveEmojiPicker] = React.useState<{ catIdx: number; itemIdx: number } | null>(null);
 
   const categories: any[] = data?.categories ?? [];
 
@@ -1836,20 +1856,63 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                               1. List
                             </button>
                             <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              {["✨", "🔥", "✅", "⭐", "📍", "📦"].map((emoji) => (
-                                <button
-                                  key={emoji}
-                                  type="button"
-                                  onClick={() => {
-                                    const cur = item.description ?? "";
-                                    updateItem(catIdx, itemIdx, "description", cur + emoji);
-                                  }}
-                                  className="hover:scale-120 active:scale-90 transition-transform cursor-pointer text-xs p-0.5"
-                                >
-                                  {emoji}
-                                </button>
-                              ))}
+                            
+                            {/* Expandable Emoji & Symbol Popover Picker */}
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx) {
+                                    setActiveEmojiPicker(null);
+                                  } else {
+                                    setActiveEmojiPicker({ catIdx, itemIdx });
+                                  }
+                                }}
+                                className={`px-2 py-0.5 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 ${
+                                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-slate-800 hover:bg-slate-700 text-slate-300"
+                                }`}
+                              >
+                                😀 Emoji & Simbol
+                              </button>
+
+                              {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
+                                <div className="absolute right-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
+                                  <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setActiveEmojiPicker(null)}
+                                      className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Tutup
+                                    </button>
+                                  </div>
+                                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
+                                    {EMOJI_GROUPS.map((group) => (
+                                      <div key={group.name} className="space-y-1">
+                                        <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
+                                        <div className="grid grid-cols-7 gap-1">
+                                          {group.emojis.map((emoji) => (
+                                            <button
+                                              key={emoji}
+                                              type="button"
+                                              onClick={() => {
+                                                const cur = item.description ?? "";
+                                                updateItem(catIdx, itemIdx, "description", cur + emoji);
+                                              }}
+                                              className="h-7 w-7 rounded bg-white/[0.03] hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
+                                            >
+                                              {emoji}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
