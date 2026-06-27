@@ -300,15 +300,17 @@ function MenuCatalogCard({
   if (layout === "compact") {
     return (
       <div className={className} style={style}>
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-4 h-full">
           <div className="flex-shrink-0">{imageNode}</div>
-          <div className="min-w-0 flex-1" style={contentStyle}>
+          <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
             {header}
             {descriptionElement}
-            <AddToCartButton
-              itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
-              category={category} className={buttonClassName} style={buttonStyle}
-            />
+            <div className="mt-auto pt-2">
+              <AddToCartButton
+                itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
+                category={category} className={buttonClassName} style={buttonStyle}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -316,15 +318,17 @@ function MenuCatalogCard({
   }
 
   return (
-    <div className={className} style={style}>
+    <div className={`${className || ""} flex flex-col h-full`} style={style}>
       {imageNode}
-      <div className={contentClassName} style={contentStyle}>
+      <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
         {descriptionElement}
-        <AddToCartButton
-          itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
-          category={category} className={buttonClassName} style={buttonStyle}
-        />
+        <div className="mt-auto pt-3">
+          <AddToCartButton
+            itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
+            category={category} className={buttonClassName} style={buttonStyle}
+          />
+        </div>
       </div>
     </div>
   );
