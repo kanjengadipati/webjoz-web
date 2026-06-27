@@ -222,7 +222,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                     href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-white hover:bg-slate-50 text-indigo-800 rounded-xl font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-700"
                   >
-                    {cta.button_text}
+                    {cta.button_text || "Hubungi Kami"}
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -344,7 +344,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab colorStyle={{ background: "#4f46e5", color: "white" }} />
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>

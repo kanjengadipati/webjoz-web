@@ -164,7 +164,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                     href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:brightness-110 text-slate-950 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
                   >
-                    {cta.button_text}
+                    {cta.button_text || "Hubungi Kami"}
                     <ArrowRight className="w-4 h-4 text-slate-950" />
                   </a>
                 </div>
@@ -353,7 +353,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab colorStyle={{ background: "#06b6d4", color: "#0f172a" }} />
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>

@@ -10,6 +10,83 @@ import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/co
 
 import type { TestimonialItem, FaqItem } from "./types";
 
+// ─── WA Lead Modal ────────────────────────────────────────────────────────────
+
+function WaLeadModal({ onSubmitLead, onClose }: {
+  onSubmitLead: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onClose: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !phone.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      await onSubmitLead({ name: name.trim(), email: "", phone: phone.trim(), message: notes.trim() || `Pesan dari ${name}` });
+      onClose();
+    } catch (err: any) {
+      setError(err?.message || "Gagal mengirim pesan");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="w-full max-w-sm mx-4 p-6 rounded-2xl shadow-2xl"
+        style={{ background: "var(--dt-bg, #fff)", color: "var(--dt-text, #1e293b)" }}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Hubungi Kami"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <span className="font-bold text-sm">Hubungi Kami</span>
+          <button type="button" onClick={onClose} className="p-1 rounded-full hover:opacity-70 cursor-pointer" aria-label="Tutup"><X className="w-4 h-4" /></button>
+        </div>
+        {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Nama *</label>
+            <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Nama Anda" maxLength={100}
+              className="w-full px-3 py-2 text-xs rounded-lg border outline-none transition-all focus:ring-1"
+              style={{ background: "color-mix(in srgb, var(--dt-bg, #fff) 97%, var(--dt-text, #1e293b) 3%)", borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)", color: "var(--dt-text, #1e293b)" }}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">No. WhatsApp *</label>
+            <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08123456789" maxLength={20}
+              className="w-full px-3 py-2 text-xs rounded-lg border outline-none transition-all focus:ring-1"
+              style={{ background: "color-mix(in srgb, var(--dt-bg, #fff) 97%, var(--dt-text, #1e293b) 3%)", borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)", color: "var(--dt-text, #1e293b)" }}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Pesan</label>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Tulis pesan Anda..." rows={3} maxLength={500}
+              className="w-full px-3 py-2 text-xs rounded-lg border outline-none resize-none transition-all focus:ring-1"
+              style={{ background: "color-mix(in srgb, var(--dt-bg, #fff) 97%, var(--dt-text, #1e293b) 3%)", borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)", color: "var(--dt-text, #1e293b)" }}
+            />
+          </div>
+          <button type="submit" disabled={loading}
+            className="w-full min-h-10 py-2.5 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 rounded-xl cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #fff)" }}
+          >
+            {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
+            <span>{loading ? "Mengirim..." : "Kirim Pesanan"}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Image Lightbox ───────────────────────────────────────────────────────────
 
 function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
@@ -142,23 +219,36 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
 // ─── WhatsApp Floating Button ────────────────────────────────────────────────
 
-const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean }> = ({ phone, isEditorMode }) => {
-  if (isEditorMode || !phone) return null;
-  const digits = phone.replace(/\D/g, "");
-  const waUrl = digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`;
+const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }> = ({ phone, isEditorMode, onSubmitLead }) => {
+  const [showModal, setShowModal] = useState(false);
+  if (isEditorMode) return null;
+  const digits = phone ? phone.replace(/\D/g, "") : "";
+  const waUrl = digits ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
+  const handleClick = (e: React.MouseEvent) => {
+    if (!digits) {
+      e.preventDefault();
+      if (onSubmitLead) setShowModal(true);
+    }
+  };
   return (
-    <a
-      href={waUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat via WhatsApp"
-      className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
-      style={{ background: "#25D366" }}
-    >
-      <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-    </a>
+    <>
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleClick}
+        aria-label="Chat via WhatsApp"
+        className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+        style={{ background: "#25D366" }}
+      >
+        <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
+      {showModal && onSubmitLead && (
+        <WaLeadModal onSubmitLead={onSubmitLead} onClose={() => setShowModal(false)} />
+      )}
+    </>
   );
 };
 

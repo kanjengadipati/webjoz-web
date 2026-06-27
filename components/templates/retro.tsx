@@ -384,7 +384,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
 
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: `linear-gradient(135deg, ${pink}, #b91c6b)`, color: "#fff" }} />
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} />
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>
