@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -88,7 +88,9 @@ export function SiteWizard({
       });
       preview.setPreviewData(mergedPreview);
       preview.streamDoneRef.current = true;
-      if (preview.loadingStepRef.current >= 5) preview.setPreviewState("result");
+      if (preview.loadingStepRef.current >= 5) {
+        setTimeout(() => preview.setPreviewState("result"), 600);
+      }
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
@@ -129,6 +131,22 @@ export function SiteWizard({
   React.useEffect(() => {
     return () => { cancelStream(); };
   }, [cancelStream]);
+
+  const writtenCharCount = useMemo(() => {
+    return JSON.stringify(preview.streamedSections).length;
+  }, [preview.streamedSections]);
+
+  const sectionSnippet = useMemo(() => {
+    const s = preview.streamedSections;
+    const hero = s.hero as Record<string, any> | undefined;
+    if (hero?.headline) return hero.headline as string;
+    if (hero?.subheadline) return hero.subheadline as string;
+    const about = s.about as Record<string, any> | undefined;
+    if (about?.title) return about.title as string;
+    const cta = s.cta as Record<string, any> | undefined;
+    if (cta?.headline) return cta.headline as string;
+    return "";
+  }, [preview.streamedSections]);
 
   const handleBack = () => {
     if (window.history.length > 1) { router.back(); return; }
@@ -422,6 +440,25 @@ export function SiteWizard({
               const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : [];
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                  {chat.typeWasInferred && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        chat.setTypeWasInferred(false);
+                        chat.setBusinessType("");
+                        chat.setBusinessSubType("");
+                        chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
+                        chat.setMessages((prev) => [
+                          ...prev,
+                          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+                        ]);
+                        chat.setChatStage("type");
+                      }}
+                      className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
+                    >
+                      Bukan ini? Pilih jenis bisnis lain
+                    </button>
+                  )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
                   <div className="flex flex-wrap gap-1.5">
                     {subTypes.map((st) => {
@@ -545,7 +582,7 @@ export function SiteWizard({
                 onChange={(e) => chat.setInputValue(e.target.value)}
                 placeholder={
                   chat.awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
-                    chat.chatStage === "description" ? "Ceritakan bisnis Anda, atau ketik 'lewat'..." :
+                    chat.chatStage === "description" ? "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar" :
                     "Ketik nama bisnis Anda..."
                 }
                 autoFocus
@@ -554,7 +591,7 @@ export function SiteWizard({
               />
               <button
                 type="submit"
-                disabled={chat.isInitialTyping || chat.isAiTyping || ((chat.chatStage === "name" || chat.chatStage === "description") && !chat.inputValue.trim())}
+                disabled={chat.isInitialTyping || chat.isAiTyping || (chat.chatStage === "name" && !chat.inputValue.trim())}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -625,7 +662,7 @@ export function SiteWizard({
               className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-white/10 bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
             >
               <RefreshCw size={11} />
-              Lihat template lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
+              Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
             </button>
           )}
 
@@ -665,13 +702,13 @@ export function SiteWizard({
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} />
+              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} businessName={chat.businessName} charCount={writtenCharCount} sectionSnippet={sectionSnippet} />
             </div>
           )}
 
           {preview.previewState === "loading" && device.isMobile && (
             <div className="absolute inset-0 z-40 bg-black/10">
-              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} center />
+              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} businessName={chat.businessName} center />
             </div>
           )}
 

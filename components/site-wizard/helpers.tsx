@@ -315,3 +315,64 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
 
   return { confidence: "low" };
 }
+
+// Indonesian city keywords for extracting location from free-text descriptions
+const KNOWN_LOCATIONS = [
+  "jogja", "yogyakarta", "jakarta", "jabodetabek", "bandung", "surabaya",
+  "semarang", "medan", "makassar", "bali", "denpasar", "malang", "solo",
+  "depok", "tangerang", "bekasi", "bogor", "palembang", "balikpapan",
+  "pekanbaru", "batam", "manado", "padang", "aceh", "lampung",
+  "banjarmasin", "pontianak", "jambi", "bengkulu", "kupang", "ambon",
+  "samarinda", "mataram", "kendari", "palu", "gorontalo", "serang",
+  "sukabumi", "tasikmalaya", "cirebon", "kediri", "madiun", "surakarta",
+  "banyuwangi", "jember", "bondowoso", "probolinggo", "pasuruan",
+  "majalengka", "subang", "karawang", "purwakarta", "indramayu",
+  "cilacap", "banyumas", "purbalingga", "banjarnegara", "kebumen",
+  "purworejo", "wonosobo", "magelang", "temanggung", "klaten",
+  "sleman", "bantul", "gunung kidul", "kulon progo",
+];
+
+export function extractLocationFromDescription(description: string): string | null {
+  const lower = (description || "").toLowerCase();
+  for (const loc of KNOWN_LOCATIONS) {
+    if (lower.includes(loc)) {
+      return capitalizeWords(loc);
+    }
+  }
+  return null;
+}
+
+const INSIGHT_POOL: Record<string, string[]> = {
+  Kuliner: [
+    "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar.",
+    "Menu digital interaktif membuat pelanggan 40% lebih mungkin memesan.",
+    "Testimoni kuliner yang otentik meningkatkan kepercayaan pelanggan baru.",
+    "Integrasi WhatsApp order memudahkan pelanggan pesan langsung.",
+    "Tampilan mobile-friendly penting karena 70% pengguna kuliner dari smartphone.",
+  ],
+  "Toko & UMKM": [
+    "Website dengan katalog produk rapi meningkatkan rata-rata belanja 2x lipat.",
+    "Toko online dengan navigasi jelas punya bounce rate 25% lebih rendah.",
+    "Foto produk profesional membuat tingkat klik naik hingga 50%.",
+    "Deskripsi produk yang detail mengurangi pertanyaan berulang dari pembeli.",
+    "Integrasi WhatsApp memudahkan pelanggan menanyakan stok barang.",
+  ],
+  Jasa: [
+    "Website dengan portofolio & testimoni nyata meningkatkan kepercayaan calon klien.",
+    "Harga transparan di website meningkatkan konversi klien jasa 2x lipat.",
+    "Form kontak yang simpel bikin calon klien lebih mudah menghubungi Anda.",
+    "Studi kasus konkret lebih meyakinkan daripada sekadar daftar layanan.",
+    "Call-to-action yang jelas membuat calon klien lebih berani mengambil langkah.",
+  ],
+};
+
+export function getInsight(businessType: string): string {
+  const pool = INSIGHT_POOL[businessType] || [
+    "Website profesional mempercepat kepercayaan klien dan mitra bisnis.",
+    "Profil perusahaan yang lengkap meningkatkan kredibilitas di mata calon klien.",
+    "Halaman layanan yang terstruktur membantu klien memahami nilai bisnis Anda.",
+    "Testimoni dan portofolio nyata memperkuat posisi bisnis di industri Anda.",
+    "Website yang responsif membuat bisnis Anda terlihat profesional di semua perangkat.",
+  ];
+  return pool[Math.floor(Math.random() * pool.length)];
+}

@@ -3,24 +3,13 @@
 import React from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
+import { getInsight } from "./helpers";
 
 interface LoadingCardProps {
   loadingStep: number;
   businessType: string;
 }
 
-function getInsight(businessType: string): string {
-  switch (businessType) {
-    case "Kuliner":
-      return "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar.";
-    case "Toko & UMKM":
-      return "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis toko & UMKM.";
-    case "Jasa":
-      return "Website dengan portofolio & testimoni nyata meningkatkan kepercayaan calon klien secara signifikan.";
-    default:
-      return "Website profesional dengan profil perusahaan yang kuat mempercepat kepercayaan klien korporat.";
-  }
-}
 
 export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
   return (

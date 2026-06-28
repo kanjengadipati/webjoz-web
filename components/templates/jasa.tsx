@@ -66,7 +66,8 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               <div className="pt-4">
                 <a
                   href={hero.cta_url}
-                  className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
+                  className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
+                  style={{ color: "var(--dt-cta-text)" }}
                 >
                   {hero.cta_text}
                   <ArrowRight className="w-4 h-4" />
@@ -227,7 +228,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
-                    className="min-h-11 px-8 py-4 bg-[var(--dt-bg)] hover:bg-[var(--dt-primary-soft)] text-[var(--dt-primary)] rounded-[var(--dt-radius)] font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-bg)] focus:ring-offset-2 focus:ring-offset-[var(--dt-primary)]"
+                    className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]" style={{ color: "var(--dt-cta-text)" }}
                   >
                     {cta.button_text || "Hubungi Kami"}
                     <ArrowRight className="w-4 h-4" />
@@ -324,7 +325,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               linkClass="text-[var(--dt-text)]"
               drawerStyle={{ background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
             />
-            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-[var(--dt-primary)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] text-xs font-semibold hover:bg-[var(--dt-primary-hover)] transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:bg-[var(--dt-primary-hover)] transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]" style={{ color: "var(--dt-cta-text)" }}>
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>

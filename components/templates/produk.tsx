@@ -68,7 +68,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               <div className="pt-4">
                 <a
                   href={hero.cta_url}
-                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] hover:scale-105 text-[var(--dt-cta-text)] rounded-full font-bold shadow-lg hover:shadow-xl transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-950"
+                  className="min-h-11 px-8 py-4 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] hover:scale-105 rounded-full font-bold shadow-lg hover:shadow-xl transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-950"
+                  style={{ color: "var(--dt-cta-text)" }}
                 >
                   {hero.cta_text}
                   <ArrowRight className="w-4 h-4" />
@@ -169,7 +170,8 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
-                    className="min-h-11 px-8 py-4 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] hover:brightness-110 text-[var(--dt-cta-text)] rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-900"
+                    className="min-h-11 px-8 py-4 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] hover:brightness-110 rounded-full font-bold shadow-lg transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-900"
+                    style={{ color: "var(--dt-cta-text)" }}
                   >
                     {cta.button_text || "Hubungi Kami"}
                     <ArrowRight className="w-4 h-4" />
@@ -328,7 +330,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               linkClass="text-slate-300"
               drawerStyle={{ background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.08)" }}
             />
-            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] text-[var(--dt-cta-text)] rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-950">
+            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-950" style={{ color: "var(--dt-cta-text)" }}>
               {headerData.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>

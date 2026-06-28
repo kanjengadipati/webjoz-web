@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
-import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription } from "./helpers";
+import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
 
 export function useWizardChat() {
@@ -31,6 +31,7 @@ export function useWizardChat() {
   const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
+  const [typeWasInferred, setTypeWasInferred] = useState(false);
 
   const hasAskedNameConfirmRef = useRef(false);
 
@@ -72,7 +73,7 @@ export function useWizardChat() {
 
   // Auto-focus input
   useEffect(() => {
-    if (!isInitialTyping && !isAiTyping && chatStage === "name") {
+    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "description")) {
       window.setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [isInitialTyping, isAiTyping, chatStage]);
@@ -103,6 +104,7 @@ export function useWizardChat() {
   const handleSelectType = (type: string) => {
     setBusinessType(type);
     setBusinessSubType("");
+    setTypeWasInferred(false);
     setInputValue("");
     setTimeout(() => {
       subTypeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -164,7 +166,7 @@ export function useWizardChat() {
   ) => {
     e.preventDefault();
     if (isInitialTyping) return;
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && chatStage !== "description") return;
     const val = inputValue.trim();
     setInputValue("");
 
@@ -217,10 +219,9 @@ export function useWizardChat() {
     }
 
     if (chatStage === "description") {
-      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-
-      const skip = val.toLowerCase().trim() === DESCRIPTION_SKIP_KEYWORD;
-      if (skip) {
+      const isSkip = !val.trim() || val.toLowerCase().trim() === DESCRIPTION_SKIP_KEYWORD;
+      if (isSkip) {
+        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lanjut" }]);
         setInferenceResult({ confidence: "low" } as InferenceResult);
         setTimeout(() => {
           typeMessage(DESCRIPTION_INFERENCE_NONE, () => {
@@ -234,7 +235,15 @@ export function useWizardChat() {
         return;
       }
 
+      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+
       setDescription(val);
+
+      // Extract location from description and pre-fill service area if not yet set
+      if (!serviceArea) {
+        const detected = extractLocationFromDescription(val);
+        if (detected) setServiceArea(detected);
+      }
 
       const result = inferTypeFromDescription(val);
       setInferenceResult(result);
@@ -255,6 +264,7 @@ export function useWizardChat() {
 
       if (result.confidence === "medium" && result.type) {
         setBusinessType(result.type);
+        setTypeWasInferred(true);
         setTimeout(() => {
           const medMsg = DESCRIPTION_INFERENCE_MEDIUM.replace("%s", result.type!);
           typeMessage(medMsg, () => {
@@ -324,6 +334,8 @@ export function useWizardChat() {
     suggestedHint,
     inferenceResult,
     awaitingInferenceConfirm,
+    typeWasInferred,
+    setTypeWasInferred,
     // Refs
     inputRef,
     chatEndRef,

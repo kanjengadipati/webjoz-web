@@ -72,15 +72,24 @@ export const TEMPLATE_NAMES: Record<string, string> = {
 };
 
 export const LOADING_CHECKLIST = [
-  { label: "Analisis bisnis", desc: "Memahami jenis bisnis dan target pasar Anda" },
-  { label: "Menentukan layout", desc: "Memilih struktur halaman yang paling efektif" },
-  { label: "Menulis headline", desc: "Membuat copywriting yang menarik" },
-  { label: "Membuat SEO", desc: "Optimasi SEO on-page & keyword" },
-  { label: "Mendesain halaman", desc: "Menyusun desain & komponen halaman" },
-  { label: "Merakit halaman", desc: "Menyusun layout & komponen halaman" },
+  { label: "Menulis headline & hero", desc: "Membuat judul utama yang menarik perhatian" },
+  { label: "Menyusun cerita bisnis", desc: "Menulis tentang brand dan nilai bisnis Anda" },
+  { label: "Menulis keunggulan & layanan", desc: "Merinci kelebihan dan layanan yang ditawarkan" },
+  { label: "Menyiapkan testimoni & FAQ", desc: "Mengumpulkan bukti sosial dan pertanyaan umum" },
+  { label: "Menyusun call-to-action", desc: "Membuat ajakan untuk bertindak yang meyakinkan" },
+  { label: "Optimasi SEO & finalisasi", desc: "Mengatur metadata agar mudah ditemukan di Google" },
 ];
 
 export const LOADING_STEPS_PERCENT = [15, 30, 45, 60, 75, 100];
+
+export const SECTION_STEP_MAP: Record<string, number> = {
+  header: 0, hero: 0,
+  about: 1,
+  benefits: 2,
+  testimonials: 3, faq: 3,
+  cta: 4,
+  seo: 5, footer: 5, menu: 5, catalog: 5, contact: 5,
+};
 
 export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
 
@@ -92,7 +101,7 @@ export const NAME_ACK_VARIANTS = [
   "Oke, kami catat namanya. Selanjutnya pilih jenis bisnisnya ya."
 ];
 
-export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat (cukup 2-3 kalimat). Atau ketik \"lewat\" untuk lanjut pilih jenis bisnis.";
+export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat (cukup 2-3 kalimat) (optional) enter untuk lanjut.";
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";

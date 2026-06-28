@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { LOADING_STEPS_PERCENT, TEMPLATE_NAMES } from "./constants";
+import { LOADING_STEPS_PERCENT, SECTION_STEP_MAP, TEMPLATE_NAMES } from "./constants";
 import { getTemplatePool } from "./helpers";
 import type { PreviewData, PreviewState } from "./types";
 import type { StreamSection } from "@/hooks/use-generate-stream";
@@ -31,6 +31,7 @@ export function useWizardPreview() {
   const desiredStepRef = useRef(0);
   const lastStepTimeRef = useRef(0);
   const prevStepRef = useRef(0);
+  const pendingResultRef = useRef(false);
   const previewScrollRef = useRef<HTMLDivElement>(null);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -101,10 +102,13 @@ export function useWizardPreview() {
       streamDoneRef.current = false;
       desiredStepRef.current = 0;
       lastStepTimeRef.current = Date.now();
+      pendingResultRef.current = false;
       const interval = setInterval(() => {
+        if (pendingResultRef.current) return;
         setLoadingStep((prev) => {
           if (prev >= 5 && streamDoneRef.current) {
-            setPreviewState("result");
+            pendingResultRef.current = true;
+            setTimeout(() => setPreviewState("result"), 600);
             return prev;
           }
           return prev < 5 ? prev + 1 : prev;
@@ -162,13 +166,7 @@ export function useWizardPreview() {
   }, [templatePool, templatePoolIndex]);
 
   const advanceLoadingStepFromSection = (section: string) => {
-    const sectionStep: Partial<Record<string, number>> = {
-      header: 0, hero: 1, about: 2, benefits: 2,
-      testimonials: 3, menu: 3, catalog: 3,
-      faq: 4, cta: 4, contact: 4,
-      seo: 5, footer: 5,
-    };
-    const mappedStep = sectionStep[section];
+    const mappedStep = SECTION_STEP_MAP[section];
     if (mappedStep !== undefined) {
       desiredStepRef.current = Math.max(desiredStepRef.current, mappedStep);
     }

@@ -3,27 +3,19 @@
 import React from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
+import { getInsight } from "./helpers";
 
 interface LoadingModalProps {
   loadingStep: number;
   businessType: string;
+  businessName?: string;
+  charCount?: number;
+  sectionSnippet?: string;
   center?: boolean;
 }
 
-function getInsight(businessType: string): string {
-  switch (businessType) {
-    case "Kuliner":
-      return "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar.";
-    case "Toko & UMKM":
-      return "Website dengan tone modern memiliki konversi lebih tinggi untuk bisnis toko & UMKM.";
-    case "Jasa":
-      return "Website dengan portofolio & testimoni nyata meningkatkan kepercayaan calon klien secara signifikan.";
-    default:
-      return "Website profesional dengan profil perusahaan yang kuat mempercepat kepercayaan klien korporat.";
-  }
-}
 
-export function LoadingModal({ loadingStep, businessType, center }: LoadingModalProps) {
+export function LoadingModal({ loadingStep, businessType, businessName, charCount, sectionSnippet, center }: LoadingModalProps) {
   return (
     <div className={`absolute inset-0 z-30 flex ${center ? "items-end pb-6 px-4 justify-center" : "items-center justify-center px-4"}`}>
       <div className={`backdrop-blur-xl rounded-3xl w-full shadow-2xl flex flex-col animate-in ${center ? "max-w-full p-3 gap-2 slide-in-from-bottom-4 max-h-[55vh] overflow-y-auto" : "max-w-sm p-7 gap-5 slide-in-from-bottom-4 zoom-in-95"} duration-500`} style={{ background: "rgba(17,19,24,0.95)", border: "1px solid rgba(255,255,255,0.1)" }}>
@@ -35,7 +27,7 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
             </div>
             <div className="min-w-0">
               <h3 className={`font-extrabold text-white m-0 leading-tight ${center ? "text-[12px]" : "text-sm"}`}>
-                {center ? "Membangun website..." : "AI sedang membangun website Anda ✨"}
+                {center ? "Membangun website..." : businessName ? `Membangun website ${businessName} ✨` : "AI sedang membangun website Anda ✨"}
               </h3>
               {!center && <p className="text-[11px] text-slate-400 mt-0.5">Mohon tunggu sebentar...</p>}
             </div>
@@ -54,6 +46,11 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
             </div>
             {center && <span className="text-[11px] font-bold text-primary shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
           </div>
+          {!center && charCount !== undefined && (
+            <p className="text-[10px] text-slate-500 text-right">
+              ✍️ {charCount.toLocaleString("id-ID")} karakter ditulis
+            </p>
+          )}
         </div>
 
         {/* Checklist — only current + next 2 on mobile */}
@@ -83,6 +80,15 @@ export function LoadingModal({ loadingStep, businessType, center }: LoadingModal
             );
           })}
         </div>
+
+        {/* Live section snippet */}
+        {!center && sectionSnippet && loadingStep >= 1 && (
+          <div className="rounded-2xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white/5 border border-white/10">
+            <p className="text-[11px] text-slate-400 leading-relaxed italic">
+              &ldquo;{sectionSnippet}&rdquo;
+            </p>
+          </div>
+        )}
 
         {/* AI Insight — only on desktop */}
         {!center && loadingStep >= 3 && (
