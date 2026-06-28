@@ -28,6 +28,8 @@ export function useWizardPreview() {
   const historyIndexRef = useRef(historyIndex);
   const loadingStepRef = useRef(0);
   const streamDoneRef = useRef(false);
+  const desiredStepRef = useRef(0);
+  const lastStepTimeRef = useRef(0);
   const prevStepRef = useRef(0);
   const previewScrollRef = useRef<HTMLDivElement>(null);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
@@ -97,6 +99,8 @@ export function useWizardPreview() {
     if (previewState === "loading") {
       setLoadingStep(0);
       streamDoneRef.current = false;
+      desiredStepRef.current = 0;
+      lastStepTimeRef.current = Date.now();
       const interval = setInterval(() => {
         setLoadingStep((prev) => {
           if (prev >= 5 && streamDoneRef.current) {
@@ -108,6 +112,21 @@ export function useWizardPreview() {
       }, 8000);
       return () => clearInterval(interval);
     }
+  }, [previewState]);
+
+  // Pace loading step advancement — minimum 1.5s per step
+  useEffect(() => {
+    if (previewState !== "loading") return;
+    const interval = setInterval(() => {
+      setLoadingStep((prev) => {
+        const now = Date.now();
+        if (prev >= desiredStepRef.current) return prev;
+        if (now - lastStepTimeRef.current < 1500) return prev;
+        lastStepTimeRef.current = now;
+        return prev + 1;
+      });
+    }, 250);
+    return () => clearInterval(interval);
   }, [previewState]);
 
   // Result blur
@@ -151,7 +170,7 @@ export function useWizardPreview() {
     };
     const mappedStep = sectionStep[section];
     if (mappedStep !== undefined) {
-      setLoadingStep((prev) => Math.max(prev, mappedStep));
+      desiredStepRef.current = Math.max(desiredStepRef.current, mappedStep);
     }
   };
 
