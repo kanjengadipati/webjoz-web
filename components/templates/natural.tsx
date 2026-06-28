@@ -48,7 +48,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="py-[var(--dt-spacing)] px-6 grid md:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
+          <section className="py-[var(--dt-spacing)] px-6 grid md:grid-cols-2 gap-10 items-center max-w-5xl mx-auto" style={h.background_color ? { background: h.background_color } : undefined}>
             <div className="space-y-5">
               {h.eyebrow && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border font-sans" style={{ background: sageLight, borderColor: border, color: sageDark }}>

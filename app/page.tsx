@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
+import { Check } from "lucide-react";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 import { InteractiveMockup } from "@/components/interactive-mockup";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -122,9 +123,6 @@ export default function LandingPage() {
             <span className="text-sm font-semibold tracking-tight text-foreground">
               Webjoz
             </span>
-            <Badge variant="outline" className="border-border/60 bg-card/60 text-muted-foreground tracking-wider px-1.5 py-0.5 text-[10px]">
-              v1.0
-            </Badge>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -381,6 +379,55 @@ export default function LandingPage() {
               ))}
             </div>
           </Card>
+        </div>
+      </section>
+
+      {/* ── Pricing ───────────────────────────────────────────────────────── */}
+      <section className="px-4 py-16 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center space-y-3 mb-12">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Harga Sederhana</h2>
+            <p className="text-muted-foreground text-base max-w-lg mx-auto">
+              Mulai gratis, kembangkan kapan pun Anda siap.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
+            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative">
+              <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Gratis</div>
+              <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
+              <p className="text-sm text-muted-foreground mb-6">Selamanya</p>
+              <ul className="space-y-2.5 text-sm text-left mb-8">
+                {["1 website aktif", "Semua template & AI fitur", "Subdomain .webjoz.app", "Hosting & SSL gratis", "Edit kapan saja"].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={() => startWizard()} className="w-full rounded-full font-bold">
+                Mulai Gratis
+              </Button>
+            </Card>
+            <Card className="border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 px-6 py-8 text-center shadow-lg shadow-primary/10 relative overflow-hidden">
+              <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
+                Segera
+              </div>
+              <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Pro</div>
+              <div className="text-4xl font-bold text-foreground mb-1">?</div>
+              <p className="text-sm text-muted-foreground mb-6">Harga menyusul</p>
+              <ul className="space-y-2.5 text-sm text-left mb-8">
+                {["Custom domain", "Hapus branding Webjoz", "Semua fitur Gratis +", "Prioritas support", "Multi-website"].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" disabled className="w-full rounded-full font-bold opacity-60">
+                Segera Hadir
+              </Button>
+            </Card>
+          </div>
         </div>
       </section>
 

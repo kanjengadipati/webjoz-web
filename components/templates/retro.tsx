@@ -45,7 +45,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 60%, ${bg} 100%)` }}>
+          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, ${bg} 0%, ${surface} 60%, ${bg} 100%)` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#fff_2px,#fff_3px)]" />
             <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[500px] h-[200px] rounded-full blur-[100px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${pink}, ${cyan})` }} />
             {h.image_url && (

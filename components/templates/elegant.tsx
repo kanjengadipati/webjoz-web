@@ -47,7 +47,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, #0d0c08 0%, ${darkBg} 100%)` }}>
+          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, #0d0c08 0%, ${darkBg} 100%)` }}>
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-[100px] pointer-events-none" style={{ background: gold }} />
             <div className="max-w-4xl mx-auto relative z-10 space-y-7">
               {h.eyebrow && (

@@ -104,6 +104,7 @@ export interface TemplateProps {
       badge_text?: string;
       opening_hours?: string;
       launch_label?: string;
+      background_color?: string;
     };
     about: {
       title: string;

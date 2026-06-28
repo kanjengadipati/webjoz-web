@@ -44,7 +44,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 50%, ${bg} 100%)` }}>
+          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, ${bg} 0%, ${surface} 50%, ${bg} 100%)` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `linear-gradient(${cyan}11 1px, transparent 1px), linear-gradient(90deg, ${cyan}11 1px, transparent 1px)`, backgroundSize: "50px 50px" }} />
             <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[150px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${cyan}11, ${blue}22)` }} />
             {h.image_url && (

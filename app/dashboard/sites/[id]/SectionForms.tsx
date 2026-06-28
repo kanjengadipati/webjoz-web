@@ -684,6 +684,34 @@ export default function SectionForms({
         </div>
       )}
 
+      {/* HERO BACKGROUND COLOR */}
+      {activeTab === "hero" && (
+        <div className="space-y-1 mt-2">
+          <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            Warna Latar Hero
+          </label>
+          <div className="flex items-center gap-2">
+            <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+              <input
+                type="color"
+                value={content.hero.background_color || "#FAF7F2"}
+                onChange={(e) => updateField("hero", "background_color", e.target.value)}
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+              />
+              <div className="w-full h-full" style={{ backgroundColor: content.hero.background_color || "#FAF7F2" }} />
+            </div>
+            <input
+              type="text"
+              value={content.hero.background_color || ""}
+              onChange={(e) => updateField("hero", "background_color", e.target.value)}
+              className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+              placeholder="Kosongkan untuk pakai warna global"
+            />
+          </div>
+          <p className="text-[10px] text-slate-600 leading-relaxed">Biarkan kosong untuk menggunakan warna latar global.</p>
+        </div>
+      )}
+
       {/* ABOUT FORM */}
       {activeTab === "about" && (
         <div className="space-y-3">

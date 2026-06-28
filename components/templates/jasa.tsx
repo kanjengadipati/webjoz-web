@@ -47,7 +47,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-[var(--dt-bg)] via-[var(--dt-bg)] to-[var(--dt-primary-soft)] overflow-hidden">
+          <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-[var(--dt-bg)] via-[var(--dt-bg)] to-[var(--dt-primary-soft)] overflow-hidden" style={hero.background_color ? { background: hero.background_color } : undefined}>
             {hero.image_url && (
               <img
                 src={hero.image_url}

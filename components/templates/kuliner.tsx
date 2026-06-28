@@ -47,7 +47,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-[var(--dt-spacing)] bg-gradient-to-b from-[var(--dt-primary-soft)] to-[var(--dt-bg)] overflow-hidden">
+          <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-[var(--dt-spacing)] bg-gradient-to-b from-[var(--dt-primary-soft)] to-[var(--dt-bg)] overflow-hidden" style={hero.background_color ? { background: hero.background_color } : undefined}>
             {hero.image_url && (
               <img
                 src={hero.image_url}

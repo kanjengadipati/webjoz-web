@@ -48,7 +48,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, color-mix(in srgb, ${red} 8%, transparent) 0%, ${bg} 60%)` }}>
+          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, color-mix(in srgb, ${red} 8%, transparent) 0%, ${bg} 60%)` }}>
             {/* Glow blob */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] pointer-events-none" style={{ background: `color-mix(in srgb, ${red} 12%, transparent)` }} />
             {h.image_url && (

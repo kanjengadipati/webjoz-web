@@ -47,7 +47,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden bg-slate-950">
+          <section className="relative min-h-[90vh] flex items-center justify-center px-5 sm:px-6 py-20 overflow-hidden bg-slate-950" style={hero.background_color ? { background: hero.background_color } : undefined}>
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full filter blur-[80px] opacity-60 pointer-events-none" style={{ background: "color-mix(in srgb, var(--dt-primary) 20%, transparent)" }} />
             <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full filter blur-[100px] opacity-50 pointer-events-none" style={{ background: "color-mix(in srgb, var(--dt-accent) 10%, transparent)" }} />
             {hero.image_url && (

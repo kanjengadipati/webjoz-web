@@ -43,7 +43,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="py-[var(--dt-spacing)] px-6 md:px-12 max-w-5xl mx-auto space-y-8">
+          <section className="py-[var(--dt-spacing)] px-6 md:px-12 max-w-5xl mx-auto space-y-8" style={h.background_color ? { background: h.background_color } : undefined}>
             {h.eyebrow && <span className="text-xs font-semibold tracking-widest uppercase block" style={{ color: zinc500 }}>{h.eyebrow}</span>}
             <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900 }}>
               {h.headline}
