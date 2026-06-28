@@ -26,7 +26,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
 
   return (
     <div className="h-full overflow-y-auto p-8" style={{ background: "#0d0f14" }}>
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full max-w-xl lg:max-w-3xl mx-auto">
         <header className="flex justify-between items-center pb-6 mb-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="flex items-center gap-3">
             {businessName ? (

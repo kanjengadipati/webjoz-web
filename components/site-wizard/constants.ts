@@ -67,6 +67,8 @@ export const TEMPLATE_NAMES: Record<string, string> = {
   "TEMPLATE_COLORFUL": "Pop Riot 🎨",
   "TEMPLATE_MINIMALIST": "White Space ⚡",
   "TEMPLATE_DYNAMIC": "AI Design ✨",
+  "TEMPLATE_RETRO": "Neon Wave 🌆",
+  "TEMPLATE_FUTURISTIC": "Cyber Core 🤖",
 };
 
 export const LOADING_CHECKLIST = [
@@ -89,6 +91,12 @@ export const NAME_ACK_VARIANTS = [
   "Keren — nama yang sederhana dan mudah dipercaya.",
   "Oke, kami catat namanya. Selanjutnya pilih jenis bisnisnya ya."
 ];
+
+export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat (cukup 2-3 kalimat). Atau ketik \"lewat\" untuk lanjut pilih jenis bisnis.";
+export const DESCRIPTION_SKIP_KEYWORD = "lewat";
+export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
+export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
+export const DESCRIPTION_INFERENCE_NONE = "Baik, silakan pilih jenis bisnis Anda:";
 
 export const NAME_CONFIRM_VARIANTS = [
   "Itu nama bisnis aslinya, atau masih nama sementara? Kalau sudah pas, ketik lagi untuk lanjut, atau ganti nama yang Anda mau pakai 😊",

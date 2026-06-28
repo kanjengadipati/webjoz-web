@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
   ArrowRight,
-  CheckCircle2,
   ChevronLeft,
   MapPin,
   MessageCircle,
@@ -18,19 +17,18 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
-import { useGenerateStream, type StreamSection } from "@/hooks/use-generate-stream";
+import { useGenerateStream } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
-import { SiteWizardProps, Message, PreviewData, ChatStage, PreviewState, PreviewDevice } from "./types";
-import { PENDING_KEY, INITIAL_MESSAGE, BUSINESS_TYPES, SUB_TYPES, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, LOADING_STEPS_PERCENT } from "./constants";
-import { selectTemplate, getTemplateComponent, formatText, capitalizeWords, normalizeWhatsapp, generateSubdomain, generateSlug, pickVariant, isLikelyGibberish, suggestTypeFromName, getTemplatePool } from "./helpers";
+import { SiteWizardProps, PreviewData } from "./types";
+import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, INITIAL_MESSAGE } from "./constants";
+import { selectTemplate, getTemplateComponent, formatText, normalizeWhatsapp, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
+import { useWizardChat } from "./use-wizard-chat";
+import { useWizardPreview } from "./use-wizard-preview";
+import { useWizardDevice } from "./use-wizard-device";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
-
-
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
-
-const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 
 export { type SiteWizardProps };
 
@@ -44,211 +42,76 @@ export function SiteWizard({
   const router = useRouter();
   const { pushToast } = useToast();
 
-  const [chatStage, setChatStage] = useState<ChatStage>("name");
-  const [messages, setMessages] = useState<Message[]>([
-    { id: "init", sender: "ai", text: INITIAL_MESSAGE },
-  ]);
-  const [inputValue, setInputValue] = useState("");
-  const [initialWordCount, setInitialWordCount] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const subTypeRef = useRef<HTMLDivElement>(null);
-  const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
+  const chat = useWizardChat();
+  const preview = useWizardPreview();
+  const device = useWizardDevice();
 
-  const [businessName, setBusinessName] = useState("");
-  const [businessType, setBusinessType] = useState("");
-  const [businessSubType, setBusinessSubType] = useState("");
-  const [description, setDescription] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
-  const [serviceArea, setServiceArea] = useState("");
-
-  const [previewState, setPreviewState] = useState<PreviewState>("wireframe");
-  const [previewData, setPreviewData] = useState<PreviewData | null>(null);
-  const [previewDevice, setPreviewDevice] = useState<PreviewDevice>("desktop");
-  const [streamedSections, setStreamedSections] = useState<Record<string, any>>({});
-  const [streamedDesignToken, setStreamedDesignToken] = useState<Record<string, any> | null>(null);
-  const [streamedTemplateId, setStreamedTemplateId] = useState<string>("");
-  const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
-  const [templatePool, setTemplatePool] = useState<string[]>([]);
-  const [templatePoolIndex, setTemplatePoolIndex] = useState(0);
-  const [regenCount, setRegenCount] = useState(0);
-  const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
-  const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
-  const [isSwitchingTemplate, setIsSwitchingTemplate] = useState(false);
-  const [isAiTyping, setIsAiTyping] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileScreen, setMobileScreen] = useState<"chat" | "loading" | "preview">("chat");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [waDraft, setWaDraft] = useState("");
   const [areaDraft, setAreaDraft] = useState("");
   const [tooManyRequests, setTooManyRequests] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
-  const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
-  const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
-  const hasAskedNameConfirmRef = useRef(false);
-
-  const streamedSectionsRef = useRef<Record<string, any>>({});
-  const isMobileRef = useRef(false);
-  const streamedTokenRef = useRef<Record<string, any> | null>(null);
   const didGenerateRef = useRef(false);
-  const historyIndexRef = useRef(historyIndex);
-  const hasPromptedDetailsRef = useRef(false);
-  const previewScrollRef = useRef<HTMLDivElement>(null);
-  const previewIframeRef = useRef<HTMLIFrameElement>(null);
-  const streamDoneRef = useRef(false);
-  const loadingStepRef = useRef(0);
-
-  useEffect(() => { historyIndexRef.current = historyIndex; }, [historyIndex]);
-  useEffect(() => { loadingStepRef.current = loadingStep; }, [loadingStep]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
-      setPreviewDevice("mobile");
-    }
-  }, []);
-
-  // Scroll helpers — content lives inside an iframe via DevicePreviewFrame
-  const scrollPreviewPct = useCallback((pct: number) => {
-    const iframe = previewIframeRef.current;
-    if (iframe) {
-      const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
-      if (doc?.body) {
-        const sh = Math.max(doc.documentElement?.scrollHeight ?? 0, doc.body.scrollHeight ?? 0);
-        const ch = doc.documentElement?.clientHeight ?? doc.body.clientHeight ?? 0;
-        if (sh > ch) {
-          const target = Math.max(0, (sh - ch) * Math.min(pct / 100, 1));
-          doc.documentElement?.scrollTo({ top: target, left: 0, behavior: "smooth" });
-          doc.body?.scrollTo({ top: target, left: 0, behavior: "smooth" });
-        }
-      }
-    }
-    const el = previewScrollRef.current;
-    if (el && el.scrollHeight > el.clientHeight) {
-      const target = Math.max(0, (el.scrollHeight - el.clientHeight) * Math.min(pct / 100, 1));
-      el.scrollTo({ top: target, left: 0, behavior: "smooth" });
-    }
-  }, []);
-
-  const scrollPreviewToTop = useCallback(() => {
-    requestAnimationFrame(() => {
-      const iframe = previewIframeRef.current;
-      if (iframe) {
-        const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
-        if (doc?.body) {
-          doc.documentElement?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-          doc.body?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-        }
-      }
-      const el = previewScrollRef.current;
-      if (el) el.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    });
-  }, []);
-
-  // Auto-scroll preview in sync with loading step progress (every ~3s)
-  // Step 0-3: proportional scroll (15-60%), step 4: 95% (near bottom), step 5: 100%
-  const prevStepRef = useRef(0);
-  useEffect(() => {
-    if (previewState === "loading" && loadingStep > prevStepRef.current) {
-      prevStepRef.current = loadingStep;
-      const pct = loadingStep === 4 ? 95 : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          scrollPreviewPct(pct);
-        });
-      });
-    }
-  }, [loadingStep, previewState, scrollPreviewPct]);
-
-  useEffect(() => {
-    if (previewDevice === "desktop") {
-      scrollPreviewToTop();
-    }
-  }, [previewDevice, previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
-
-  const typeMessage = (fullText: string, onComplete: () => void) => {
-    let idx = 0;
-    const typingId = 'typing';
-    setIsAiTyping(true);
-    const interval = setInterval(() => {
-      idx++;
-      const partial = fullText.slice(0, idx);
-      setMessages((prev) => {
-        const filtered = prev.filter((m) => m.id !== typingId);
-        return [...filtered, { id: typingId, sender: "ai", text: partial }];
-      });
-      if (idx >= fullText.length) {
-        clearInterval(interval);
-        setMessages((prev) => {
-          const filtered = prev.filter((m) => m.id !== typingId);
-          return [...filtered, { id: Date.now().toString(), sender: "ai", text: fullText }];
-        });
-        setIsAiTyping(false);
-        onComplete();
-      }
-    }, 30);
-  };
 
   const { startStream, cancelStream } = useGenerateStream({
     onDesignToken: (token) => {
-      setStreamedDesignToken(token);
-      streamedTokenRef.current = token;
+      preview.setStreamedDesignToken(token);
+      preview.streamedTokenRef.current = token;
     },
     onSection: (section, data) => {
-      streamedSectionsRef.current = { ...streamedSectionsRef.current, [section]: data };
-      setStreamedSections((prev) => ({ ...prev, [section]: data }));
-      setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
+      preview.streamedSectionsRef.current = { ...preview.streamedSectionsRef.current, [section]: data };
+      preview.setStreamedSections((prev) => ({ ...prev, [section]: data }));
+      preview.setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
+      preview.advanceLoadingStepFromSection(section);
     },
     onDone: (templateId, _qualityScore) => {
-      setStreamedTemplateId(templateId);
+      preview.setStreamedTemplateId(templateId);
 
-      // Determine template pool for "Coba rekomendasi lain"
-      const mood = (streamedTokenRef.current as any)?.mood ?? "";
+      const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
       const pool = getTemplatePool(mood);
       const activeIndex = pool.indexOf(templateId);
-      setTemplatePool(pool);
-      setTemplatePoolIndex(activeIndex >= 0 ? activeIndex : 0);
+      preview.setTemplatePool(pool);
+      preview.setTemplatePoolIndex(activeIndex >= 0 ? activeIndex : 0);
 
-      const finalContent = streamedSectionsRef.current;
-      const finalToken = streamedTokenRef.current ?? {};
+      const finalContent = preview.streamedSectionsRef.current;
+      const finalToken = preview.streamedTokenRef.current ?? {};
       const mergedPreview: PreviewData = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
         design_token: finalToken,
         template_id: templateId,
       };
-      setPreviewHistory((prev) => {
-        const base = prev.slice(0, historyIndexRef.current + 1);
+      preview.setPreviewHistory((prev) => {
+        const base = prev.slice(0, preview.historyIndexRef.current + 1);
         const next = [...base, mergedPreview].slice(-5);
-        setHistoryIndex(next.length - 1);
+        preview.setHistoryIndex(next.length - 1);
         return next;
       });
-      setPreviewData(mergedPreview);
-      streamDoneRef.current = true;
-      if (loadingStepRef.current >= 5) setPreviewState("result");
+      preview.setPreviewData(mergedPreview);
+      preview.streamDoneRef.current = true;
+      if (preview.loadingStepRef.current >= 5) preview.setPreviewState("result");
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
-          businessName, businessType, businessSubType, description,
-          whatsapp: whatsapp || "",
-          service_area: serviceArea || "",
+          businessName: chat.businessNameRef.current, businessType: chat.businessTypeRef.current,
+          businessSubType: chat.businessSubTypeRef.current, description: chat.descriptionRef.current,
+          whatsapp: chat.whatsappRef.current || "",
+          service_area: chat.serviceAreaRef.current || "",
           templateId: mergedPreview.template_id,
           previewContent: mergedPreview.content,
           previewDesignToken: mergedPreview.design_token,
         })
       );
-      if (isMobileRef.current) {
-        setPreviewDevice("mobile");
+      if (device.isMobileRef.current) {
+        device.setPreviewDevice("mobile");
         if (didGenerateRef.current) {
-          setMobileScreen("preview");
+          device.setMobileScreen("preview");
         }
         return;
       }
       if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
-        setPreviewDevice("mobile");
+        device.setPreviewDevice("mobile");
       }
-      setMobilePreviewOpen(true);
+      device.setMobilePreviewOpen(true);
     },
     onError: (message) => {
       const lower = (message || "").toLowerCase();
@@ -257,106 +120,13 @@ export function SiteWizard({
       } else {
         setGenerationError(message || "Terjadi kesalahan saat membuat preview.");
       }
-      setPreviewState("wireframe");
-      setMobileScreen("chat");
+      preview.setPreviewState("wireframe");
+      device.setMobileScreen("chat");
     },
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  }, [messages, chatStage, previewState]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setInitialWordCount((count) => {
-        if (count >= INITIAL_MESSAGE_WORDS.length) {
-          clearInterval(interval);
-          return count;
-        }
-        return count + 1;
-      });
-    }, 130);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!isInitialTyping && !isAiTyping && chatStage === "name") {
-      window.setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [isInitialTyping, isAiTyping, chatStage]);
-
-  useEffect(() => {
-    if (previewState === "loading") {
-      setLoadingStep(0);
-      streamDoneRef.current = false;
-      const interval = setInterval(() => {
-        setLoadingStep((prev) => {
-          if (prev >= 5 && streamDoneRef.current) {
-            setPreviewState("result");
-            return prev;
-          }
-          return prev < 5 ? prev + 1 : prev;
-        });
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [previewState]);
-
-  // Keep blur during result scroll‑up; clear only after reaching top
-  const [resultClear, setResultClear] = useState(false);
-
-  useEffect(() => {
-    if (previewState === "result") {
-      setResultClear(false);
-      scrollPreviewToTop();
-      const t = setTimeout(() => setResultClear(true), 600);
-      return () => clearTimeout(t);
-    } else {
-      setResultClear(true);
-    }
-  }, [previewState, scrollPreviewToTop]);
-
-  // Progressive blur: starts strong during loading, retains ~2px on last step
-  // and during result scroll‑up, then clears when scroll reaches top
-  const previewBlurPx = useMemo(() => {
-    if (previewState === "result" && resultClear) return 0;
-    if (previewState === "result") return 2;
-    const pct = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
-    const blur = Math.round(8 * (1 - pct / 100) * 10) / 10;
-    return Math.max(blur, 1.5);
-  }, [previewState, loadingStep, resultClear]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const setAppHeight = () => {
-      const height = window.visualViewport?.height || window.innerHeight;
-      document.documentElement.style.setProperty("--webjoz-app-height", `${height}px`);
-    };
-
-    setAppHeight();
-    window.addEventListener("resize", setAppHeight);
-    window.visualViewport?.addEventListener("resize", setAppHeight);
-
-    const mq = window.matchMedia("(max-width: 767px)");
-    isMobileRef.current = mq.matches;
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => {
-      isMobileRef.current = e.matches;
-      setIsMobile(e.matches);
-    };
-    mq.addEventListener("change", handler);
-    return () => {
-      mq.removeEventListener("change", handler);
-      window.removeEventListener("resize", setAppHeight);
-      window.visualViewport?.removeEventListener("resize", setAppHeight);
-      document.documentElement.style.removeProperty("--webjoz-app-height");
-    };
-  }, []);
-
-  useEffect(() => {
+  // Cleanup on unmount
+  React.useEffect(() => {
     return () => { cancelStream(); };
   }, [cancelStream]);
 
@@ -369,161 +139,90 @@ export function SiteWizard({
     cancelStream();
     setTooManyRequests(false);
     setGenerationError(null);
-    setPreviewState("wireframe");
-    setMobileScreen("chat");
+    preview.setPreviewState("wireframe");
+    device.setMobileScreen("chat");
   };
 
   const handleRetryGeneration = () => {
     setTooManyRequests(false);
     setGenerationError(null);
-    setMobileScreen("loading");
+    device.setMobileScreen("loading");
     didGenerateRef.current = true;
     void handleGenerate();
   };
 
-  const handleSendText = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isInitialTyping) return;
-    if (!inputValue.trim()) return;
-    const val = inputValue.trim();
-    setInputValue("");
-
-    if (chatStage === "name") {
-      const capitalized = capitalizeWords(val);
-
-      // If we are currently awaiting a confirm (we already asked once), accept any reply and continue
-      if (awaitingNameConfirm) {
-        // Treat 'ya' / 'yes' as confirmation; otherwise use the provided text as the corrected name
-        const lower = val.toLowerCase();
-        const isConfirm = ["ya", "y", "yes", "oke", "ok"].includes(lower);
-        if (!isConfirm) setBusinessName(capitalized);
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-        setAwaitingNameConfirm(false);
-        // Acknowledge and move to type selection
-        setTimeout(() => {
-          typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
-            ]);
-            setChatStage("type");
-          });
-        }, 500);
-        return;
-      }
-
-      // New submission: check for likely gibberish to optionally ask confirmation
-      setBusinessName(capitalized);
-      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-
-      const flagged = isLikelyGibberish(val);
-      const hint = suggestTypeFromName(capitalized);
-      setSuggestedHint(hint);
-
-      if (flagged && !hasAskedNameConfirmRef.current) {
-        hasAskedNameConfirmRef.current = true;
-        setAwaitingNameConfirm(true);
-        setTimeout(() => {
-          typeMessage(pickVariant(NAME_CONFIRM_VARIANTS), () => {
-            // wait for user's next reply; do not advance stage here
-          });
-        }, 500);
-        return;
-      }
-
-      // Normal path: praise + move to type
-      setTimeout(() => {
-        typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" },
-          ]);
-          setChatStage("type");
-        });
-      }, 500);
-    }
-  };
-
-  const handleSelectType = (type: string) => {
-    setBusinessType(type);
-    setBusinessSubType("");
-    setDescription("");
-    setInputValue("");
-    setTimeout(() => {
-      subTypeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, 120);
-  };
-
-  const handleSelectSubType = (subType: string) => {
-    setBusinessSubType(subType);
-    setDescription("");
-    setInputValue("");
-    setRegenCount(0);
-    setHasUnsavedEdits(false);
-    hasPromptedDetailsRef.current = false;
-
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), sender: "user", text: subType },
-      { id: `ai-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
-    ]);
-
-    setChatStage("done");
-    if (isMobile) setMobileScreen("loading");
-
-    didGenerateRef.current = true;
-    void handleGenerate(businessName, businessType, { businessSubType: subType });
-  };
-
   const handleGenerate = async (
-    bName = businessName,
-    bType = businessType,
-    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string } = {}
+    bName = chat.businessName,
+    bType = chat.businessType,
+    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string } = {}
   ) => {
-    const nextBusinessSubType = overrides.businessSubType ?? businessSubType;
-    const nextWhatsapp = overrides.whatsapp ?? whatsapp;
-    const nextServiceArea = overrides.serviceArea ?? serviceArea;
+    const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubType;
+    const nextWhatsapp = overrides.whatsapp ?? chat.whatsapp;
+    const nextServiceArea = overrides.serviceArea ?? chat.serviceArea;
+    const nextDescription = overrides.description ?? chat.descriptionRef.current;
 
-    setStreamedSections({});
-    setStreamedDesignToken(null);
-    setArrivedSections([]);
-    setStreamedTemplateId("");
-    streamedSectionsRef.current = {};
-    streamedTokenRef.current = null;
-    setPreviewState("loading");
-    setLoadingStep(0);
+    preview.setStreamedSections({});
+    preview.setStreamedDesignToken(null);
+    preview.setArrivedSections([]);
+    preview.setStreamedTemplateId("");
+    preview.streamedSectionsRef.current = {};
+    preview.streamedTokenRef.current = null;
+    preview.setPreviewState("loading");
+    preview.setLoadingStep(0);
+
+    chat.syncChatRefs({
+      businessName: bName,
+      businessType: bType,
+      businessSubType: nextBusinessSubType,
+      whatsapp: nextWhatsapp,
+      serviceArea: nextServiceArea,
+    });
+    if (nextDescription) chat.descriptionRef.current = nextDescription;
 
     localStorage.setItem(PENDING_KEY, JSON.stringify({
       businessName: bName, businessType: bType, businessSubType: nextBusinessSubType,
+      description: nextDescription || "",
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
     }));
 
     await startStream({
       business_name: bName, business_type: bType, business_sub_type: nextBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
+      description: nextDescription || undefined,
     });
   };
 
-  const handleSwitchTemplate = useCallback(() => {
-    if (templatePool.length <= 1) return;
-    setIsSwitchingTemplate(true);
-    const nextIndex = (templatePoolIndex + 1) % templatePool.length;
-    const nextTemplateId = templatePool[nextIndex];
-    setTemplatePoolIndex(nextIndex);
-    setPreviewData(prev => prev ? { ...prev, template_id: nextTemplateId } : prev);
+  // Wire up chat handlers with handleGenerate
+  const onChatGenerate = (name: string, type: string, overrides: any) => {
+    void handleGenerate(name, type, overrides);
+  };
 
-    setTimeout(() => {
-      setIsSwitchingTemplate(false);
-    }, 450);
-  }, [templatePool, templatePoolIndex]);
+  const handleSendText = (e: React.FormEvent) => chat.handleSendText(e, onChatGenerate);
+  const handleSelectSubType = (subType: string) => {
+    chat.handleSelectSubType(subType, (name, type, overrides) => {
+      preview.setRegenCount(0);
+      preview.setHasUnsavedEdits(false);
+      didGenerateRef.current = true;
+      void handleGenerate(name, type, overrides);
+    });
+  };
+  const handleConfirmInference = (confirmed: boolean) => {
+    chat.handleConfirmInference(confirmed, (name, type, overrides) => {
+      preview.setRegenCount(0);
+      preview.setHasUnsavedEdits(false);
+      didGenerateRef.current = true;
+      void handleGenerate(name, type, overrides);
+    });
+  };
 
   const handleGoToEditor = async () => {
     if (!token) {
       localStorage.setItem(PENDING_KEY, JSON.stringify({
-        businessName, businessType, businessSubType, description, whatsapp,
-        service_area: serviceArea || "",
-        templateId: previewData?.template_id, previewContent: previewData?.content,
-        previewDesignToken: previewData?.design_token,
+        businessName: chat.businessName, businessType: chat.businessType,
+        businessSubType: chat.businessSubType, description: chat.description, whatsapp: chat.whatsapp,
+        service_area: chat.serviceArea || "",
+        templateId: preview.previewData?.template_id, previewContent: preview.previewData?.content,
+        previewDesignToken: preview.previewData?.design_token,
       }));
       if (onNeedAuth) { onNeedAuth(); }
       else { router.push("/login?redirect=/create?action=save"); }
@@ -533,14 +232,14 @@ export function SiteWizard({
     try {
       let tenantId = activeTenantId;
       if (!tenantId && mode === "public" && createTenant) {
-        const slug = generateSlug(businessName);
-        const created = await createTenant(businessName + " Workspace", slug);
+        const slug = generateSlug(chat.businessName);
+        const created = await createTenant(chat.businessName + " Workspace", slug);
         if (created?.id) tenantId = created.id;
         else throw new Error("Gagal membuat workspace.");
       }
       if (!tenantId) throw new Error("Workspace tidak ditemukan.");
 
-      const subdomain = generateSubdomain(businessName);
+      const subdomain = generateSubdomain(chat.businessName);
 
       const createRes = await request<any>(
         "/sites",
@@ -548,8 +247,8 @@ export function SiteWizard({
           method: "POST",
           headers: { "X-Tenant-ID": tenantId.toString() },
           body: JSON.stringify({
-            name: businessName,
-            template_id: previewData?.template_id || selectTemplate(businessSubType || businessType),
+            name: chat.businessName,
+            template_id: preview.previewData?.template_id || selectTemplate(chat.businessSubType || chat.businessType),
             subdomain,
           }),
         },
@@ -558,10 +257,10 @@ export function SiteWizard({
       if (createRes.status !== "success") throw new Error(createRes.message);
       const siteId = createRes.data.id;
 
-      if (previewData) {
+      if (preview.previewData) {
         const enrichedContent = buildFullContent(
-          { content: previewData.content, design_token: previewData.design_token },
-          businessName, businessSubType || businessType, description, whatsapp
+          { content: preview.previewData.content, design_token: preview.previewData.design_token },
+          chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
         await request(
           `/sites/${siteId}/content`,
@@ -570,7 +269,7 @@ export function SiteWizard({
             headers: { "X-Tenant-ID": tenantId.toString() },
             body: JSON.stringify({
               content: enrichedContent,
-              design_token: previewData.design_token,
+              design_token: preview.previewData.design_token,
             }),
           },
           token
@@ -585,66 +284,53 @@ export function SiteWizard({
     }
   };
 
-  // History nav
-  const TEMPLATE_NAMES: Record<string, string> = {
-    "TEMPLATE_KULINER01": "Vista Prime 🍜",
-    "TEMPLATE_JASA02": "Elevate One 💼",
-    "TEMPLATE_PRODUK03": "Forge Flow 🛍️",
-    "TEMPLATE_ELEGANT": "Noir Prestige 👑",
-    "TEMPLATE_NATURAL": "Bumi Lestari 🌿",
-    "TEMPLATE_COLORFUL": "Pop Riot 🎨",
-    "TEMPLATE_MINIMALIST": "White Space ⚡",
-    "TEMPLATE_DYNAMIC": "AI Design ✨",
-    "TEMPLATE_RETRO": "Neon Wave 🌆",
-    "TEMPLATE_FUTURISTIC": "Cyber Core 🤖",
-  };
-  const currentName = TEMPLATE_NAMES[previewData?.template_id ?? ""] || "Desain ini";
-
-  // Template preview content — render as soon as sections start arriving
+  // Preview rendering
+  const hasLiveData = Object.keys(preview.streamedSections).length > 0;
+  const hasPreviewData = !!preview.previewData;
   let resultPreviewContent: React.ReactNode = null;
-  const hasLiveData = Object.keys(streamedSections).length > 0;
-  const hasPreviewData = !!previewData;
+
   if (hasLiveData || hasPreviewData) {
-    const isStreamingLive = hasLiveData && (!streamedTemplateId || !hasPreviewData);
-    const liveContent = isStreamingLive ? streamedSections : previewData!.content;
-    const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : previewData!.design_token;
-    const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData!.template_id) || selectTemplate(businessSubType || businessType);
+    const isStreamingLive = hasLiveData && (!preview.streamedTemplateId || !hasPreviewData);
+    const liveContent = isStreamingLive ? preview.streamedSections : preview.previewData!.content;
+    const liveToken = isStreamingLive ? (preview.streamedDesignToken ?? {}) : preview.previewData!.design_token;
+    const liveTemplateId = (isStreamingLive ? preview.streamedTemplateId : preview.previewData!.template_id)
+      || selectTemplate(chat.businessSubType || chat.businessType);
     const TemplateComponent = getTemplateComponent(liveTemplateId);
     const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
     const templatePreview = (
       <TemplateComponent
-        content={buildFullContent(displayData, businessName, businessType, description, whatsapp) as any}
+        content={buildFullContent(displayData, chat.businessName, chat.businessType, chat.description, chat.whatsapp) as any}
         design_token={liveToken as any}
         isEditorMode={false}
-        arrivedSections={isStreamingLive ? arrivedSections : undefined}
+        arrivedSections={isStreamingLive ? preview.arrivedSections : undefined}
       />
     );
     resultPreviewContent = (
       <div className="h-full flex flex-col overflow-hidden relative bg-[#0d0f14]">
-        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`}>
-          {previewDevice === "mobile" ? (
-            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${regenCount}-${historyIndex}`}>
+        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${preview.isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`}>
+          {device.previewDevice === "mobile" ? (
+            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${preview.regenCount}-${preview.historyIndex}`}>
               <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
                 <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
                 <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
-                  <DevicePreviewFrame device="mobile" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
+                  <DevicePreviewFrame device="mobile" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
                 </div>
                 <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
               </div>
             </div>
           ) : (
-            <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${regenCount}-${historyIndex}`}>
-              <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
+            <div ref={preview.previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${preview.regenCount}-${preview.historyIndex}`}>
+              <DevicePreviewFrame device="desktop" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
             </div>
           )}
         </div>
-        {isSwitchingTemplate && (
+        {preview.isSwitchingTemplate && (
           <div className="absolute inset-0 z-30 overflow-hidden bg-[#0d0f14]/70 backdrop-blur-[2px]">
             <Wireframe
-              businessName={businessName}
-              businessType={businessType}
-              businessSubType={businessSubType}
-              description={description}
+              businessName={chat.businessName}
+              businessType={chat.businessType}
+              businessSubType={chat.businessSubType}
+              description={chat.description}
               chatStage="done"
             />
           </div>
@@ -661,9 +347,9 @@ export function SiteWizard({
 
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${isMobile
-            ? mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
-            : mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${device.isMobile
+            ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
+            : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
           }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
@@ -686,10 +372,10 @@ export function SiteWizard({
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  {isMobile && previewState === "result" && (
+                  {device.isMobile && preview.previewState === "result" && (
                     <button
                       type="button"
-                      onClick={() => setMobileScreen("preview")}
+                      onClick={() => device.setMobileScreen("preview")}
                       className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse"
                     >
                       Preview &rarr;
@@ -700,47 +386,102 @@ export function SiteWizard({
               </div>
             </div>
           </div>
-
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
-          {messages.map((m) => {
+          {chat.messages.map((m) => {
+            if (m.widget === "inference-confirm") {
+              const isLocked = !chat.awaitingInferenceConfirm;
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => !isLocked && handleConfirmInference(true)}
+                      disabled={isLocked}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40"
+                    >
+                      Ya, lanjut
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => !isLocked && handleConfirmInference(false)}
+                      disabled={isLocked}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-white/10 transition-all hover:border-white/30 active:scale-95 disabled:opacity-40"
+                      style={{ background: "rgba(255,255,255,0.05)" }}
+                    >
+                      Bukan
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+
+            if (m.widget === "subtype-chips") {
+              const isLocked = chat.chatStage !== "type";
+              const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : [];
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                  <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {subTypes.map((st) => {
+                      const isSubSelected = chat.businessSubType === st.value;
+                      return (
+                        <button
+                          key={st.value}
+                          type="button"
+                          onClick={() => !isLocked && handleSelectSubType(st.value)}
+                          disabled={isLocked}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white"}`}
+                          style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
+                        >
+                          <span>{st.emoji}</span>
+                          <span>{st.label}</span>
+                          {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            }
+
             if (m.widget === "type-chips") {
-              const isLocked = chatStage !== "type";
-              const subTypes = businessType ? SUB_TYPES[businessType] : null;
+              const isLocked = chat.chatStage !== "type";
+              const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : null;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     {BUSINESS_TYPES.map((t) => {
-                      const isSelected = businessType === t.value;
+                      const isSelected = chat.businessType === t.value;
                       return (
                         <button
                           key={t.value}
-                          onClick={() => !isLocked && handleSelectType(t.value)}
+                          onClick={() => !isLocked && chat.handleSelectType(t.value)}
                           disabled={isLocked}
                           className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-white/[0.04] border-white/[0.07]"}`}
                         >
                           <span className="text-lg">{t.emoji}</span>
                           <div className="flex items-center gap-2">
                             <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{t.label}</span>
-                            {suggestedHint?.type === t.value && (
+                            {chat.suggestedHint?.type === t.value && (
                               <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">✨ Disarankan</span>
                             )}
                           </div>
                           <span className="text-[10px] text-slate-500">{t.desc}</span>
-                          {isSelected && !businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
-                          {isSelected && businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {businessSubType}</span>}
+                          {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
+                          {isSelected && chat.businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {chat.businessSubType}</span>}
                         </button>
                       );
                     })}
                   </div>
 
                   {subTypes && !isLocked && (
-                    <div ref={subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+                    <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
                       <div className="flex flex-wrap gap-1.5">
                         {subTypes.map((st) => {
-                          const isSubSelected = businessSubType === st.value;
+                          const isSubSelected = chat.businessSubType === st.value;
                           return (
                             <button
                               key={st.value}
@@ -752,7 +493,7 @@ export function SiteWizard({
                             >
                               <span>{st.emoji}</span>
                               <span>{st.label}</span>
-                              {suggestedHint?.subType === st.value && (
+                              {chat.suggestedHint?.subType === st.value && (
                                 <span className="text-[10px] text-amber-300">✨</span>
                               )}
                               {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
@@ -766,8 +507,8 @@ export function SiteWizard({
               );
             }
 
-            const messageText = m.id === "init" && chatStage === "name"
-              ? INITIAL_MESSAGE_WORDS.slice(0, initialWordCount).join(" ")
+            const messageText = m.id === "init" && chat.chatStage === "name"
+              ? INITIAL_MESSAGE_WORDS.slice(0, chat.initialWordCount).join(" ")
               : m.text;
 
             return (
@@ -782,7 +523,7 @@ export function SiteWizard({
                   style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
                   {formatText(messageText, m.sender === "user")}
-                  {m.id === "init" && isInitialTyping && (
+                  {m.id === "init" && chat.isInitialTyping && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
                   )}
                 </div>
@@ -790,30 +531,30 @@ export function SiteWizard({
             );
           })}
 
-
-          <div ref={chatEndRef} />
+          <div ref={chat.chatEndRef} />
         </div>
 
         {/* Chat Input */}
-        {chatStage !== "type" && chatStage !== "done" && (
+        {chat.chatStage !== "type" && chat.chatStage !== "done" && (
           <div className="shrink-0 px-4 pb-12 pt-2 md:py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
-                ref={inputRef}
+                ref={chat.inputRef}
                 type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                value={chat.inputValue}
+                onChange={(e) => chat.setInputValue(e.target.value)}
                 placeholder={
-                  awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
+                  chat.awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
+                    chat.chatStage === "description" ? "Ceritakan bisnis Anda, atau ketik 'lewat'..." :
                     "Ketik nama bisnis Anda..."
                 }
                 autoFocus
-                disabled={isInitialTyping || isAiTyping}
+                disabled={chat.isInitialTyping || chat.isAiTyping}
                 className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
               />
               <button
                 type="submit"
-                disabled={isInitialTyping || isAiTyping || (chatStage === "name" && !inputValue.trim())}
+                disabled={chat.isInitialTyping || chat.isAiTyping || ((chat.chatStage === "name" || chat.chatStage === "description") && !chat.inputValue.trim())}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -825,14 +566,14 @@ export function SiteWizard({
         <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <div
-              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"
                 }`}
             />
             <span className="transition-all duration-300">
-              {previewState === "wireframe" && (chatStage === "name" || chatStage === "type") && "Menunggu input..."}
-              {previewState === "loading" && "AI sedang generate..."}
-              {previewState === "result" && "Preview siap ✓"}
-              {previewState === "wireframe" && chatStage === "done" && "Menyiapkan AI..."}
+              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type") && "Menunggu input..."}
+              {preview.previewState === "loading" && "AI sedang generate..."}
+              {preview.previewState === "result" && "Preview siap ✓"}
+              {preview.previewState === "wireframe" && chat.chatStage === "done" && "Menyiapkan AI..."}
             </span>
           </span>
           <span className="text-[11px] text-slate-500">
@@ -843,15 +584,15 @@ export function SiteWizard({
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${isMobile
-            ? mobileScreen === "preview" || mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
-            : mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
+        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
+            ? device.mobileScreen === "preview" || device.mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
+            : device.mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <button
             type="button"
-            onClick={() => setMobileScreen("chat")}
+            onClick={() => device.setMobileScreen("chat")}
             aria-label="Kembali ke chat"
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
           >
@@ -861,89 +602,84 @@ export function SiteWizard({
           <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
             <button
               type="button"
-              onClick={() => setPreviewDevice("desktop")}
-              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${previewDevice === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              onClick={() => device.setPreviewDevice("desktop")}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
               aria-label="Preview desktop"
             >
               <Monitor className="h-3.5 w-3.5" />
             </button>
             <button
               type="button"
-              onClick={() => setPreviewDevice("mobile")}
-              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${previewDevice === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              onClick={() => device.setPreviewDevice("mobile")}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
               aria-label="Preview mobile"
             >
               <Smartphone className="h-3.5 w-3.5" />
             </button>
           </div>
 
-          {templatePool.length > 1 && previewState === "result" && (
+          {preview.templatePool.length > 1 && preview.previewState === "result" && (
             <button
               type="button"
-              onClick={handleSwitchTemplate}
+              onClick={preview.handleSwitchTemplate}
               className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-white/10 bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
             >
               <RefreshCw size={11} />
-              Coba rekomendasi lain ({templatePoolIndex + 1}/{templatePool.length})
+              Lihat template lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
             </button>
           )}
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 flex-1 max-w-xs" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${previewState === "loading" ? "bg-amber-400" : previewState === "result" ? "bg-emerald-400" : businessName ? "bg-slate-500" : "bg-slate-600"}`} />
+              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${preview.previewState === "loading" ? "bg-amber-400" : preview.previewState === "result" ? "bg-emerald-400" : chat.businessName ? "bg-slate-500" : "bg-slate-600"}`} />
               <span className="text-xs text-slate-400 truncate font-medium transition-all duration-300">
-                {businessName ? `${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com` : "preview.webjoz.com"}
+                {chat.businessName ? `${chat.businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com` : "preview.webjoz.com"}
               </span>
-              {previewState === "loading" && (
+              {preview.previewState === "loading" && (
                 <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full shrink-0">Draft Preview</span>
               )}
-              {previewState === "result" && (
+              {preview.previewState === "result" && (
                 <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Live Preview</span>
               )}
             </div>
           </div>
         </div>
 
-
-
         <div className="flex-1 overflow-hidden relative bg-white">
-          {previewState === "wireframe" || (previewState === "loading" && !hasLiveData && !hasPreviewData) ? (
+          {preview.previewState === "wireframe" || (preview.previewState === "loading" && !hasLiveData && !hasPreviewData) ? (
             <Wireframe
-              businessName={businessName}
-              businessType={businessType}
-              businessSubType={businessSubType}
-              description={description}
-              chatStage={chatStage}
+              businessName={chat.businessName}
+              businessType={chat.businessType}
+              businessSubType={chat.businessSubType}
+              description={chat.description}
+              chatStage={chat.chatStage}
             />
           ) : (
             <div className="h-full" style={{
-              filter: `blur(${previewBlurPx}px)`,
+              filter: `blur(${preview.previewBlurPx}px)`,
               transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
             }}>
               {resultPreviewContent}
             </div>
           )}
 
-          {/* Loading overlay on top of preview */}
-          {previewState === "loading" && !isMobile && (
+          {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-              <LoadingModal loadingStep={loadingStep} businessType={businessType} />
+              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} />
             </div>
           )}
 
-          {/* Mobile loading overlay — covers full screen */}
-          {previewState === "loading" && isMobile && (
+          {preview.previewState === "loading" && device.isMobile && (
             <div className="absolute inset-0 z-40 bg-black/10">
-              <LoadingModal loadingStep={loadingStep} businessType={businessType} center />
+              <LoadingModal loadingStep={preview.loadingStep} businessType={chat.businessType} center />
             </div>
           )}
 
-          {/* Desktop: Lengkapi Data + Edit & Publish buttons */}
-          {previewState === "result" && (
+          {preview.previewState === "result" && (
             <div className="hidden md:flex absolute bottom-6 right-6 z-40 gap-2">
               <button
                 type="button"
-                onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
+                onClick={() => { setWaDraft(chat.whatsapp || ""); setAreaDraft(chat.serviceArea || ""); setSheetOpen(true); }}
                 className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               >
                 <Plus className="h-4 w-4" />
@@ -960,11 +696,9 @@ export function SiteWizard({
               </button>
             </div>
           )}
-
         </div>
       </div>
 
-      {/* ══ MOBILE PREVIEW: action bar + sheet overlay ════════════════════ */}
       <WizardErrorModal
         open={tooManyRequests}
         title="Terlalu cepat!"
@@ -982,31 +716,27 @@ export function SiteWizard({
         onRetry={handleRetryGeneration}
       />
 
-      {isMobile && mobileScreen === "preview" && previewState === "result" && (
-        <>
-          {/* Bottom action bar */}
-          <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
-            <button
-              type="button"
-              onClick={() => { setWaDraft(whatsapp || ""); setAreaDraft(serviceArea || ""); setSheetOpen(true); }}
-              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
-            >
-              <Plus className="h-3.5 w-3.5 text-slate-400" />
-              Lengkapi Data
-            </button>
-            <button
-              type="button"
-              onClick={handleGoToEditor}
-              className="btn-primary flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Edit & Publikasikan
-            </button>
-          </div>
-        </>
+      {device.isMobile && device.mobileScreen === "preview" && preview.previewState === "result" && (
+        <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
+          <button
+            type="button"
+            onClick={() => { setWaDraft(chat.whatsapp || ""); setAreaDraft(chat.serviceArea || ""); setSheetOpen(true); }}
+            className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
+          >
+            <Plus className="h-3.5 w-3.5 text-slate-400" />
+            Lengkapi Data
+          </button>
+          <button
+            type="button"
+            onClick={handleGoToEditor}
+            className="btn-primary flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            Edit & Publikasikan
+          </button>
+        </div>
       )}
 
-      {/* Sheet overlay - visible on both mobile and desktop */}
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center md:items-end md:justify-center bg-black/60" onClick={() => setSheetOpen(false)}>
           <div className="rounded-t-2xl md:rounded-2xl bg-[#111318] px-5 pb-8 pt-3 md:pt-5 border-t md:border border-white/10 md:max-w-sm md:w-full md:mx-4 md:mb-6" onClick={(e) => e.stopPropagation()} style={{ boxShadow: "0 -8px 30px rgba(0,0,0,0.5)" }}>
@@ -1057,19 +787,18 @@ export function SiteWizard({
               </button>
               <button
                 type="button"
-                disabled={waDraft === (whatsapp || "") && areaDraft === (serviceArea || "")}
+                disabled={waDraft === (chat.whatsapp || "") && areaDraft === (chat.serviceArea || "")}
                 onClick={() => {
-                  setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : whatsapp);
-                  setServiceArea(areaDraft || serviceArea);
+                  chat.setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : chat.whatsapp);
+                  chat.setServiceArea(areaDraft || chat.serviceArea);
                   setSheetOpen(false);
-                  setHasUnsavedEdits(true);
-                  setRegenCount((c) => c + 1);
-                  setPreviewState("loading");
-                  setMobileScreen("loading");
-                  hasPromptedDetailsRef.current = false;
-                  void handleGenerate(businessName, businessType, {
-                    whatsapp: waDraft ? normalizeWhatsapp(waDraft) : whatsapp,
-                    serviceArea: areaDraft || serviceArea,
+                  preview.setHasUnsavedEdits(true);
+                  preview.setRegenCount((c: number) => c + 1);
+                  preview.setPreviewState("loading");
+                  device.setMobileScreen("loading");
+                  void handleGenerate(chat.businessName, chat.businessType, {
+                    whatsapp: waDraft ? normalizeWhatsapp(waDraft) : chat.whatsapp,
+                    serviceArea: areaDraft || chat.serviceArea,
                   });
                 }}
                 className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95 disabled:opacity-40"
@@ -1084,3 +813,5 @@ export function SiteWizard({
     </div>
   );
 }
+
+const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");

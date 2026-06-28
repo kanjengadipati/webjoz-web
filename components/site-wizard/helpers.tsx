@@ -28,6 +28,9 @@ export function selectTemplate(businessType: string): string {
     lower.includes("boba")) return "TEMPLATE_PRODUK03";
   if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
     lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) return "TEMPLATE_JASA02";
+  if (lower.includes("retro") || lower.includes("vintage") || lower.includes("klasik")) return "TEMPLATE_RETRO";
+  if (lower.includes("futuristik") || lower.includes("tech") || lower.includes("teknologi") ||
+    lower.includes("cyber") || lower.includes("modern")) return "TEMPLATE_FUTURISTIC";
 
   return "TEMPLATE_DYNAMIC";
 }
@@ -53,7 +56,7 @@ export function formatText(text: string, isUser: boolean) {
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={i} className={`font-bold ${isUser ? "text-white" : "text-slate-950"}`}>
+        <strong key={i} className={`font-bold ${isUser ? "text-white" : "text-slate-100"}`}>
           {part.slice(2, -2)}
         </strong>
       );
@@ -92,7 +95,8 @@ export function generateSlug(name: string): string {
 
 export function calculateProgress(chatStage: string): number {
   switch (chatStage) {
-    case "name": return 15;
+    case "name": return 10;
+    case "description": return 25;
     case "type": return 40;
     case "done": return 100;
     default: return 100;
@@ -102,8 +106,9 @@ export function calculateProgress(chatStage: string): number {
 export function getStageNumber(chatStage: string): number {
   switch (chatStage) {
     case "name": return 1;
-    case "type": return 2;
-    case "done": return 2;
+    case "description": return 2;
+    case "type": return 3;
+    case "done": return 3;
     default: return 1;
   }
 }
@@ -194,6 +199,7 @@ export function isLikelyGibberish(input: string): boolean {
 
 // Suggest business type/subtype from name keywords. Uses NAME_TYPE_HINTS from constants.
 import { NAME_TYPE_HINTS } from "./constants";
+import type { InferenceResult } from "./types";
 
 export function suggestTypeFromName(name: string): { type?: string; subType?: string } | null {
   const s = (name || "").toLowerCase();
@@ -202,4 +208,110 @@ export function suggestTypeFromName(name: string): { type?: string; subType?: st
     if (s.includes(key)) return NAME_TYPE_HINTS[key];
   }
   return null;
+}
+
+interface DescHintEntry {
+  type: string;
+  subType?: string;
+  keywords: string[];
+  weight: number;
+}
+
+const DESC_HINTS: DescHintEntry[] = [
+  { type: "Kuliner", subType: "Kafe", keywords: ["kopi", "coffee", "kafe", "cafe", "ngopi", "roasting", "espresso", "latte", "cappuccino", "brew", "kedai kopi"], weight: 2 },
+  { type: "Kuliner", subType: "Restoran", keywords: ["restoran", "makan siang", "makan malam", "prasmanan", "fine dining", "menu", "chef", "masakan", "nasi", "lauk", "makanan"], weight: 2 },
+  { type: "Kuliner", subType: "Bakery & Pastry", keywords: ["roti", "bakery", "kue", "pastry", "cake", "baking", "kue kering", "donat"], weight: 2 },
+  { type: "Kuliner", subType: "Catering", keywords: ["catering", "prasmanan", "nasi kotak", "nasi box", "katering"], weight: 2 },
+  { type: "Kuliner", subType: "Warung Makan", keywords: ["warung", "warteg", "nasi padang", "soto", "bakso", "mie ayam", "sate"], weight: 2 },
+  { type: "Kuliner", subType: "Minuman & Bubble Tea", keywords: ["minuman", "bubble", "boba", "es teh", "es", "jus", "smoothie", "shaken", "thai tea", "milk tea"], weight: 2 },
+  { type: "Jasa", subType: "Salon & Kecantikan", keywords: ["salon", "kecantikan", "beauty", "hair", "makeup", "rias", "spa", "manicure", "pedicure", "skincare", "perawatan"], weight: 2 },
+  { type: "Jasa", subType: "Barbershop", keywords: ["barber", "pangkas rambut", "cukur", "potong rambut", "fade", "beard", "grooming"], weight: 2 },
+  { type: "Jasa", subType: "Laundry", keywords: ["laundry", "cuci", "setrika", "dry clean", "laundry kiloan", "binatu"], weight: 2 },
+  { type: "Jasa", subType: "Otomotif & Bengkel", keywords: ["bengkel", "otomotif", "mobil", "motor", "servis", "tambal ban", "cuci motor", "cuci mobil", "spooring", "balance"], weight: 2 },
+  { type: "Jasa", subType: "Klinik & Kesehatan", keywords: ["klinik", "dokter", "kesehatan", "medis", "rumah sakit", "puskesmas", "bidan", "perawat", "poli"], weight: 2 },
+  { type: "Jasa", subType: "Konsultan", keywords: ["konsultan", "konsultasi", "advisor", "pembinaan", "pelatihan", "training", "coaching", "mentor"], weight: 2 },
+  { type: "Jasa", subType: "Fotografer", keywords: ["fotografer", "photography", "photo", "foto", "videografi", "wedding", "prewedding", "shoot"], weight: 2 },
+  { type: "Jasa", subType: "Agensi", keywords: ["agensi", "agency", "iklan", "marketing", "branding", "digital", "media sosial", "content writer", "kreatif"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Fashion & Pakaian", keywords: ["fashion", "pakaian", "baju", "sepatu", "tembaga", "batik", "distro", "konveksi", "jahit", "kain", "busana"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Elektronik", keywords: ["elektronik", "gadget", "handphone", "hp", "laptop", "komputer", "aksesoris", "pulsa", "listrik", "lampu"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Produk Lokal Handmade", keywords: ["handmade", "kerajinan", "souvenir", "oleh-oleh", "kriya", "tenun", "anyam", "lokal", "produk lokal", "umkm lokal"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Toko Online", keywords: ["online", "shop", "e-commerce", "jual beli", "reseller", "dropship", "marketplace", "olshop"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Minimarket", keywords: ["minimarket", "sembako", "kelontong", "toko kelontong", "bahan pokok", "sembilan bahan"], weight: 2 },
+  { type: "Toko & UMKM", subType: "Perabot & Furnitur", keywords: ["furnitur", "perabot", "meja", "kursi", "lemari", "kasur", "interior", "dekorasi"], weight: 2 },
+  { type: "Company", subType: "Properti & Real Estate", keywords: ["properti", "real estate", "rumah", "apartemen", "tanah", "perumahan", "agent properti", "jual rumah"], weight: 2 },
+  { type: "Company", subType: "Konstruksi", keywords: ["konstruksi", "kontraktor", "bangunan", "pembangunan", "arsitek", "desain interior", "renovasi"], weight: 2 },
+  { type: "Company", subType: "Pendidikan & Kursus", keywords: ["pendidikan", "sekolah", "kursus", "bimbingan belajar", "bimbel", "les", "privat", "pelatihan", "akademi"], weight: 2 },
+  { type: "Company", subType: "Travel & Wisata", keywords: ["travel", "wisata", "liburan", "tour", "paket wisata", "tiket", "pariwisata", "jalan-jalan"], weight: 2 },
+  { type: "Company", subType: "Hotel & Penginapan", keywords: ["hotel", "penginapan", "villa", "guest house", "homestay", "resort", "lodge", "pondok wisata"], weight: 2 },
+  { type: "Company", subType: "Manufaktur", keywords: ["manufaktur", "pabrik", "produksi", "industri", "fabrikasi", "perakitan", "pengolahan"], weight: 2 },
+];
+
+// Broader type-only keywords (lower weight)
+const DESC_TYPE_HINTS: { type: string; keywords: string[]; weight: number }[] = [
+  { type: "Kuliner", keywords: ["makan", "minum", "jual makanan", "bisnis kuliner", "usaha makanan", "makanan ringan"], weight: 1 },
+  { type: "Jasa", keywords: ["jasa", "layanan", "service", "bantuan", "profesional", "bidang jasa"], weight: 1 },
+  { type: "Toko & UMKM", keywords: ["jual", "dagang", "toko", "ritel", "eceran", "usaha kecil", "bisnis rumahan"], weight: 1 },
+  { type: "Company", keywords: ["perusahaan", "corporation", "pt", "cv", "bisnis besar", "korporasi"], weight: 1 },
+];
+
+export function inferTypeFromDescription(desc: string): InferenceResult {
+  const s = (desc || "").toLowerCase().trim();
+  if (!s || s.split(/\s+/).length < 3) {
+    // Empty or too short to infer confidently
+    return { confidence: "low" };
+  }
+
+  const typeScores: Record<string, { totalWeight: number; matchedSubTypes: Set<string> }> = {};
+  let bestSubType: { type: string; subType: string; weight: number } | null = null;
+
+  for (const hint of DESC_HINTS) {
+    if (hint.keywords.some(k => s.includes(k))) {
+      if (!typeScores[hint.type]) typeScores[hint.type] = { totalWeight: 0, matchedSubTypes: new Set() };
+      typeScores[hint.type].totalWeight += hint.weight;
+      if (hint.subType) typeScores[hint.type].matchedSubTypes.add(hint.subType);
+      if (!bestSubType || hint.weight > bestSubType.weight) {
+        bestSubType = { type: hint.type, subType: hint.subType!, weight: hint.weight };
+      }
+    }
+  }
+
+  // Broader type-only keywords (lower weight)
+  for (const hint of DESC_TYPE_HINTS) {
+    if (hint.keywords.some(k => s.includes(k))) {
+      if (!typeScores[hint.type]) typeScores[hint.type] = { totalWeight: 0, matchedSubTypes: new Set() };
+      typeScores[hint.type].totalWeight += hint.weight;
+    }
+  }
+
+  const sortedTypes = Object.entries(typeScores).sort((a, b) => b[1].totalWeight - a[1].totalWeight);
+
+  if (sortedTypes.length === 0) {
+    return { confidence: "low" };
+  }
+
+  const topType = sortedTypes[0][0];
+  const topScore = sortedTypes[0][1];
+  const nextScore = sortedTypes[1]?.[1].totalWeight ?? 0;
+
+  // Confidence determination
+  const hasStrongSubType = bestSubType !== null && bestSubType.type === topType && topScore.totalWeight >= 3;
+  const hasTypeClarity = topScore.totalWeight >= 2;
+  const hasConflictingTypes = sortedTypes.length > 1 && (topScore.totalWeight - nextScore) <= 1;
+
+  if (hasStrongSubType && !hasConflictingTypes) {
+    return {
+      type: topType,
+      subType: bestSubType!.subType,
+      confidence: "high",
+    };
+  }
+
+  if (hasTypeClarity) {
+    return {
+      type: topType,
+      confidence: "medium",
+    };
+  }
+
+  return { confidence: "low" };
 }
