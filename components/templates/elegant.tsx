@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref,
   ContactSection,
 } from "./shared";
+import { buildCssVars, loadGoogleFont } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -18,6 +19,12 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
+  const cssVars = buildCssVars(dt);
+
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
+
   const sectionOrder = (() => {
     const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
     const order = [...base];
@@ -28,12 +35,13 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     return order;
   })();
 
-  const gold = "#c9a84c";
-  const goldLight = "#f0d080";
+  const gold = dt?.palette?.primary ?? "#c9a84c";
+  const goldLight = dt?.palette?.accent ?? "#f0d080";
   const darkBg = "#0a0a0a";
   const darkSurface = "#0f0f0f";
   const darkCard = "#141414";
-  const textMuted = "rgba(200,160,60,0.5)";
+  const textMuted = `color-mix(in srgb, ${gold} 55%, transparent)`;
+  const ctaText = "var(--dt-cta-text)";
 
   const sectionNodes: Record<string, React.ReactNode> = {
     hero: (
@@ -54,7 +62,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: "#0a0a0a" }}>
+                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -185,7 +193,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.85rem", fontWeight: 700 }}
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -238,8 +246,8 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.9rem", fontWeight: 700 }}
-                        badgeStyle={{ color: "#0a0a0a", background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: "#0a0a0a", borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
+                        badgeStyle={{ color: ctaText, background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -272,7 +280,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
               {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>{c.eyebrow}</span>}
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light font-sans" style={{ color: "rgba(245,230,192,0.55)" }}>{c.subheadline}</p>}
-              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: "#0a0a0a" }}>
+              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />
               </a>
               {c.trust_signal && <p className="text-[10px] font-sans" style={{ color: textMuted }}>{c.trust_signal}</p>}
@@ -327,7 +335,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ background: darkBg, color: "#f5e6c0", fontFamily: "Georgia, serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: darkBg, color: "#f5e6c0", fontFamily: "Georgia, serif", minHeight: "100vh", overflowX: "hidden" }}>
       <div className="py-2 text-center text-[10px] uppercase tracking-widest font-sans" style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
         {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
       </div>
@@ -340,7 +348,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
               {h.brand_name}
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: darkCard, borderTop: `1px solid ${gold}20` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110 font-sans" style={{ background: gold, color: "#0a0a0a" }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110 font-sans" style={{ background: gold, color: ctaText }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>
@@ -377,7 +385,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      <CartFab colorStyle={{ background: gold, color: "#0a0a0a" }} />
+      <CartFab colorStyle={{ background: gold, color: ctaText }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

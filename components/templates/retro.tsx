@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
   ContactSection,
 } from "./shared";
+import { buildCssVars, loadGoogleFont } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -18,6 +19,10 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
+  const cssVars = buildCssVars(dt);
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
   const sectionOrder = (() => {
     const base: string[] = ["hero", "about", "testimonials", "benefits", "faq", "cta", "contact"];
     const order = [...base];
@@ -27,7 +32,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     return order;
   })();
 
-  const pink = "#ff2a6d";
+  const pink = "var(--dt-primary)";
   const cyan = "#05d9e8";
   const bg = "#120826";
   const surface = "#1a0a30";
@@ -40,7 +45,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-28 px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 60%, ${bg} 100%)` }}>
+          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 60%, ${bg} 100%)` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#fff_2px,#fff_3px)]" />
             <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[500px] h-[200px] rounded-full blur-[100px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${pink}, ${cyan})` }} />
             {h.image_url && (
@@ -48,7 +53,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
             )}
             <div className="max-w-4xl mx-auto relative z-10 space-y-7">
               {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full" style={{ background: "rgba(5,217,232,0.1)", border: `1px solid ${cyan}`, color: cyan }}>
+                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] rounded-[var(--dt-radius)]" style={{ background: "rgba(5,217,232,0.1)", border: `1px solid ${cyan}`, color: cyan }}>
                   <Zap className="w-3 h-3 fill-current" /> {h.eyebrow}
                 </span>
               )}
@@ -59,11 +64,11 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:brightness-110 rounded-lg" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
+                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:brightness-110 rounded-[var(--dt-radius)]" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
                 {h.cta_secondary_text && (
-                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest rounded-lg transition-all" style={{ border: `1px solid ${cyan}`, color: cyan }}>
+                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest rounded-[var(--dt-radius)] transition-all" style={{ border: `1px solid ${cyan}`, color: cyan }}>
                     {h.cta_secondary_text}
                   </a>
                 )}
@@ -80,7 +85,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
-          <section id="about" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
+          <section id="about" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-5">
                 {a.eyebrow && <span className="text-[10px] font-bold uppercase tracking-[0.2em] block" style={{ color: cyan }}>{a.eyebrow}</span>}
@@ -100,8 +105,8 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
               <div className="relative">
                 <div className="absolute -inset-2 blur-2xl opacity-20" style={{ background: `linear-gradient(135deg, ${pink}, ${cyan})` }} />
                 {a.image_url
-                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-xl" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                  : <div className="relative w-full h-72 rounded-xl flex items-center justify-center" style={{ background: card, border: `1px solid ${border}` }}>
+                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-[var(--dt-radius)]" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  : <div className="relative w-full h-72 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: card, border: `1px solid ${border}` }}>
                       <Music className="w-16 h-16 opacity-20" style={{ color: pink }} />
                     </div>
                 }
@@ -115,7 +120,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
+          <section id="benefits" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 {b.eyebrow && <span className="text-[10px] font-bold uppercase tracking-[0.2em] block" style={{ color: cyan }}>{b.eyebrow}</span>}
@@ -124,8 +129,8 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
               </div>
               <div className="grid md:grid-cols-3 gap-5">
                 {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 space-y-4 rounded-xl transition-all duration-300 hover:scale-[1.02]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
-                    <div className="w-10 h-10 flex items-center justify-center rounded-lg" style={{ background: `${pink}15`, border: `1px solid ${pink}33` }}>
+                  <div key={idx} className="p-6 space-y-4 rounded-[var(--dt-radius)] transition-all duration-300 hover:scale-[1.02]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
+                    <div className="w-10 h-10 flex items-center justify-center rounded-[var(--dt-radius)]" style={{ background: `${pink}15`, border: `1px solid ${pink}33` }}>
                       <span style={{ color: pink }}>
                         <DynamicIcon name={item.icon} defaultIcon={Sparkles} className="w-5 h-5" />
                       </span>
@@ -150,12 +155,12 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-16 px-6"
+          bgClass="py-[var(--dt-spacing)] px-6"
           sectionStyle={{ background: surface, borderTop: `1px solid ${border}` }}
           headingClass="text-white font-black tracking-tight text-2xl md:text-3xl"
           eyebrowClass="font-bold uppercase text-[10px] tracking-[0.2em]"
           eyebrowStyle={{ color: cyan }}
-          cardClass="rounded-xl"
+          cardClass="rounded-[var(--dt-radius)]"
           cardStyle={{ background: card, border: `1px solid ${border}` }}
           quoteClass="text-sm leading-relaxed"
           quoteStyle={{ color: textMuted }}
@@ -169,7 +174,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
+          <section id="menu" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-full" style={{ color: pink, background: `${pink}15`, border: `1px solid ${pink}30` }}>Menu</span>
@@ -189,10 +194,10 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 p-4 rounded-xl transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
+                      <div key={ii} className="flex gap-4 p-4 rounded-[var(--dt-radius)] transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-lg flex-shrink-0 ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          : <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center ring-1 ring-white/10" style={{ background: `${pink}10` }}><Music className="w-6 h-6" style={{ color: pink }} /></div>}
+                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-[var(--dt-radius)] flex-shrink-0 ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-16 h-16 rounded-[var(--dt-radius)] flex-shrink-0 flex items-center justify-center ring-1 ring-white/10" style={{ background: `${pink}10` }}><Music className="w-6 h-6" style={{ color: pink }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex justify-between gap-2 items-start">
                             <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
@@ -200,7 +205,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                           </div>
                           {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all duration-200 hover:brightness-110 hover:shadow-lg"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-[var(--dt-radius)] transition-all duration-200 hover:brightness-110 hover:shadow-lg"
                             style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }} />
                         </div>
                       </div>
@@ -217,7 +222,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
+          <section id="catalog" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `2px solid ${cyanGlow}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-full" style={{ color: pink, background: `${pink}15`, border: `1px solid ${pink}30` }}>Katalog</span>
@@ -237,17 +242,17 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                   </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 p-4 rounded-xl transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
+                      <div key={ii} className="space-y-3 p-4 rounded-[var(--dt-radius)] transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
                         {item.badge && <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.badge}</span>}
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-lg ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          : <div className="w-full h-36 rounded-lg flex items-center justify-center" style={{ background: `${pink}10` }}><Music className="w-10 h-10" style={{ color: `${pink}40` }} /></div>}
+                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-[var(--dt-radius)] ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-full h-36 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: `${pink}10` }}><Music className="w-10 h-10" style={{ color: `${pink}40` }} /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                         {!isPlaceholderPrice(item.price) && item.price && <p className="font-black text-xs inline-block px-2 py-0.5 rounded-full" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.price}</p>}
                         <div className="pt-1">
                           <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg transition-all duration-200 hover:brightness-110 hover:shadow-lg"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white rounded-[var(--dt-radius)] transition-all duration-200 hover:brightness-110 hover:shadow-lg"
                             style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }} />
                         </div>
                       </div>
@@ -264,12 +269,12 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(f) => (
-          <section id="faq" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
+          <section id="faq" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">{f.title}</h2>
               <div className="space-y-2">
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className="group rounded-xl overflow-hidden" style={{ background: card, border: `1px solid ${border}` }}>
+                  <details key={idx} className="group rounded-[var(--dt-radius)] overflow-hidden" style={{ background: card, border: `1px solid ${border}` }}>
                     <summary className="flex justify-between items-center p-5 cursor-pointer list-none font-black text-sm uppercase tracking-tight text-white hover:opacity-80 transition-opacity">
                       {item.question}
                       <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform shrink-0 ml-4" style={{ color: cyan }} />
@@ -287,13 +292,13 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={cta} render={(c) => (
-          <section className="py-20 px-6 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${pink}22, ${cyan}11)`, borderTop: `1px solid ${border}` }}>
+          <section className="py-[var(--dt-spacing)] px-6 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${pink}22, ${cyan}11)`, borderTop: `1px solid ${border}` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,#fff_4px,#fff_5px)]" />
             <div className="max-w-2xl mx-auto space-y-6 relative z-10">
               {c.eyebrow && <span className="text-[10px] font-bold uppercase tracking-[0.2em] block" style={{ color: cyan }}>{c.eyebrow}</span>}
               <h2 className="text-2xl md:text-4xl font-black tracking-tight text-white leading-tight">{c.headline}</h2>
               {c.subheadline && <p className="text-sm" style={{ color: textMuted }}>{c.subheadline}</p>}
-              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white rounded-lg transition-all hover:brightness-110" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
+              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white rounded-[var(--dt-radius)] transition-all hover:brightness-110" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />
               </a>
               {c.trust_signal && <p className="text-[11px] font-bold" style={{ color: `${cyan}aa` }}>{c.trust_signal}</p>}
@@ -318,19 +323,19 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}
             leadError={data.leadError}
-            wrapperClass="py-16 px-6"
+            wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: bg, borderTop: `1px solid ${border}` }}
             titleClass="text-2xl md:text-3xl font-black tracking-tight text-white"
             accentColor={pink}
             textClass="text-sm"
             textStyle={{ color: textMuted }}
-            leadCardClass="p-6 rounded-xl"
+            leadCardClass="p-6 rounded-[var(--dt-radius)]"
             leadCardStyle={{ background: card, border: `1px solid ${border}` }}
             leadTitleClass="text-sm font-black uppercase tracking-widest text-white"
             leadTitleText="Kirim Pesan"
-            leadFormBtnClass="w-full font-bold text-xs uppercase tracking-widest text-white rounded-lg transition-all hover:brightness-110"
+            leadFormBtnClass="w-full font-bold text-xs uppercase tracking-widest text-white rounded-[var(--dt-radius)] transition-all hover:brightness-110"
             leadFormBtnStyle={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }}
-            leadFormInputClass="w-full px-3 py-2.5 text-sm outline-none focus:ring-1 text-white placeholder-neutral-500 rounded-lg"
+            leadFormInputClass="w-full px-3 py-2.5 text-sm outline-none focus:ring-1 text-white placeholder-neutral-500 rounded-[var(--dt-radius)]"
             leadFormInputStyle={{ background: "#1a0d2e", border: `1px solid ${border}` }}
           />
         )} />
@@ -348,7 +353,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ background: bg, color: "#e0d6ff", fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: bg, color: "#e0d6ff", fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}e0`, borderBottom: `1px solid ${border}`, backdropFilter: "blur(12px)" }}>
@@ -360,7 +365,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-neutral-400 text-xs font-bold uppercase tracking-wider hover:text-cyan-400 transition-colors" drawerStyle={{ background: surface, borderTop: `1px solid ${border}` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-bold text-[10px] uppercase tracking-widest text-white rounded-lg transition-all hover:brightness-110" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-bold text-[10px] uppercase tracking-widest text-white rounded-[var(--dt-radius)] transition-all hover:brightness-110" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>

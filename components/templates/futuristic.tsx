@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
   ContactSection,
 } from "./shared";
+import { buildCssVars, loadGoogleFont } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -18,6 +19,10 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
+  const cssVars = buildCssVars(dt);
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
   const sectionOrder = (() => {
     const base: string[] = ["hero", "catalog", "benefits", "about", "testimonials", "faq", "cta", "contact"];
     const order = [...base];
@@ -27,7 +32,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
   })();
 
   const cyan = "#00d4ff";
-  const blue = "#0066ff";
+  const blue = "var(--dt-primary)";
   const bg = "#060d1a";
   const surface = "#0a1530";
   const card = "rgba(255,255,255,0.04)";
@@ -39,7 +44,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-28 px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 50%, ${bg} 100%)` }}>
+          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: `linear-gradient(180deg, ${bg} 0%, ${surface} 50%, ${bg} 100%)` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `linear-gradient(${cyan}11 1px, transparent 1px), linear-gradient(90deg, ${cyan}11 1px, transparent 1px)`, backgroundSize: "50px 50px" }} />
             <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[150px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${cyan}11, ${blue}22)` }} />
             {h.image_url && (
@@ -58,11 +63,11 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33` }}>
+                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
                 {h.cta_secondary_text && (
-                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all" style={{ border: `1px solid ${cyan}55`, color: cyan }}>
+                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all" style={{ border: `1px solid ${cyan}55`, color: cyan, borderRadius: "var(--dt-radius)" }}>
                     {h.cta_secondary_text}
                   </a>
                 )}
@@ -79,7 +84,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
-          <section id="about" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
+          <section id="about" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-5">
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{a.eyebrow}</span>}
@@ -99,8 +104,8 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
               <div className="relative">
                 <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: `linear-gradient(135deg, ${cyan}, ${blue})` }} />
                 {a.image_url
-                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `1px solid ${border}`, borderRadius: "12px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                  : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}>
+                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `1px solid ${border}`, borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}>
                       <Cpu className="w-16 h-16 opacity-20" style={{ color: cyan }} />
                     </div>
                 }
@@ -114,7 +119,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
+          <section id="benefits" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{b.eyebrow}</span>}
@@ -123,8 +128,8 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
               </div>
               <div className="grid md:grid-cols-3 gap-5">
                 {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 space-y-4 transition-all duration-300 hover:translate-y-[-4px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)", boxShadow: `0 8px 32px rgba(0,0,0,0.3)` }}>
-                    <div className="w-10 h-10 flex items-center justify-center" style={{ background: `${cyan}11`, border: `1px solid ${cyan}22`, borderRadius: "8px" }}>
+                  <div key={idx} className="p-6 space-y-4 transition-all duration-300 hover:translate-y-[-4px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)", boxShadow: `0 8px 32px rgba(0,0,0,0.3)` }}>
+                    <div className="w-10 h-10 flex items-center justify-center" style={{ background: `${cyan}11`, border: `1px solid ${cyan}22`, borderRadius: "var(--dt-radius)" }}>
                       <span style={{ color: cyan }}>
                         <DynamicIcon name={item.icon} defaultIcon={Cpu} className="w-5 h-5" />
                       </span>
@@ -149,13 +154,13 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-16 px-6"
+          bgClass="py-[var(--dt-spacing)] px-6"
           sectionStyle={{ background: surface, borderTop: `1px solid ${border}` }}
           headingClass="text-white font-light tracking-tight text-2xl md:text-3xl"
           eyebrowClass="font-semibold uppercase text-[10px] tracking-widest"
           eyebrowStyle={{ color: cyan }}
           cardClass=""
-          cardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}
+          cardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}
           quoteClass="text-sm font-light leading-relaxed"
           quoteStyle={{ color: textMuted }}
           nameClass="text-sm font-semibold text-white"
@@ -168,10 +173,10 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
+          <section id="menu" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "6px", border: `1px solid ${glow}` }}>Menu</span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>Menu</span>
                 <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{m.title}</h2>
                 <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
               </div>
@@ -179,24 +184,24 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                 <div key={ci} className="space-y-5">
                   <div className="flex items-center gap-3">
                     <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${glow})` }} />
-                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "6px", border: `1px solid ${glow}` }}>{cat.name}</span>
+                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>{cat.name}</span>
                     <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${glow}, transparent)` }} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
+                      <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          : <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center" style={{ background: `${cyan}10`, borderRadius: "8px" }}><Zap className="w-6 h-6" style={{ color: `${cyan}50` }} /></div>}
+                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center" style={{ background: `${cyan}10`, borderRadius: "var(--dt-radius)" }}><Zap className="w-6 h-6" style={{ color: `${cyan}50` }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex justify-between gap-2 items-start">
                             <p className="font-semibold text-sm text-white group-hover:text-cyan-200 transition-colors">{item.name}</p>
-                            {!isPlaceholderPrice(item.price) && item.price && <span className="text-xs font-semibold shrink-0 px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})` }}>{item.price}</span>}
+                            {!isPlaceholderPrice(item.price) && item.price && <span className="text-xs font-semibold shrink-0 px-2 py-0.5 rounded-[var(--dt-radius)]" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})` }}>{item.price}</span>}
                           </div>
                           {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                           <AddToCartButton itemId={`menu-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110 hover:shadow-lg"
-                            style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }} />
+                            style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }} />
                         </div>
                       </div>
                     ))}
@@ -212,10 +217,10 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-16 px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
+          <section id="catalog" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "6px", border: `1px solid ${glow}` }}>Katalog</span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>Katalog</span>
                 <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{c.title}</h2>
                 <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
               </div>
@@ -223,23 +228,23 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                 <div key={ci} className="space-y-5">
                   <div className="flex items-center gap-3">
                     <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${glow})` }} />
-                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "6px", border: `1px solid ${glow}` }}>{cat.name}</span>
+                    <span className="text-xs font-semibold uppercase tracking-widest px-4 py-1" style={{ color: cyan, background: `${cyan}08`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>{cat.name}</span>
                     <span className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${glow}, transparent)` }} />
                   </div>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {cat.items?.map((item, ii) => (
-                      <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
-                        {item.badge && <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "4px" }}>{item.badge}</span>}
+                      <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
+                        {item.badge && <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}>{item.badge}</span>}
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                          : <div className="w-full h-36 flex items-center justify-center" style={{ background: `${cyan}08`, borderRadius: "8px" }}><Cpu className="w-10 h-10" style={{ color: `${cyan}30` }} /></div>}
+                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          : <div className="w-full h-36 flex items-center justify-center" style={{ background: `${cyan}08`, borderRadius: "var(--dt-radius)" }}><Cpu className="w-10 h-10" style={{ color: `${cyan}30` }} /></div>}
                         <p className="font-semibold text-sm text-white group-hover:text-cyan-200 transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
-                        {!isPlaceholderPrice(item.price) && item.price && <span className="inline-block text-xs font-semibold px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "4px" }}>{item.price}</span>}
+                        {!isPlaceholderPrice(item.price) && item.price && <span className="inline-block text-xs font-semibold px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}>{item.price}</span>}
                         <div className="pt-1">
                           <AddToCartButton itemId={`cat-${ci}-${ii}`} itemName={item.name} itemPrice={item.price || null} category={cat.name}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:brightness-110 hover:shadow-lg"
-                            style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }} />
+                            style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }} />
                         </div>
                       </div>
                     ))}
@@ -255,12 +260,12 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(f) => (
-          <section id="faq" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
+          <section id="faq" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{f.title}</h2>
               <div className="space-y-2">
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className="group" style={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}>
+                  <details key={idx} className="group" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}>
                     <summary className="flex justify-between items-center p-5 cursor-pointer list-none font-semibold text-sm text-white hover:opacity-80 transition-opacity">
                       {item.question}
                       <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform shrink-0 ml-4" style={{ color: cyan }} />
@@ -278,13 +283,13 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={cta} render={(c) => (
-          <section className="py-20 px-6 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${blue}22, ${cyan}11)`, borderTop: `1px solid ${border}` }}>
+          <section className="py-[var(--dt-spacing)] px-6 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${blue}22, ${cyan}11)`, borderTop: `1px solid ${border}` }}>
             <div className="absolute inset-0 pointer-events-none opacity-[0.02]" style={{ backgroundImage: `linear-gradient(${cyan} 1px, transparent 1px), linear-gradient(90deg, ${cyan} 1px, transparent 1px)`, backgroundSize: "30px 30px" }} />
             <div className="max-w-2xl mx-auto space-y-6 relative z-10">
               {c.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{c.eyebrow}</span>}
               <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight">{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light" style={{ color: textMuted }}>{c.subheadline}</p>}
-              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33` }}>
+              <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />
               </a>
               {c.trust_signal && <p className="text-[11px] font-semibold" style={{ color: `${cyan}aa` }}>{c.trust_signal}</p>}
@@ -309,20 +314,20 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}
             leadError={data.leadError}
-            wrapperClass="py-16 px-6"
+            wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: bg, borderTop: `1px solid ${border}` }}
             titleClass="text-2xl md:text-3xl font-light tracking-tight text-white"
             accentColor={cyan}
             textClass="text-sm font-light"
             textStyle={{ color: textMuted }}
             leadCardClass="p-6"
-            leadCardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "12px", backdropFilter: "blur(8px)" }}
+            leadCardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}
             leadTitleClass="text-sm font-semibold tracking-wider text-white"
             leadTitleText="Kirim Pesan"
-            leadFormBtnClass="w-full font-semibold text-xs uppercase tracking-widest text-white rounded-lg transition-all hover:brightness-110"
-            leadFormBtnStyle={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }}
-            leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-500 rounded-lg"
-            leadFormInputStyle={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${border}` }}
+            leadFormBtnClass="w-full font-semibold text-xs uppercase tracking-widest text-white transition-all hover:brightness-110"
+            leadFormBtnStyle={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}
+            leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-500"
+            leadFormInputStyle={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${border}`, borderRadius: "var(--dt-radius)" }}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -339,7 +344,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ background: bg, color: "#e0f0ff", fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: bg, color: "#e0f0ff", fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between gap-4" style={{ background: `${bg}e0`, borderBottom: `1px solid ${border}`, backdropFilter: "blur(16px)" }}>
@@ -351,7 +356,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
               </span>
             </span>
             <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-neutral-400 text-xs font-medium uppercase tracking-wider hover:text-cyan-300 transition-colors" drawerStyle={{ background: surface, borderTop: `1px solid ${border}` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-semibold text-[10px] uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})` }}>
+            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 font-semibold text-[10px] uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}>
               {h.nav_cta_text || "Hubungi Kami"}
             </a>
           </header>

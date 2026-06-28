@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, navCtaHref,
   ContactSection,
 } from "./shared";
+import { buildCssVars, loadGoogleFont } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -18,6 +19,12 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
+  const cssVars = buildCssVars(dt);
+
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
+
   const sectionOrder = (() => {
     const base: string[] = ["hero", "about", "menu", "catalog", "testimonials", "benefits", "faq", "cta", "contact"];
     const order = [...base];
@@ -28,11 +35,12 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     return order;
   })();
 
-  const yellow = "#FFE135";
-  const pink = "#FF3CAC";
+  const yellow = dt?.palette?.primary ?? "#FFE135";
+  const pink = dt?.palette?.accent ?? "#FF3CAC";
   const black = "#0D0D0D";
   const bg = "#FFFBEB";
   const surface = "#FFFFFF";
+  const ctaText = "var(--dt-cta-text)";
 
   const shadowBlock = "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
   const shadowBlockHover = "hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:translate-x-0.5";
@@ -44,7 +52,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section className="py-14 px-6 max-w-5xl mx-auto grid md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-7 space-y-5">
               {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 bg-yellow-200 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000" }}>
+                <span className="inline-flex items-center gap-1.5 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000", background: `color-mix(in srgb, ${yellow} 35%, white)`, color: black }}>
                   <Sparkles className="w-3 h-3" /> {h.eyebrow}
                 </span>
               )}
@@ -55,7 +63,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <div className="flex flex-wrap gap-3 pt-2">
                 <a href={h.cta_url}
                   className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all ${shadowBlock} ${shadowBlockHover}`}
-                  style={{ background: yellow, color: black }}>
+                  style={{ background: yellow, color: ctaText }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
                 </a>
                 {h.cta_secondary_text && (
@@ -93,7 +101,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section id="about" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E8F5E9" }}>
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
               <div className="space-y-4">
-                {a.eyebrow && <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-2 py-1">{a.eyebrow}</span>}
+                {a.eyebrow && <span className="inline-block text-[10px] font-black uppercase tracking-widest px-2 py-1" style={{ background: black, color: yellow }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-3xl font-black uppercase leading-snug" style={{ color: black }}>{a.title}</h2>
                 <p className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }}>{a.body}</p>
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
@@ -124,7 +132,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section id="benefits" className="py-14 px-6" style={{ background: bg }}>
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-3">
-                {b.eyebrow && <span className="inline-block border-2 border-black bg-yellow-300 text-[10px] font-black uppercase px-2.5 py-1" style={{ boxShadow: "2px 2px 0 #000" }}>{b.eyebrow}</span>}
+                {b.eyebrow && <span className="inline-block border-2 border-black text-[10px] font-black uppercase px-2.5 py-1" style={{ boxShadow: "2px 2px 0 #000", background: yellow, color: ctaText }}>{b.eyebrow}</span>}
                 <h2 className="text-2xl md:text-3xl font-black uppercase" style={{ color: black }}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm font-bold" style={{ color: "#5D4037" }}>{b.subtitle}</p>}
               </div>
@@ -170,7 +178,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section id="menu" className="py-14 px-6 border-y-4 border-black" style={{ background: "#FCE4EC" }}>
             <div className="max-w-5xl mx-auto space-y-8">
               <div className="text-center space-y-3">
-                <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Menu</span>
+                <span className="inline-block text-[10px] font-black uppercase tracking-widest px-3 py-1" style={{ background: black, color: yellow }}>Menu</span>
                 <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{m.title}</h2>
                 <div className="flex items-center justify-center gap-1">
                   <span className="w-2 h-2" style={{ background: black }} />
@@ -212,7 +220,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         priceClassName="font-black text-xs px-2 py-0.5 whitespace-nowrap"
                         priceStyle={{ color: yellow, background: black }}
                         buttonClassName={`mt-2 flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
-                        buttonStyle={{ background: yellow, color: black }}
+                        buttonStyle={{ background: yellow, color: ctaText }}
                       />
                     ))}
                   </div>
@@ -229,7 +237,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section id="catalog" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E3F2FD" }}>
             <div className="max-w-5xl mx-auto space-y-8">
               <div className="text-center space-y-3">
-                <span className="inline-block bg-black text-yellow-300 text-[10px] font-black uppercase tracking-widest px-3 py-1">Katalog</span>
+                <span className="inline-block text-[10px] font-black uppercase tracking-widest px-3 py-1" style={{ background: black, color: yellow }}>Katalog</span>
                 <h2 className="text-2xl md:text-3xl font-black uppercase text-center" style={{ color: black }}>{c.title}</h2>
                 <div className="flex items-center justify-center gap-1">
                   <span className="w-2 h-2" style={{ background: black }} />
@@ -273,7 +281,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         priceStyle={{ color: pink }}
                         badgeClassName="inline-block bg-black text-yellow-300 text-[9px] font-black uppercase px-2 py-0.5"
                         buttonClassName={`w-full flex items-center justify-center gap-1.5 py-2 border-2 border-black text-[10px] font-black uppercase transition-all ${shadowBlock} ${shadowBlockHover}`}
-                        buttonStyle={{ background: yellow, color: black }}
+                        buttonStyle={{ background: yellow, color: ctaText }}
                       />
                     ))}
                   </div>
@@ -314,7 +322,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               {c.eyebrow && <span className="inline-block border-2 border-yellow-300 text-yellow-300 text-[10px] font-black uppercase px-2.5 py-1">{c.eyebrow}</span>}
               <h2 className="text-2xl md:text-4xl font-black uppercase leading-tight" style={{ color: yellow }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-bold" style={{ color: "#ccc" }}>{c.subheadline}</p>}
-              <a href={c.button_url} className={`inline-flex items-center gap-2 px-8 py-4 border-4 border-yellow-300 font-black text-sm uppercase tracking-wider transition-all ${shadowBlock} hover:translate-y-0.5`} style={{ background: yellow, color: black }}>
+              <a href={c.button_url} className={`inline-flex items-center gap-2 px-8 py-4 border-4 font-black text-sm uppercase tracking-wider transition-all ${shadowBlock} hover:translate-y-0.5`} style={{ borderColor: yellow, background: yellow, color: ctaText }}>
                 {c.button_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
               </a>
               {c.trust_signal && <p className="text-[11px] font-bold" style={{ color: "#999" }}>{c.trust_signal}</p>}
@@ -349,7 +357,8 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             leadCardStyle={{ background: surface }}
             leadTitleText=""
             leadFormBtnClass="border-2 border-black font-black uppercase text-sm"
-            leadFormInputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white"
+            leadFormBtnStyle={{ background: yellow, color: ctaText }}
+            leadFormInputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] bg-white"
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -366,12 +375,12 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ background: bg, color: black, fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: bg, color: black, fontFamily: "'Outfit', 'Inter', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 border-b-4 border-black px-6 py-3 flex items-center justify-between gap-4 relative" style={{ background: yellow }}>
-            <span className="flex shrink-0 items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: black }}>
+            <span className="flex shrink-0 items-center gap-2 font-black text-base uppercase tracking-tight" style={{ color: ctaText }}>
               <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Sparkles} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 border-2 border-black object-cover" />
               <span className="min-w-0">
                 <span className="block truncate">{h.brand_name}</span>
@@ -417,7 +426,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
-      <CartFab colorStyle={{ background: pink, color: "white" }} />
+      <CartFab colorStyle={{ background: pink, color: ctaText }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>

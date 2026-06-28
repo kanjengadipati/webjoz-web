@@ -107,6 +107,9 @@ export default function SiteEditorPage() {
 
   const fetchCustomTemplates = async (reset = false) => {
     if (!token || !activeTenantId || !siteId) return;
+    // Only superadmin can access template library
+    const role = (() => { try { return JSON.parse(atob(token.split(".")[1]))?.role } catch {} })();
+    if (role !== "superadmin") return;
     try {
       setLoadingTemplates(true);
       const currentOffset = reset ? 0 : customTemplates.length;

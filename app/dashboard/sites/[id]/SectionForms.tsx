@@ -492,6 +492,7 @@ export default function SectionForms({
   siteId,
 }: SectionFormsProps) {
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
+  const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
   const businessType = content?.header?.brand_name ? "" : "";
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
@@ -505,6 +506,39 @@ export default function SectionForms({
       if (result) updateField(section, fieldKey, result);
     } finally {
       setAiLoadingField(null);
+    }
+  };
+
+  const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string) => {
+    if (!token || !activeTenantId || !siteId) return;
+    const loadKey = `${catIdx}_${itemIdx}`;
+    setAiLoadingDesc(loadKey);
+    try {
+      const res = await request<any>("/ai/regenerate-section", {
+        method: "POST",
+        body: JSON.stringify({
+          site_id: siteId,
+          section: activeTab,
+          instructions: `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.`,
+          tenant_id: activeTenantId,
+        }),
+      }, String(token));
+      if (res.status === "success" && res.data?.section) {
+        const updated = res.data.section;
+        const cats = updated?.categories ?? [];
+        const targetCat = cats[catIdx];
+        if (targetCat) {
+          const targetItems = targetCat.items ?? [];
+          const targetItem = targetItems[itemIdx];
+          if (targetItem?.description) {
+            updateField(activeTab, "categories", cats);
+          }
+        }
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setAiLoadingDesc(null);
     }
   };
 
@@ -1427,6 +1461,8 @@ export default function SectionForms({
             hasBadge={false}
             data={content.menu}
             updateField={updateField}
+            onAiDescription={handleAiItemDescription}
+            aiLoadingDesc={aiLoadingDesc}
           />
         </>
       )}
@@ -1633,6 +1669,8 @@ export default function SectionForms({
             hasBadge
             data={content.catalog}
             updateField={updateField}
+            onAiDescription={handleAiItemDescription}
+            aiLoadingDesc={aiLoadingDesc}
           />
         </>
       )}
@@ -1649,9 +1687,11 @@ interface MenuCatalogFormProps {
   hasBadge: boolean;
   data: any;
   updateField: (section: string, key: string, val: any) => void;
+  onAiDescription?: (catIdx: number, itemIdx: number, itemName: string, catName: string) => Promise<void>;
+  aiLoadingDesc?: string | null;
 }
 
-function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField }: MenuCatalogFormProps) {
+function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField, onAiDescription, aiLoadingDesc }: MenuCatalogFormProps) {
   const [expandedCat, setExpandedCat] = React.useState<number | null>(0);
   const [activeEmojiPicker, setActiveEmojiPicker] = React.useState<{ catIdx: number; itemIdx: number } | null>(null);
 
@@ -1834,6 +1874,13 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                         <div className="flex items-center justify-between mb-1">
                           <label className={inputLabel}>Deskripsi</label>
                           <div className="flex items-center gap-1.5 text-[10px]">
+                            {onAiDescription && (
+                              <AiFieldButton
+                                loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
+                                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "")}
+                                title="AI: generate deskripsi"
+                              />
+                            )}
                             <button
                               type="button"
                               onClick={() => {

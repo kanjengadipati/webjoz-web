@@ -9,6 +9,7 @@ import {
   SeoEditorPreview, navCtaHref,
   ContactSection,
 } from "./shared";
+import { buildCssVars, loadGoogleFont } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -18,6 +19,10 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
+  const cssVars = buildCssVars(dt);
+  React.useEffect(() => {
+    loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
+  }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
   const sectionOrder = (() => {
     const base: string[] = ["hero", "benefits", "cta", "faq", "contact"];
     const order = [...base];
@@ -38,7 +43,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="py-20 px-6 md:px-12 max-w-5xl mx-auto space-y-8">
+          <section className="py-[var(--dt-spacing)] px-6 md:px-12 max-w-5xl mx-auto space-y-8">
             {h.eyebrow && <span className="text-xs font-semibold tracking-widest uppercase block" style={{ color: zinc500 }}>{h.eyebrow}</span>}
             <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900 }}>
               {h.headline}
@@ -67,7 +72,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     about: (
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
-          <section id="about" className="py-16 px-6 md:px-12 border-y" style={{ background: zinc100, borderColor: zinc200 }}>
+          <section id="about" className="py-[var(--dt-spacing)] px-6 md:px-12 border-y" style={{ background: zinc100, borderColor: zinc200 }}>
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
               <div className="space-y-6">
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{a.eyebrow}</span>}
@@ -95,7 +100,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-16 px-6 md:px-12" style={{ background: surface }}>
+          <section id="benefits" className="py-[var(--dt-spacing)] px-6 md:px-12" style={{ background: surface }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-3">
                 {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{b.eyebrow}</span>}
@@ -121,7 +126,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-16 px-6 md:px-12"
+          bgClass="py-[var(--dt-spacing)] px-6 md:px-12"
           sectionStyle={{ background: zinc100, borderTop: `1px solid ${zinc200}`, borderBottom: `1px solid ${zinc200}` }}
           headingClass="text-2xl md:text-3xl font-light tracking-tight"
           eyebrowClass="text-[10px] font-semibold uppercase tracking-widest"
@@ -136,7 +141,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
+          <section id="menu" className="py-[var(--dt-spacing)] px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Menu</p>
@@ -190,7 +195,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-16 px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
+          <section id="catalog" className="py-[var(--dt-spacing)] px-6 md:px-12 border-y" style={{ background: surface, borderColor: zinc200 }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Katalog</p>
@@ -247,7 +252,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(f) => (
-          <section id="faq" className="py-16 px-6 md:px-12" style={{ background: zinc100 }}>
+          <section id="faq" className="py-[var(--dt-spacing)] px-6 md:px-12" style={{ background: zinc100 }}>
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{f.title}</h2>
               <div className="divide-y" style={{ borderColor: zinc200 }}>
@@ -269,7 +274,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     cta: (
       <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={cta} render={(c) => (
-          <section className="py-20 px-6 md:px-12" style={{ background: zinc900 }}>
+          <section className="py-[var(--dt-spacing)] px-6 md:px-12" style={{ background: zinc900 }}>
             <div className="max-w-5xl mx-auto space-y-6">
               {c.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{c.eyebrow}</span>}
               <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-tight max-w-2xl" style={{ color: "#F4F4F5" }}>{c.headline}</h2>
@@ -300,7 +305,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             leadSubmitting={leadSubmitting}
             leadSuccess={leadSuccess}
             leadError={leadError}
-            wrapperClass="py-16 px-6 md:px-12 border-t"
+            wrapperClass="py-[var(--dt-spacing)] px-6 md:px-12 border-t"
             wrapperStyle={{ background: surface, borderColor: zinc200 }}
             titleClass="text-2xl font-light tracking-tight"
             titleStyle={{ color: zinc900 }}
@@ -328,7 +333,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ background: bg, color: zinc900, fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: bg, color: zinc900, fontFamily: "'Inter', 'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
