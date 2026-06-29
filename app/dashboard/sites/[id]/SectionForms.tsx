@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Sparkles, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase } from "lucide-react";
 import FileUpload from "@/components/file-upload";
+import LocationPicker from "@/components/location-picker";
 import { isPlaceholderValue } from "./editor-utils";
 import { request } from "@/lib/api/client";
 
@@ -495,6 +496,7 @@ export default function SectionForms({
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
   const [resolvingMaps, setResolvingMaps] = React.useState(false);
   const [resolveError, setResolveError] = React.useState<string | null>(null);
+  const [showLocationPicker, setShowLocationPicker] = React.useState(false);
   const businessType = content?.header?.brand_name ? "" : "";
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
@@ -1138,6 +1140,16 @@ export default function SectionForms({
               />
               <button
                 type="button"
+                onClick={() => setShowLocationPicker(true)}
+                className="shrink-0 px-3 py-1.5 rounded-md text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                title="Pilih lokasi di peta"
+              >
+                Pilih Lokasi
+              </button>
+            </div>
+            <div className="flex gap-2 mt-1.5">
+              <button
+                type="button"
                 onClick={async () => {
                   const url = content.contact.maps_url?.trim();
                   if (!url || !/goo\.gl|maps\.app\.goo/.test(url)) return;
@@ -1165,15 +1177,22 @@ export default function SectionForms({
             </div>
             {content.contact.maps_url && !/\/maps\/embed\?pb=|openstreetmap\.org\/export/.test(content.contact.maps_url) && !/@?(-?\d+\.\d+),(-?\d+\.\d+)/.test(content.contact.maps_url) && (
               <p className="text-[10px] text-amber-400 leading-relaxed">
-                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps, atau klik "Resolve" jika ini shortlink Google Maps.
+                Link ini tidak bisa ditampilkan sebagai peta interaktif. Klik "Pilih Lokasi" atau gunakan link embed Google Maps.
               </p>
             )}
             {resolveError && (
               <p className="text-[10px] text-red-400 leading-relaxed">{resolveError}</p>
             )}
             <p className="text-[10px] text-slate-500 leading-relaxed">
-              Buka lokasi Anda di Google Maps → Bagikan → Sematkan peta (Embed a map) → salin link dari kode HTML yang muncul. Link biasa dari address bar tidak akan menampilkan peta.
+              Klik "Pilih Lokasi" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.
             </p>
+
+            <LocationPicker
+              open={showLocationPicker}
+              onClose={() => setShowLocationPicker(false)}
+              currentUrl={content.contact.maps_url}
+              onSave={(url) => updateField("contact", "maps_url", url)}
+            />
           </div>
         </div>
       )}
