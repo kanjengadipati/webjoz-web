@@ -759,12 +759,13 @@ const TILE_STYLES: Record<string, { url: string; label: string }> = {
 
 function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle?: string | null }) {
   const ref = useRef<HTMLDivElement>(null);
-  const initialized = useRef(false);
+  const initRef = useRef(false);
+  const mapRef = useRef<any>(null);
+  const tileRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!ref.current || initialized.current) return;
-    initialized.current = true;
-    let map: any;
+    if (!ref.current || initRef.current) return;
+    initRef.current = true;
     import("leaflet").then((L) => {
       import("leaflet/dist/leaflet.css");
       if (!ref.current) return;
@@ -774,14 +775,25 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
         iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
       });
-      map = L.map(ref.current, { zoomControl: false, scrollWheelZoom: false }).setView([lat, lng], 15);
+      const map = L.map(ref.current, { zoomControl: false, scrollWheelZoom: false }).setView([lat, lng], 15);
+      mapRef.current = map;
       const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
-      L.tileLayer(info.url, { attribution: "" }).addTo(map);
+      tileRef.current = L.tileLayer(info.url, { attribution: "" }).addTo(map);
       L.marker([lat, lng]).addTo(map);
       setTimeout(() => map.invalidateSize(), 200);
     });
-    return () => { if (map) { map.remove(); } };
-  }, [lat, lng, tileStyle]);
+    return () => { if (mapRef.current) { mapRef.current.remove(); } };
+  }, [lat, lng]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !tileRef.current) return;
+    import("leaflet").then((L) => {
+      map.removeLayer(tileRef.current);
+      const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
+      tileRef.current = L.tileLayer(info.url, { attribution: "" }).addTo(map);
+    });
+  }, [tileStyle]);
 
   return <div ref={ref} className="w-full h-[220px] rounded-xl overflow-hidden" />;
 }
