@@ -148,6 +148,7 @@ export interface TemplateProps {
       align?: "left" | "center" | "right" | null;
       show_lead_form?: boolean;
       show_map?: boolean;
+      map_tile_style?: string;
     };
     footer?: {
       brand_name?: string;

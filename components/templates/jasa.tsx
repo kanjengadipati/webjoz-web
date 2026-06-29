@@ -252,6 +252,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             align={data.contact.align}
             showLeadForm={data.contact.show_lead_form}
             showMap={data.contact.show_map}
+            mapTileStyle={data.contact.map_tile_style}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}

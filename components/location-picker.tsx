@@ -13,6 +13,12 @@ interface LocationPickerProps {
 const DEFAULT_LAT = -6.2088;
 const DEFAULT_LNG = 106.8456;
 
+const TILE_STYLES: Record<string, { url: string; label: string }> = {
+  default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
+  light:   { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
+  dark:    { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
+};
+
 export default function LocationPicker({ open, onClose, currentUrl, onSave }: LocationPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -25,6 +31,8 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [detectedCoords, setDetectedCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [detectingGeo, setDetectingGeo] = useState(false);
+  const [tileStyle, setTileStyle] = useState("default");
+  const tileLayerRef = useRef<any>(null);
 
   // Auto-detect geolocation when popup opens
   useEffect(() => {
@@ -72,9 +80,9 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         zoomControl: false,
       }).setView([initLat, initLng], 15);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "",
-      }).addTo(map);
+      const tileInfo = TILE_STYLES[tileStyle] || TILE_STYLES.default;
+      const tileLayer = L.tileLayer(tileInfo.url, { attribution: "" }).addTo(map);
+      tileLayerRef.current = { layer: tileLayer, map };
 
       const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
 
@@ -103,6 +111,17 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
       }
     };
   }, [open, currentUrl, detectedCoords]);
+
+  // Switch tile layer when style changes
+  useEffect(() => {
+    const ref = tileLayerRef.current;
+    if (!ref) return;
+    import("leaflet").then((L) => {
+      ref.map.removeLayer(ref.layer);
+      const tileInfo = TILE_STYLES[tileStyle] || TILE_STYLES.default;
+      ref.layer = L.tileLayer(tileInfo.url, { attribution: "" }).addTo(ref.map);
+    });
+  }, [tileStyle]);
 
   const searchLocation = async () => {
     if (!searchQuery.trim()) return;
@@ -269,11 +288,21 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
 
         {/* Footer */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80">
-          <p className="text-[11px] text-gray-400">
-            {position
-              ? "Geser pin atau klik peta untuk menyesuaikan lokasi"
-              : "Klik peta untuk menandai lokasi"}
-          </p>
+          <div className="flex items-center gap-1">
+            {(Object.keys(TILE_STYLES) as Array<keyof typeof TILE_STYLES>).map((key) => (
+              <button
+                key={key}
+                onClick={() => setTileStyle(key)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+                  tileStyle === key
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-gray-400 hover:text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {TILE_STYLES[key].label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="px-4 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors">
               Batal

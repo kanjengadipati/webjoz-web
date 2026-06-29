@@ -1134,6 +1134,24 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
+            <div className="flex gap-1">
+              {[{ key: "default", label: "OSM" }, { key: "light", label: "Terang" }, { key: "dark", label: "Gelap" }].map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => updateField("contact", "map_tile_style", opt.key)}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    (content.contact.map_tile_style || "default") === opt.key
+                      ? "bg-primary/20 text-primary"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Link Google Maps <span className="text-slate-600 normal-case font-normal">(opsional)</span>

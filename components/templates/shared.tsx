@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState, useEffect } from "react";
+import React, { useId, useState, useEffect, useRef } from "react";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
   Sparkles, MapPin, Phone, Mail, Globe,
@@ -751,6 +751,39 @@ function toEmbedUrl(url: string): string | null {
 
 // ─── Contact Section ───────────────────────────────────────────────────────────
 
+const TILE_STYLES: Record<string, { url: string; label: string }> = {
+  default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
+  light:   { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
+  dark:    { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
+};
+
+function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle?: string | null }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    let map: any, marker: any, tileLayer: any;
+    import("leaflet").then((L) => {
+      import("leaflet/dist/leaflet.css");
+      if (!ref.current) return;
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      });
+      map = L.map(ref.current, { zoomControl: false, scrollWheelZoom: false }).setView([lat, lng], 15);
+      const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
+      tileLayer = L.tileLayer(info.url, { attribution: "" }).addTo(map);
+      marker = L.marker([lat, lng]).addTo(map);
+      setTimeout(() => map.invalidateSize(), 200);
+    });
+    return () => { if (map) { map.remove(); } };
+  }, [lat, lng, tileStyle]);
+
+  return <div ref={ref} className="w-full h-[220px] rounded-xl overflow-hidden" />;
+}
+
 interface ContactSectionProps {
   title?: string | null;
   address?: string | null;
@@ -760,6 +793,7 @@ interface ContactSectionProps {
   align?: "left" | "center" | "right" | null;
   showLeadForm?: boolean | null;
   showMap?: boolean | null;
+  mapTileStyle?: string | null;
   onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<void>) | null;
   leadSubmitting?: boolean | null;
   leadSuccess?: boolean | null;
@@ -787,7 +821,7 @@ interface ContactSectionProps {
 const ContactSection: React.FC<ContactSectionProps> = ({
   title, address, phone, email, mapsUrl,
   align = "center",
-  showLeadForm, showMap, onSubmitLead, leadSubmitting, leadSuccess, leadError,
+  showLeadForm, showMap, mapTileStyle, onSubmitLead, leadSubmitting, leadSuccess, leadError,
   wrapperClass = "py-16 px-6", wrapperStyle,
   titleClass = "text-2xl font-bold", titleStyle,
   accentColor = "currentColor",
@@ -840,11 +874,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           {mapsUrl && showMap !== false && (
             <div className="space-y-2 mt-2">
               {(() => {
-                const embedSrc = toEmbedUrl(mapsUrl);
-                if (!embedSrc) return null;
+                const m = mapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (!m) return null;
+                const lat = parseFloat(m[1]);
+                const lng = parseFloat(m[2]);
+                if (isNaN(lat) || isNaN(lng)) return null;
                 return (
                   <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${accentColor}20` }}>
-                    <iframe src={embedSrc} width="100%" height="220" style={{ border: 0 }} loading="lazy" title="Lokasi" />
+                    <MapEmbed lat={lat} lng={lng} tileStyle={mapTileStyle} />
                   </div>
                 );
               })()}

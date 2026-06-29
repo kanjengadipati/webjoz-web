@@ -343,6 +343,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             align={c.align}
             showLeadForm={c.show_lead_form}
             showMap={c.show_map}
+            mapTileStyle={c.map_tile_style}
             onSubmitLead={onSubmitLead}
             leadSubmitting={leadSubmitting}
             leadSuccess={leadSuccess}
