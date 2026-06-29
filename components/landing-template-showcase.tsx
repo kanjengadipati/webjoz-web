@@ -79,7 +79,7 @@ function TemplatePreview({ templateId, content, designToken }: { templateId: str
   );
 }
 
-export function LandingTemplateShowcase({ onStart }: { onStart: () => void }) {
+export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: string) => void }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {SHOWCASE_ITEMS.map((item) => {
@@ -115,7 +115,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: () => void }) {
                 </p>
               </div>
               <button
-                onClick={onStart}
+                onClick={() => onStart(item.templateId)}
                 className="shrink-0 rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold text-primary-foreground transition hover:brightness-110 active:scale-95"
               >
                 Buat

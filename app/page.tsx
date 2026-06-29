@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
 import { Check } from "lucide-react";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
+import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { InteractiveMockup } from "@/components/interactive-mockup";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 
@@ -103,7 +104,10 @@ export default function LandingPage() {
   }, []);
 
   function startWizard(templateId?: string) {
-    router.push(templateId ? `/create?template=${templateId}` : "/create");
+    if (!templateId) { router.push("/create"); return; }
+    const prefill = TEMPLATE_PREFILL_MAP[templateId];
+    if (!prefill) { router.push("/create"); return; }
+    router.push(`/create?businessType=${encodeURIComponent(prefill.businessType)}&businessSubType=${encodeURIComponent(prefill.businessSubType)}`);
   }
 
   return (
@@ -327,7 +331,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <LandingTemplateShowcase onStart={() => startWizard()} />
+          <LandingTemplateShowcase onStart={(templateId) => startWizard(templateId)} />
         </div>
       </section>
 

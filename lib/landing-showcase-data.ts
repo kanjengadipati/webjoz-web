@@ -1,6 +1,17 @@
 // Sample generated content for landing page template showcase
 // Mimics real AI output for different business types
 
+export const TEMPLATE_PREFILL_MAP: Record<string, { businessType: string; businessSubType: string }> = {
+  TEMPLATE_KULINER01: { businessType: "Kuliner", businessSubType: "Kafe" },
+  TEMPLATE_JASA02:    { businessType: "Jasa", businessSubType: "Konsultan" },
+  TEMPLATE_COLORFUL:  { businessType: "Kuliner", businessSubType: "Minuman & Bubble Tea" },
+  TEMPLATE_ELEGANT:   { businessType: "Jasa", businessSubType: "Salon & Kecantikan" },
+  TEMPLATE_NATURAL:   { businessType: "Toko & UMKM", businessSubType: "Produk Lokal Handmade" },
+  TEMPLATE_MINIMALIST:{ businessType: "Jasa", businessSubType: "Konsultan" },
+  TEMPLATE_BOLD:      { businessType: "Jasa", businessSubType: "Otomotif & Bengkel" },
+  TEMPLATE_DYNAMIC:   { businessType: "Jasa", businessSubType: "Klinik & Kesehatan" },
+};
+
 export const SHOWCASE_ITEMS = [
   {
     templateId: "TEMPLATE_KULINER01",

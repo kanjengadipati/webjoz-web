@@ -7,7 +7,7 @@ const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
 
-export function useWizardChat() {
+export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
   const [chatStage, setChatStage] = useState<ChatStage>("name");
   const [messages, setMessages] = useState<Message[]>([
     { id: "init", sender: "ai", text: INITIAL_MESSAGE },
@@ -20,8 +20,8 @@ export function useWizardChat() {
   const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
 
   const [businessName, setBusinessName] = useState("");
-  const [businessType, setBusinessType] = useState("");
-  const [businessSubType, setBusinessSubType] = useState("");
+  const [businessType, setBusinessType] = useState(prefill?.businessType ?? "");
+  const [businessSubType, setBusinessSubType] = useState(prefill?.businessSubType ?? "");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
@@ -209,11 +209,20 @@ export function useWizardChat() {
 
       setTimeout(() => {
         typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `ai-desc-${Date.now()}`, sender: "ai", text: DESCRIPTION_PROMPT },
-          ]);
-          setChatStage("description");
+          if (prefill?.businessType && prefill?.businessSubType) {
+            setChatStage("done");
+            setMessages((prev) => [
+              ...prev,
+              { id: `ai-prefill-${Date.now()}`, sender: "ai", text: `Baik, kita pakai ${prefill.businessSubType} ya. AI sedang menyiapkan website Anda...` },
+            ]);
+            onGenerate(capitalized, prefill.businessType, { businessSubType: prefill.businessSubType });
+          } else {
+            setMessages((prev) => [
+              ...prev,
+              { id: `ai-desc-${Date.now()}`, sender: "ai", text: DESCRIPTION_PROMPT },
+            ]);
+            setChatStage("description");
+          }
         });
       }, 500);
     }

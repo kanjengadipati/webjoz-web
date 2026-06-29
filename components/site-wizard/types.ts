@@ -7,6 +7,8 @@ export interface SiteWizardProps {
   memberships?: { tenant: { id: number | string } }[];
   createTenant?: (name: string, slug: string) => Promise<{ id: number | string } | null>;
   onNeedAuth?: () => void;
+  initialBusinessType?: string;
+  initialBusinessSubType?: string;
 }
 
 export type Message = {

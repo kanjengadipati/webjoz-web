@@ -21,6 +21,8 @@ function PublicWizardContent() {
   const { activeTenantId, memberships, createTenant, loading: tenantLoading } = useActiveTenant();
 
   const isSaveAction = searchParams.get("action") === "save";
+  const initialBusinessType = searchParams.get("businessType") || undefined;
+  const initialBusinessSubType = searchParams.get("businessSubType") || undefined;
 
   // We track save state reactively to URL param changes
   const [pendingSave, setPendingSave] = useState(false);
@@ -243,6 +245,8 @@ function PublicWizardContent() {
         memberships={memberships}
         createTenant={createTenant}
         onNeedAuth={handleNeedAuth}
+        initialBusinessType={initialBusinessType}
+        initialBusinessSubType={initialBusinessSubType}
       />
     </div>
   );

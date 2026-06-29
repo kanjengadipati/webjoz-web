@@ -38,11 +38,13 @@ export function SiteWizard({
   activeTenantId,
   createTenant,
   onNeedAuth,
+  initialBusinessType,
+  initialBusinessSubType,
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
 
-  const chat = useWizardChat();
+  const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
 
