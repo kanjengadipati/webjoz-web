@@ -67,6 +67,15 @@ function generateLogoSVG(brandName: string, color?: string, businessType?: strin
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
+function autoTileStyle(token?: Record<string, any>): string {
+  const mood = (token?.mood || "").toLowerCase();
+  const bg = token?.palette?.background || "";
+  const isDark = bg.startsWith("#") && parseInt(bg.slice(1), 16) < 0x444444;
+  if (isDark || mood.includes("dark") || mood.includes("premium") || mood.includes("bold")) return "dark";
+  if (mood.includes("natural") || mood.includes("warm") || mood.includes("earthy") || mood.includes("fresh")) return "light";
+  return "default";
+}
+
 export function buildFullContent(
   data: { content: Record<string, any>; [key: string]: any },
   businessName: string,
@@ -136,6 +145,7 @@ export function buildFullContent(
       phone: c.contact?.phone || whatsapp || "",
       email: c.contact?.email || "",
       align: c.contact?.align || "center",
+      map_tile_style: c.contact?.map_tile_style || autoTileStyle(data.design_token || data.designToken),
     },
     footer: {
       ...c.footer,

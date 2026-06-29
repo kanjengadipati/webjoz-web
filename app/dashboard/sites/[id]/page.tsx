@@ -191,6 +191,16 @@ export default function SiteEditorPage() {
 
       // Fallback empty content scaffold if empty
       const data = stripRegeneratedMarkers(contentRes.data?.content || {});
+      const fetchedDesignToken = contentRes.data?.design_token || null;
+      const defaultTileStyle = (() => {
+        if (!fetchedDesignToken) return "default";
+        const mood = (fetchedDesignToken.mood || "").toLowerCase();
+        const bg = fetchedDesignToken.palette?.background || "";
+        const isDark = bg.startsWith("#") && parseInt(bg.slice(1), 16) < 0x444444;
+        if (isDark || mood.includes("dark") || mood.includes("premium") || mood.includes("bold")) return "dark";
+        if (mood.includes("natural") || mood.includes("warm") || mood.includes("earthy") || mood.includes("fresh")) return "light";
+        return "default";
+      })();
       const fallback = {
         header: { brand_name: "", nav_cta_text: "", logo_url: "", icon: "" },
         hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "", matra: "" },
@@ -199,7 +209,7 @@ export default function SiteEditorPage() {
         testimonials: { title: "", items: [] },
         faq: { title: "", items: [] },
         cta: { headline: "", button_text: "", button_url: "" },
-        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true },
+        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true, map_tile_style: defaultTileStyle },
         footer: { brand_name: "", tagline: "", copyright_text: "" },
         seo: { title: "", description: "", favicon_url: "", og_image_url: "" }
       };
@@ -224,7 +234,6 @@ export default function SiteEditorPage() {
 
       setContent(finalContent);
 
-      const fetchedDesignToken = contentRes.data?.design_token || null;
       // Load design token if available
       if (fetchedDesignToken) {
         setDesignToken(fetchedDesignToken);
