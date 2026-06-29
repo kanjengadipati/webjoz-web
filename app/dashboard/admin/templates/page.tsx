@@ -84,7 +84,12 @@ function scoreDesignToken(dt: any): { total: number; parts: { label: string; sco
     else if (cr >= 4.5) acc = 20 + Math.round(((cr - 4.5) / 2.5) * 10);
     else acc = Math.round((cr / 4.5) * 20);
   }
-  if (primary && text && contrastRatio(primary, text) >= 3) acc += 5;
+  // bonus: primary button text contrast (WCAG AA → 4.5:1)
+  if (primary && text && contrastRatio(primary, text) >= 4.5) acc += 5;
+  // bonus: text-on-surface contrast (ensures content legible on cards/sections)
+  if (text && surface && contrastRatio(text, surface) >= 4.5) acc += 5;
+  // bonus: primary-vs-background button visibility (WCAG non-text AA → 3:1)
+  if (primary && bg && contrastRatio(primary, bg) >= 3) acc += 5;
   if (acc > 40) acc = 40;
   parts.push({ label: "Aksesibilitas", score: acc, max: 40 });
 
