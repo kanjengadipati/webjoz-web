@@ -1137,7 +1137,7 @@ export default function SectionForms({
           <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
             <div className="flex gap-1">
-              {[{ key: "default", label: "OSM" }, { key: "light", label: "Terang" }, { key: "dark", label: "Gelap" }].map((opt) => (
+              {[{ key: "default", label: "OSM" }, { key: "cyclosm", label: "CyclOSM" }, { key: "light", label: "Terang" }, { key: "dark", label: "Gelap" }, { key: "esri", label: "Esri" }, { key: "satelit", label: "Satelit" }].map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => updateField("contact", "map_tile_style", opt.key)}
