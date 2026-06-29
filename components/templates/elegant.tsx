@@ -298,6 +298,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             phone={data.contact.phone}
             email={data.contact.email}
             showLeadForm={data.contact.show_lead_form}
+            showMap={data.contact.show_map}
             align={data.contact.align}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}

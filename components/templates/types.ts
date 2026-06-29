@@ -147,6 +147,7 @@ export interface TemplateProps {
       maps_url?: string | null;
       align?: "left" | "center" | "right" | null;
       show_lead_form?: boolean;
+      show_map?: boolean;
     };
     footer?: {
       brand_name?: string;

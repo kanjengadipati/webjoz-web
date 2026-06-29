@@ -199,7 +199,7 @@ export default function SiteEditorPage() {
         testimonials: { title: "", items: [] },
         faq: { title: "", items: [] },
         cta: { headline: "", button_text: "", button_url: "" },
-        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true },
+        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true },
         footer: { brand_name: "", tagline: "", copyright_text: "" },
         seo: { title: "", description: "", favicon_url: "", og_image_url: "" }
       };

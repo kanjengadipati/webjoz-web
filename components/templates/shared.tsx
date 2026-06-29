@@ -759,6 +759,7 @@ interface ContactSectionProps {
   mapsUrl?: string | null;
   align?: "left" | "center" | "right" | null;
   showLeadForm?: boolean | null;
+  showMap?: boolean | null;
   onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<void>) | null;
   leadSubmitting?: boolean | null;
   leadSuccess?: boolean | null;
@@ -786,7 +787,7 @@ interface ContactSectionProps {
 const ContactSection: React.FC<ContactSectionProps> = ({
   title, address, phone, email, mapsUrl,
   align = "center",
-  showLeadForm, onSubmitLead, leadSubmitting, leadSuccess, leadError,
+  showLeadForm, showMap, onSubmitLead, leadSubmitting, leadSuccess, leadError,
   wrapperClass = "py-16 px-6", wrapperStyle,
   titleClass = "text-2xl font-bold", titleStyle,
   accentColor = "currentColor",
@@ -836,7 +837,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             })}
           </div>
 
-          {mapsUrl && (
+          {mapsUrl && showMap !== false && (
             <div className="space-y-2 mt-2">
               {(() => {
                 const embedSrc = toEmbedUrl(mapsUrl);

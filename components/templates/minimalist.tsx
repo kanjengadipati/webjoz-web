@@ -301,6 +301,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             mapsUrl={c.maps_url}
             align={c.align}
             showLeadForm={c.show_lead_form}
+            showMap={c.show_map}
             onSubmitLead={onSubmitLead}
             leadSubmitting={leadSubmitting}
             leadSuccess={leadSuccess}

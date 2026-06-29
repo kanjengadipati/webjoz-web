@@ -194,6 +194,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             mapsUrl={data.contact.maps_url}
             align={data.contact.align}
             showLeadForm={data.contact.show_lead_form}
+            showMap={data.contact.show_map}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}

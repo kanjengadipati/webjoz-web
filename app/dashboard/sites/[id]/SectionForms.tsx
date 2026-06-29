@@ -1125,6 +1125,15 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Peta Lokasi</span>
+            <input 
+              type="checkbox" 
+              checked={content.contact.show_map !== false} 
+              onChange={(e) => updateField("contact", "show_map", e.target.checked)} 
+              className="w-4 h-4 accent-primary cursor-pointer" 
+            />
+          </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Link Google Maps <span className="text-slate-600 normal-case font-normal">(opsional)</span>
