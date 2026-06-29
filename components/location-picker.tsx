@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { MapPin, Search, Crosshair, Loader2, X } from "lucide-react";
+import { MapPin, Crosshair, Loader2, X, Check } from "lucide-react";
 
 interface LocationPickerProps {
   open: boolean;
@@ -17,6 +17,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{ lat: string; lon: string; display_name: string }>>([]);
   const [searching, setSearching] = useState(false);
@@ -25,18 +26,44 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
 
   useEffect(() => {
     if (!open) return;
-    const initLat = DEFAULT_LAT;
-    const initLng = DEFAULT_LNG;
 
-    // Load Leaflet dynamically (client only)
     import("leaflet").then((L) => {
       import("leaflet/dist/leaflet.css");
 
       if (!mapRef.current || mapInstanceRef.current) return;
 
-      const map = L.map(mapRef.current).setView([initLat, initLng], 13);
+      // Fix default marker icon
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      });
+
+      const initLat = currentUrl ? (() => {
+        const m = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+        if (m) {
+          const v = parseFloat(m[1]);
+          return isNaN(v) ? DEFAULT_LAT : v;
+        }
+        return DEFAULT_LAT;
+      })() : DEFAULT_LAT;
+
+      const initLng = currentUrl ? (() => {
+        const m = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+        if (m) {
+          const v = parseFloat(m[2]);
+          return isNaN(v) ? DEFAULT_LNG : v;
+        }
+        return DEFAULT_LNG;
+      })() : DEFAULT_LNG;
+
+      const map = L.map(mapRef.current, {
+        zoomControl: false,
+      }).setView([initLat, initLng], 15);
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
+        attribution: "",
       }).addTo(map);
 
       const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
@@ -51,22 +78,11 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         setPosition({ lat: pos.lat, lng: pos.lng });
       });
 
-      // Try to parse existing URL for initial position
-      if (currentUrl) {
-        const coordMatch = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-        if (coordMatch) {
-          const lat = parseFloat(coordMatch[1]);
-          const lng = parseFloat(coordMatch[2]);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            map.setView([lat, lng], 15);
-            marker.setLatLng([lat, lng]);
-            setPosition({ lat, lng });
-          }
-        }
-      }
-
+      setPosition({ lat: initLat, lng: initLng });
       mapInstanceRef.current = map;
       markerRef.current = marker;
+
+      setTimeout(() => map.invalidateSize(), 200);
     });
 
     return () => {
@@ -82,11 +98,12 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
     if (!searchQuery.trim()) return;
     setSearching(true);
     try {
+      const q = searchQuery.includes(",") ? searchQuery : `${searchQuery}, Indonesia`;
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5&countrycodes=id`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&countrycodes=id&accept-language=id`
       );
       const data = await res.json();
-      setSearchResults(data);
+      setSearchResults(Array.isArray(data) ? data : []);
     } catch {
       setSearchResults([]);
     } finally {
@@ -94,7 +111,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
     }
   };
 
-  const goToResult = (lat: string, lon: string) => {
+  const goToResult = (lat: string, lon: string, name: string) => {
     const latF = parseFloat(lat);
     const lngF = parseFloat(lon);
     if (!mapInstanceRef.current || !markerRef.current) return;
@@ -102,7 +119,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
     markerRef.current.setLatLng([latF, lngF]);
     setPosition({ lat: latF, lng: lngF });
     setSearchResults([]);
-    setSearchQuery("");
+    setSearchQuery(name);
   };
 
   const detectLocation = () => {
@@ -133,89 +150,123 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#1a1a2e] rounded-2xl border border-white/10 w-[90vw] max-w-2xl max-h-[90vh] flex flex-col shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-          <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" />
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
+          <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-emerald-600" />
             Pilih Lokasi
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {position && (
+              <span className="text-[10px] text-gray-400 font-mono">
+                {position.lat.toFixed(6)}, {position.lng.toFixed(6)}
+              </span>
+            )}
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Search bar */}
-        <div className="relative px-4 pt-3">
-          <div className="flex gap-2">
-            <div className="relative flex-1">
+        {/* Search bar — floating over the map */}
+        <div className="relative">
+          <div className="absolute top-3 left-3 right-3 z-10 flex gap-1.5">
+            <div className="relative flex-1 shadow-sm">
               <input
+                ref={searchRef}
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && searchLocation()}
-                placeholder="Cari tempat, jalan, kota..."
-                className="w-full pl-8 pr-3 py-2 rounded-lg border border-white/10 bg-white/5 text-sm text-white placeholder-slate-500 outline-none focus:border-primary/50"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (!e.target.value) setSearchResults([]);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") searchLocation();
+                  if (e.key === "Escape") {
+                    setSearchResults([]);
+                    searchRef.current?.blur();
+                  }
+                }}
+                placeholder="Cari tempat..."
+                className="w-full py-2 pl-3 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 placeholder-gray-400 bg-white/95 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-400 shadow-sm"
               />
-              <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-slate-500" />
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchResults([]);
+                    searchRef.current?.focus();
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
             <button
               onClick={searchLocation}
-              disabled={searching}
-              className="px-3 py-2 rounded-lg bg-primary/20 text-primary text-sm font-medium hover:bg-primary/30 disabled:opacity-50"
+              disabled={searching || !searchQuery.trim()}
+              className="shrink-0 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm transition-colors"
             >
               {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cari"}
             </button>
             <button
               onClick={detectLocation}
               disabled={locating}
-              className="px-3 py-2 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 disabled:opacity-50"
-              title="Deteksi lokasi saya"
+              className="shrink-0 w-[38px] flex items-center justify-center rounded-lg bg-white/95 border border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-white hover:border-gray-300 disabled:opacity-40 shadow-sm transition-colors"
+              title="Lokasi saya saat ini"
             >
               {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
             </button>
           </div>
 
-          {/* Search results */}
+          {/* Search results dropdown */}
           {searchResults.length > 0 && (
-            <div className="absolute left-4 right-4 top-full mt-1 z-10 bg-[#22223b] border border-white/10 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+            <div className="absolute top-[52px] left-3 right-[116px] z-20 bg-white border border-gray-200 rounded-lg shadow-xl max-h-44 overflow-y-auto">
               {searchResults.map((r, i) => (
                 <button
                   key={i}
-                  onClick={() => goToResult(r.lat, r.lon)}
-                  className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-white/5 border-b border-white/5 last:border-0"
+                  onClick={() => goToResult(r.lat, r.lon, r.display_name)}
+                  className="w-full text-left px-3.5 py-2.5 text-[12px] text-gray-600 hover:bg-emerald-50 hover:text-gray-900 border-b border-gray-100 last:border-0 transition-colors"
                 >
                   {r.display_name}
                 </button>
               ))}
             </div>
           )}
-        </div>
 
-        {/* Map */}
-        <div className="flex-1 m-4 min-h-[350px] rounded-xl overflow-hidden">
-          <div ref={mapRef} className="w-full h-[350px]" />
+          {/* Map */}
+          <div ref={mapRef} className="w-full h-[380px] bg-gray-100" />
 
-          <style>{`${`.leaflet-container { background: #1a1a2e; border-radius: 0.75rem; }`}`}</style>
+          {/* Center instruction */}
+          {!position && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 shadow text-sm text-gray-500">
+                Klik peta untuk memilih lokasi
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-white/10">
-          <p className="text-[11px] text-slate-500">
+        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80">
+          <p className="text-[11px] text-gray-400">
             {position
-              ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}`
-              : "Klik peta untuk memilih lokasi"}
+              ? "Geser pin atau klik peta untuk menyesuaikan lokasi"
+              : "Klik peta untuk menandai lokasi"}
           </p>
-          <div className="flex gap-2">
-            <button onClick={onClose} className="px-4 py-1.5 rounded-lg text-sm text-slate-300 hover:bg-white/5">
+          <div className="flex items-center gap-2">
+            <button onClick={onClose} className="px-4 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors">
               Batal
             </button>
             <button
               onClick={handleSave}
               disabled={!position}
-              className="px-4 py-1.5 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm transition-colors"
             >
+              <Check className="w-3.5 h-3.5" />
               Simpan
             </button>
           </div>
