@@ -1121,6 +1121,22 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
+          <div className="space-y-1">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              Link Google Maps <span className="text-slate-600 normal-case font-normal">(opsional)</span>
+            </label>
+            <input
+              id="field-contact.maps_url"
+              type="url"
+              value={content.contact.maps_url || ""}
+              onChange={(e) => updateField("contact", "maps_url", e.target.value)}
+              placeholder="https://www.google.com/maps/embed?pb=..."
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+            />
+            <p className="text-[10px] text-slate-500 leading-relaxed">
+              Buka lokasi Anda di Google Maps → Bagikan → Sematkan peta (Embed a map) → salin link dari kode HTML yang muncul. Link biasa dari address bar tidak akan menampilkan peta.
+            </p>
+          </div>
         </div>
       )}
 

@@ -818,15 +818,15 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           </div>
 
           {mapsUrl && (
-            <a
-              href={mapsUrl}
-              target="_blank" rel="noopener noreferrer"
-              className={`inline-flex items-center ${justifyClass} gap-2 text-sm font-semibold hover:underline transition-colors ${mapsLinkClass || ""}`}
-              style={{ color: accentColor, ...mapsLinkStyle }}
-            >
-              <Globe className="w-4 h-4" />
-              Buka Google Maps
-            </a>
+            <div className="space-y-2 mt-2">
+              <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${accentColor}20` }}>
+                <iframe src={mapsUrl} width="100%" height="220" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Lokasi" />
+              </div>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
+                <Globe className="w-3.5 h-3.5" />
+                Buka di Google Maps
+              </a>
+            </div>
           )}
         </div>
 
