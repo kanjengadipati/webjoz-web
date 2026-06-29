@@ -493,6 +493,8 @@ export default function SectionForms({
 }: SectionFormsProps) {
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
+  const [resolvingMaps, setResolvingMaps] = React.useState(false);
+  const [resolveError, setResolveError] = React.useState<string | null>(null);
   const businessType = content?.header?.brand_name ? "" : "";
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
@@ -1125,18 +1127,49 @@ export default function SectionForms({
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Link Google Maps <span className="text-slate-600 normal-case font-normal">(opsional)</span>
             </label>
-            <input
-              id="field-contact.maps_url"
-              type="url"
-              value={content.contact.maps_url || ""}
-              onChange={(e) => updateField("contact", "maps_url", e.target.value)}
-              placeholder="https://www.google.com/maps/embed?pb=..."
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
-            />
+            <div className="flex gap-2">
+              <input
+                id="field-contact.maps_url"
+                type="url"
+                value={content.contact.maps_url || ""}
+                onChange={(e) => { updateField("contact", "maps_url", e.target.value); setResolveError(null); }}
+                placeholder="https://www.google.com/maps/embed?pb=..."
+                className="flex-1 w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  const url = content.contact.maps_url?.trim();
+                  if (!url || !/goo\.gl|maps\.app\.goo/.test(url)) return;
+                  setResolvingMaps(true);
+                  try {
+                    const res = await request<{ embed_url: string; final_url: string }>(
+                      `/ai/public/resolve-maps-url?url=${encodeURIComponent(url)}`,
+                      undefined,
+                      token ?? undefined
+                    );
+                    if (res.data?.embed_url) {
+                      updateField("contact", "maps_url", res.data.embed_url);
+                    }
+                  } catch {
+                    setResolveError("Gagal meresolve link. Coba salin link embed manual.");
+                  } finally {
+                    setResolvingMaps(false);
+                  }
+                }}
+                disabled={resolvingMaps || !/goo\.gl|maps\.app\.goo/.test(content.contact.maps_url || "")}
+                className="shrink-0 px-3 py-1.5 rounded-md text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                {resolvingMaps ? "..." : "Resolve"}
+              </button>
+            </div>
             {content.contact.maps_url && !/\/maps\/embed\?pb=|maps\.google\.com\/maps\?q=/.test(content.contact.maps_url) && (
               <p className="text-[10px] text-amber-400 leading-relaxed">
-                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps (bukan link dari address bar).
+                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps, atau klik "Resolve" jika ini link Google Maps.
               </p>
+            )}
+            {resolveError && (
+              <p className="text-[10px] text-red-400 leading-relaxed">{resolveError}</p>
             )}
             <p className="text-[10px] text-slate-500 leading-relaxed">
               Buka lokasi Anda di Google Maps → Bagikan → Sematkan peta (Embed a map) → salin link dari kode HTML yang muncul. Link biasa dari address bar tidak akan menampilkan peta.
