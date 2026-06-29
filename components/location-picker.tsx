@@ -23,6 +23,23 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const [searching, setSearching] = useState(false);
   const [locating, setLocating] = useState(false);
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [detectedCoords, setDetectedCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [detectingGeo, setDetectingGeo] = useState(false);
+
+  // Auto-detect geolocation when popup opens
+  useEffect(() => {
+    if (!open || !navigator.geolocation) return;
+    setDetectingGeo(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setDetectedCoords({ lat: latitude, lng: longitude });
+        setDetectingGeo(false);
+      },
+      () => setDetectingGeo(false),
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -40,23 +57,16 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
       });
 
-      const initLat = currentUrl ? (() => {
+      const fromUrl = (idx: number): number | null => {
+        if (!currentUrl) return null;
         const m = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-        if (m) {
-          const v = parseFloat(m[1]);
-          return isNaN(v) ? DEFAULT_LAT : v;
-        }
-        return DEFAULT_LAT;
-      })() : DEFAULT_LAT;
+        if (!m) return null;
+        const v = parseFloat(m[idx]);
+        return isNaN(v) ? null : v;
+      };
 
-      const initLng = currentUrl ? (() => {
-        const m = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-        if (m) {
-          const v = parseFloat(m[2]);
-          return isNaN(v) ? DEFAULT_LNG : v;
-        }
-        return DEFAULT_LNG;
-      })() : DEFAULT_LNG;
+      const initLat = detectedCoords?.lat ?? fromUrl(1) ?? DEFAULT_LAT;
+      const initLng = detectedCoords?.lng ?? fromUrl(2) ?? DEFAULT_LNG;
 
       const map = L.map(mapRef.current, {
         zoomControl: false,
@@ -92,15 +102,14 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         markerRef.current = null;
       }
     };
-  }, [open, currentUrl]);
+  }, [open, currentUrl, detectedCoords]);
 
   const searchLocation = async () => {
     if (!searchQuery.trim()) return;
     setSearching(true);
     try {
-      const q = searchQuery.includes(",") ? searchQuery : `${searchQuery}, Indonesia`;
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&countrycodes=id&accept-language=id`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5&accept-language=id`
       );
       const data = await res.json();
       setSearchResults(Array.isArray(data) ? data : []);
@@ -240,8 +249,16 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
           {/* Map */}
           <div ref={mapRef} className="w-full h-[380px] bg-gray-100" />
 
-          {/* Center instruction */}
-          {!position && (
+          {/* Center instruction / detecting geo */}
+          {detectingGeo && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 shadow text-sm text-gray-500 flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Mendeteksi lokasi...
+              </div>
+            </div>
+          )}
+          {!detectingGeo && !position && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 shadow text-sm text-gray-500">
                 Klik peta untuk memilih lokasi
