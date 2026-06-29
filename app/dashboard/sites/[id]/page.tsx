@@ -2129,6 +2129,7 @@ export default function SiteEditorPage() {
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleAiRegenerateForSection}
+                      onSubmitLead={async () => {}}
                     />
                   </div>
                 </div>
@@ -2145,6 +2146,7 @@ export default function SiteEditorPage() {
                   activeSection={activeTab}
                   onSelectSection={handlePreviewSelectSection}
                   onRegenSection={handleAiRegenerateForSection}
+                  onSubmitLead={async () => {}}
                 />
               </div>
             )}
