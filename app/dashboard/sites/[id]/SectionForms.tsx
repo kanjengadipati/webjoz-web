@@ -1133,6 +1133,11 @@ export default function SectionForms({
               placeholder="https://www.google.com/maps/embed?pb=..."
               className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
             />
+            {content.contact.maps_url && !/\/maps\/embed\?pb=|maps\.google\.com\/maps\?q=/.test(content.contact.maps_url) && (
+              <p className="text-[10px] text-amber-400 leading-relaxed">
+                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps (bukan link dari address bar).
+              </p>
+            )}
             <p className="text-[10px] text-slate-500 leading-relaxed">
               Buka lokasi Anda di Google Maps → Bagikan → Sematkan peta (Embed a map) → salin link dari kode HTML yang muncul. Link biasa dari address bar tidak akan menampilkan peta.
             </p>

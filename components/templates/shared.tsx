@@ -730,6 +730,19 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
   </section>
 );
 
+function toEmbedUrl(url: string): string | null {
+  if (/\/maps\/embed\?pb=/.test(url)) return url;
+  if (/maps\.google\.com\/maps\?q=/.test(url)) return url;
+
+  const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (coordMatch) {
+    const [, lat, lng] = coordMatch;
+    return `https://maps.google.com/maps?q=${lat},${lng}&output=embed&z=15`;
+  }
+
+  return null;
+}
+
 // ─── Contact Section ───────────────────────────────────────────────────────────
 
 interface ContactSectionProps {
@@ -819,9 +832,15 @@ const ContactSection: React.FC<ContactSectionProps> = ({
 
           {mapsUrl && (
             <div className="space-y-2 mt-2">
-              <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${accentColor}20` }}>
-                <iframe src={mapsUrl} width="100%" height="220" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Lokasi" />
-              </div>
+              {(() => {
+                const embedSrc = toEmbedUrl(mapsUrl);
+                if (!embedSrc) return null;
+                return (
+                  <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${accentColor}20` }}>
+                    <iframe src={embedSrc} width="100%" height="220" style={{ border: 0 }} loading="lazy" title="Lokasi" />
+                  </div>
+                );
+              })()}
               <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
                 <Globe className="w-3.5 h-3.5" />
                 Buka di Google Maps
