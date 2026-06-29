@@ -1133,7 +1133,7 @@ export default function SectionForms({
                 type="url"
                 value={content.contact.maps_url || ""}
                 onChange={(e) => { updateField("contact", "maps_url", e.target.value); setResolveError(null); }}
-                placeholder="https://www.google.com/maps/embed?pb=..."
+                placeholder="https://www.google.com/maps/embed?pb=... atau share link Google Maps"
                 className="flex-1 w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
               />
               <button
@@ -1143,13 +1143,13 @@ export default function SectionForms({
                   if (!url || !/goo\.gl|maps\.app\.goo/.test(url)) return;
                   setResolvingMaps(true);
                   try {
-                    const res = await request<{ embed_url: string; final_url: string }>(
+                    const res = await request<{ embed_url: string; final_url: string; google_maps_url: string }>(
                       `/ai/public/resolve-maps-url?url=${encodeURIComponent(url)}`,
                       undefined,
                       token ?? undefined
                     );
-                    if (res.data?.embed_url) {
-                      updateField("contact", "maps_url", res.data.embed_url);
+                    if (res.data?.google_maps_url) {
+                      updateField("contact", "maps_url", res.data.google_maps_url);
                     }
                   } catch {
                     setResolveError("Gagal meresolve link. Coba salin link embed manual.");
@@ -1163,9 +1163,9 @@ export default function SectionForms({
                 {resolvingMaps ? "..." : "Resolve"}
               </button>
             </div>
-            {content.contact.maps_url && !/\/maps\/embed\?pb=|maps\.google\.com\/maps\?q=/.test(content.contact.maps_url) && (
+            {content.contact.maps_url && !/\/maps\/embed\?pb=|openstreetmap\.org\/export/.test(content.contact.maps_url) && !/@?(-?\d+\.\d+),(-?\d+\.\d+)/.test(content.contact.maps_url) && (
               <p className="text-[10px] text-amber-400 leading-relaxed">
-                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps, atau klik "Resolve" jika ini link Google Maps.
+                Link ini tidak bisa ditampilkan sebagai peta interaktif. Gunakan link embed Google Maps, atau klik "Resolve" jika ini shortlink Google Maps.
               </p>
             )}
             {resolveError && (

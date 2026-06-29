@@ -732,12 +732,18 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
 
 function toEmbedUrl(url: string): string | null {
   if (/\/maps\/embed\?pb=/.test(url)) return url;
-  if (/maps\.google\.com\/maps\?q=/.test(url)) return url;
 
-  const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  const coordMatch = url.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
   if (coordMatch) {
     const [, lat, lng] = coordMatch;
-    return `https://maps.google.com/maps?q=${lat},${lng}&output=embed&z=15`;
+    const latF = parseFloat(lat);
+    const lngF = parseFloat(lng);
+    if (isNaN(latF) || isNaN(lngF)) return null;
+    const minLat = (latF - 0.005).toFixed(6);
+    const maxLat = (latF + 0.005).toFixed(6);
+    const minLng = (lngF - 0.005).toFixed(6);
+    const maxLng = (lngF + 0.005).toFixed(6);
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${minLng},${minLat},${maxLng},${maxLat}&layer=mapnik&marker=${lat},${lng}`;
   }
 
   return null;
