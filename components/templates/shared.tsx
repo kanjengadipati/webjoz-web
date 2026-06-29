@@ -759,10 +759,12 @@ const TILE_STYLES: Record<string, { url: string; label: string }> = {
 
 function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle?: string | null }) {
   const ref = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (!ref.current) return;
-    let map: any, marker: any, tileLayer: any;
+    if (!ref.current || initialized.current) return;
+    initialized.current = true;
+    let map: any;
     import("leaflet").then((L) => {
       import("leaflet/dist/leaflet.css");
       if (!ref.current) return;
@@ -774,8 +776,8 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
       });
       map = L.map(ref.current, { zoomControl: false, scrollWheelZoom: false }).setView([lat, lng], 15);
       const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
-      tileLayer = L.tileLayer(info.url, { attribution: "" }).addTo(map);
-      marker = L.marker([lat, lng]).addTo(map);
+      L.tileLayer(info.url, { attribution: "" }).addTo(map);
+      L.marker([lat, lng]).addTo(map);
       setTimeout(() => map.invalidateSize(), 200);
     });
     return () => { if (map) { map.remove(); } };
