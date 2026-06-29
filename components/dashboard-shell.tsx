@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -91,7 +91,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   }
 
   const isAdmin = userRole === "superadmin" || userRole === "admin";
+  const isSuperAdmin = userRole === "superadmin";
   const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => {
+    if ("superAdminOnly" in item && item.superAdminOnly && !isSuperAdmin) return false;
     if ("adminOnly" in item && item.adminOnly && !isAdmin) return false;
     if (!item.permission) return true;
     if (isAdmin) return true;
@@ -117,6 +119,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     activity: Activity,
     megaphone: Megaphone,
     building: Building2,
+    palette: Palette,
   };
 
   return (

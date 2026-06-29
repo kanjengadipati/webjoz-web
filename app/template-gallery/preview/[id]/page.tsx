@@ -28,37 +28,49 @@ function scoreDesignToken(dt: any): { total: number; parts: { label: string; sco
   const parts: { label: string; score: number; max: number }[] = [];
   const pal = dt?.palette || {}, typo = dt?.typography || {}, layout = dt?.layout || {};
 
-  const bg = pal.background || "#FFFFFF", text = pal.text || "#000000";
-  const cr = contrastRatio(text, bg);
-  let acc = Math.min(40, Math.round((cr / 21) * 40));
-  const primary = pal.primary || "";
-  if (primary && text) { const bcr = contrastRatio(primary, text); if (bcr >= 3) acc = Math.min(40, acc + 5); }
+  const bg = pal.background || "", text = pal.text || "", primary = pal.primary || "", accent = pal.accent || "", surface = pal.surface || "";
+  const cr = bg && text ? contrastRatio(text, bg) : 0;
+
+  // ── Accessibility (40 pts) ──
+  let acc = 0;
+  if (text && bg) {
+    if (cr >= 12) acc = 40;
+    else if (cr >= 7) acc = 30 + Math.round(((cr - 7) / 5) * 10);
+    else if (cr >= 4.5) acc = 20 + Math.round(((cr - 4.5) / 2.5) * 10);
+    else acc = Math.round((cr / 4.5) * 20);
+  }
+  if (primary && text && contrastRatio(primary, text) >= 3) acc += 5;
+  if (acc > 40) acc = 40;
   parts.push({ label: "Aksesibilitas", score: acc, max: 40 });
 
+  // ── Completeness (30 pts) ──
   let complete = 0;
   for (const k of ["primary", "accent", "background", "surface", "text"]) if (pal[k]) complete++;
   for (const k of ["heading_font", "body_font", "heading_weight", "heading_size_hero"]) if (typo[k]) complete++;
   for (const k of ["section_spacing", "corner_radius"]) if (layout[k]) complete++;
   if (["compact", "normal", "relaxed"].includes(layout.section_spacing)) complete++;
   if (["sharp", "soft", "rounded"].includes(layout.corner_radius)) complete++;
-  parts.push({ label: "Kelengkapan", score: Math.min(30, Math.round(complete / 13 * 30)), max: 30 });
+  const totalFields = 5 + 4 + 2 + 2;
+  parts.push({ label: "Kelengkapan", score: Math.min(30, Math.round((complete / totalFields) * 30)), max: 30 });
 
+  // ── Palette quality (20 pts) ──
   let pq = 0;
-  if (pal.primary && pal.accent && pal.primary !== pal.accent) pq += 5;
-  if (pal.primary && pal.background && pal.primary !== pal.background) pq += 3;
-  if (pal.surface && pal.background && pal.surface !== pal.background) pq += 4;
-  if (pal.accent && pal.background && pal.accent !== pal.background) pq += 3;
-  const gray = (h: string) => { const hh = h.replace("#",""); if (hh.length<6) return true; const r=parseInt(hh[0]+hh[1],16), g=parseInt(hh[2]+hh[3],16), b=parseInt(hh[4]+hh[5],16); return Math.max(Math.abs(r-g),Math.abs(r-b),Math.abs(g-b))<30; };
-  if (primary && pal.accent && !gray(primary) && !gray(pal.accent)) pq += 3;
+  if (primary && accent && primary !== accent) pq += 5;
+  if (primary && bg && primary !== bg) pq += 3;
+  if (surface && bg && surface !== bg) pq += 4;
+  if (accent && bg && accent !== bg) pq += 3;
+  if (primary && accent) { const gray = (h: string) => { const hh = h.replace("#",""); if (hh.length<6) return true; const r=parseInt(hh[0]+hh[1],16), g=parseInt(hh[2]+hh[3],16), b=parseInt(hh[4]+hh[5],16); return Math.max(Math.abs(r-g),Math.abs(r-b),Math.abs(g-b))<30; }; if (!gray(primary) || !gray(accent)) pq += 3; }
   if (text && bg) { const bl=luminance(bg), tl=luminance(text); if ((bl>0.5&&tl<0.5)||(bl<0.5&&tl>0.5)) pq += 2; }
   parts.push({ label: "Palet", score: Math.min(20, pq), max: 20 });
 
+  // ── Typography (10 pts) ──
   let rd = 0;
-  if (typo.heading_font && !["inherit","sans-serif"].includes(typo.heading_font.toLowerCase())) rd += 3;
-  if (typo.body_font && !["inherit","serif"].includes(typo.body_font.toLowerCase())) rd += 2;
-  if (["300","400","500","600","700","800","900"].includes(typo.heading_weight)) { const w=+typo.heading_weight; rd += w>=700?3: w>=600?2:1; }
-  if (typo.heading_size_hero && !typo.heading_size_hero.startsWith("xs") && !typo.heading_size_hero.startsWith("sm")) rd += 2;
-  if (typo.heading_font && typo.body_font && typo.heading_font.toLowerCase() !== typo.body_font.toLowerCase()) rd += 1;
+  const hf = typo.heading_font || "", bf = typo.body_font || "", hw = typo.heading_weight || "", hs = typo.heading_size_hero || "";
+  if (hf && !["inherit","sans-serif"].includes(hf.toLowerCase())) rd += 3;
+  if (bf && !["inherit","serif"].includes(bf.toLowerCase())) rd += 2;
+  if (["300","400","500","600","700","800","900"].includes(hw)) { const w=+hw; rd += w>=700?3: w>=600?2:1; }
+  if (hs && !hs.startsWith("xs") && !hs.startsWith("sm")) rd += 2;
+  if (hf && bf && hf.toLowerCase() !== bf.toLowerCase()) rd += 1;
   parts.push({ label: "Tipografi", score: Math.min(10, rd), max: 10 });
 
   return { total: parts.reduce((s, p) => s + p.score, 0), parts };
@@ -71,7 +83,7 @@ export default function TemplatePreviewPage() {
   const id = params?.id as string;
   const seedId = searchParams?.get("seed_id");
   const tpl = getTemplate(id);
-  const [authToken] = useAuthToken();
+  const authToken = useAuthToken();
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -81,7 +93,7 @@ export default function TemplatePreviewPage() {
     try {
       await request(`/ai/templates/${seedId}`, { method: "DELETE" }, authToken);
       localStorage.removeItem("preview_seed_dt");
-      router.push("/template-gallery");
+      router.push("/dashboard/admin/templates");
     } catch (e) {
       if (e instanceof ApiError && e.statusCode === 403) {
         alert("Hanya superadmin yang bisa menghapus design token.");
@@ -117,7 +129,7 @@ export default function TemplatePreviewPage() {
       <main className="min-h-screen bg-zinc-950 text-white p-8">
         <h1 className="text-2xl font-bold">Template tidak ditemukan</h1>
         <p className="text-zinc-500 mt-2">ID: {id}</p>
-        <a href="/template-gallery" className="text-blue-400 underline text-sm mt-4 inline-block">Kembali ke gallery</a>
+        <a href="/dashboard/admin/templates" className="text-blue-400 underline text-sm mt-4 inline-block">Kembali ke gallery</a>
         <div className="mt-4 space-y-1">
           <p className="text-sm text-zinc-500">Template yang tersedia:</p>
           {TEMPLATE_REGISTRY.map((t) => (
@@ -138,7 +150,7 @@ export default function TemplatePreviewPage() {
   return (
     <main className="min-h-screen bg-zinc-950">
       <div className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur border-b border-zinc-800 px-4 py-2 flex items-center gap-4 overflow-x-auto">
-        <a href="/template-gallery" className="text-xs text-zinc-500 hover:text-white shrink-0">&larr; Gallery</a>
+        <a href="/dashboard/admin/templates" className="text-xs text-zinc-500 hover:text-white shrink-0">&larr; Gallery</a>
         <span className="text-xs font-mono text-zinc-600 shrink-0">|</span>
         <span className="text-sm font-bold shrink-0">{tpl.name}</span>
         <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">{tpl.id}</span>

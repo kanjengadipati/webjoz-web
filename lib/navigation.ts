@@ -5,6 +5,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "health", href: "/dashboard/admin/health", label: "System Health", permission: "tenant:manage", icon: "activity", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "announcements", href: "/dashboard/admin/announcements", label: "Announcements", permission: "tenant:manage", icon: "megaphone", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "tenants", href: "/dashboard/tenants", label: "All Tenants", permission: "tenant:manage", icon: "building", section: "Dashboard", groupStart: false, adminOnly: true },
+  { id: "templates", href: "/dashboard/admin/templates", label: "Template Gallery", permission: "tenant:manage", icon: "palette", section: "Dashboard", groupStart: false, superAdminOnly: true },
 
   { id: "sites", href: "/dashboard/sites", label: "Website Saya", permission: "site:view", icon: "globe", section: "Website Builder", groupStart: false },
   { id: "domains", href: "/dashboard/domains", label: "Pengaturan Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
