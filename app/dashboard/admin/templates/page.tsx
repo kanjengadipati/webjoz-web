@@ -36,6 +36,7 @@ import {
 interface SeedEntry {
   id: number;
   source_template_id?: string;
+  source_name?: string;
   business_type: string;
   mood: string;
   design_token: any;
@@ -173,7 +174,7 @@ export default function TemplateGalleryPage() {
     setLoading(true);
     setForbidden(false);
     try {
-      const res = await request<{ items: SeedEntry[] }>("/ai/templates?limit=100", {}, authToken);
+      const res = await request<{ items: SeedEntry[] }>("/ai/templates?limit=2000", {}, authToken);
       setSeeds(res.data.items);
     } catch (e) {
       if (e instanceof ApiError && e.statusCode === 403) {
@@ -191,6 +192,19 @@ export default function TemplateGalleryPage() {
       fetchSeeds();
     }
   }, [tab, isSuperAdmin, authToken]);
+
+  const handleBackfill = async () => {
+    if (!window.confirm("Backfill scores untuk semua template_library rows yang score=0?")) {
+      return;
+    }
+    try {
+      await request("/ai/templates/backfill-scores", { method: "POST" }, authToken);
+      pushToast("Backfill selesai — scores sudah diperbarui", "success");
+      fetchSeeds();
+    } catch (e) {
+      pushToast("Gagal backfill: " + (e as any).message, "error");
+    }
+  };
 
   const handleDeleteSeed = async (id: number) => {
     if (!window.confirm("Apakah Anda yakin ingin menghapus design token seed ini secara permanen?")) {
@@ -263,10 +277,16 @@ export default function TemplateGalleryPage() {
           </p>
         </div>
         {tab === "seeds" && (
-          <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2">
-            <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
-            Refresh Seeds
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 hover:bg-amber-500/10">
+              <Loader2 className="size-3.5" />
+              Backfill Scores
+            </Button>
+            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2">
+              <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
+              Refresh Seeds
+            </Button>
+          </div>
         )}
       </div>
 
@@ -567,12 +587,12 @@ export default function TemplateGalleryPage() {
                         <div className="flex items-start justify-between gap-2">
                           <div className="space-y-0.5 min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-bold text-base text-foreground leading-snug truncate capitalize">{seed.business_type}</h3>
+                              <h3 className="font-bold text-base text-foreground leading-snug truncate capitalize">{seed.source_name || seed.business_type}</h3>
                               <Badge variant="secondary" className="text-[10px] font-semibold bg-primary/10 text-primary border-none rounded capitalize shrink-0">
                                 {seed.mood}
                               </Badge>
                             </div>
-                            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">#{seed.id} {seed.source_template_id && <span className="ml-1">· Base: <span className="font-bold">{seed.source_template_id}</span></span>}</p>
+                            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">#{seed.id} · {seed.business_type} {seed.source_template_id && <span>· Base: <span className="font-bold">{seed.source_template_id}</span></span>}</p>
                           </div>
                           <Badge variant="outline" className={`font-mono font-bold text-[10px] border shrink-0 ${scoreColorClass}`}>
                             Score: {score}
