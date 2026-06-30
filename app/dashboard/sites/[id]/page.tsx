@@ -106,6 +106,15 @@ interface ColorPattern {
   theme_mode?: 'light' | 'dark';
 }
 
+interface IndustryPreset {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  pairing_id: string;
+  pattern_id: string;
+}
+
 const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
   {
     id: "neo-clean",
@@ -338,6 +347,89 @@ const COLOR_PATTERNS: ColorPattern[] = [
     description: "Lembut kreatif untuk beauty & lifestyle",
     palette: { primary: "#7E22CE", accent: "#A855F7", background: "#FAF5FF", surface: "#FFFFFF", text: "#2E1065" },
     theme_mode: "light",
+  },
+];
+
+const INDUSTRY_PRESETS: IndustryPreset[] = [
+  {
+    id: "resto",
+    name: "Restoran",
+    description: "Hangat alami untuk restoran, bakery & catering",
+    icon: "🍜",
+    pairing_id: "organic-warm",
+    pattern_id: "hangat",
+  },
+  {
+    id: "kafe",
+    name: "Kafe Modern",
+    description: "Serif hangat untuk kafe, coffee shop & minuman",
+    icon: "☕",
+    pairing_id: "fraunces-organic",
+    pattern_id: "mentari",
+  },
+  {
+    id: "fashion",
+    name: "Fashion",
+    description: "Berani dan stylish untuk fashion & apparel",
+    icon: "👗",
+    pairing_id: "bold-display",
+    pattern_id: "mawar",
+  },
+  {
+    id: "toko-online",
+    name: "Toko Online",
+    description: "Modern dan bersih untuk toko online & elektronik",
+    icon: "📱",
+    pairing_id: "tech-forward",
+    pattern_id: "laut",
+  },
+  {
+    id: "jasa",
+    name: "Jasa Profesional",
+    description: "Korporat elegan untuk konsultan & fotografer",
+    icon: "💼",
+    pairing_id: "neo-clean",
+    pattern_id: "profesional",
+  },
+  {
+    id: "salon",
+    name: "Salon & Kecantikan",
+    description: "Anggun kreatif untuk salon, barbershop & beauty",
+    icon: "💄",
+    pairing_id: "luxury-serif",
+    pattern_id: "lembayung",
+  },
+  {
+    id: "otomotif",
+    name: "Otomotif",
+    description: "Gelap bertenaga untuk bengkel & otomotif",
+    icon: "🔧",
+    pairing_id: "urban-street",
+    pattern_id: "modern-gelap",
+  },
+  {
+    id: "klinik",
+    name: "Klinik",
+    description: "Bersih dan ramah untuk klinik & kesehatan",
+    icon: "🏥",
+    pairing_id: "friendly-round",
+    pattern_id: "segar",
+  },
+  {
+    id: "properti",
+    name: "Properti",
+    description: "Industrial solid untuk properti & konstruksi",
+    icon: "🏢",
+    pairing_id: "sora-industrial",
+    pattern_id: "tenang-abu",
+  },
+  {
+    id: "pendidikan",
+    name: "Pendidikan",
+    description: "Elegan modern untuk kursus & pendidikan",
+    icon: "📚",
+    pairing_id: "jakarta-pro",
+    pattern_id: "laut",
   },
 ];
 
@@ -648,6 +740,193 @@ function ColorPatternPicker({
               </div>
               <p className="text-[9px] text-slate-500 leading-tight line-clamp-2">
                 {pattern.description}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function IndustryPresetPicker({
+  designToken,
+  aiDesignToken,
+  designTokenScore,
+  onApply,
+  onRestoreAi,
+}: {
+  designToken: any;
+  aiDesignToken?: any;
+  designTokenScore?: number;
+  onApply: (preset: IndustryPreset) => void;
+  onRestoreAi?: () => void;
+}) {
+  const currentHeading = designToken?.typography?.heading_font || "";
+  const currentBody = designToken?.typography?.body_font || "";
+  const currentPalette = designToken?.palette || {};
+
+  const activePreset = INDUSTRY_PRESETS.find((preset) => {
+    const pairing = TYPOGRAPHY_PAIRINGS.find((p) => p.id === preset.pairing_id);
+    const pattern = COLOR_PATTERNS.find((p) => p.id === preset.pattern_id);
+    if (!pairing || !pattern) return false;
+    return (
+      currentHeading === pairing.heading_font &&
+      currentBody === pairing.body_font &&
+      currentPalette.primary === pattern.palette.primary &&
+      currentPalette.accent === pattern.palette.accent &&
+      currentPalette.background === pattern.palette.background &&
+      currentPalette.surface === pattern.palette.surface &&
+      currentPalette.text === pattern.palette.text
+    );
+  });
+
+  const aiPalette = aiDesignToken?.palette || {};
+  const aiTypography = aiDesignToken?.typography || {};
+  const hasAiRecommendation =
+    currentPalette.primary &&
+    aiTypography.heading_font &&
+    (designTokenScore ?? 0) >= 65;
+  const isAiActive = aiDesignToken?.palette &&
+    aiDesignToken?.typography &&
+    aiDesignToken.palette.primary === currentPalette.primary &&
+    aiDesignToken.palette.accent === currentPalette.accent &&
+    aiDesignToken.palette.background === currentPalette.background &&
+    aiDesignToken.palette.surface === currentPalette.surface &&
+    aiDesignToken.palette.text === currentPalette.text &&
+    aiTypography.heading_font === currentHeading &&
+    aiTypography.body_font === currentBody;
+
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+        Paket Tampilan
+      </p>
+
+      {hasAiRecommendation && (
+        <button
+          type="button"
+          onClick={onRestoreAi}
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
+            isAiActive
+              ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
+              : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
+          }`}
+        >
+          <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
+            <span>✨</span> Rekomendasi AI
+          </p>
+          <div className="flex gap-1 mb-1.5">
+            {(["primary", "accent", "background", "surface", "text"] as const).map((key) => (
+              <div
+                key={key}
+                className="w-3.5 h-3.5 rounded-sm border border-white/20"
+                style={{ backgroundColor: aiPalette[key] }}
+                title={key}
+              />
+            ))}
+          </div>
+          <div className="space-y-0.5 pointer-events-none">
+            <p
+              style={{
+                fontFamily: `'${aiTypography.heading_font || "Inter"}', sans-serif`,
+                fontWeight: aiTypography.heading_weight ?? "700",
+                fontSize: "11px",
+                lineHeight: 1.2,
+                color: "rgba(252,211,77,0.9)",
+                margin: 0,
+              }}
+            >
+              {aiTypography.heading_font || "Heading Font"}
+            </p>
+            <p
+              style={{
+                fontFamily: `'${aiTypography.body_font || "Inter"}', sans-serif`,
+                fontSize: "9px",
+                color: "rgba(252,211,77,0.5)",
+                margin: 0,
+                lineHeight: 1.4,
+              }}
+            >
+              {aiTypography.body_font || "Body Font"}
+            </p>
+          </div>
+          <p className="text-[9px] text-amber-200/70 leading-tight mt-1">
+            Dibuat khusus berdasarkan info bisnis Anda
+          </p>
+        </button>
+      )}
+
+      {hasAiRecommendation && (
+        <p className="text-[10px] font-medium text-slate-400 text-center">
+          — atau pilih paket tampilan favorit Anda —
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        {INDUSTRY_PRESETS.map((preset) => {
+          const pairing = TYPOGRAPHY_PAIRINGS.find((p) => p.id === preset.pairing_id);
+          const pattern = COLOR_PATTERNS.find((p) => p.id === preset.pattern_id);
+          const isActive = activePreset?.id === preset.id;
+
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => onApply(preset)}
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                isActive
+                  ? "border-primary bg-primary/10 ring-1 ring-primary"
+                  : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+              }`}
+            >
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="text-sm">{preset.icon}</span>
+                <p className="text-[10px] font-bold text-slate-200 truncate">
+                  {preset.name}
+                </p>
+              </div>
+              {pattern && (
+                <div className="flex gap-1 mb-1.5">
+                  {(["primary", "accent", "background", "surface", "text"] as const).map((key) => (
+                    <div
+                      key={key}
+                      className="w-3.5 h-3.5 rounded-sm border border-white/20"
+                      style={{ backgroundColor: pattern.palette[key] }}
+                      title={key}
+                    />
+                  ))}
+                </div>
+              )}
+              {pairing && (
+                <div className="space-y-0.5 pointer-events-none mt-1">
+                  <p
+                    style={{
+                      fontFamily: `'${pairing.heading_font}', sans-serif`,
+                      fontWeight: pairing.heading_weight,
+                      fontSize: "11px",
+                      lineHeight: 1.2,
+                      color: "rgba(255,255,255,0.7)",
+                      margin: 0,
+                    }}
+                  >
+                    {pairing.heading_font}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: `'${pairing.body_font}', sans-serif`,
+                      fontSize: "9px",
+                      color: "rgba(255,255,255,0.35)",
+                      margin: 0,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {pairing.body_font}
+                  </p>
+                </div>
+              )}
+              <p className="text-[9px] text-slate-500 leading-tight line-clamp-2 mt-1">
+                {preset.description}
               </p>
             </button>
           );
@@ -1489,6 +1768,31 @@ export default function SiteEditorPage() {
     });
   };
 
+  const applyIndustryPreset = (preset: IndustryPreset) => {
+    const pairing = TYPOGRAPHY_PAIRINGS.find((p) => p.id === preset.pairing_id);
+    const pattern = COLOR_PATTERNS.find((p) => p.id === preset.pattern_id);
+    if (!pairing || !pattern) return;
+    pushGlobalUndo();
+    setDesignToken((prev: any) => {
+      const next = { ...(prev || {}) };
+      next.palette = { ...(next.palette || {}), ...pattern.palette };
+      if (pattern.theme_mode) {
+        next.theme_mode = pattern.theme_mode;
+      }
+      next.typography = {
+        ...(next.typography || {}),
+        heading_font: pairing.heading_font,
+        body_font: pairing.body_font,
+        heading_weight: pairing.heading_weight,
+        heading_size_hero: pairing.heading_size_hero,
+        heading_style: pairing.heading_style ?? "normal",
+        heading_transform: pairing.heading_transform ?? "none",
+        heading_tracking: pairing.heading_tracking ?? "normal",
+      };
+      return next;
+    });
+  };
+
   const handleColorChange = (colorKey: string, value: string) => {
     updateDesignTokenField("palette", colorKey, value);
   };
@@ -2089,6 +2393,29 @@ export default function SiteEditorPage() {
                     </div>
                   </div>
                   </div>
+
+                  <div className="border-t border-white/10 my-2" />
+
+                  {/* Paket Tampilan */}
+                  <IndustryPresetPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={applyIndustryPreset}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
+                      pushGlobalUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                        if (latestAiDesignToken.theme_mode) {
+                          next.theme_mode = latestAiDesignToken.theme_mode;
+                        }
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
+                      });
+                    }}
+                  />
 
                   <div className="border-t border-white/10 my-2" />
 

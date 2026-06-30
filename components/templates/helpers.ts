@@ -126,6 +126,7 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
 }
 
 export const headingVars: Record<string, string> = {
+  fontFamily: "var(--dt-heading-font)",
   fontStyle: "var(--dt-heading-style)",
   textTransform: "var(--dt-heading-transform)",
   letterSpacing: "var(--dt-heading-tracking)",
