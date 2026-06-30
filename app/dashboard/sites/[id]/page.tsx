@@ -38,7 +38,9 @@ const GOOGLE_FONTS_WHITELIST = [
   "Poppins", "Outfit", "Plus Jakarta Sans", "Work Sans", "DM Sans",
   "Playfair Display", "Merriweather", "Lora", "PT Serif",
   "Cinzel", "Cormorant Garamond", "Arvo",
-  "Oswald", "Bebas Neue", "Space Grotesk"
+  "Oswald", "Bebas Neue", "Space Grotesk",
+  "Fraunces", "Bricolage Grotesque", "Sora", "Urbanist",
+  "Schibsted Grotesk", "JetBrains Mono"
 ];
 
 function FontPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -205,6 +207,65 @@ const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
     heading_transform: "uppercase",
     heading_tracking: "0.02em",
   },
+  {
+    id: "fraunces-organic",
+    name: "Fraunces Organic",
+    description: "Serif hangat dan alami, cocok untuk produk organik & F&B",
+    heading_font: "Fraunces",
+    body_font: "DM Sans",
+    heading_weight: "600",
+    heading_size_hero: "3.5rem",
+  },
+  {
+    id: "bricolage-playful",
+    name: "Bricolage Playful",
+    description: "Penuh karakter dan dinamis, cocok untuk brand kreatif & anak muda",
+    heading_font: "Bricolage Grotesque",
+    body_font: "DM Sans",
+    heading_weight: "800",
+    heading_size_hero: "3rem",
+    heading_tracking: "-0.03em",
+  },
+  {
+    id: "sora-industrial",
+    name: "Sora Industrial",
+    description: "Tegas kotak dengan struktur modern, cocok untuk tech & industri",
+    heading_font: "Sora",
+    body_font: "Inter",
+    heading_weight: "800",
+    heading_size_hero: "3rem",
+    heading_tracking: "-0.03em",
+  },
+  {
+    id: "urbanist-clean",
+    name: "Urbanist Clean",
+    description: "Geometris modern yang sangat sleek, cocok untuk startup & digital",
+    heading_font: "Urbanist",
+    body_font: "Urbanist",
+    heading_weight: "700",
+    heading_size_hero: "3rem",
+    heading_tracking: "-0.03em",
+  },
+  {
+    id: "schibsted-technical",
+    name: "Schibsted Technical",
+    description: "Grotesk Skandinavia dipasangkan dengan monospace teknis",
+    heading_font: "Schibsted Grotesk",
+    body_font: "JetBrains Mono",
+    heading_weight: "700",
+    heading_size_hero: "3rem",
+    heading_tracking: "-0.03em",
+  },
+  {
+    id: "cyber-developer",
+    name: "Cyber Developer",
+    description: "Monospace mentah dan terstruktur, cocok untuk developer & SaaS",
+    heading_font: "JetBrains Mono",
+    body_font: "JetBrains Mono",
+    heading_weight: "600",
+    heading_size_hero: "2.5rem",
+    heading_tracking: "-0.03em",
+  },
 ];
 
 const COLOR_PATTERNS: ColorPattern[] = [
@@ -282,12 +343,18 @@ const COLOR_PATTERNS: ColorPattern[] = [
 
 function TypographyPairingPicker({
   designToken,
+  aiDesignToken,
+  designTokenScore,
   onApply,
   onFieldChange,
+  onRestoreAi,
 }: {
   designToken: any;
+  aiDesignToken?: any;
+  designTokenScore?: number;
   onApply: (pairing: TypographyPairing) => void;
   onFieldChange?: (field: string, subfield: string, value: string) => void;
+  onRestoreAi?: () => void;
 }) {
   const [showManual, setShowManual] = useState(false);
 
@@ -299,15 +366,73 @@ function TypographyPairingPicker({
 
   const currentHeading = designToken?.typography?.heading_font || "Inter";
   const currentBody = designToken?.typography?.body_font || "Inter";
+  const aiTypography = aiDesignToken?.typography || designToken?.typography || {};
+  const aiHeading = aiTypography.heading_font || "Inter";
+  const aiBody = aiTypography.body_font || "Inter";
   const activePairing = TYPOGRAPHY_PAIRINGS.find(
     (p) => p.heading_font === currentHeading && p.body_font === currentBody
   );
+  const hasAiRecommendation =
+    designToken?.typography?.heading_font &&
+    (designTokenScore ?? 0) >= 65;
+  const isAiActive = aiTypography.heading_font === currentHeading &&
+    aiTypography.body_font === currentBody;
 
   return (
     <div className="space-y-3">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
         Gaya Tipografi
       </p>
+
+      {hasAiRecommendation && (
+        <button
+          type="button"
+          onClick={onRestoreAi}
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
+            isAiActive
+              ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
+              : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
+          }`}
+        >
+          <p className="text-[10px] font-bold text-amber-300 mb-1 truncate flex items-center gap-1">
+            <span>✨</span> Rekomendasi AI
+          </p>
+          <div className="space-y-0.5 pointer-events-none">
+            <p
+              style={{
+                fontFamily: `'${aiHeading}', sans-serif`,
+                fontWeight: aiTypography.heading_weight ?? "700",
+                fontStyle: aiTypography.heading_style ?? "normal",
+                textTransform: (aiTypography.heading_transform ?? "none") as any,
+                letterSpacing: aiTypography.heading_tracking ?? "normal",
+                fontSize: "13px",
+                lineHeight: 1.2,
+                color: "rgba(252,211,77,0.9)",
+                margin: 0,
+              }}
+            >
+              Heading
+            </p>
+            <p
+              style={{
+                fontFamily: `'${aiBody}', sans-serif`,
+                fontSize: "10px",
+                color: "rgba(252,211,77,0.5)",
+                margin: 0,
+                lineHeight: 1.4,
+              }}
+            >
+              Teks deskripsi bisnis Anda...
+            </p>
+          </div>
+        </button>
+      )}
+
+      {hasAiRecommendation && (
+        <p className="text-[10px] font-medium text-slate-400 text-center">
+          — atau pilih pasangan font favorit Anda —
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         {TYPOGRAPHY_PAIRINGS.map((pairing) => {
@@ -420,12 +545,19 @@ function TypographyPairingPicker({
 
 function ColorPatternPicker({
   designToken,
+  aiDesignToken,
+  designTokenScore,
   onApply,
+  onRestoreAi,
 }: {
   designToken: any;
+  aiDesignToken?: any;
+  designTokenScore?: number;
   onApply: (pattern: ColorPattern) => void;
+  onRestoreAi?: () => void;
 }) {
   const currentPalette = designToken?.palette || {};
+  const aiPalette = aiDesignToken?.palette || currentPalette;
   const activePattern = COLOR_PATTERNS.find(
     (p) =>
       p.palette.primary === currentPalette.primary &&
@@ -434,12 +566,58 @@ function ColorPatternPicker({
       p.palette.surface === currentPalette.surface &&
       p.palette.text === currentPalette.text
   );
+  const hasAiRecommendation =
+    currentPalette.primary &&
+    currentPalette.background &&
+    currentPalette.text &&
+    (designTokenScore ?? 0) >= 65;
+  const isAiActive = aiDesignToken?.palette &&
+    aiDesignToken.palette.primary === currentPalette.primary &&
+    aiDesignToken.palette.accent === currentPalette.accent &&
+    aiDesignToken.palette.background === currentPalette.background &&
+    aiDesignToken.palette.surface === currentPalette.surface &&
+    aiDesignToken.palette.text === currentPalette.text;
 
   return (
     <div className="space-y-3">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
         Corak Warna
       </p>
+
+      {hasAiRecommendation && (
+        <button
+          type="button"
+          onClick={onRestoreAi}
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
+            isAiActive
+              ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
+              : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
+          }`}
+        >
+          <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
+            <span>✨</span> Rekomendasi AI
+          </p>
+          <div className="flex gap-1 mb-1.5">
+            {(["primary", "accent", "background", "surface", "text"] as const).map((key) => (
+              <div
+                key={key}
+                className="w-4 h-4 rounded-sm border border-white/20"
+                style={{ backgroundColor: aiPalette[key] }}
+                title={key}
+              />
+            ))}
+          </div>
+          <p className="text-[9px] text-amber-200/70 leading-tight">
+            Dibuat khusus berdasarkan info bisnis Anda
+          </p>
+        </button>
+      )}
+
+      {hasAiRecommendation && (
+        <p className="text-[10px] font-medium text-slate-400 text-center">
+          — atau pilih palet favorit Anda —
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         {COLOR_PATTERNS.map((pattern) => {
@@ -523,6 +701,7 @@ export default function SiteEditorPage() {
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
 
   const [globalUndo, setGlobalUndo] = useState<any[]>([]);
+  const [designTokenScore, setDesignTokenScore] = useState(0);
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
     before: any;
@@ -643,6 +822,7 @@ export default function SiteEditorPage() {
         setDesignToken(fetchedDesignToken);
         setLatestAiDesignToken(fetchedDesignToken);
       }
+      setDesignTokenScore(contentRes.data?.design_token_score ?? (fetchedDesignToken ? 100 : 0));
 
       // Save initial loaded state for comparison
       lastSavedRef.current = {
@@ -1220,6 +1400,10 @@ export default function SiteEditorPage() {
 
         // Temporarily apply the design token in preview
         setDesignToken(newDesignToken);
+        setLatestAiDesignToken(newDesignToken);
+        if (res.data.design_token_score != null) {
+          setDesignTokenScore(res.data.design_token_score);
+        }
 
         pushToast("AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.", "success");
         setAiDesignInstructions("");
@@ -1761,7 +1945,21 @@ export default function SiteEditorPage() {
 
                     <ColorPatternPicker
                       designToken={designToken}
+                      aiDesignToken={latestAiDesignToken}
+                      designTokenScore={designTokenScore}
                       onApply={applyColorPattern}
+                      onRestoreAi={() => {
+                        if (!latestAiDesignToken?.palette) return;
+                        pushGlobalUndo();
+                        setDesignToken((prev: any) => {
+                          const next = { ...(prev || {}) };
+                          next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                          if (latestAiDesignToken.theme_mode) {
+                            next.theme_mode = latestAiDesignToken.theme_mode;
+                          }
+                          return next;
+                        });
+                      }}
                     />
 
                     <div className="border-t border-white/10 my-2" />
@@ -1897,6 +2095,8 @@ export default function SiteEditorPage() {
                   {/* Tipografi */}
                     <TypographyPairingPicker
                       designToken={designToken}
+                      aiDesignToken={latestAiDesignToken}
+                      designTokenScore={designTokenScore}
                       onApply={(pairing) => {
                       applyTypographyBatch({
                         heading_font: pairing.heading_font,
@@ -1906,6 +2106,15 @@ export default function SiteEditorPage() {
                         heading_style: pairing.heading_style ?? "normal",
                         heading_transform: pairing.heading_transform ?? "none",
                         heading_tracking: pairing.heading_tracking ?? "normal",
+                      });
+                    }}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.typography) return;
+                      pushGlobalUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
                       });
                     }}
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
