@@ -76,7 +76,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                   : (
                     <>
                       <span className="text-4xl block">🌿</span>
-                      <h3 className="italic text-lg" style={{ color: sageDark, fontFamily: "Georgia, serif" }}>"{h.headline}"</h3>
+                      <h3 className="italic text-lg" style={{ color: sageDark, fontFamily: "var(--dt-heading-font)" }}>"{h.headline}"</h3>
                       <p className="text-[9px] uppercase tracking-widest font-sans" style={{ color: brownMuted }}>{header?.brand_name}</p>
                     </>
                   )}
@@ -94,7 +94,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-4">
                   {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{a.eyebrow}</span>}
-                  <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: brown, fontFamily: "Georgia, serif" }}>{a.title}</h2>
+                  <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{a.title}</h2>
                   <p className="text-sm leading-relaxed italic font-light" style={{ color: brownMuted }}>{a.body}</p>
                 </div>
                 {a.image_url && (
@@ -105,7 +105,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: border }}>
                   {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
                     <div key={i} className="text-center space-y-1">
-                      <p className="text-2xl font-bold" style={{ color: sage, fontFamily: "Georgia, serif" }}>{stat!.value}</p>
+                      <p className="text-2xl font-bold" style={{ color: sage, fontFamily: "var(--dt-heading-font)" }}>{stat!.value}</p>
                       <p className="text-[10px] font-sans" style={{ color: brownMuted }}>{stat!.label}</p>
                     </div>
                   ))}
@@ -123,7 +123,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-2">
                 {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "Georgia, serif" }}>{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm italic" style={{ color: brownMuted }}>{b.subtitle}</p>}
               </div>
               <div className="grid md:grid-cols-3 gap-6">
@@ -132,7 +132,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                     <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: sageLight }}>
                       <Sparkles className="w-5 h-5" style={{ color: sage }} />
                     </div>
-                    {item.stat && <p className="text-xl font-bold" style={{ color: sage, fontFamily: "Georgia, serif" }}>{item.stat}</p>}
+                    {item.stat && <p className="text-xl font-bold" style={{ color: sage, fontFamily: "var(--dt-heading-font)" }}>{item.stat}</p>}
                     <h3 className="text-sm font-bold font-sans" style={{ color: brown }}>{item.title}</h3>
                     <p className="text-xs leading-relaxed italic font-light" style={{ color: brownMuted }}>{item.description}</p>
                   </div>
@@ -160,7 +160,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Menu Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "Georgia, serif" }}>{menuData.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
@@ -210,7 +210,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Koleksi Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "Georgia, serif" }}>{catalogData.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{catalogData.title}</h2>
               </div>
               {catalogData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
@@ -261,7 +261,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section className="py-[var(--dt-spacing)] px-6 max-w-3xl mx-auto space-y-8" id="faq">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-medium" style={{ color: brown, fontFamily: "Georgia, serif" }}>{f.title}</h2>
+              <h2 className="text-2xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{f.title}</h2>
             </div>
             <div className="space-y-3">{f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} />)}</div>
           </section>
@@ -274,7 +274,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
           <section className="py-[var(--dt-spacing)] px-6 border-y" style={{ background: "var(--dt-primary-soft)", borderColor: border }}>
             <div className="max-w-2xl mx-auto text-center space-y-5">
               {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "Georgia, serif" }}>{c.headline}</h2>
+              <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm italic font-light" style={{ color: brownMuted }}>{c.subheadline}</p>}
               <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3 rounded-[var(--dt-radius)] text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90" style={{ background: sage, color: ctaText }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />
@@ -305,7 +305,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: cream }}
             titleClass="text-2xl font-medium"
-            titleStyle={{ color: brown, fontFamily: "Georgia, serif" }}
+            titleStyle={{ color: brown, fontFamily: "var(--dt-heading-font)" }}
             accentColor={sage}
             textClass="text-sm font-sans"
             textStyle={{ color: brownMuted }}
@@ -334,7 +334,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ ...cssVars, background: cream, color: brown, fontFamily: "Georgia, 'Playfair Display', serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: cream, color: brown, fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
           <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative border-b font-sans" style={{ background: `color-mix(in srgb, ${cream} 88%, transparent)`, borderColor: border }}>

@@ -55,10 +55,10 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                   <Award className="w-3 h-3" /> {h.eyebrow}
                 </span>
               )}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>
                 {h.headline}
               </h1>
-              <p className="text-sm md:text-base leading-relaxed max-w-xl mx-auto font-light" style={{ color: "rgba(245,230,192,0.6)", fontFamily: "sans-serif" }}>
+              <p className="text-sm md:text-base leading-relaxed max-w-xl mx-auto font-light" style={{ color: "rgba(245,230,192,0.6)",  }}>
                 {h.subheadline}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
@@ -81,13 +81,13 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-5">
                 {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: gold }}>{a.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-bold leading-snug" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{a.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold leading-snug" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{a.title}</h2>
                 <p className="text-sm leading-relaxed font-light font-sans" style={{ color: "rgba(245,230,192,0.55)" }}>{a.body}</p>
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: `${gold}20` }}>
                     {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
                       <div key={i}>
-                        <p className="text-xl font-bold" style={{ color: gold, fontFamily: "Georgia, serif" }}>{stat!.value}</p>
+                        <p className="text-xl font-bold" style={{ color: gold, fontFamily: "var(--dt-heading-font)" }}>{stat!.value}</p>
                         <p className="text-[10px] font-sans mt-1" style={{ color: "rgba(245,230,192,0.4)" }}>{stat!.label}</p>
                       </div>
                     ))}
@@ -115,7 +115,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-2">
                 {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: gold }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{b.title}</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 {b.items?.map((item, idx) => (
@@ -125,7 +125,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         <DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" />
                       </span>
                     </div>
-                    {item.stat && <p className="text-2xl font-bold" style={{ color: gold, fontFamily: "Georgia, serif" }}>{item.stat}<span className="text-sm ml-1" style={{ color: textMuted }}>{item.stat_label}</span></p>}
+                    {item.stat && <p className="text-2xl font-bold" style={{ color: gold, fontFamily: "var(--dt-heading-font)" }}>{item.stat}<span className="text-sm ml-1" style={{ color: textMuted }}>{item.stat_label}</span></p>}
                     <h3 className="text-sm font-bold font-sans" style={{ color: "#f5e6c0" }}>{item.title}</h3>
                     <p className="text-xs leading-relaxed font-light font-sans" style={{ color: "rgba(245,230,192,0.45)" }}>{item.description}</p>
                   </div>
@@ -159,7 +159,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Menu Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{m.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{m.title}</h2>
                 <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
               </div>
               {m.categories?.map((cat, ci) => (
@@ -190,10 +190,10 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
                         contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
                         headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
-                        titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
+                        titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
-                        priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.85rem", fontWeight: 700 }}
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
+                        priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.85rem", fontWeight: 700 }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -211,7 +211,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-[0.28em] font-sans block" style={{ color: gold }}>Koleksi Eksklusif</span>
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{c.title}</h2>
                 <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
               </div>
               {c.categories?.map((cat, ci) => (
@@ -243,11 +243,11 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
                         contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
                         headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
-                        titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
+                        titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
-                        priceStyle={{ color: gold, fontFamily: "Georgia, serif", fontSize: "0.9rem", fontWeight: 700 }}
-                        badgeStyle={{ color: ctaText, background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontFamily: "sans-serif", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontFamily: "sans-serif", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
+                        priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.9rem", fontWeight: 700 }}
+                        badgeStyle={{ color: ctaText, background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
                   </div>
@@ -263,7 +263,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section className="py-20 px-6 max-w-3xl mx-auto space-y-10" id="faq">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{f.title}</h2>
+              <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{f.title}</h2>
             </div>
             <div className="space-y-3">
               {f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} isDark={true} />)}
@@ -278,7 +278,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
           <section className="py-20 px-6 border-y" style={{ background: darkSurface, borderColor: `${gold}15` }}>
             <div className="max-w-2xl mx-auto text-center space-y-5">
               {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: gold }}>{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}>{c.headline}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light font-sans" style={{ color: "rgba(245,230,192,0.55)" }}>{c.subheadline}</p>}
               <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />
@@ -308,7 +308,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             wrapperClass="py-24 px-6"
             wrapperStyle={{ background: darkBg }}
             titleClass="text-2xl md:text-3xl font-bold"
-            titleStyle={{ color: "#f5e6c0", fontFamily: "Georgia, serif" }}
+            titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
             accentColor={gold}
             textClass="text-sm"
             textStyle={{ color: "rgba(245,230,192,0.6)" }}
@@ -337,7 +337,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ ...cssVars, background: darkBg, color: "#f5e6c0", fontFamily: "Georgia, serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: darkBg, color: "#f5e6c0", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <div className="py-2 text-center text-[10px] uppercase tracking-widest font-sans" style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
         {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
       </div>
