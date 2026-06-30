@@ -78,6 +78,7 @@ export interface DesignToken {
     engine?: "default" | "storytelling" | "showcase" | "minimal";
   };
   mood?: string;
+  theme_mode?: 'light' | 'dark';
 }
 
 export interface ContentSection {

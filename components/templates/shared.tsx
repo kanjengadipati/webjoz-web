@@ -319,11 +319,11 @@ interface TestimonialsSectionProps {
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
-  testimonials, headingClass = "text-slate-900", eyebrowClass = "text-primary",
+  testimonials, headingClass = "", eyebrowClass = "",
   eyebrowStyle, quoteStyle, roleStyle,
-  cardClass = "bg-white border border-slate-200", quoteClass = "text-slate-700",
-  nameClass = "text-slate-900", roleClass = "text-slate-500",
-  bgClass = "bg-slate-50 py-20 px-5 sm:px-6", cardStyle, sectionStyle,
+  cardClass = "border", quoteClass = "",
+  nameClass = "", roleClass = "",
+  bgClass = "py-20 px-5 sm:px-6", cardStyle, sectionStyle,
 }) => {
   if (!testimonials?.items?.length) return null;
   return (

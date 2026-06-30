@@ -10,8 +10,8 @@ import { request } from "@/lib/api/client";
 import {
   Save, Loader2, Sparkles,
   HelpCircle, AlertCircle,
-  Monitor, Smartphone, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send, Rocket, Copy
+  Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
+  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
 } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -350,7 +350,7 @@ export default function SiteEditorPage() {
   const [editorTab, setEditorTab] = useState<"content" | "design">("content");
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
-  const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [mobileView, setMobileView] = useState<"edit" | "preview">(
     typeof window !== "undefined" && window.innerWidth < 768 ? "preview" : "edit"
   );
@@ -373,7 +373,8 @@ export default function SiteEditorPage() {
   const designTokenRef = useRef<any>(null);
   const [latestAiDesignToken, setLatestAiDesignToken] = useState<any>(null);
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
-  const [colorUndo, setColorUndo] = useState<Record<string, string[]>>({});
+
+  const [globalUndo, setGlobalUndo] = useState<any[]>([]);
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
     before: any;
@@ -1097,55 +1098,55 @@ export default function SiteEditorPage() {
   };
 
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
-    let nextToken = { ...(designToken || {}) };
+    pushGlobalUndo();
+    setDesignToken((prev: any) => {
+      let next = { ...(prev || {}) };
 
-    // Switch to TEMPLATE_DYNAMIC and prefill defaults if we edit manual styles on static templates
-    if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
-      const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
-      nextToken = {
-        ...defaults,
-        ...nextToken,
-        palette: { ...defaults.palette, ...(nextToken.palette || {}) },
-        typography: { ...defaults.typography, ...(nextToken.typography || {}) },
-        layout: { ...defaults.layout, ...(nextToken.layout || {}) }
+      // Switch to TEMPLATE_DYNAMIC and prefill defaults if we edit manual styles on static templates
+      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+        next = {
+          ...defaults,
+          ...next,
+          palette: { ...defaults.palette, ...(next.palette || {}) },
+          typography: { ...defaults.typography, ...(next.typography || {}) },
+          layout: { ...defaults.layout, ...(next.layout || {}) }
+        };
+        setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
+      }
+
+      next[group] = {
+        ...(next[group] || {}),
+        [key]: value
       };
-      setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
-    }
 
-    nextToken[group] = {
-      ...(nextToken[group] || {}),
-      [key]: value
-    };
+      return next;
+    });
+  };
 
-    setDesignToken(nextToken);
+  const pushGlobalUndo = () => {
+    if (!designToken) return;
+    setGlobalUndo(prev => [JSON.parse(JSON.stringify(designToken)), ...prev].slice(0, 3));
+  };
+
+  const handleGlobalUndo = () => {
+    if (!globalUndo.length) return;
+    const [prev, ...rest] = globalUndo;
+    setDesignToken(prev);
+    setGlobalUndo(rest);
+  };
+
+  const applyTypographyBatch = (fields: Record<string, any>) => {
+    pushGlobalUndo();
+    setDesignToken((prev: any) => {
+      const next = { ...(prev || {}) };
+      next.typography = { ...(next.typography || {}), ...fields };
+      return next;
+    });
   };
 
   const handleColorChange = (colorKey: string, value: string) => {
-    const oldValue = designToken?.palette?.[colorKey] || "";
-    if (oldValue && oldValue !== value) {
-      setColorUndo(prev => {
-        const stack = prev[colorKey] || [];
-        return { ...prev, [colorKey]: [...stack, oldValue].slice(-3) };
-      });
-    }
     updateDesignTokenField("palette", colorKey, value);
-  };
-
-  const undoColor = (colorKey: string) => {
-    const stack = colorUndo[colorKey];
-    if (!stack || stack.length === 0) return;
-    const oldValue = stack[stack.length - 1];
-    updateDesignTokenField("palette", colorKey, oldValue);
-    setColorUndo(prev => {
-      const next = { ...prev };
-      const remaining = next[colorKey].slice(0, -1);
-      if (remaining.length === 0) {
-        delete next[colorKey];
-      } else {
-        next[colorKey] = remaining;
-      }
-      return next;
-    });
   };
 
   if (loading) {
@@ -1620,11 +1621,6 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#4F46E5"
                       />
-                      {colorUndo["primary"]?.length ? (
-                        <button type="button" onClick={() => undoColor("primary")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   </div>
 
@@ -1650,11 +1646,6 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#7C3AED"
                       />
-                      {colorUndo["accent"]?.length ? (
-                        <button type="button" onClick={() => undoColor("accent")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   </div>
 
@@ -1680,11 +1671,6 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#FAF7F2"
                       />
-                      {colorUndo["background"]?.length ? (
-                        <button type="button" onClick={() => undoColor("background")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   </div>
 
@@ -1710,11 +1696,6 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#FFFFFF"
                       />
-                      {colorUndo["surface"]?.length ? (
-                        <button type="button" onClick={() => undoColor("surface")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   </div>
 
@@ -1740,11 +1721,6 @@ export default function SiteEditorPage() {
                         className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                         placeholder="#2C2C2A"
                       />
-                      {colorUndo["text"]?.length ? (
-                        <button type="button" onClick={() => undoColor("text")} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   </div>
                   </div>
@@ -1752,16 +1728,18 @@ export default function SiteEditorPage() {
                   <div className="border-t border-white/10 my-2" />
 
                   {/* Tipografi */}
-                  <TypographyPairingPicker
-                    designToken={designToken}
-                    onApply={(pairing) => {
-                      updateDesignTokenField("typography", "heading_font", pairing.heading_font);
-                      updateDesignTokenField("typography", "body_font", pairing.body_font);
-                      updateDesignTokenField("typography", "heading_weight", pairing.heading_weight);
-                      updateDesignTokenField("typography", "heading_size_hero", pairing.heading_size_hero);
-                      updateDesignTokenField("typography", "heading_style", pairing.heading_style ?? "normal");
-                      updateDesignTokenField("typography", "heading_transform", pairing.heading_transform ?? "none");
-                      updateDesignTokenField("typography", "heading_tracking", pairing.heading_tracking ?? "normal");
+                    <TypographyPairingPicker
+                      designToken={designToken}
+                      onApply={(pairing) => {
+                      applyTypographyBatch({
+                        heading_font: pairing.heading_font,
+                        body_font: pairing.body_font,
+                        heading_weight: pairing.heading_weight,
+                        heading_size_hero: pairing.heading_size_hero,
+                        heading_style: pairing.heading_style ?? "normal",
+                        heading_transform: pairing.heading_transform ?? "none",
+                        heading_tracking: pairing.heading_tracking ?? "normal",
+                      });
                     }}
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
                   />
@@ -2085,22 +2063,72 @@ export default function SiteEditorPage() {
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+              <div className="relative group">
+                <button
+                  onClick={() => setDevice("desktop")}
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  aria-label="Preview desktop"
+                >
+                  <Monitor className="w-3.5 h-3.5" />
+                </button>
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  Desktop
+                </span>
+              </div>
+              <div className="relative group">
+                <button
+                  onClick={() => setDevice("tablet")}
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  aria-label="Preview tablet"
+                >
+                  <Tablet className="w-4 h-4" />
+                </button>
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  Tablet
+                </span>
+              </div>
+              <div className="relative group">
+                <button
+                  onClick={() => setDevice("mobile")}
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  aria-label="Preview mobile"
+                >
+                  <Smartphone className="w-3.5 h-3.5" />
+                </button>
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  Mobile
+                </span>
+              </div>
+            </div>
+
+            {/* Separator */}
+            <div className="h-5 w-px bg-white/10" />
+
+            {/* Theme toggle */}
+            <div className="relative group">
               <button
-                onClick={() => setDevice("desktop")}
-                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                onClick={() => {
+                  pushGlobalUndo();
+                  setDesignToken((prev: any) => ({
+                    ...(prev || {}),
+                    theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
+                  }));
+                }}
+                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
+                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                    : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
-                aria-label="Preview desktop"
+                aria-label="Toggle dark mode"
               >
-                <Monitor className="w-3.5 h-3.5" />
+                {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                {designToken?.theme_mode === 'dark' ? 'Light' : 'Dark'}
               </button>
-              <button
-                onClick={() => setDevice("mobile")}
-                className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
-                  }`}
-                aria-label="Preview mobile"
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-              </button>
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                {designToken?.theme_mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              </span>
             </div>
 
             {/* Completion score */}
@@ -2112,6 +2140,19 @@ export default function SiteEditorPage() {
               }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
               {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
             </span>
+
+            {/* Global undo */}
+            {globalUndo.length > 0 && (
+              <button
+                type="button"
+                onClick={handleGlobalUndo}
+                className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                title="Undo perubahan terakhir"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Undo
+              </button>
+            )}
 
             {/* Spacer */}
             <div className="flex-1" />
@@ -2364,6 +2405,37 @@ export default function SiteEditorPage() {
                 {/* Home Indicator line */}
                 <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
               </div>
+            ) : device === "tablet" ? (
+              /* Tablet: centered with some margin */
+              <div className="relative mx-auto my-6 h-[900px] w-[768px] flex-shrink-0 rounded-[24px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
+                {/* Camera notch */}
+                <div className="absolute left-1/2 top-2 z-50 h-3 w-16 -translate-x-1/2 rounded-full bg-slate-900" />
+                {/* Screen container */}
+                <div
+                  className="h-full w-full overflow-hidden rounded-[14px] bg-white relative z-10"
+                  style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
+                >
+                  <div
+                    style={{
+                      width: "150%",
+                      height: "150%",
+                      transform: "scale(0.667)",
+                      transformOrigin: "top left"
+                    }}
+                    className="overflow-y-auto h-full"
+                  >
+                    <TemplateComponent
+                      content={content}
+                      design_token={designToken ?? null}
+                      isEditorMode={true}
+                      activeSection={activeTab}
+                      onSelectSection={handlePreviewSelectSection}
+                      onRegenSection={handleAiRegenerateForSection}
+                      onSubmitLead={async () => {}}
+                    />
+                  </div>
+                </div>
+              </div>
             ) : (
               /* Desktop: full width, no padding — site fills the canvas edge-to-edge */
               <div className="w-full overflow-hidden">
@@ -2511,11 +2583,6 @@ export default function SiteEditorPage() {
                         onChange={(e) => handleColorChange(colorKey, e.target.value)}
                         onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
                         className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
-                      {colorUndo[colorKey]?.length ? (
-                        <button type="button" onClick={() => undoColor(colorKey)} className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md border border-white/10 hover:bg-white/5 transition-colors" title="Kembalikan warna">
-                          <RotateCcw className="h-3 w-3 text-slate-400" />
-                        </button>
-                      ) : null}
                     </div>
                   ))}
                   {/* Typography */}

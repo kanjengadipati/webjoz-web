@@ -16,8 +16,6 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     rounded: "20px",
   };
 
-  const bg = p?.background ?? "#F8F9FF";
-
   const isDarkColor = (hex: string) => {
     const clean = (hex || "").replace("#", "").trim();
     if (clean.length === 3) {
@@ -35,38 +33,74 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     return false;
   };
 
-  const isDarkBg = isDarkColor(bg);
-  let surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
-  if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
-    surfaceVal = isDarkBg
-      ? "color-mix(in srgb, var(--dt-bg) 92%, white)"
-      : "color-mix(in srgb, var(--dt-bg) 96%, black)";
+  const rawBg = p?.background ?? "#F8F9FF";
+  const rawText = p?.text ?? "#1e293b";
+  const isRawBgDark = isDarkColor(rawBg);
+  const themeMode = dt?.theme_mode; // undefined = auto-detect, 'light'/'dark' = forced
+
+  // Normalise: light mode → light bg/dark text, dark mode → dark bg/light text
+  let bg: string;
+  let text: string;
+  let surfaceVal: string;
+
+  if (themeMode === 'dark') {
+    bg = isRawBgDark ? rawBg : rawText;
+    text = isRawBgDark ? rawText : rawBg;
+    surfaceVal = "color-mix(in srgb, var(--dt-bg) 92%, white)";
+  } else if (themeMode === 'light') {
+    bg = isRawBgDark ? rawText : rawBg;
+    text = isRawBgDark ? rawBg : rawText;
+    surfaceVal = "color-mix(in srgb, var(--dt-bg) 96%, black)";
+  } else {
+    // Auto-detect — original behaviour
+    bg = rawBg;
+    text = rawText;
+    const isDarkBg = isDarkColor(bg);
+    surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
+    if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
+      surfaceVal = isDarkBg
+        ? "color-mix(in srgb, var(--dt-bg) 92%, white)"
+        : "color-mix(in srgb, var(--dt-bg) 96%, black)";
+    }
   }
+
+  const isDarkBg = isDarkColor(bg);
+
   const borderVal = isDarkBg
     ? "color-mix(in srgb, var(--dt-bg) 85%, white)"
     : "color-mix(in srgb, var(--dt-bg) 88%, black)";
 
   const primaryColor = p?.primary ?? "#4F46E5";
+  const accentColor = p?.accent ?? "#7C3AED";
   const isPrimaryDark = isDarkColor(primaryColor);
+  const isAccentDark = isDarkColor(accentColor);
+
+  // In dark mode, lighten primary/accent if they're too dark for dark bg
+  const lightenIfDark = (hex: string, isDark: boolean) =>
+    themeMode === 'dark' && isDark
+      ? `color-mix(in srgb, ${hex} 70%, white)`
+      : hex;
+
+  const effPrimary = lightenIfDark(primaryColor, isPrimaryDark);
+  const effAccent = lightenIfDark(accentColor, isAccentDark);
+
+  // All contrast checks use ORIGINAL colors (color-mix can't be measured in JS)
   const primaryFg = isPrimaryDark ? "#ffffff" : "#1e293b";
   const ctaText = isPrimaryDark ? "#ffffff" : "#1e293b";
-  // CTA button sits on a dark gradient background (primary→accent),
-  // so we always want a high-contrast button: white bg + dark text, or
-  // a subtle semi-transparent white for dark primaries.
   const ctaBtnBg = "#ffffff";
-  const ctaBtnText = isDarkColor(primaryColor) ? primaryColor : "#1e293b";
+  const ctaBtnText = isPrimaryDark ? primaryColor : "#1e293b";
 
   return {
-    "--dt-primary": primaryColor,
+    "--dt-primary": effPrimary,
     "--dt-primary-foreground": primaryFg,
     "--dt-cta-text": ctaText,
     "--dt-cta-btn-bg": ctaBtnBg,
     "--dt-cta-btn-text": ctaBtnText,
-    "--dt-accent": p?.accent ?? "#7C3AED",
+    "--dt-accent": effAccent,
     "--dt-bg": bg,
     "--dt-surface": surfaceVal,
     "--dt-border": borderVal,
-    "--dt-text": p?.text ?? "#1e293b",
+    "--dt-text": text,
     "--dt-text-muted": "color-mix(in srgb, var(--dt-text) 55%, transparent)",
     "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,

@@ -26,6 +26,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Inter",
             heading_weight: "700",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "centered",
@@ -34,6 +37,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "about", "menu", "benefits", "testimonials", "gallery", "cta", "faq", "contact"],
         },
         mood: "warm-earthy",
+        theme_mode: "light",
     },
     TEMPLATE_JASA02: {
         palette: {
@@ -48,6 +52,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Inter",
             heading_weight: "700",
             heading_size_hero: "3rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "centered",
@@ -56,6 +63,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "benefits", "about", "testimonials", "gallery", "cta", "faq", "contact"],
         },
         mood: "professional",
+        theme_mode: "light",
     },
     TEMPLATE_PRODUK03: {
         palette: {
@@ -70,6 +78,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "DM Sans",
             heading_weight: "700",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "centered",
@@ -78,6 +89,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "benefits", "catalog", "testimonials", "gallery", "cta", "about", "faq", "contact"],
         },
         mood: "clean-modern",
+        theme_mode: "light",
     },
     TEMPLATE_ELEGANT: {
         palette: {
@@ -92,6 +104,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Lato",
             heading_weight: "700",
             heading_size_hero: "3.5rem",
+            heading_style: "italic",
+            heading_transform: "none",
+            heading_tracking: "0.04em",
         },
         layout: {
             hero_style: "full-bleed",
@@ -100,6 +115,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"],
         },
         mood: "dark-premium",
+        theme_mode: "dark",
     },
     TEMPLATE_NATURAL: {
         palette: {
@@ -114,6 +130,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Lato",
             heading_weight: "700",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "split",
@@ -122,6 +141,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"],
         },
         mood: "warm-earthy",
+        theme_mode: "light",
     },
     TEMPLATE_COLORFUL: {
         palette: {
@@ -136,6 +156,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Outfit",
             heading_weight: "900",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "centered",
@@ -144,6 +167,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "benefits", "testimonials", "about", "cta", "faq", "contact"],
         },
         mood: "bold-vibrant",
+        theme_mode: "light",
     },
     TEMPLATE_MINIMALIST: {
         palette: {
@@ -158,6 +182,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Inter",
             heading_weight: "300",
             heading_size_hero: "3rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "minimal",
@@ -166,6 +193,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "about", "benefits", "cta", "testimonials", "faq", "contact"],
         },
         mood: "clean-modern",
+        theme_mode: "light",
     },
     TEMPLATE_BOLD: {
         palette: {
@@ -180,6 +208,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Outfit",
             heading_weight: "900",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "uppercase",
+            heading_tracking: "normal",
         },
         layout: {
             hero_style: "full-bleed",
@@ -188,6 +219,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "benefits", "testimonials", "cta", "about", "faq", "contact"],
         },
         mood: "bold-dark",
+        theme_mode: "dark",
     },
     TEMPLATE_RETRO: {
         // Mirrors the hardcoded synthwave palette in components/templates/retro.tsx.
@@ -206,6 +238,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Inter",
             heading_weight: "800",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "uppercase",
+            heading_tracking: "0.05em",
         },
         layout: {
             hero_style: "full-bleed",
@@ -214,6 +249,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "about", "testimonials", "benefits", "faq", "cta", "contact"],
         },
         mood: "retro",
+        theme_mode: "dark",
     },
     TEMPLATE_FUTURISTIC: {
         // Mirrors the hardcoded cyber palette in components/templates/futuristic.tsx.
@@ -230,6 +266,9 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             body_font: "Inter",
             heading_weight: "700",
             heading_size_hero: "3.5rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "-0.03em",
         },
         layout: {
             hero_style: "centered",
@@ -238,6 +277,7 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
             section_order: ["hero", "catalog", "benefits", "about", "testimonials", "faq", "cta", "contact"],
         },
         mood: "futuristic",
+        theme_mode: "dark",
     },
 };
 
