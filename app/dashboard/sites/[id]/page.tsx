@@ -90,6 +90,20 @@ interface TypographyPairing {
   heading_tracking?: string;
 }
 
+interface ColorPattern {
+  id: string;
+  name: string;
+  description: string;
+  palette: {
+    primary: string;
+    accent: string;
+    background: string;
+    surface: string;
+    text: string;
+  };
+  theme_mode?: 'light' | 'dark';
+}
+
 const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
   {
     id: "neo-clean",
@@ -190,6 +204,79 @@ const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
     heading_size_hero: "3.5rem",
     heading_transform: "uppercase",
     heading_tracking: "0.02em",
+  },
+];
+
+const COLOR_PATTERNS: ColorPattern[] = [
+  {
+    id: "profesional",
+    name: "Profesional",
+    description: "Biru elegan, cocok untuk jasa & korporat",
+    palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" },
+    theme_mode: "light",
+  },
+  {
+    id: "hangat",
+    name: "Hangat",
+    description: "Cokelat hangat, cocok untuk kuliner & UMKM",
+    palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" },
+    theme_mode: "light",
+  },
+  {
+    id: "malam",
+    name: "Malam Gelap",
+    description: "Gelap elegan dengan aksen emas",
+    palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" },
+    theme_mode: "dark",
+  },
+  {
+    id: "segar",
+    name: "Segar Alami",
+    description: "Hijau alami, cocok untuk gaya hidup & organik",
+    palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" },
+    theme_mode: "light",
+  },
+  {
+    id: "laut",
+    name: "Laut Tenang",
+    description: "Biru laut yang menenangkan",
+    palette: { primary: "#0369A1", accent: "#0284C7", background: "#F0F9FF", surface: "#FFFFFF", text: "#0C4A6E" },
+    theme_mode: "light",
+  },
+  {
+    id: "modern-gelap",
+    name: "Modern Gelap",
+    description: "Gelap modern dengan aksen ungu neon",
+    palette: { primary: "#8B5CF6", accent: "#6D28D9", background: "#0B0E17", surface: "#161B2B", text: "#E2E8F0" },
+    theme_mode: "dark",
+  },
+  {
+    id: "mentari",
+    name: "Mentari Pagi",
+    description: "Oranye cerah ceria untuk F&B & kreatif",
+    palette: { primary: "#EA580C", accent: "#F97316", background: "#FFF7ED", surface: "#FFFFFF", text: "#2D1B0E" },
+    theme_mode: "light",
+  },
+  {
+    id: "mawar",
+    name: "Mawar Merah",
+    description: "Merah berani untuk fashion & event",
+    palette: { primary: "#BE123C", accent: "#E11D48", background: "#FFF1F2", surface: "#FFFFFF", text: "#1F0A0C" },
+    theme_mode: "light",
+  },
+  {
+    id: "tenang-abu",
+    name: "Abu Tenang",
+    description: "Monokrom minimalis, profesional",
+    palette: { primary: "#475569", accent: "#64748B", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" },
+    theme_mode: "light",
+  },
+  {
+    id: "lembayung",
+    name: "Lembayung",
+    description: "Lembut kreatif untuk beauty & lifestyle",
+    palette: { primary: "#7E22CE", accent: "#A855F7", background: "#FAF5FF", surface: "#FFFFFF", text: "#2E1065" },
+    theme_mode: "light",
   },
 ];
 
@@ -327,6 +414,67 @@ function TypographyPairingPicker({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function ColorPatternPicker({
+  designToken,
+  onApply,
+}: {
+  designToken: any;
+  onApply: (pattern: ColorPattern) => void;
+}) {
+  const currentPalette = designToken?.palette || {};
+  const activePattern = COLOR_PATTERNS.find(
+    (p) =>
+      p.palette.primary === currentPalette.primary &&
+      p.palette.accent === currentPalette.accent &&
+      p.palette.background === currentPalette.background &&
+      p.palette.surface === currentPalette.surface &&
+      p.palette.text === currentPalette.text
+  );
+
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+        Corak Warna
+      </p>
+
+      <div className="grid grid-cols-2 gap-2">
+        {COLOR_PATTERNS.map((pattern) => {
+          const isActive = activePattern?.id === pattern.id;
+          return (
+            <button
+              key={pattern.id}
+              type="button"
+              onClick={() => onApply(pattern)}
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                isActive
+                  ? "border-primary bg-primary/10 ring-1 ring-primary"
+                  : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+              }`}
+            >
+              <p className="text-[10px] font-bold text-slate-200 mb-1.5 truncate">
+                {pattern.name}
+              </p>
+              <div className="flex gap-1 mb-1.5">
+                {(["primary", "accent", "background", "surface", "text"] as const).map((key) => (
+                  <div
+                    key={key}
+                    className="w-4 h-4 rounded-sm border border-white/20"
+                    style={{ backgroundColor: pattern.palette[key] }}
+                    title={key}
+                  />
+                ))}
+              </div>
+              <p className="text-[9px] text-slate-500 leading-tight line-clamp-2">
+                {pattern.description}
+              </p>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -1145,6 +1293,18 @@ export default function SiteEditorPage() {
     });
   };
 
+  const applyColorPattern = (pattern: ColorPattern) => {
+    pushGlobalUndo();
+    setDesignToken((prev: any) => {
+      const next = { ...(prev || {}) };
+      next.palette = { ...(next.palette || {}), ...pattern.palette };
+      if (pattern.theme_mode) {
+        next.theme_mode = pattern.theme_mode;
+      }
+      return next;
+    });
+  };
+
   const handleColorChange = (colorKey: string, value: string) => {
     updateDesignTokenField("palette", colorKey, value);
   };
@@ -1598,6 +1758,13 @@ export default function SiteEditorPage() {
                   {/* Palet Warna */}
                   <div className="space-y-3">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
+
+                    <ColorPatternPicker
+                      designToken={designToken}
+                      onApply={applyColorPattern}
+                    />
+
+                    <div className="border-t border-white/10 my-2" />
 
                     {/* Primary Color */}
                     <div className="space-y-1">
