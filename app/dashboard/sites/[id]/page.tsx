@@ -30,6 +30,7 @@ import {
   isDesignTokenEqual
 } from "./editor-utils";
 import TemplateThumbnail from "./TemplateThumbnail";
+import { loadGoogleFont } from "@/components/templates/helpers";
 import SectionForms from "./SectionForms";
 
 const GOOGLE_FONTS_WHITELIST = [
@@ -70,6 +71,260 @@ function FontPicker({ value, onChange }: { value: string; onChange: (v: string) 
               {f}
             </button>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface TypographyPairing {
+  id: string;
+  name: string;
+  description: string;
+  heading_font: string;
+  body_font: string;
+  heading_weight: string;
+  heading_size_hero: string;
+  heading_style?: string;
+  heading_transform?: string;
+  heading_tracking?: string;
+}
+
+const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
+  {
+    id: "neo-clean",
+    name: "Neo Clean",
+    description: "Jernih dan modern, cocok untuk semua jenis bisnis",
+    heading_font: "Inter",
+    body_font: "Inter",
+    heading_weight: "700",
+    heading_size_hero: "3rem",
+  },
+  {
+    id: "jakarta-pro",
+    name: "Jakarta Pro",
+    description: "Elegan korporat, premium dan mudah dibaca",
+    heading_font: "Plus Jakarta Sans",
+    body_font: "DM Sans",
+    heading_weight: "800",
+    heading_size_hero: "3rem",
+  },
+  {
+    id: "editorial-elegance",
+    name: "Editorial Elegan",
+    description: "Serif kontras tinggi, cocok untuk bisnis premium & butik",
+    heading_font: "Playfair Display",
+    body_font: "DM Sans",
+    heading_weight: "600",
+    heading_size_hero: "3.5rem",
+    heading_style: "italic",
+  },
+  {
+    id: "bold-display",
+    name: "Bold Display",
+    description: "Tegas dan berenergi, cocok untuk toko & produk",
+    heading_font: "Montserrat",
+    body_font: "Open Sans",
+    heading_weight: "800",
+    heading_size_hero: "3.5rem",
+    heading_transform: "uppercase",
+    heading_tracking: "-0.02em",
+  },
+  {
+    id: "cinematic",
+    name: "Sinematik",
+    description: "Megah dan berkarakter, cocok untuk resto & event",
+    heading_font: "Cinzel",
+    body_font: "Lato",
+    heading_weight: "700",
+    heading_size_hero: "3rem",
+    heading_transform: "uppercase",
+    heading_tracking: "0.12em",
+  },
+  {
+    id: "organic-warm",
+    name: "Organik Hangat",
+    description: "Alami dan ramah, cocok untuk kuliner & produk lokal",
+    heading_font: "Lora",
+    body_font: "Work Sans",
+    heading_weight: "600",
+    heading_size_hero: "3rem",
+  },
+  {
+    id: "tech-forward",
+    name: "Tech Modern",
+    description: "Geometris digital, cocok untuk bisnis teknologi & jasa",
+    heading_font: "Space Grotesk",
+    body_font: "Inter",
+    heading_weight: "700",
+    heading_size_hero: "3rem",
+    heading_tracking: "-0.03em",
+  },
+  {
+    id: "friendly-round",
+    name: "Ramah & Bulat",
+    description: "Hangat dan mudah didekati, cocok untuk pendidikan & klinik",
+    heading_font: "Poppins",
+    body_font: "Lato",
+    heading_weight: "700",
+    heading_size_hero: "2.5rem",
+  },
+  {
+    id: "luxury-serif",
+    name: "Mewah Klasik",
+    description: "Anggun tinggi, cocok untuk salon, hotel & jasa premium",
+    heading_font: "Cormorant Garamond",
+    body_font: "Work Sans",
+    heading_weight: "600",
+    heading_size_hero: "3.5rem",
+    heading_style: "italic",
+    heading_tracking: "0.04em",
+  },
+  {
+    id: "urban-street",
+    name: "Urban Street",
+    description: "Padat dan bertenaga, cocok untuk streetwear & otomotif",
+    heading_font: "Oswald",
+    body_font: "Open Sans",
+    heading_weight: "700",
+    heading_size_hero: "3.5rem",
+    heading_transform: "uppercase",
+    heading_tracking: "0.02em",
+  },
+];
+
+function TypographyPairingPicker({
+  designToken,
+  onApply,
+  onFieldChange,
+}: {
+  designToken: any;
+  onApply: (pairing: TypographyPairing) => void;
+  onFieldChange?: (field: string, subfield: string, value: string) => void;
+}) {
+  const [showManual, setShowManual] = useState(false);
+
+  useEffect(() => {
+    TYPOGRAPHY_PAIRINGS.forEach((p) => {
+      loadGoogleFont(p.heading_font, p.body_font);
+    });
+  }, []);
+
+  const currentHeading = designToken?.typography?.heading_font || "Inter";
+  const currentBody = designToken?.typography?.body_font || "Inter";
+  const activePairing = TYPOGRAPHY_PAIRINGS.find(
+    (p) => p.heading_font === currentHeading && p.body_font === currentBody
+  );
+
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+        Gaya Tipografi
+      </p>
+
+      <div className="grid grid-cols-2 gap-2">
+        {TYPOGRAPHY_PAIRINGS.map((pairing) => {
+          const isActive = activePairing?.id === pairing.id;
+          return (
+            <button
+              key={pairing.id}
+              type="button"
+              onClick={() => onApply(pairing)}
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                isActive
+                  ? "border-primary bg-primary/10 ring-1 ring-primary"
+                  : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+              }`}
+            >
+              <p className="text-[10px] font-bold text-slate-200 mb-1 truncate">
+                {pairing.name}
+              </p>
+              <div className="space-y-0.5 pointer-events-none">
+                <p
+                  style={{
+                    fontFamily: `'${pairing.heading_font}', sans-serif`,
+                    fontWeight: pairing.heading_weight,
+                    fontStyle: pairing.heading_style ?? "normal",
+                    textTransform: (pairing.heading_transform ?? "none") as any,
+                    letterSpacing: pairing.heading_tracking ?? "normal",
+                    fontSize: "13px",
+                    lineHeight: 1.2,
+                    color: "rgba(255,255,255,0.9)",
+                    margin: 0,
+                  }}
+                >
+                  Heading
+                </p>
+                <p
+                  style={{
+                    fontFamily: `'${pairing.body_font}', sans-serif`,
+                    fontSize: "10px",
+                    color: "rgba(255,255,255,0.45)",
+                    margin: 0,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Teks deskripsi bisnis Anda...
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setShowManual((v) => !v)}
+        className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+      >
+        <span>{showManual ? "▾" : "▸"}</span>
+        Fine-tune manual
+      </button>
+
+      {showManual && (
+        <div className="space-y-2 pl-3 border-l border-white/10">
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Heading</label>
+            <FontPicker
+              value={currentHeading}
+              onChange={(v) => onFieldChange?.("typography", "heading_font", v)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Body</label>
+            <FontPicker
+              value={currentBody}
+              onChange={(v) => onFieldChange?.("typography", "body_font", v)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ketebalan Heading</label>
+            <select
+              value={designToken?.typography?.heading_weight || "700"}
+              onChange={(e) => onFieldChange?.("typography", "heading_weight", e.target.value)}
+              className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+            >
+              <option value="400" className="bg-[#111318]">Regular (400)</option>
+              <option value="500" className="bg-[#111318]">Medium (500)</option>
+              <option value="600" className="bg-[#111318]">Semi-Bold (600)</option>
+              <option value="700" className="bg-[#111318]">Bold (700)</option>
+              <option value="800" className="bg-[#111318]">Extra-Bold (800)</option>
+            </select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ukuran Hero Title</label>
+            <select
+              value={designToken?.typography?.heading_size_hero || "3rem"}
+              onChange={(e) => onFieldChange?.("typography", "heading_size_hero", e.target.value)}
+              className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+            >
+              <option value="2rem" className="bg-[#111318]">Kecil (2rem)</option>
+              <option value="2.5rem" className="bg-[#111318]">Sedang (2.5rem)</option>
+              <option value="3rem" className="bg-[#111318]">Besar (3rem)</option>
+              <option value="3.5rem" className="bg-[#111318]">Sangat Besar (3.5rem)</option>
+              <option value="4rem" className="bg-[#111318]">Maksimal (4rem)</option>
+            </select>
+          </div>
         </div>
       )}
     </div>
@@ -1497,55 +1752,16 @@ export default function SiteEditorPage() {
                   <div className="border-t border-white/10 my-2" />
 
                   {/* Tipografi */}
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tipografi (Google Fonts)</p>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Heading</label>
-                      <FontPicker
-                        value={designToken?.typography?.heading_font || "Inter"}
-                        onChange={(v) => updateDesignTokenField("typography", "heading_font", v)}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Font Body</label>
-                      <FontPicker
-                        value={designToken?.typography?.body_font || "Inter"}
-                        onChange={(v) => updateDesignTokenField("typography", "body_font", v)}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ketebalan Heading</label>
-                      <select
-                        value={designToken?.typography?.heading_weight || "700"}
-                        onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
-                      >
-                        <option value="400" className="bg-[#111318]">Regular (400)</option>
-                        <option value="500" className="bg-[#111318]">Medium (500)</option>
-                        <option value="600" className="bg-[#111318]">Semi-Bold (600)</option>
-                        <option value="700" className="bg-[#111318]">Bold (700)</option>
-                        <option value="800" className="bg-[#111318]">Extra-Bold (800)</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Ukuran Hero Title</label>
-                      <select
-                        value={designToken?.typography?.heading_size_hero || "3rem"}
-                        onChange={(e) => updateDesignTokenField("typography", "heading_size_hero", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
-                      >
-                        <option value="2rem" className="bg-[#111318]">Kecil (2rem)</option>
-                        <option value="2.5rem" className="bg-[#111318]">Sedang (2.5rem)</option>
-                        <option value="3rem" className="bg-[#111318]">Besar (3rem)</option>
-                        <option value="3.5rem" className="bg-[#111318]">Sangat Besar (3.5rem)</option>
-                        <option value="4rem" className="bg-[#111318]">Maksimal (4rem)</option>
-                      </select>
-                    </div>
-                  </div>
+                  <TypographyPairingPicker
+                    designToken={designToken}
+                    onApply={(pairing) => {
+                      updateDesignTokenField("typography", "heading_font", pairing.heading_font);
+                      updateDesignTokenField("typography", "body_font", pairing.body_font);
+                      updateDesignTokenField("typography", "heading_weight", pairing.heading_weight);
+                      updateDesignTokenField("typography", "heading_size_hero", pairing.heading_size_hero);
+                    }}
+                    onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
+                  />
 
                   <div className="border-t border-white/10 my-2" />
 
