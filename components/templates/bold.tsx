@@ -9,7 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
   ContactSection,
 } from "./shared";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -60,7 +60,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                   <Zap className="w-3 h-3 fill-current" /> {h.eyebrow}
                 </span>
               )}
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-white">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-white" style={headingVars}>
                 {h.headline}
               </h1>
               <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light" style={{ color: textMuted }}>
@@ -92,7 +92,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-5">
                 {a.eyebrow && <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: red }}>{a.eyebrow}</span>}
-                <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight">{a.title}</h2>
+                <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight" style={headingVars}>{a.title}</h2>
                 <p className="text-sm leading-relaxed font-light" style={{ color: textMuted }}>{a.body}</p>
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-4 pt-4" style={{ borderTop: `1px solid ${border}` }}>
@@ -127,7 +127,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 {b.eyebrow && <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: red }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm font-light" style={{ color: textMuted }}>{b.subtitle}</p>}
               </div>
               <div className="grid md:grid-cols-3 gap-5">
@@ -181,7 +181,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] px-3 py-1.5" style={{ color: ctaText, background: red, border: `2px solid ${borderRed}` }}>Menu</span>
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{m.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{m.title}</h2>
                 <div className="flex items-center justify-center gap-2">
                   <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${red})` }} />
                   <span className="w-2 h-2" style={{ background: red, transform: "rotate(45deg)" }} />
@@ -229,7 +229,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] px-3 py-1.5" style={{ color: ctaText, background: red, border: `2px solid ${borderRed}` }}>Katalog</span>
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{c.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{c.title}</h2>
                 <div className="flex items-center justify-center gap-2">
                   <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${red})` }} />
                   <span className="w-2 h-2" style={{ background: red, transform: "rotate(45deg)" }} />
@@ -274,7 +274,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section id="faq" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white">{f.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{f.title}</h2>
               <div className="space-y-2">
                 {f.items?.map((item, idx) => (
                   <details key={idx} className="group" style={{ background: card, border: `2px solid ${border}` }}>
@@ -299,7 +299,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 0, transparent 50%)", backgroundSize: "12px 12px" }} />
             <div className="max-w-2xl mx-auto space-y-6 relative z-10">
               {c.eyebrow && <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: ctaText, opacity: 0.85 }}>{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight" style={{ color: ctaText }}>{c.headline}</h2>
+              <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight leading-tight" style={{ color: ctaText, ...headingVars }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light" style={{ color: ctaText, opacity: 0.85 }}>{c.subheadline}</p>}
               <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 font-black text-xs uppercase tracking-widest transition-all hover:opacity-90" style={{ background: "#fff", color: red }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />

@@ -10,7 +10,7 @@ import {
   ContactSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import type { TemplateProps } from "./types";
 
 export const TemplateKuliner: React.FC<TemplateProps> = ({
@@ -57,7 +57,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl relative z-10 space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-[var(--dt-text)] leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-[var(--dt-text)] leading-tight" style={headingVars}>
                 {hero.headline}
               </h1>
               <p className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed">
@@ -90,7 +90,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-5 sm:px-6 py-[var(--dt-spacing)] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
             <div className="space-y-6">
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
-              <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]">{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{about.title}</h2>
               <p className="text-[var(--dt-text-muted)] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
             </div>
             <div className="relative">
@@ -124,7 +124,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Keunggulan</span>
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]">{benefits.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{benefits.title}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {benefits.items?.map((item, idx) => (
@@ -148,7 +148,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-12" id="faq">
             <div className="text-center space-y-2">
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
-              <h2 className="text-3xl font-bold font-serif text-[var(--dt-text)]">{faq.title}</h2>
+              <h2 className="text-3xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{faq.title}</h2>
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -166,7 +166,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="bg-[var(--dt-surface)] border border-[var(--dt-border)] p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center space-y-6 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-gradient-to-tr from-[var(--dt-primary-soft)] to-[var(--dt-accent-soft)] opacity-40"></div>
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]">{cta.headline}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{cta.headline}</h2>
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
@@ -237,7 +237,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-10 relative">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[var(--dt-border)] bg-[var(--dt-primary-soft)] px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-[var(--dt-primary)]">Pilihan Menu</span>
-                <h2 className="text-3xl md:text-5xl font-bold font-serif text-[var(--dt-text)] max-w-3xl mx-auto leading-tight">{menuData.title}</h2>
+                <h2 className="text-3xl md:text-5xl font-bold font-serif text-[var(--dt-text)] max-w-3xl mx-auto leading-tight" style={headingVars}>{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} className="space-y-5">

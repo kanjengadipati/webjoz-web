@@ -9,7 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
   ContactSection,
 } from "./shared";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -56,7 +56,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                   <Cpu className="w-3 h-3" /> {h.eyebrow}
                 </span>
               )}
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight leading-none text-white">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight leading-none text-white" style={headingVars}>
                 {h.headline}
               </h1>
               <p className="text-sm md:text-base font-light leading-relaxed max-w-2xl mx-auto" style={{ color: textMuted }}>
@@ -88,7 +88,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-5">
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{a.eyebrow}</span>}
-                <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight">{a.title}</h2>
+                <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight" style={headingVars}>{a.title}</h2>
                 <p className="text-sm font-light leading-relaxed" style={{ color: textMuted }}>{a.body}</p>
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-4 pt-4" style={{ borderTop: `1px solid ${border}` }}>
@@ -123,7 +123,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm font-light" style={{ color: textMuted }}>{b.subtitle}</p>}
               </div>
               <div className="grid md:grid-cols-3 gap-5">
@@ -177,7 +177,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>Menu</span>
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{m.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{m.title}</h2>
                 <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
               </div>
               {m.categories?.map((cat, ci) => (
@@ -221,7 +221,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>Katalog</span>
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{c.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{c.title}</h2>
                 <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
               </div>
               {c.categories?.map((cat, ci) => (
@@ -262,7 +262,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section id="faq" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
-              <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white">{f.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{f.title}</h2>
               <div className="space-y-2">
                 {f.items?.map((item, idx) => (
                   <details key={idx} className="group" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}>
@@ -287,7 +287,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             <div className="absolute inset-0 pointer-events-none opacity-[0.02]" style={{ backgroundImage: `linear-gradient(${cyan} 1px, transparent 1px), linear-gradient(90deg, ${cyan} 1px, transparent 1px)`, backgroundSize: "30px 30px" }} />
             <div className="max-w-2xl mx-auto space-y-6 relative z-10">
               {c.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight">{c.headline}</h2>
+              <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight" style={headingVars}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light" style={{ color: textMuted }}>{c.subheadline}</p>}
               <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />

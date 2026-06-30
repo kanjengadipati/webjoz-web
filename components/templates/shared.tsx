@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useId, useState, useEffect, useRef } from "react";
+import { headingVars } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
   Sparkles, MapPin, Phone, Mail, Globe,
@@ -330,7 +331,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="text-center space-y-2">
           {testimonials.eyebrow && <span className={`text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`} style={eyebrowStyle || (eyebrowClass ? undefined : { color: "var(--dt-primary)", letterSpacing: "0.15em" })}>{testimonials.eyebrow}</span>}
-          <h2 className={`text-3xl md:text-4xl font-bold ${headingClass}`} style={headingClass ? undefined : { fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>{testimonials.title}</h2>
+          <h2 className={`text-3xl md:text-4xl font-bold ${headingClass}`} style={headingClass ? undefined : { fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)", ...headingVars }}>{testimonials.title}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.items.map((t, idx) => (
@@ -345,7 +346,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   {t.avatar_initials}
                 </div>
                 <div>
-                  <p className={`text-sm font-bold leading-tight ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" }}>{t.name}</p>
+                  <p className={`text-sm font-bold leading-tight ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{t.name}</p>
                   <p className={`text-xs ${roleClass}`} style={roleStyle || (roleClass ? undefined : { color: "var(--dt-text-muted)" })}>{t.role}</p>
                 </div>
               </div>
@@ -868,7 +869,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
       <div className={`${containerWidthClass} ${containerMarginClass} ${hasLeadForm ? "grid md:grid-cols-2 gap-10 md:gap-14" : textAlignClass}`}>
         {/* Contact info */}
         <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
-          <h2 className={titleClass} style={titleStyle}>{title}</h2>
+          <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{title}</h2>
           <div className="space-y-4">
             {infoItems.map(({ icon: Icon, text, href }) => {
               const content = (

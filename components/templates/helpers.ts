@@ -72,6 +72,9 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
     "--dt-heading-weight": ty?.heading_weight ?? "700",
     "--dt-hero-size": ty?.heading_size_hero ?? "3rem",
+    "--dt-heading-style": ty?.heading_style ?? "normal",
+    "--dt-heading-transform": ty?.heading_transform ?? "none",
+    "--dt-heading-tracking": ty?.heading_tracking ?? "normal",
     "--dt-spacing": spacingMap[la?.section_spacing ?? "normal"] ?? "5rem",
     "--dt-radius": radiusMap[la?.corner_radius ?? "soft"] ?? "8px",
     "--dt-radius-lg": la?.corner_radius === "sharp" ? "0px" : la?.corner_radius === "rounded" ? "32px" : "16px",
@@ -87,6 +90,18 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-accent-soft": "color-mix(in srgb, var(--dt-accent) 10%, var(--dt-bg))",
   };
 }
+
+export const headingVars: Record<string, string> = {
+  fontStyle: "var(--dt-heading-style)",
+  textTransform: "var(--dt-heading-transform)",
+  letterSpacing: "var(--dt-heading-tracking)",
+};
+
+export const sectionTitleStyle: Record<string, string> = {
+  ...headingVars,
+  fontWeight: "var(--dt-heading-weight)",
+  fontFamily: "var(--dt-heading-font)",
+};
 
 export function loadGoogleFont(headingFont?: string, bodyFont?: string) {
   if (typeof document === "undefined") return;

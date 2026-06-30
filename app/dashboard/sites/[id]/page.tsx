@@ -1759,6 +1759,9 @@ export default function SiteEditorPage() {
                       updateDesignTokenField("typography", "body_font", pairing.body_font);
                       updateDesignTokenField("typography", "heading_weight", pairing.heading_weight);
                       updateDesignTokenField("typography", "heading_size_hero", pairing.heading_size_hero);
+                      updateDesignTokenField("typography", "heading_style", pairing.heading_style ?? "normal");
+                      updateDesignTokenField("typography", "heading_transform", pairing.heading_transform ?? "none");
+                      updateDesignTokenField("typography", "heading_tracking", pairing.heading_tracking ?? "normal");
                     }}
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
                   />

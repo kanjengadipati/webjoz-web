@@ -10,7 +10,7 @@ import {
   ContactSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import type { TemplateProps } from "./types";
 
 export const TemplateJasa: React.FC<TemplateProps> = ({
@@ -57,7 +57,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl text-center space-y-6 relative z-10">
-              <h1 className="text-4xl md:text-6xl font-black text-[var(--dt-text)] tracking-tight leading-tight">
+              <h1 className="text-4xl md:text-6xl font-black text-[var(--dt-text)] tracking-tight leading-tight" style={headingVars}>
                 {hero.headline}
               </h1>
               <p className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed">
@@ -106,7 +106,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
             <div className="space-y-6">
               <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Profil</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight">{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{about.title}</h2>
               <p className="text-[var(--dt-text-muted)] leading-relaxed text-justify whitespace-pre-line">{about.body}</p>
             </div>
           </section>
@@ -120,7 +120,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-3">
                 <span className="font-extrabold tracking-wider uppercase text-xs" style={{ color: "var(--dt-on-dark-accent)" }}>Mengapa Kami</span>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: "var(--dt-on-dark)" }}>{benefits.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: "var(--dt-on-dark)", ...headingVars }}>{benefits.title}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {benefits.items?.map((item, idx) => (
@@ -152,7 +152,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-14">
               <div className="text-center space-y-3">
                 {catalogData.eyebrow && <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight">{catalogData.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{catalogData.title}</h2>
                 {catalogData.subtitle && <p className="text-[var(--dt-text-muted)] max-w-2xl mx-auto">{catalogData.subtitle}</p>}
                 <div className="flex items-center justify-center gap-2 pt-1">
                   <span className="w-6 h-0.5 rounded-full" style={{ background: "var(--dt-primary)" }} />
@@ -207,7 +207,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
               <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Solusi Pertanyaan</span>
-              <h2 className="text-3xl font-extrabold text-[var(--dt-text)] tracking-tight">{faq.title}</h2>
+              <h2 className="text-3xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{faq.title}</h2>
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -224,7 +224,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <section className="px-6 py-16 max-w-6xl mx-auto">
             <div className="bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center space-y-6 relative overflow-hidden shadow-lg">
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--dt-cta-text)] tracking-tight">{cta.headline}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-[var(--dt-cta-text)] tracking-tight" style={headingVars}>{cta.headline}</h2>
                 <div className="pt-4">
                   <a
                     href={cta.button_url}

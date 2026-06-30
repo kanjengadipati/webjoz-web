@@ -9,7 +9,7 @@ import {
   SeoEditorPreview, navCtaHref,
   ContactSection,
 } from "./shared";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -45,7 +45,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(h) => (
           <section className="py-[var(--dt-spacing)] px-6 md:px-12 max-w-5xl mx-auto space-y-8" style={h.background_color ? { background: h.background_color } : undefined}>
             {h.eyebrow && <span className="text-xs font-semibold tracking-widest uppercase block" style={{ color: zinc500 }}>{h.eyebrow}</span>}
-            <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900 }}>
+            <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900, ...headingVars }}>
               {h.headline}
             </h1>
             <div className="w-12 h-px" style={{ background: zinc900 }} />
@@ -76,7 +76,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
               <div className="space-y-6">
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{a.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900 }}>{a.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{a.title}</h2>
                 <p className="text-sm font-light leading-relaxed" style={{ color: zinc500 }}>{a.body}</p>
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-6 pt-4 border-t" style={{ borderColor: zinc200 }}>
@@ -104,7 +104,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-3">
                 {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900 }}>{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm font-light" style={{ color: zinc500 }}>{b.subtitle}</p>}
               </div>
               <div className="grid md:grid-cols-3 gap-0 border-l border-t" style={{ borderColor: zinc200 }}>
@@ -145,7 +145,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Menu</p>
-                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{m.title}</h2>
+                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{m.title}</h2>
                 <div className="w-12 h-px" style={{ background: zinc200 }} />
               </div>
               {m.categories?.map((cat, ci) => (
@@ -199,7 +199,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="space-y-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: zinc500 }}>Katalog</p>
-                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{c.title}</h2>
+                <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{c.title}</h2>
                 <div className="w-12 h-px" style={{ background: zinc200 }} />
               </div>
               {c.categories?.map((cat, ci) => (
@@ -254,7 +254,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section id="faq" className="py-[var(--dt-spacing)] px-6 md:px-12" style={{ background: zinc100 }}>
             <div className="max-w-3xl mx-auto space-y-8">
-              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900 }}>{f.title}</h2>
+              <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{f.title}</h2>
               <div className="divide-y" style={{ borderColor: zinc200 }}>
                 {f.items?.map((item, idx) => (
                   <details key={idx} className="py-5 group">
@@ -277,7 +277,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
           <section className="py-[var(--dt-spacing)] px-6 md:px-12" style={{ background: zinc900 }}>
             <div className="max-w-5xl mx-auto space-y-6">
               {c.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{c.eyebrow}</span>}
-              <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-tight max-w-2xl" style={{ color: "#F4F4F5" }}>{c.headline}</h2>
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-tight max-w-2xl" style={{ color: "#F4F4F5", ...headingVars }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm font-light max-w-xl" style={{ color: zinc500 }}>{c.subheadline}</p>}
               <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
                 <a href={c.button_url} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-80" style={{ background: "#F4F4F5", color: zinc900 }}>

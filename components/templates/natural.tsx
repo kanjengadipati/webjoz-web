@@ -10,7 +10,7 @@ import {
   ContactSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import type { TemplateProps } from "./types";
 
 export const TemplateNatural: React.FC<TemplateProps> = ({
@@ -55,7 +55,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                   <Leaf className="w-3 h-3" /> {h.eyebrow}
                 </span>
               )}
-              <h1 className="text-3xl md:text-5xl font-medium leading-tight" style={{ color: brown, fontFamily: "Georgia, 'Playfair Display', serif" }}>
+              <h1 className="text-3xl md:text-5xl font-medium leading-tight" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>
                 {h.headline}
               </h1>
               <p className="text-sm md:text-base leading-relaxed italic font-light" style={{ color: brownMuted }}>
@@ -94,7 +94,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-4">
                   {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{a.eyebrow}</span>}
-                  <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{a.title}</h2>
+                  <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{a.title}</h2>
                   <p className="text-sm leading-relaxed italic font-light" style={{ color: brownMuted }}>{a.body}</p>
                 </div>
                 {a.image_url && (
@@ -123,7 +123,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-2">
                 {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold font-sans block" style={{ color: sage }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{b.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{b.title}</h2>
                 {b.subtitle && <p className="text-sm italic" style={{ color: brownMuted }}>{b.subtitle}</p>}
               </div>
               <div className="grid md:grid-cols-3 gap-6">
@@ -160,7 +160,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Menu Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{menuData.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
@@ -210,7 +210,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="max-w-5xl mx-auto space-y-10">
               <div className="text-center space-y-3">
                 <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>Koleksi Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{catalogData.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{catalogData.title}</h2>
               </div>
               {catalogData.categories?.map((cat, ci) => (
                 <div key={ci} className="space-y-5">
@@ -261,7 +261,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(f) => (
           <section className="py-[var(--dt-spacing)] px-6 max-w-3xl mx-auto space-y-8" id="faq">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{f.title}</h2>
+              <h2 className="text-2xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{f.title}</h2>
             </div>
             <div className="space-y-3">{f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} />)}</div>
           </section>
@@ -274,7 +274,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
           <section className="py-[var(--dt-spacing)] px-6 border-y" style={{ background: "var(--dt-primary-soft)", borderColor: border }}>
             <div className="max-w-2xl mx-auto text-center space-y-5">
               {c.eyebrow && <span className="text-[10px] uppercase tracking-widest font-sans block" style={{ color: sage }}>{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)" }}>{c.headline}</h2>
+              <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{c.headline}</h2>
               {c.subheadline && <p className="text-sm italic font-light" style={{ color: brownMuted }}>{c.subheadline}</p>}
               <a href={c.button_url} className="inline-flex items-center gap-2 px-8 py-3 rounded-[var(--dt-radius)] text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90" style={{ background: sage, color: ctaText }}>
                 {c.button_text} <ArrowRight className="w-4 h-4" />

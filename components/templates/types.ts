@@ -65,6 +65,9 @@ export interface DesignToken {
     body_font?: string;
     heading_weight?: string;
     heading_size_hero?: string;
+    heading_style?: string;
+    heading_transform?: string;
+    heading_tracking?: string;
   };
   layout?: {
     hero_style?: "full-bleed" | "split" | "centered" | "minimal";

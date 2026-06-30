@@ -9,7 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref,
   ContactSection,
 } from "./shared";
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
 import type { TemplateProps } from "./types";
 
@@ -59,7 +59,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl text-center space-y-8 relative z-10">
-              <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-white">
+              <h1 className="text-2xl sm:text-4xl md:text-7xl font-extrabold tracking-tight leading-tight md:leading-none text-white" style={headingVars}>
                 {hero.headline}
               </h1>
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -86,7 +86,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
             <div className="space-y-6">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] font-extrabold tracking-wider uppercase text-xs">Misi Kami</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight" style={headingVars}>{about.title}</h2>
               <p className="text-slate-300 leading-relaxed sm:text-justify whitespace-pre-line">{about.body}</p>
             </div>
             <div className="relative">
@@ -124,7 +124,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-3">
                 <span className="font-extrabold tracking-wider uppercase text-xs text-[var(--dt-primary)]">Teknologi</span>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{benefits.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={headingVars}>{benefits.title}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {benefits.items?.map((item, idx) => (
@@ -148,7 +148,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
               <span className="font-extrabold tracking-wider uppercase text-xs text-[var(--dt-primary)]">Pusat Bantuan</span>
-              <h2 className="text-3xl font-extrabold tracking-tight">{faq.title}</h2>
+              <h2 className="text-3xl font-extrabold tracking-tight" style={headingVars}>{faq.title}</h2>
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -166,7 +166,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             <div className="relative bg-slate-900 border border-slate-800 p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center overflow-hidden">
               <div className="absolute top-0 right-0 w-[400px] h-[200px] rounded-full filter blur-[50px] md:blur-[100px]" style={{ background: "color-mix(in srgb, var(--dt-primary) 5%, transparent)" }}></div>
               <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">{cta.headline}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white" style={headingVars}>{cta.headline}</h2>
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
@@ -236,7 +236,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             <div className="max-w-7xl mx-auto space-y-12 relative">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em]" style={{ borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>Koleksi Produk</span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white max-w-3xl mx-auto leading-tight">{catalogData.title}</h2>
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white max-w-3xl mx-auto leading-tight" style={headingVars}>{catalogData.title}</h2>
                 <div className="flex items-center justify-center gap-2">
                   <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--dt-primary) 50%, transparent))` }} />
                   <span className="w-2 h-2 rotate-45" style={{ background: "var(--dt-primary)", boxShadow: "0 0 8px color-mix(in srgb, var(--dt-primary) 50%, transparent)" }} />
