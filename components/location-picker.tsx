@@ -315,8 +315,8 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
               disabled={!position}
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm transition-colors"
             >
-              <Check className="w-3.5 h-3.5" />
-              Simpan
+              <MapPin className="w-3.5 h-3.5" />
+              Pilih
             </button>
           </div>
         </div>
