@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateElegant: React.FC<TemplateProps> = ({
@@ -98,7 +99,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                 <div className="absolute inset-0 rounded blur-xl opacity-20" style={{ background: gold }} />
                 <div className="relative rounded border p-8 text-center space-y-3" style={{ background: darkCard, borderColor: `${gold}25` }}>
                   {a.image_url
-                    ? <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    ? <><img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
                     : <Award className="w-12 h-12 mx-auto" style={{ color: gold }} />}
                   <p className="text-sm font-bold  " style={{ color: goldLight }}>{header?.brand_name}</p>
                 </div>
@@ -181,6 +182,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         icon={Utensils}
                         className="group transition-all duration-300 hover:translate-y-[-2px]"
                         style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem", boxShadow: "0 4px 24px rgba(0,0,0,0.2)" }}
@@ -233,6 +235,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         badge={item.badge}
                         icon={ImageIcon}
                         className="group transition-all duration-300 hover:translate-y-[-2px]"

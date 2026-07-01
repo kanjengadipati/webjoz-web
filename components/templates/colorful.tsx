@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateColorful: React.FC<TemplateProps> = ({
@@ -80,7 +81,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <div className="absolute inset-0 rounded-2xl rotate-2 border-2 border-black" style={{ background: pink }} />
               <div className={`relative bg-white border-4 border-black rounded-2xl p-5 space-y-4 ${shadowBlock}`}>
                 {h.image_url
-                  ? <img src={h.image_url} alt={h.headline} className="w-full h-48 object-cover rounded-xl border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ? <><img src={h.image_url} alt={h.headline} className="w-full h-48 object-cover rounded-xl border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={h.image_credit} /></>
                   : (
                     <div className="w-full h-48 rounded-xl border-2 border-black flex items-center justify-center" style={{ background: yellow }}>
                       <span className="text-5xl">🎯</span>
@@ -121,6 +122,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                   <img src={a.image_url} alt={a.title} className="relative w-full h-60 object-cover rounded-xl border-4 border-black" style={{ boxShadow: "5px 5px 0 #000" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
               )}
+              {a.image_url && <PhotoCredit credit={a.image_credit} />}
             </div>
           </section>
         )} />
@@ -203,6 +205,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         icon={Utensils}
                         className={`group border-2 border-black p-4 flex gap-3 transition-all duration-200 ${shadowBlock} ${shadowBlockHover}`}
                         style={{ background: surface }}
@@ -262,6 +265,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         badge={item.badge}
                         icon={ImageIcon}
                         className={`group border-2 border-black p-4 space-y-2 transition-all duration-200 ${shadowBlock} ${shadowBlockHover}`}

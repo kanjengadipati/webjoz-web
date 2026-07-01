@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateMinimalist: React.FC<TemplateProps> = ({
@@ -63,6 +64,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             {h.image_url && (
               <div className="pt-8">
                 <img src={h.image_url} alt={h.headline} className="w-full max-h-[480px] object-cover" style={{ filter: "grayscale(15%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <PhotoCredit credit={h.image_credit} />
               </div>
             )}
           </section>
@@ -92,6 +94,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
               {a.image_url && (
                 <img src={a.image_url} alt={a.title} className="w-full h-72 object-cover" style={{ filter: "grayscale(10%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               )}
+              {a.image_url && <PhotoCredit credit={a.image_credit} />}
             </div>
           </section>
         )} />
@@ -164,6 +167,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         icon={Utensils}
                         layout="compact"
                         className="py-4 flex items-center justify-between gap-4 group transition-all duration-200 hover:opacity-80"
@@ -218,6 +222,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         badge={item.badge}
                         icon={ImageIcon}
                         className="p-6 space-y-3 hover:bg-zinc-50 transition-all duration-300 group"

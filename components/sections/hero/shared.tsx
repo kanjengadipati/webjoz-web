@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ArrowRight, Clock } from "lucide-react";
+import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps } from "../../templates/types";
 
 export function HeroContent({ hero: h }: { hero: TemplateProps["content"]["hero"] }) {
@@ -34,12 +35,15 @@ export function HeroDecorations({ hero: h }: { hero: TemplateProps["content"]["h
       <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "35%", height: "60%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-accent) 12%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
       {h.image_url && (
-        <img
-          src={h.image_url}
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", zIndex: 1 }}
-          alt="Hero"
-        />
+        <>
+          <img
+            src={h.image_url}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.12, mixBlendMode: "multiply", zIndex: 1 }}
+            alt="Hero"
+          />
+          <PhotoCredit credit={h.image_credit} />
+        </>
       )}
     </>
   );

@@ -14,24 +14,46 @@ import {
   type TemplateProps,
 } from "@/components/templates";
 
+export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
+  kuliner:  ["TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_ELEGANT", "TEMPLATE_RETRO", "TEMPLATE_BOLD"],
+  jasa:     ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT", "TEMPLATE_BOLD"],
+  produk:   ["TEMPLATE_PRODUK03", "TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_NATURAL", "TEMPLATE_MINIMALIST"],
+  properti: ["TEMPLATE_JASA02", "TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_NATURAL"],
+  retro:    ["TEMPLATE_RETRO", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
+  futuristic: ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
+};
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
 export function selectTemplate(businessType: string): string {
   const lower = businessType.toLowerCase();
 
+  let pool: string[] = [];
   if (lower.includes("kafe") || lower.includes("cafe") || lower.includes("kopi") ||
     lower.includes("restoran") || lower.includes("warung") || lower.includes("bakery") ||
-    lower.includes("catering") || lower.includes("kuliner")) return "TEMPLATE_KULINER01";
-  if (lower.includes("jasa") || lower.includes("konsultan") || lower.includes("agensi") ||
-    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter")) return "TEMPLATE_JASA02";
-  if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
+    lower.includes("catering") || lower.includes("kuliner")) pool = BUSINESS_TEMPLATE_POOLS.kuliner;
+  else if (lower.includes("jasa") || lower.includes("konsultan") || lower.includes("agensi") ||
+    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter")) pool = BUSINESS_TEMPLATE_POOLS.jasa;
+  else if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
     lower.includes("fashion") || lower.includes("elektronik") || lower.includes("umkm") ||
     lower.includes("online") || lower.includes("minuman") || lower.includes("bubble") ||
-    lower.includes("boba")) return "TEMPLATE_PRODUK03";
-  if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
-    lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) return "TEMPLATE_JASA02";
-  if (lower.includes("retro") || lower.includes("vintage") || lower.includes("klasik")) return "TEMPLATE_RETRO";
-  if (lower.includes("futuristik") || lower.includes("tech") || lower.includes("teknologi") ||
-    lower.includes("cyber") || lower.includes("modern")) return "TEMPLATE_FUTURISTIC";
+    lower.includes("boba")) pool = BUSINESS_TEMPLATE_POOLS.produk;
+  else if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
+    lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) pool = BUSINESS_TEMPLATE_POOLS.properti;
+  else if (lower.includes("retro") || lower.includes("vintage") || lower.includes("klasik")) pool = BUSINESS_TEMPLATE_POOLS.retro;
+  else if (lower.includes("futuristik") || lower.includes("tech") || lower.includes("teknologi") ||
+    lower.includes("cyber") || lower.includes("modern")) pool = BUSINESS_TEMPLATE_POOLS.futuristic;
 
+  if (pool.length > 0) {
+    return pool[hashString(businessType) % pool.length];
+  }
   return "TEMPLATE_DYNAMIC";
 }
 
@@ -114,14 +136,14 @@ export function getStageNumber(chatStage: string): number {
 }
 
 export const MOOD_TEMPLATE_POOLS: Record<string, string[]> = {
-  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
-  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01"],
-  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_PRODUK03", "TEMPLATE_KULINER01"],
-  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_DYNAMIC", "TEMPLATE_JASA02"],
-  "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
-  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC"],
-  "retro":       ["TEMPLATE_RETRO", "TEMPLATE_DYNAMIC", "TEMPLATE_BOLD"],
-  "futuristic":  ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST"],
+  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_NATURAL"],
+  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_ELEGANT"],
+  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_PRODUK03", "TEMPLATE_BOLD"],
+  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_DYNAMIC", "TEMPLATE_FUTURISTIC", "TEMPLATE_JASA02"],
+  "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT", "TEMPLATE_FUTURISTIC"],
+  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT"],
+  "retro":       ["TEMPLATE_RETRO", "TEMPLATE_DYNAMIC", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
+  "futuristic":  ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
 };
 
 export function getTemplatePool(mood: string): string[] {

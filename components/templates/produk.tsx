@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateProduk: React.FC<TemplateProps> = ({
@@ -76,6 +77,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                 </a>
               </div>
             </div>
+            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
           </section>
         )} />
       </MemoPreviewSectionWrapper>
@@ -104,12 +106,15 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                   </div>
                 </div>
                 {about.image_url && (
-                  <img
-                    src={about.image_url}
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    className="w-full h-full object-cover absolute inset-0 z-10"
-                    alt="About"
-                  />
+                  <>
+                    <img
+                      src={about.image_url}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      className="w-full h-full object-cover absolute inset-0 z-10"
+                      alt="About"
+                    />
+                    <PhotoCredit credit={about.image_credit} />
+                  </>
                 )}
               </div>
             </div>
@@ -264,6 +269,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                           itemDescription={item.description}
                           category={cat.name}
                           image_url={item.image_url}
+                          image_credit={item.image_credit}
                           badge={item.badge}
                           icon={ImageIcon}
                           className="group rounded-[var(--dt-radius-lg)] overflow-hidden transition-all duration-300 hover:shadow-xl"

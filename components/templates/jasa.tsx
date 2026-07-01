@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateJasa: React.FC<TemplateProps> = ({
@@ -74,6 +75,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 </a>
               </div>
             </div>
+            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
           </section>
         )} />
       </MemoPreviewSectionWrapper>
@@ -95,12 +97,15 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                   </div>
                 </div>
                 {about.image_url && (
-                  <img
-                    src={about.image_url}
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    className="w-full h-full object-cover absolute inset-0 z-10"
-                    alt="About"
-                  />
+                  <>
+                    <img
+                      src={about.image_url}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      className="w-full h-full object-cover absolute inset-0 z-10"
+                      alt="About"
+                    />
+                    <PhotoCredit credit={about.image_credit} />
+                  </>
                 )}
               </div>
             </div>
@@ -177,6 +182,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         badge={item.badge}
                         icon={Sparkles}
                         className="group bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] rounded-[var(--dt-radius-lg)] p-5 space-y-4 shadow-sm hover:border-[var(--dt-primary)] hover:shadow-md transition-all"

@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateBold: React.FC<TemplateProps> = ({
@@ -80,6 +81,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                 <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: `color-mix(in srgb, ${red} 70%, white)` }}>{h.badge_text}</p>
               )}
             </div>
+            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
           </section>
         )} />
       </MemoPreviewSectionWrapper>
@@ -108,7 +110,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
               <div className="relative">
                 <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: red }} />
                 {a.image_url
-                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `2px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ? <><img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `2px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
                   : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `2px solid ${border}` }}>
                       <Flame className="w-16 h-16 opacity-20" style={{ color: red }} />
                     </div>
@@ -199,7 +201,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                     {cat.items?.map((item, ii) => (
                       <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ? <><img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
                           : <div className="w-16 h-16 flex-shrink-0 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-6 h-6" style={{ color: `${red}50` }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex justify-between gap-2 items-start">
@@ -248,7 +250,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                       <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
                         {item.badge && <span className="inline-block text-[9px] font-black uppercase tracking-wider px-2 py-0.5" style={{ color: ctaText, background: red }}>{item.badge}</span>}
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ? <><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
                           : <div className="w-full h-36 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-10 h-10" style={{ color: `${red}40` }} /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-[var(--dt-accent)] transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}

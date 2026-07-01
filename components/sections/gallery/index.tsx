@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryItem, DesignToken, GalleryLayout } from "@/components/templates/types";
+import PhotoCredit from "../PhotoCredit";
 
 interface GallerySectionProps {
   gallery?: {
@@ -93,6 +94,7 @@ function Lightbox({ items, index, onClose }: { items: GalleryItem[]; index: numb
         {items.length > 1 && (
           <p className="mt-2 text-white/50 text-xs">{current + 1} / {items.length}</p>
         )}
+        <PhotoCredit credit={item.image_credit} className="text-xs text-white/50 mt-2" />
       </div>
     </div>
   );
@@ -162,6 +164,11 @@ function Carousel({
             {item.caption && (
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
                 <p className="text-white text-sm font-medium">{item.caption}</p>
+              </div>
+            )}
+            {item.image_credit?.name && (
+              <div className="absolute bottom-1 right-2 z-10">
+                <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
               </div>
             )}
           </button>
@@ -235,6 +242,11 @@ function Grid({ items, radius, setLightboxIndex }: {
               <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
             </div>
           )}
+          {item.image_credit?.name && (
+            <div className="absolute bottom-1 right-2 z-10">
+              <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
+            </div>
+          )}
         </button>
       ))}
     </div>
@@ -271,6 +283,11 @@ function Masonry({ items, radius, setLightboxIndex }: {
           {item.caption && (
             <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
+            </div>
+          )}
+          {item.image_credit?.name && (
+            <div className="absolute bottom-1 right-2 z-10">
+              <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
             </div>
           )}
         </button>

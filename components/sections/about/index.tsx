@@ -2,6 +2,7 @@
 import React from "react";
 import { Award } from "lucide-react";
 import { DynamicIcon } from "../../templates/shared";
+import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps } from "../../templates/types";
 
 export default function AboutSectionInner({ about: a }: { about: TemplateProps["content"]["about"] }) {
@@ -26,12 +27,15 @@ export default function AboutSectionInner({ about: a }: { about: TemplateProps["
             </div>
           </div>
           {a.image_url && (
-            <img
-              src={a.image_url}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }}
-              alt="About"
-            />
+            <>
+              <img
+                src={a.image_url}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }}
+                alt="About"
+              />
+              <PhotoCredit credit={a.image_credit} />
+            </>
           )}
         </div>
       </div>

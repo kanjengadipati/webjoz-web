@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateRetro: React.FC<TemplateProps> = ({
@@ -77,6 +78,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                 <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: cyan }}>{h.badge_text}</p>
               )}
             </div>
+            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
           </section>
         )} />
       </MemoPreviewSectionWrapper>
@@ -105,7 +107,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
               <div className="relative">
                 <div className="absolute -inset-2 blur-2xl opacity-20" style={{ background: `linear-gradient(135deg, ${pink}, ${cyan})` }} />
                 {a.image_url
-                  ? <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-[var(--dt-radius)]" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ? <><img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-[var(--dt-radius)]" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
                   : <div className="relative w-full h-72 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: card, border: `1px solid ${border}` }}>
                       <Music className="w-16 h-16 opacity-20" style={{ color: pink }} />
                     </div>
@@ -196,7 +198,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                     {cat.items?.map((item, ii) => (
                       <div key={ii} className="flex gap-4 p-4 rounded-[var(--dt-radius)] transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-[var(--dt-radius)] flex-shrink-0 ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ? <><img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-[var(--dt-radius)] flex-shrink-0 ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
                           : <div className="w-16 h-16 rounded-[var(--dt-radius)] flex-shrink-0 flex items-center justify-center ring-1 ring-white/10" style={{ background: `${pink}10` }}><Music className="w-6 h-6" style={{ color: pink }} /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex justify-between gap-2 items-start">
@@ -245,7 +247,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                       <div key={ii} className="space-y-3 p-4 rounded-[var(--dt-radius)] transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
                         {item.badge && <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.badge}</span>}
                         {item.image_url
-                          ? <img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-[var(--dt-radius)] ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                          ? <><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-[var(--dt-radius)] ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
                           : <div className="w-full h-36 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: `${pink}10` }}><Music className="w-10 h-10" style={{ color: `${pink}40` }} /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}

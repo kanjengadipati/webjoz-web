@@ -19,11 +19,17 @@ export interface FaqItem {
   answer: string;
 }
 
+export interface ImageCredit {
+  name: string;
+  url: string;
+}
+
 export interface MenuItem {
   name: string;
   description?: string;
   price?: string;
   image_url?: string | null;
+  image_credit?: ImageCredit | null;
 }
 
 export interface MenuCategory {
@@ -37,6 +43,7 @@ export interface CatalogItem {
   price?: string;
   badge?: string | null;
   image_url?: string | null;
+  image_credit?: ImageCredit | null;
 }
 
 export interface CatalogCategory {
@@ -48,6 +55,7 @@ export interface GalleryItem {
   image_url: string;
   caption?: string;
   alt_text?: string;
+  image_credit?: ImageCredit | null;
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
@@ -103,6 +111,7 @@ export interface TemplateProps {
       cta_text: string;
       cta_url: string;
       image_url?: string;
+      image_credit?: ImageCredit | null;
       eyebrow?: string;
       cta_secondary_text?: string;
       badge_text?: string;
@@ -114,6 +123,7 @@ export interface TemplateProps {
       title: string;
       body: string;
       image_url?: string | null;
+      image_credit?: ImageCredit | null;
       icon?: string;
       eyebrow?: string;
       highlight_stat_1?: { value: string; label: string };

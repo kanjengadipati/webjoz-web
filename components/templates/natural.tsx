@@ -11,6 +11,7 @@ import {
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
+import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
 export const TemplateNatural: React.FC<TemplateProps> = ({
@@ -72,7 +73,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               <div className="absolute inset-0 rounded-[var(--dt-radius-lg)] rotate-1" style={{ background: sageLight }} />
               <div className="relative rounded-[var(--dt-radius-lg)] p-6 text-center space-y-4 border shadow" style={{ background: surface, borderColor: border }}>
                 {h.image_url
-                  ? <img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ? <><img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={h.image_credit} /></>
                   : (
                     <>
                       <span className="text-4xl block">🌿</span>
@@ -100,6 +101,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                 {a.image_url && (
                   <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)] border" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 )}
+                {a.image_url && <PhotoCredit credit={a.image_credit} />}
               </div>
               {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: border }}>
@@ -175,6 +177,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         icon={Utensils}
                         className="rounded-[var(--dt-radius-lg)] border overflow-hidden flex flex-col transition-all hover:shadow-md"
                         style={{ background: surface, borderColor: border }}
@@ -225,6 +228,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}
+                        image_credit={item.image_credit}
                         badge={item.badge}
                         icon={ImageIcon}
                         className="rounded-[var(--dt-radius-lg)] border overflow-hidden flex flex-col transition-all hover:shadow-md"

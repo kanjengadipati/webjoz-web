@@ -9,7 +9,8 @@ import {
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 
-import type { TestimonialItem, FaqItem } from "./types";
+import type { TestimonialItem, FaqItem, ImageCredit } from "./types";
+import PhotoCredit from "../sections/PhotoCredit";
 
 // ─── WA Lead Modal ────────────────────────────────────────────────────────────
 
@@ -367,6 +368,7 @@ interface MenuCatalogCardProps {
   itemDescription?: string | null;
   category: string;
   image_url?: string | null;
+  image_credit?: ImageCredit | null;
   badge?: string | null;
   icon: React.ElementType;
   layout?: "grid" | "compact";
@@ -395,7 +397,7 @@ interface MenuCatalogCardProps {
 }
 
 function MenuCatalogCard({
-  itemId, itemName, itemPrice, itemDescription, category, image_url, badge, icon,
+  itemId, itemName, itemPrice, itemDescription, category, image_url, image_credit, badge, icon,
   layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
@@ -416,6 +418,7 @@ function MenuCatalogCard({
         onClick={() => setLightboxOpen(true)}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
+      <PhotoCredit credit={image_credit} />
       {lightboxOpen && (
         <ImageLightbox src={image_url} alt={itemName} onClose={() => setLightboxOpen(false)} />
       )}
