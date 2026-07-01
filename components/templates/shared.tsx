@@ -796,7 +796,7 @@ function toEmbedUrl(url: string): string | null {
 
 const TILE_STYLES: Record<string, { url: string; label: string }> = {
   default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
-  cyclosm: { url: "https://{s}.tile.cyclosm.org/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
+  cyclosm: { url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
   light:   { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
   dark:    { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
   esri:    { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", label: "Esri Street" },

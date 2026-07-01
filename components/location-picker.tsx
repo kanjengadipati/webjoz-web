@@ -27,7 +27,7 @@ const parseUrlCoords = (url?: string | null) => {
 
 const TILE_STYLES: Record<string, { url: string; label: string }> = {
   default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
-  cyclosm: { url: "https://{s}.tile.cyclosm.org/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
+  cyclosm: { url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
   light:   { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
   dark:    { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
   esri:    { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", label: "Esri Street" },
@@ -299,13 +299,13 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80 shrink-0">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80 shrink-0 gap-4">
+          <div className="flex items-center gap-1 overflow-x-auto min-w-0 scrollbar-none py-0.5">
             {(Object.keys(TILE_STYLES) as Array<keyof typeof TILE_STYLES>).map((key) => (
               <button
                 key={key}
                 onClick={() => setTileStyle(key)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors shrink-0 ${
                   tileStyle === key
                     ? "bg-emerald-600 text-white shadow-sm"
                     : "text-gray-400 hover:text-gray-600 hover:bg-gray-200"
@@ -315,7 +315,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button onClick={onClose} className="px-4 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors">
               Batal
             </button>
