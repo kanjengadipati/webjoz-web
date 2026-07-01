@@ -309,7 +309,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
-    <div className="bg-slate-950 text-slate-100 font-sans overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)" }}>
+    <div className="bg-slate-950 text-slate-100 overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
           <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">

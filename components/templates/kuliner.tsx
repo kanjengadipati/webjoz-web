@@ -57,7 +57,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               />
             )}
             <div className="max-w-4xl relative z-10 space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-serif text-[var(--dt-text)] leading-tight" style={headingVars}>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold  text-[var(--dt-text)] leading-tight" style={headingVars}>
                 {hero.headline}
               </h1>
               <p className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed">
@@ -90,7 +90,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-5 sm:px-6 py-[var(--dt-spacing)] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
             <div className="space-y-6">
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
-              <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{about.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{about.title}</h2>
               <p className="text-[var(--dt-text-muted)] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
             </div>
             <div className="relative">
@@ -99,7 +99,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
                   <div className="space-y-2">
                     <DynamicIcon name={about.icon} defaultIcon={Utensils} className="w-12 h-12 text-[var(--dt-primary)] mx-auto" />
-                    <p className="font-serif italic text-[var(--dt-text)] font-semibold text-lg">{header?.brand_name || "Bisnis Kami"}</p>
+                    <p className=" italic text-[var(--dt-text)] font-semibold text-lg">{header?.brand_name || "Bisnis Kami"}</p>
                     <p className="text-[var(--dt-text-muted)] text-sm max-w-xs">{about.title}</p>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-12">
               <div className="text-center space-y-3">
                 <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Keunggulan</span>
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{benefits.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{benefits.title}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {benefits.items?.map((item, idx) => (
@@ -148,7 +148,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-12" id="faq">
             <div className="text-center space-y-2">
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
-              <h2 className="text-3xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{faq.title}</h2>
+              <h2 className="text-3xl font-bold  text-[var(--dt-text)]" style={headingVars}>{faq.title}</h2>
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -166,7 +166,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="bg-[var(--dt-surface)] border border-[var(--dt-border)] p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center space-y-6 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-gradient-to-tr from-[var(--dt-primary-soft)] to-[var(--dt-accent-soft)] opacity-40"></div>
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold font-serif text-[var(--dt-text)]" style={headingVars}>{cta.headline}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{cta.headline}</h2>
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
@@ -202,12 +202,12 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             leadError={data.leadError}
             wrapperClass="px-6 py-[var(--dt-spacing)] border-t border-[var(--dt-border)]"
             wrapperStyle={{ background: "var(--dt-primary-soft)" }}
-            titleClass="text-3xl font-bold font-serif text-[var(--dt-text)]"
+            titleClass="text-3xl font-bold  text-[var(--dt-text)]"
             accentColor={dt?.palette?.primary ?? "#b45309"}
             textClass="text-[var(--dt-text-muted)]"
             mapsLinkClass="text-[var(--dt-primary)] underline hover:text-[var(--dt-text)] font-medium"
             leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
-            leadTitleClass="text-lg font-bold font-serif text-[var(--dt-text)]"
+            leadTitleClass="text-lg font-bold  text-[var(--dt-text)]"
             leadTitleText="Hubungi Kami / Reservasi"
             leadFormBtnClass="bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] shadow-sm hover:shadow"
             leadFormInputClass="w-full px-4 py-2.5 bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm transition-all"
@@ -219,7 +219,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass="text-[var(--dt-text)] font-serif"
+          headingClass="text-[var(--dt-text)] "
           eyebrowClass="text-[var(--dt-primary)]"
           cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)]"
           quoteClass="text-[var(--dt-text-muted)]"
@@ -237,13 +237,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-10 relative">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[var(--dt-border)] bg-[var(--dt-primary-soft)] px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-[var(--dt-primary)]">Pilihan Menu</span>
-                <h2 className="text-3xl md:text-5xl font-bold font-serif text-[var(--dt-text)] max-w-3xl mx-auto leading-tight" style={headingVars}>{menuData.title}</h2>
+                <h2 className="text-3xl md:text-5xl font-bold  text-[var(--dt-text)] max-w-3xl mx-auto leading-tight" style={headingVars}>{menuData.title}</h2>
               </div>
               {menuData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} className="space-y-5">
                   <div className="flex items-center gap-3">
                     <span className="h-px flex-1 bg-[var(--dt-border)]" />
-                    <h3 className="px-4 py-2 rounded-full bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] text-[var(--dt-text)] text-sm font-bold font-serif whitespace-nowrap">{cat.name}</h3>
+                    <h3 className="px-4 py-2 rounded-full bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] text-[var(--dt-text)] text-sm font-bold  whitespace-nowrap">{cat.name}</h3>
                     <span className="h-px flex-1 bg-[var(--dt-border)]" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -265,7 +265,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                           placeholderIconClassName="w-12 h-12 text-[var(--dt-primary-soft-strong)]"
                           contentClassName="p-5 space-y-3 flex flex-col flex-1"
                           headerClassName="flex items-start justify-between gap-3"
-                          titleClassName="font-serif font-bold text-[var(--dt-text)] text-base leading-tight"
+                          titleClassName=" font-bold text-[var(--dt-text)] text-base leading-tight"
                           descriptionClassName="text-[var(--dt-text-muted)] text-sm leading-relaxed flex-1"
                           priceClassName="text-xs font-bold text-[var(--dt-primary)] bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
                           buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-[var(--dt-radius)] text-xs font-bold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-1"
@@ -296,7 +296,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   return (
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"}>
     <div
-      className="font-sans selection:bg-[var(--dt-primary-soft-strong)] selection:text-[var(--dt-text)] overflow-x-hidden min-h-screen"
+      className="selection:bg-[var(--dt-primary-soft-strong)] selection:text-[var(--dt-text)] overflow-x-hidden min-h-screen"
       style={{ ...cssVars, background: "var(--dt-bg)", color: "var(--dt-text)", fontFamily: "var(--dt-body-font)" }}
     >
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
@@ -305,7 +305,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             className="sticky top-0 z-50 backdrop-blur-md border-b px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative"
             style={{ background: "color-mix(in srgb, var(--dt-bg) 80%, transparent)", borderColor: "var(--dt-border)" }}
           >
-            <span className="min-w-0 text-lg sm:text-xl font-bold font-serif text-[var(--dt-text)] tracking-wide flex items-center gap-2">
+            <span className="min-w-0 text-lg sm:text-xl font-bold  text-[var(--dt-text)] tracking-wide flex items-center gap-2">
               <LogoImage
                 url={headerData.logo_url}
                 icon={headerData.icon}
