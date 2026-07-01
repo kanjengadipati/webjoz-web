@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { MapPin, Crosshair, Loader2, X, Check } from "lucide-react";
+import "leaflet/dist/leaflet.css";
 
 interface LocationPickerProps {
   open: boolean;
@@ -12,6 +13,17 @@ interface LocationPickerProps {
 
 const DEFAULT_LAT = -6.2088;
 const DEFAULT_LNG = 106.8456;
+
+// Helper to parse coordinates from Google Maps URL
+const parseUrlCoords = (url?: string | null) => {
+  if (!url) return null;
+  const m = url.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (!m) return null;
+  const lat = parseFloat(m[1]);
+  const lng = parseFloat(m[2]);
+  if (isNaN(lat) || isNaN(lng)) return null;
+  return { lat, lng };
+};
 
 const TILE_STYLES: Record<string, { url: string; label: string }> = {
   default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
@@ -31,7 +43,9 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const [searchResults, setSearchResults] = useState<Array<{ lat: string; lon: string; display_name: string }>>([]);
   const [searching, setSearching] = useState(false);
   const [locating, setLocating] = useState(false);
-  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [position, setPosition] = useState<{ lat: number; lng: number }>(() => {
+    return parseUrlCoords(currentUrl) ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
+  });
   const [detectedCoords, setDetectedCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [detectingGeo, setDetectingGeo] = useState(false);
   const [tileStyle, setTileStyle] = useState("default");
@@ -56,8 +70,6 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
     if (!open) return;
 
     import("leaflet").then((L) => {
-      import("leaflet/dist/leaflet.css");
-
       if (!mapRef.current || mapInstanceRef.current) return;
 
       // Fix default marker icon
@@ -68,16 +80,9 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
       });
 
-      const fromUrl = (idx: number): number | null => {
-        if (!currentUrl) return null;
-        const m = currentUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-        if (!m) return null;
-        const v = parseFloat(m[idx]);
-        return isNaN(v) ? null : v;
-      };
-
-      const initLat = detectedCoords?.lat ?? fromUrl(1) ?? DEFAULT_LAT;
-      const initLng = detectedCoords?.lng ?? fromUrl(2) ?? DEFAULT_LNG;
+      const urlCoords = parseUrlCoords(currentUrl);
+      const initLat = detectedCoords?.lat ?? urlCoords?.lat ?? DEFAULT_LAT;
+      const initLng = detectedCoords?.lng ?? urlCoords?.lng ?? DEFAULT_LNG;
 
       const map = L.map(mapRef.current, {
         zoomControl: false,
