@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -121,37 +121,50 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section className="py-[var(--dt-spacing)] px-6" id="benefits" style={{ background: cream }}>
-            <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center space-y-2">
-                {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold   block" style={{ color: sage }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{b.title}</h2>
-                {b.subtitle && <p className="text-sm italic" style={{ color: brownMuted }}>{b.subtitle}</p>}
-              </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 rounded-[var(--dt-radius-lg)] border space-y-3 transition-all hover:shadow-md" style={{ background: surface, borderColor: border }}>
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: sageLight }}>
-                      <Sparkles className="w-5 h-5" style={{ color: sage }} />
-                    </div>
-                    {item.stat && <p className="text-xl font-bold" style={{ color: sage, fontFamily: "var(--dt-heading-font)" }}>{item.stat}</p>}
-                    <h3 className="text-sm font-bold  " style={{ color: brown }}>{item.title}</h3>
-                    <p className="text-xs leading-relaxed italic font-light" style={{ color: brownMuted }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={b}
+            wrapperClass="py-[var(--dt-spacing)] px-6"
+            wrapperStyle={{ background: cream }}
+            eyebrowClass="text-[10px] uppercase tracking-widest font-bold block"
+            eyebrowStyle={{ color: sage }}
+            titleClass="text-2xl md:text-3xl font-medium"
+            titleStyle={{ color: brown, fontFamily: "var(--dt-heading-font)" }}
+            subtitleClass="text-sm italic"
+            subtitleStyle={{ color: brownMuted }}
+            cardClass="p-6 rounded-[var(--dt-radius-lg)] border space-y-3 transition-all hover:shadow-md"
+            cardStyle={{ background: surface, borderColor: border }}
+            iconContainerClass="w-10 h-10 rounded-full flex items-center justify-center"
+            iconContainerStyle={{ background: sageLight }}
+            iconClass="w-5 h-5"
+            statClass="text-xl font-bold"
+            statStyle={{ color: sage, fontFamily: "var(--dt-heading-font)" }}
+            cardTitleClass="text-sm font-bold"
+            cardTitleStyle={{ color: brown }}
+            cardDescClass="text-xs leading-relaxed italic font-light"
+            cardDescStyle={{ color: brownMuted }}
+            accentColor={sage}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection testimonials={testimonials}
-          headingClass="font-medium" eyebrowClass="" cardClass="" quoteClass="" nameClass="" roleClass=""
-          bgClass="py-[var(--dt-spacing)] px-6"
-          sectionStyle={{ background: "var(--dt-primary-soft)", borderTop: `1px solid ${border}` }}
+          wrapperClass="py-[var(--dt-spacing)] px-6"
+          wrapperStyle={{ background: "var(--dt-primary-soft)", borderTop: `1px solid ${border}` }}
+          titleClass="font-medium"
+          titleStyle={{ color: brown, fontFamily: "var(--dt-heading-font)" }}
+          eyebrowClass=""
+          eyebrowStyle={{ color: sage }}
+          cardClass=""
           cardStyle={{ background: surface, border: `1px solid ${border}`, borderRadius: "var(--dt-radius-lg)" }}
+          quoteClass=""
+          quoteStyle={{ color: brownMuted }}
+          nameClass=""
+          nameStyle={{ color: brown }}
+          roleClass=""
+          roleStyle={{ color: brownMuted }}
+          accentColor={sage}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

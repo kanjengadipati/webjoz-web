@@ -9,7 +9,7 @@ import {
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 
-import type { TestimonialItem, FaqItem, ImageCredit } from "./types";
+import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
 
 // ─── WA Lead Modal ────────────────────────────────────────────────────────────
@@ -305,50 +305,79 @@ function navCtaHref(navCtaText?: string): string {
 
 interface TestimonialsSectionProps {
   testimonials?: { title: string; eyebrow?: string; items: TestimonialItem[] };
-  headingClass?: string;
+  variant?: "grid" | "compact" | "carousel";
+  wrapperClass?: string;
+  wrapperStyle?: React.CSSProperties;
   eyebrowClass?: string;
   eyebrowStyle?: React.CSSProperties;
-  cardStyle?: React.CSSProperties;
+  titleClass?: string;
+  titleStyle?: React.CSSProperties;
   cardClass?: string;
+  cardStyle?: React.CSSProperties;
   quoteClass?: string;
   quoteStyle?: React.CSSProperties;
   nameClass?: string;
+  nameStyle?: React.CSSProperties;
   roleClass?: string;
   roleStyle?: React.CSSProperties;
-  bgClass?: string;
-  sectionStyle?: React.CSSProperties;
+  accentColor?: string;
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
-  testimonials, headingClass = "", eyebrowClass = "",
-  eyebrowStyle, quoteStyle, roleStyle,
-  cardClass = "border", quoteClass = "",
-  nameClass = "", roleClass = "",
-  bgClass = "py-20 px-5 sm:px-6", cardStyle, sectionStyle,
+  testimonials,
+  variant = "grid",
+  wrapperClass = "",
+  wrapperStyle,
+  eyebrowClass = "",
+  eyebrowStyle,
+  titleClass = "",
+  titleStyle,
+  cardClass = "",
+  cardStyle,
+  quoteClass = "",
+  quoteStyle,
+  nameClass = "",
+  nameStyle,
+  roleClass = "",
+  roleStyle,
+  accentColor = "var(--dt-primary)",
 }) => {
   if (!testimonials?.items?.length) return null;
+
+  const wrapperClasses = `py-20 px-5 sm:px-6 ${wrapperClass}`;
+  const gridClass = variant === "compact" ? "grid grid-cols-1 md:grid-cols-2 gap-4" :
+    variant === "carousel" ? "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4" :
+    "grid grid-cols-1 md:grid-cols-3 gap-6";
+  const eyebrowClasses = `text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`;
+  const titleClasses = `text-3xl md:text-4xl font-bold ${titleClass}`;
+  const cardClasses = `rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
+  const quoteClasses = `text-sm leading-relaxed flex-1 ${quoteClass}`;
+  const nameClasses = `text-sm font-bold leading-tight ${nameClass}`;
+  const roleClasses = `text-xs ${roleClass}`;
+
   return (
-    <section id="testimonials" className={bgClass} style={sectionStyle}>
+    <section id="testimonials" className={wrapperClasses} style={wrapperStyle}>
       <div className="max-w-6xl mx-auto space-y-12">
-        <div className="text-center space-y-2">
-          {testimonials.eyebrow && <span className={`text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`} style={eyebrowStyle || (eyebrowClass ? undefined : { color: "var(--dt-primary)", letterSpacing: "0.15em" })}>{testimonials.eyebrow}</span>}
-          <h2 className={`text-3xl md:text-4xl font-bold ${headingClass}`} style={headingClass ? undefined : { fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)", ...headingVars }}>{testimonials.title}</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {(testimonials.eyebrow || testimonials.title) && (
+          <div className="text-center space-y-2">
+            {testimonials.eyebrow && <span className={eyebrowClasses} style={eyebrowStyle}>{testimonials.eyebrow}</span>}
+            {testimonials.title && <h2 className={titleClasses} style={{ ...titleStyle, ...headingVars }}>{testimonials.title}</h2>}
+          </div>
+        )}
+        <div className={gridClass}>
           {testimonials.items.map((t, idx) => (
-            <div key={idx} className={`${cardClass} rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200`} style={cardStyle}>
-              <div className={`text-4xl leading-none font-serif opacity-30 ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-primary)" }}>"</div>
-              <p className={`text-sm leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle || (quoteClass ? undefined : { color: "var(--dt-text-muted)" })}>{t.quote}</p>
-              <div className="flex items-center gap-3 pt-2" style={{ borderTop: cardStyle ? "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" : undefined }}>
+            <div key={idx} className={cardClasses} style={cardStyle}>
+              <p className={quoteClasses} style={quoteStyle}>{t.quote}</p>
+              <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                  style={{ background: t.avatar_color || "var(--primary)" }}
+                  style={{ background: t.avatar_color || accentColor }}
                 >
                   {t.avatar_initials}
                 </div>
-                <div>
-                  <p className={`text-sm font-bold leading-tight ${nameClass}`} style={nameClass ? undefined : { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{t.name}</p>
-                  <p className={`text-xs ${roleClass}`} style={roleStyle || (roleClass ? undefined : { color: "var(--dt-text-muted)" })}>{t.role}</p>
+                <div className="min-w-0">
+                  <p className={nameClasses} style={nameStyle}>{t.name}</p>
+                  {t.role && <p className={roleClasses} style={roleStyle}>{t.role}</p>}
                 </div>
               </div>
             </div>
@@ -935,11 +964,146 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   );
 };
 
+// ─── Benefits (Keunggulan) Section ─────────────────────────────────────────────
+
+interface BenefitsSectionProps {
+  benefits: {
+    title: string;
+    items: BenefitItem[];
+    eyebrow?: string;
+    subtitle?: string;
+  };
+  variant?: "grid" | "stats" | "alternating" | "compact";
+  wrapperClass?: string;
+  wrapperStyle?: React.CSSProperties;
+  eyebrowClass?: string;
+  eyebrowStyle?: React.CSSProperties;
+  titleClass?: string;
+  titleStyle?: React.CSSProperties;
+  subtitleClass?: string;
+  subtitleStyle?: React.CSSProperties;
+  cardClass?: string;
+  cardStyle?: React.CSSProperties;
+  iconContainerClass?: string;
+  iconContainerStyle?: React.CSSProperties;
+  iconClass?: string;
+  iconStyle?: React.CSSProperties;
+  statClass?: string;
+  statStyle?: React.CSSProperties;
+  statLabelClass?: string;
+  statLabelStyle?: React.CSSProperties;
+  cardTitleClass?: string;
+  cardTitleStyle?: React.CSSProperties;
+  cardDescClass?: string;
+  cardDescStyle?: React.CSSProperties;
+  accentColor?: string;
+}
+
+const BenefitsSection: React.FC<BenefitsSectionProps> = ({
+  benefits: b,
+  variant = "grid",
+  wrapperClass = "py-[var(--dt-spacing)] px-6",
+  wrapperStyle,
+  eyebrowClass = "text-[10px] font-bold uppercase tracking-widest block",
+  eyebrowStyle,
+  titleClass = "text-2xl md:text-3xl font-bold",
+  titleStyle,
+  subtitleClass = "text-sm",
+  subtitleStyle,
+  cardClass = "",
+  cardStyle,
+  iconContainerClass = "w-10 h-10 rounded flex items-center justify-center",
+  iconContainerStyle,
+  iconClass = "w-5 h-5",
+  iconStyle,
+  statClass = "text-2xl font-bold leading-none",
+  statStyle,
+  statLabelClass = "text-[10px] font-semibold uppercase tracking-wider",
+  statLabelStyle,
+  cardTitleClass = "text-sm font-bold",
+  cardTitleStyle,
+  cardDescClass = "text-xs leading-relaxed",
+  cardDescStyle,
+  accentColor = "var(--dt-primary)",
+}) => {
+  const containerClass = variant === "compact" ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" :
+    variant === "stats" ? "grid grid-cols-1 md:grid-cols-3 gap-6" :
+    variant === "alternating" ? "grid grid-cols-1 md:grid-cols-2 gap-6" :
+    "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8";
+
+  const statAccent = { color: accentColor };
+
+  return (
+    <section id="benefits" className={wrapperClass} style={wrapperStyle}>
+      <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
+        {(b.eyebrow || b.title || b.subtitle) && (
+          <div className="space-y-2">
+            {b.eyebrow && <span className={eyebrowClass} style={eyebrowStyle}>{b.eyebrow}</span>}
+            {b.title && <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{b.title}</h2>}
+            {b.subtitle && <p className={subtitleClass} style={subtitleStyle}>{b.subtitle}</p>}
+          </div>
+        )}
+        <div className={containerClass}>
+          {b.items?.map((item, idx) => {
+            if (variant === "stats" && item.stat) {
+              return (
+                <div key={idx} className={cardClass || "p-6 space-y-3"} style={cardStyle}>
+                  <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>
+                  {item.stat_label && <p className={statLabelClass} style={statLabelStyle}>{item.stat_label}</p>}
+                  <div className={iconContainerClass} style={{ ...iconContainerStyle, color: accentColor }}>
+                    <DynamicIcon name={item.icon} defaultIcon={Star} className={iconClass} />
+                  </div>
+                  <h3 className={cardTitleClass} style={cardTitleStyle}>{item.title}</h3>
+                  <p className={cardDescClass} style={cardDescStyle}>{item.description}</p>
+                </div>
+              );
+            }
+            if (variant === "alternating" && idx % 2 === 1 && item.stat) {
+              return (
+                <div key={idx} className={`${cardClass || ""} flex flex-col justify-center text-center`} style={cardStyle}>
+                  <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>
+                  {item.stat_label && <p className={statLabelClass} style={statLabelStyle}>{item.stat_label}</p>}
+                  <h3 className={cardTitleClass} style={cardTitleStyle}>{item.title}</h3>
+                </div>
+              );
+            }
+            return (
+              <div key={idx} className={cardClass || "p-5 md:p-6 space-y-3"} style={cardStyle}>
+                {item.stat ? (
+                  <div className="space-y-1">
+                    <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>
+                    {item.stat_label && <p className={statLabelClass} style={statLabelStyle}>{item.stat_label}</p>}
+                  </div>
+                ) : (
+                  <div className={iconContainerClass} style={{ ...iconContainerStyle, color: accentColor }}>
+                    <DynamicIcon name={item.icon} defaultIcon={Star} className={iconClass} />
+                  </div>
+                )}
+                {variant === "compact" ? (
+                  <>
+                    <h3 className={cardTitleClass} style={cardTitleStyle}>{item.title}</h3>
+                    <p className={cardDescClass} style={cardDescStyle}>{item.description}</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className={cardTitleClass} style={cardTitleStyle}>{item.title}</h3>
+                    <p className={cardDescClass} style={cardDescStyle}>{item.description}</p>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref,
   TestimonialsSection, MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
-  ContactSection,
+  ContactSection, BenefitsSection,
 };
-export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps };
+export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };

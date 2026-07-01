@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -122,33 +122,29 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="space-y-2">
-                {b.eyebrow && <span className="text-[10px] font-bold uppercase tracking-[0.2em] block" style={{ color: cyan }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white" style={headingVars}>{b.title}</h2>
-                {b.subtitle && <p className="text-sm" style={{ color: textMuted }}>{b.subtitle}</p>}
-              </div>
-              <div className="grid md:grid-cols-3 gap-5">
-                {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 space-y-4 rounded-[var(--dt-radius)] transition-all duration-300 hover:scale-[1.02]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
-                    <div className="w-10 h-10 flex items-center justify-center rounded-[var(--dt-radius)]" style={{ background: `${pink}15`, border: `1px solid ${pink}33` }}>
-                      <span style={{ color: pink }}>
-                        <DynamicIcon name={item.icon} defaultIcon={Sparkles} className="w-5 h-5" />
-                      </span>
-                    </div>
-                    {item.stat && (
-                      <p className="text-3xl font-black" style={{ color: cyan }}>
-                        {item.stat}<span className="text-sm font-bold ml-1" style={{ color: textMuted }}>{item.stat_label}</span>
-                      </p>
-                    )}
-                    <h3 className="font-black text-sm uppercase tracking-tight text-white">{item.title}</h3>
-                    <p className="text-xs leading-relaxed" style={{ color: textMuted }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={b}
+            wrapperClass="py-[var(--dt-spacing)] px-6"
+            wrapperStyle={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}
+            eyebrowClass="text-[10px] font-bold uppercase tracking-[0.2em] block"
+            eyebrowStyle={{ color: cyan }}
+            titleClass="text-2xl md:text-3xl font-black tracking-tight text-white"
+            subtitleClass="text-sm"
+            subtitleStyle={{ color: textMuted }}
+            cardClass="p-6 space-y-4 rounded-[var(--dt-radius)] transition-all duration-300 hover:scale-[1.02]"
+            cardStyle={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}
+            iconContainerClass="w-10 h-10 flex items-center justify-center rounded-[var(--dt-radius)]"
+            iconContainerStyle={{ background: `${pink}15`, border: `1px solid ${pink}33` }}
+            iconClass="w-5 h-5"
+            statClass="text-3xl font-black"
+            statStyle={{ color: cyan }}
+            statLabelClass="text-sm font-bold ml-1"
+            statLabelStyle={{ color: textMuted }}
+            cardTitleClass="font-black text-sm uppercase tracking-tight text-white"
+            cardDescClass="text-xs leading-relaxed"
+            cardDescStyle={{ color: textMuted }}
+            accentColor={pink}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -157,9 +153,9 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-[var(--dt-spacing)] px-6"
-          sectionStyle={{ background: surface, borderTop: `1px solid ${border}` }}
-          headingClass="text-white font-black tracking-tight text-2xl md:text-3xl"
+          wrapperClass="py-[var(--dt-spacing)] px-6"
+          wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
+          titleClass="text-white font-black tracking-tight"
           eyebrowClass="font-bold uppercase text-[10px] tracking-[0.2em]"
           eyebrowStyle={{ color: cyan }}
           cardClass="rounded-[var(--dt-radius)]"
@@ -169,6 +165,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
           nameClass="text-sm font-black text-white uppercase"
           roleClass="text-[10px] font-bold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}
+          accentColor={pink}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

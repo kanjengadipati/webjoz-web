@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -112,28 +112,30 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section className="py-20 px-6" id="benefits" style={{ background: darkBg }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="text-center space-y-2">
-                {b.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold   block" style={{ color: gold }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{b.title}</h2>
-              </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 rounded border space-y-3 transition-all hover:brightness-110" style={{ background: darkCard, borderColor: `${gold}20` }}>
-                    <div className="w-10 h-10 rounded flex items-center justify-center" style={{ background: `${gold}15` }}>
-                      <span style={{ color: gold }}>
-                        <DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" />
-                      </span>
-                    </div>
-                    {item.stat && <p className="text-2xl font-bold" style={{ color: gold, fontFamily: "var(--dt-heading-font)" }}>{item.stat}<span className="text-sm ml-1" style={{ color: textMuted }}>{item.stat_label}</span></p>}
-                    <h3 className="text-sm font-bold  " style={{ color: "#f5e6c0" }}>{item.title}</h3>
-                    <p className="text-xs leading-relaxed font-light  " style={{ color: "rgba(245,230,192,0.45)" }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={b}
+            variant="grid"
+            wrapperClass="py-20 px-6"
+            wrapperStyle={{ background: darkBg }}
+            eyebrowClass="text-[10px] uppercase tracking-widest font-bold block"
+            eyebrowStyle={{ color: gold }}
+            titleClass="text-2xl md:text-3xl font-bold"
+            titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
+            cardClass="p-6 rounded border space-y-3 transition-all hover:brightness-110"
+            cardStyle={{ background: darkCard, borderColor: `${gold}20` }}
+            iconContainerClass="w-10 h-10 rounded flex items-center justify-center"
+            iconContainerStyle={{ background: `${gold}15` }}
+            iconClass="w-5 h-5"
+            statClass="text-2xl font-bold"
+            statStyle={{ color: gold, fontFamily: "var(--dt-heading-font)" }}
+            statLabelClass="text-sm ml-1"
+            statLabelStyle={{ color: textMuted }}
+            cardTitleClass="text-sm font-bold"
+            cardTitleStyle={{ color: "#f5e6c0" }}
+            cardDescClass="text-xs leading-relaxed font-light"
+            cardDescStyle={{ color: "rgba(245,230,192,0.45)" }}
+            accentColor={gold}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -141,15 +143,21 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass=""
+          wrapperClass="py-20 px-6"
+          wrapperStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
           eyebrowClass=""
+          eyebrowStyle={{ color: gold }}
+          titleClass=""
+          titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
           cardClass=""
-          quoteClass=""
-          nameClass=""
-          roleClass=""
-          bgClass="py-20 px-6"
-          sectionStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
           cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "8px" }}
+          quoteClass=""
+          quoteStyle={{ color: "rgba(245,230,192,0.45)" }}
+          nameClass=""
+          nameStyle={{ color: "#f5e6c0" }}
+          roleClass=""
+          roleStyle={{ color: "rgba(245,230,192,0.5)" }}
+          accentColor={gold}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

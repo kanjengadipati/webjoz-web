@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab,
   WAFloatingButton, BackToTop, navCtaHref, FaqAccordion, SeoEditorPreview,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -121,32 +121,29 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="px-6 py-[var(--dt-spacing)]" id="benefits" style={{ background: "var(--dt-primary-dark)", color: "var(--dt-on-dark-muted)" }}>
-            <div className="max-w-6xl mx-auto space-y-16">
-              <div className="text-center space-y-3">
-                <span className="font-extrabold tracking-wider uppercase text-xs" style={{ color: "var(--dt-on-dark-accent)" }}>Mengapa Kami</span>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: "var(--dt-on-dark)", ...headingVars }}>{benefits.title}</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {benefits.items?.map((item, idx) => (
-                  <div key={idx} className="border hover:border-[var(--dt-on-dark-accent)] p-8 rounded-[var(--dt-radius-lg)] transition-all duration-300 group" style={{ background: "var(--dt-primary-dark-soft)", borderColor: "var(--dt-primary-dark-border)" }}>
-                    {item.stat ? (
-                      <div className="mb-4 sm:mb-6">
-                        <p className="text-3xl font-black tracking-tight" style={{ color: "var(--dt-on-dark)" }}>{item.stat}</p>
-                        {item.stat_label && <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--dt-on-dark-accent)" }}>{item.stat_label}</p>}
-                      </div>
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-[var(--dt-radius)] flex items-center justify-center mb-4 sm:mb-6 group-hover:brightness-125 transition-all" style={{ background: "var(--dt-primary-dark-soft)", color: "var(--dt-on-dark-accent)" }}>
-                        <DynamicIcon name={item.icon} defaultIcon={Zap} className="w-5 h-5 sm:w-6 sm:h-6" />
-                      </div>
-                    )}
-                    <h3 className="text-xl font-bold mb-3" style={{ color: "var(--dt-on-dark)" }}>{item.title}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--dt-on-dark-muted)" }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={benefits}
+            wrapperClass="px-6 py-[var(--dt-spacing)]"
+            wrapperStyle={{ background: "var(--dt-primary-dark)", color: "var(--dt-on-dark-muted)" }}
+            eyebrowClass="font-extrabold tracking-wider uppercase text-xs"
+            eyebrowStyle={{ color: "var(--dt-on-dark-accent)" }}
+            titleClass="text-3xl md:text-4xl font-bold tracking-tight"
+            titleStyle={{ color: "var(--dt-on-dark)" }}
+            cardClass="border hover:border-[var(--dt-on-dark-accent)] p-8 rounded-[var(--dt-radius-lg)] transition-all duration-300 group"
+            cardStyle={{ background: "var(--dt-primary-dark-soft)", borderColor: "var(--dt-primary-dark-border)" }}
+            iconContainerClass="w-10 h-10 sm:w-12 sm:h-12 rounded-[var(--dt-radius)] flex items-center justify-center mb-4 sm:mb-6 group-hover:brightness-125 transition-all"
+            iconContainerStyle={{ background: "var(--dt-primary-dark-soft)", color: "var(--dt-on-dark-accent)" }}
+            iconClass="w-5 h-5 sm:w-6 sm:h-6"
+            statClass="text-3xl font-black tracking-tight"
+            statStyle={{ color: "var(--dt-on-dark)" }}
+            statLabelClass="text-xs font-semibold uppercase tracking-wider"
+            statLabelStyle={{ color: "var(--dt-on-dark-accent)" }}
+            cardTitleClass="text-xl font-bold mb-3"
+            cardTitleStyle={{ color: "var(--dt-on-dark)" }}
+            cardDescClass="text-sm leading-relaxed"
+            cardDescStyle={{ color: "var(--dt-on-dark-muted)" }}
+            accentColor="var(--dt-on-dark-accent)"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -282,13 +279,13 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass="text-[var(--dt-text)] font-extrabold tracking-tight"
+          wrapperClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-6"
+          titleClass="text-[var(--dt-text)] font-extrabold tracking-tight"
           eyebrowClass="text-[var(--dt-primary)]"
           cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)]"
           quoteClass="text-[var(--dt-text-muted)]"
           nameClass="text-[var(--dt-text)]"
           roleClass="text-[var(--dt-text-muted)]"
-          bgClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-6"
         />
       </MemoPreviewSectionWrapper>
     ) : null,

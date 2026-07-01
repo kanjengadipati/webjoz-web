@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -121,33 +121,29 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="space-y-2">
-                {b.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{b.title}</h2>
-                {b.subtitle && <p className="text-sm font-light" style={{ color: textMuted }}>{b.subtitle}</p>}
-              </div>
-              <div className="grid md:grid-cols-3 gap-5">
-                {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 space-y-4 transition-all duration-300 hover:translate-y-[-4px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)", boxShadow: `0 8px 32px rgba(0,0,0,0.3)` }}>
-                    <div className="w-10 h-10 flex items-center justify-center" style={{ background: `${cyan}11`, border: `1px solid ${cyan}22`, borderRadius: "var(--dt-radius)" }}>
-                      <span style={{ color: cyan }}>
-                        <DynamicIcon name={item.icon} defaultIcon={Cpu} className="w-5 h-5" />
-                      </span>
-                    </div>
-                    {item.stat && (
-                      <p className="text-3xl font-light" style={{ color: cyan }}>
-                        {item.stat}<span className="text-sm font-semibold ml-1" style={{ color: textMuted }}>{item.stat_label}</span>
-                      </p>
-                    )}
-                    <h3 className="font-semibold text-sm tracking-tight text-white">{item.title}</h3>
-                    <p className="text-xs font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={b}
+            wrapperClass="py-[var(--dt-spacing)] px-6"
+            wrapperStyle={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}
+            eyebrowClass="text-[10px] font-semibold uppercase tracking-widest block"
+            eyebrowStyle={{ color: cyan }}
+            titleClass="text-2xl md:text-3xl font-light tracking-tight text-white"
+            subtitleClass="text-sm font-light"
+            subtitleStyle={{ color: textMuted }}
+            cardClass="p-6 space-y-4 transition-all duration-300 hover:translate-y-[-4px]"
+            cardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)", boxShadow: `0 8px 32px rgba(0,0,0,0.3)` }}
+            iconContainerClass="w-10 h-10 flex items-center justify-center"
+            iconContainerStyle={{ background: `${cyan}11`, border: `1px solid ${cyan}22`, borderRadius: "var(--dt-radius)" }}
+            iconClass="w-5 h-5"
+            statClass="text-3xl font-light"
+            statStyle={{ color: cyan }}
+            statLabelClass="text-sm font-semibold ml-1"
+            statLabelStyle={{ color: textMuted }}
+            cardTitleClass="font-semibold text-sm tracking-tight text-white"
+            cardDescClass="text-xs font-light leading-relaxed"
+            cardDescStyle={{ color: textMuted }}
+            accentColor={cyan}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -156,9 +152,9 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-[var(--dt-spacing)] px-6"
-          sectionStyle={{ background: surface, borderTop: `1px solid ${border}` }}
-          headingClass="text-white font-light tracking-tight text-2xl md:text-3xl"
+          wrapperClass="py-[var(--dt-spacing)] px-6"
+          wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
+          titleClass="text-white font-light tracking-tight"
           eyebrowClass="font-semibold uppercase text-[10px] tracking-widest"
           eyebrowStyle={{ color: cyan }}
           cardClass=""
@@ -168,6 +164,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
           nameClass="text-sm font-semibold text-white"
           roleClass="text-[10px] font-semibold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}
+          accentColor={cyan}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

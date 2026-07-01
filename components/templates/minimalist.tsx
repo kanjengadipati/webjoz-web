@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -129,15 +129,16 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-[var(--dt-spacing)] px-6 md:px-12"
-          sectionStyle={{ background: zinc100, borderTop: `1px solid ${zinc200}`, borderBottom: `1px solid ${zinc200}` }}
-          headingClass="text-2xl md:text-3xl font-light tracking-tight"
+          wrapperClass="py-[var(--dt-spacing)] px-6 md:px-12"
+          wrapperStyle={{ background: zinc100, borderTop: `1px solid ${zinc200}`, borderBottom: `1px solid ${zinc200}` }}
+          titleClass="text-2xl md:text-3xl font-light tracking-tight"
           eyebrowClass="text-[10px] font-semibold uppercase tracking-widest"
           cardClass="border"
           cardStyle={{ background: surface, borderColor: zinc200 }}
           quoteClass="text-sm font-light leading-relaxed"
           nameClass="text-sm font-medium"
           roleClass="text-xs font-light"
+          accentColor={zinc900}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

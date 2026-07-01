@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -162,15 +162,16 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-14 px-6 border-y-4 border-black"
-          sectionStyle={{ background: "#FFF9C4" }}
-          headingClass="font-black uppercase text-2xl md:text-3xl"
+          wrapperClass="py-14 px-6 border-y-4 border-black"
+          wrapperStyle={{ background: "#FFF9C4" }}
+          titleClass="font-black uppercase"
           eyebrowClass="font-black uppercase text-xs"
           cardClass="border-2 border-black"
           cardStyle={{ background: surface, boxShadow: "4px 4px 0px #000" }}
           quoteClass="text-sm font-semibold"
           nameClass="text-sm font-black uppercase"
           roleClass="text-xs font-bold"
+          accentColor="#000"
         />
       </MemoPreviewSectionWrapper>
     ) : null,

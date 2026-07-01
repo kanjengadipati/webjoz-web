@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -125,33 +125,29 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <section id="benefits" className="py-16 px-6" style={{ background: bg, borderTop: `2px solid ${border}`, borderBottom: `2px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="space-y-2">
-                {b.eyebrow && <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: red }}>{b.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{b.title}</h2>
-                {b.subtitle && <p className="text-sm font-light" style={{ color: textMuted }}>{b.subtitle}</p>}
-              </div>
-              <div className="grid md:grid-cols-3 gap-5">
-                {b.items?.map((item, idx) => (
-                  <div key={idx} className="p-6 space-y-4 transition-all hover:border-red-600 group" style={{ background: card, border: `2px solid ${border}` }}>
-                    <div className="w-10 h-10 flex items-center justify-center" style={{ background: `color-mix(in srgb, ${red} 10%, transparent)`, border: `1px solid ${borderRed}` }}>
-                      <span style={{ color: red }}>
-                        <DynamicIcon name={item.icon} defaultIcon={Flame} className="w-5 h-5" />
-                      </span>
-                    </div>
-                    {item.stat && (
-                      <p className="text-3xl font-black" style={{ color: red }}>
-                        {item.stat}<span className="text-sm font-bold ml-1" style={{ color: textMuted }}>{item.stat_label}</span>
-                      </p>
-                    )}
-                    <h3 className="font-black text-sm uppercase tracking-tight text-white">{item.title}</h3>
-                    <p className="text-xs leading-relaxed font-light" style={{ color: textMuted }}>{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={b}
+            wrapperClass="py-16 px-6"
+            wrapperStyle={{ background: bg, borderTop: `2px solid ${border}`, borderBottom: `2px solid ${border}` }}
+            eyebrowClass="text-[10px] font-black uppercase tracking-widest block"
+            eyebrowStyle={{ color: red }}
+            titleClass="text-2xl md:text-3xl font-black uppercase tracking-tight text-white"
+            subtitleClass="text-sm font-light"
+            subtitleStyle={{ color: textMuted }}
+            cardClass="p-6 space-y-4 transition-all hover:border-red-600 group"
+            cardStyle={{ background: card, border: `2px solid ${border}` }}
+            iconContainerClass="w-10 h-10 flex items-center justify-center"
+            iconContainerStyle={{ background: `color-mix(in srgb, ${red} 10%, transparent)`, border: `1px solid ${borderRed}` }}
+            iconClass="w-5 h-5"
+            statClass="text-3xl font-black"
+            statStyle={{ color: red }}
+            statLabelClass="text-sm font-bold ml-1"
+            statLabelStyle={{ color: textMuted }}
+            cardTitleClass="font-black text-sm uppercase tracking-tight text-white"
+            cardDescClass="text-xs leading-relaxed font-light"
+            cardDescStyle={{ color: textMuted }}
+            accentColor={red}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -160,9 +156,9 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          bgClass="py-16 px-6"
-          sectionStyle={{ background: surface, borderTop: `1px solid ${border}` }}
-          headingClass="text-white font-black uppercase tracking-tight text-2xl md:text-3xl"
+          wrapperClass="py-16 px-6"
+          wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
+          titleClass="text-white font-black uppercase tracking-tight"
           eyebrowClass="font-black uppercase text-[10px] tracking-widest"
           eyebrowStyle={{ color: red }}
           cardClass=""
@@ -172,6 +168,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
           nameClass="text-sm font-black text-white uppercase"
           roleClass="text-[10px] font-bold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}
+          accentColor={red}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

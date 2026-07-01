@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -125,25 +125,20 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="bg-slate-900/30 border-y border-slate-900 px-6 py-[var(--dt-spacing)]" id="benefits">
-            <div className="max-w-6xl mx-auto space-y-16">
-              <div className="text-center space-y-3">
-                <span className="font-extrabold tracking-wider uppercase text-xs text-[var(--dt-primary)]">Teknologi</span>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={headingVars}>{benefits.title}</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {benefits.items?.map((item, idx) => (
-                  <div key={idx} className="bg-slate-900 border border-slate-800 hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] transition-all duration-300 group">
-                    <div className="w-12 h-12 rounded-[var(--dt-radius)] flex items-center justify-center mb-6 border" style={{ background: "color-mix(in srgb, var(--dt-primary) 15%, #0f172a)", color: "var(--dt-primary)", borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}>
-                      <DynamicIcon name={item.icon} defaultIcon={Check} className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={benefits}
+            wrapperClass="bg-slate-900/30 border-y border-slate-900 px-6 py-[var(--dt-spacing)]"
+            eyebrowClass="font-extrabold tracking-wider uppercase text-xs"
+            eyebrowStyle={{ color: "var(--dt-primary)" }}
+            titleClass="text-3xl md:text-4xl font-bold tracking-tight text-white"
+            cardClass="bg-slate-900 border border-slate-800 hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] transition-all duration-300 group"
+            iconContainerClass="w-12 h-12 rounded-[var(--dt-radius)] flex items-center justify-center mb-6 border"
+            iconContainerStyle={{ background: "color-mix(in srgb, var(--dt-primary) 15%, #0f172a)", color: "var(--dt-primary)", borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}
+            iconClass="w-5 h-5"
+            cardTitleClass="text-xl font-bold text-white mb-3"
+            cardDescClass="text-slate-300 text-sm leading-relaxed"
+            accentColor="var(--dt-primary)"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -224,13 +219,13 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass="text-white font-extrabold tracking-tight"
+          wrapperClass="bg-slate-950 border-y border-slate-800 py-[var(--dt-spacing)] px-6"
+          titleClass="text-white font-extrabold tracking-tight"
           eyebrowClass="text-[var(--dt-primary)]"
           cardClass="bg-slate-900 border border-slate-800"
           quoteClass="text-slate-300"
           nameClass="text-white"
           roleClass="text-slate-500"
-          bgClass="bg-slate-950 border-y border-slate-800 py-[var(--dt-spacing)] px-6"
         />
       </MemoPreviewSectionWrapper>
     ) : null,

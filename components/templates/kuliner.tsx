@@ -7,7 +7,7 @@ import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, navCtaHref,
-  ContactSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -125,25 +125,18 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <section className="bg-[var(--dt-primary-soft)] px-5 sm:px-6 py-[var(--dt-spacing)] border-y border-[var(--dt-border)]" id="benefits">
-            <div className="max-w-6xl mx-auto space-y-12">
-              <div className="text-center space-y-3">
-                <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Keunggulan</span>
-                <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{benefits.title}</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {benefits.items?.map((item, idx) => (
-                  <div key={idx} className="bg-[var(--dt-surface)] border border-[var(--dt-border)] hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] shadow-sm hover:shadow-md transition-all duration-300 group">
-                    <div className="w-12 h-12 bg-[var(--dt-primary-soft-strong)] text-[var(--dt-primary)] rounded-[var(--dt-radius)] flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
-                      <DynamicIcon name={item.icon} defaultIcon={Star} className="w-6 h-6 fill-[var(--dt-primary)] stroke-[var(--dt-primary)]" />
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--dt-text)] mb-3">{item.title}</h3>
-                    <p className="text-[var(--dt-text-muted)] text-sm leading-relaxed">{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <BenefitsSection
+            benefits={benefits}
+            wrapperClass="bg-[var(--dt-primary-soft)] px-5 sm:px-6 py-[var(--dt-spacing)] border-y border-[var(--dt-border)]"
+            eyebrowClass="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs"
+            titleClass="text-3xl md:text-4xl font-bold text-[var(--dt-text)]"
+            cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)] hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] shadow-sm hover:shadow-md transition-all duration-300 group"
+            iconContainerClass="w-12 h-12 bg-[var(--dt-primary-soft-strong)] text-[var(--dt-primary)] rounded-[var(--dt-radius)] flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform"
+            iconClass="w-6 h-6"
+            cardTitleClass="text-xl font-bold text-[var(--dt-text)] mb-3"
+            cardDescClass="text-[var(--dt-text-muted)] text-sm leading-relaxed"
+            accentColor="var(--dt-primary)"
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -224,13 +217,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
-          headingClass="text-[var(--dt-text)] "
+          wrapperClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-5 sm:px-6"
+          titleClass="text-[var(--dt-text)]"
           eyebrowClass="text-[var(--dt-primary)]"
           cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)]"
           quoteClass="text-[var(--dt-text-muted)]"
           nameClass="text-[var(--dt-text)]"
           roleClass="text-[var(--dt-text-muted)]"
-          bgClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-5 sm:px-6"
         />
       </MemoPreviewSectionWrapper>
     ) : null,
