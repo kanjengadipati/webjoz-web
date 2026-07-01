@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, navCtaHref,
+  SeoEditorPreview, navCtaHref, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -62,7 +62,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               </h1>
               <p className="text-sm font-bold leading-relaxed" style={{ color: "#3D2B00" }}>{h.subheadline}</p>
               <div className="flex flex-wrap gap-3 pt-2">
-                <a href={h.cta_url}
+                <a href={ctaHref(contact.phone, h.cta_url)}
                   className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all ${shadowBlock} ${shadowBlockHover}`}
                   style={{ background: yellow, color: ctaText }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4 stroke-[3]" />

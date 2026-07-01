@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -63,7 +63,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
+                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>

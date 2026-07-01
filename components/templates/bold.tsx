@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref, isPlaceholderPrice,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -68,7 +68,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 font-black text-xs uppercase tracking-widest transition-all hover:brightness-110" style={{ background: red, color: ctaText, boxShadow: `0 8px 24px ${borderRed}` }}>
+                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-8 py-4 font-black text-xs uppercase tracking-widest transition-all hover:brightness-110" style={{ background: red, color: ctaText, boxShadow: `0 8px 24px ${borderRed}` }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
                 {h.cta_secondary_text && (

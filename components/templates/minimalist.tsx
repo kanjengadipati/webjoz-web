@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, navCtaHref,
+  SeoEditorPreview, navCtaHref, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -52,7 +52,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             <div className="w-12 h-px" style={{ background: zinc900 }} />
             <p className="text-sm md:text-base font-light leading-relaxed max-w-2xl" style={{ color: zinc500 }}>{h.subheadline}</p>
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <a href={h.cta_url} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-70" style={{ background: zinc900, color: "#fff" }}>
+              <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-70" style={{ background: zinc900, color: "#fff" }}>
                 {h.cta_text} <ArrowRight className="w-4 h-4" />
               </a>
               {h.cta_secondary_text && (

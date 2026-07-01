@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
@@ -63,7 +63,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a href={h.cta_url} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--dt-radius)] text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90" style={{ background: sage, color: ctaText }}>
+                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--dt-radius)] text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90" style={{ background: sage, color: ctaText }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>

@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref, isPlaceholderPrice,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -64,7 +64,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
+                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
                 {h.cta_secondary_text && (

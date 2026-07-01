@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, isPlaceholderPrice,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref, isPlaceholderPrice,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
@@ -65,7 +65,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                 {h.subheadline}
               </p>
               <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={h.cta_url} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:brightness-110 rounded-[var(--dt-radius)]" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
+                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:brightness-110 rounded-[var(--dt-radius)]" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
                   {h.cta_text} <ArrowRight className="w-4 h-4" />
                 </a>
                 {h.cta_secondary_text && (

@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref,
+  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
@@ -72,7 +72,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
               )}
               <div className="pt-4">
                 <a
-                  href={hero.cta_url}
+                  href={ctaHref(contact.phone, hero.cta_url)}
                   className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
                   style={{ color: "var(--dt-cta-text)" }}
                 >

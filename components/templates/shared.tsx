@@ -301,6 +301,16 @@ function navCtaHref(navCtaText?: string): string {
   return "#contact";
 }
 
+// ─── Hero CTA href helper — WhatsApp jika ada phone, fallback ke cta_url ────
+
+function ctaHref(phone?: string | null, fallbackUrl?: string): string {
+  if (phone) {
+    const cleaned = phone.replace(/[^0-9]/g, "");
+    if (cleaned) return `https://wa.me/${cleaned}`;
+  }
+  return fallbackUrl || "#contact";
+}
+
 // ─── Shared Testimonials Section ─────────────────────────────────────────────
 
 interface TestimonialsSectionProps {
@@ -1100,7 +1110,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
 };
 
 export {
-  NavMenu, WAFloatingButton, BackToTop, navCtaHref,
+  NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
   TestimonialsSection, MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
