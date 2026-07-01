@@ -87,16 +87,20 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
       const tileLayer = L.tileLayer(tileInfo.url, { attribution: "" }).addTo(map);
       tileLayerRef.current = { layer: tileLayer, map };
 
-      const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+      const marker = L.marker([initLat, initLng], { interactive: false }).addTo(map);
 
-      map.on("click", (e: any) => {
-        marker.setLatLng(e.latlng);
-        setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+      map.on("move", () => {
+        const center = map.getCenter();
+        marker.setLatLng(center);
       });
 
-      marker.on("dragend", () => {
-        const pos = marker.getLatLng();
-        setPosition({ lat: pos.lat, lng: pos.lng });
+      map.on("moveend", () => {
+        const center = map.getCenter();
+        setPosition({ lat: center.lat, lng: center.lng });
+      });
+
+      map.on("click", (e: any) => {
+        map.panTo(e.latlng);
       });
 
       setPosition({ lat: initLat, lng: initLng });
@@ -181,10 +185,10 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden max-h-[90vh] md:max-h-[85vh] my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 shrink-0">
           <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-emerald-600" />
             Pilih Lokasi
@@ -202,7 +206,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         </div>
 
         {/* Search bar — floating over the map */}
-        <div className="relative">
+        <div className="relative flex-1 min-h-0 flex flex-col">
           <div className="absolute top-3 left-3 right-3 z-10 flex gap-1.5">
             <div className="relative flex-1 shadow-sm">
               <input
@@ -269,7 +273,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
           )}
 
           {/* Map */}
-          <div ref={mapRef} className="w-full h-[380px] bg-gray-100" />
+          <div ref={mapRef} className="w-full flex-1 min-h-[220px] md:min-h-[320px] bg-gray-100" />
 
           {/* Center instruction / detecting geo */}
           {detectingGeo && (
@@ -290,7 +294,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80">
+        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200 bg-gray-50/80 shrink-0">
           <div className="flex items-center gap-1">
             {(Object.keys(TILE_STYLES) as Array<keyof typeof TILE_STYLES>).map((key) => (
               <button
