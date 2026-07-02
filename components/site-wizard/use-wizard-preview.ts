@@ -95,7 +95,15 @@ export function useWizardPreview() {
     scrollPreviewToTop();
   }, [previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
-  // Loading step fallback timer
+  // Instant transition to result when stream is done and loading step reaches 5
+  useEffect(() => {
+    if (previewState === "loading" && loadingStep >= 5 && streamDoneRef.current && !pendingResultRef.current) {
+      pendingResultRef.current = true;
+      setTimeout(() => setPreviewState("result"), 600);
+    }
+  }, [loadingStep, previewState]);
+
+  // Loading step fallback timer & safety net
   useEffect(() => {
     if (previewState === "loading") {
       setLoadingStep(0);
@@ -103,12 +111,25 @@ export function useWizardPreview() {
       desiredStepRef.current = 0;
       lastStepTimeRef.current = Date.now();
       pendingResultRef.current = false;
+      const startTime = Date.now();
       const interval = setInterval(() => {
         if (pendingResultRef.current) return;
         setLoadingStep((prev) => {
+          // 1. If stream is done and loading step is at least 5, transition to result
           if (prev >= 5 && streamDoneRef.current) {
             pendingResultRef.current = true;
             setTimeout(() => setPreviewState("result"), 600);
+            return prev;
+          }
+          // 2. Cap step advancement by real AI stream progress (desiredStepRef)
+          // If stream is done, we don't cap it anymore (we let it advance to 100%).
+          if (!streamDoneRef.current && prev >= desiredStepRef.current) {
+            // Safety timeout: if total generation takes more than 180 seconds, 
+            // force transition to prevent infinite loading state
+            if (Date.now() - startTime > 180000) {
+              pendingResultRef.current = true;
+              setTimeout(() => setPreviewState("result"), 600);
+            }
             return prev;
           }
           return prev < 5 ? prev + 1 : prev;
@@ -124,7 +145,9 @@ export function useWizardPreview() {
     const interval = setInterval(() => {
       setLoadingStep((prev) => {
         const now = Date.now();
-        if (prev >= desiredStepRef.current) return prev;
+        // If stream is done, we want to reach 5 quickly. Otherwise cap by desiredStepRef.current
+        const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
+        if (prev >= targetStep) return prev;
         if (now - lastStepTimeRef.current < 1500) return prev;
         lastStepTimeRef.current = now;
         return prev + 1;
