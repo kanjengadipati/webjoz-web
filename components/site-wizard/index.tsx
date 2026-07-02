@@ -65,10 +65,20 @@ export function SiteWizard({
       preview.setStreamedTemplateId(templateId);
 
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
-      const pool = getTemplatePool(mood);
-      const activeIndex = pool.indexOf(templateId);
+      let pool = getTemplatePool(mood);
+
+      // Reorder template pool so the generated template is at index 0.
+      // This ensures the template selection starts at 1/N instead of a higher index (like 2/4).
+      if (templateId) {
+        const activeIndex = pool.indexOf(templateId);
+        if (activeIndex > 0) {
+          pool = [templateId, ...pool.slice(0, activeIndex), ...pool.slice(activeIndex + 1)];
+        } else if (activeIndex === -1) {
+          pool = [templateId, ...pool];
+        }
+      }
       preview.setTemplatePool(pool);
-      preview.setTemplatePoolIndex(activeIndex >= 0 ? activeIndex : 0);
+      preview.setTemplatePoolIndex(0);
 
       const finalContent = preview.streamedSectionsRef.current;
       const finalToken = preview.streamedTokenRef.current ?? {};
