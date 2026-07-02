@@ -6,7 +6,7 @@ import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, navCtaHref, ctaHref,
+  SeoEditorPreview, navCtaHref, ctaHref, FaqAccordion,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
@@ -265,13 +265,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
               <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{f.title}</h2>
               <div className="divide-y" style={{ borderColor: zinc200 }}>
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className="py-5 group">
-                    <summary className="text-sm font-medium cursor-pointer list-none flex justify-between items-center" style={{ color: zinc900 }}>
-                      {item.question}
-                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform flex-shrink-0 ml-4" style={{ color: zinc500 }} />
-                    </summary>
-                    <p className="mt-4 text-sm font-light leading-relaxed" style={{ color: zinc500 }}>{item.answer}</p>
-                  </details>
+                  <FaqAccordion key={idx} item={item} variant="minimal" index={idx} />
                 ))}
               </div>
             </div>

@@ -276,15 +276,9 @@ export const TemplateBold: React.FC<TemplateProps> = ({
           <section id="faq" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white" style={headingVars}>{f.title}</h2>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className="group" style={{ background: card, border: `2px solid ${border}` }}>
-                    <summary className="flex justify-between items-center p-5 cursor-pointer list-none font-black text-sm uppercase tracking-tight text-white hover:text-[var(--dt-accent)] transition-colors">
-                      {item.question}
-                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform shrink-0 ml-4" style={{ color: red }} />
-                    </summary>
-                    <p className="px-5 pb-5 text-sm font-light leading-relaxed" style={{ color: textMuted, borderTop: `1px solid ${border}` }}>{item.answer}</p>
-                  </details>
+                  <FaqAccordion key={idx} item={item} isDark={true} variant="card" index={idx} />
                 ))}
               </div>
             </div>

@@ -282,7 +282,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-medium" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{f.title}</h2>
             </div>
-            <div className="space-y-3">{f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} />)}</div>
+            <div className="divide-y divide-stone-200">{f.items?.map((item, idx) => <FaqAccordion key={idx} item={item} variant="minimal" index={idx} />)}</div>
           </section>
         )} />
       </MemoPreviewSectionWrapper>

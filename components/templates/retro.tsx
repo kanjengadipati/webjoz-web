@@ -273,15 +273,9 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
           <section id="faq" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
             <div className="max-w-3xl mx-auto space-y-8">
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white" style={headingVars}>{f.title}</h2>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className="group rounded-[var(--dt-radius)] overflow-hidden" style={{ background: card, border: `1px solid ${border}` }}>
-                    <summary className="flex justify-between items-center p-5 cursor-pointer list-none font-black text-sm uppercase tracking-tight text-white hover:opacity-80 transition-opacity">
-                      {item.question}
-                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform shrink-0 ml-4" style={{ color: cyan }} />
-                    </summary>
-                    <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: textMuted, borderTop: `1px solid ${border}` }}>{item.answer}</p>
-                  </details>
+                  <FaqAccordion key={idx} item={item} isDark={true} variant="card" index={idx} />
                 ))}
               </div>
             </div>

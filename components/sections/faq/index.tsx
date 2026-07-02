@@ -8,22 +8,67 @@ const DynamicFaqAccordion: React.FC<{ item: FaqItem }> = ({ item }) => {
   const reactId = useId();
   const answerId = `dtfaq-answer-${reactId}`;
   return (
-    <div className="dt-faq-item" style={{ border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", borderRadius: "var(--dt-radius)", overflow: "hidden" }}>
+    <div
+      className="dt-faq-item"
+      style={{
+        border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)",
+        borderRadius: "var(--dt-radius)",
+        overflow: "hidden",
+        transition: "box-shadow 0.2s ease",
+        boxShadow: isOpen ? "0 2px 12px color-mix(in srgb, var(--dt-primary) 8%, transparent)" : "none",
+      }}
+    >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls={answerId}
-        style={{ width: "100%", padding: "1rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: "transparent", cursor: "pointer", fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, textAlign: "left", gap: "1rem" }}
+        style={{
+          width: "100%", padding: "1rem 1.25rem",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          background: isOpen ? "color-mix(in srgb, var(--dt-primary) 5%, transparent)" : "transparent",
+          cursor: "pointer",
+          fontFamily: "var(--dt-body-font)",
+          color: "var(--dt-text)",
+          fontWeight: 600,
+          textAlign: "left",
+          gap: "1rem",
+          transition: "background 0.2s ease",
+        }}
       >
-        <span style={{ fontSize: "0.9rem" }}>{item.question}</span>
-        {isOpen ? <ChevronUp style={{ width: 18, height: 18, flexShrink: 0, color: "var(--dt-primary)" }} /> : <ChevronDown style={{ width: 18, height: 18, flexShrink: 0, opacity: 0.4 }} />}
+        <span style={{ fontSize: "0.875rem", flex: 1 }}>{item.question}</span>
+        <ChevronDown
+          style={{
+            width: 16, height: 16, flexShrink: 0,
+            color: isOpen ? "var(--dt-primary)" : "var(--dt-text-muted)",
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.28s ease, color 0.2s ease",
+          }}
+        />
       </button>
-      {isOpen && (
-        <div id={answerId} style={{ padding: "0 1.5rem 1.25rem", fontSize: "0.875rem", lineHeight: 1.7, color: "var(--dt-text-muted)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", background: "color-mix(in srgb, var(--dt-primary) 3%, transparent)" }}>
-          {item.answer}
+
+      {/* Grid trick: smooth height animation without knowing exact height */}
+      <div
+        id={answerId}
+        style={{
+          display: "grid",
+          gridTemplateRows: isOpen ? "1fr" : "0fr",
+          transition: "grid-template-rows 0.28s ease",
+        }}
+      >
+        <div style={{ overflow: "hidden" }}>
+          <div style={{
+            padding: "0 1.25rem 1.25rem",
+            fontSize: "0.875rem",
+            lineHeight: 1.7,
+            color: "var(--dt-text-muted)",
+            borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)",
+            background: "color-mix(in srgb, var(--dt-primary) 3%, transparent)",
+          }}>
+            {item.answer}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

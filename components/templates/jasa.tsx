@@ -216,7 +216,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
-                <FaqAccordion key={idx} item={item} />
+                <FaqAccordion key={idx} item={item} variant="numbered" index={idx} />
               ))}
             </div>
           </section>

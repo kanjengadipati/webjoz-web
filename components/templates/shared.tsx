@@ -552,42 +552,140 @@ function MenuCatalogCard({
 
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
 
-const FaqAccordion: React.FC<{ item: FaqItem; isDark?: boolean }> = ({ item, isDark = false }) => {
+const FaqAccordion: React.FC<{
+  item: FaqItem;
+  isDark?: boolean;
+  variant?: "card" | "minimal" | "numbered";
+  index?: number;
+}> = ({ item, isDark = false, variant = "card", index = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const reactId = useId();
   const answerId = `faq-answer-${reactId}`;
+  const num = String(index + 1).padStart(2, "0");
 
+  // ── Numbered variant ────────────────────────────────────────────────────────
+  if (variant === "numbered") {
+    return (
+      <div className={`border-b transition-colors duration-200 ${isDark ? "border-slate-700/50" : "border-stone-200"}`}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-controls={answerId}
+          className="w-full py-5 flex items-start gap-4 text-left cursor-pointer select-none focus:outline-none"
+        >
+          <span className={`text-xs font-bold tabular-nums pt-0.5 flex-shrink-0 transition-colors duration-200 ${isDark
+            ? isOpen ? "text-cyan-400" : "text-slate-500"
+            : isOpen ? "text-[var(--dt-primary,#4F46E5)]" : "text-stone-400"
+          }`} style={{ fontVariantNumeric: "tabular-nums" }}>
+            {num}
+          </span>
+          <span className={`flex-1 font-semibold text-sm md:text-base leading-snug transition-colors duration-200 ${isDark
+            ? isOpen ? "text-white" : "text-slate-200"
+            : isOpen ? "text-stone-900" : "text-stone-700"
+          }`}>
+            {item.question}
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
+              ? isOpen ? "text-cyan-400" : "text-slate-500"
+              : isOpen ? "text-[var(--dt-primary,#4F46E5)]" : "text-stone-400"
+            }`}
+          />
+        </button>
+        <div
+          id={answerId}
+          style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
+        >
+          <div className="overflow-hidden">
+            <p className={`pl-8 pb-5 text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-stone-500"}`}>
+              {item.answer}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Minimal variant ─────────────────────────────────────────────────────────
+  if (variant === "minimal") {
+    return (
+      <div className={`border-b transition-colors duration-200 ${isDark ? "border-slate-700/50" : "border-stone-200"}`}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-controls={answerId}
+          className="w-full py-5 flex items-center justify-between gap-4 text-left cursor-pointer select-none focus:outline-none"
+        >
+          <span className={`font-medium text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
+            ? isOpen ? "text-white" : "text-slate-300"
+            : isOpen ? "text-stone-900" : "text-stone-700"
+          }`}>
+            {item.question}
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
+              ? isOpen ? "text-white" : "text-slate-500"
+              : isOpen ? "text-stone-900" : "text-stone-400"
+            }`}
+          />
+        </button>
+        <div
+          id={answerId}
+          style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
+        >
+          <div className="overflow-hidden">
+            <p className={`pb-5 text-sm leading-relaxed font-light ${isDark ? "text-slate-400" : "text-stone-500"}`}>
+              {item.answer}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Card variant (default) ──────────────────────────────────────────────────
   return (
     <div
-      className={`border rounded-2xl transition-all overflow-hidden ${isDark
-        ? "border-slate-800 bg-slate-900/40 hover:bg-slate-900/60"
-        : "border-[#EADFCB] bg-[#FAF7F2]/40 hover:bg-white"
-        }`}
+      className={`border rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
+        ? `border-slate-700/60 ${isOpen ? "bg-slate-900/70" : "bg-slate-900/30 hover:bg-slate-900/50"}`
+        : `border-[#E8DDD0] ${isOpen ? "bg-white shadow-sm" : "bg-[#FAF7F2]/60 hover:bg-white/80"}`
+      }`}
     >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls={answerId}
-        className="w-full px-6 py-4 flex items-center justify-between gap-4 font-bold text-left cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-current"
+        className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-current"
       >
-        <span className={isDark ? "text-white text-sm md:text-base" : "text-amber-950 text-sm md:text-base"}>
+        <span className={`font-semibold text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
+          ? isOpen ? "text-white" : "text-slate-200"
+          : isOpen ? "text-amber-950" : "text-amber-900"
+        }`}>
           {item.question}
         </span>
-        {isOpen ? (
-          <ChevronUp className={`w-5 h-5 flex-shrink-0 ${isDark ? "text-cyan-400" : "text-amber-800"}`} />
-        ) : (
-          <ChevronDown className={`w-5 h-5 flex-shrink-0 ${isDark ? "text-slate-500" : "text-amber-600"}`} />
-        )}
+        <ChevronDown
+          className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : "rotate-0"} ${isDark
+            ? isOpen ? "text-cyan-400" : "text-slate-400"
+            : isOpen ? "text-amber-700" : "text-amber-500/70"
+          }`}
+        />
       </button>
-      {isOpen && (
-        <div id={answerId} className={`px-6 pb-5 pt-1 text-sm leading-relaxed border-t ${isDark
-          ? "text-slate-300 border-slate-800 bg-slate-950/20"
-          : "text-[#6D5D50] border-[#EADFCB]/50 bg-amber-50/10"
+      <div
+        id={answerId}
+        style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
+      >
+        <div className="overflow-hidden">
+          <div className={`px-5 pb-5 pt-1 text-sm leading-relaxed border-t ${isDark
+            ? "text-slate-300 border-slate-700/40"
+            : "text-[#6D5D50] border-[#E8DDD0]/60"
           }`}>
-          {item.answer}
+            {item.answer}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
