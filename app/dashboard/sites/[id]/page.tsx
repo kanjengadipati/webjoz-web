@@ -1101,11 +1101,13 @@ export default function SiteEditorPage() {
       // Load design token if available
       let resolvedDesignToken = fetchedDesignToken;
       if (fetchedDesignToken) {
-        // Auto-hide empty optional sections (FAQ, Gallery, etc.) so the
-        // editor doesn't show empty section outlines by default.
-        // The user can reveal them by clicking the eye icon in the sidebar.
+        // Auto-hide optional sections (FAQ, Gallery, etc.) that are either:
+        // • not in the AI-recommended section_order, or
+        // • have empty content arrays.
+        // The user can reveal any section by clicking the eye icon in the sidebar.
         const existingHidden: string[] = fetchedDesignToken?.layout?.hidden_sections ?? [];
-        const autoHide = getAutoHiddenSections(finalContent, existingHidden);
+        const sectionOrder: string[] = fetchedDesignToken?.layout?.section_order ?? [];
+        const autoHide = getAutoHiddenSections(finalContent, existingHidden, sectionOrder);
         if (autoHide.length > 0) {
           resolvedDesignToken = {
             ...fetchedDesignToken,

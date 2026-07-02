@@ -177,21 +177,40 @@ export const isDesignTokenEqual = (a: any, b: any) => {
 
 /**
  * Returns section keys that should be automatically hidden on first editor
- * load because their content arrays are empty.
+ * load.  A section is auto-hidden when:
+ *   1. It is an optional section (faq, gallery, testimonials, menu, catalog)
+ *      that is NOT present in the AI-recommended section_order, OR
+ *   2. Its content array is empty (items / categories length === 0).
+ *
  * Only adds keys that are not already present in existingHidden so we don't
  * overwrite deliberate user choices.
  * The user can reveal any hidden section by clicking the eye icon in the
  * section sidebar.
  */
-export const getAutoHiddenSections = (content: any, existingHidden: string[] = []): string[] => {
+export const getAutoHiddenSections = (
+  content: any,
+  existingHidden: string[] = [],
+  sectionOrder: string[] = [],
+): string[] => {
   const result: string[] = [];
-  const check = (key: string, isEmpty: boolean) => {
-    if (isEmpty && !existingHidden.includes(key)) result.push(key);
+
+  const OPTIONAL = ["faq", "testimonials", "gallery", "menu", "catalog"] as const;
+
+  const isEmpty = (key: string): boolean => {
+    if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);
+    // faq, testimonials, gallery
+    return !(content?.[key]?.items?.length);
   };
-  check("faq",          !(content?.faq?.items?.length));
-  check("testimonials", !(content?.testimonials?.items?.length));
-  check("gallery",      !(content?.gallery?.items?.length));
-  check("menu",         !(content?.menu?.categories?.length));
-  check("catalog",      !(content?.catalog?.categories?.length));
+
+  for (const key of OPTIONAL) {
+    if (existingHidden.includes(key)) continue; // already there, skip
+
+    const notRecommended = sectionOrder.length > 0 && !sectionOrder.includes(key);
+    if (notRecommended || isEmpty(key)) {
+      result.push(key);
+    }
+  }
+
   return result;
 };
+
