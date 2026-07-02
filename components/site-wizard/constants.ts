@@ -98,10 +98,14 @@ export const NAME_ACK_VARIANTS = [
   "Bagus! Nama tersebut bisa jadi identitas yang kuat.",
   "Sip, nama yang profesional dan mudah diingat. 👍",
   "Keren — nama yang sederhana dan mudah dipercaya.",
-  "Oke, kami catat namanya. Selanjutnya pilih jenis bisnisnya ya."
+  "Oke, kami catat namanya. Selanjutnya pilih jenis bisnisnya ya.",
+  "Mantap! Nama yang menarik dan terdengar bersahabat.",
+  "Nama yang sangat bagus! Cocok sekali untuk brand Anda.",
+  "Halo! Nama usahanya bagus sekali, terdengar sangat orisinal.",
+  "Siap! Nama bisnis tercatat dengan baik. Mari kita lanjut."
 ];
 
-export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 2-3 kalimat. Tekan Enter untuk lanjut jika ingin skip.";
+export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Tekan Enter untuk lanjut jika ingin skip.";
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
