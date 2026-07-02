@@ -284,16 +284,12 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
   }
 
   const typeScores: Record<string, { totalWeight: number; matchedSubTypes: Set<string> }> = {};
-  let bestSubType: { type: string; subType: string; weight: number } | null = null;
 
   for (const hint of DESC_HINTS) {
     if (hint.keywords.some(k => s.includes(k))) {
       if (!typeScores[hint.type]) typeScores[hint.type] = { totalWeight: 0, matchedSubTypes: new Set() };
       typeScores[hint.type].totalWeight += hint.weight;
       if (hint.subType) typeScores[hint.type].matchedSubTypes.add(hint.subType);
-      if (!bestSubType || hint.weight > bestSubType.weight) {
-        bestSubType = { type: hint.type, subType: hint.subType!, weight: hint.weight };
-      }
     }
   }
 
@@ -315,15 +311,20 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
   const topScore = sortedTypes[0][1];
   const nextScore = sortedTypes[1]?.[1].totalWeight ?? 0;
 
+  // After determining topType, find the best subType *within that type*:
+  const bestSubTypeForTopType = DESC_HINTS
+    .filter(h => h.type === topType && h.subType && h.keywords.some(k => s.includes(k)))
+    .sort((a, b) => b.weight - a.weight)[0];
+
   // Confidence determination
-  const hasStrongSubType = bestSubType !== null && bestSubType.type === topType && topScore.totalWeight >= 3;
+  const hasStrongSubType = bestSubTypeForTopType !== undefined && topScore.totalWeight >= 3;
   const hasTypeClarity = topScore.totalWeight >= 2;
   const hasConflictingTypes = sortedTypes.length > 1 && (topScore.totalWeight - nextScore) <= 1;
 
   if (hasStrongSubType && !hasConflictingTypes) {
     return {
       type: topType,
-      subType: bestSubType!.subType,
+      subType: bestSubTypeForTopType.subType,
       confidence: "high",
     };
   }
@@ -331,6 +332,7 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
   if (hasTypeClarity) {
     return {
       type: topType,
+      subType: bestSubTypeForTopType?.subType,
       confidence: "medium",
     };
   }
@@ -357,7 +359,9 @@ const KNOWN_LOCATIONS = [
 export function extractLocationFromDescription(description: string): string | null {
   const lower = (description || "").toLowerCase();
   for (const loc of KNOWN_LOCATIONS) {
-    if (lower.includes(loc)) {
+    // Match only as a whole word (surrounded by non-letters)
+    const re = new RegExp(`(?<![a-z])${loc.replace(/\s+/g, "\\s+")}(?![a-z])`);
+    if (re.test(lower)) {
       return capitalizeWords(loc);
     }
   }

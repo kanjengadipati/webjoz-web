@@ -103,56 +103,47 @@ export function useWizardPreview() {
     }
   }, [loadingStep, previewState]);
 
-  // Loading step fallback timer & safety net
-  useEffect(() => {
-    if (previewState === "loading") {
-      setLoadingStep(0);
-      streamDoneRef.current = false;
-      desiredStepRef.current = 0;
-      lastStepTimeRef.current = Date.now();
-      pendingResultRef.current = false;
-      const startTime = Date.now();
-      const interval = setInterval(() => {
-        if (pendingResultRef.current) return;
-        setLoadingStep((prev) => {
-          // 1. If stream is done and loading step is at least 5, transition to result
-          if (prev >= 5 && streamDoneRef.current) {
-            pendingResultRef.current = true;
-            setTimeout(() => setPreviewState("result"), 600);
-            return prev;
-          }
-          // 2. Cap step advancement by real AI stream progress (desiredStepRef)
-          // If stream is done, we don't cap it anymore (we let it advance to 100%).
-          if (!streamDoneRef.current && prev >= desiredStepRef.current) {
-            // Safety timeout: if total generation takes more than 180 seconds, 
-            // force transition to prevent infinite loading state
-            if (Date.now() - startTime > 180000) {
-              pendingResultRef.current = true;
-              setTimeout(() => setPreviewState("result"), 600);
-            }
-            return prev;
-          }
-          return prev < 5 ? prev + 1 : prev;
-        });
-      }, 8000);
-      return () => clearInterval(interval);
-    }
-  }, [previewState]);
-
-  // Pace loading step advancement — minimum 1.5s per step
+  // Handle loading steps, pacing, and safety timeout
   useEffect(() => {
     if (previewState !== "loading") return;
+
+    setLoadingStep(0);
+    streamDoneRef.current = false;
+    desiredStepRef.current = 0;
+    lastStepTimeRef.current = Date.now();
+    pendingResultRef.current = false;
+    const startTime = Date.now();
+
     const interval = setInterval(() => {
+      if (pendingResultRef.current) return;
+
+      const now = Date.now();
+
+      // 1. Safety timeout: force transition to result after 3 minutes to prevent infinite loading
+      if (now - startTime > 180000) {
+        pendingResultRef.current = true;
+        setTimeout(() => setPreviewState("result"), 600);
+        return;
+      }
+
       setLoadingStep((prev) => {
-        const now = Date.now();
-        // If stream is done, we want to reach 5 quickly. Otherwise cap by desiredStepRef.current
+        // 2. If stream is done and loading step is at least 5, transition to result
+        if (prev >= 5 && streamDoneRef.current) {
+          pendingResultRef.current = true;
+          setTimeout(() => setPreviewState("result"), 600);
+          return prev;
+        }
+
         const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
         if (prev >= targetStep) return prev;
+
+        // Pacing: minimum 1.5s per step
         if (now - lastStepTimeRef.current < 1500) return prev;
         lastStepTimeRef.current = now;
         return prev + 1;
       });
     }, 250);
+
     return () => clearInterval(interval);
   }, [previewState]);
 

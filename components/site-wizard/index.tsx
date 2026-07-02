@@ -6,10 +6,8 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   ChevronLeft,
-  MapPin,
   MessageCircle,
   Monitor,
-  Phone,
   Pencil,
   Plus,
   RefreshCw,
@@ -18,16 +16,17 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
-import { useGenerateStream } from "@/hooks/use-generate-stream";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, INITIAL_MESSAGE } from "./constants";
-import { selectTemplate, getTemplateComponent, formatText, normalizeWhatsapp, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
+import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
-import { DevicePreviewFrame } from "./device-frame";
-import { Wireframe } from "./wireframe";
+import { useWizardGenerate } from "./use-wizard-generate";
+import { PreviewCanvas } from "./preview-canvas";
+import { MobileActionBar } from "./mobile-action-bar";
+import { BusinessDetailsSheet } from "./business-details-sheet";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 
@@ -50,13 +49,8 @@ export function SiteWizard({
   const device = useWizardDevice();
 
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [waDraft, setWaDraft] = useState("");
-  const [areaDraft, setAreaDraft] = useState("");
-  const [tooManyRequests, setTooManyRequests] = useState(false);
-  const [generationError, setGenerationError] = useState<string | null>(null);
-  const didGenerateRef = useRef(false);
 
-  const { startStream, cancelStream } = useGenerateStream({
+  const generate = useWizardGenerate({
     onDesignToken: (token) => {
       preview.setStreamedDesignToken(token);
       preview.streamedTokenRef.current = token;
@@ -97,8 +91,10 @@ export function SiteWizard({
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
-          businessName: chat.businessNameRef.current, businessType: chat.businessTypeRef.current,
-          businessSubType: chat.businessSubTypeRef.current, description: chat.descriptionRef.current,
+          businessName: chat.businessNameRef.current,
+          businessType: chat.businessTypeRef.current,
+          businessSubType: chat.businessSubTypeRef.current,
+          description: chat.descriptionRef.current,
           whatsapp: chat.whatsappRef.current || "",
           service_area: chat.serviceAreaRef.current || "",
           templateId: mergedPreview.template_id,
@@ -108,7 +104,7 @@ export function SiteWizard({
       );
       if (device.isMobileRef.current) {
         device.setPreviewDevice("mobile");
-        if (didGenerateRef.current) {
+        if (generate.didGenerateRef.current) {
           device.setMobileScreen("preview");
         }
         return;
@@ -121,9 +117,9 @@ export function SiteWizard({
     onError: (message) => {
       const lower = (message || "").toLowerCase();
       if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
-        setTooManyRequests(true);
+        generate.setTooManyRequests(true);
       } else {
-        setGenerationError(message || "Terjadi kesalahan saat membuat preview.");
+        generate.setGenerationError(message || "Terjadi kesalahan saat membuat preview.");
       }
       preview.setPreviewState("wireframe");
       device.setMobileScreen("chat");
@@ -132,8 +128,8 @@ export function SiteWizard({
 
   // Cleanup on unmount
   React.useEffect(() => {
-    return () => { cancelStream(); };
-  }, [cancelStream]);
+    return () => { generate.cancelStream(); };
+  }, [generate]);
 
   const writtenCharCount = useMemo(() => {
     return JSON.stringify(preview.streamedSections).length;
@@ -157,19 +153,14 @@ export function SiteWizard({
   };
 
   const handleCancelGenerationError = () => {
-    cancelStream();
-    setTooManyRequests(false);
-    setGenerationError(null);
+    generate.handleCancelGenerationError();
     preview.setPreviewState("wireframe");
     device.setMobileScreen("chat");
   };
 
   const handleRetryGeneration = () => {
-    setTooManyRequests(false);
-    setGenerationError(null);
     device.setMobileScreen("loading");
-    didGenerateRef.current = true;
-    void handleGenerate();
+    generate.handleRetryGeneration(handleGenerate);
   };
 
   const handleGenerate = async (
@@ -190,7 +181,7 @@ export function SiteWizard({
     preview.streamedTokenRef.current = null;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
-    didGenerateRef.current = true;
+    generate.didGenerateRef.current = true;
     device.setMobileScreen("loading");
 
     chat.syncChatRefs({
@@ -208,7 +199,7 @@ export function SiteWizard({
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
     }));
 
-    await startStream({
+    await generate.startStream({
       business_name: bName, business_type: bType, business_sub_type: nextBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined,
@@ -225,7 +216,7 @@ export function SiteWizard({
     chat.handleSelectSubType(subType, (name, type, overrides) => {
       preview.setRegenCount(0);
       preview.setHasUnsavedEdits(false);
-      didGenerateRef.current = true;
+      generate.didGenerateRef.current = true;
       void handleGenerate(name, type, overrides);
     });
   };
@@ -233,7 +224,7 @@ export function SiteWizard({
     chat.handleConfirmInference(confirmed, (name, type, overrides) => {
       preview.setRegenCount(0);
       preview.setHasUnsavedEdits(false);
-      didGenerateRef.current = true;
+      generate.didGenerateRef.current = true;
       void handleGenerate(name, type, overrides);
     });
   };
@@ -307,81 +298,32 @@ export function SiteWizard({
     }
   };
 
-  // Preview rendering
-  const hasLiveData = Object.keys(preview.streamedSections).length > 0;
-  const hasPreviewData = !!preview.previewData;
-  let resultPreviewContent: React.ReactNode = null;
-
-  if (hasLiveData || hasPreviewData) {
-    const isStreamingLive = hasLiveData && (!preview.streamedTemplateId || !hasPreviewData);
-    const liveContent = isStreamingLive ? preview.streamedSections : preview.previewData!.content;
-    const liveToken = isStreamingLive ? (preview.streamedDesignToken ?? {}) : preview.previewData!.design_token;
-    const liveTemplateId = (isStreamingLive ? preview.streamedTemplateId : preview.previewData!.template_id)
-      || selectTemplate(chat.businessSubType || chat.businessType);
-    const TemplateComponent = getTemplateComponent(liveTemplateId);
-    const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
-    const templatePreview = (
-      <TemplateComponent
-        content={buildFullContent(displayData, chat.businessName, chat.businessType, chat.description, chat.whatsapp) as any}
-        design_token={liveToken as any}
-        isEditorMode={false}
-        arrivedSections={isStreamingLive ? preview.arrivedSections : undefined}
-      />
-    );
-    resultPreviewContent = (
-      <div className="h-full flex flex-col overflow-hidden relative bg-[#0d0f14]">
-        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${preview.isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`}>
-          {device.previewDevice === "mobile" ? (
-            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${preview.regenCount}-${preview.historyIndex}`}>
-              <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
-                <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
-                <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
-                  <DevicePreviewFrame device="mobile" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
-                </div>
-                <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
-              </div>
-            </div>
-          ) : device.previewDevice === "tablet" ? (
-            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`tablet-${preview.regenCount}-${preview.historyIndex}`}>
-              <div className="relative mx-auto my-3 h-[820px] w-[540px] max-w-full flex-shrink-0 rounded-[20px] border-8 border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
-                <div className="relative z-10 h-full w-full overflow-hidden rounded-[12px] bg-white">
-                  <DevicePreviewFrame device="tablet" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div ref={preview.previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${preview.regenCount}-${preview.historyIndex}`}>
-              <DevicePreviewFrame device="desktop" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
-            </div>
-          )}
-        </div>
-        {preview.isSwitchingTemplate && (
-          <div className="absolute inset-0 z-30 overflow-hidden bg-[#0d0f14]/70 backdrop-blur-[2px]">
-            <Wireframe
-              businessName={chat.businessName}
-              businessType={chat.businessType}
-              businessSubType={chat.businessSubType}
-              description={chat.description}
-              chatStage="done"
-            />
-          </div>
-        )}
-      </div>
-    );
-  }
+  const handleDetailsSheetRegenerate = (whatsapp: string, serviceArea: string) => {
+    chat.setWhatsapp(whatsapp);
+    chat.setServiceArea(serviceArea);
+    setSheetOpen(false);
+    preview.setHasUnsavedEdits(true);
+    preview.setRegenCount((c: number) => c + 1);
+    preview.setPreviewState("loading");
+    device.setMobileScreen("loading");
+    void handleGenerate(chat.businessName, chat.businessType, {
+      whatsapp,
+      serviceArea,
+    });
+  };
 
   return (
     <div
       className="relative flex w-screen overflow-hidden bg-[#0d0f14] md:h-screen"
       style={{ height: "var(--webjoz-app-height, 100dvh)" }}
     >
-
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
+          device.isMobile
             ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
             : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
-          }`}
+        }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
         <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
@@ -565,7 +507,7 @@ export function SiteWizard({
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
                   <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
-                    <Sparkles className="w-3 h-3 text-primary-foreground" />
+                    <Sparkles className="w-[14px] h-[14px] text-primary-foreground" />
                   </div>
                 )}
                 <div
@@ -616,8 +558,7 @@ export function SiteWizard({
         <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <div
-              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"
-                }`}
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"}`}
             />
             <span className="transition-all duration-300">
               {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type") && "Menunggu input..."}
@@ -634,10 +575,11 @@ export function SiteWizard({
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
+          device.isMobile
             ? device.mobileScreen === "preview" || device.mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
             : device.mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <button
@@ -689,31 +631,21 @@ export function SiteWizard({
 
           <div className="flex-1 min-w-0">
             {preview.previewState === "loading" && (
-              <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full w-fit">Draft Preview</span>
+              <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full w-fit block">Draft Preview</span>
             )}
             {preview.previewState === "result" && (
-              <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full w-fit">Live Preview</span>
+              <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
             )}
           </div>
         </div>
 
         <div className="flex-1 overflow-hidden relative bg-white">
-          {preview.previewState === "wireframe" || (preview.previewState === "loading" && !hasLiveData && !hasPreviewData) ? (
-            <Wireframe
-              businessName={chat.businessName}
-              businessType={chat.businessType}
-              businessSubType={chat.businessSubType}
-              description={chat.description}
-              chatStage={chat.chatStage}
-            />
-          ) : (
-            <div className="h-full" style={{
-              filter: `blur(${preview.previewBlurPx}px)`,
-              transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-            }}>
-              {resultPreviewContent}
-            </div>
-          )}
+          <div className="h-full" style={{
+            filter: `blur(${preview.previewBlurPx}px)`,
+            transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}>
+            <PreviewCanvas chat={chat} preview={preview} device={device} />
+          </div>
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
@@ -731,7 +663,7 @@ export function SiteWizard({
             <div className="hidden md:flex absolute bottom-6 right-6 z-40 gap-2">
               <button
                 type="button"
-                onClick={() => { setWaDraft(chat.whatsapp || ""); setAreaDraft(chat.serviceArea || ""); setSheetOpen(true); }}
+                onClick={() => setSheetOpen(true)}
                 className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
               >
                 <Plus className="h-4 w-4" />
@@ -752,7 +684,7 @@ export function SiteWizard({
       </div>
 
       <WizardErrorModal
-        open={tooManyRequests}
+        open={generate.tooManyRequests}
         title="Terlalu cepat!"
         message="Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya."
         variant="warning"
@@ -761,107 +693,26 @@ export function SiteWizard({
       />
 
       <WizardErrorModal
-        open={!!generationError}
+        open={!!generate.generationError}
         title="Generate belum berhasil"
-        message={generationError || "Terjadi kesalahan saat membuat preview."}
+        message={generate.generationError || "Terjadi kesalahan saat membuat preview."}
         onCancel={handleCancelGenerationError}
         onRetry={handleRetryGeneration}
       />
 
-      {device.isMobile && device.mobileScreen === "preview" && preview.previewState === "result" && (
-        <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
-          <button
-            type="button"
-            onClick={() => { setWaDraft(chat.whatsapp || ""); setAreaDraft(chat.serviceArea || ""); setSheetOpen(true); }}
-            className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
-          >
-            <Plus className="h-3.5 w-3.5 text-slate-400" />
-            Lengkapi Data
-          </button>
-          <button
-            type="button"
-            onClick={handleGoToEditor}
-            className="btn-primary flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            Edit & Publikasikan
-          </button>
-        </div>
-      )}
+      <MobileActionBar
+        preview={preview}
+        device={device}
+        onOpenSheet={() => setSheetOpen(true)}
+        onGoToEditor={handleGoToEditor}
+      />
 
-      {sheetOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center md:items-end md:justify-center bg-black/60" onClick={() => setSheetOpen(false)}>
-          <div className="rounded-t-2xl md:rounded-2xl bg-[#111318] px-5 pb-8 pt-3 md:pt-5 border-t md:border border-white/10 md:max-w-sm md:w-full md:mx-4 md:mb-6" onClick={(e) => e.stopPropagation()} style={{ boxShadow: "0 -8px 30px rgba(0,0,0,0.5)" }}>
-            <div className="w-8 h-1 rounded-full bg-slate-700 mx-auto mb-4 md:hidden" />
-            <p className="text-sm font-semibold text-slate-100 mb-1">Lengkapi data bisnis</p>
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed">Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.</p>
-            <div className="flex gap-2 mb-3 flex-wrap">
-              <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${waDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
-                <Phone className="w-3 h-3" />
-                {waDraft ? "WA tersimpan" : "WA belum diisi"}
-              </span>
-              <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${areaDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
-                <MapPin className="w-3 h-3" />
-                {areaDraft ? areaDraft : "Area belum diisi"}
-              </span>
-            </div>
-            <div className="space-y-3 mb-4">
-              <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Nomor WhatsApp</label>
-                <input
-                  type="tel"
-                  value={waDraft}
-                  onChange={(e) => setWaDraft(e.target.value)}
-                  placeholder="cth. 081234567890"
-                  className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
-                />
-                <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
-              </div>
-              <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1 block">Jangkauan bisnis</label>
-                <input
-                  type="text"
-                  value={areaDraft}
-                  onChange={(e) => setAreaDraft(e.target.value)}
-                  placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
-                  className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
-                />
-                <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setSheetOpen(false)}
-                className="h-9 px-4 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
-              >
-                Nanti saja
-              </button>
-              <button
-                type="button"
-                disabled={waDraft === (chat.whatsapp || "") && areaDraft === (chat.serviceArea || "")}
-                onClick={() => {
-                  chat.setWhatsapp(waDraft ? normalizeWhatsapp(waDraft) : chat.whatsapp);
-                  chat.setServiceArea(areaDraft || chat.serviceArea);
-                  setSheetOpen(false);
-                  preview.setHasUnsavedEdits(true);
-                  preview.setRegenCount((c: number) => c + 1);
-                  preview.setPreviewState("loading");
-                  device.setMobileScreen("loading");
-                  void handleGenerate(chat.businessName, chat.businessType, {
-                    whatsapp: waDraft ? normalizeWhatsapp(waDraft) : chat.whatsapp,
-                    serviceArea: areaDraft || chat.serviceArea,
-                  });
-                }}
-                className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95 disabled:opacity-40"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                Re-generate
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <BusinessDetailsSheet
+        isOpen={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        chat={chat}
+        onRegenerate={handleDetailsSheetRegenerate}
+      />
     </div>
   );
 }

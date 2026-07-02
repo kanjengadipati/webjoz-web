@@ -42,8 +42,18 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const descriptionRef = useRef(description);
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
+  const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => { businessNameRef.current = businessName; }, [businessName]);
+
+  // Cancel any active typing animation on unmount
+  useEffect(() => {
+    return () => {
+      if (activeTypingCancellerRef.current) {
+        activeTypingCancellerRef.current();
+      }
+    };
+  }, []);
   useEffect(() => { businessTypeRef.current = businessType; }, [businessType]);
   useEffect(() => { businessSubTypeRef.current = businessSubType; }, [businessSubType]);
   useEffect(() => { descriptionRef.current = description; }, [description]);
@@ -78,11 +88,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
   }, [isInitialTyping, isAiTyping, chatStage]);
 
-  const typeMessage = (fullText: string, onComplete: () => void) => {
+  const typeMessage = (fullText: string, onComplete: () => void): (() => void) => {
+    if (activeTypingCancellerRef.current) {
+      activeTypingCancellerRef.current();
+    }
+
     let idx = 0;
+    let cancelled = false;
     const typingId = 'typing';
     setIsAiTyping(true);
+
     const interval = setInterval(() => {
+      if (cancelled) {
+        clearInterval(interval);
+        return;
+      }
       idx++;
       const partial = fullText.slice(0, idx);
       setMessages((prev) => {
@@ -96,9 +116,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
           return [...filtered, { id: Date.now().toString(), sender: "ai", text: fullText }];
         });
         setIsAiTyping(false);
+        activeTypingCancellerRef.current = null;
         onComplete();
       }
     }, 30);
+
+    const cancel = () => {
+      cancelled = true;
+      clearInterval(interval);
+      if (activeTypingCancellerRef.current === cancel) {
+        activeTypingCancellerRef.current = null;
+      }
+    };
+
+    activeTypingCancellerRef.current = cancel;
+    return cancel;
   };
 
   const handleSelectType = (type: string) => {
@@ -143,7 +175,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         { id: `ai-done-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
       ]);
       setChatStage("done");
-      onGenerate(businessName, inferenceResult.type, { businessSubType: subType, description: description });
+      onGenerate(businessName, inferenceResult.type, { businessSubType: subType, description: descriptionRef.current });
     } else {
       const inferredType = inferenceResult?.type || "";
       if (inferredType) setBusinessType(inferredType);
