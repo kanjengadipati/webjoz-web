@@ -100,7 +100,6 @@ export function SiteWizard({
       if (preview.loadingStepRef.current >= 5) {
         setTimeout(() => preview.setPreviewState("result"), 600);
       }
-      setTimeout(() => setSuccessModalOpen(true), 1200);
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
@@ -147,6 +146,22 @@ export function SiteWizard({
   React.useEffect(() => {
     return () => { cancelStreamRef.current(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reset success modal whenever a new generation begins
+  React.useEffect(() => {
+    if (preview.previewState === "loading") {
+      setSuccessModalOpen(false);
+    }
+  }, [preview.previewState]);
+
+  // Show success modal only after blur has fully cleared and scroll is done
+  React.useEffect(() => {
+    if (preview.resultClear && preview.previewState === "result") {
+      // Small extra delay so the user has a moment to see the preview before the modal pops
+      const t = setTimeout(() => setSuccessModalOpen(true), 400);
+      return () => clearTimeout(t);
+    }
+  }, [preview.resultClear, preview.previewState]);
 
   const writtenCharCount = useMemo(() => {
     return JSON.stringify(preview.streamedSections).length;
