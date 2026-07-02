@@ -1029,7 +1029,7 @@ export default function SectionForms({
       )}
 
       {/* FAQ FORM */}
-      {activeTab === "faq" && (
+      {activeTab === "faq" && content?.faq && (
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">

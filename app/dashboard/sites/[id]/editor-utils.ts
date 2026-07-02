@@ -20,8 +20,10 @@ export const stripRegeneratedMarkers = (value: any): any => {
 export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo"];
 
-// Sections that are only shown in the sidebar when content actually has that key
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery"];
+// Sections that are only shown in the sidebar when content actually has that key.
+// "faq" is here because the AI recommendation logic may prune it for certain business types
+// (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery", "faq"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
   header:       { label: "Header",       icon: Layout },

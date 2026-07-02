@@ -1069,7 +1069,7 @@ export default function SiteEditorPage() {
         about: { title: "", body: "", image_url: "", icon: "" },
         benefits: { title: "", items: [] },
         testimonials: { title: "", items: [] },
-        faq: { title: "", items: [] },
+        // NOTE: faq is intentionally NOT in the fallback — it is an optional section.
         cta: { headline: "", button_text: "", button_url: "" },
         contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true, map_tile_style: defaultTileStyle },
         footer: { brand_name: "", tagline: "", copyright_text: "" },
@@ -1083,7 +1083,8 @@ export default function SiteEditorPage() {
         hero: { ...fallback.hero, ...data.hero, matra: data.hero?.matra ?? "" },
         about: { ...fallback.about, ...data.about },
         benefits: { ...fallback.benefits, ...data.benefits },
-        faq: { ...fallback.faq, ...data.faq },
+        // Preserve optional sections as-is (only include when present in fetched data)
+        ...(data.faq ? { faq: { title: "", items: [], ...data.faq } } : {}),
         cta: { ...fallback.cta, ...data.cta },
         contact: { ...fallback.contact, ...data.contact },
         footer: { ...fallback.footer, ...data.footer },
