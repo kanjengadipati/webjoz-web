@@ -126,10 +126,14 @@ export function SiteWizard({
     },
   });
 
-  // Cleanup on unmount
+  // Cleanup on unmount — use cancelStream (stable via useCallback) not the
+  // whole `generate` object which changes every render and would cancel the
+  // stream mid-flight on every re-render.
+  const cancelStreamRef = React.useRef(generate.cancelStream);
+  cancelStreamRef.current = generate.cancelStream;
   React.useEffect(() => {
-    return () => { generate.cancelStream(); };
-  }, [generate]);
+    return () => { cancelStreamRef.current(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const writtenCharCount = useMemo(() => {
     return JSON.stringify(preview.streamedSections).length;
