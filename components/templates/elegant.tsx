@@ -41,7 +41,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
   const darkBg = "#0a0a0a";
   const darkSurface = "#0f0f0f";
   const darkCard = "#141414";
-  const textMuted = `color-mix(in srgb, ${gold} 55%, transparent)`;
+  const textMuted = `color-mix(in srgb, var(--dt-text) 75%, var(--dt-bg))`;
   const ctaText = "var(--dt-cta-text)";
 
   const sectionNodes: Record<string, React.ReactNode> = {

@@ -42,7 +42,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
   const card = "#120d0b";
   const border = "#1f1a18";
   const borderRed = `color-mix(in srgb, ${red} 30%, transparent)`;
-  const textMuted = "rgba(163,163,163,0.7)";
+  const textMuted = "color-mix(in srgb, var(--dt-text) 75%, var(--dt-bg))";
   const ctaText = "var(--dt-cta-text)";
 
   const sectionNodes: Record<string, React.ReactNode> = {

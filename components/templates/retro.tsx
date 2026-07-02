@@ -40,7 +40,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
   const card = "#241040";
   const border = "rgba(255,42,109,0.15)";
   const cyanGlow = "rgba(5,217,232,0.15)";
-  const textMuted = "rgba(180,160,220,0.55)";
+  const textMuted = "color-mix(in srgb, var(--dt-text) 75%, var(--dt-bg))";
 
   const sectionNodes: Record<string, React.ReactNode> = {
     hero: (

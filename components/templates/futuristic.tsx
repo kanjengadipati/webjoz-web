@@ -39,7 +39,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
   const card = "rgba(255,255,255,0.04)";
   const border = "rgba(0,212,255,0.12)";
   const glow = "rgba(0,212,255,0.08)";
-  const textMuted = "rgba(150,190,230,0.5)";
+  const textMuted = "color-mix(in srgb, var(--dt-text) 75%, var(--dt-bg))";
 
   const sectionNodes: Record<string, React.ReactNode> = {
     hero: (

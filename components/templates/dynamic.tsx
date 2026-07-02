@@ -280,8 +280,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
               gap: "0.375rem"
             }}>
               <p style={{ fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{displayBrand}</p>
-              <p style={{ color: "var(--dt-text-muted)", margin: 0, opacity: 0.85 }}>{displayTagline}</p>
-              <p style={{ margin: 0, fontSize: "0.75rem", opacity: 0.7 }}>
+              <p style={{ color: "var(--dt-text-muted)", margin: 0 }}>{displayTagline}</p>
+              <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--dt-text-muted)" }}>
                 {f?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
               </p>
             </footer>
