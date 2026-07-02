@@ -27,7 +27,8 @@ import {
   cloneData,
   collectQualityIssues,
   summarizeDiff,
-  isDesignTokenEqual
+  isDesignTokenEqual,
+  getAutoHiddenSections
 } from "./editor-utils";
 import TemplateThumbnail from "./TemplateThumbnail";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -1098,16 +1099,31 @@ export default function SiteEditorPage() {
       setContent(finalContent);
 
       // Load design token if available
+      let resolvedDesignToken = fetchedDesignToken;
       if (fetchedDesignToken) {
-        setDesignToken(fetchedDesignToken);
-        setLatestAiDesignToken(fetchedDesignToken);
+        // Auto-hide empty optional sections (FAQ, Gallery, etc.) so the
+        // editor doesn't show empty section outlines by default.
+        // The user can reveal them by clicking the eye icon in the sidebar.
+        const existingHidden: string[] = fetchedDesignToken?.layout?.hidden_sections ?? [];
+        const autoHide = getAutoHiddenSections(finalContent, existingHidden);
+        if (autoHide.length > 0) {
+          resolvedDesignToken = {
+            ...fetchedDesignToken,
+            layout: {
+              ...(fetchedDesignToken.layout ?? {}),
+              hidden_sections: [...existingHidden, ...autoHide],
+            },
+          };
+        }
+        setDesignToken(resolvedDesignToken);
+        setLatestAiDesignToken(resolvedDesignToken);
       }
       setDesignTokenScore(contentRes.data?.design_token_score ?? (fetchedDesignToken ? 100 : 0));
 
       // Save initial loaded state for comparison
       lastSavedRef.current = {
         content: finalContent,
-        designToken: fetchedDesignToken,
+        designToken: resolvedDesignToken,
         siteDetails: siteRes.data
       };
 

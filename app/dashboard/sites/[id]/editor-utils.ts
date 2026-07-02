@@ -174,3 +174,24 @@ export const isDesignTokenEqual = (a: any, b: any) => {
     JSON.stringify(a.layout?.section_order) === JSON.stringify(b.layout?.section_order)
   );
 };
+
+/**
+ * Returns section keys that should be automatically hidden on first editor
+ * load because their content arrays are empty.
+ * Only adds keys that are not already present in existingHidden so we don't
+ * overwrite deliberate user choices.
+ * The user can reveal any hidden section by clicking the eye icon in the
+ * section sidebar.
+ */
+export const getAutoHiddenSections = (content: any, existingHidden: string[] = []): string[] => {
+  const result: string[] = [];
+  const check = (key: string, isEmpty: boolean) => {
+    if (isEmpty && !existingHidden.includes(key)) result.push(key);
+  };
+  check("faq",          !(content?.faq?.items?.length));
+  check("testimonials", !(content?.testimonials?.items?.length));
+  check("gallery",      !(content?.gallery?.items?.length));
+  check("menu",         !(content?.menu?.categories?.length));
+  check("catalog",      !(content?.catalog?.categories?.length));
+  return result;
+};
