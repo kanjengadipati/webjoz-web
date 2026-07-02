@@ -98,6 +98,10 @@ export function SiteWizard({
       if (preview.loadingStepRef.current >= 5) {
         setTimeout(() => preview.setPreviewState("result"), 600);
       }
+      chat.typeMessage(
+        "Selamat! Website Anda telah berhasil dibuat. 🎉\n\nSilakan lihat hasilnya pada preview di sebelah kanan. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, jangan khawatir! Anda bisa menyesuaikan semuanya dengan sangat mudah melalui tombol 'Edit & Publikasikan' di pojok kanan bawah.",
+        () => {}
+      );
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
