@@ -29,6 +29,7 @@ import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
+import { WizardSuccessModal } from "./success-modal";
 
 export { type SiteWizardProps };
 
@@ -49,6 +50,7 @@ export function SiteWizard({
   const device = useWizardDevice();
 
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
@@ -98,10 +100,7 @@ export function SiteWizard({
       if (preview.loadingStepRef.current >= 5) {
         setTimeout(() => preview.setPreviewState("result"), 600);
       }
-      chat.typeMessage(
-        "Selamat! Website Anda telah berhasil dibuat. 🎉\n\nSilakan lihat hasilnya pada preview di sebelah kanan. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, jangan khawatir! Anda bisa menyesuaikan semuanya dengan sangat mudah melalui tombol 'Edit & Publikasikan' di pojok kanan bawah.",
-        () => {}
-      );
+      setTimeout(() => setSuccessModalOpen(true), 1200);
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
@@ -698,6 +697,12 @@ export function SiteWizard({
               </button>
             </div>
           )}
+
+          <WizardSuccessModal
+            open={successModalOpen}
+            onClose={() => setSuccessModalOpen(false)}
+            onGoToEditor={() => { setSuccessModalOpen(false); handleGoToEditor(); }}
+          />
         </div>
       </div>
 
