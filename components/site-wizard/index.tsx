@@ -29,7 +29,7 @@ import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
-import { WizardSuccessModal } from "./success-modal";
+import { WizardSuccessToast } from "./success-toast";
 
 export { type SiteWizardProps };
 
@@ -51,6 +51,8 @@ export function SiteWizard({
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  // Ref to the preview container so confetti canvas can size itself correctly
+  const previewContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
@@ -671,7 +673,7 @@ export function SiteWizard({
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-[#0d0f14]">
+        <div className="flex-1 overflow-hidden relative bg-[#0d0f14]" ref={previewContainerRef}>
           <div className="h-full" style={{
             filter: `blur(${preview.previewBlurPx}px)`,
             transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -713,10 +715,13 @@ export function SiteWizard({
             </div>
           )}
 
-          <WizardSuccessModal
+          <WizardSuccessToast
             open={successModalOpen}
-            onClose={() => setSuccessModalOpen(false)}
+            onDismiss={() => setSuccessModalOpen(false)}
             onGoToEditor={() => { setSuccessModalOpen(false); handleGoToEditor(); }}
+            containerRef={previewContainerRef}
+            // MobileActionBar is ~88px tall on mobile; on desktop the bar is absent
+            bottomOffset={device.isMobile ? 88 : 0}
           />
         </div>
       </div>
