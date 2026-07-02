@@ -87,8 +87,8 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-5">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-12 items-center" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-5" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: cyan }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-4xl font-light tracking-tight text-white leading-tight" style={headingVars}>{a.title}</h2>
                 <p className="text-sm font-light leading-relaxed" style={{ color: textMuted }}>{a.body}</p>
@@ -103,15 +103,17 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                   </div>
                 )}
               </div>
-              <div className="relative">
-                <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: `linear-gradient(135deg, ${cyan}, ${blue})` }} />
-                {a.image_url
-                  ? <><img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `1px solid ${border}`, borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
-                  : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}>
-                      <Cpu className="w-16 h-16 opacity-20" style={{ color: cyan }} />
+              {a.image_url && (
+                <div className="relative">
+                  <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: `linear-gradient(135deg, ${cyan}, ${blue})` }} />
+                  <div className="relative">
+                    <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `1px solid ${border}`, borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <div className="absolute bottom-1 right-2 z-10">
+                      <PhotoCredit credit={a.image_credit} />
                     </div>
-                }
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )} />
@@ -235,7 +237,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
                       <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(12px)", boxShadow: `0 4px 24px rgba(0,0,0,0.2)` }}>
                         {item.badge && <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5" style={{ color: "#fff", background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}>{item.badge}</span>}
                         {item.image_url
-                          ? <><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
+                          ? <div className="relative"><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover ring-1 ring-white/10 group-hover:ring-cyan-400/30 transition-all" style={{ borderRadius: "var(--dt-radius)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={item.image_credit} /></div></div>
                           : <div className="w-full h-36 flex items-center justify-center" style={{ background: `${cyan}08`, borderRadius: "var(--dt-radius)" }}><Cpu className="w-10 h-10" style={{ color: `${cyan}30` }} /></div>}
                         <p className="font-semibold text-sm text-white group-hover:text-cyan-200 transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}

@@ -14,6 +14,7 @@ import {
   Plus,
   RefreshCw,
   Smartphone,
+  Tablet,
   Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
@@ -189,6 +190,8 @@ export function SiteWizard({
     preview.streamedTokenRef.current = null;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
+    didGenerateRef.current = true;
+    device.setMobileScreen("loading");
 
     chat.syncChatRefs({
       businessName: bName,
@@ -336,6 +339,14 @@ export function SiteWizard({
                   <DevicePreviewFrame device="mobile" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
                 </div>
                 <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
+              </div>
+            </div>
+          ) : device.previewDevice === "tablet" ? (
+            <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`tablet-${preview.regenCount}-${preview.historyIndex}`}>
+              <div className="relative mx-auto my-3 h-[820px] w-[540px] max-w-full flex-shrink-0 rounded-[20px] border-8 border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
+                <div className="relative z-10 h-full w-full overflow-hidden rounded-[12px] bg-white">
+                  <DevicePreviewFrame device="tablet" iframeRef={preview.previewIframeRef}>{templatePreview}</DevicePreviewFrame>
+                </div>
               </div>
             </div>
           ) : (
@@ -649,6 +660,14 @@ export function SiteWizard({
             </button>
             <button
               type="button"
+              onClick={() => device.setPreviewDevice("tablet")}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "tablet" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              aria-label="Preview tablet"
+            >
+              <Tablet className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
               onClick={() => device.setPreviewDevice("mobile")}
               className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
               aria-label="Preview mobile"
@@ -668,19 +687,13 @@ export function SiteWizard({
             </button>
           )}
 
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 flex-1 max-w-xs" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className={`w-2 h-2 rounded-full shrink-0 transition-colors duration-500 ${preview.previewState === "loading" ? "bg-amber-400" : preview.previewState === "result" ? "bg-emerald-400" : chat.businessName ? "bg-slate-500" : "bg-slate-600"}`} />
-              <span className="text-xs text-slate-400 truncate font-medium transition-all duration-300">
-                {chat.businessName ? `${chat.businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.webjoz.com` : "preview.webjoz.com"}
-              </span>
-              {preview.previewState === "loading" && (
-                <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full shrink-0">Draft Preview</span>
-              )}
-              {preview.previewState === "result" && (
-                <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Live Preview</span>
-              )}
-            </div>
+          <div className="flex-1 min-w-0">
+            {preview.previewState === "loading" && (
+              <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full w-fit">Draft Preview</span>
+            )}
+            {preview.previewState === "result" && (
+              <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full w-fit">Live Preview</span>
+            )}
           </div>
         </div>
 

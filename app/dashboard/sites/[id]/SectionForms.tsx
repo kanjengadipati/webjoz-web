@@ -580,6 +580,16 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.header?.tagline || ""}
+              onChange={(e) => updateField("header", "tagline", e.target.value)}
+              placeholder="cth. Cita Rasa Nusantara"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Logo URL</label>
             <FileUpload label="" value={content.header?.logo_url || ""} onChange={(val) => updateField("header", "logo_url", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
           </div>
@@ -605,6 +615,19 @@ export default function SectionForms({
               <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)} />
             </label>
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
+          </div>
+          {/* Eyebrow label (semua template, opsional) */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              id="field-hero.eyebrow"
+              type="text"
+              value={content.hero?.eyebrow || ""}
+              onChange={(e) => updateField("hero", "eyebrow", e.target.value)}
+              placeholder="cth. Tersedia Sekarang"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+            <p className="text-[10px] text-slate-600 leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
@@ -685,6 +708,44 @@ export default function SectionForms({
             label="Link Tombol CTA"
             defaultWaNumber={content.contact?.phone}
           />
+          {/* Secondary CTA (optional, used by Futuristic and some templates) */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              id="field-hero.cta_secondary_text"
+              type="text"
+              value={content.hero?.cta_secondary_text || ""}
+              onChange={(e) => updateField("hero", "cta_secondary_text", e.target.value)}
+              placeholder="cth. Pelajari Lebih Lanjut"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+            <p className="text-[10px] text-slate-600 leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
+          </div>
+          {/* Badge text (small text below CTA, used by Futuristic template) */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              id="field-hero.badge_text"
+              type="text"
+              value={content.hero?.badge_text || ""}
+              onChange={(e) => updateField("hero", "badge_text", e.target.value)}
+              placeholder="cth. Buka 7 Hari · Jam 07.00–22.00"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+            <p className="text-[10px] text-slate-600 leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
+          </div>
+          {/* Opening hours (used by Bold template) */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              id="field-hero.opening_hours"
+              type="text"
+              value={content.hero?.opening_hours || ""}
+              onChange={(e) => updateField("hero", "opening_hours", e.target.value)}
+              placeholder="cth. Buka Setiap Hari 07.00 – 22.00"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
         </div>
       )}
 
@@ -725,6 +786,35 @@ export default function SectionForms({
               <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)} />
             </label>
             <FileUpload label="" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] text-slate-500 uppercase">Perataan Teks</label>
+            <div className="flex gap-1">
+              {(["left", "center", "right"] as const).map((align) => (
+                <button
+                  key={align}
+                  type="button"
+                  onClick={() => updateField("about", "textAlign", align === "left" ? undefined : align)}
+                  className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
+                    (content.about.textAlign || "left") === align
+                      ? "bg-primary/20 border-primary/60 text-primary"
+                      : "border-white/10 text-slate-400 hover:border-white/30"
+                  }`}
+                >
+                  {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.about?.eyebrow || ""}
+              onChange={(e) => updateField("about", "eyebrow", e.target.value)}
+              placeholder="cth. Tentang Kami"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
@@ -806,6 +896,16 @@ export default function SectionForms({
       {activeTab === "benefits" && (
         <div className="space-y-3">
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.benefits?.eyebrow || ""}
+              onChange={(e) => updateField("benefits", "eyebrow", e.target.value)}
+              placeholder="cth. Kenapa Pilih Kami"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
             </label>
@@ -816,6 +916,35 @@ export default function SectionForms({
               onChange={(e) => updateField("benefits", "title", e.target.value)} 
               className={fieldClass("benefits.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.benefits?.subtitle || ""}
+              onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
+              placeholder="cth. Berbagai alasan mengapa pelanggan mempercayai kami"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] text-slate-500 uppercase">Perataan Teks</label>
+            <div className="flex gap-1">
+              {(["left", "center", "right"] as const).map((align) => (
+                <button
+                  key={align}
+                  type="button"
+                  onClick={() => updateField("benefits", "textAlign", align === "center" ? undefined : align)}
+                  className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
+                    (content.benefits.textAlign || "center") === align
+                      ? "bg-primary/20 border-primary/60 text-primary"
+                      : "border-white/10 text-slate-400 hover:border-white/30"
+                  }`}
+                >
+                  {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
+                </button>
+              ))}
+            </div>
           </div>
           {content.benefits.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-white/10 p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
@@ -985,6 +1114,36 @@ export default function SectionForms({
               value={content.cta.headline || ""} 
               onChange={(e) => updateField("cta", "headline", e.target.value)} 
               className={fieldClass("cta.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.cta?.eyebrow || ""}
+              onChange={(e) => updateField("cta", "eyebrow", e.target.value)}
+              placeholder="cth. Mulai Sekarang"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subheadline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.cta?.subheadline || ""}
+              onChange={(e) => updateField("cta", "subheadline", e.target.value)}
+              placeholder="cth. Dapatkan penawaran spesial sebelum kehabisan!"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Kepercayaan <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.cta?.trust_signal || ""}
+              onChange={(e) => updateField("cta", "trust_signal", e.target.value)}
+              placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1436,6 +1595,16 @@ export default function SectionForms({
       {activeTab === "testimonials" && (
         <div className="space-y-3">
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.testimonials?.eyebrow || ""}
+              onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)}
+              placeholder="cth. Testimoni"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
+          <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
             <input
               type="text"
@@ -1881,6 +2050,26 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
               onChange={(e) => updateField(sectionKey, "title", e.target.value)}
               placeholder={`cth. Menu ${sectionTitle}`}
               className={`${inputBase} bg-white/[0.04]`}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className={inputLabel}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={data?.eyebrow ?? ""}
+              onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)}
+              placeholder={`cth. Pilihan ${sectionTitle}`}
+              className={inputBase}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className={inputLabel}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={data?.subtitle ?? ""}
+              onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
+              placeholder="cth. Nikmati berbagai pilihan menu terbaik kami"
+              className={inputBase}
             />
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">

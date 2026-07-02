@@ -9,7 +9,7 @@ export function useWizardDevice() {
   const isMobileRef = useRef(false);
   const [mobileScreen, setMobileScreen] = useState<MobileScreen>("chat");
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
-  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {

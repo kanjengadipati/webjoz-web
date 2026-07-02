@@ -86,7 +86,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(about) => (
           <section className="px-6 py-[var(--dt-spacing)] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" id="about">
-            <div className="space-y-6">
+            <div className="space-y-6" style={{ textAlign: about.textAlign || "left" }}>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] font-extrabold tracking-wider uppercase text-xs">Misi Kami</span>
               <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight" style={headingVars}>{about.title}</h2>
               <p className="text-slate-300 leading-relaxed sm:text-justify whitespace-pre-line">{about.body}</p>
@@ -113,7 +113,9 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
                       className="w-full h-full object-cover absolute inset-0 z-10"
                       alt="About"
                     />
-                    <PhotoCredit credit={about.image_credit} />
+                    <div className="absolute bottom-2 right-2 z-20">
+                      <PhotoCredit credit={about.image_credit} />
+                    </div>
                   </>
                 )}
               </div>

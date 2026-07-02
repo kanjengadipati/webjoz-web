@@ -52,7 +52,7 @@ export function DevicePreviewFrame({
     <iframe
       key={device}
       ref={iframeRef}
-      title={device === "desktop" ? "Preview desktop" : "Preview mobile"}
+      title={device === "desktop" ? "Preview desktop" : device === "tablet" ? "Preview tablet" : "Preview mobile"}
       onLoad={syncFrameDocument}
       srcDoc="<!doctype html><html><head></head><body style='background:#0d0f14'></body></html>"
       className={device === "desktop" ? "block h-full w-full border-0 bg-white" : "h-full w-full bg-white"}

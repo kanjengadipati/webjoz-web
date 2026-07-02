@@ -73,7 +73,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               <div className="absolute inset-0 rounded-[var(--dt-radius-lg)] rotate-1" style={{ background: sageLight }} />
               <div className="relative rounded-[var(--dt-radius-lg)] p-6 text-center space-y-4 border shadow" style={{ background: surface, borderColor: border }}>
                 {h.image_url
-                  ? <><img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={h.image_credit} /></>
+                  ? <div className="relative"><img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={h.image_credit} /></div></div>
                   : (
                     <>
                       <span className="text-4xl block">🌿</span>
@@ -92,16 +92,18 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         <MemoSectionContent content={about} render={(a) => (
           <section className="py-[var(--dt-spacing)] px-6 border-y" id="about" style={{ background: "var(--dt-primary-soft)", borderColor: border }}>
             <div className="max-w-5xl mx-auto space-y-8">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div className="space-y-4">
+              <div className={a.image_url ? "grid md:grid-cols-2 gap-8 items-center" : "max-w-3xl mx-auto"}>
+                <div className="space-y-4" style={{ textAlign: a.textAlign || "left" }}>
                   {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold   block" style={{ color: sage }}>{a.eyebrow}</span>}
                   <h2 className="text-2xl md:text-3xl font-medium leading-snug" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>{a.title}</h2>
                   <p className="text-sm leading-relaxed italic font-light" style={{ color: brownMuted }}>{a.body}</p>
                 </div>
                 {a.image_url && (
-                  <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)] border" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  <div className="relative">
+                    <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)] border" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={a.image_credit} /></div>
+                  </div>
                 )}
-                {a.image_url && <PhotoCredit credit={a.image_credit} />}
               </div>
               {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: border }}>

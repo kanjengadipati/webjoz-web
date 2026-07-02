@@ -91,8 +91,8 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-16 px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-5">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-12 items-center" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-5" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: red }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-white leading-tight" style={headingVars}>{a.title}</h2>
                 <p className="text-sm leading-relaxed font-light" style={{ color: textMuted }}>{a.body}</p>
@@ -107,15 +107,17 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                   </div>
                 )}
               </div>
-              <div className="relative">
-                <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: red }} />
-                {a.image_url
-                  ? <><img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `2px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
-                  : <div className="relative w-full h-72 flex items-center justify-center" style={{ background: card, border: `2px solid ${border}` }}>
-                      <Flame className="w-16 h-16 opacity-20" style={{ color: red }} />
+              {a.image_url && (
+                <div className="relative">
+                  <div className="absolute -inset-2 blur-xl opacity-20" style={{ background: red }} />
+                  <div className="relative">
+                    <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover" style={{ border: `2px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <div className="absolute bottom-1 right-2 z-10">
+                      <PhotoCredit credit={a.image_credit} />
                     </div>
-                }
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )} />
@@ -247,7 +249,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                       <div key={ii} className="space-y-3 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
                         {item.badge && <span className="inline-block text-[9px] font-black uppercase tracking-wider px-2 py-0.5" style={{ color: ctaText, background: red }}>{item.badge}</span>}
                         {item.image_url
-                          ? <><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
+                          ? <div className="relative"><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={item.image_credit} /></div></div>
                           : <div className="w-full h-36 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-10 h-10" style={{ color: `${red}40` }} /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-[var(--dt-accent)] transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}

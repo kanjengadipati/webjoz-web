@@ -4,6 +4,18 @@ import { Globe, MapPin, Phone, Mail } from "lucide-react";
 import type { TemplateProps } from "../../templates/types";
 import DynamicLeadForm from "./lead-form";
 
+function isPlaceholderPhone(phone: string | null | undefined): boolean {
+  if (!phone) return true;
+  const digits = phone.replace(/\D/g, "");
+  return digits === "6281234567890" || digits === "081234567890" || digits === "81234567890";
+}
+
+function isPlaceholderMap(url: string | null | undefined): boolean {
+  if (!url) return true;
+  const lower = url.toLowerCase();
+  return lower === "https://maps.google.com" || lower === "https://maps.google.com/" || lower === "https://google.com/maps" || lower === "https://maps.apple.com";
+}
+
 export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: { contact: TemplateProps["content"]["contact"]; onSubmitLead?: TemplateProps["onSubmitLead"]; leadSubmitting?: boolean; leadSuccess?: boolean; leadError?: string | null }) {
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const align = c.align || "center";
@@ -20,7 +32,7 @@ export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubm
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
             {[
               ...(c.address ? [{ icon: MapPin, text: c.address } as const] : []),
-              ...(c.phone ? [{ icon: Phone, text: c.phone, href: `https://wa.me/${c.phone.replace(/\D/g, "")}` } as const] : []),
+              ...(c.phone && !isPlaceholderPhone(c.phone) ? [{ icon: Phone, text: c.phone, href: `https://wa.me/${c.phone.replace(/\D/g, "")}` } as const] : []),
               ...(c.email ? [{ icon: Mail, text: c.email, href: `mailto:${c.email}` } as const] : []),
             ].map((item) => {
               const { icon: Icon, text, href } = item;
@@ -36,7 +48,7 @@ export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubm
               return <div key={text}>{content}</div>;
             })}
           </div>
-          {c.maps_url && (
+          {c.maps_url && c.show_map && !isPlaceholderMap(c.maps_url) && (
             <a href={c.maps_url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent, gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem" }}>
               <Globe style={{ width: 15, height: 15 }} /> Buka Google Maps
             </a>

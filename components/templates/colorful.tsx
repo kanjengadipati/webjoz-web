@@ -81,7 +81,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <div className="absolute inset-0 rounded-2xl rotate-2 border-2 border-black" style={{ background: pink }} />
               <div className={`relative bg-white border-4 border-black rounded-2xl p-5 space-y-4 ${shadowBlock}`}>
                 {h.image_url
-                  ? <><img src={h.image_url} alt={h.headline} className="w-full h-48 object-cover rounded-xl border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={h.image_credit} /></>
+                  ? <div className="relative"><img src={h.image_url} alt={h.headline} className="w-full h-48 object-cover rounded-xl border-2 border-black" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={h.image_credit} /></div></div>
                   : (
                     <div className="w-full h-48 rounded-xl border-2 border-black flex items-center justify-center" style={{ background: yellow }}>
                       <span className="text-5xl">🎯</span>
@@ -100,8 +100,8 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E8F5E9" }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-              <div className="space-y-4">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-10 items-center" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-4" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="inline-block text-[10px] font-black uppercase tracking-widest px-2 py-1" style={{ background: black, color: yellow }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-3xl font-black uppercase leading-snug" style={{ color: black, ...headingVars }}>{a.title}</h2>
                 <p className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }}>{a.body}</p>
@@ -120,9 +120,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                 <div className="relative">
                   <div className="absolute inset-0 border-2 border-black rounded-xl rotate-2" style={{ background: yellow }} />
                   <img src={a.image_url} alt={a.title} className="relative w-full h-60 object-cover rounded-xl border-4 border-black" style={{ boxShadow: "5px 5px 0 #000" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  <div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={a.image_credit} /></div>
                 </div>
               )}
-              {a.image_url && <PhotoCredit credit={a.image_credit} />}
             </div>
           </section>
         )} />

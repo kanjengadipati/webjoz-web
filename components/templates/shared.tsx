@@ -12,6 +12,18 @@ import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/co
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
 
+export function isPlaceholderPhone(phone: string | null | undefined): boolean {
+  if (!phone) return true;
+  const digits = phone.replace(/\D/g, "");
+  return digits === "6281234567890" || digits === "081234567890" || digits === "81234567890";
+}
+
+export function isPlaceholderMap(url: string | null | undefined): boolean {
+  if (!url) return true;
+  const lower = url.toLowerCase();
+  return lower === "https://maps.google.com" || lower === "https://maps.google.com/" || lower === "https://google.com/maps" || lower === "https://maps.apple.com";
+}
+
 // ─── WA Lead Modal ────────────────────────────────────────────────────────────
 
 function WaLeadModal({ onSubmitLead, onClose }: {
@@ -224,12 +236,11 @@ const NavMenu: React.FC<NavMenuProps> = ({
 const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }> = ({ phone, isEditorMode, onSubmitLead }) => {
   const [showModal, setShowModal] = useState(false);
   const digits = phone ? phone.replace(/\D/g, "") : "";
-  const hasWa = digits.length >= 8;
+  const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
 
-  // In editor mode: always show the button as a preview
-  // In live mode: show WA button if phone set, generic contact if onSubmitLead exists, else hide
-  const showGenericButton = !hasWa && (isEditorMode || !!onSubmitLead);
+  // In editor mode: hide generic button; only show when not editor and lead form exists
+  const showGenericButton = !hasWa && !!onSubmitLead && !isEditorMode;
 
   return (
     <>
@@ -252,7 +263,7 @@ const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean; onSubm
         /* Generic contact button — primary color with Send icon */
         <button
           type="button"
-          onClick={onSubmitLead ? () => setShowModal(true) : undefined}
+          onClick={() => setShowModal(true)}
           aria-label="Hubungi Kami"
           className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.35)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 cursor-pointer"
           style={{ background: "var(--dt-primary, #4F46E5)" }}
@@ -448,7 +459,7 @@ function MenuCatalogCard({
   const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
 
   const imageNode = image_url ? (
-    <>
+    <div className="relative">
       <img
         src={image_url}
         alt={itemName}
@@ -457,11 +468,15 @@ function MenuCatalogCard({
         onClick={() => setLightboxOpen(true)}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
-      <PhotoCredit credit={image_credit} />
+      {image_credit?.name && (
+        <div className="absolute bottom-1 right-2 z-10">
+          <PhotoCredit credit={image_credit} />
+        </div>
+      )}
       {lightboxOpen && (
         <ImageLightbox src={image_url} alt={itemName} onClose={() => setLightboxOpen(false)} />
       )}
-    </>
+    </div>
   ) : (
     <div className={placeholderClassName} style={placeholderStyle}>
       {React.createElement(icon, { className: placeholderIconClassName, style: placeholderIconStyle })}
@@ -902,7 +917,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
   const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
     ...(address && address !== "area sekitar" ? [{ icon: MapPin, text: address }] : []),
-    ...(phone ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
+    ...(phone && !isPlaceholderPhone(phone) ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
     ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email, href: `mailto:${email}` }] : []),
   ];
 
@@ -931,7 +946,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             })}
           </div>
 
-          {mapsUrl && showMap !== false && (
+          {mapsUrl && !isPlaceholderMap(mapsUrl) && showMap !== false && (
             <div className="space-y-2 mt-2">
               {(() => {
                 const m = mapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
@@ -982,6 +997,7 @@ interface BenefitsSectionProps {
     items: BenefitItem[];
     eyebrow?: string;
     subtitle?: string;
+    textAlign?: "left" | "center" | "right";
   };
   variant?: "grid" | "stats" | "alternating" | "compact";
   wrapperClass?: string;
@@ -1042,22 +1058,25 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
     "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8";
 
   const statAccent = { color: accentColor };
+  const alignStyle = b.textAlign ? { textAlign: b.textAlign as React.CSSProperties['textAlign'] } : { textAlign: "center" as React.CSSProperties['textAlign'] };
+  const headerAlign = { ...eyebrowStyle, ...alignStyle };
+  const cardAlign = { ...cardStyle, ...alignStyle };
 
   return (
-    <section id="benefits" className={wrapperClass} style={wrapperStyle}>
+    <section id="benefits" className={wrapperClass} style={{ ...wrapperStyle, ...alignStyle }}>
       <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
         {(b.eyebrow || b.title || b.subtitle) && (
           <div className="space-y-2">
-            {b.eyebrow && <span className={eyebrowClass} style={eyebrowStyle}>{b.eyebrow}</span>}
-            {b.title && <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{b.title}</h2>}
-            {b.subtitle && <p className={subtitleClass} style={subtitleStyle}>{b.subtitle}</p>}
+            {b.eyebrow && <span className={eyebrowClass} style={headerAlign}>{b.eyebrow}</span>}
+            {b.title && <h2 className={titleClass} style={{ ...titleStyle, ...headingVars, ...alignStyle }}>{b.title}</h2>}
+            {b.subtitle && <p className={subtitleClass} style={{ ...subtitleStyle, ...alignStyle }}>{b.subtitle}</p>}
           </div>
         )}
         <div className={containerClass}>
           {b.items?.map((item, idx) => {
             if (variant === "stats" && item.stat) {
               return (
-                <div key={idx} className={cardClass || "p-6 space-y-3"} style={cardStyle}>
+                <div key={idx} className={cardClass || "p-6 space-y-3"} style={{ ...cardStyle, ...cardAlign }}>
                   <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>
                   {item.stat_label && <p className={statLabelClass} style={statLabelStyle}>{item.stat_label}</p>}
                   <div className={iconContainerClass} style={{ ...iconContainerStyle, color: accentColor }}>
@@ -1070,7 +1089,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
             }
             if (variant === "alternating" && idx % 2 === 1 && item.stat) {
               return (
-                <div key={idx} className={`${cardClass || ""} flex flex-col justify-center text-center`} style={cardStyle}>
+                <div key={idx} className={`${cardClass || ""} flex flex-col justify-center text-center`} style={{ ...cardStyle, ...cardAlign }}>
                   <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>
                   {item.stat_label && <p className={statLabelClass} style={statLabelStyle}>{item.stat_label}</p>}
                   <h3 className={cardTitleClass} style={cardTitleStyle}>{item.title}</h3>
@@ -1078,7 +1097,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
               );
             }
             return (
-              <div key={idx} className={cardClass || "p-5 md:p-6 space-y-3"} style={cardStyle}>
+              <div key={idx} className={cardClass || "p-5 md:p-6 space-y-3"} style={{ ...cardStyle, ...cardAlign }}>
                 {item.stat ? (
                   <div className="space-y-1">
                     <p className={statClass} style={{ ...statStyle, ...statAccent }}>{item.stat}</p>

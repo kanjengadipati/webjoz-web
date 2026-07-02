@@ -126,6 +126,7 @@ export interface TemplateProps {
       image_credit?: ImageCredit | null;
       icon?: string;
       eyebrow?: string;
+      textAlign?: "left" | "center" | "right";
       highlight_stat_1?: { value: string; label: string };
       highlight_stat_2?: { value: string; label: string };
       highlight_stat_3?: { value: string; label: string };
@@ -135,6 +136,7 @@ export interface TemplateProps {
       items: BenefitItem[];
       eyebrow?: string;
       subtitle?: string;
+      textAlign?: "left" | "center" | "right";
     };
     testimonials?: {
       title: string;

@@ -34,7 +34,7 @@ export type InferenceResult = {
 
 export type PreviewState = "wireframe" | "loading" | "result";
 
-export type PreviewDevice = "desktop" | "mobile";
+export type PreviewDevice = "desktop" | "tablet" | "mobile";
 
 export type BusinessTypeItem = {
   value: string;

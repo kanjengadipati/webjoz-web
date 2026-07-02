@@ -79,8 +79,8 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section className="py-20 px-6 border-y" id="about" style={{ background: darkSurface, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-5">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-12 items-center" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-5" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="text-[10px] uppercase tracking-widest font-bold   block" style={{ color: gold }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-3xl font-bold leading-snug" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{a.title}</h2>
                 <p className="text-sm leading-relaxed font-light  " style={{ color: "rgba(245,230,192,0.55)" }}>{a.body}</p>
@@ -95,15 +95,20 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                   </div>
                 )}
               </div>
-              <div className="relative">
-                <div className="absolute inset-0 rounded blur-xl opacity-20" style={{ background: gold }} />
-                <div className="relative rounded border p-8 text-center space-y-3" style={{ background: darkCard, borderColor: `${gold}25` }}>
-                  {a.image_url
-                    ? <><img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
-                    : <Award className="w-12 h-12 mx-auto" style={{ color: gold }} />}
-                  <p className="text-sm font-bold  " style={{ color: goldLight }}>{header?.brand_name}</p>
+              {a.image_url && (
+                <div className="relative">
+                  <div className="absolute inset-0 rounded blur-xl opacity-20" style={{ background: gold }} />
+                  <div className="relative rounded border p-8 text-center space-y-3" style={{ background: darkCard, borderColor: `${gold}25` }}>
+                    <div className="relative">
+                      <img src={a.image_url} alt={a.title} className="w-full h-52 object-cover rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                      <div className="absolute bottom-1 right-2 z-10">
+                        <PhotoCredit credit={a.image_credit} />
+                      </div>
+                    </div>
+                    <p className="text-sm font-bold  " style={{ color: goldLight }}>{header?.brand_name}</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </section>
         )} />

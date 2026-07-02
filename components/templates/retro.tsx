@@ -88,8 +88,8 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-[var(--dt-spacing)] px-6" style={{ background: surface, borderTop: `1px solid ${border}` }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-5">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-12 items-center" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-5" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="text-[10px] font-bold uppercase tracking-[0.2em] block" style={{ color: cyan }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-4xl font-black tracking-tight text-white leading-tight" style={headingVars}>{a.title}</h2>
                 <p className="text-sm leading-relaxed" style={{ color: textMuted }}>{a.body}</p>
@@ -104,15 +104,17 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                   </div>
                 )}
               </div>
-              <div className="relative">
-                <div className="absolute -inset-2 blur-2xl opacity-20" style={{ background: `linear-gradient(135deg, ${pink}, ${cyan})` }} />
-                {a.image_url
-                  ? <><img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-[var(--dt-radius)]" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={a.image_credit} /></>
-                  : <div className="relative w-full h-72 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: card, border: `1px solid ${border}` }}>
-                      <Music className="w-16 h-16 opacity-20" style={{ color: pink }} />
+              {a.image_url && (
+                <div className="relative">
+                  <div className="absolute -inset-2 blur-2xl opacity-20" style={{ background: `linear-gradient(135deg, ${pink}, ${cyan})` }} />
+                  <div className="relative">
+                    <img src={a.image_url} alt={a.title} className="relative w-full h-72 object-cover rounded-[var(--dt-radius)]" style={{ border: `1px solid ${border}` }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <div className="absolute bottom-1 right-2 z-10">
+                      <PhotoCredit credit={a.image_credit} />
                     </div>
-                }
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )} />
@@ -244,7 +246,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
                       <div key={ii} className="space-y-3 p-4 rounded-[var(--dt-radius)] transition-all duration-300 group hover:translate-y-[-3px]" style={{ background: card, border: `1px solid ${border}`, boxShadow: `0 4px 20px rgba(0,0,0,0.3)` }}>
                         {item.badge && <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" style={{ color: "#fff", background: `linear-gradient(135deg, ${pink}, #b91c6b)` }}>{item.badge}</span>}
                         {item.image_url
-                          ? <><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-[var(--dt-radius)] ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
+                          ? <div className="relative"><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover rounded-[var(--dt-radius)] ring-1 ring-white/10 group-hover:ring-pink-400/30 transition-all" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={item.image_credit} /></div></div>
                           : <div className="w-full h-36 rounded-[var(--dt-radius)] flex items-center justify-center" style={{ background: `${pink}10` }}><Music className="w-10 h-10" style={{ color: `${pink}40` }} /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-pink-200 transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}

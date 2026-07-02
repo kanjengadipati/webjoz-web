@@ -9,7 +9,7 @@ export default function PhotoCredit({ credit, className = "" }: PhotoCreditProps
   if (!credit?.name) return null;
 
   return (
-    <p className={`text-xs text-gray-500 mt-2 ${className}`}>
+    <p className={`text-[10px] text-white/70 ${className}`}>
       Photo by{" "}
       <a href={credit.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">
         {credit.name}

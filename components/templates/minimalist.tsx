@@ -62,9 +62,9 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
               )}
             </div>
             {h.image_url && (
-              <div className="pt-8">
+              <div className="pt-8 relative">
                 <img src={h.image_url} alt={h.headline} className="w-full max-h-[480px] object-cover" style={{ filter: "grayscale(15%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                <PhotoCredit credit={h.image_credit} />
+                <div className="absolute bottom-2 right-2 z-10"><PhotoCredit credit={h.image_credit} /></div>
               </div>
             )}
           </section>
@@ -75,8 +75,8 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-[var(--dt-spacing)] px-6 md:px-12 border-y" style={{ background: zinc100, borderColor: zinc200 }}>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
-              <div className="space-y-6">
+            <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-12 items-start" : "max-w-3xl mx-auto"}`}>
+              <div className="space-y-6" style={{ textAlign: a.textAlign || "left" }}>
                 {a.eyebrow && <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: zinc500 }}>{a.eyebrow}</span>}
                 <h2 className="text-2xl md:text-3xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{a.title}</h2>
                 <p className="text-sm font-light leading-relaxed" style={{ color: zinc500 }}>{a.body}</p>
@@ -92,9 +92,11 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                 )}
               </div>
               {a.image_url && (
-                <img src={a.image_url} alt={a.title} className="w-full h-72 object-cover" style={{ filter: "grayscale(10%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <div className="relative">
+                  <img src={a.image_url} alt={a.title} className="w-full h-72 object-cover" style={{ filter: "grayscale(10%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  <div className="absolute bottom-2 right-2 z-10"><PhotoCredit credit={a.image_credit} /></div>
+                </div>
               )}
-              {a.image_url && <PhotoCredit credit={a.image_credit} />}
             </div>
           </section>
         )} />

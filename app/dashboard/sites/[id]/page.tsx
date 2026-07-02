@@ -1065,7 +1065,7 @@ export default function SiteEditorPage() {
       })();
       const fallback = {
         header: { brand_name: "", nav_cta_text: "", logo_url: "", icon: "" },
-        hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "", matra: "" },
+        hero: { headline: "", subheadline: "", cta_text: "", cta_url: "", image_url: "", matra: "", eyebrow: "", badge_text: "", cta_secondary_text: "", opening_hours: "", launch_label: "" },
         about: { title: "", body: "", image_url: "", icon: "" },
         benefits: { title: "", items: [] },
         testimonials: { title: "", items: [] },
