@@ -177,20 +177,22 @@ export const isDesignTokenEqual = (a: any, b: any) => {
 
 /**
  * Returns section keys that should be automatically hidden on first editor
- * load.  A section is auto-hidden when:
- *   1. It is an optional section (faq, gallery, testimonials, menu, catalog)
- *      that is NOT present in the AI-recommended section_order, OR
- *   2. Its content array is empty (items / categories length === 0).
+ * load because their content arrays are empty (no items / no categories).
  *
  * Only adds keys that are not already present in existingHidden so we don't
- * overwrite deliberate user choices.
- * The user can reveal any hidden section by clicking the eye icon in the
- * section sidebar.
+ * overwrite deliberate user choices. The user can reveal any hidden section
+ * by clicking the eye icon in the section sidebar.
+ *
+ * NOTE: We intentionally do NOT auto-hide based on section_order alone.
+ * If a user explicitly reveals a section and adds content, it must survive
+ * reloads even if the AI's section_order doesn't list it.
+ * The section_order is already enforced by:
+ *   - Template sectionOrder computation (starts from AI's recommendation)
+ *   - filterEmptySections() which hides empty sections on the live site
  */
 export const getAutoHiddenSections = (
   content: any,
   existingHidden: string[] = [],
-  sectionOrder: string[] = [],
 ): string[] => {
   const result: string[] = [];
 
@@ -198,17 +200,12 @@ export const getAutoHiddenSections = (
 
   const isEmpty = (key: string): boolean => {
     if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);
-    // faq, testimonials, gallery
     return !(content?.[key]?.items?.length);
   };
 
   for (const key of OPTIONAL) {
     if (existingHidden.includes(key)) continue; // already there, skip
-
-    const notRecommended = sectionOrder.length > 0 && !sectionOrder.includes(key);
-    if (notRecommended || isEmpty(key)) {
-      result.push(key);
-    }
+    if (isEmpty(key)) result.push(key);
   }
 
   return result;

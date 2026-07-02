@@ -1101,13 +1101,15 @@ export default function SiteEditorPage() {
       // Load design token if available
       let resolvedDesignToken = fetchedDesignToken;
       if (fetchedDesignToken) {
-        // Auto-hide optional sections (FAQ, Gallery, etc.) that are either:
-        // • not in the AI-recommended section_order, or
-        // • have empty content arrays.
-        // The user can reveal any section by clicking the eye icon in the sidebar.
+        // Auto-hide optional sections (FAQ, Gallery, Testimoni, etc.) whose
+        // content arrays are empty, so the editor canvas stays uncluttered.
+        // The user can reveal any section via the eye icon in the sidebar.
+        // NOTE: We don't auto-hide based on section_order alone — a user who
+        // deliberately reveals a section and adds content must not lose it
+        // on reload. section_order is enforced by filterEmptySections on
+        // the live site, not here.
         const existingHidden: string[] = fetchedDesignToken?.layout?.hidden_sections ?? [];
-        const sectionOrder: string[] = fetchedDesignToken?.layout?.section_order ?? [];
-        const autoHide = getAutoHiddenSections(finalContent, existingHidden, sectionOrder);
+        const autoHide = getAutoHiddenSections(finalContent, existingHidden);
         if (autoHide.length > 0) {
           resolvedDesignToken = {
             ...fetchedDesignToken,
