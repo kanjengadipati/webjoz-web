@@ -10,7 +10,7 @@ import {
   ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
-import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -372,7 +372,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
         )} />
       </MemoPreviewSectionWrapper>
 
-      {sectionOrder
+      {filterEmptySections(sectionOrder, content, isEditorMode)
         .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
         .filter(k => !arrivedSections || arrivedSections.includes(k))
         .map(k => <div key={k} className="animate-slide-up">{sectionNodes[k] ?? null}</div>)}

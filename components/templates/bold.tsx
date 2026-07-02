@@ -9,7 +9,7 @@ import {
   SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref, isPlaceholderPrice,
   ContactSection, BenefitsSection,
 } from "./shared";
-import { buildCssVars, loadGoogleFont, headingVars } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import GallerySection from "../sections/gallery";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -380,7 +380,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
 
       {/* Sections */}
-      {sectionOrder
+      {filterEmptySections(sectionOrder, content, isEditorMode)
         .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
         .filter(k => !arrivedSections || arrivedSections.includes(k))
         .map((k) => {

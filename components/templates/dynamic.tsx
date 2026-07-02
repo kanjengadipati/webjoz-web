@@ -11,7 +11,7 @@ import {
   CartProvider,
 } from "./shared";
 
-import { buildCssVars, loadGoogleFont } from "./helpers";
+import { buildCssVars, loadGoogleFont, filterEmptySections } from "./helpers";
 import type { TemplateProps, DesignToken, ContentSection } from "./types";
 
 // Section components (Phase 1 extraction)
@@ -69,7 +69,12 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   const { header, footer, seo } = content;
   const cssVars = buildCssVars(dt);
 
-  const resolvedSections = normalizeContent(content, dt);
+  const rawSections = normalizeContent(content, dt);
+  const resolvedSections = React.useMemo(() => {
+    const order = rawSections.map((s) => s.type);
+    const filteredOrder = filterEmptySections(order, content, isEditorMode);
+    return rawSections.filter((s) => filteredOrder.includes(s.type));
+  }, [rawSections, content, isEditorMode]);
   const sectionOrder = resolvedSections.map((s) => s.type);
 
   React.useEffect(() => {

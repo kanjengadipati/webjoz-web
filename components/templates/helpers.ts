@@ -151,3 +151,16 @@ export function loadGoogleFont(headingFont?: string, bodyFont?: string) {
   link.href = `https://fonts.googleapis.com/css2?family=${famStr}:wght@400;500;600;700;800&display=swap`;
   document.head.appendChild(link);
 }
+
+export function filterEmptySections(sectionOrder: string[], content: any, isEditorMode: boolean): string[] {
+  if (isEditorMode) return sectionOrder;
+  return sectionOrder.filter((key) => {
+    if (key === "faq") return (content.faq?.items?.length ?? 0) > 0;
+    if (key === "testimonials") return (content.testimonials?.items?.length ?? 0) > 0;
+    if (key === "gallery") return (content.gallery?.items?.length ?? 0) > 0;
+    if (key === "menu") return (content.menu?.categories?.length ?? 0) > 0;
+    if (key === "catalog") return (content.catalog?.categories?.length ?? 0) > 0;
+    return true;
+  });
+}
+
