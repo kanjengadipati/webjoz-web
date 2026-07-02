@@ -20,7 +20,17 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   const hasLiveData = Object.keys(preview.streamedSections).length > 0;
   const hasPreviewData = !!preview.previewData;
 
-  if (!hasLiveData && !hasPreviewData) return null;
+  if (!hasLiveData && !hasPreviewData) {
+    return (
+      <Wireframe
+        businessName={chat.businessName}
+        businessType={chat.businessType}
+        businessSubType={chat.businessSubType}
+        description={chat.description}
+        chatStage={chat.chatStage}
+      />
+    );
+  }
 
   const isStreamingLive = hasLiveData && (!preview.streamedTemplateId || !hasPreviewData);
   const liveContent = isStreamingLive ? preview.streamedSections : preview.previewData!.content;

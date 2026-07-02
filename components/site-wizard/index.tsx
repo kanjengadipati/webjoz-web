@@ -639,7 +639,7 @@ export function SiteWizard({
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-white">
+        <div className="flex-1 overflow-hidden relative bg-[#0d0f14]">
           <div className="h-full" style={{
             filter: `blur(${preview.previewBlurPx}px)`,
             transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
