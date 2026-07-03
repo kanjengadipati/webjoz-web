@@ -148,6 +148,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="elegant"
           wrapperClass="py-20 px-6"
           wrapperStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
           eyebrowClass=""
@@ -155,9 +156,9 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
           titleClass=""
           titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
           cardClass=""
-          cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "8px" }}
-          quoteClass=""
-          quoteStyle={{ color: "rgba(245,230,192,0.45)" }}
+          cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "16px" }}
+          quoteClass="font-serif italic"
+          quoteStyle={{ color: "rgba(245,230,192,0.75)" }}
           nameClass=""
           nameStyle={{ color: "#f5e6c0" }}
           roleClass=""

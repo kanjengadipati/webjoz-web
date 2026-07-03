@@ -155,15 +155,15 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="neobrutalist"
           wrapperClass="py-[var(--dt-spacing)] px-6"
           wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
           titleClass="text-white font-black tracking-tight"
           eyebrowClass="font-bold uppercase text-[10px] tracking-[0.2em]"
           eyebrowStyle={{ color: cyan }}
-          cardClass="rounded-[var(--dt-radius)]"
-          cardStyle={{ background: card, border: `1px solid ${border}` }}
-          quoteClass="text-sm leading-relaxed"
-          quoteStyle={{ color: textMuted }}
+          cardClass=""
+          cardStyle={{ background: card, border: `3px solid ${border}`, color: "#fff" }}
+          quoteClass="text-sm font-bold text-white leading-relaxed"
           nameClass="text-sm font-black text-white uppercase"
           roleClass="text-[10px] font-bold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}

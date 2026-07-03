@@ -158,15 +158,15 @@ export const TemplateBold: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="neobrutalist"
           wrapperClass="py-16 px-6"
           wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
           titleClass="text-white font-black uppercase tracking-tight"
           eyebrowClass="font-black uppercase text-[10px] tracking-widest"
           eyebrowStyle={{ color: red }}
           cardClass=""
-          cardStyle={{ background: card, border: `2px solid ${border}` }}
-          quoteClass="text-sm font-light leading-relaxed"
-          quoteStyle={{ color: textMuted }}
+          cardStyle={{ background: card, border: `3px solid ${border}`, color: "#fff" }}
+          quoteClass="text-sm font-bold leading-relaxed text-white"
           nameClass="text-sm font-black text-white uppercase"
           roleClass="text-[10px] font-bold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}

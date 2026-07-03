@@ -152,6 +152,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection testimonials={testimonials}
+          designVariant="minimal"
           wrapperClass="py-[var(--dt-spacing)] px-6"
           wrapperStyle={{ background: "var(--dt-primary-soft)", borderTop: `1px solid ${border}` }}
           titleClass="font-medium"
@@ -159,13 +160,11 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
           eyebrowClass=""
           eyebrowStyle={{ color: sage }}
           cardClass=""
-          cardStyle={{ background: surface, border: `1px solid ${border}`, borderRadius: "var(--dt-radius-lg)" }}
-          quoteClass=""
+          cardStyle={{ background: "transparent" }}
+          quoteClass="italic font-light"
           quoteStyle={{ color: brownMuted }}
-          nameClass=""
-          nameStyle={{ color: brown }}
-          roleClass=""
-          roleStyle={{ color: brownMuted }}
+          nameClass="text-sm font-semibold text-stone-800"
+          roleClass="text-xs font-light text-stone-500"
           accentColor={sage}
         />
       </MemoPreviewSectionWrapper>

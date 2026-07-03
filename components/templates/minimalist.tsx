@@ -131,15 +131,16 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="minimal"
           wrapperClass="py-[var(--dt-spacing)] px-6 md:px-12"
           wrapperStyle={{ background: zinc100, borderTop: `1px solid ${zinc200}`, borderBottom: `1px solid ${zinc200}` }}
           titleClass="text-2xl md:text-3xl font-light tracking-tight"
           eyebrowClass="text-[10px] font-semibold uppercase tracking-widest"
-          cardClass="border"
-          cardStyle={{ background: surface, borderColor: zinc200 }}
+          cardClass=""
+          cardStyle={{ background: "transparent" }}
           quoteClass="text-sm font-light leading-relaxed"
-          nameClass="text-sm font-medium"
-          roleClass="text-xs font-light"
+          nameClass="text-sm font-medium text-stone-900"
+          roleClass="text-xs font-light text-stone-500"
           accentColor={zinc900}
         />
       </MemoPreviewSectionWrapper>

@@ -154,15 +154,15 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="glassmorphic"
           wrapperClass="py-[var(--dt-spacing)] px-6"
           wrapperStyle={{ background: surface, borderTop: `1px solid ${border}` }}
           titleClass="text-white font-light tracking-tight"
           eyebrowClass="font-semibold uppercase text-[10px] tracking-widest"
           eyebrowStyle={{ color: cyan }}
           cardClass=""
-          cardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}
-          quoteClass="text-sm font-light leading-relaxed"
-          quoteStyle={{ color: textMuted }}
+          cardStyle={{ background: "rgba(255, 255, 255, 0.03)", border: `1px solid ${border}` }}
+          quoteClass="text-sm font-light leading-relaxed text-slate-200"
           nameClass="text-sm font-semibold text-white"
           roleClass="text-[10px] font-semibold uppercase tracking-wider"
           roleStyle={{ color: textMuted }}

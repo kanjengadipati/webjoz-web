@@ -162,13 +162,14 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <TestimonialsSection
           testimonials={testimonials}
+          designVariant="neobrutalist"
           wrapperClass="py-14 px-6 border-y-4 border-black"
           wrapperStyle={{ background: "#FFF9C4" }}
           titleClass="font-black uppercase"
           eyebrowClass="font-black uppercase text-xs"
-          cardClass="border-2 border-black"
-          cardStyle={{ background: surface, boxShadow: "4px 4px 0px #000" }}
-          quoteClass="text-sm font-semibold"
+          cardClass=""
+          cardStyle={{ background: surface, border: "3px solid #000", boxShadow: "4px 4px 0px #000" }}
+          quoteClass="text-sm font-black text-black"
           nameClass="text-sm font-black uppercase"
           roleClass="text-xs font-bold"
           accentColor="#000"

@@ -327,6 +327,7 @@ function ctaHref(phone?: string | null, fallbackUrl?: string): string {
 interface TestimonialsSectionProps {
   testimonials?: { title: string; eyebrow?: string; items: TestimonialItem[] };
   variant?: "grid" | "compact" | "carousel";
+  designVariant?: "standard" | "neobrutalist" | "minimal" | "elegant" | "glassmorphic";
   wrapperClass?: string;
   wrapperStyle?: React.CSSProperties;
   eyebrowClass?: string;
@@ -347,6 +348,7 @@ interface TestimonialsSectionProps {
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   testimonials,
   variant = "grid",
+  designVariant = "standard",
   wrapperClass = "",
   wrapperStyle,
   eyebrowClass = "",
@@ -371,10 +373,6 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     "grid grid-cols-1 md:grid-cols-3 gap-6";
   const eyebrowClasses = `text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`;
   const titleClasses = `text-3xl md:text-4xl font-bold ${titleClass}`;
-  const cardClasses = `rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
-  const quoteClasses = `text-sm leading-relaxed flex-1 ${quoteClass}`;
-  const nameClasses = `text-sm font-bold leading-tight ${nameClass}`;
-  const roleClasses = `text-xs ${roleClass}`;
 
   return (
     <section id="testimonials" className={wrapperClasses} style={wrapperStyle}>
@@ -386,23 +384,159 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           </div>
         )}
         <div className={gridClass}>
-          {testimonials.items.map((t, idx) => (
-            <div key={idx} className={cardClasses} style={cardStyle}>
-              <p className={quoteClasses} style={quoteStyle}>{t.quote}</p>
-              <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
+          {testimonials.items.map((t, idx) => {
+            // ─── 1. NEOBRUTALIST VARIANT ───
+            if (designVariant === "neobrutalist") {
+              return (
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                  style={{ background: t.avatar_color || accentColor }}
+                  key={idx}
+                  className={`border-3 border-black p-6 flex flex-col gap-4 bg-white transition-transform hover:-translate-y-1 ${cardClass}`}
+                  style={{
+                    boxShadow: "4px 4px 0px 0px #000000",
+                    borderRadius: "12px",
+                    ...cardStyle,
+                  }}
                 >
-                  {t.avatar_initials}
+                  <span className="text-4xl font-black text-black leading-none -mb-3 opacity-20 font-mono select-none">“</span>
+                  <p className={`text-sm font-bold text-black leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle}>
+                    {t.quote}
+                  </p>
+                  <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
+                    <div
+                      className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-white text-xs font-black flex-shrink-0"
+                      style={{ background: t.avatar_color || accentColor }}
+                    >
+                      {t.avatar_initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm font-black text-black leading-tight ${nameClass}`} style={nameStyle}>{t.name}</p>
+                      {t.role && <p className={`text-xs font-bold text-stone-600 ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                    </div>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className={nameClasses} style={nameStyle}>{t.name}</p>
-                  {t.role && <p className={roleClasses} style={roleStyle}>{t.role}</p>}
+              );
+            }
+
+            // ─── 2. MINIMAL VARIANT ───
+            if (designVariant === "minimal") {
+              return (
+                <div
+                  key={idx}
+                  className={`p-6 flex flex-col gap-4 bg-transparent border-0 shadow-none ${cardClass}`}
+                  style={cardStyle}
+                >
+                  <span className="text-5xl font-serif leading-none -mb-4 opacity-30 select-none" style={{ color: accentColor }}>“</span>
+                  <p className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle}>
+                    {t.quote}
+                  </p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium flex-shrink-0"
+                      style={{ background: t.avatar_color || accentColor, opacity: 0.85 }}
+                    >
+                      {t.avatar_initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle}>{t.name}</p>
+                      {t.role && <p className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // ─── 3. ELEGANT VARIANT ───
+            if (designVariant === "elegant") {
+              return (
+                <div
+                  key={idx}
+                  className={`p-7 flex flex-col gap-5 bg-gradient-to-b from-white/50 to-white/10 backdrop-blur-sm border transition-all hover:shadow-lg hover:border-[var(--dt-primary)]/40 ${cardClass}`}
+                  style={{
+                    borderRadius: "16px",
+                    borderColor: "color-mix(in srgb, var(--dt-border) 40%, transparent)",
+                    boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
+                    ...cardStyle,
+                  }}
+                >
+                  <span className="text-4xl font-serif text-[var(--dt-primary)] leading-none -mb-4 opacity-40 select-none">“</span>
+                  <p className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle}>
+                    {t.quote}
+                  </p>
+                  <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: "color-mix(in srgb, var(--dt-border) 20%, transparent)" }}>
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 shadow-inner"
+                      style={{ background: `linear-gradient(135deg, ${t.avatar_color || accentColor}, color-mix(in srgb, ${t.avatar_color || accentColor} 70%, black))` }}
+                    >
+                      {t.avatar_initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle}>{t.name}</p>
+                      {t.role && <p className={`text-xs italic ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // ─── 4. GLASSMORPHIC VARIANT ───
+            if (designVariant === "glassmorphic") {
+              return (
+                <div
+                  key={idx}
+                  className={`p-6 flex flex-col gap-4 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)] ${cardClass}`}
+                  style={{
+                    borderRadius: "20px",
+                    boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
+                    ...cardStyle,
+                  }}
+                >
+                  <span className="text-5xl font-mono text-cyan-400 leading-none -mb-5 opacity-40 select-none">“</span>
+                  <p className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle}>
+                    {t.quote}
+                  </p>
+                  <div className="flex items-center gap-3 pt-3 border-t border-white/10">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 border border-cyan-400/30"
+                      style={{
+                        background: `radial-gradient(circle, ${t.avatar_color || accentColor} 0%, rgba(0,0,0,0.4) 100%)`,
+                        boxShadow: `0 0 10px ${t.avatar_color || accentColor}33`,
+                      }}
+                    >
+                      {t.avatar_initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle}>{t.name}</p>
+                      {t.role && <p className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // ─── 5. STANDARD CARD (Default) ───
+            const cardClasses = `rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
+            const quoteClasses = `text-sm leading-relaxed flex-1 ${quoteClass}`;
+            const nameClasses = `text-sm font-bold leading-tight ${nameClass}`;
+            const roleClasses = `text-xs ${roleClass}`;
+
+            return (
+              <div key={idx} className={cardClasses} style={cardStyle}>
+                <p className={quoteClasses} style={quoteStyle}>{t.quote}</p>
+                <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    style={{ background: t.avatar_color || accentColor }}
+                  >
+                    {t.avatar_initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className={nameClasses} style={nameStyle}>{t.name}</p>
+                    {t.role && <p className={roleClasses} style={roleStyle}>{t.role}</p>}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
