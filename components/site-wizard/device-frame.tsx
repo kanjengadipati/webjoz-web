@@ -48,6 +48,32 @@ export function DevicePreviewFrame({
     syncFrameDocument();
   }, [device]);
 
+  useEffect(() => {
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc || !mountNode) return;
+
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest("a");
+      if (!anchor) return;
+
+      const href = anchor.getAttribute("href");
+      if (href && href.startsWith("#")) {
+        e.preventDefault();
+        const id = href.slice(1);
+        const element = doc.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    };
+
+    doc.addEventListener("click", handleAnchorClick);
+    return () => {
+      doc.removeEventListener("click", handleAnchorClick);
+    };
+  }, [mountNode]);
+
   return (
     <iframe
       key={device}

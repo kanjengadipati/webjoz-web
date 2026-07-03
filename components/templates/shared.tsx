@@ -179,9 +179,10 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
   if (navItems.length === 0) return null;
 
-  const handleClick = (key: string) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
     setOpen(false);
-    const el = document.getElementById(key);
+    const doc = e.currentTarget.ownerDocument || document;
+    const el = doc.getElementById(key);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -192,7 +193,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
           <button
             key={key}
             type="button"
-            onClick={() => handleClick(key)}
+            onClick={(e) => handleClick(e, key)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
           >
             {label}
@@ -219,7 +220,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
             <button
               key={key}
               type="button"
-              onClick={() => handleClick(key)}
+              onClick={(e) => handleClick(e, key)}
               className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
             >
               {label}
