@@ -867,8 +867,11 @@ function MenuCatalogCard({
 
   const header = (
     <div className={headerClassName} style={headerStyle}>
-      <div className="min-w-0">
-        {badge && <span className={badgeClassName} style={badgeStyle}>{badge}</span>}
+      <div className="min-w-0 flex-1">
+        {/* Fixed-height badge zone — reserves space even when badge is absent */}
+        <div className="min-h-[1.375rem] mb-1">
+          {badge && <span className={badgeClassName} style={badgeStyle}>{badge}</span>}
+        </div>
         <h4 className={titleClassName} style={titleStyle}>{itemName}</h4>
       </div>
       {showPrice && <span className={priceClassName} style={priceStyle}>{itemPrice}</span>}
