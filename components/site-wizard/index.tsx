@@ -674,12 +674,7 @@ export function SiteWizard({
         </div>
 
         <div className="flex-1 overflow-hidden relative bg-[#0d0f14]" ref={previewContainerRef}>
-          <div className="h-full" style={{
-            filter: `blur(${preview.previewBlurPx}px)`,
-            transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}>
-            <PreviewCanvas chat={chat} preview={preview} device={device} />
-          </div>
+          <PreviewCanvas chat={chat} preview={preview} device={device} />
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">

@@ -51,7 +51,10 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative bg-[#0d0f14]">
-      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${preview.isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${preview.isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`} style={{
+        filter: `blur(${preview.previewBlurPx}px)`,
+        transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, transform 0.3s",
+      }}>
         {device.previewDevice === "mobile" ? (
           <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${preview.regenCount}-${preview.historyIndex}`}>
             <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
