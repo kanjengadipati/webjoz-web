@@ -1427,7 +1427,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           </div>
 
           {mapsUrl && !isPlaceholderMap(mapsUrl) && showMap !== false && (
-            <div className="space-y-2 mt-2">
+            <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>
               {(() => {
                 const m = mapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
                 if (!m) return null;
@@ -1435,7 +1435,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                 const lng = parseFloat(m[2]);
                 if (isNaN(lat) || isNaN(lng)) return null;
                 return (
-                  <div className="rounded-xl overflow-hidden border" style={{ borderColor: `${accentColor}20` }}>
+                  <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
                     <MapEmbed lat={lat} lng={lng} tileStyle={mapTileStyle} />
                   </div>
                 );
