@@ -29,7 +29,7 @@ export default function CatalogSectionInner({ catalog }: { catalog: TemplateProp
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: brandPrimary, flexShrink: 0 }} />
               <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem", alignItems: "stretch" }}>
               {cat.items?.map((item, itemIdx) => (
                 <MenuCatalogCard
                   key={itemIdx}
@@ -43,22 +43,22 @@ export default function CatalogSectionInner({ catalog }: { catalog: TemplateProp
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                  imageClassName="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
-                  placeholderClassName="w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
+                  imageClassName="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                  placeholderClassName="w-full h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
                   placeholderStyle={{ background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }}
                   placeholderIconClassName="w-12 h-12"
                   placeholderIconStyle={{ color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 }}
-                  contentClassName="p-5 space-y-3 flex flex-col flex-1"
-                  headerClassName="flex items-start justify-between gap-3"
+                  contentClassName="p-5 flex flex-col flex-1"
+                  headerClassName="flex items-start justify-between gap-3 mb-2"
                   titleClassName="font-bold text-sm leading-tight"
                   titleStyle={{ color: brandText, fontFamily: headingFont }}
-                  descriptionClassName="text-xs leading-relaxed flex-1"
+                  descriptionClassName="text-xs leading-relaxed line-clamp-3"
                   descriptionStyle={{ color: `color-mix(in srgb, ${brandText} 60%, transparent)` }}
                   priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
                   priceStyle={{ background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary }}
                   badgeClassName="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
                   badgeStyle={{ background: brandPrimary, color: brandBg }}
-                  buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
+                  buttonClassName="w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
                   buttonStyle={{ background: brandPrimary, color: brandBg, border: "none" }}
                 />
               ))}
