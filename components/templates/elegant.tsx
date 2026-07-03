@@ -209,6 +209,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.85rem", fontWeight: 700 }}
+                        buttonClassName="w-full flex items-center justify-center gap-1.5"
                         buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
@@ -264,6 +265,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
                         descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
                         priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.9rem", fontWeight: 700 }}
                         badgeStyle={{ color: ctaText, background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                        buttonClassName="w-full flex items-center justify-center gap-1.5"
                         buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
                       />
                     ))}
