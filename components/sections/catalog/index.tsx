@@ -50,9 +50,9 @@ export default function CatalogSectionInner({ catalog }: { catalog: TemplateProp
                   placeholderIconStyle={{ color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 }}
                   contentClassName="p-5 flex flex-col flex-1"
                   headerClassName="flex items-start justify-between gap-3 mb-2"
-                  titleClassName="font-bold text-sm leading-tight"
+                  titleClassName="font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]"
                   titleStyle={{ color: brandText, fontFamily: headingFont }}
-                  descriptionClassName="text-xs leading-relaxed line-clamp-3"
+                  descriptionClassName="text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]"
                   descriptionStyle={{ color: `color-mix(in srgb, ${brandText} 60%, transparent)` }}
                   priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
                   priceStyle={{ background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary }}
