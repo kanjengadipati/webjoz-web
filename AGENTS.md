@@ -45,3 +45,15 @@ Rebranded across **15 files**: brand text, domain (`app.webjoz.com`, `sites.webj
 - `web/components/templates/shared.tsx` — shared components including `ContactSection`
 - `web/components/templates/{kuliner,jasa,produk,elegant,natural,colorful,minimalist,bold,dynamic}.tsx` — each template
 - `web/components/site-wizard.tsx` — IIFE bug fix
+
+<!-- BEGIN:git-safety-rules -->
+# Git Safety Rules
+
+These rules MUST be followed on every git operation, without exception:
+
+1. **Never `git init` on a folder that already has a remote repository.** Always run `git fetch origin` first to check for existing history before any operation.
+2. **Never `git push --force` or `git push -f` without explicit confirmation from the user** in that specific conversation turn. Force push can destroy remote git history.
+3. **If a folder has no `.git` directory but has a remote URL**, do `git init`, then `git fetch origin`, then `git reset --soft origin/<branch>` to inherit the existing history — never create a standalone initial commit that squashes all files.
+4. **Before any commit or push**, always run `git status` and `git diff --stat` to confirm only the intended files are included.
+5. **If in doubt about git operations with destructive potential**, stop and ask the user first.
+<!-- END:git-safety-rules -->
