@@ -63,7 +63,7 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 export const TemplateDynamic: React.FC<TemplateProps> = ({
   content, design_token,
   onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const dt = design_token ?? null;
   const { header, footer, seo } = content;
@@ -303,7 +303,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab />
-      <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
+      <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
   );

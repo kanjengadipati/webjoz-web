@@ -142,6 +142,7 @@ export interface TemplateProps {
       title: string;
       eyebrow?: string;
       items: TestimonialItem[];
+      variant?: string;
     };
     faq: {
       title: string;
@@ -224,4 +225,11 @@ export interface TemplateProps {
    * supaya efek "dibangun bertahap" terlihat sesuai urutan SSE dari backend.
    */
   arrivedSections?: string[];
+  /**
+   * Apakah user/tenant ini memiliki plan premium/pro.
+   * true  → fitur premium aktif (contoh: WA Chat Widget interaktif)
+   * false → fitur standar saja (contoh: simple floating WA button)
+   * Belum diwire dari plan backend — menyusul. Default: false.
+   */
+  isPremium?: boolean;
 }

@@ -16,7 +16,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery } = content;
   const dt = design_token ?? null;
@@ -364,7 +364,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab colorStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }} />
-      {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />}
+      {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} />}
       {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
     </div>
     </CartProvider>

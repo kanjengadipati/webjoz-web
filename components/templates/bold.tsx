@@ -16,7 +16,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateBold: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -409,7 +409,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
 
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: red, color: ctaText }} />
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} />
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>

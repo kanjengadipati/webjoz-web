@@ -233,50 +233,177 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
 // ─── WhatsApp Floating Button ────────────────────────────────────────────────
 
-const WAFloatingButton: React.FC<{ phone: string; isEditorMode?: boolean; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }> = ({ phone, isEditorMode, onSubmitLead }) => {
-  const [showModal, setShowModal] = useState(false);
+const WAFloatingButton: React.FC<{
+  phone: string;
+  isEditorMode?: boolean;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  brandName?: string;
+  /** true = premium chat widget; false = simple floating WA button */
+  isPremium?: boolean;
+}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false }) => {
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+  const [userMessage, setUserMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  // Stop typing indicator after 1.2s
+  useEffect(() => {
+    if (isWidgetOpen) {
+      setIsTyping(true);
+      const timer = setTimeout(() => setIsTyping(false), 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [isWidgetOpen]);
+
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
 
-  // In editor mode: hide generic button; only show when not editor and lead form exists
-  const showGenericButton = !hasWa && !!onSubmitLead && !isEditorMode;
+  if (!hasWa) return null;
+
+  // ── Simple floating WA button (for regular/free users) ─────────────────────
+  if (!isPremium) {
+    return (
+      <a
+        href={isEditorMode ? "#" : waUrl}
+        target={isEditorMode ? undefined : "_blank"}
+        rel="noopener noreferrer"
+        onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
+        aria-label="Chat via WhatsApp"
+        className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+        style={{ background: "#25D366" }}
+      >
+        <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
+    );
+  }
+
+  // ── Premium interactive chat widget ────────────────────────────────────────
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isEditorMode) return;
+    const finalMsg = userMessage.trim();
+    if (!finalMsg) return;
+    const encodedText = encodeURIComponent(finalMsg);
+    window.open(`${waUrl}?text=${encodedText}`, "_blank", "noopener,noreferrer");
+    setUserMessage("");
+    setIsWidgetOpen(false);
+  };
 
   return (
     <>
-      {hasWa ? (
-        /* WhatsApp button — green with WA icon */
-        <a
-          href={isEditorMode ? "#" : waUrl}
-          target={isEditorMode ? undefined : "_blank"}
-          rel="noopener noreferrer"
-          onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
-          aria-label="Chat via WhatsApp"
-          className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
-          style={{ background: "#25D366" }}
-        >
-          <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-          </svg>
-        </a>
-      ) : showGenericButton ? (
-        /* Generic contact button — primary color with Send icon */
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
+        {/* Chat Window Panel */}
+        {isWidgetOpen && (
+          <div
+            className="mb-4 w-[340px] max-w-[90vw] rounded-2xl overflow-hidden shadow-2xl border border-stone-200/80 bg-[#f0f2f5] animate-[widgetSlideUp_0.3s_cubic-bezier(0.16,1,0.3,1)_forward]"
+            style={{
+              fontFamily: "var(--dt-body-font), sans-serif",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.15)",
+            }}
+          >
+            {/* Header */}
+            <div className="bg-[#075E54] p-4 flex items-center justify-between text-white">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs border border-white/25">
+                  {brandName.substring(0, 2).toUpperCase()}
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#075E54] animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm leading-tight">{brandName}</h4>
+                  <span className="text-[11px] text-white/80">Online • Balas dalam sekejap</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsWidgetOpen(false)}
+                className="p-1 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                aria-label="Tutup Chat"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Chat Body (WA Patterned Background) */}
+            <div
+              className="h-60 p-4 overflow-y-auto flex flex-col gap-3 relative"
+              style={{
+                backgroundImage: `radial-gradient(#e5ddd5 20%, transparent 20%), radial-gradient(#e5ddd5 20%, transparent 20%)`,
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 10px 10px",
+                backgroundColor: "#efeae2",
+              }}
+            >
+              {isTyping ? (
+                <div className="self-start bg-white py-2.5 px-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-stone-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 bg-stone-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 bg-stone-400 rounded-full animate-bounce" />
+                </div>
+              ) : (
+                <div className="self-start bg-white py-2.5 px-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-xs text-stone-800 leading-relaxed animate-[widgetMessageIn_0.2s_ease-out_forwards]">
+                  <p className="font-semibold text-[10px] text-[#075E54] mb-0.5">{brandName}</p>
+                  Halo! Ada yang bisa kami bantu hari ini? Silakan ketik pesan Anda di bawah untuk mulai berkonsultasi secara langsung via WhatsApp. 😊
+                </div>
+              )}
+            </div>
+
+            {/* Footer Input Area */}
+            <form onSubmit={handleSendMessage} className="bg-white p-3 flex items-center gap-2 border-t border-stone-200">
+              <input
+                type="text"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+                placeholder="Ketik pesan di sini..."
+                disabled={isEditorMode}
+                className="flex-1 px-4 py-2 text-xs bg-stone-100 rounded-full outline-none focus:bg-stone-50 border border-stone-200 focus:border-[#075E54]/40 transition-colors"
+              />
+              <button
+                type="submit"
+                disabled={!userMessage.trim() || isEditorMode}
+                className="w-8 h-8 rounded-full bg-[#075E54] hover:bg-[#128C7E] active:scale-95 transition-all text-white flex items-center justify-center disabled:opacity-50 disabled:scale-100 cursor-pointer"
+                aria-label="Kirim Pesan"
+              >
+                <Send className="w-3.5 h-3.5 fill-white stroke-none translate-x-[1px]" />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Trigger Floating Action Button */}
         <button
           type="button"
-          onClick={() => setShowModal(true)}
-          aria-label="Hubungi Kami"
-          className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.35)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 cursor-pointer"
-          style={{ background: "var(--dt-primary, #4F46E5)" }}
+          onClick={() => setIsWidgetOpen(!isWidgetOpen)}
+          aria-label="Chat via WhatsApp"
+          className="flex items-center justify-center w-14 h-14 rounded-full shadow-[0_6px_24px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 cursor-pointer"
+          style={{ background: "#25D366" }}
         >
-          <Send className="w-6 h-6" style={{ color: "var(--dt-primary-foreground, #fff)" }} />
+          {isWidgetOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+          )}
         </button>
-      ) : null}
-      {showModal && onSubmitLead && (
-        <WaLeadModal onSubmitLead={onSubmitLead} onClose={() => setShowModal(false)} />
-      )}
+      </div>
+
+      {/* Animation Styles Injection */}
+      <style>{`
+        @keyframes widgetSlideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes widgetMessageIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </>
   );
 };
+
 
 // ─── Back To Top ──────────────────────────────────────────────────────────────
 
@@ -325,9 +452,9 @@ function ctaHref(phone?: string | null, fallbackUrl?: string): string {
 // ─── Shared Testimonials Section ─────────────────────────────────────────────
 
 interface TestimonialsSectionProps {
-  testimonials?: { title: string; eyebrow?: string; items: TestimonialItem[] };
+  testimonials?: { title: string; eyebrow?: string; items: TestimonialItem[]; variant?: string };
   variant?: "grid" | "compact" | "carousel";
-  designVariant?: "standard" | "neobrutalist" | "minimal" | "elegant" | "glassmorphic";
+  designVariant?: "standard" | "neobrutalist" | "minimal" | "elegant" | "glassmorphic" | "chat";
   wrapperClass?: string;
   wrapperStyle?: React.CSSProperties;
   eyebrowClass?: string;
@@ -367,6 +494,8 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 }) => {
   if (!testimonials?.items?.length) return null;
 
+  const resolvedDesignVariant = testimonials?.variant || designVariant || "standard";
+
   const wrapperClasses = `py-20 px-5 sm:px-6 ${wrapperClass}`;
   const gridClass = variant === "compact" ? "grid grid-cols-1 md:grid-cols-2 gap-4" :
     variant === "carousel" ? "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4" :
@@ -386,7 +515,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
         <div className={gridClass}>
           {testimonials.items.map((t, idx) => {
             // ─── 1. NEOBRUTALIST VARIANT ───
-            if (designVariant === "neobrutalist") {
+            if (resolvedDesignVariant === "neobrutalist") {
               return (
                 <div
                   key={idx}
@@ -418,7 +547,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             }
 
             // ─── 2. MINIMAL VARIANT ───
-            if (designVariant === "minimal") {
+            if (resolvedDesignVariant === "minimal") {
               return (
                 <div
                   key={idx}
@@ -446,7 +575,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             }
 
             // ─── 3. ELEGANT VARIANT ───
-            if (designVariant === "elegant") {
+            if (resolvedDesignVariant === "elegant") {
               return (
                 <div
                   key={idx}
@@ -479,7 +608,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             }
 
             // ─── 4. GLASSMORPHIC VARIANT ───
-            if (designVariant === "glassmorphic") {
+            if (resolvedDesignVariant === "glassmorphic") {
               return (
                 <div
                   key={idx}
@@ -513,7 +642,125 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               );
             }
 
-            // ─── 5. STANDARD CARD (Default) ───
+            // ─── 5. CHAT / WHATSAPP VARIANT ───
+            if (resolvedDesignVariant === "chat") {
+              return (
+                <div
+                  key={idx}
+                  className={`w-full max-w-[360px] mx-auto bg-[#efeae2] border border-[#d1d7db] shadow-md rounded-[24px] overflow-hidden flex flex-col relative select-none font-sans ${cardClass}`}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23c1b8aa' fill-opacity='0.15'%3E%3Cpath d='M10 20c2 0 3-1 3-3s-1-3-3-3-3 1-3 3 1 3 3 3zm0-4c1 0 1 .5 1 1s0 1-1 1-1-.5-1-1 0-1 1-1zm32 30c0-1.5 1-2.5 2.5-2.5S47 34.5 47 36s-1 2.5-2.5 2.5-2.5-1-2.5-2.5zm4 0c0-.5-.5-1-1.5-1s-1.5.5-1.5 1 .5 1 1.5 1 1.5-.5 1.5-1zM58 8c1.5 0 2.5 1 2.5 2.5S59.5 13 58 13s-2.5-1-2.5-2.5S56.5 8 58 8zm0 3c.5 0 1-.5 1-1s-.5-1-1-1-1 .5-1 1 .5 1 1 1z' fill='%23000'/%3E%3C/g%3E%3C/svg%3E")`,
+                    ...cardStyle,
+                  }}
+                >
+                  {/* WhatsApp Header */}
+                  <div className="bg-[#075e54] text-white py-3 px-4 flex items-center justify-between gap-2 shadow-sm shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {/* Back Arrow */}
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2 shrink-0">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                      </svg>
+                      {/* Avatar */}
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 border border-white/20"
+                        style={{ background: t.avatar_color || accentColor }}
+                      >
+                        {t.avatar_initials}
+                      </div>
+                      {/* Contact Info */}
+                      <div className="min-w-0 leading-tight">
+                        <h4 className="text-xs font-bold truncate">{t.name}</h4>
+                        <span className="text-[10px] text-emerald-100 opacity-90 block">Online</span>
+                      </div>
+                    </div>
+                    {/* Header Icons */}
+                    <div className="flex items-center gap-3 text-white/90">
+                      {/* Video Camera Icon */}
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-2 shrink-0">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                      </svg>
+                      {/* Phone Icon */}
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-2 shrink-0">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                      </svg>
+                      {/* More Vert Icon */}
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-2 shrink-0">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Chat Area */}
+                  <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto min-h-[220px]">
+                    {/* Date Divider */}
+                    <div className="mx-auto bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded text-[9px] text-gray-500 font-semibold tracking-wide shadow-sm">
+                      HARI INI
+                    </div>
+
+                    {/* Left Message Bubble (Business Prompt) */}
+                    <div className="bg-white text-gray-800 rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[85%] self-start relative border border-gray-200/50 flex flex-col gap-1">
+                      <p className="text-[11px] leading-normal font-normal">
+                        Halo Kak {t.name}, bagaimana kesan Kakak setelah menggunakan layanan kami? Kami sangat menghargai feedback Kakak! 😊
+                      </p>
+                      <span className="text-[8px] text-gray-400 self-end mt-0.5 leading-none">11:20 AM</span>
+                    </div>
+
+                    {/* Right Message Bubble (Client Testimonial) */}
+                    <div className="bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] self-end relative border border-[#c1e8ba]/40 flex flex-col gap-1">
+                      <p className={`text-[11px] leading-normal font-normal ${quoteClass}`} style={quoteStyle}>
+                        {t.quote}
+                      </p>
+                      <div className="flex items-center gap-1 self-end mt-0.5 leading-none">
+                        <span className="text-[8px] text-gray-500">11:22 AM</span>
+                        {/* WhatsApp Blue Double Checkmark */}
+                        <svg viewBox="0 0 24 24" className="w-3 h-3 fill-[#34b7f1] shrink-0">
+                          <path d="M0.5 12l5 5 11-11-1.5-1.5-9.5 9.5-3.5-3.5-1.5 1.5zm6.5 5l1.5 1.5 11-11-1.5-1.5-9.5 9.5-1.5-1.5zm11.5-7.5l-1.5-1.5-6 6 1.5 1.5 6-6z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Input Mock */}
+                  <div className="p-2 bg-transparent flex items-center gap-1.5 shrink-0">
+                    <div className="flex-1 bg-white rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm border border-gray-200/50 min-w-0">
+                      {/* Smiley Emoji */}
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-gray-400 stroke-2 shrink-0">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                      </svg>
+                      {/* Input Placeholder */}
+                      <span className="text-[10px] text-gray-400 flex-1 truncate">Ketik pesan...</span>
+                      {/* Attachment Icon */}
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-gray-400 stroke-2 rotate-45 shrink-0">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                      </svg>
+                      {/* Camera Icon */}
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-gray-400 stroke-2 shrink-0">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                      </svg>
+                    </div>
+                    {/* Microphone Circle Button */}
+                    <div className="w-7 h-7 bg-[#00a884] rounded-full flex items-center justify-center text-white shadow-sm shrink-0">
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // ─── 6. STANDARD CARD (Default) ───
             const cardClasses = `rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
             const quoteClasses = `text-sm leading-relaxed flex-1 ${quoteClass}`;
             const nameClasses = `text-sm font-bold leading-tight ${nameClass}`;
