@@ -108,7 +108,14 @@ export function buildFullContent(
       matra: c.hero?.matra || matraValue || "",
       subheadline: c.hero?.subheadline || description,
       cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
-      cta_url: waUrl ?? (c.hero?.cta_url || "#contact"),           // ← preserve AI value if WA not provided
+      // Only override cta_url with WhatsApp link when the original target is a
+      // contact-style destination. Section-scroll hashes (#catalog, #menu, etc.)
+      // must be preserved so "Lihat Katalog" / "Lihat Menu" buttons work correctly.
+      cta_url: (() => {
+        const orig = c.hero?.cta_url || "#contact";
+        const isSectionHash = orig.startsWith("#") && orig !== "#contact";
+        return (waUrl && !isSectionHash) ? waUrl : orig;
+      })(),
       image_url: c.hero?.image_url || "",
       badge_text: c.hero?.badge_text || "",
     },

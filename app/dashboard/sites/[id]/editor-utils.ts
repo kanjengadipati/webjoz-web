@@ -136,6 +136,45 @@ export const collectQualityIssues = (content: any) => {
   return { score, issues };
 };
 
+/** Returns issues that belong to a specific section (e.g. "hero", "about"). */
+export const getSectionQualityIssues = (content: any, section: string) => {
+  const { issues } = collectQualityIssues(content);
+  return issues.filter((issue) => issue.path.startsWith(section + "."));
+};
+
+/** Returns quality score (0-100) for a specific section only. */
+export const getSectionScore = (content: any, section: string): number => {
+  const sectionIssues = getSectionQualityIssues(content, section);
+  const sectionFields = collectQualityIssues(content).issues.filter(() => true);
+
+  // Count how many fields belong to this section
+  const allFields: Array<{ path: string }> = [
+    { path: "header.brand_name" }, { path: "header.nav_cta_text" },
+    { path: "hero.headline" }, { path: "hero.subheadline" }, { path: "hero.cta_text" }, { path: "hero.cta_url" },
+    { path: "about.title" }, { path: "about.body" },
+    { path: "benefits.title" },
+    { path: "cta.headline" }, { path: "cta.button_text" }, { path: "cta.button_url" },
+    { path: "contact.title" }, { path: "contact.phone" },
+    { path: "seo.title" }, { path: "seo.description" },
+  ];
+
+  // Add dynamic fields
+  (content?.benefits?.items || []).forEach((_: any, idx: number) => {
+    allFields.push({ path: `benefits.items.${idx}.title` });
+    allFields.push({ path: `benefits.items.${idx}.description` });
+  });
+  (content?.faq?.items || []).forEach((_: any, idx: number) => {
+    allFields.push({ path: `faq.items.${idx}.question` });
+    allFields.push({ path: `faq.items.${idx}.answer` });
+  });
+
+  const relevantFields = allFields.filter((f) => f.path.startsWith(section + "."));
+  const relevantIssuePaths = new Set(sectionIssues.map((i) => i.path));
+  const bad = relevantFields.filter((f) => relevantIssuePaths.has(f.path)).length;
+  const total = relevantFields.length;
+  return total ? Math.max(0, Math.round(((total - bad) / total) * 100)) : 100;
+};
+
 export const summarizeDiff = (before: any, after: any) => {
   const rows: Array<{ label: string; before: string; after: string }> = [];
   const walk = (oldVal: any, newVal: any, path: string[] = []) => {

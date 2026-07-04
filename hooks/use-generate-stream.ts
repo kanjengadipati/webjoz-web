@@ -19,13 +19,24 @@ export type StreamSection =
   | "faq" | "cta" | "contact" | "header" | "footer"
   | "seo" | "menu" | "catalog";
 
+export interface FieldIssue {
+  path: string;
+  reason: "empty" | "placeholder" | "too_short" | "cliche";
+}
+
 export interface StreamEvent {
   type: "design_token" | "section" | "done" | "error";
   section?: StreamSection;
   data?: Record<string, any>;
   template_id?: string;
   quality_score?: number;
+  quality_issues?: FieldIssue[];
   error?: string;
+}
+
+export interface QualityResult {
+  score: number;
+  issues: FieldIssue[];
 }
 
 export interface GenerateStreamRequest {
@@ -49,7 +60,7 @@ export interface UseGenerateStreamOptions {
   /** Dipanggil setiap kali satu section konten diterima */
   onSection: (section: StreamSection, data: Record<string, any>) => void;
   /** Dipanggil saat semua section sudah dikirim */
-  onDone: (templateId: string, qualityScore: number) => void;
+  onDone: (templateId: string, qualityScore: number, qualityIssues?: FieldIssue[]) => void;
   /** Dipanggil jika terjadi error */
   onError: (message: string) => void;
 }
@@ -204,7 +215,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                 break;
 
               case "done":
-                onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0);
+                onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0, event.quality_issues);
                 break;
 
               case "error":

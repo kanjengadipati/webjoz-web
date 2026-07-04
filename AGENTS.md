@@ -57,3 +57,42 @@ These rules MUST be followed on every git operation, without exception:
 4. **Before any commit or push**, always run `git status` and `git diff --stat` to confirm only the intended files are included.
 5. **If in doubt about git operations with destructive potential**, stop and ask the user first.
 <!-- END:git-safety-rules -->
+
+# Session Summary — 4 July 2026
+
+## Goal
+Implement remaining high-ROI improvements from `webjoz-engine-improvements.md` — prompt versioning, section caching, per-section quality badges.
+
+## Completed
+
+### 1.3 Prompt versioning in API
+- Added `content_prompt_version` (`v2.3.0`) and `design_token_prompt_version` (`v1.5.0`) to:
+  - `GeneratePreview` JSON response (`handler.go:417-418`)
+  - `GeneratePreviewStream` SSE `done` event (`handler.go:647-649`)
+  - `streamEvent` struct (`handler.go:436-437`)
+
+### 2.3 Gemini responseSchema (confirmed already done)
+- Gemini provider already passes `responseSchema` in `generationConfig` — no change needed.
+
+### 3.4 Section-level cache wiring
+- `GenerateSiteContent` in `service.go` now:
+  1. Checks cache for cacheable sections (benefits, faq, testimonials) after AI generation — if a cached version exists, it overwrites the AI-generated one
+  2. Re-caches the version in use after each generation
+- Cache key uses `generic_section:<section>:<fnv32hash>` with 24h TTL
+- Cache store is already plumbed through `module.go`/`router.go`
+
+### 7.1/7.2 Per-section quality badges
+- Added `getSectionQualityIssues(content, section)` and `getSectionScore(content, section)` to `editor-utils.ts`
+- Modified editor sidebar (`page.tsx:22214`) to show a colored dot next to each section number:
+  - Green (`>=85%`), Amber (`>=65%`), Red (`<65%`)
+  - Hidden for header/footer/seo (non-content sections)
+  - Hidden when score is 100% (no issues)
+- `collectQualityIssues` field list exported for reuse
+
+## Not implemented (blocked)
+- **7.3 Mood preview tiles** — No mood picker exists in the wizard; mood is AI-inferred. Skipped per user decision.
+
+## Verification
+- `go build ./...` passes (api/)
+- `npx tsc --noEmit` passes (web/)
+<!-- END:git-safety-rules -->

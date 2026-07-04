@@ -46,6 +46,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       design_token={liveToken as any}
       isEditorMode={false}
       arrivedSections={isStreamingLive ? preview.arrivedSections : undefined}
+      onSubmitLead={async () => {}}
     />
   );
 

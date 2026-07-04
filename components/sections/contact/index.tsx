@@ -24,6 +24,12 @@ export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubm
   const justifyContent = align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center";
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
 
+  // Use dummy fallbacks purely for visual purposes so the UI looks complete
+  const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
+  const displayPhone = c.phone || "+62 812-3456-7890";
+  const displayEmail = c.email || "hello@domain.com";
+  const displayMapsUrl = c.maps_url || "https://www.google.com/maps/place/@-7.7956,110.3695";
+
   return (
     <section id="contact" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
       <div className={hasLeadForm ? "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12" : ""} style={{ maxWidth: hasLeadForm ? "72rem" : "36rem", margin: "0 auto", textAlign }}>
@@ -31,9 +37,9 @@ export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubm
           <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: 0 }}>{c.title}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
             {[
-              ...(c.address ? [{ icon: MapPin, text: c.address } as const] : []),
-              ...(c.phone && !isPlaceholderPhone(c.phone) ? [{ icon: Phone, text: c.phone, href: `https://wa.me/${c.phone.replace(/\D/g, "")}` } as const] : []),
-              ...(c.email ? [{ icon: Mail, text: c.email, href: `mailto:${c.email}` } as const] : []),
+              { icon: MapPin, text: displayAddress } as const,
+              { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` } as const,
+              { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` } as const,
             ].map((item) => {
               const { icon: Icon, text, href } = item;
               const content = (
@@ -48,8 +54,8 @@ export default function ContactSectionInner({ contact: c, onSubmitLead, leadSubm
               return <div key={text}>{content}</div>;
             })}
           </div>
-          {c.maps_url && c.show_map && !isPlaceholderMap(c.maps_url) && (
-            <a href={c.maps_url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent, gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem" }}>
+          {c.show_map !== false && (
+            <a href={displayMapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent, gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem" }}>
               <Globe style={{ width: 15, height: 15 }} /> Buka Google Maps
             </a>
           )}

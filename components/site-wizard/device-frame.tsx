@@ -57,14 +57,23 @@ export function DevicePreviewFrame({
       const anchor = target.closest("a");
       if (!anchor) return;
 
+      // Always prevent default to stop the iframe from navigating away
+      e.preventDefault();
+
       const href = anchor.getAttribute("href");
-      if (href && href.startsWith("#")) {
-        e.preventDefault();
+      if (!href) return;
+
+      if (href.startsWith("#")) {
+        // Hash link → smooth-scroll to element inside the iframe document
         const id = href.slice(1);
         const element = doc.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
+      } else {
+        // External link (WA, https://, tel:, mailto:) → open in a new tab
+        // so the preview iframe never navigates away.
+        window.open(href, "_blank", "noopener,noreferrer");
       }
     };
 

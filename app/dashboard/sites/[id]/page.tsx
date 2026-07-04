@@ -28,7 +28,8 @@ import {
   collectQualityIssues,
   summarizeDiff,
   isDesignTokenEqual,
-  getAutoHiddenSections
+  getAutoHiddenSections,
+  getSectionScore
 } from "./editor-utils";
 import TemplateThumbnail from "./TemplateThumbnail";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -2242,9 +2243,17 @@ export default function SiteEditorPage() {
                       }
                     </div>
                   )}
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
-                    activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
-                  }`}>{num}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    {["header", "footer", "seo"].includes(key) ? null : (() => {
+                      const score = getSectionScore(content, key);
+                      if (score >= 100) return null;
+                      const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
+                      return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={`Kualitas: ${score}%`} />;
+                    })()}
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                      activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
+                    }`}>{num}</span>
+                  </div>
                 </div>
               ))}
             </div>

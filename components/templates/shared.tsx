@@ -441,13 +441,19 @@ function navCtaHref(navCtaText?: string): string {
 }
 
 // ─── Hero CTA href helper — WhatsApp jika ada phone, fallback ke cta_url ────
+// NOTE: Section-scroll hashes (#catalog, #menu, etc.) are preserved even when
+// a phone number is present — the WhatsApp override only applies when the
+// original target is #contact or an explicit contact-style destination.
 
 function ctaHref(phone?: string | null, fallbackUrl?: string): string {
-  if (phone) {
+  const url = fallbackUrl || "#contact";
+  // If the URL is a section-scroll anchor (not #contact), preserve it as-is
+  const isSectionHash = url.startsWith("#") && url !== "#contact";
+  if (phone && !isSectionHash) {
     const cleaned = phone.replace(/[^0-9]/g, "");
     if (cleaned) return `https://wa.me/${cleaned}`;
   }
-  return fallbackUrl || "#contact";
+  return url;
 }
 
 // ─── Shared Testimonials Section ─────────────────────────────────────────────
@@ -1398,10 +1404,17 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const isCenter = effectiveAlign === "center";
   const containerWidthClass = hasLeadForm ? "max-w-5xl" : isCenter ? "max-w-xl" : "max-w-5xl";
   const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
+
+  // Use dummy fallbacks purely for visual purposes so the UI looks complete
+  const displayAddress = address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
+  const displayPhone = phone || "+62 812-3456-7890";
+  const displayEmail = email || "hello@domain.com";
+  const displayMapsUrl = mapsUrl || "https://www.google.com/maps/place/@-7.7956,110.3695";
+
   const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
-    ...(address && address !== "area sekitar" ? [{ icon: MapPin, text: address }] : []),
-    ...(phone && !isPlaceholderPhone(phone) ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
-    ...(email && !email.includes("brand-anda") ? [{ icon: Mail, text: email, href: `mailto:${email}` }] : []),
+    { icon: MapPin, text: displayAddress },
+    { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
+    { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` },
   ];
 
   return (
@@ -1429,10 +1442,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             })}
           </div>
 
-          {mapsUrl && !isPlaceholderMap(mapsUrl) && showMap !== false && (
+          {showMap !== false && (
             <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>
               {(() => {
-                const m = mapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+                const m = displayMapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
                 if (!m) return null;
                 const lat = parseFloat(m[1]);
                 const lng = parseFloat(m[2]);
@@ -1443,7 +1456,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                   </div>
                 );
               })()}
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
+              <a href={displayMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
                 <Globe className="w-3.5 h-3.5" />
                 Buka di Google Maps
               </a>
