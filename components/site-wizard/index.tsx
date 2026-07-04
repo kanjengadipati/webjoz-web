@@ -69,18 +69,7 @@ export function SiteWizard({
       preview.setStreamedTemplateId(templateId);
 
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
-      let pool = getTemplatePool(chat.businessType, mood);
-
-      // Reorder template pool so the generated template is at index 0.
-      // This ensures the template selection starts at 1/N instead of a higher index (like 2/4).
-      if (templateId) {
-        const activeIndex = pool.indexOf(templateId);
-        if (activeIndex > 0) {
-          pool = [templateId, ...pool.slice(0, activeIndex), ...pool.slice(activeIndex + 1)];
-        } else if (activeIndex === -1) {
-          pool = [templateId, ...pool];
-        }
-      }
+      const pool = getTemplatePool(chat.businessType, mood);
       preview.setTemplatePool(pool);
       preview.setTemplatePoolIndex(0);
 
