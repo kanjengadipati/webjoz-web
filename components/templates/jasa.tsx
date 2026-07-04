@@ -27,7 +27,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "catalog", "benefits", "testimonials", "faq", "cta", "contact"];
     const order = [...base];
     if (testimonials && !order.includes("testimonials")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;

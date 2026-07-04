@@ -27,7 +27,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "catalog", "testimonials", "benefits", "cta", "contact"];
     const order = [...base];
     if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
     if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
