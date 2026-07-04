@@ -2782,7 +2782,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setPublishModalOpen(true)}
-                  className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-white"
+                  className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground"
                   style={{ background: "var(--primary)" }}
                 >
                   <Rocket className="w-3 h-3" />
