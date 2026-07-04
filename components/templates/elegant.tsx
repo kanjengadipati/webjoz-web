@@ -27,12 +27,19 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "catalog", "testimonials", "benefits", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "cta", "faq", "contact"];
     const order = [...base];
+    // catalog and menu are special-case sections (toko online / kuliner).
+    // If they have content but weren't in section_order, inject them right
+    // after hero so they lead the page — not buried after benefits.
+    const afterHero = (s: string) => {
+      const heroIdx = order.indexOf("hero");
+      order.splice(heroIdx >= 0 ? heroIdx + 1 : 1, 0, s);
+    };
+    if (menu    && !order.includes("menu"))    afterHero("menu");
+    if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
-    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
-    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
-    if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
+    if (gallery     && !order.includes("gallery"))     order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
     return order;
   })();
 

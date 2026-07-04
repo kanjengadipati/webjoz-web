@@ -27,15 +27,19 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "catalog", "benefits", "testimonials", "faq", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
     const order = [...base];
+    // catalog and menu are special-case sections (toko online / kuliner).
+    // If they have content but weren't in section_order, inject them right
+    // after hero so they lead the page — not buried after benefits.
+    const afterHero = (s: string) => {
+      const heroIdx = order.indexOf("hero");
+      order.splice(heroIdx >= 0 ? heroIdx + 1 : 1, 0, s);
+    };
+    if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (testimonials && !order.includes("testimonials")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "testimonials");
-    }
-    if (catalog && !order.includes("catalog")) {
-      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
-      order.splice(idx, 0, "catalog");
     }
     if (gallery && !order.includes("gallery")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;

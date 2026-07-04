@@ -27,10 +27,14 @@ export const TemplateBold: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = ["hero", "benefits", "about", "testimonials", "cta", "faq", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "benefits", "about", "testimonials", "cta", "faq", "contact"];
     const order = [...base];
-    if (menu && !order.includes("menu")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "menu");
-    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "catalog");
+    const afterHero = (s: string) => {
+      const heroIdx = order.indexOf("hero");
+      order.splice(heroIdx >= 0 ? heroIdx + 1 : 1, 0, s);
+    };
+    if (menu    && !order.includes("menu"))    afterHero("menu");
+    if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
     return order;
   })();
