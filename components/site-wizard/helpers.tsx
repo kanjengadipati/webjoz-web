@@ -141,16 +141,85 @@ export const MOOD_TEMPLATE_POOLS: Record<string, string[]> = {
   "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_PRODUK03", "TEMPLATE_BOLD"],
   "bold":        ["TEMPLATE_BOLD", "TEMPLATE_DYNAMIC", "TEMPLATE_FUTURISTIC", "TEMPLATE_JASA02"],
   "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT", "TEMPLATE_FUTURISTIC"],
-  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT"],
+  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_PRODUK03", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT"],
   "retro":       ["TEMPLATE_RETRO", "TEMPLATE_DYNAMIC", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
   "futuristic":  ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
 };
 
-export function getTemplatePool(mood: string): string[] {
-  const lm = mood.toLowerCase();
-  for (const [key, pool] of Object.entries(MOOD_TEMPLATE_POOLS)) {
-    if (lm.includes(key)) return pool;
+function filterPoolByBusiness(pool: string[], businessLower: string): string[] {
+  const kulinerTypes = ["kafe", "cafe", "kopi", "restoran", "warung", "bakery", "catering", "kuliner"];
+  const jasaTypes = ["jasa", "konsultan", "agensi", "fotografer", "klinik", "dokter"];
+  const produkTypes = ["produk", "toko", "retail", "fashion", "umkm", "online", "baju", "sepatu", "hijab"];
+  const techTypes = ["tech", "teknologi", "saas", "software", "ai", "digital", "startup", "robot"];
+  const creativeTypes = ["kreatif", "art", "seni", "musik", "film", "studio", "vintage", "retro"];
+
+  let preferred = "";
+  if (kulinerTypes.some((kw) => businessLower.includes(kw))) {
+    preferred = "TEMPLATE_KULINER01";
+  } else if (jasaTypes.some((kw) => businessLower.includes(kw))) {
+    preferred = "TEMPLATE_JASA02";
+  } else if (produkTypes.some((kw) => businessLower.includes(kw))) {
+    preferred = "TEMPLATE_PRODUK03";
+  } else if (techTypes.some((kw) => businessLower.includes(kw))) {
+    preferred = "TEMPLATE_FUTURISTIC";
+  } else if (creativeTypes.some((kw) => businessLower.includes(kw))) {
+    preferred = "TEMPLATE_RETRO";
   }
+
+  if (!preferred) {
+    return pool;
+  }
+
+  const reordered: string[] = [];
+  for (const t of pool) {
+    if (t === preferred) {
+      reordered.unshift(t);
+    } else {
+      reordered.push(t);
+    }
+  }
+  return reordered;
+}
+
+export function getTemplatePool(businessType: string, mood: string): string[] {
+  const lm = mood.toLowerCase();
+  const lower = businessType.toLowerCase();
+
+  // 1. Mood pool (highest priority)
+  for (const [key, pool] of Object.entries(MOOD_TEMPLATE_POOLS)) {
+    if (lm.includes(key)) {
+      return filterPoolByBusiness(pool, lower);
+    }
+  }
+
+  // 2. Business type pool (mood neutral / profesional)
+  if (lower.includes("kafe") || lower.includes("cafe") || lower.includes("kopi") ||
+    lower.includes("restoran") || lower.includes("warung") || lower.includes("bakery") ||
+    lower.includes("catering") || lower.includes("kuliner")) {
+    return BUSINESS_TEMPLATE_POOLS.kuliner;
+  }
+  if (lower.includes("jasa") || lower.includes("konsultan") || lower.includes("agensi") ||
+    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter")) {
+    return BUSINESS_TEMPLATE_POOLS.jasa;
+  }
+  if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
+    lower.includes("fashion") || lower.includes("elektronik") || lower.includes("umkm") ||
+    lower.includes("online") || lower.includes("minuman") || lower.includes("bubble") ||
+    lower.includes("boba")) {
+    return BUSINESS_TEMPLATE_POOLS.produk;
+  }
+  if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
+    lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) {
+    return BUSINESS_TEMPLATE_POOLS.properti;
+  }
+  if (lower.includes("retro") || lower.includes("vintage") || lower.includes("klasik")) {
+    return BUSINESS_TEMPLATE_POOLS.retro;
+  }
+  if (lower.includes("futuristik") || lower.includes("tech") || lower.includes("teknologi") ||
+    lower.includes("cyber") || lower.includes("modern")) {
+    return BUSINESS_TEMPLATE_POOLS.futuristic;
+  }
+
   return ["TEMPLATE_DYNAMIC"];
 }
 

@@ -65,11 +65,11 @@ export function SiteWizard({
       preview.setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
       preview.advanceLoadingStepFromSection(section);
     },
-    onDone: (templateId, _qualityScore) => {
+    onDone: (templateId, _qualityScore, _qualityIssues) => {
       preview.setStreamedTemplateId(templateId);
 
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
-      let pool = getTemplatePool(mood);
+      let pool = getTemplatePool(chat.businessType, mood);
 
       // Reorder template pool so the generated template is at index 0.
       // This ensures the template selection starts at 1/N instead of a higher index (like 2/4).
