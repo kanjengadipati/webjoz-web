@@ -174,6 +174,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       const decoder = new TextDecoder();
       let buffer = "";
       let hasReceivedEvent = false;
+      const streamStartTime = performance.now();
 
       try {
         while (true) {
@@ -205,10 +206,18 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
 
             switch (event.type) {
               case "design_token":
-                if (event.data) onDesignTokenRef.current(event.data);
+                if (event.data) {
+                  if (!hasReceivedEvent) {
+                    console.log(`[stream_perf] first event (design_token) received in ${(performance.now() - streamStartTime).toFixed(0)}ms`);
+                  }
+                  onDesignTokenRef.current(event.data);
+                }
                 break;
 
               case "section":
+                if (!hasReceivedEvent) {
+                  console.log(`[stream_perf] first section streamed in ${(performance.now() - streamStartTime).toFixed(0)}ms`);
+                }
                 if (event.section && event.data) {
                   onSectionRef.current(event.section, event.data);
                 }
