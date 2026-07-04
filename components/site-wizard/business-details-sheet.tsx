@@ -58,7 +58,7 @@ export function BusinessDetailsSheet({
               value={waDraft}
               onChange={(e) => setWaDraft(e.target.value)}
               placeholder="cth. 081234567890"
-              className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
+              className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-base md:text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
             />
             <p className="text-[10px] text-slate-600 mt-1">Langsung jadi tombol chat di hero & footer</p>
           </div>
@@ -69,7 +69,7 @@ export function BusinessDetailsSheet({
               value={areaDraft}
               onChange={(e) => setAreaDraft(e.target.value)}
               placeholder="cth. Jogja, Jabodetabek, seluruh Indonesia"
-              className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
+              className="w-full bg-[#1e293b] border border-slate-700/50 rounded-lg px-3 py-2.5 text-base md:text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-primary/50"
             />
             <p className="text-[10px] text-slate-600 mt-1">AI pakai ini untuk nulis copy yang lebih relevan</p>
           </div>

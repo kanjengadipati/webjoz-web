@@ -576,7 +576,7 @@ export function SiteWizard({
                 }
                 autoFocus
                 disabled={chat.isInitialTyping || chat.isAiTyping}
-                className="flex-1 bg-transparent border-none py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
               />
               <button
                 type="submit"
