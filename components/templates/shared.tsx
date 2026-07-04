@@ -172,12 +172,26 @@ const NavMenu: React.FC<NavMenuProps> = ({
   drawerStyle,
 }) => {
   const [open, setOpen] = useState(false);
+  const [drawerTop, setDrawerTop] = useState(0);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const navItems = sectionOrder
     .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && NAV_LABELS[k])
     .map(k => ({ key: k, label: NAV_LABELS[k] }));
 
   if (navItems.length === 0) return null;
+
+  const handleToggle = () => {
+    if (!open && btnRef.current) {
+      // Find the nearest header/nav ancestor to get its bottom position.
+      // Using fixed positioning avoids iOS Safari's known bug where absolute
+      // children of sticky+backdrop-filter parents are clipped.
+      const header = btnRef.current.closest("header") ?? btnRef.current.closest("nav") ?? btnRef.current;
+      const rect = header.getBoundingClientRect();
+      setDrawerTop(rect.bottom);
+    }
+    setOpen(v => !v);
+  };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
     setOpen(false);
@@ -202,8 +216,9 @@ const NavMenu: React.FC<NavMenuProps> = ({
       </nav>
 
       <button
+        ref={btnRef}
         type="button"
-        onClick={() => setOpen(v => !v)}
+        onClick={handleToggle}
         className={`md:hidden flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none ${linkClass}`}
         aria-label={open ? "Tutup menu" : "Buka menu"}
         aria-expanded={open}
@@ -212,21 +227,30 @@ const NavMenu: React.FC<NavMenuProps> = ({
       </button>
 
       {open && (
-        <div
-          className="md:hidden absolute top-full left-0 right-0 z-[60] shadow-lg py-2"
-          style={drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }}
-        >
-          {navItems.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={(e) => handleClick(e, key)}
-              className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <>
+          {/* Backdrop — tap outside to close */}
+          <div
+            className="md:hidden fixed inset-0 z-[59]"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Drawer — fixed so iOS sticky/backdrop-filter clipping is avoided */}
+          <div
+            className="md:hidden fixed left-0 right-0 z-[60] shadow-lg py-2"
+            style={{ top: drawerTop, ...(drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }) }}
+          >
+            {navItems.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={(e) => handleClick(e, key)}
+                className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
       )}
     </>
   );

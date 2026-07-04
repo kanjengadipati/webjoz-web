@@ -482,11 +482,10 @@ function TypographyPairingPicker({
         <button
           type="button"
           onClick={onRestoreAi}
-          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
-            isAiActive
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${isAiActive
               ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
               : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
-          }`}
+            }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1 truncate flex items-center gap-1">
             <span>✨</span> Rekomendasi AI
@@ -536,11 +535,10 @@ function TypographyPairingPicker({
               key={pairing.id}
               type="button"
               onClick={() => onApply(pairing)}
-              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                isActive
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
                   : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-              }`}
+                }`}
             >
               <p className="text-[10px] font-bold text-slate-200 mb-1 truncate">
                 {pairing.name}
@@ -682,11 +680,10 @@ function ColorPatternPicker({
         <button
           type="button"
           onClick={onRestoreAi}
-          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
-            isAiActive
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${isAiActive
               ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
               : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
-          }`}
+            }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
             <span>✨</span> Rekomendasi AI
@@ -721,11 +718,10 @@ function ColorPatternPicker({
               key={pattern.id}
               type="button"
               onClick={() => onApply(pattern)}
-              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                isActive
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
                   : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-              }`}
+                }`}
             >
               <p className="text-[10px] font-bold text-slate-200 mb-1.5 truncate">
                 {pattern.name}
@@ -809,11 +805,10 @@ function IndustryPresetPicker({
         <button
           type="button"
           onClick={onRestoreAi}
-          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
-            isAiActive
+          className={`w-full p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${isAiActive
               ? "border-amber-400 bg-amber-400/10 ring-1 ring-amber-400"
               : "border-dashed border-amber-400/50 bg-amber-400/5 hover:bg-amber-400/10"
-          }`}
+            }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
             <span>✨</span> Rekomendasi AI
@@ -876,11 +871,10 @@ function IndustryPresetPicker({
               key={preset.id}
               type="button"
               onClick={() => onApply(preset)}
-              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                isActive
+              className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
                   : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
                 <span className="text-sm">{preset.icon}</span>
@@ -1009,7 +1003,7 @@ export default function SiteEditorPage() {
   const fetchCustomTemplates = async (reset = false) => {
     if (!token || !activeTenantId || !siteId) return;
     // Only superadmin can access template library
-    const role = (() => { try { return JSON.parse(atob(token.split(".")[1]))?.role } catch {} })();
+    const role = (() => { try { return JSON.parse(atob(token.split(".")[1]))?.role } catch { } })();
     if (role !== "superadmin") return;
     try {
       setLoadingTemplates(true);
@@ -1863,8 +1857,8 @@ export default function SiteEditorPage() {
   const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
   const aiPlaceholder = activeSuggestions[0] || "Buat copy lebih jelas dan meyakinkan...";
   const fieldClass = (path: string, base: string) => `${base} ${issuePaths.has(path)
-      ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
-      : ""
+    ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
+    : ""
     }`;
   const needsAttention = (path: string) => issuePaths.has(path);
   const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
@@ -1902,9 +1896,8 @@ export default function SiteEditorPage() {
 
         {/* ════ LEFT SIDEBAR ════ */}
         <div
-          className={`absolute inset-0 z-20 flex h-full w-full flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
-            mobileView === "preview" ? "-translate-x-full" : "translate-x-0"
-          }`}
+          className={`absolute inset-0 z-20 flex h-full w-full flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${mobileView === "preview" ? "-translate-x-full" : "translate-x-0"
+            }`}
           style={{ borderColor: "rgba(255,255,255,0.07)" }}
         >
 
@@ -1928,8 +1921,8 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
-                  ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                  : "text-slate-400 hover:text-slate-200"
+                ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                : "text-slate-400 hover:text-slate-200"
                 }`}
             >
               Konten
@@ -1937,8 +1930,8 @@ export default function SiteEditorPage() {
             <button
               onClick={() => setEditorTab("design")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "design"
-                  ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                  : "text-slate-400 hover:text-slate-200"
+                ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                : "text-slate-400 hover:text-slate-200"
                 }`}
             >
               Desain
@@ -1982,8 +1975,8 @@ export default function SiteEditorPage() {
                         onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
-                            ? "border-primary bg-primary/15"
-                            : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          ? "border-primary bg-primary/15"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={isTopActive}
@@ -2020,8 +2013,8 @@ export default function SiteEditorPage() {
                         onClick={() => void handleTemplateChange(template.id)}
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
-                            ? "border-primary bg-primary/15"
-                            : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          ? "border-primary bg-primary/15"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={active}
@@ -2068,8 +2061,8 @@ export default function SiteEditorPage() {
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
-                                  ? "border-primary bg-primary/15"
-                                  : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                                ? "border-primary bg-primary/15"
+                                : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                                 }`}
                               role="option"
                               aria-selected={active}
@@ -2185,79 +2178,77 @@ export default function SiteEditorPage() {
 
           {/* Section nav — persistent list */}
           {editorTab === "content" && (
-          <div className="flex-shrink-0 border-b border-white/10 hidden md:block">
-            <div className="px-3 py-1.5">
-              <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">Bagian halaman</p>
-            </div>
-            <div
-              className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
-              style={{ maxHeight: sectionNavCollapsed ? 0 : 180, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
-            >
-              {SECTIONS.map(({ key, label, icon: Icon, num }) => (
-                <div
-                  key={key}
-                  draggable={BODY_SECTION_KEYS.includes(key) && !pendingDiff}
-                  onDragStart={(event) => {
-                    if (!BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
-                    setDraggingSection(key);
-                    event.dataTransfer.effectAllowed = "move";
-                    event.dataTransfer.setData("text/plain", key);
-                  }}
-                  onDragOver={(event) => {
-                    if (!draggingSection || !BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
-                    event.preventDefault();
-                    event.dataTransfer.dropEffect = "move";
-                  }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    const source = event.dataTransfer.getData("text/plain") || draggingSection;
-                    if (source) handleReorderSection(source, key);
-                    setDraggingSection(null);
-                  }}
-                  onDragEnd={() => setDraggingSection(null)}
-                  onClick={() => { if (!pendingDiff) selectSection(key, true); }}
-                  className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${
-                    activeTab === key
-                      ? "bg-primary/15"
-                      : hiddenSections.includes(key)
-                        ? "opacity-40 hover:opacity-60"
-                        : "hover:bg-white/[0.03]"
-                  }`}
-                >
-                  <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
-                  <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
-                    {label}
-                  </span>
-                  {!["header", "footer", "seo"].includes(key) && (
-                    <div
-                      role="button" tabIndex={0}
-                      onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
-                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
-                      title={hiddenSections.includes(key) ? "Tampilkan" : "Sembunyikan"}
-                      className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
-                    >
-                      {hiddenSections.includes(key)
-                        ? <EyeOff className="w-3 h-3 text-slate-600" />
-                        : <Eye className="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      }
+            <div className="flex-shrink-0 border-b border-white/10 hidden md:block">
+              <div className="px-3 py-1.5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">Bagian halaman</p>
+              </div>
+              <div
+                className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
+                style={{ maxHeight: sectionNavCollapsed ? 0 : 180, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
+              >
+                {SECTIONS.map(({ key, label, icon: Icon, num }) => (
+                  <div
+                    key={key}
+                    draggable={BODY_SECTION_KEYS.includes(key) && !pendingDiff}
+                    onDragStart={(event) => {
+                      if (!BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
+                      setDraggingSection(key);
+                      event.dataTransfer.effectAllowed = "move";
+                      event.dataTransfer.setData("text/plain", key);
+                    }}
+                    onDragOver={(event) => {
+                      if (!draggingSection || !BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = "move";
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      const source = event.dataTransfer.getData("text/plain") || draggingSection;
+                      if (source) handleReorderSection(source, key);
+                      setDraggingSection(null);
+                    }}
+                    onDragEnd={() => setDraggingSection(null)}
+                    onClick={() => { if (!pendingDiff) selectSection(key, true); }}
+                    className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${activeTab === key
+                        ? "bg-primary/15"
+                        : hiddenSections.includes(key)
+                          ? "opacity-40 hover:opacity-60"
+                          : "hover:bg-white/[0.03]"
+                      }`}
+                  >
+                    <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
+                    <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
+                      {label}
+                    </span>
+                    {!["header", "footer", "seo"].includes(key) && (
+                      <div
+                        role="button" tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
+                        title={hiddenSections.includes(key) ? "Tampilkan" : "Sembunyikan"}
+                        className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
+                      >
+                        {hiddenSections.includes(key)
+                          ? <EyeOff className="w-3 h-3 text-slate-600" />
+                          : <Eye className="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        }
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {["header", "footer", "seo"].includes(key) ? null : (() => {
+                        const score = getSectionScore(content, key);
+                        if (score >= 100) return null;
+                        const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
+                        return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={`Kualitas: ${score}%`} />;
+                      })()}
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
+                        }`}>{num}</span>
                     </div>
-                  )}
-                  <div className="flex items-center gap-1 shrink-0">
-                    {["header", "footer", "seo"].includes(key) ? null : (() => {
-                      const score = getSectionScore(content, key);
-                      if (score >= 100) return null;
-                      const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
-                      return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={`Kualitas: ${score}%`} />;
-                    })()}
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
-                      activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
-                    }`}>{num}</span>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
           )}
 
           {/* ── Field Panel (scrollable) ── */}
@@ -2303,125 +2294,125 @@ export default function SiteEditorPage() {
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Utama (Primary)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.primary || "#4F46E5"}
+                            onChange={(e) => handleColorChange("primary", e.target.value)}
+                            ref={(el) => { colorRefs.current["primary"] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
+                        </div>
                         <input
-                          type="color"
-                          value={designToken?.palette?.primary || "#4F46E5"}
+                          type="text"
+                          value={designToken?.palette?.primary || ""}
                           onChange={(e) => handleColorChange("primary", e.target.value)}
-                          ref={(el) => { colorRefs.current["primary"] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={() => colorRefs.current["primary"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          placeholder="#4F46E5"
                         />
-                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
                       </div>
-                      <input
-                        type="text"
-                        value={designToken?.palette?.primary || ""}
-                        onChange={(e) => handleColorChange("primary", e.target.value)}
-                        onClick={() => colorRefs.current["primary"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                        placeholder="#4F46E5"
-                      />
                     </div>
-                  </div>
 
-                  {/* Accent Color */}
+                    {/* Accent Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Aksen (Accent)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.accent || "#7C3AED"}
+                            onChange={(e) => handleColorChange("accent", e.target.value)}
+                            ref={(el) => { colorRefs.current["accent"] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
+                        </div>
                         <input
-                          type="color"
-                          value={designToken?.palette?.accent || "#7C3AED"}
+                          type="text"
+                          value={designToken?.palette?.accent || ""}
                           onChange={(e) => handleColorChange("accent", e.target.value)}
-                          ref={(el) => { colorRefs.current["accent"] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={() => colorRefs.current["accent"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          placeholder="#7C3AED"
                         />
-                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
                       </div>
-                      <input
-                        type="text"
-                        value={designToken?.palette?.accent || ""}
-                        onChange={(e) => handleColorChange("accent", e.target.value)}
-                        onClick={() => colorRefs.current["accent"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                        placeholder="#7C3AED"
-                      />
                     </div>
-                  </div>
 
-                  {/* Background Color */}
+                    {/* Background Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Latar (Background)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.background || "#FAF7F2"}
+                            onChange={(e) => handleColorChange("background", e.target.value)}
+                            ref={(el) => { colorRefs.current["background"] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
+                        </div>
                         <input
-                          type="color"
-                          value={designToken?.palette?.background || "#FAF7F2"}
+                          type="text"
+                          value={designToken?.palette?.background || ""}
                           onChange={(e) => handleColorChange("background", e.target.value)}
-                          ref={(el) => { colorRefs.current["background"] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={() => colorRefs.current["background"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          placeholder="#FAF7F2"
                         />
-                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
                       </div>
-                      <input
-                        type="text"
-                        value={designToken?.palette?.background || ""}
-                        onChange={(e) => handleColorChange("background", e.target.value)}
-                        onClick={() => colorRefs.current["background"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                        placeholder="#FAF7F2"
-                      />
                     </div>
-                  </div>
 
-                  {/* Surface Color */}
+                    {/* Surface Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Permukaan (Surface)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.surface || "#FFFFFF"}
+                            onChange={(e) => handleColorChange("surface", e.target.value)}
+                            ref={(el) => { colorRefs.current["surface"] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
+                        </div>
                         <input
-                          type="color"
-                          value={designToken?.palette?.surface || "#FFFFFF"}
+                          type="text"
+                          value={designToken?.palette?.surface || ""}
                           onChange={(e) => handleColorChange("surface", e.target.value)}
-                          ref={(el) => { colorRefs.current["surface"] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={() => colorRefs.current["surface"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          placeholder="#FFFFFF"
                         />
-                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
                       </div>
-                      <input
-                        type="text"
-                        value={designToken?.palette?.surface || ""}
-                        onChange={(e) => handleColorChange("surface", e.target.value)}
-                        onClick={() => colorRefs.current["surface"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                        placeholder="#FFFFFF"
-                      />
                     </div>
-                  </div>
 
-                  {/* Text Color */}
+                    {/* Text Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Teks (Text)</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                          <input
+                            type="color"
+                            value={designToken?.palette?.text || "#2C2C2A"}
+                            onChange={(e) => handleColorChange("text", e.target.value)}
+                            ref={(el) => { colorRefs.current["text"] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          />
+                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
+                        </div>
                         <input
-                          type="color"
-                          value={designToken?.palette?.text || "#2C2C2A"}
+                          type="text"
+                          value={designToken?.palette?.text || ""}
                           onChange={(e) => handleColorChange("text", e.target.value)}
-                          ref={(el) => { colorRefs.current["text"] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={() => colorRefs.current["text"]?.click()}
+                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          placeholder="#2C2C2A"
                         />
-                        <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
                       </div>
-                      <input
-                        type="text"
-                        value={designToken?.palette?.text || ""}
-                        onChange={(e) => handleColorChange("text", e.target.value)}
-                        onClick={() => colorRefs.current["text"]?.click()}
-                        className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                        placeholder="#2C2C2A"
-                      />
                     </div>
-                  </div>
                   </div>
 
                   <div className="border-t border-white/10 my-2" />
@@ -2450,11 +2441,11 @@ export default function SiteEditorPage() {
                   <div className="border-t border-white/10 my-2" />
 
                   {/* Tipografi */}
-                    <TypographyPairingPicker
-                      designToken={designToken}
-                      aiDesignToken={latestAiDesignToken}
-                      designTokenScore={designTokenScore}
-                      onApply={(pairing) => {
+                  <TypographyPairingPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={(pairing) => {
                       applyTypographyBatch({
                         heading_font: pairing.heading_font,
                         body_font: pairing.body_font,
@@ -2640,7 +2631,7 @@ export default function SiteEditorPage() {
 
                 {/* ── AI Prompt bar inside field panel ── */}
                 <div className={`border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 transition-all duration-300 ${aiPromptCollapsed ? 'py-2' : 'py-2.5 space-y-2'}`}>
-                  <div 
+                  <div
                     onClick={aiPromptCollapsed ? () => setAiPromptCollapsed(false) : undefined}
                     className={`flex items-center justify-between gap-2 ${aiPromptCollapsed ? 'cursor-pointer select-none' : ''}`}
                   >
@@ -2744,9 +2735,8 @@ export default function SiteEditorPage() {
 
         {/* ════ RIGHT CANVAS ════ */}
         <div
-          className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
-            mobileView === "preview" ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${mobileView === "preview" ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           {/* Mobile topbar */}
           <div className="flex md:hidden h-[52px] flex-shrink-0 items-center gap-2.5 border-b border-white/10 bg-[#111318] px-3 pt-2">
@@ -2851,8 +2841,8 @@ export default function SiteEditorPage() {
                   }));
                 }}
                 className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
-                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                    : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                  : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
                 aria-label="Toggle dark mode"
               >
@@ -2866,10 +2856,10 @@ export default function SiteEditorPage() {
 
             {/* Completion score */}
             <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
-                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                : quality.score >= 65
-                  ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
-                  : "border-red-500/20 bg-red-500/10 text-red-300"
+              ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+              : quality.score >= 65
+                ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
+                : "border-red-500/20 bg-red-500/10 text-red-300"
               }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
               {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
             </span>
@@ -2893,8 +2883,8 @@ export default function SiteEditorPage() {
             {/* Autosave status */}
             {autosaveStatus !== "idle" && (
               <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-amber-300" :
-                  autosaveStatus === "saved" ? "text-emerald-400" :
-                    "text-red-300"
+                autosaveStatus === "saved" ? "text-emerald-400" :
+                  "text-red-300"
                 }`}>
                 {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                 {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
@@ -3131,7 +3121,7 @@ export default function SiteEditorPage() {
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleAiRegenerateForSection}
-                      onSubmitLead={async () => {}}
+                      onSubmitLead={async () => { }}
                     />
                   </div>
                 </div>
@@ -3164,7 +3154,7 @@ export default function SiteEditorPage() {
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleAiRegenerateForSection}
-                      onSubmitLead={async () => {}}
+                      onSubmitLead={async () => { }}
                     />
                   </div>
                 </div>
@@ -3179,7 +3169,7 @@ export default function SiteEditorPage() {
                   activeSection={activeTab}
                   onSelectSection={handlePreviewSelectSection}
                   onRegenSection={handleAiRegenerateForSection}
-                  onSubmitLead={async () => {}}
+                  onSubmitLead={async () => { }}
                 />
               </div>
             )}
@@ -3227,11 +3217,10 @@ export default function SiteEditorPage() {
                   data-section-key={sec.key}
                   type="button"
                   onClick={() => selectSection(sec.key)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${
-                    activeTab === sec.key
+                  className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${activeTab === sec.key
                       ? "bg-primary/15 border-primary/30 text-primary"
                       : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200"
-                  }`}
+                    }`}
                 >
                   <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-bold"
                     style={{
@@ -3251,18 +3240,16 @@ export default function SiteEditorPage() {
               <button
                 type="button"
                 onClick={() => setEditorTab("content")}
-                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
-                  editorTab === "content" ? "bg-primary text-primary-foreground" : "text-slate-400"
-                }`}
+                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${editorTab === "content" ? "bg-primary text-primary-foreground" : "text-slate-400"
+                  }`}
               >
                 Konten
               </button>
               <button
                 type="button"
                 onClick={() => setEditorTab("design")}
-                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${
-                  editorTab === "design" ? "bg-primary text-primary-foreground" : "text-slate-400"
-                }`}
+                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${editorTab === "design" ? "bg-primary text-primary-foreground" : "text-slate-400"
+                  }`}
               >
                 Desain
               </button>
@@ -3533,13 +3520,12 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             Nama Subdomain
           </label>
           <div
-            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${
-              subdomain && !isInputValid
+            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${subdomain && !isInputValid
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
                   : "border-white/10 hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
-            }`}
+              }`}
           >
             <input
               type="text"
@@ -3558,11 +3544,10 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
 
           {previewDomain && (
             <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${
-                isInputValid
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${isInputValid
                   ? "bg-[#3ddc84]/8 text-[#5fe3a0] border border-[#3ddc84]/20"
                   : "bg-red-500/8 text-[#ff8a8a] border border-red-500/20"
-              }`}
+                }`}
             >
               <span className="shrink-0 text-[14px]">{isInputValid ? "✓" : "⚠"}</span>
               <span className="truncate leading-none">
@@ -3615,11 +3600,10 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </Button>
           <Button
             type="submit"
-            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              !isInputValid || loading
+            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${!isInputValid || loading
                 ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
                 : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_4px_18px_color-mix(in_srgb,var(--primary)_35%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
-            }`}
+              }`}
             disabled={loading || !isInputValid}
           >
             {loading ? (
@@ -3698,14 +3682,14 @@ function CongratsModal({ site, onClose }: CongratsModalProps) {
         <div className="space-y-2 max-w-sm mx-auto">
           <h3 className="text-xl font-bold text-white tracking-tight">Website Anda Resmi Mengudara!</h3>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
-              Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
+            Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
           </p>
         </div>
 
         {/* Clickable Subdomain Link Box */}
         <div className="bg-[#15151c] border border-white/[0.08] rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
-          
+
           <div className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-white/10 rounded-xl px-4 py-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
@@ -3719,7 +3703,7 @@ function CongratsModal({ site, onClose }: CongratsModalProps) {
                 {displayDomain}
               </a>
             </div>
-            
+
             <button
               type="button"
               onClick={handleCopy}
