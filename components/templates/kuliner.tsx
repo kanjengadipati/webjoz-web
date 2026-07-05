@@ -205,7 +205,6 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             titleClass="text-3xl font-bold  text-[var(--dt-text)]"
             accentColor={dt?.palette?.primary ?? "#b45309"}
             textClass="text-[var(--dt-text-muted)]"
-            mapsLinkClass="text-[var(--dt-primary)] underline hover:text-[var(--dt-text)] font-medium"
             leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
             leadTitleClass="text-lg font-bold  text-[var(--dt-text)]"
             leadTitleText="Hubungi Kami / Reservasi"
@@ -364,8 +363,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab colorStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }} />
-      {!isEditorMode && <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} />}
-      {!isEditorMode && <BackToTop isEditorMode={isEditorMode} />}
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} />
+      <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>
   );

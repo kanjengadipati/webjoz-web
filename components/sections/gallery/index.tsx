@@ -83,11 +83,13 @@ function Lightbox({ items, index, onClose }: { items: GalleryItem[]; index: numb
         className="relative max-w-[90vw] max-h-[85vh] flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={item.image_url}
-          alt={item.alt_text || item.caption || "Gallery image"}
-          className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
-        />
+        {item.image_url && (
+          <img
+            src={item.image_url}
+            alt={item.alt_text || item.caption || "Gallery image"}
+            className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
+          />
+        )}
         {item.caption && (
           <p className="mt-3 text-white/80 text-sm text-center max-w-lg">{item.caption}</p>
         )}
@@ -155,12 +157,14 @@ function Carousel({
             onClick={() => setLightboxIndex(idx)}
             className="min-w-full aspect-video relative cursor-pointer p-0 border-0 text-left"
           >
-            <img
-              src={item.image_url}
-              alt={item.alt_text || item.caption || "Gallery image"}
-              className="w-full h-full object-cover"
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
-            />
+            {item.image_url && (
+              <img
+                src={item.image_url}
+                alt={item.alt_text || item.caption || "Gallery image"}
+                className="w-full h-full object-cover"
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+            )}
             {item.caption && (
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
                 <p className="text-white text-sm font-medium">{item.caption}</p>
@@ -230,12 +234,14 @@ function Grid({ items, radius, setLightboxIndex }: {
           className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
           style={{ borderRadius: radius, aspectRatio: "4 / 3" }}
         >
-          <img
-            src={item.image_url}
-            alt={item.alt_text || item.caption || "Gallery image"}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
-          />
+          {item.image_url && (
+            <img
+              src={item.image_url}
+              alt={item.alt_text || item.caption || "Gallery image"}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           {item.caption && (
             <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -273,12 +279,14 @@ function Masonry({ items, radius, setLightboxIndex }: {
           className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
           style={{ borderRadius: radius, height: heights[(startIdx / 3 + idx) % heights.length] }}
         >
-          <img
-            src={item.image_url}
-            alt={item.alt_text || item.caption || "Gallery image"}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
-          />
+          {item.image_url && (
+            <img
+              src={item.image_url}
+              alt={item.alt_text || item.caption || "Gallery image"}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           {item.caption && (
             <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">

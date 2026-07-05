@@ -1402,12 +1402,10 @@ interface ContactSectionProps {
   leadFormBtnStyle?: React.CSSProperties;
   leadFormInputClass?: string;
   leadFormInputStyle?: React.CSSProperties;
-  mapsLinkClass?: string;
-  mapsLinkStyle?: React.CSSProperties;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
-  title, address, phone, email, mapsUrl,
+  title, address, phone, email,
   align = "center",
   showLeadForm, showMap, mapTileStyle, onSubmitLead, leadSubmitting, leadSuccess, leadError,
   wrapperClass = "py-16 px-6", wrapperStyle,
@@ -1418,7 +1416,6 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   leadTitleClass, leadTitleStyle, leadTitleText = "Hubungi Kami",
   leadFormBtnClass, leadFormBtnStyle,
   leadFormInputClass, leadFormInputStyle,
-  mapsLinkClass, mapsLinkStyle,
 }) => {
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
@@ -1429,11 +1426,22 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const containerWidthClass = hasLeadForm ? "max-w-5xl" : isCenter ? "max-w-xl" : "max-w-5xl";
   const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
 
-  // Use dummy fallbacks purely for visual purposes so the UI looks complete
-  const displayAddress = address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
-  const displayPhone = phone || "+62 812-3456-7890";
-  const displayEmail = email || "hello@domain.com";
-  const displayMapsUrl = mapsUrl || "https://www.google.com/maps/place/@-7.7956,110.3695";
+  // Always show map with detected location or Jakarta fallback
+  const [mapCoords, setMapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => {},
+        { timeout: 5000, enableHighAccuracy: false },
+      );
+    }
+  }, []);
+
+  // Dummy fallbacks — real data replaces when user fills via editor
+  const displayAddress = address || "Alamat Anda";
+  const displayPhone = phone || "08xx-xxxx-xxxx";
+  const displayEmail = email || "email@anda.com";
 
   const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
     { icon: MapPin, text: displayAddress },
@@ -1468,19 +1476,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
 
           {showMap !== false && (
             <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>
-              {(() => {
-                const m = displayMapsUrl.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-                if (!m) return null;
-                const lat = parseFloat(m[1]);
-                const lng = parseFloat(m[2]);
-                if (isNaN(lat) || isNaN(lng)) return null;
-                return (
-                  <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
-                    <MapEmbed lat={lat} lng={lng} tileStyle={mapTileStyle} />
-                  </div>
-                );
-              })()}
-              <a href={displayMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
+              <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
+                <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
+              </div>
+              <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
                 <Globe className="w-3.5 h-3.5" />
                 Buka di Google Maps
               </a>

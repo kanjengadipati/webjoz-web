@@ -271,7 +271,6 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             titleClass="text-3xl font-extrabold text-[var(--dt-text)] tracking-tight"
             accentColor={dt?.palette?.primary ?? "#4f46e5"}
             textClass="text-[var(--dt-text-muted)]"
-            mapsLinkClass="text-[var(--dt-primary)] hover:text-[var(--dt-text)] font-bold"
             leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
             leadTitleClass="text-lg font-bold text-[var(--dt-text)]"
             leadTitleText="Kirim Pertanyaan Anda"

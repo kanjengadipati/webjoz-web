@@ -58,6 +58,9 @@ export function SiteWizard({
     onDesignToken: (token) => {
       preview.setStreamedDesignToken(token);
       preview.streamedTokenRef.current = token;
+      if (token.template_id) {
+        preview.setStreamedTemplateId(token.template_id);
+      }
     },
     onSection: (section, data) => {
       preview.streamedSectionsRef.current = { ...preview.streamedSectionsRef.current, [section]: data };

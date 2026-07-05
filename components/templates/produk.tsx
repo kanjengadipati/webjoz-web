@@ -207,7 +207,6 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             titleClass="text-3xl font-extrabold tracking-tight text-white"
             accentColor={dt?.palette?.primary ?? "#22d3ee"}
             textClass="text-slate-300"
-            mapsLinkClass="font-bold text-[var(--dt-primary)] hover:opacity-80"
             leadCardClass="bg-slate-900 p-8 rounded-[var(--dt-radius-lg)] border border-slate-800 shadow-xl backdrop-blur-sm"
             leadTitleClass="text-lg font-bold text-white"
             leadTitleText="Hubungi Kami Langsung"

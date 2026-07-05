@@ -1184,28 +1184,11 @@ export default function SiteEditorPage() {
     contentRef.current = content;
   }, [content]);
 
-  // Sync favicon & page title for editor preview
+  // Sync page title for editor preview (favicon not shown during preview)
   useEffect(() => {
     if (!content) return;
 
-    const faviconUrl = content?.seo?.favicon_url;
     const siteTitle = content?.seo?.title || siteDetails?.name;
-
-    // Save original favicon href so we can restore on unmount
-    let originalFaviconHref = "";
-    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-    if (link) {
-      originalFaviconHref = link.href;
-    }
-
-    if (faviconUrl) {
-      if (!link) {
-        link = document.createElement("link");
-        link.rel = "icon";
-        document.head.appendChild(link);
-      }
-      link.href = faviconUrl;
-    }
 
     const originalTitle = document.title;
     if (siteTitle) {
@@ -1213,13 +1196,9 @@ export default function SiteEditorPage() {
     }
 
     return () => {
-      // Restore original favicon when leaving editor
-      if (link && originalFaviconHref) {
-        link.href = originalFaviconHref;
-      }
       document.title = originalTitle;
     };
-  }, [content?.seo?.favicon_url, content?.seo?.title, siteDetails?.name]);
+  }, [content?.seo?.title, siteDetails?.name]);
 
   useEffect(() => {
     designTokenRef.current = designToken;
