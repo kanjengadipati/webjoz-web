@@ -22,6 +22,7 @@ export function useWizardPreview() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [isSwitchingTemplate, setIsSwitchingTemplate] = useState(false);
   const [resultClear, setResultClear] = useState(false);
+  const [stepElapsed, setStepElapsed] = useState<number[]>([0, 0, 0, 0, 0, 0]);
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
@@ -32,6 +33,7 @@ export function useWizardPreview() {
   const lastStepTimeRef = useRef(0);
   const prevStepRef = useRef(0);
   const pendingResultRef = useRef(false);
+  const stepStartTimesRef = useRef<number[]>([0, 0, 0, 0, 0, 0]);
   const previewScrollRef = useRef<HTMLDivElement>(null);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -108,10 +110,12 @@ export function useWizardPreview() {
     if (previewState !== "loading") return;
 
     setLoadingStep(0);
+    setStepElapsed([0, 0, 0, 0, 0, 0]);
     streamDoneRef.current = false;
     desiredStepRef.current = 0;
     lastStepTimeRef.current = Date.now();
     pendingResultRef.current = false;
+    stepStartTimesRef.current = [Date.now(), 0, 0, 0, 0, 0];
     const startTime = Date.now();
 
     const interval = setInterval(() => {
@@ -119,29 +123,54 @@ export function useWizardPreview() {
 
       const now = Date.now();
 
-      // 1. Safety timeout: force transition to result after 3 minutes to prevent infinite loading
+      // 1. Safety timeout
       if (now - startTime > 180000) {
         pendingResultRef.current = true;
         setTimeout(() => setPreviewState("result"), 600);
         return;
       }
 
-      setLoadingStep((prev) => {
-        // 2. If stream is done and loading step is at least 5, transition to result
-        if (prev >= 5 && streamDoneRef.current) {
+      const currentStep = loadingStepRef.current;
+
+      // 2. Update ticking timer for the active step — only once per second (floor check)
+      const activeStart = stepStartTimesRef.current[currentStep];
+      if (activeStart > 0) {
+        const elapsed = Math.round((now - activeStart) / 1000);
+        setStepElapsed((prev) => {
+          if (prev[currentStep] === elapsed) return prev; // skip if unchanged
+          const next = [...prev];
+          next[currentStep] = elapsed;
+          return next;
+        });
+      }
+
+      // 3. Advance loading step if needed
+      if (currentStep >= 5 && streamDoneRef.current) {
+        if (!pendingResultRef.current) {
           pendingResultRef.current = true;
           setTimeout(() => setPreviewState("result"), 600);
-          return prev;
         }
+        return;
+      }
 
-        const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
-        if (prev >= targetStep) return prev;
+      const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
+      if (currentStep >= targetStep) return;
 
-        // Pacing: minimum 1.5s per step
-        if (now - lastStepTimeRef.current < 1500) return prev;
-        lastStepTimeRef.current = now;
-        return prev + 1;
+      // Pacing: minimum 1.5s per step
+      if (now - lastStepTimeRef.current < 1500) return;
+
+      // Freeze elapsed for the step we're leaving, then advance
+      const frozenElapsed = Math.round((now - stepStartTimesRef.current[currentStep]) / 1000);
+      stepStartTimesRef.current[currentStep + 1] = now;
+      lastStepTimeRef.current = now;
+
+      setStepElapsed((prev) => {
+        const next = [...prev];
+        next[currentStep] = frozenElapsed;
+        return next;
       });
+
+      setLoadingStep(currentStep + 1);
     }, 250);
 
     return () => clearInterval(interval);
@@ -213,6 +242,7 @@ export function useWizardPreview() {
     setHistoryIndex,
     loadingStep,
     setLoadingStep,
+    stepElapsed,
     isSwitchingTemplate,
     setIsSwitchingTemplate,
     resultClear,

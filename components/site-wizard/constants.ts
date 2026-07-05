@@ -76,8 +76,8 @@ export const LOADING_CHECKLIST = [
   { label: "Menyusun cerita bisnis", desc: "Menulis tentang brand dan nilai bisnis Anda" },
   { label: "Menulis keunggulan & layanan", desc: "Merinci kelebihan dan layanan yang ditawarkan" },
   { label: "Menyiapkan testimoni & FAQ", desc: "Mengumpulkan bukti sosial dan pertanyaan umum" },
-  { label: "Menyusun call-to-action", desc: "Membuat ajakan untuk bertindak yang meyakinkan" },
-  { label: "Optimasi SEO & finalisasi", desc: "Mengatur metadata agar mudah ditemukan di Google" },
+  { label: "Menyusun katalog & galeri", desc: "Membuat daftar menu/layanan dan galeri foto" },
+  { label: "Optimasi SEO & finalisasi", desc: "Mengatur metadata dan call-to-action kontak" },
 ];
 
 export const LOADING_STEPS_PERCENT = [15, 30, 45, 60, 75, 100];
@@ -87,8 +87,8 @@ export const SECTION_STEP_MAP: Record<string, number> = {
   about: 1,
   benefits: 2,
   testimonials: 3, faq: 3,
-  cta: 4,
-  seo: 5, footer: 5, menu: 5, catalog: 5, contact: 5,
+  menu: 4, catalog: 4, gallery: 4,
+  cta: 5, contact: 5, footer: 5, seo: 5,
 };
 
 export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;

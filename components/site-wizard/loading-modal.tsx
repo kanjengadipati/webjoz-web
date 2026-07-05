@@ -12,10 +12,17 @@ interface LoadingModalProps {
   charCount?: number;
   sectionSnippet?: string;
   center?: boolean;
+  stepElapsed?: number[];
 }
 
 
-export function LoadingModal({ loadingStep, businessType, businessName, charCount, sectionSnippet, center }: LoadingModalProps) {
+export function LoadingModal({ loadingStep, businessType, businessName, charCount, sectionSnippet, center, stepElapsed }: LoadingModalProps) {
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
+
   return (
     <div className={`absolute inset-0 z-30 flex ${center ? "items-end pb-6 px-4 justify-center" : "items-center justify-center px-4"}`}>
       <div className={`backdrop-blur-xl rounded-3xl w-full shadow-2xl flex flex-col animate-in ${center ? "max-w-full p-3 gap-2 slide-in-from-bottom-4 max-h-[55vh] overflow-y-auto" : "max-w-sm p-7 gap-5 slide-in-from-bottom-4 zoom-in-95"} duration-500`} style={{ background: "rgba(17,19,24,0.95)", border: "1px solid rgba(255,255,255,0.1)" }}>
@@ -73,7 +80,7 @@ export function LoadingModal({ loadingStep, businessType, businessName, charCoun
                 </span>
                 {!center && (
                   <span className={`font-mono shrink-0 ml-auto ${active ? "text-primary" : "text-slate-300"} text-[10px]`}>
-                    {active ? `00:${String(idx + 3).padStart(2, "0")}` : done ? `00:0${idx + 3}` : "00:00"}
+                    {active || done ? formatTime(stepElapsed?.[idx] ?? 0) : "00:00"}
                   </span>
                 )}
               </div>
