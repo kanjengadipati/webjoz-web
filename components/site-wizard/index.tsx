@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 "use client";
 
 import React, { useState, useRef, useMemo } from "react";
@@ -69,8 +70,6 @@ export function SiteWizard({
       preview.advanceLoadingStepFromSection(section);
     },
     onDone: (templateId, _qualityScore, _qualityIssues) => {
-      preview.setStreamedTemplateId(templateId);
-
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
       const pool = getTemplatePool(chat.businessType, mood);
       preview.setTemplatePool(pool);
@@ -78,11 +77,27 @@ export function SiteWizard({
 
       const finalContent = preview.streamedSectionsRef.current;
       const finalToken = preview.streamedTokenRef.current ?? {};
-      const mergedPreview: PreviewData = {
+
+      const basePreview: PreviewData = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
         design_token: finalToken,
         template_id: templateId,
       };
+
+      const enrichedContent = buildFullContent(
+        basePreview,
+        chat.businessNameRef.current,
+        chat.businessSubTypeRef.current || chat.businessTypeRef.current,
+        chat.descriptionRef.current,
+        chat.whatsappRef.current || ""
+      );
+
+      const mergedPreview: PreviewData = {
+        content: enrichedContent,
+        design_token: finalToken,
+        template_id: templateId,
+      };
+
       preview.setPreviewHistory((prev) => {
         const base = prev.slice(0, preview.historyIndexRef.current + 1);
         const next = [...base, mergedPreview].slice(-5);
@@ -90,6 +105,14 @@ export function SiteWizard({
         return next;
       });
       preview.setPreviewData(mergedPreview);
+
+      // Reset streamed variables since the stream is complete
+      preview.setStreamedSections({});
+      preview.setStreamedDesignToken(null);
+      preview.setStreamedTemplateId("");
+      preview.streamedSectionsRef.current = {};
+      preview.streamedTokenRef.current = null;
+
       preview.streamDoneRef.current = true;
       if (preview.loadingStepRef.current >= 5) {
         setTimeout(() => preview.setPreviewState("result"), 600);
@@ -205,6 +228,7 @@ export function SiteWizard({
     preview.setStreamedTemplateId("");
     preview.streamedSectionsRef.current = {};
     preview.streamedTokenRef.current = null;
+    preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
     generate.didGenerateRef.current = true;

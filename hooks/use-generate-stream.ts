@@ -140,7 +140,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         const now = performance.now();
         const elapsed = now - lastMark;
         lastMark = now;
-        console.info(`[generate_stage] req=${requestId} stage=${stage} elapsed=${elapsed.toFixed(0)}ms`);
+        console.info(`[generate_stage] req=${requestId} stage=${stage} elapsed=${(elapsed / 1000).toFixed(2)}s`);
       }
 
       for (let attempt = 0; attempt <= MAX_STREAM_RETRIES; attempt += 1) {
@@ -231,7 +231,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
 
               case "done":
                 markStage("done");
-                console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${(performance.now() - clientStart).toFixed(0)}ms`);
+                console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${((performance.now() - clientStart) / 1000).toFixed(2)}s`);
                 onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0, event.quality_issues);
                 break;
 
