@@ -132,6 +132,16 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       abortRef.current = controller;
 
       let response: Response | null = null;
+      let requestId = "unknown";
+      const clientStart = performance.now();
+      let lastMark = clientStart;
+
+      function markStage(stage: string) {
+        const now = performance.now();
+        const elapsed = now - lastMark;
+        lastMark = now;
+        console.info(`[generate_stage] req=${requestId} stage=${stage} elapsed=${elapsed.toFixed(0)}ms`);
+      }
 
       for (let attempt = 0; attempt <= MAX_STREAM_RETRIES; attempt += 1) {
         try {
@@ -168,13 +178,14 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         return;
       }
 
+      requestId = response.headers.get("X-Request-ID") ?? "unknown";
+      markStage("response_headers_received");
+
       // Baca stream per-line
       const reader = response.body.getReader();
       readerRef.current = reader;
       const decoder = new TextDecoder();
       let buffer = "";
-      let hasReceivedEvent = false;
-      const streamStartTime = performance.now();
 
       try {
         while (true) {
@@ -202,32 +213,30 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
             } catch {
               continue;
             }
-            hasReceivedEvent = true;
 
             switch (event.type) {
               case "design_token":
                 if (event.data) {
-                  if (!hasReceivedEvent) {
-                    console.log(`[stream_perf] first event (design_token) received in ${(performance.now() - streamStartTime).toFixed(0)}ms`);
-                  }
+                  markStage("design_token_received");
                   onDesignTokenRef.current(event.data);
                 }
                 break;
 
               case "section":
-                if (!hasReceivedEvent) {
-                  console.log(`[stream_perf] first section streamed in ${(performance.now() - streamStartTime).toFixed(0)}ms`);
-                }
+                markStage(`section_received:${event.section}`);
                 if (event.section && event.data) {
                   onSectionRef.current(event.section, event.data);
                 }
                 break;
 
               case "done":
+                markStage("done");
+                console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${(performance.now() - clientStart).toFixed(0)}ms`);
                 onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0, event.quality_issues);
                 break;
 
               case "error":
+                markStage("error");
                 onErrorRef.current(event.error ?? "Terjadi kesalahan saat generate.");
                 break;
             }
@@ -235,10 +244,6 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
-        if (!hasReceivedEvent) {
-          onErrorRef.current("Koneksi terputus sebelum generate dimulai. Silakan coba lagi.");
-          return;
-        }
         onErrorRef.current(err?.message || "Koneksi terputus.");
       } finally {
         readerRef.current = null;
