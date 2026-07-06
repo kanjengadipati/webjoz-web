@@ -7,6 +7,7 @@ import { getInsight } from "./helpers";
 
 interface LoadingModalProps {
   loadingStep: number;
+  progressPercent?: number;
   businessType: string;
   businessName?: string;
   charCount?: number;
@@ -16,12 +17,14 @@ interface LoadingModalProps {
 }
 
 
-export function LoadingModal({ loadingStep, businessType, businessName, charCount, sectionSnippet, center, stepElapsed }: LoadingModalProps) {
+export function LoadingModal({ loadingStep, progressPercent, businessType, businessName, charCount, sectionSnippet, center, stepElapsed }: LoadingModalProps) {
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
+
+  const displayPercent = progressPercent !== undefined ? Math.round(progressPercent) : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
 
   return (
     <div className={`absolute inset-0 z-30 flex ${center ? "items-end pb-6 px-4 justify-center" : "items-center justify-center px-4"}`}>
@@ -39,7 +42,7 @@ export function LoadingModal({ loadingStep, businessType, businessName, charCoun
               {!center && <p className="text-[11px] text-slate-400 mt-0.5">Mohon tunggu sebentar...</p>}
             </div>
           </div>
-          {!center && <span className="text-xs font-bold text-primary shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
+          {!center && <span className="text-xs font-bold text-primary shrink-0">{displayPercent}%</span>}
         </div>
 
         {/* Progress bar */}
@@ -48,10 +51,10 @@ export function LoadingModal({ loadingStep, businessType, businessName, charCoun
             <div className={`rounded-full overflow-hidden flex-1 ${center ? "h-2" : "h-2.5"}`} style={{ background: "rgba(255,255,255,0.06)" }}>
               <div
                 className="h-full bg-primary transition-all duration-1000 ease-out rounded-full"
-                style={{ width: `${LOADING_STEPS_PERCENT[loadingStep] ?? 15}%` }}
+                style={{ width: `${displayPercent}%` }}
               />
             </div>
-            {center && <span className="text-[11px] font-bold text-primary shrink-0">{LOADING_STEPS_PERCENT[loadingStep] ?? 15}%</span>}
+            {center && <span className="text-[11px] font-bold text-primary shrink-0">{displayPercent}%</span>}
           </div>
           {!center && charCount !== undefined && (
             <p className="text-[10px] text-slate-500 text-right">

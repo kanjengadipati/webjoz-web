@@ -23,6 +23,7 @@ export function useWizardPreview() {
   const [isSwitchingTemplate, setIsSwitchingTemplate] = useState(false);
   const [resultClear, setResultClear] = useState(false);
   const [stepElapsed, setStepElapsed] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [smoothProgress, setSmoothProgress] = useState(0);
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
   const streamedTokenRef = useRef<Record<string, any> | null>(null);
@@ -99,18 +100,40 @@ export function useWizardPreview() {
   }, [previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
   // Transition to result only when BOTH conditions are true in React's eyes:
-  // - loadingStep has reached 5 (progress bar at 100%)
-  // - streamDone is true (meaning previewData has already been committed by React
-  //   because setStreamDone(true) is called *after* setPreviewData inside onDone)
-  // Using state instead of a ref here is critical: refs don't trigger re-renders,
-  // so if loadingStep hits 5 while the stream is still in-flight, this effect won't
-  // fire prematurely. It will only fire once the stream's React state settles.
+  // - smoothProgress has reached 100% (the progress bar visually hits the end)
+  // - streamDone is true (meaning previewData has already been committed by React)
+  // This ensures the user always sees the progress bar fill up completely and naturally
+  // before transitioning to the final preview layout.
   useEffect(() => {
-    if (previewState === "loading" && loadingStep >= 5 && streamDone && !pendingResultRef.current) {
+    if (previewState === "loading" && Math.round(smoothProgress) >= 100 && streamDone && !pendingResultRef.current) {
       pendingResultRef.current = true;
       setTimeout(() => setPreviewState("result"), 600);
     }
-  }, [loadingStep, previewState, streamDone]);
+  }, [smoothProgress, previewState, streamDone]);
+
+  // Smoothly interpolate progress bar and percentage value
+  useEffect(() => {
+    if (previewState !== "loading") {
+      setSmoothProgress(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setSmoothProgress((prev) => {
+        const target = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
+        if (prev >= target) {
+          return target;
+        }
+        const diff = target - prev;
+        // Natural easing step: increment proportional to the remaining distance
+        const step = Math.min(0.8, Math.max(0.15, diff * 0.04));
+        const next = prev + step;
+        return next >= target ? target : next;
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [previewState, loadingStep]);
 
   // Handle loading steps, pacing, and safety timeout
   useEffect(() => {
@@ -193,10 +216,10 @@ export function useWizardPreview() {
   const previewBlurPx = useMemo(() => {
     if (previewState === "result" && resultClear) return 0;
     if (previewState === "result") return 2;
-    const pct = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
+    const pct = smoothProgress;
     const blur = Math.round(8 * (1 - pct / 100) * 10) / 10;
     return Math.max(blur, 1.5);
-  }, [previewState, loadingStep, resultClear]);
+  }, [previewState, smoothProgress, resultClear]);
 
   const handleSwitchTemplate = useCallback(() => {
     if (templatePool.length <= 1) return;
@@ -245,6 +268,8 @@ export function useWizardPreview() {
     loadingStep,
     setLoadingStep,
     stepElapsed,
+    smoothProgress,
+    setSmoothProgress,
     isSwitchingTemplate,
     setIsSwitchingTemplate,
     resultClear,
