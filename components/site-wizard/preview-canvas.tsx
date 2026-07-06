@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PreviewData } from "./types";
-import { selectTemplate, getTemplateComponent } from "./helpers";
+import { getTemplateComponent } from "./helpers";
 import { buildFullContent } from "@/lib/build-full-content";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -29,11 +29,12 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
     isSwitchingTemplate,
     previewBlurPx,
     previewScrollRef,
-    previewIframeRef
+    previewIframeRef,
+    streamDone
   } = preview;
 
   const hasLiveData = Object.keys(streamedSections).length > 0;
-  const isStreamingLive = previewState === "loading";
+  const isStreamingLive = previewState === "loading" && !streamDone;
   // While streaming, only treat previewData as usable AFTER live sections arrive.
   // Before that, old previewData from a prior generation must not be shown —
   // it would produce a flash of the previous result at the start of the new stream.
@@ -53,12 +54,11 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   }
   const liveContent = isStreamingLive ? streamedSections : (previewData?.content || {});
   const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : (previewData?.design_token || {});
-  const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData?.template_id)
-    || selectTemplate(chat.businessSubType || chat.businessType);
-  const TemplateComponent = getTemplateComponent(liveTemplateId);
+  const liveTemplateId = isStreamingLive ? streamedTemplateId : (previewData?.template_id || "");
+  const TemplateComponent = liveTemplateId ? getTemplateComponent(liveTemplateId) : null;
   const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
 
-  const templatePreview = (
+  const templatePreview = TemplateComponent ? (
     // eslint-disable-next-line react-hooks/static-components
     <TemplateComponent
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,7 +67,16 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       design_token={liveToken as any}
       isEditorMode={false}
       arrivedSections={isStreamingLive ? arrivedSections : undefined}
-      onSubmitLead={async () => {}}
+      onSubmitLead={async () => { }}
+    />
+  ) : (
+    <Wireframe
+      businessName={chat.businessName}
+      businessType={chat.businessType}
+      businessSubType={chat.businessSubType}
+      description={chat.description}
+      chatStage={chat.chatStage}
+      designToken={isStreamingLive ? streamedDesignToken : null}
     />
   );
 
