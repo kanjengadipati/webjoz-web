@@ -186,9 +186,10 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       readerRef.current = reader;
       const decoder = new TextDecoder();
       let buffer = "";
+      let isDoneReceived = false;
 
       try {
-        while (true) {
+        while (!isDoneReceived) {
           const { done, value } = await reader.read();
           if (done) break;
 
@@ -232,11 +233,13 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
               case "done":
                 markStage("done");
                 console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${((performance.now() - clientStart) / 1000).toFixed(2)}s`);
+                isDoneReceived = true;
                 onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0, event.quality_issues);
                 break;
 
               case "error":
                 markStage("error");
+                isDoneReceived = true;
                 onErrorRef.current(event.error ?? "Terjadi kesalahan saat generate.");
                 break;
             }
@@ -244,7 +247,11 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
-        onErrorRef.current(err?.message || "Koneksi terputus.");
+        if (!isDoneReceived) {
+          onErrorRef.current(err?.message || "Koneksi terputus.");
+        } else {
+          console.warn("Ignored stream read error after generation completed successfully:", err);
+        }
       } finally {
         readerRef.current = null;
       }

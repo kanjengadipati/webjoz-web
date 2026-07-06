@@ -34,6 +34,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
 
   const hasLiveData = Object.keys(streamedSections).length > 0;
   const hasPreviewData = !!previewData;
+  const isStreamingLive = previewState === "loading";
 
   if (!hasLiveData && !hasPreviewData) {
     return (
@@ -43,11 +44,10 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
         businessSubType={chat.businessSubType}
         description={chat.description}
         chatStage={chat.chatStage}
+        designToken={isStreamingLive ? streamedDesignToken : null}
       />
     );
   }
-
-  const isStreamingLive = previewState === "loading";
   const liveContent = isStreamingLive ? streamedSections : (previewData?.content || {});
   const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : (previewData?.design_token || {});
   const liveTemplateId = (isStreamingLive ? streamedTemplateId : previewData?.template_id)
