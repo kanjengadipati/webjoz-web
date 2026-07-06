@@ -62,6 +62,23 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
       }}
     >
       <div className="w-full max-w-xl lg:max-w-3xl mx-auto">
+        {designToken && (
+          <div
+            className="flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full w-fit text-[11px] font-medium animate-in fade-in slide-in-from-top-2 duration-500"
+            style={{
+              background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
+              color: "var(--dt-primary)",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: "var(--dt-primary)" }}
+            />
+            Pratinjau desain — hasil akhir sedang dibuat AI
+          </div>
+        )}
+
         <header
           className="flex justify-between items-center pb-6 mb-10 transition-colors duration-500"
           style={{ borderBottom: designToken ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.07)" }}
