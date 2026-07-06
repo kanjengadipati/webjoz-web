@@ -1072,18 +1072,39 @@ export default function SiteEditorPage() {
         seo: { title: "", description: "", favicon_url: "", og_image_url: "" }
       };
 
+      const siteName: string = siteRes.data?.name || "Bisnis Kami";
       const finalContent = {
         ...fallback,
         ...data,
         header: { ...fallback.header, ...data.header },
         hero: { ...fallback.hero, ...data.hero, matra: data.hero?.matra ?? "" },
-        about: { ...fallback.about, ...data.about },
-        benefits: { ...fallback.benefits, ...data.benefits },
+        about: {
+          ...fallback.about,
+          ...data.about,
+          // Defensive: ensure body is never blank after DB load
+          body: data.about?.body || `${siteName} hadir untuk memberikan layanan terbaik bagi Anda. Kami berkomitmen menghadirkan pengalaman yang memuaskan dan terpercaya bagi setiap pelanggan.`,
+        },
+        benefits: {
+          ...fallback.benefits,
+          ...data.benefits,
+          // Defensive: ensure benefit cards are never empty after DB load
+          items: (data.benefits?.items && data.benefits.items.length > 0)
+            ? data.benefits.items
+            : [
+                { title: "Layanan Terpercaya", description: `${siteName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
+                { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
+                { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
+              ],
+        },
         // Preserve optional sections as-is (only include when present in fetched data)
         ...(data.faq ? { faq: { title: "", items: [], ...data.faq } } : {}),
         cta: { ...fallback.cta, ...data.cta },
         contact: { ...fallback.contact, ...data.contact },
-        footer: { ...fallback.footer, ...data.footer },
+        footer: {
+          ...fallback.footer,
+          ...data.footer,
+          tagline: data.footer?.tagline || `Layanan terbaik dari ${siteName} untuk Anda.`,
+        },
         seo: { ...fallback.seo, ...data.seo },
         // Preserve optional sections as-is
         ...(data.testimonials ? { testimonials: data.testimonials } : {}),

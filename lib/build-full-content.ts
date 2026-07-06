@@ -122,13 +122,24 @@ export function buildFullContent(
     about: {
       ...c.about,
       title: c.about?.title || `Tentang ${businessName}`,
-      body: c.about?.body || description,
+      // Fallback chain: AI body → user description → generic placeholder
+      // Prevents blank paragraphs when AI returned empty string and user skipped description
+      body: c.about?.body || description ||
+        `${businessName} hadir untuk memberikan layanan terbaik bagi Anda. Kami berkomitmen menghadirkan pengalaman yang memuaskan dan terpercaya bagi setiap pelanggan.`,
       image_url: c.about?.image_url || "",
     },
     benefits: {
       ...c.benefits,
       title: c.benefits?.title || "Kenapa Pilih Kami?",
-      items: c.benefits?.items ?? [],
+      // When AI returned [] (empty items), generate 3 generic benefit cards so the section
+      // is never blank. Real AI content always replaces these on a new generation.
+      items: (c.benefits?.items && c.benefits.items.length > 0)
+        ? c.benefits.items
+        : [
+            { title: "Layanan Terpercaya", description: `${businessName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
+            { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
+            { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
+          ],
     },
     testimonials: {
       ...c.testimonials,
@@ -157,7 +168,7 @@ export function buildFullContent(
     footer: {
       ...c.footer,
       brand_name: businessName,
-      tagline: c.footer?.tagline || description,
+      tagline: c.footer?.tagline || description || `Layanan terbaik dari ${businessName} untuk Anda.`,
       copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
     },
     ...(c.menu ? { menu: c.menu } : {}),
