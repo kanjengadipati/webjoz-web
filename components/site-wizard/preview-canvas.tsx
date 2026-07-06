@@ -33,8 +33,11 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   } = preview;
 
   const hasLiveData = Object.keys(streamedSections).length > 0;
-  const hasPreviewData = !!previewData;
   const isStreamingLive = previewState === "loading";
+  // While streaming, only treat previewData as usable AFTER live sections arrive.
+  // Before that, old previewData from a prior generation must not be shown —
+  // it would produce a flash of the previous result at the start of the new stream.
+  const hasPreviewData = isStreamingLive ? hasLiveData : !!previewData;
 
   if (!hasLiveData && !hasPreviewData) {
     return (
