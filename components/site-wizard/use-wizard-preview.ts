@@ -29,6 +29,7 @@ export function useWizardPreview() {
   const historyIndexRef = useRef(historyIndex);
   const loadingStepRef = useRef(0);
   const streamDoneRef = useRef(false);
+  const [streamDone, setStreamDone] = useState(false);
   const desiredStepRef = useRef(0);
   const lastStepTimeRef = useRef(0);
   const prevStepRef = useRef(0);
@@ -97,13 +98,19 @@ export function useWizardPreview() {
     scrollPreviewToTop();
   }, [previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
-  // Instant transition to result when stream is done and loading step reaches 5
+  // Transition to result only when BOTH conditions are true in React's eyes:
+  // - loadingStep has reached 5 (progress bar at 100%)
+  // - streamDone is true (meaning previewData has already been committed by React
+  //   because setStreamDone(true) is called *after* setPreviewData inside onDone)
+  // Using state instead of a ref here is critical: refs don't trigger re-renders,
+  // so if loadingStep hits 5 while the stream is still in-flight, this effect won't
+  // fire prematurely. It will only fire once the stream's React state settles.
   useEffect(() => {
-    if (previewState === "loading" && loadingStep >= 5 && streamDoneRef.current && !pendingResultRef.current) {
+    if (previewState === "loading" && loadingStep >= 5 && streamDone && !pendingResultRef.current) {
       pendingResultRef.current = true;
       setTimeout(() => setPreviewState("result"), 600);
     }
-  }, [loadingStep, previewState]);
+  }, [loadingStep, previewState, streamDone]);
 
   // Handle loading steps, pacing, and safety timeout
   useEffect(() => {
@@ -112,6 +119,7 @@ export function useWizardPreview() {
     setLoadingStep(0);
     setStepElapsed([0, 0, 0, 0, 0, 0]);
     streamDoneRef.current = false;
+    setStreamDone(false);
     desiredStepRef.current = 0;
     lastStepTimeRef.current = Date.now();
     pendingResultRef.current = false;
@@ -144,14 +152,8 @@ export function useWizardPreview() {
         });
       }
 
-      // 3. Advance loading step if needed
-      if (currentStep >= 5 && streamDoneRef.current) {
-        if (!pendingResultRef.current) {
-          pendingResultRef.current = true;
-          setTimeout(() => setPreviewState("result"), 600);
-        }
-        return;
-      }
+      // 3. Advance loading step if needed (transition to result handled by useEffect)
+      if (currentStep >= 5) return;
 
       const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
       if (currentStep >= targetStep) return;
@@ -252,6 +254,8 @@ export function useWizardPreview() {
     streamedTokenRef,
     historyIndexRef,
     loadingStepRef,
+    streamDone,
+    setStreamDone,
     streamDoneRef,
     previewScrollRef,
     previewIframeRef,

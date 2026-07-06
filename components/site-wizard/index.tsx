@@ -113,10 +113,11 @@ export function SiteWizard({
       preview.streamedSectionsRef.current = {};
       preview.streamedTokenRef.current = null;
 
+      // Signal stream completion via state so React's useEffect can
+      // safely transition to "result" only after previewData is committed.
+      // streamDoneRef is still set for the fast-path pacing check in the interval.
       preview.streamDoneRef.current = true;
-      if (preview.loadingStepRef.current >= 5) {
-        setTimeout(() => preview.setPreviewState("result"), 600);
-      }
+      preview.setStreamDone(true);
       localStorage.setItem(
         PENDING_KEY,
         JSON.stringify({
