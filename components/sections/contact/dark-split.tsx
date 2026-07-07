@@ -7,6 +7,7 @@ import LeafletMap from "./leaflet-map";
 
 export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
+  const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
   const displayEmail = c.email || "hello@domain.com";
 
@@ -33,13 +34,15 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
             </p>
           </div>
 
-          <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", height: "11rem", position: "relative" }}>
-            <LeafletMap invertTiles opacity={0.6} style={{ height: "100%" }} />
-            <a href={`https://maps.google.com/?q=${encodeURIComponent(c.address || "Monas, Jakarta, Indonesia")}`} target="_blank" rel="noopener noreferrer"
-              style={{ position: "absolute", bottom: "0.5rem", right: "0.5rem", padding: "0.375rem 0.75rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-bg) 95%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-text-muted)", textDecoration: "none", fontSize: "0.6rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-              <Navigation style={{ width: 12, height: 12 }} /> Maps
-            </a>
-          </div>
+          {showMap && (
+            <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", height: "11rem", position: "relative" }}>
+              <LeafletMap tileStyle={c.map_tile_style} invertTiles opacity={0.6} style={{ height: "100%" }} />
+              <a href={`https://maps.google.com/?q=${encodeURIComponent(c.address || "Monas, Jakarta, Indonesia")}`} target="_blank" rel="noopener noreferrer"
+                style={{ position: "absolute", bottom: "0.5rem", right: "0.5rem", padding: "0.375rem 0.75rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-bg) 95%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-text-muted)", textDecoration: "none", fontSize: "0.6rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                <Navigation style={{ width: 12, height: 12 }} /> Maps
+              </a>
+            </div>
+          )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>

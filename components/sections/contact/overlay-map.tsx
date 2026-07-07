@@ -12,15 +12,18 @@ function mapsDirUrl(c: ContactVariantProps["contact"]): string {
 
 export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
+  const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
   const displayPhone = c.phone || "+62 812-3456-7890";
   const displayEmail = c.email || "hello@domain.com";
 
   return (
     <section id="contact" className="relative w-full overflow-hidden" style={{ minHeight: "580px", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderRadius: "var(--dt-radius-lg)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
-      <div className="absolute inset-0 w-full h-full z-0">
-        <LeafletMap filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
-      </div>
+      {showMap && (
+        <div className="absolute inset-0 w-full h-full z-0">
+          <LeafletMap tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
+        </div>
+      )}
 
       <div className="absolute top-4 left-4 z-10" style={{ display: "none" }}>
         <div className="flex items-center gap-2" style={{ background: "var(--dt-surface)", padding: "0.5rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" }}>

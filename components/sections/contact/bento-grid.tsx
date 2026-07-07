@@ -12,6 +12,7 @@ function mapsDirUrl(c: ContactVariantProps["contact"]): string {
 
 export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
+  const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
   const displayPhone = c.phone || "+62 812-3456-7890";
   const displayEmail = c.email || "hello@domain.com";
@@ -62,21 +63,23 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
         </div>
 
         {/* Block 2: Map */}
-        <div className="lg:col-span-7" style={{ borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", minHeight: "220px", position: "relative" }}>
-          <LeafletMap filter="grayscale(1)" opacity={0.8} style={{ minHeight: "220px" }} />
-          <div style={{ position: "absolute", bottom: "0.75rem", left: "0.75rem", right: "0.75rem", background: "color-mix(in srgb, var(--dt-surface) 95%, transparent)", backdropFilter: "blur(8px)", padding: "0.75rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0 }}>
-              <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)", flexShrink: 0 }} />
-              <div style={{ minWidth: 0 }}>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Alamat</p>
-                <p style={{ fontSize: "0.75rem", color: "var(--dt-text)", fontWeight: 500, margin: "0.125rem 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayAddress}</p>
+        {showMap && (
+          <div className="lg:col-span-7" style={{ borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", minHeight: "220px", position: "relative" }}>
+            <LeafletMap tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.8} style={{ minHeight: "220px" }} />
+            <div style={{ position: "absolute", bottom: "0.75rem", left: "0.75rem", right: "0.75rem", background: "color-mix(in srgb, var(--dt-surface) 95%, transparent)", backdropFilter: "blur(8px)", padding: "0.75rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0 }}>
+                <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)", flexShrink: 0 }} />
+                <div style={{ minWidth: 0 }}>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Alamat</p>
+                  <p style={{ fontSize: "0.75rem", color: "var(--dt-text)", fontWeight: 500, margin: "0.125rem 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayAddress}</p>
+                </div>
               </div>
+              <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ padding: "0.375rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", color: "var(--dt-primary)", flexShrink: 0 }}>
+                <ExternalLink style={{ width: 14, height: 14 }} />
+              </a>
             </div>
-            <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ padding: "0.375rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", color: "var(--dt-primary)", flexShrink: 0 }}>
-              <ExternalLink style={{ width: 14, height: 14 }} />
-            </a>
           </div>
-        </div>
+        )}
 
         {/* Block 3: Form */}
         <div className="lg:col-span-8" style={{ background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-surface))", padding: "1.5rem 2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)" }}>
