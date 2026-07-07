@@ -5,11 +5,19 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import CatalogClassic from "./classic";
 import CatalogCompact from "./compact";
 import CatalogCards from "./cards";
+import CatalogGridDense from "./grid-dense";
+import CatalogShowcaseFeatured from "./showcase-featured";
+import CatalogTabsByCategory from "./tabs-by-category";
 
 const variants: Record<string, ComponentType<{ catalog: TemplateProps["content"]["catalog"]; design_token?: DesignToken | null }>> = {
+  // existing
   grid: CatalogClassic,
   compact: CatalogCompact,
   cards: CatalogCards,
+  // new
+  "grid-dense": CatalogGridDense,
+  "showcase-featured": CatalogShowcaseFeatured,
+  "tabs-by-category": CatalogTabsByCategory,
 };
 
 export default function CatalogSection({ catalog, design_token }: { catalog: TemplateProps["content"]["catalog"]; design_token?: DesignToken | null }) {

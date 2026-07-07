@@ -1,0 +1,79 @@
+"use client";
+import React from "react";
+import { Utensils } from "lucide-react";
+import { MenuCatalogCard } from "../../templates/shared";
+import type { TemplateProps, DesignToken } from "../../templates/types";
+
+/**
+ * Compact List — horizontal card layout (image left, text right).
+ * Reuses MenuCatalogCard with layout="compact".
+ * Good for menus with many items where vertical space is precious.
+ */
+export default function MenuCompactList({ menu }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }) {
+  if (!menu) return null;
+  const p = "var(--dt-primary)";
+  const bg = "var(--dt-bg)";
+  const text = "var(--dt-text)";
+  const hFont = "var(--dt-heading-font)";
+  const hWeight = "var(--dt-heading-weight)";
+
+  return (
+    <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
+      <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>
+            {menu.eyebrow ?? "Pilihan Menu"}
+          </span>
+          <h2 style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}>
+            {menu.title}
+          </h2>
+          <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
+        </div>
+
+        {menu.categories?.map((cat, ci) => (
+          <div key={ci} style={{ marginBottom: "2.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.25rem" }}>
+              <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
+              <h3 style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+              <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {cat.items?.map((item, ii) => (
+                <MenuCatalogCard
+                  key={ii}
+                  layout="compact"
+                  itemId={`menu-cl-${ci}-${ii}`}
+                  itemName={item.name}
+                  itemPrice={item.price}
+                  itemDescription={item.description}
+                  category={cat.name}
+                  image_url={item.image_url}
+                  icon={Utensils}
+                  className="transition-all duration-200 hover:shadow-md"
+                  style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", padding: "0.875rem", overflow: "hidden" }}
+                  imageClassName="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                  imageStyle={{ minWidth: "5rem" }}
+                  placeholderClassName="w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0"
+                  placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)`, minWidth: "5rem" }}
+                  placeholderIconClassName="w-7 h-7"
+                  placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 35%, transparent)` }}
+                  contentClassName="flex flex-col flex-1 min-w-0"
+                  contentStyle={{ gap: "0.25rem" }}
+                  headerClassName="flex items-start justify-between gap-2"
+                  titleClassName="font-semibold text-sm leading-tight"
+                  titleStyle={{ color: text, fontFamily: hFont }}
+                  descriptionClassName="text-xs leading-relaxed"
+                  descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
+                  priceClassName="text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
+                  priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
+                  buttonClassName="mt-auto self-start flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all hover:brightness-110"
+                  buttonStyle={{ background: p, color: bg, border: "none" }}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

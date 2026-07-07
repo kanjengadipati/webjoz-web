@@ -1967,7 +1967,7 @@ export default function SectionForms({
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
             <p className="font-semibold text-primary">🛍️ Section Katalog Produk</p>
             <p className="mt-1 text-primary/80">
-              Tambah kategori dan produk di sini. Setiap produk bisa dilengkapi foto, nama, deskripsi, harga, dan badge (cth: Best Seller).
+              Tambah kategori dan produk di sini. Setiap produk bisa dilengkapi foto, nama, deskripsi, harga, dan badge (cth: Best Seller, Baru, Promo — item dengan badge otomatis dijadikan unggulan di tampilan showcase).
               Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.
             </p>
           </div>
@@ -2187,12 +2187,12 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
 
                         {hasBadge && (
                           <div>
-                            <label className={inputLabel}>Badge</label>
+                            <label className={inputLabel}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
                             <input
                               type="text"
                               value={item.badge ?? ""}
                               onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
-                              placeholder="cth. Best Seller"
+                              placeholder="cth. Best Seller, Baru, Promo, Populer"
                               className={inputBase}
                             />
                           </div>

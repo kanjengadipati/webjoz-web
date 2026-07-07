@@ -88,8 +88,8 @@ export interface DesignToken {
       cta?: "banner" | "card" | "centered";
       faq?: "accordion" | "simple" | "columns";
       gallery?: "grid" | "masonry" | "carousel";
-      menu?: "grid" | "compact" | "cards";
-      catalog?: "grid" | "compact" | "cards";
+      menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category";
+      catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category";
       contact?: "classic-split" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
     };
     section_order?: string[];
