@@ -1443,10 +1443,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const displayPhone = phone || "08xx-xxxx-xxxx";
   const displayEmail = email || "email@anda.com";
 
-  const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
-    { icon: MapPin, text: displayAddress },
-    { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
-    { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` },
+  const infoItems: { icon: React.ElementType; text?: string; href?: string; isPlaceholder?: boolean }[] = [
+    { icon: MapPin, text: displayAddress, isPlaceholder: !address },
+    { icon: Phone, text: displayPhone, href: address ? `https://wa.me/${displayPhone.replace(/\D/g, "")}` : undefined, isPlaceholder: !phone },
+    { icon: Mail, text: displayEmail, href: email ? `mailto:${displayEmail}` : undefined, isPlaceholder: !email },
   ];
 
   return (
@@ -1456,14 +1456,15 @@ const ContactSection: React.FC<ContactSectionProps> = ({
         <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
           <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{title}</h2>
           <div className="space-y-4">
-            {infoItems.map(({ icon: Icon, text, href }) => {
+            {infoItems.map(({ icon: Icon, text, href, isPlaceholder }) => {
               const content = (
-                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}>
+                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}
+                  style={isPlaceholder ? { opacity: 0.35 } : undefined}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
                   <div className={hasLeadForm ? "flex-1 min-w-0 pt-1" : "min-w-0"}>
-                    <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
+                    <p className={`${textClass} break-words`} style={{ ...textStyle, ...(isPlaceholder ? { fontStyle: "italic" } : {}) }}>{text}</p>
                   </div>
                 </div>
               );
@@ -1473,6 +1474,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
               return <div key={text}>{content}</div>;
             })}
           </div>
+
 
           {showMap !== false && (
             <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>

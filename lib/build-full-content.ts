@@ -162,7 +162,7 @@ export function buildFullContent(
       address: c.contact?.address || "",
       phone: c.contact?.phone || whatsapp || "",
       email: c.contact?.email || "",
-      align: c.contact?.align || "center",
+      align: c.contact?.align || "left",
       map_tile_style: c.contact?.map_tile_style || autoTileStyle(data.design_token || data.designToken),
     },
     footer: {
