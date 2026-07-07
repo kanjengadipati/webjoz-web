@@ -3,12 +3,7 @@ import React from "react";
 import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
-
-function mapsEmbedUrl(c: ContactVariantProps["contact"]): string {
-  if (c.maps_url) return c.maps_url;
-  const addr = c.address || "Monas, Jakarta, Indonesia";
-  return `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
-}
+import LeafletMap from "./leaflet-map";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
   const addr = c.address || "Monas, Jakarta, Indonesia";
@@ -24,12 +19,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
   return (
     <section id="contact" className="relative w-full overflow-hidden" style={{ minHeight: "580px", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderRadius: "var(--dt-radius-lg)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       <div className="absolute inset-0 w-full h-full z-0">
-        <iframe
-          title="Peta Interaktif"
-          src={mapsEmbedUrl(c)}
-          style={{ width: "100%", height: "100%", border: 0, filter: "grayscale(1)", opacity: 0.7 }}
-          allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-        />
+        <LeafletMap filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
       </div>
 
       <div className="absolute top-4 left-4 z-10" style={{ display: "none" }}>

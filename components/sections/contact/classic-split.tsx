@@ -1,13 +1,46 @@
 "use client";
-import React from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 
-function mapsEmbedUrl(c: ContactVariantProps["contact"]): string {
-  if (c.maps_url) return c.maps_url;
-  const addr = c.address || "Monas, Jakarta, Indonesia";
-  return `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+// Minimal Leaflet-based map — uses browser geolocation or Jakarta fallback
+function MapEmbed({ style, className }: { style?: React.CSSProperties; className?: string }) {
+  const [coords, setCoords] = useState({ lat: -6.2088, lng: 106.8456 }); // Jakarta fallback
+  const ref = React.useRef<HTMLDivElement>(null);
+  const initRef = React.useRef(false);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => {},
+        { timeout: 5000, enableHighAccuracy: false }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ref.current || initRef.current) return;
+    initRef.current = true;
+    import("leaflet").then((L) => {
+      import("leaflet/dist/leaflet.css");
+      if (!ref.current) return;
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      });
+      const map = L.map(ref.current, { zoomControl: false, scrollWheelZoom: false }).setView([coords.lat, coords.lng], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "" }).addTo(map);
+      L.marker([coords.lat, coords.lng]).addTo(map);
+      setTimeout(() => map.invalidateSize(), 200);
+      return () => map.remove();
+    });
+  }, [coords.lat, coords.lng]);
+
+  return <div ref={ref} style={{ width: "100%", height: "100%", ...style }} className={className} />;
 }
 
 export default function ClassicSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
@@ -15,6 +48,17 @@ export default function ClassicSplit({ contact: c, onSubmitLead, leadSubmitting,
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
   const displayPhone = c.phone || "+62 812-3456-7890";
   const displayEmail = c.email || "hello@domain.com";
+  const [mapCoords, setMapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => {},
+        { timeout: 5000, enableHighAccuracy: false }
+      );
+    }
+  }, []);
 
   const iconBox: React.CSSProperties = {
     padding: "0.75rem",
@@ -62,9 +106,12 @@ export default function ClassicSplit({ contact: c, onSubmitLead, leadSubmitting,
                   <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Kantor</h4>
                   <p style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0.75rem", lineHeight: 1.5 }}>{displayAddress}</p>
                   <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem" }}>
-                    <iframe title="Peta" src={mapsEmbedUrl(c)} style={{ width: "100%", height: "100%", border: 0, filter: "grayscale(1)", opacity: 0.85 }}
-                      allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+                    <MapEmbed />
                   </div>
+                  <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.6875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", marginTop: "0.375rem" }}>
+                    <Globe style={{ width: 13, height: 13 }} /> Buka di Google Maps
+                  </a>
                 </div>
               </div>
             </div>

@@ -1,14 +1,9 @@
 "use client";
 import React from "react";
-import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ExternalLink, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
-
-function mapsEmbedUrl(c: ContactVariantProps["contact"]): string {
-  if (c.maps_url) return c.maps_url;
-  const addr = c.address || "Monas, Jakarta, Indonesia";
-  return `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
-}
+import LeafletMap from "./leaflet-map";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
   const addr = c.address || "Monas, Jakarta, Indonesia";
@@ -68,8 +63,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
 
         {/* Block 2: Map */}
         <div className="lg:col-span-7" style={{ borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", minHeight: "220px", position: "relative" }}>
-          <iframe title="Peta" src={mapsEmbedUrl(c)} style={{ width: "100%", height: "100%", minHeight: "220px", border: 0, filter: "grayscale(1)", opacity: 0.8 }}
-            allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <LeafletMap filter="grayscale(1)" opacity={0.8} style={{ minHeight: "220px" }} />
           <div style={{ position: "absolute", bottom: "0.75rem", left: "0.75rem", right: "0.75rem", background: "color-mix(in srgb, var(--dt-surface) 95%, transparent)", backdropFilter: "blur(8px)", padding: "0.75rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0 }}>
               <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)", flexShrink: 0 }} />

@@ -1457,8 +1457,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{title}</h2>
           <div className="space-y-4">
             {infoItems.map(({ icon: Icon, text, href }) => {
-              const content = (
-                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}>
+              const inner = (
+                <div className="inline-flex gap-3 items-center">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
@@ -1466,6 +1466,11 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                     <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
                   </div>
                 </div>
+              );
+              const content = hasLeadForm ? (
+                <div className="flex gap-3 items-start">{inner}</div>
+              ) : (
+                <div className={`flex ${justifyClass}`}>{inner}</div>
               );
               if (href) {
                 return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{content}</a>;
