@@ -88,6 +88,7 @@ import {
  getEnabledTypographyPairings,
  getEnabledColorPatterns,
  getEnabledIndustryPresets,
+ getHiddenSections,
 } from "@/lib/design-assets-config";
 
 function TypographyPairingPicker({
@@ -1221,7 +1222,7 @@ export default function SiteEditorPage() {
 
   const handleReorderSection = (source: string, target: string) => {
     if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
-    const currentOrder = getOrderedSections(designToken, content).filter((key) => BODY_SECTION_KEYS.includes(key));
+    const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key));
     const nextOrder = [...currentOrder];
     const from = nextOrder.indexOf(source);
     const to = nextOrder.indexOf(target);
@@ -1573,7 +1574,7 @@ export default function SiteEditorPage() {
     );
   }
 
-  const orderedSectionKeys = getOrderedSections(designToken, content);
+  const orderedSectionKeys = getOrderedSections(designToken, content, getHiddenSections());
   const SECTIONS = orderedSectionKeys
     .filter((key) => {
       // Only show menu/catalog tabs when content actually has them

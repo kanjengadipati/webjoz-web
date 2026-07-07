@@ -1,7 +1,6 @@
 import { 
   Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera
 } from "lucide-react";
-import { getHiddenSections } from "@/lib/design-assets-config";
 
 export const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -58,8 +57,8 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
 };
 
-export const getOrderedSections = (designToken: any, content?: any) => {
-  const adminHidden = new Set(getHiddenSections());
+export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmin: string[] = []) => {
+  const adminHidden = new Set(hiddenByAdmin);
   const tokenOrder = Array.isArray(designToken?.layout?.section_order)
     ? designToken.layout.section_order.filter((key: string) => BODY_SECTION_KEYS.includes(key) && !adminHidden.has(key))
     : [];
