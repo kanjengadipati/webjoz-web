@@ -1,6 +1,7 @@
 import { 
   Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera
 } from "lucide-react";
+import { getHiddenSections } from "@/lib/design-assets-config";
 
 export const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -58,18 +59,21 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
 };
 
 export const getOrderedSections = (designToken: any, content?: any) => {
+  const adminHidden = new Set(getHiddenSections());
   const tokenOrder = Array.isArray(designToken?.layout?.section_order)
-    ? designToken.layout.section_order.filter((key: string) => BODY_SECTION_KEYS.includes(key))
+    ? designToken.layout.section_order.filter((key: string) => BODY_SECTION_KEYS.includes(key) && !adminHidden.has(key))
     : [];
   // Include optional sections (menu/catalog) only when content actually has them
+  // and they are not hidden by the superadmin
   const availableBodyKeys = BODY_SECTION_KEYS.filter((key) => {
+    if (adminHidden.has(key)) return false;
     if (OPTIONAL_SECTION_KEYS.includes(key)) {
       return content ? !!content[key] : tokenOrder.includes(key);
     }
     return true;
   });
   const bodyOrder = [...tokenOrder, ...availableBodyKeys.filter((key) => !tokenOrder.includes(key))];
-  return ["header", ...bodyOrder, "footer", "seo"];
+  return ["header", ...bodyOrder, "footer", "seo"].filter((key) => !adminHidden.has(key));
 };
 
 export const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));

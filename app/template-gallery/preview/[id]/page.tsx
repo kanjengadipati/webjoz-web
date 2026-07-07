@@ -9,72 +9,7 @@ import { request, ApiError } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import type { DesignToken } from "@/components/templates/types";
 
-function luminance(hex: string): number {
-  const c = hex.replace("#", "");
-  if (c.length < 6) return 0;
-  const r = parseInt(c.substring(0, 2), 16) / 255;
-  const g = parseInt(c.substring(2, 4), 16) / 255;
-  const b = parseInt(c.substring(4, 6), 16) / 255;
-  const a = [r, g, b].map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
-  return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
-}
-
-function contrastRatio(c1: string, c2: string): number {
-  const l1 = luminance(c1), l2 = luminance(c2);
-  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-}
-
-function scoreDesignToken(dt: any): { total: number; parts: { label: string; score: number; max: number }[] } {
-  const parts: { label: string; score: number; max: number }[] = [];
-  const pal = dt?.palette || {}, typo = dt?.typography || {}, layout = dt?.layout || {};
-
-  const bg = pal.background || "", text = pal.text || "", primary = pal.primary || "", accent = pal.accent || "", surface = pal.surface || "";
-  const cr = bg && text ? contrastRatio(text, bg) : 0;
-
-  // ── Accessibility (40 pts) ──
-  let acc = 0;
-  if (text && bg) {
-    if (cr >= 12) acc = 40;
-    else if (cr >= 7) acc = 30 + Math.round(((cr - 7) / 5) * 10);
-    else if (cr >= 4.5) acc = 20 + Math.round(((cr - 4.5) / 2.5) * 10);
-    else acc = Math.round((cr / 4.5) * 20);
-  }
-  if (primary && text && contrastRatio(primary, text) >= 3) acc += 5;
-  if (acc > 40) acc = 40;
-  parts.push({ label: "Aksesibilitas", score: acc, max: 40 });
-
-  // ── Completeness (30 pts) ──
-  let complete = 0;
-  for (const k of ["primary", "accent", "background", "surface", "text"]) if (pal[k]) complete++;
-  for (const k of ["heading_font", "body_font", "heading_weight", "heading_size_hero"]) if (typo[k]) complete++;
-  for (const k of ["section_spacing", "corner_radius"]) if (layout[k]) complete++;
-  if (["compact", "normal", "relaxed"].includes(layout.section_spacing)) complete++;
-  if (["sharp", "soft", "rounded"].includes(layout.corner_radius)) complete++;
-  const totalFields = 5 + 4 + 2 + 2;
-  parts.push({ label: "Kelengkapan", score: Math.min(30, Math.round((complete / totalFields) * 30)), max: 30 });
-
-  // ── Palette quality (20 pts) ──
-  let pq = 0;
-  if (primary && accent && primary !== accent) pq += 5;
-  if (primary && bg && primary !== bg) pq += 3;
-  if (surface && bg && surface !== bg) pq += 4;
-  if (accent && bg && accent !== bg) pq += 3;
-  if (primary && accent) { const gray = (h: string) => { const hh = h.replace("#",""); if (hh.length<6) return true; const r=parseInt(hh[0]+hh[1],16), g=parseInt(hh[2]+hh[3],16), b=parseInt(hh[4]+hh[5],16); return Math.max(Math.abs(r-g),Math.abs(r-b),Math.abs(g-b))<30; }; if (!gray(primary) || !gray(accent)) pq += 3; }
-  if (text && bg) { const bl=luminance(bg), tl=luminance(text); if ((bl>0.5&&tl<0.5)||(bl<0.5&&tl>0.5)) pq += 2; }
-  parts.push({ label: "Palet", score: Math.min(20, pq), max: 20 });
-
-  // ── Typography (10 pts) ──
-  let rd = 0;
-  const hf = typo.heading_font || "", bf = typo.body_font || "", hw = typo.heading_weight || "", hs = typo.heading_size_hero || "";
-  if (hf && !["inherit","sans-serif"].includes(hf.toLowerCase())) rd += 3;
-  if (bf && !["inherit","serif"].includes(bf.toLowerCase())) rd += 2;
-  if (["300","400","500","600","700","800","900"].includes(hw)) { const w=+hw; rd += w>=700?3: w>=600?2:1; }
-  if (hs && !hs.startsWith("xs") && !hs.startsWith("sm")) rd += 2;
-  if (hf && bf && hf.toLowerCase() !== bf.toLowerCase()) rd += 1;
-  parts.push({ label: "Tipografi", score: Math.min(10, rd), max: 10 });
-
-  return { total: parts.reduce((s, p) => s + p.score, 0), parts };
-}
+import { scoreDesignToken, scoreColorClass } from "@/lib/design-token-score";
 
 export default function TemplatePreviewPage() {
   const params = useParams();
