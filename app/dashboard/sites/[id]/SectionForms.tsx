@@ -721,6 +721,19 @@ export default function SectionForms({
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
           </div>
+          {/* Secondary CTA URL */}
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              id="field-hero.cta_secondary_url"
+              type="text"
+              value={content.hero?.cta_secondary_url || ""}
+              onChange={(e) => updateField("hero", "cta_secondary_url", e.target.value)}
+              placeholder="cth. #about atau https://..."
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+            <p className="text-[10px] text-slate-600 leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
+          </div>
           {/* Badge text (small text below CTA, used by Futuristic template) */}
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>

@@ -78,7 +78,7 @@ export interface DesignToken {
     heading_tracking?: string;
   };
   layout?: {
-    hero_style?: "full-bleed" | "split" | "centered" | "minimal";
+    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic";
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
@@ -125,6 +125,7 @@ export interface TemplateProps {
       image_credit?: ImageCredit | null;
       eyebrow?: string;
       cta_secondary_text?: string;
+      cta_secondary_url?: string;
       badge_text?: string;
       opening_hours?: string;
       launch_label?: string;
