@@ -1438,13 +1438,16 @@ const ContactSection: React.FC<ContactSectionProps> = ({
     }
   }, []);
 
-  // Only show contact rows that have real data — never show placeholder text on the live preview.
-  const infoItems: { icon: React.ElementType; text: string; href?: string }[] = [
-    ...(address ? [{ icon: MapPin, text: address }] : []),
-    ...(phone ? [{ icon: Phone, text: phone, href: `https://wa.me/${phone.replace(/\D/g, "")}` }] : []),
-    ...(email ? [{ icon: Mail, text: email, href: `mailto:${email}` }] : []),
-  ];
+  // Dummy fallbacks — real data replaces when user fills via editor
+  const displayAddress = address || "Alamat Anda";
+  const displayPhone = phone || "08xx-xxxx-xxxx";
+  const displayEmail = email || "email@anda.com";
 
+  const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
+    { icon: MapPin, text: displayAddress },
+    { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
+    { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` },
+  ];
 
   return (
     <section id="contact" className={wrapperClass} style={wrapperStyle}>
