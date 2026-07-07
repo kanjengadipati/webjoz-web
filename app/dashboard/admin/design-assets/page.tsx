@@ -15,13 +15,11 @@ import {
 import {
   TYPOGRAPHY_PAIRINGS, COLOR_PATTERNS, INDUSTRY_PRESETS,
   type TypographyPairing, type ColorPattern, type IndustryPreset,
-  loadConfig, saveConfig, resetConfig,
-  setAssetHidden, setSectionRequired,
-  addCustomPairing, deleteCustomPairing,
-  addCustomPattern, deleteCustomPattern,
-  addCustomPreset, deleteCustomPreset,
+  loadDesignAssetsConfig, saveDesignAssetsConfig, resetDesignAssetsConfig,
+  loadConfig, updateCache,
   REQUIRED_SECTIONS_DEFAULT,
 } from "@/lib/design-assets-config";
+import { useAuthToken } from "@/lib/auth-store";
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 import { SECTION_META, BODY_SECTION_KEYS, OPTIONAL_SECTION_KEYS } from "@/app/dashboard/sites/[id]/editor-utils";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -642,9 +640,11 @@ function PresetsTab({
 export default function DesignAssetsPage() {
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
+  const authToken = useAuthToken();
   const isSuperAdmin = userRole === "superadmin";
+  const [saving, setSaving] = useState(false);
 
-  // Local config state (mirrors localStorage)
+  // Local config state (mirrors API / localStorage)
   const [hiddenPairings, setHiddenPairings] = useState<Set<string>>(new Set());
   const [hiddenPatterns, setHiddenPatterns] = useState<Set<string>>(new Set());
   const [hiddenPresets, setHiddenPresets] = useState<Set<string>>(new Set());
@@ -654,23 +654,28 @@ export default function DesignAssetsPage() {
   const [customPatterns, setCustomPatterns] = useState<ColorPattern[]>([]);
   const [customPresets, setCustomPresets] = useState<IndustryPreset[]>([]);
   const [tab, setTab] = useState<Tab>("sections");
+  const [loading, setLoading] = useState(true);
 
-  // Load config from localStorage on mount
+  // Load config from API (falls back to localStorage) on mount
   useEffect(() => {
-    const cfg = loadConfig();
-    setHiddenPairings(new Set(cfg.hidden_pairings));
-    setHiddenPatterns(new Set(cfg.hidden_patterns));
-    setHiddenPresets(new Set(cfg.hidden_presets));
-    setHiddenSections(new Set(cfg.hidden_sections));
-    setRequiredSections(new Set(cfg.required_sections));
-    setCustomPairings(cfg.custom_pairings ?? []);
-    setCustomPatterns(cfg.custom_patterns ?? []);
-    setCustomPresets(cfg.custom_presets ?? []);
-  }, []);
+    if (!isSuperAdmin) return;
+    setLoading(true);
+    loadDesignAssetsConfig(authToken).then((cfg) => {
+      setHiddenPairings(new Set(cfg.hidden_pairings));
+      setHiddenPatterns(new Set(cfg.hidden_patterns));
+      setHiddenPresets(new Set(cfg.hidden_presets));
+      setHiddenSections(new Set(cfg.hidden_sections));
+      setRequiredSections(new Set(cfg.required_sections));
+      setCustomPairings(cfg.custom_pairings ?? []);
+      setCustomPatterns(cfg.custom_patterns ?? []);
+      setCustomPresets(cfg.custom_presets ?? []);
+    }).finally(() => setLoading(false));
+  }, [isSuperAdmin, authToken]);
 
-  const syncAndPersist = useCallback((updater: (prev: ReturnType<typeof loadConfig>) => ReturnType<typeof loadConfig>) => {
+  const syncAndPersist = useCallback(async (updater: (prev: ReturnType<typeof loadConfig>) => ReturnType<typeof loadConfig>) => {
     const next = updater(loadConfig());
-    saveConfig(next);
+    // Update in-memory cache + localStorage mirror immediately (optimistic)
+    updateCache(next);
     setHiddenPairings(new Set(next.hidden_pairings));
     setHiddenPatterns(new Set(next.hidden_patterns));
     setHiddenPresets(new Set(next.hidden_presets));
@@ -679,16 +684,35 @@ export default function DesignAssetsPage() {
     setCustomPairings(next.custom_pairings ?? []);
     setCustomPatterns(next.custom_patterns ?? []);
     setCustomPresets(next.custom_presets ?? []);
-  }, []);
+    // Persist to API in background
+    if (authToken) {
+      setSaving(true);
+      try {
+        await saveDesignAssetsConfig(next, authToken);
+      } catch {
+        pushToast("Gagal menyimpan ke server. Perubahan tersimpan lokal.", "error");
+      } finally {
+        setSaving(false);
+      }
+    }
+  }, [authToken, pushToast]);
 
-  if (!isSuperAdmin) {
-    return (
+  if (!isSuperAdmin) {    return (
       <div className="flex flex-col items-center justify-center h-96 text-muted-foreground gap-4 animate-in fade-in duration-300">
         <ShieldAlert className="size-16 text-destructive opacity-80" />
         <div className="text-center space-y-1">
           <h2 className="text-lg font-bold text-foreground">Akses Ditolak</h2>
           <p className="text-sm max-w-sm">Halaman ini hanya dapat diakses oleh akun dengan peran <span className="font-semibold text-primary">Superadmin</span>.</p>
         </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 gap-3 text-muted-foreground animate-in fade-in duration-300">
+        <SlidersHorizontal className="size-8 animate-pulse text-primary" />
+        <p className="text-sm font-medium">Memuat konfigurasi design assets...</p>
       </div>
     );
   }
@@ -711,21 +735,38 @@ export default function DesignAssetsPage() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Kelola section, tipografi, palet warna, dan paket tampilan yang tersedia di editor website.
+          {saving && <span className="text-[10px] text-muted-foreground animate-pulse font-medium">Menyimpan...</span>}
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
           className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10 shrink-0"
-          onClick={() => {
+          onClick={async () => {
             if (!window.confirm("Reset semua pengaturan Design Assets ke default?")) return;
-            resetConfig();
-            const cfg = loadConfig();
-            syncAndPersist(() => cfg);
-            pushToast("Semua pengaturan Design Assets direset ke default.", "success");
+            setSaving(true);
+            try {
+              const cfg = authToken
+                ? await resetDesignAssetsConfig(authToken)
+                : (() => { updateCache({ hidden_pairings: [], hidden_patterns: [], hidden_presets: [], hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, custom_pairings: [], custom_patterns: [], custom_presets: [] }); return loadConfig(); })();
+              setHiddenPairings(new Set(cfg.hidden_pairings));
+              setHiddenPatterns(new Set(cfg.hidden_patterns));
+              setHiddenPresets(new Set(cfg.hidden_presets));
+              setHiddenSections(new Set(cfg.hidden_sections));
+              setRequiredSections(new Set(cfg.required_sections));
+              setCustomPairings(cfg.custom_pairings ?? []);
+              setCustomPatterns(cfg.custom_patterns ?? []);
+              setCustomPresets(cfg.custom_presets ?? []);
+              pushToast("Semua pengaturan Design Assets direset ke default.", "success");
+            } catch {
+              pushToast("Gagal reset ke server.", "error");
+            } finally {
+              setSaving(false);
+            }
           }}
+          disabled={saving}
         >
-          <RotateCcw className="size-3.5" /> Reset Semua
+          <RotateCcw className={`size-3.5 ${saving ? "animate-spin" : ""}`} /> Reset Semua
         </Button>
       </div>
 

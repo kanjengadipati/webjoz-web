@@ -7,13 +7,17 @@
  *   - Industry Presets
  *   - Sections (visibility + required flags)
  *
- * Storage: localStorage under key "design_assets_config" (Phase 1).
- * Superadmin writes via the /dashboard/admin/design-assets page.
- * The editor pickers read via the getEnabled* helpers below.
+ * Storage: API → GET/PUT /admin/platform-config/design-assets (superadmin only).
+ * Falls back to localStorage under key "design_assets_config" when the API is
+ * unavailable (unauthenticated editor reads, offline, etc.).
  *
- * All built-in items can be hidden but not deleted.
+ * Editor pickers call getEnabled* synchronously — they read from an in-memory
+ * cache that is populated once on admin page mount via loadDesignAssetsConfig().
+ * Built-in items can be hidden but not deleted.
  * Custom items (is_custom: true) can be both hidden and deleted.
  */
+
+import { request } from "@/lib/api/client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,21 +60,12 @@ export interface IndustryPreset {
   is_custom?: boolean;
 }
 
-export interface SectionConfig {
-  key: string;
-  hidden: boolean;
-  required: boolean;
-}
-
 export interface DesignAssetsConfig {
-  /** Set of asset IDs that are hidden from end-users */
   hidden_pairings: string[];
   hidden_patterns: string[];
   hidden_presets: string[];
   hidden_sections: string[];
-  /** Required sections cannot be hidden by the editor sidebar auto-hide logic */
   required_sections: string[];
-  /** Custom items added by superadmin */
   custom_pairings: TypographyPairing[];
   custom_patterns: ColorPattern[];
   custom_presets: IndustryPreset[];
@@ -123,12 +118,11 @@ export const INDUSTRY_PRESETS: IndustryPreset[] = [
   { id: "pendidikan", name: "Pendidikan", description: "Elegan modern untuk kursus & pendidikan", icon: "📚", pairing_id: "jakarta-pro", pattern_id: "laut" },
 ];
 
-// Sections that cannot be hidden (structural minimum)
 export const REQUIRED_SECTIONS_DEFAULT = ["hero", "contact"];
 
-// ─── Storage ──────────────────────────────────────────────────────────────────
-
-const STORAGE_KEY = "design_assets_config";
+// ─── In-memory cache ─────────────────────────────────────────────────────────
+// Populated via loadDesignAssetsConfig() on admin page mount.
+// Editor pickers read synchronously from this cache — no async needed.
 
 const DEFAULT_CONFIG: DesignAssetsConfig = {
   hidden_pairings: [],
@@ -141,14 +135,20 @@ const DEFAULT_CONFIG: DesignAssetsConfig = {
   custom_presets: [],
 };
 
+let _cache: DesignAssetsConfig = { ...DEFAULT_CONFIG };
+let _cacheLoaded = false;
+
 function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
-export function loadConfig(): DesignAssetsConfig {
+// ── localStorage fallback key (used when API is unavailable) ─────────────────
+const LS_KEY = "design_assets_config";
+
+function loadFromLocalStorage(): DesignAssetsConfig {
   if (!isClient()) return { ...DEFAULT_CONFIG };
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(LS_KEY);
     if (!raw) return { ...DEFAULT_CONFIG };
     return { ...DEFAULT_CONFIG, ...JSON.parse(raw) };
   } catch {
@@ -156,17 +156,114 @@ export function loadConfig(): DesignAssetsConfig {
   }
 }
 
-export function saveConfig(config: DesignAssetsConfig): void {
+function saveToLocalStorage(cfg: DesignAssetsConfig): void {
   if (!isClient()) return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(cfg));
+  } catch {}
 }
 
+// ─── API helpers ──────────────────────────────────────────────────────────────
+
+const API_PATH = "/admin/platform-config/design-assets";
+
+interface ApiDesignAssetsResponse {
+  config: DesignAssetsConfig;
+  updated_by?: number;
+  updated_at?: string;
+}
+
+/**
+ * Fetch config from the API. Falls back to localStorage on error.
+ * Call this once on admin page mount — it populates the in-memory cache.
+ */
+export async function loadDesignAssetsConfig(token?: string | null): Promise<DesignAssetsConfig> {
+  if (token) {
+    try {
+      const res = await request<ApiDesignAssetsResponse>(API_PATH, {}, token);
+      const cfg: DesignAssetsConfig = { ...DEFAULT_CONFIG, ...res.data.config };
+      _cache = cfg;
+      _cacheLoaded = true;
+      // Mirror to localStorage as fallback for unauthenticated reads (editor pickers)
+      saveToLocalStorage(cfg);
+      return cfg;
+    } catch {
+      // Fall through to localStorage
+    }
+  }
+  const lsCfg = loadFromLocalStorage();
+  _cache = lsCfg;
+  _cacheLoaded = true;
+  return lsCfg;
+}
+
+/**
+ * Save config to the API (superadmin only). Also updates localStorage mirror.
+ */
+export async function saveDesignAssetsConfig(
+  cfg: DesignAssetsConfig,
+  token: string,
+): Promise<DesignAssetsConfig> {
+  const res = await request<ApiDesignAssetsResponse>(
+    API_PATH,
+    { method: "PUT", body: JSON.stringify(cfg) },
+    token,
+  );
+  const saved: DesignAssetsConfig = { ...DEFAULT_CONFIG, ...res.data.config };
+  _cache = saved;
+  saveToLocalStorage(saved);
+  return saved;
+}
+
+/**
+ * Reset config to defaults via the API.
+ */
+export async function resetDesignAssetsConfig(token: string): Promise<DesignAssetsConfig> {
+  const res = await request<ApiDesignAssetsResponse>(
+    API_PATH,
+    { method: "DELETE" },
+    token,
+  );
+  const reset: DesignAssetsConfig = { ...DEFAULT_CONFIG, ...res.data.config };
+  _cache = reset;
+  saveToLocalStorage(reset);
+  return reset;
+}
+
+/**
+ * Synchronously update the in-memory cache and localStorage mirror.
+ * Used by the admin page after each toggle — no API call here, the caller
+ * is responsible for calling saveDesignAssetsConfig() to persist.
+ */
+export function updateCache(cfg: DesignAssetsConfig): void {
+  _cache = cfg;
+  saveToLocalStorage(cfg);
+}
+
+/**
+ * Read the current in-memory cache synchronously.
+ * If not yet populated, reads from localStorage.
+ */
+export function loadConfig(): DesignAssetsConfig {
+  if (_cacheLoaded) return _cache;
+  const lsCfg = loadFromLocalStorage();
+  _cache = lsCfg;
+  return lsCfg;
+}
+
+/** @deprecated Use loadDesignAssetsConfig() instead. kept for backward compat. */
+export function saveConfig(cfg: DesignAssetsConfig): void {
+  _cache = cfg;
+  saveToLocalStorage(cfg);
+}
+
+/** @deprecated Use resetDesignAssetsConfig() instead. */
 export function resetConfig(): void {
-  if (!isClient()) return;
-  localStorage.removeItem(STORAGE_KEY);
+  _cache = { ...DEFAULT_CONFIG };
+  if (isClient()) localStorage.removeItem(LS_KEY);
 }
 
-// ─── Helpers — used by editor pickers ────────────────────────────────────────
+// ─── Helpers — used by editor pickers (synchronous) ──────────────────────────
 
 export function getEnabledTypographyPairings(): TypographyPairing[] {
   const cfg = loadConfig();
@@ -198,71 +295,4 @@ export function getHiddenSections(): string[] {
 
 export function getRequiredSections(): string[] {
   return loadConfig().required_sections;
-}
-
-// ─── Mutators — used by superadmin panel ─────────────────────────────────────
-
-export function setAssetHidden(
-  type: "pairing" | "pattern" | "preset" | "section",
-  id: string,
-  hidden: boolean
-): void {
-  const cfg = loadConfig();
-  const key = ({
-    pairing: "hidden_pairings",
-    pattern: "hidden_patterns",
-    preset: "hidden_presets",
-    section: "hidden_sections",
-  } as const)[type];
-
-  const current = new Set(cfg[key]);
-  if (hidden) current.add(id);
-  else current.delete(id);
-  cfg[key] = Array.from(current);
-  saveConfig(cfg);
-}
-
-export function setSectionRequired(sectionKey: string, required: boolean): void {
-  const cfg = loadConfig();
-  const current = new Set(cfg.required_sections);
-  if (required) current.add(sectionKey);
-  else current.delete(sectionKey);
-  cfg.required_sections = Array.from(current);
-  saveConfig(cfg);
-}
-
-export function addCustomPairing(pairing: TypographyPairing): void {
-  const cfg = loadConfig();
-  cfg.custom_pairings = [...(cfg.custom_pairings || []), { ...pairing, is_custom: true }];
-  saveConfig(cfg);
-}
-
-export function deleteCustomPairing(id: string): void {
-  const cfg = loadConfig();
-  cfg.custom_pairings = (cfg.custom_pairings || []).filter((p) => p.id !== id);
-  saveConfig(cfg);
-}
-
-export function addCustomPattern(pattern: ColorPattern): void {
-  const cfg = loadConfig();
-  cfg.custom_patterns = [...(cfg.custom_patterns || []), { ...pattern, is_custom: true }];
-  saveConfig(cfg);
-}
-
-export function deleteCustomPattern(id: string): void {
-  const cfg = loadConfig();
-  cfg.custom_patterns = (cfg.custom_patterns || []).filter((p) => p.id !== id);
-  saveConfig(cfg);
-}
-
-export function addCustomPreset(preset: IndustryPreset): void {
-  const cfg = loadConfig();
-  cfg.custom_presets = [...(cfg.custom_presets || []), { ...preset, is_custom: true }];
-  saveConfig(cfg);
-}
-
-export function deleteCustomPreset(id: string): void {
-  const cfg = loadConfig();
-  cfg.custom_presets = (cfg.custom_presets || []).filter((p) => p.id !== id);
-  saveConfig(cfg);
 }
