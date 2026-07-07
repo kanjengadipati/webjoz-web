@@ -77,7 +77,7 @@ function autoTileStyle(token?: Record<string, any>): string {
 }
 
 export function buildFullContent(
-  data: { content: Record<string, any>; [key: string]: any },
+  data: { content: Record<string, any>;[key: string]: any },
   businessName: string,
   businessType: string,
   description: string,
@@ -136,10 +136,10 @@ export function buildFullContent(
       items: (c.benefits?.items && c.benefits.items.length > 0)
         ? c.benefits.items
         : [
-            { title: "Layanan Terpercaya", description: `${businessName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
-            { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
-            { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
-          ],
+          { title: "Layanan Terpercaya", description: `${businessName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
+          { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
+          { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
+        ],
     },
     testimonials: {
       ...c.testimonials,
@@ -162,7 +162,7 @@ export function buildFullContent(
       address: c.contact?.address || "",
       phone: c.contact?.phone || whatsapp || "",
       email: c.contact?.email || "",
-      align: c.contact?.align || "left",
+      align: c.contact?.align || "center",
       map_tile_style: c.contact?.map_tile_style || autoTileStyle(data.design_token || data.designToken),
     },
     footer: {

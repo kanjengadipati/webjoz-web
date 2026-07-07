@@ -147,14 +147,14 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 const NAV_SKIP = new Set(["header", "hero", "footer", "seo"]);
 
 const NAV_LABELS: Record<string, string> = {
-  about:    "Tentang",
+  about: "Tentang",
   benefits: "Keunggulan",
-  menu:     "Menu",
-  catalog:  "Katalog",
-  gallery:  "Galeri",
-  faq:      "FAQ",
-  cta:      "Promo",
-  contact:  "Kontak",
+  menu: "Menu",
+  catalog: "Katalog",
+  gallery: "Galeri",
+  faq: "FAQ",
+  cta: "Promo",
+  contact: "Kontak",
 };
 
 interface NavMenuProps {
@@ -298,7 +298,7 @@ const WAFloatingButton: React.FC<{
         style={{ background: "#25D366" }}
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
         </svg>
       </a>
     );
@@ -408,7 +408,7 @@ const WAFloatingButton: React.FC<{
             <X className="w-6 h-6 text-white" />
           ) : (
             <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
             </svg>
           )}
         </button>
@@ -448,7 +448,7 @@ const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
       aria-label="Kembali ke atas"
       className="fixed bottom-24 right-6 z-[150] w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40"
     >
-      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-white stroke-2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/></svg>
+      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-white stroke-2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
     </button>
   );
 };
@@ -530,7 +530,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   const wrapperClasses = `py-20 px-5 sm:px-6 ${wrapperClass}`;
   const gridClass = variant === "compact" ? "grid grid-cols-1 md:grid-cols-2 gap-4" :
     variant === "carousel" ? "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4" :
-    "grid grid-cols-1 md:grid-cols-3 gap-6";
+      "grid grid-cols-1 md:grid-cols-3 gap-6";
   const eyebrowClasses = `text-xs font-bold uppercase tracking-widest block ${eyebrowClass}`;
   const titleClasses = `text-3xl md:text-4xl font-bold ${titleClass}`;
 
@@ -909,8 +909,8 @@ function MenuCatalogCard({
   );
 
   const isLong = itemDescription && itemDescription.length > 90;
-  const displayDescription = isLong && !isExpanded 
-    ? itemDescription.replace(/\n+/g, " ").substring(0, 80).trim() + "..." 
+  const displayDescription = isLong && !isExpanded
+    ? itemDescription.replace(/\n+/g, " ").substring(0, 80).trim() + "..."
     : itemDescription;
 
   const descriptionElement = itemDescription && (
@@ -992,20 +992,20 @@ const FaqAccordion: React.FC<{
           <span className={`text-xs font-bold tabular-nums pt-0.5 flex-shrink-0 transition-colors duration-200 ${isDark
             ? isOpen ? "text-cyan-400" : "text-slate-500"
             : isOpen ? "text-[var(--dt-primary,#4F46E5)]" : "text-stone-400"
-          }`} style={{ fontVariantNumeric: "tabular-nums" }}>
+            }`} style={{ fontVariantNumeric: "tabular-nums" }}>
             {num}
           </span>
           <span className={`flex-1 font-semibold text-sm md:text-base leading-snug transition-colors duration-200 ${isDark
             ? isOpen ? "text-white" : "text-slate-200"
             : isOpen ? "text-stone-900" : "text-stone-700"
-          }`}>
+            }`}>
             {item.question}
           </span>
           <ChevronDown
             className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
               ? isOpen ? "text-cyan-400" : "text-slate-500"
               : isOpen ? "text-[var(--dt-primary,#4F46E5)]" : "text-stone-400"
-            }`}
+              }`}
           />
         </button>
         <div
@@ -1036,14 +1036,14 @@ const FaqAccordion: React.FC<{
           <span className={`font-medium text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
             ? isOpen ? "text-white" : "text-slate-300"
             : isOpen ? "text-stone-900" : "text-stone-700"
-          }`}>
+            }`}>
             {item.question}
           </span>
           <ChevronDown
             className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
               ? isOpen ? "text-white" : "text-slate-500"
               : isOpen ? "text-stone-900" : "text-stone-400"
-            }`}
+              }`}
           />
         </button>
         <div
@@ -1066,7 +1066,7 @@ const FaqAccordion: React.FC<{
       className={`border rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
         ? `border-slate-700/60 ${isOpen ? "bg-slate-900/70" : "bg-slate-900/30 hover:bg-slate-900/50"}`
         : `border-[#E8DDD0] ${isOpen ? "bg-white shadow-sm" : "bg-[#FAF7F2]/60 hover:bg-white/80"}`
-      }`}
+        }`}
     >
       <button
         type="button"
@@ -1078,14 +1078,14 @@ const FaqAccordion: React.FC<{
         <span className={`font-semibold text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
           ? isOpen ? "text-white" : "text-slate-200"
           : isOpen ? "text-amber-950" : "text-amber-900"
-        }`}>
+          }`}>
           {item.question}
         </span>
         <ChevronDown
           className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : "rotate-0"} ${isDark
             ? isOpen ? "text-cyan-400" : "text-slate-400"
             : isOpen ? "text-amber-700" : "text-amber-500/70"
-          }`}
+            }`}
         />
       </button>
       <div
@@ -1096,7 +1096,7 @@ const FaqAccordion: React.FC<{
           <div className={`px-5 pb-5 pt-1 text-sm leading-relaxed border-t ${isDark
             ? "text-slate-300 border-slate-700/40"
             : "text-[#6D5D50] border-[#E8DDD0]/60"
-          }`}>
+            }`}>
             {item.answer}
           </div>
         </div>
@@ -1227,7 +1227,7 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
 
       {/* Info banner */}
       <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-[11px]" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)" }}>
-        <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" d="M12 16v-4M12 8h.01"/></svg>
+        <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path strokeLinecap="round" d="M12 16v-4M12 8h.01" /></svg>
         <span className="text-indigo-300 leading-relaxed">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari & saat link dibagikan.</span>
       </div>
 
@@ -1272,8 +1272,8 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
           {seo?.og_image_url
             ? <img src={seo.og_image_url} alt="OG" className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             : <div className="w-full h-28 flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-                <span className="text-[11px] text-slate-600">Tidak ada OG image</span>
-              </div>
+              <span className="text-[11px] text-slate-600">Tidak ada OG image</span>
+            </div>
           }
           <div className="px-3 py-2.5 space-y-0.5" style={{ background: "rgba(255,255,255,0.03)" }}>
             <p className="text-[10px] uppercase tracking-widest text-slate-500">{seo?.og_type || "website"}</p>
@@ -1325,9 +1325,9 @@ function toEmbedUrl(url: string): string | null {
 const TILE_STYLES: Record<string, { url: string; label: string }> = {
   default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
   cyclosm: { url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
-  light:   { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
-  dark:    { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
-  esri:    { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", label: "Esri Street" },
+  light: { url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", label: "Terang" },
+  dark: { url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", label: "Gelap" },
+  esri: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", label: "Esri Street" },
   satelit: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", label: "Satelit" },
 };
 
@@ -1432,7 +1432,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {},
+        () => { },
         { timeout: 5000, enableHighAccuracy: false },
       );
     }
@@ -1443,10 +1443,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const displayPhone = phone || "08xx-xxxx-xxxx";
   const displayEmail = email || "email@anda.com";
 
-  const infoItems: { icon: React.ElementType; text?: string; href?: string; isPlaceholder?: boolean }[] = [
-    { icon: MapPin, text: displayAddress, isPlaceholder: !address },
-    { icon: Phone, text: displayPhone, href: address ? `https://wa.me/${displayPhone.replace(/\D/g, "")}` : undefined, isPlaceholder: !phone },
-    { icon: Mail, text: displayEmail, href: email ? `mailto:${displayEmail}` : undefined, isPlaceholder: !email },
+  const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
+    { icon: MapPin, text: displayAddress },
+    { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
+    { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` },
   ];
 
   return (
@@ -1456,15 +1456,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({
         <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
           <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{title}</h2>
           <div className="space-y-4">
-            {infoItems.map(({ icon: Icon, text, href, isPlaceholder }) => {
+            {infoItems.map(({ icon: Icon, text, href }) => {
               const content = (
-                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}
-                  style={isPlaceholder ? { opacity: 0.35 } : undefined}>
+                <div className={`flex gap-3 ${hasLeadForm ? "items-start" : `items-center ${justifyClass}`}`}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
                   <div className={hasLeadForm ? "flex-1 min-w-0 pt-1" : "min-w-0"}>
-                    <p className={`${textClass} break-words`} style={{ ...textStyle, ...(isPlaceholder ? { fontStyle: "italic" } : {}) }}>{text}</p>
+                    <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
                   </div>
                 </div>
               );
@@ -1474,7 +1473,6 @@ const ContactSection: React.FC<ContactSectionProps> = ({
               return <div key={text}>{content}</div>;
             })}
           </div>
-
 
           {showMap !== false && (
             <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>
@@ -1575,8 +1573,8 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
 }) => {
   const containerClass = variant === "compact" ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" :
     variant === "stats" ? "grid grid-cols-1 md:grid-cols-3 gap-6" :
-    variant === "alternating" ? "grid grid-cols-1 md:grid-cols-2 gap-6" :
-    "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8";
+      variant === "alternating" ? "grid grid-cols-1 md:grid-cols-2 gap-6" :
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8";
 
   const statAccent = { color: accentColor };
   const alignStyle = b.textAlign ? { textAlign: b.textAlign as React.CSSProperties['textAlign'] } : { textAlign: "center" as React.CSSProperties['textAlign'] };

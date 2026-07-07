@@ -106,15 +106,6 @@ export function SiteWizard({
       });
       preview.setPreviewData(mergedPreview);
 
-      // Reset streamed variables since the stream is complete
-      preview.setStreamedSections({});
-      preview.setStreamedDesignToken(null);
-      preview.setStreamedTemplateId("");
-      preview.streamedSectionsRef.current = {};
-      preview.streamedTokenRef.current = null;
-
-      // Signal stream completion via state so React's useEffect can
-      // safely transition to "result" only after previewData is committed.
       // streamDoneRef is still set for the fast-path pacing check in the interval.
       preview.streamDoneRef.current = true;
       preview.setStreamDone(true);
