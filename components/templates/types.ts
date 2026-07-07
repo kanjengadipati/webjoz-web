@@ -81,6 +81,17 @@ export interface DesignToken {
     hero_style?: "full-bleed" | "split" | "centered" | "minimal";
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
+    section_variants?: {
+      about?: "classic" | "split-image" | "stat-heavy";
+      benefits?: "grid" | "stat-grid" | "checklist";
+      testimonials?: "carousel" | "compact" | "grid";
+      cta?: "banner" | "card" | "centered";
+      faq?: "accordion" | "simple" | "columns";
+      gallery?: "grid" | "masonry" | "carousel";
+      menu?: "grid" | "compact" | "cards";
+      catalog?: "grid" | "compact" | "cards";
+      contact?: "classic-split" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
+    };
     section_order?: string[];
     hidden_sections?: string[];
     engine?: "default" | "storytelling" | "showcase" | "minimal";

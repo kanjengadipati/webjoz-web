@@ -1751,6 +1751,82 @@ export default function SiteEditorPage() {
     });
   };
 
+  const SECTION_VARIANT_OPTIONS: Record<string, { value: string; label: string }[]> = {
+    about: [
+      { value: "classic", label: "Klasik" },
+      { value: "split-image", label: "Split + Gambar" },
+      { value: "stat-heavy", label: "Statistik" },
+    ],
+    benefits: [
+      { value: "grid", label: "Grid" },
+      { value: "stat-grid", label: "Grid Statistik" },
+      { value: "checklist", label: "Checklist" },
+    ],
+    testimonials: [
+      { value: "carousel", label: "Carousel" },
+      { value: "compact", label: "Ringkas" },
+      { value: "grid", label: "Grid" },
+    ],
+    cta: [
+      { value: "banner", label: "Banner" },
+      { value: "card", label: "Kartu" },
+      { value: "centered", label: "Tengah" },
+    ],
+    faq: [
+      { value: "accordion", label: "Akordion" },
+      { value: "simple", label: "Sederhana" },
+      { value: "columns", label: "Kolom" },
+    ],
+    gallery: [
+      { value: "grid", label: "Grid" },
+      { value: "masonry", label: "Masonry" },
+      { value: "carousel", label: "Carousel" },
+    ],
+    menu: [
+      { value: "grid", label: "Grid" },
+      { value: "compact", label: "Ringkas" },
+      { value: "cards", label: "Kartu" },
+    ],
+    catalog: [
+      { value: "grid", label: "Grid" },
+      { value: "compact", label: "Ringkas" },
+      { value: "cards", label: "Kartu" },
+    ],
+    contact: [
+      { value: "classic-split", label: "Klasik Split" },
+      { value: "minimal-centered", label: "Minimal Tengah" },
+      { value: "overlay-map", label: "Overlay Peta" },
+      { value: "bento-grid", label: "Bento Grid" },
+      { value: "dark-split", label: "Dark Split" },
+    ],
+  };
+
+  const updateSectionVariant = (section: string, value: string) => {
+    pushGlobalUndo();
+    setDesignToken((prev: any) => {
+      let next = { ...(prev || {}) };
+      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+        next = {
+          ...defaults,
+          ...next,
+          palette: { ...defaults.palette, ...(next.palette || {}) },
+          typography: { ...defaults.typography, ...(next.typography || {}) },
+          layout: { ...defaults.layout, ...(next.layout || {}) },
+        };
+        setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
+      }
+      next.layout = {
+        ...(next.layout || {}),
+        section_variants: {
+          ...(next.layout?.section_variants || {}),
+          [section]: value,
+        },
+      };
+      return next;
+    });
+  };
+
   const pushGlobalUndo = () => {
     if (!designToken) return;
     setGlobalUndo(prev => [JSON.parse(JSON.stringify(designToken)), ...prev].slice(0, 3));
@@ -3357,6 +3433,22 @@ export default function SiteEditorPage() {
                     <option value="full-bleed" className="bg-[#111318]">Hero: Full Bleed</option>
                     <option value="minimal" className="bg-[#111318]">Hero: Minimalist</option>
                   </select>
+                <div className="border-t border-white/10 my-2" />
+                <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Seksi</p>
+                {Object.keys(SECTION_VARIANT_OPTIONS).map((section) => {
+                  const options = SECTION_VARIANT_OPTIONS[section];
+                  return (
+                    <select key={section}
+                      value={designToken?.layout?.section_variants?.[section] || options[0].value}
+                      onChange={(e) => updateSectionVariant(section, e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                    >
+                      {options.map((opt) => (
+                        <option key={opt.value} value={opt.value} className="bg-[#111318]">{SECTION_META[section]?.label || section}: {opt.label}</option>
+                      ))}
+                    </select>
+                  );
+                })}
                 </div>
               )}
             </div>
@@ -3397,11 +3489,29 @@ export default function SiteEditorPage() {
               </div>
             </div>
           </div>
+                    </div>
 
-        </div>
+                    <div className="border-t border-white/10 my-2" />
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Variasi Seksi</p>
+                    {Object.keys(SECTION_VARIANT_OPTIONS).map((section) => {
+                      const options = SECTION_VARIANT_OPTIONS[section];
+                      return (
+                        <div key={section} className="space-y-1">
+                          <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{SECTION_META[section]?.label || section}</label>
+                          <select
+                            value={designToken?.layout?.section_variants?.[section] || options[0].value}
+                            onChange={(e) => updateSectionVariant(section, e.target.value)}
+                            className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                          >
+                            {options.map((opt) => (
+                              <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      );
+                    })}
 
-      </div>
-
+                  </div>
       {/* Desktop floating publish / apply button — placed outside any transformed container so fixed works */}
       {siteDetails?.status === "published" ? (
         <button

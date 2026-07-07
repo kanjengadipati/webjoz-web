@@ -1,15 +1,19 @@
 "use client";
 import React from "react";
-import { TestimonialsSection } from "../../templates/shared";
-import type { TemplateProps } from "../../templates/types";
+import type { ComponentType } from "react";
+import type { DesignToken, TemplateProps } from "../../templates/types";
+import TestimonialsClassic from "./classic";
+import TestimonialsCompact from "./compact";
+import TestimonialsGrid from "./grid";
 
-export default function TestimonialsSectionInner({ testimonials }: { testimonials: TemplateProps["content"]["testimonials"] }) {
-  return (
-    <TestimonialsSection
-      testimonials={testimonials}
-      wrapperClass="py-20 px-5 sm:px-6"
-      wrapperStyle={{ background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}
-      cardStyle={{ background: "var(--dt-surface)", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", borderRadius: "var(--dt-radius-lg)" }}
-    />
-  );
+const variants: Record<string, ComponentType<{ testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }>> = {
+  carousel: TestimonialsClassic,
+  compact: TestimonialsCompact,
+  grid: TestimonialsGrid,
+};
+
+export default function TestimonialsSection({ testimonials, design_token }: { testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }) {
+  const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
+  const Renderer = variants[variant] ?? TestimonialsClassic;
+  return <Renderer testimonials={testimonials} design_token={design_token} />;
 }

@@ -1,0 +1,28 @@
+"use client";
+import React from "react";
+import type { TemplateProps, DesignToken } from "../../templates/types";
+
+interface FaqVariantProps {
+  faq: TemplateProps["content"]["faq"];
+  design_token?: DesignToken | null;
+}
+
+export default function FaqColumns({ faq }: FaqVariantProps) {
+  const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
+  return (
+    <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "60rem", margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
+        <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{faq.title}</h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {faq.items?.map((item, idx) => (
+          <div key={idx}>
+            <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, marginBottom: "0.4rem" }}>{item.question}</h3>
+            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.85rem", lineHeight: 1.7, margin: 0 }}>{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
