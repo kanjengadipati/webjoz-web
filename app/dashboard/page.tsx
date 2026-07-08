@@ -118,7 +118,7 @@ function QuickLink({ href, label, icon: Icon, desc }: { href: string; label: str
 export default function DashboardOverviewPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { activeTenantId } = useActiveTenant();
+  const { activeTenantId, activeTenant } = useActiveTenant();
   const { role } = usePermissions();
   const isAdmin = role === "superadmin" || role === "admin";
 
@@ -425,6 +425,18 @@ export default function DashboardOverviewPage() {
           </div>
         </div>
       </section>
+
+      {activeTenant?.tenant.plan === "free" && (
+        <section className="bg-gradient-to-r from-primary/10 to-amber-500/10 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">Anda sedang menggunakan paket <span className="capitalize">Free</span></p>
+            <p className="text-xs text-muted-foreground">Upgrade ke Pro untuk custom domain, SEO optimasi, lebih banyak website, dan AI generates tanpa batas.</p>
+          </div>
+          <Link href="/dashboard/upgrade">
+            <Button className="shrink-0 h-10 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">Upgrade ke Pro</Button>
+          </Link>
+        </section>
+      )}
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard label="Website" value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-primary" sub={`${metrics.publishedSites} published`} />

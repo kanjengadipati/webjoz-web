@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera
+  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle
 } from "lucide-react";
 
 export const stripRegeneratedMarkers = (value: any): any => {
@@ -18,7 +18,7 @@ export const stripRegeneratedMarkers = (value: any): any => {
 };
 
 export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "cta", "faq", "contact"];
-export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo"];
+export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
@@ -39,6 +39,7 @@ export const SECTION_META: Record<string, { label: string; icon: any }> = {
   contact:      { label: "Kontak",       icon: Mail },
   footer:       { label: "Footer",       icon: BookOpen },
   seo:          { label: "SEO",          icon: Globe },
+  floating:     { label: "Tombol Aksi",  icon: MessageCircle },
 };
 
 export const AI_SUGGESTIONS: Record<string, string[]> = {
@@ -72,7 +73,7 @@ export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmi
     return true;
   });
   const bodyOrder = [...tokenOrder, ...availableBodyKeys.filter((key) => !tokenOrder.includes(key))];
-  return ["header", ...bodyOrder, "footer", "seo"].filter((key) => !adminHidden.has(key));
+  return ["header", ...bodyOrder, "footer", "seo", "floating"].filter((key) => !adminHidden.has(key));
 };
 
 export const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));

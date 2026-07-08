@@ -25,6 +25,10 @@ export interface SectionFormsProps {
   token?: string | null;
   activeTenantId?: number | string | null;
   siteId?: number | null;
+  designToken?: any;
+  updateDesignTokenLayout?: (key: string, value: any) => void;
+  isPremium?: boolean;
+  onUpgradeRequired?: () => void;
 }
 
 // ─── Icon Picker ──────────────────────────────────────────────────────────────
@@ -175,9 +179,11 @@ interface KeywordsInputProps {
   onChange: (keywords: string[]) => void;
   aiLoading?: boolean;
   onAiGenerate?: () => Promise<void>;
+  isPremium?: boolean;
+  onUpgradeRequired?: () => void;
 }
 
-function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate }: KeywordsInputProps) {
+function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired }: KeywordsInputProps) {
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -207,6 +213,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate }: Keywords
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
             title="AI: generate keywords"
+            onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
         )}
       </label>
@@ -243,17 +250,25 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate }: Keywords
 // ─── AI Field Button ──────────────────────────────────────────────────────────
 interface AiFieldButtonProps {
   onGenerate: () => Promise<void>;
+  onUpgradeRequired?: () => void;
   loading: boolean;
   title?: string;
+  isPremium?: boolean;
 }
 
-function AiFieldButton({ onGenerate, loading, title = "Generate dengan AI" }: AiFieldButtonProps) {
+function AiFieldButton({ onGenerate, onUpgradeRequired, loading, title = "Generate dengan AI", isPremium }: AiFieldButtonProps) {
   return (
     <button
       type="button"
-      onClick={onGenerate}
-      disabled={loading}
-      title={title}
+      onClick={() => {
+        if (isPremium) {
+          void onGenerate();
+        } else {
+          onUpgradeRequired?.();
+        }
+      }}
+      disabled={loading && !!isPremium}
+      title={!isPremium ? "Pro only – upgrade untuk AI Generate" : title}
       className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 hover:text-primary transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
     >
       {loading
@@ -317,14 +332,6 @@ async function generateFieldText(
   } catch {
     return null;
   }
-}
-
-export interface SectionFormsProps {
-  activeTab: string;
-  content: any;
-  updateField: (section: string, key: string, val: any) => void;
-  needsAttention: (path: string) => boolean;
-  fieldClass: (path: string, base: string) => string;
 }
 
 interface LinkTypeInputProps {
@@ -501,6 +508,10 @@ export default function SectionForms({
   token,
   activeTenantId,
   siteId,
+  designToken,
+  updateDesignTokenLayout,
+  isPremium = false,
+  onUpgradeRequired,
 }: SectionFormsProps) {
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
@@ -648,6 +659,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "hero.headline"}
                 onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata")}
                 title="AI: generate headline"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <input 
@@ -681,6 +693,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "hero.subheadline"}
                 onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata")}
                 title="AI: generate subheadline"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <textarea 
@@ -848,6 +861,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "about.title"}
                 onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis")}
                 title="AI: generate judul"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <input 
@@ -867,6 +881,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "about.body"}
                 onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.")}
                 title="AI: generate deskripsi"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <textarea 
@@ -1129,6 +1144,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "cta.headline"}
                 onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli")}
                 title="AI: generate headline CTA"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <input 
@@ -1465,6 +1481,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "seo.title"}
                 onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.")}
                 title="AI: generate SEO title"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <input 
@@ -1491,6 +1508,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "seo.description"}
                 onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.")}
                 title="AI: generate meta description"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <textarea 
@@ -1513,6 +1531,7 @@ export default function SectionForms({
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
             onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.")}
+            onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
           {/* Favicon + OG Image row */}
@@ -1527,6 +1546,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "seo.og_type"}
                 onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.")}
                 title="AI: suggest OG type"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <select
@@ -1550,6 +1570,7 @@ export default function SectionForms({
                 loading={aiLoadingField === "seo.twitter_card"}
                 onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.")}
                 title="AI: suggest Twitter card"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
             <select
@@ -1786,6 +1807,7 @@ export default function SectionForms({
             updateField={updateField}
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
+            onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
         </>
       )}
@@ -1994,8 +2016,85 @@ export default function SectionForms({
             updateField={updateField}
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
+            onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
         </>
+      )}
+
+      {/* ── FLOATING BUTTON FORM ── */}
+      {activeTab === "floating" && (
+        <div className="space-y-4">
+          <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
+            <p className="font-semibold text-primary">💬 Tombol Aksi Mengambang</p>
+            <p className="mt-1 text-primary/80">Tombol yang selalu terlihat di pojok kanan bawah halaman website.</p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tipe Tombol</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { value: "none",         label: "Tidak Ada",   icon: "🚫", desc: "Tidak tampil tombol" },
+                { value: "whatsapp",     label: "WhatsApp",    icon: "💬", desc: "Tombol WA sederhana" },
+                { value: "chat_bubble",  label: "Chat Bubble", icon: "✨",    desc: "Widget chat interaktif" },
+                { value: "contact_link", label: "Link Kontak", icon: "📋", desc: "Scroll ke section Kontak" },
+              ] as const).map((opt) => {
+                const current = designToken?.layout?.floating_button ?? "whatsapp";
+                const isActive = current === opt.value;
+                const isProGated = opt.value === "chat_bubble" && !isPremium;
+                return (
+                  <button key={opt.value} type="button"
+                    onClick={() => {
+                      if (isProGated) {
+                        onUpgradeRequired?.();
+                        return;
+                      }
+                      updateDesignTokenLayout?.("floating_button", opt.value);
+                    }}
+                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]"} ${isProGated ? "opacity-60" : ""}`}
+                  >
+                    <span className="text-lg block mb-1">{opt.icon}</span>
+                    <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{opt.desc}</p>
+                    {opt.value === "chat_bubble" && <span className="absolute top-1.5 right-1.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">PRO</span>}
+                    {isActive && <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_currentColor]" />}
+                  </button>
+                );
+              })}
+            </div>
+            {!isPremium && (
+              <p className="text-[10px] text-amber-400/80 leading-relaxed">✨ Chat Bubble tersedia untuk plan <strong className="text-amber-400">Pro</strong>.</p>
+            )}
+          </div>
+          {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
+            <div className="space-y-2 pt-2 border-t border-white/10">
+              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                Nomor WhatsApp <span className="text-red-400">*</span>
+              </label>
+              <input type="text" inputMode="tel" value={content?.contact?.phone || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  updateField("contact", "phone", val);
+                  const digits = val.replace(/\D/g, "");
+                  if (digits) {
+                    const fmt = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
+                    if (/wa\.me|whatsapp\.com/i.test(content?.hero?.cta_url || "")) updateField("hero", "cta_url", `https://wa.me/${fmt}`);
+                    if (/wa\.me|whatsapp\.com/i.test(content?.cta?.button_url || "")) updateField("cta", "button_url", `https://wa.me/${fmt}`);
+                  }
+                }}
+                placeholder="cth. 628123456789 atau 08123456789"
+                className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+              />
+              {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
+              <p className="text-[10px] text-slate-600">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
+            </div>
+          )}
+          {designToken?.layout?.floating_button !== "none" && (
+            <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3 text-[11px] text-slate-400 leading-relaxed">
+              {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
+              {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
+              {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
+            </div>
+          )}
+        </div>
       )}
     </>
   );
@@ -2012,9 +2111,11 @@ interface MenuCatalogFormProps {
   updateField: (section: string, key: string, val: any) => void;
   onAiDescription?: (catIdx: number, itemIdx: number, itemName: string, catName: string) => Promise<void>;
   aiLoadingDesc?: string | null;
+  isPremium?: boolean;
+  onUpgradeRequired?: () => void;
 }
 
-function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField, onAiDescription, aiLoadingDesc }: MenuCatalogFormProps) {
+function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired }: MenuCatalogFormProps) {
   const [expandedCat, setExpandedCat] = React.useState<number | null>(0);
   const [activeEmojiPicker, setActiveEmojiPicker] = React.useState<{ catIdx: number; itemIdx: number } | null>(null);
 
@@ -2222,6 +2323,7 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                                 loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
                                 onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "")}
                                 title="AI: generate deskripsi"
+                                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                               />
                             )}
                             <button
@@ -2342,3 +2444,5 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
     </div>
   );
 }
+
+// (this export lets page.tsx import the FLOATING_FORM inline instead)

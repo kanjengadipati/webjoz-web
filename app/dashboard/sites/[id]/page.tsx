@@ -8,7 +8,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import {
-  Save, Loader2, Sparkles,
+  Save, Loader2, Sparkles, Zap,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
@@ -599,7 +599,8 @@ export default function SiteEditorPage() {
   const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { activeTenantId } = useActiveTenant();
+  const { activeTenantId, activeTenant } = useActiveTenant();
+  const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const siteId = params.id ? Number(params.id) : null;
 
@@ -691,7 +692,15 @@ export default function SiteEditorPage() {
   const [aiInstructions, setAiInstructions] = useState("");
   const [recentInstructions, setRecentInstructions] = useState<string[]>([]);
   const [aiDesignPromptOpen, setAiDesignPromptOpen] = useState(false);
+  const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
   const [aiDesignInstructions, setAiDesignInstructions] = useState("");
+
+  // ── Inline AI prompt modal (replaces window.prompt) ─────────────────────────
+  const [aiPromptModal, setAiPromptModal] = useState<{
+    section: string;
+    resolve: (value: string | null) => void;
+  } | null>(null);
+  const [aiPromptInput, setAiPromptInput] = useState("");
 
   const fetchData = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1263,7 +1272,10 @@ export default function SiteEditorPage() {
 
     let instructions = customInstructions || aiInstructions;
     if (!instructions.trim()) {
-      const input = window.prompt(`Masukkan instruksi AI untuk regenerasi bagian "${section}" (cth: "buat kalimat lebih persuasif"):`);
+      const input = await new Promise<string | null>((resolve) => {
+        setAiPromptInput("");
+        setAiPromptModal({ section, resolve });
+      });
       if (!input || !input.trim()) return;
       instructions = input;
     }
@@ -1322,6 +1334,10 @@ export default function SiteEditorPage() {
   }, [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
+  const handleRegenWithPremiumCheck = useCallback((section: string) => {
+    if (!isPremium) { setUpgradePromptOpen(true); return; }
+    return handleAiRegenerateForSection(section);
+  }, [isPremium, handleAiRegenerateForSection]);
 
   const handleAiRegenerateDesign = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1473,18 +1489,7 @@ export default function SiteEditorPage() {
   const updateSectionVariant = (section: string, value: string) => {
     pushGlobalUndo();
     setDesignToken((prev: any) => {
-      let next = { ...(prev || {}) };
-      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
-        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
-        next = {
-          ...defaults,
-          ...next,
-          palette: { ...defaults.palette, ...(next.palette || {}) },
-          typography: { ...defaults.typography, ...(next.typography || {}) },
-          layout: { ...defaults.layout, ...(next.layout || {}) },
-        };
-        setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
-      }
+      const next = prev ? JSON.parse(JSON.stringify(prev)) : {};
       next.layout = {
         ...(next.layout || {}),
         section_variants: {
@@ -1492,6 +1497,14 @@ export default function SiteEditorPage() {
           [section]: value,
         },
       };
+      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+        Object.assign(next, defaults, next);
+        next.palette = { ...defaults.palette, ...(next.palette || {}) };
+        next.typography = { ...defaults.typography, ...(next.typography || {}) };
+        next.layout = { ...defaults.layout, ...next.layout };
+        setSiteDetails((prev: any) => ({ ...prev, template_id: "TEMPLATE_DYNAMIC" }));
+      }
       return next;
     });
   };
@@ -1871,7 +1884,10 @@ export default function SiteEditorPage() {
                   {!aiDesignPromptOpen ? (
                     <button
                       type="button"
-                      onClick={() => setAiDesignPromptOpen(true)}
+                      onClick={() => {
+                        if (!isPremium) { setUpgradePromptOpen(true); return; }
+                        setAiDesignPromptOpen(true);
+                      }}
                       disabled={aiLoading || !!pendingDiff}
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
                     >
@@ -1914,9 +1930,9 @@ export default function SiteEditorPage() {
                         )}
                         {aiLoading ? "Memproses..." : "Terapkan Gaya"}
                       </button>
-                    </div>
-                  )}
                 </div>
+              )}
+            </div>
               )}
             </div>
           )}
@@ -1966,6 +1982,11 @@ export default function SiteEditorPage() {
                     <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
                       {label}
                     </span>
+                    {key === "seo" && !(activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise") && (
+                      <span className="text-[7px] px-1 py-0.5 bg-primary/30 text-primary rounded font-extrabold uppercase tracking-wider leading-none ml-1">
+                        Pro
+                      </span>
+                    )}
                     {!["header", "footer", "seo"].includes(key) && (
                       <div
                         role="button" tabIndex={0}
@@ -2370,6 +2391,10 @@ export default function SiteEditorPage() {
                     token={token}
                     activeTenantId={activeTenantId}
                     siteId={siteId}
+                    isPremium={isPremium}
+                    onUpgradeRequired={() => setUpgradePromptOpen(true)}
+                    designToken={designToken}
+                    updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                   />
 
                   {/* Variasi tampilan per section */}
@@ -2443,7 +2468,10 @@ export default function SiteEditorPage() {
                           <button
                             key={suggestion}
                             type="button"
-                            onClick={() => setAiInstructions(suggestion)}
+                            onClick={() => {
+                              if (!isPremium) { setUpgradePromptOpen(true); return; }
+                              setAiInstructions(suggestion);
+                            }}
                             disabled={!!pendingDiff}
                             className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-left text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50 disabled:pointer-events-none"
                           >
@@ -2472,13 +2500,21 @@ export default function SiteEditorPage() {
                           type="text"
                           value={aiInstructions}
                           onChange={(e) => setAiInstructions(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !pendingDiff) {
+                              if (!isPremium) { setUpgradePromptOpen(true); return; }
+                              handleAiRegenerateSection();
+                            }
+                          }}
                           placeholder={aiPlaceholder}
                           disabled={aiLoading || !!pendingDiff}
                           className="flex-1 h-8 px-2.5 border border-primary bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700 disabled:opacity-50"
                         />
                         <button
-                          onClick={handleAiRegenerateSection}
+                          onClick={() => {
+                            if (!isPremium) { setUpgradePromptOpen(true); return; }
+                            handleAiRegenerateSection();
+                          }}
                           disabled={aiLoading || !!pendingDiff}
                           className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 whitespace-nowrap"
                         >
@@ -2886,8 +2922,9 @@ export default function SiteEditorPage() {
                       isEditorMode={true}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
-                      onRegenSection={handleAiRegenerateForSection}
+                      onRegenSection={handleRegenWithPremiumCheck}
                       onSubmitLead={async () => { }}
+                      isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
                   </div>
                 </div>
@@ -2919,8 +2956,9 @@ export default function SiteEditorPage() {
                       isEditorMode={true}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
-                      onRegenSection={handleAiRegenerateForSection}
+                      onRegenSection={handleRegenWithPremiumCheck}
                       onSubmitLead={async () => { }}
+                      isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
                   </div>
                 </div>
@@ -2934,8 +2972,9 @@ export default function SiteEditorPage() {
                   isEditorMode={true}
                   activeSection={activeTab}
                   onSelectSection={handlePreviewSelectSection}
-                  onRegenSection={handleAiRegenerateForSection}
+                  onRegenSection={handleRegenWithPremiumCheck}
                   onSubmitLead={async () => { }}
+                  isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                 />
               </div>
             )}
@@ -3049,6 +3088,10 @@ export default function SiteEditorPage() {
                   token={token}
                   activeTenantId={activeTenantId}
                   siteId={siteId}
+                  isPremium={isPremium}
+                  onUpgradeRequired={() => setUpgradePromptOpen(true)}
+                  designToken={designToken}
+                  updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                 />
                 {/* Variasi tampilan per section */}
                 {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
@@ -3157,7 +3200,10 @@ export default function SiteEditorPage() {
                   {activeSuggestions.slice(0, 3).map((chip) => (
                     <button
                       key={chip} type="button"
-                      onClick={() => setAiInstructions(chip)}
+                      onClick={() => {
+                        if (!isPremium) { setUpgradePromptOpen(true); return; }
+                        setAiInstructions(chip);
+                      }}
                       disabled={!!pendingDiff}
                       className="flex-shrink-0 px-2 py-1 rounded-full border border-primary/20 bg-primary/10 text-[9px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
                     >
@@ -3170,14 +3216,22 @@ export default function SiteEditorPage() {
                 <input
                   type="text" value={aiInstructions}
                   onChange={(e) => setAiInstructions(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) handleAiRegenerateSection(); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !pendingDiff) {
+                      if (!isPremium) { setUpgradePromptOpen(true); return; }
+                      handleAiRegenerateSection();
+                    }
+                  }}
                   placeholder={aiPlaceholder}
                   disabled={aiLoading || !!pendingDiff}
                   className="flex-1 h-9 px-3 border border-primary/25 bg-[#05070b] text-slate-100 rounded-[10px] text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
                 />
                 <button
                   type="button"
-                  onClick={handleAiRegenerateSection}
+                  onClick={() => {
+                    if (!isPremium) { setUpgradePromptOpen(true); return; }
+                    handleAiRegenerateSection();
+                  }}
                   disabled={aiLoading || !!pendingDiff}
                   className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-primary text-primary-foreground disabled:opacity-50"
                 >
@@ -3236,6 +3290,132 @@ export default function SiteEditorPage() {
           }}
         />
       )}
+
+      {/* ── Upgrade Prompt Modal ── */}
+      <Dialog
+        open={upgradePromptOpen}
+        onOpenChange={setUpgradePromptOpen}
+        title="Fitur AI Only untuk Pro"
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+              onClick={() => setUpgradePromptOpen(false)}
+            >
+              Nanti
+            </Button>
+            <Button
+              type="button"
+              className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary text-primary-foreground hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)] flex items-center justify-center gap-2"
+              onClick={() => { setUpgradePromptOpen(false); router.push("/dashboard/upgrade"); }}
+            >
+              <Zap className="w-4 h-4" /> Upgrade ke Pro
+            </Button>
+          </>
+        }
+      >
+        <div className="text-center space-y-4 py-2">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center">
+              <Zap className="w-8 h-8 text-primary" />
+            </div>
+          </div>
+          <div>
+            <p className="text-[14px] font-semibold text-slate-100">Fitur AI hanya tersedia untuk pengguna Pro</p>
+            <p className="text-[12px] text-slate-400 mt-1">Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.</p>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* ── AI Prompt Modal (replaces window.prompt) ── */}
+      {aiPromptModal && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-150"
+          onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+                <Sparkles className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                  Instruksi AI
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Apa yang ingin kamu ubah di bagian <span className="font-semibold text-primary capitalize">{SECTION_META[aiPromptModal.section]?.label ?? aiPromptModal.section}</span>?
+                </p>
+              </div>
+            </div>
+
+            {/* Input */}
+            <div className="space-y-2">
+              <input
+                autoFocus
+                type="text"
+                value={aiPromptInput}
+                onChange={(e) => setAiPromptInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && aiPromptInput.trim()) {
+                    aiPromptModal.resolve(aiPromptInput.trim());
+                    setAiPromptModal(null);
+                  }
+                  if (e.key === "Escape") {
+                    aiPromptModal.resolve(null);
+                    setAiPromptModal(null);
+                  }
+                }}
+                placeholder={`cth. "buat lebih persuasif dan emosional"`}
+                className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+              />
+              {/* Quick suggestion chips */}
+              <div className="flex flex-wrap gap-1.5">
+                {(AI_SUGGESTIONS[aiPromptModal.section] ?? []).slice(0, 3).map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => setAiPromptInput(chip)}
+                    className="px-2.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={!aiPromptInput.trim()}
+                onClick={() => {
+                  if (!aiPromptInput.trim()) return;
+                  aiPromptModal.resolve(aiPromptInput.trim());
+                  setAiPromptModal(null);
+                }}
+                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)]"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Generate AI
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   );
@@ -3357,7 +3537,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
+              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Pro</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
               Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}

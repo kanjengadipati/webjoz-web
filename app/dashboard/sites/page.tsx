@@ -302,7 +302,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </div>
           <div className="space-y-1">
               <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Premium</span>
+              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Pro</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
               Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}

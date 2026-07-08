@@ -268,7 +268,7 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
     );
   }
 
-  const { content, template_id, design_token } = siteData;
+  const { content, template_id, design_token, is_premium } = siteData;
 
   const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
 
@@ -280,6 +280,7 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
       leadSubmitting={leadSubmitting}
       leadSuccess={leadSuccess}
       leadError={leadError}
+      isPremium={is_premium === true}
     />
   );
 }

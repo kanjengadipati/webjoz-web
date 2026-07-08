@@ -17,6 +17,7 @@ import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/components/toast-provider";
 import { logoutCurrentSession } from "@/lib/api";
+import { useActiveTenant } from "@/lib/tenant-store";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +28,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
   const { unreadCount } = useUnreadNotifications();
+  const { activeTenant } = useActiveTenant();
   const isAuthenticated = Boolean(token);
 
   useEffect(() => {
@@ -181,6 +183,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}>
                     {item.label}
                   </span>
+                  {"premium" in item && item.premium && (
+                    <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
+                      Pro
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -252,10 +259,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <div className="rounded-2xl border border-border/30 bg-background/50 p-4 shadow-inner">
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="text-xs font-medium text-muted-foreground/70">Mode</div>
-                    <div className={cn(
-                      "size-2 rounded-full",
-                      isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
-                    )} aria-hidden="true" />
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center rounded-full border border-border/40 px-2 py-0.5 text-[9px] font-bold capitalize">{activeTenant?.tenant.plan || "free"}</span>
+                      {activeTenant?.tenant.plan === "free" && (
+                        <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
+                          Upgrade
+                        </Link>
+                      )}
+                      <div className={cn(
+                        "size-2 rounded-full",
+                        isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
+                      )} aria-hidden="true" />
+                    </div>
                   </div>
                   <div className="text-sm font-bold tracking-tight">
                     {isAuthenticated ? (
@@ -298,6 +313,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
                                   {item.label}
                                 </span>
+                                {"premium" in item && item.premium && (
+                                  <span className="ml-auto text-[8px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
+                                    Pro
+                                  </span>
+                                )}
                                 {showBadge && (
                                   <span className="ml-auto mr-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary/15 text-primary text-[10px] font-bold leading-none">
                                     {unreadCount > 99 ? "99+" : unreadCount}

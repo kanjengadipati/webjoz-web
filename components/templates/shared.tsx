@@ -265,7 +265,15 @@ const WAFloatingButton: React.FC<{
   brandName?: string;
   /** true = premium chat widget; false = simple floating WA button */
   isPremium?: boolean;
-}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false }) => {
+  /**
+   * Explicit floating button type. Takes precedence over isPremium.
+   * "whatsapp"     → simple WA button
+   * "chat_bubble"  → premium chat widget (only if isPremium=true)
+   * "contact_link" → scroll to #contact
+   * "none"         → hidden
+   */
+  floatingType?: "none" | "whatsapp" | "chat_bubble" | "contact_link";
+}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false, floatingType }) => {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const [userMessage, setUserMessage] = useState("");
   const [isTyping, setIsTyping] = useState(true);
@@ -283,10 +291,33 @@ const WAFloatingButton: React.FC<{
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
 
+  // Resolve effective type from floatingType prop, falling back to isPremium legacy behaviour
+  const effectiveType = floatingType ?? (isPremium ? "chat_bubble" : "whatsapp");
+
+  if (effectiveType === "none") return null;
+
+  // ── Contact Link button — no phone required ───────────────────────────────
+  if (effectiveType === "contact_link") {
+    return (
+      <a
+        href={isEditorMode ? "#" : "#contact"}
+        onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
+        aria-label="Hubungi Kami"
+        className="fixed bottom-6 right-6 z-[150] flex items-center gap-2 px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm font-semibold"
+        style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-primary-foreground, #fff)" }}
+      >
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+        </svg>
+        Kontak Kami
+      </a>
+    );
+  }
+
   if (!hasWa) return null;
 
-  // ── Simple floating WA button (for regular/free users) ─────────────────────
-  if (!isPremium) {
+  // ── Simple floating WA button (whatsapp type or free users) ─────────────────
+  if (effectiveType !== "chat_bubble") {
     return (
       <a
         href={isEditorMode ? "#" : waUrl}

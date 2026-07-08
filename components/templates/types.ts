@@ -95,6 +95,14 @@ export interface DesignToken {
     section_order?: string[];
     hidden_sections?: string[];
     engine?: "default" | "storytelling" | "showcase" | "minimal";
+    /**
+     * Controls which floating action button appears on the live site.
+     * "none"         → no floating button
+     * "whatsapp"     → simple green WA button (requires contact.phone)
+     * "chat_bubble"  → premium interactive WA chat widget (requires pro plan + contact.phone)
+     * "contact_link" → scroll-to-contact button (no phone required)
+     */
+    floating_button?: "none" | "whatsapp" | "chat_bubble" | "contact_link";
   };
   mood?: string;
   theme_mode?: 'light' | 'dark';

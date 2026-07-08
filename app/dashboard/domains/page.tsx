@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
+import { useRouter } from "next/navigation";
 import {
   Loader2, Trash2, Globe, Clock, RefreshCw,
   Server, Copy, Info, Check, Link2, ExternalLink,
@@ -37,6 +38,7 @@ const customDomainRegex = /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
 
 export default function DomainsPage() {
   const token         = useAuthToken();
+  const router        = useRouter();
   const { pushToast } = useToast();
   const { activeTenantId } = useActiveTenant();
 
@@ -171,17 +173,16 @@ export default function DomainsPage() {
       >
         Lanjutkan Hubungkan
       </button>
-      <button
-        type="button"
-        onClick={() => {
-          pushToast("Upgrade Premium sedang dikembangkan! Anda tetap bisa menggunakan custom domain secara gratis untuk saat ini.", "info");
-          setShowUpsellModal(false);
-          proceedAddDomain(domainInput.toLowerCase().trim());
-        }}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
-      >
-        Upgrade Sekarang
-      </button>
+        <button
+          type="button"
+          onClick={() => {
+            setShowUpsellModal(false);
+            router.push("/dashboard/upgrade");
+          }}
+          className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
+        >
+          Upgrade ke Pro
+        </button>
     </div>
   );
 
@@ -420,7 +421,7 @@ export default function DomainsPage() {
       >
         <div className="space-y-4">
           <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
-            Custom Domain adalah fitur <strong>Premium</strong> yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).
+            Custom Domain adalah fitur <strong>Pro</strong> yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).
           </p>
           <div className="bg-[#1b1b21] border border-white/10 rounded-xl p-4 space-y-3">
             <div className="flex items-start gap-3">

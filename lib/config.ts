@@ -75,3 +75,6 @@ export const config = {
 export const IS_LOCAL =
   API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1");
 export const ENV_NAME = IS_LOCAL ? "Local" : "Production";
+
+export const MIDTRANS_CLIENT_KEY = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "";
+export const MIDTRANS_MERCHANT_ID = process.env.NEXT_PUBLIC_MIDTRANS_MERCHANT_ID || "";

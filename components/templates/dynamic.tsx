@@ -303,7 +303,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         </MemoPreviewSectionWrapper>
       )}
       <CartFab />
-      <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} />
+      <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} floatingType={dt?.layout?.floating_button} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
   );
