@@ -2037,16 +2037,13 @@ export default function SectionForms({
                 { value: "chat_bubble",  label: "Chat Bubble", icon: "✨",    desc: "Widget chat interaktif" },
                 { value: "contact_link", label: "Link Kontak", icon: "📋", desc: "Scroll ke section Kontak" },
               ] as const).map((opt) => {
-                const current = designToken?.layout?.floating_button ?? "whatsapp";
+                const current = designToken?.layout?.floating_button ?? "contact_link";
                 const isActive = current === opt.value;
                 const isProGated = opt.value === "chat_bubble" && !isPremium;
                 return (
                   <button key={opt.value} type="button"
                     onClick={() => {
-                      if (isProGated) {
-                        onUpgradeRequired?.();
-                        return;
-                      }
+                      if (isProGated) { onUpgradeRequired?.(); return; }
                       updateDesignTokenLayout?.("floating_button", opt.value);
                     }}
                     className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]"} ${isProGated ? "opacity-60" : ""}`}

@@ -291,7 +291,7 @@ const WAFloatingButton: React.FC<{
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
 
-  // Resolve effective type from floatingType prop, falling back to isPremium legacy behaviour
+  // Resolve effective type — default to whatsapp for backward compat (existing sites)
   const effectiveType = floatingType ?? (isPremium ? "chat_bubble" : "whatsapp");
 
   if (effectiveType === "none") return null;
