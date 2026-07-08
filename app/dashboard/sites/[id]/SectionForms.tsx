@@ -518,6 +518,13 @@ export default function SectionForms({
   const [resolvingMaps, setResolvingMaps] = React.useState(false);
   const [resolveError, setResolveError] = React.useState<string | null>(null);
   const [showLocationPicker, setShowLocationPicker] = React.useState(false);
+
+  // Auto-initialize floating_button default when user opens the floating tab
+  React.useEffect(() => {
+    if (activeTab === "floating" && designToken?.layout?.floating_button === undefined) {
+      updateDesignTokenLayout?.("floating_button", "contact_link");
+    }
+  }, [activeTab]);
   const businessType = content?.header?.brand_name ? "" : "";
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
