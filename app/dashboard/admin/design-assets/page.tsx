@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useToast } from "@/components/toast-provider";
 import {
@@ -18,6 +18,7 @@ import {
   loadDesignAssetsConfig, saveDesignAssetsConfig, resetDesignAssetsConfig,
   loadConfig, updateCache,
   REQUIRED_SECTIONS_DEFAULT,
+  type DesignAssetsConfig,
 } from "@/lib/design-assets-config";
 import { useAuthToken } from "@/lib/auth-store";
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
@@ -36,6 +37,197 @@ const GOOGLE_FONTS_WHITELIST = [
 
 // All sections superadmin can manage (excludes seo — not a visual section)
 const MANAGEABLE_SECTIONS = ["header", ...BODY_SECTION_KEYS, "footer"];
+
+// ─── Variant wireframe previews ───────────────────────────────────────────────
+function VariantPreview({ id }: { id: string }) {
+  const s = { fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round" as const };
+  const b = "bg-gradient-to-br from-primary/5 to-muted/20 text-muted-foreground/60";
+
+  const diagrams: Record<string, React.ReactNode> = {
+    // About
+    "about-classic": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="8" y="8" width="64" height="6" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="18" width="48" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="25" width="52" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="32" width="40" height="4" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "about-split-image": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="8" width="34" height="32" rx="2" fill="currentColor" opacity=".15"/><rect x="44" y="10" width="32" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x="44" y="19" width="26" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="44" y="25" width="28" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="44" y="31" width="22" height="3" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "about-stat-heavy": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="8" y="6" width="64" height="6" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="18" width="18" height="12" rx="2" fill="currentColor" opacity=".2"/><rect x="31" y="18" width="18" height="12" rx="2" fill="currentColor" opacity=".2"/><rect x="54" y="18" width="18" height="12" rx="2" fill="currentColor" opacity=".2"/><rect x="12" y="35" width="56" height="3" rx="1" fill="currentColor" opacity=".12"/></svg>
+    ),
+    // Benefits
+    "benefits-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x="30" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x="54" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x="6" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/><rect x="30" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/><rect x="54" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/></svg>
+    ),
+    "benefits-stat-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><text x="16" y="18" textAnchor="middle" fontSize="8" fill="currentColor" opacity=".5">50+</text><rect x="30" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><text x="40" y="18" textAnchor="middle" fontSize="8" fill="currentColor" opacity=".5">99%</text><rect x="54" y="6" width="20" height="18" rx="2" fill="currentColor" opacity=".15"/><text x="64" y="18" textAnchor="middle" fontSize="8" fill="currentColor" opacity=".5">24h</text><rect x="6" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/><rect x="30" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/><rect x="54" y="28" width="20" height="14" rx="2" fill="currentColor" opacity=".1"/></svg>
+    ),
+    "benefits-checklist": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[8,16,24,32,40].map(y=><g key={y}><circle cx="14" cy={y+4} r="3" fill="currentColor" opacity=".3"/><rect x="22" y={y+2} width="44" height="4" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    // Testimonials
+    "testimonials-carousel": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="12" y="8" width="56" height="26" rx="3" fill="currentColor" opacity=".12"/><rect x="18" y="14" width="44" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="18" y="20" width="36" height="3" rx="1" fill="currentColor" opacity=".15"/><circle cx="18" cy="38" r="3" fill="currentColor" opacity=".15"/><rect x="24" y="36" width="18" height="4" rx="1" fill="currentColor" opacity=".2"/><circle cx="36" cy="44" r="2" fill="currentColor" opacity=".3"/><circle cx="41" cy="44" r="2" fill="currentColor" opacity=".15"/><circle cx="46" cy="44" r="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "testimonials-compact": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,17,30].map(y=><g key={y}><circle cx="12" cy={y+7} r="5" fill="currentColor" opacity=".2"/><rect x="22" y={y+4} width="48" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="22" y={y+10} width="34" height="3" rx="1" fill="currentColor" opacity=".12"/></g>)}</svg>
+    ),
+    "testimonials-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="34" height="20" rx="2" fill="currentColor" opacity=".12"/><rect x="8" y="9" width="26" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="8" y="15" width="20" height="3" rx="1" fill="currentColor" opacity=".12"/><rect x="42" y="4" width="34" height="20" rx="2" fill="currentColor" opacity=".12"/><rect x="46" y="9" width="26" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="46" y="15" width="20" height="3" rx="1" fill="currentColor" opacity=".12"/><rect x="4" y="28" width="34" height="16" rx="2" fill="currentColor" opacity=".08"/><rect x="42" y="28" width="34" height="16" rx="2" fill="currentColor" opacity=".08"/></svg>
+    ),
+    // CTA
+    "cta-banner": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="12" width="76" height="24" rx="3" fill="currentColor" opacity=".12"/><rect x="14" y="18" width="32" height="5" rx="1" fill="currentColor" opacity=".25"/><rect x="14" y="26" width="24" height="5" rx="2" fill="currentColor" opacity=".35"/></svg>
+    ),
+    "cta-card": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="12" y="6" width="56" height="36" rx="4" fill="currentColor" opacity=".08"/><rect x="12" y="6" width="56" height="36" rx="4" {...s} opacity=".2"/><rect x="20" y="14" width="40" height="5" rx="1" fill="currentColor" opacity=".25"/><rect x="26" y="22" width="28" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="26" y="30" width="28" height="6" rx="2" fill="currentColor" opacity=".3"/></svg>
+    ),
+    "cta-centered": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="16" y="10" width="48" height="6" rx="1" fill="currentColor" opacity=".25"/><rect x="20" y="20" width="40" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="24" y="30" width="32" height="8" rx="3" fill="currentColor" opacity=".3"/></svg>
+    ),
+    // FAQ
+    "faq-accordion": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,14,24,34].map((y,i)=><g key={y}><rect x="6" y={y} width="68" height="9" rx="2" fill="currentColor" opacity={i===0?".18":".1"}/><rect x="10" y={y+3} width="40" height="3" rx="1" fill="currentColor" opacity=".25"/><text x="68" y={y+7} fontSize="8" fill="currentColor" opacity=".4">{i===0?"▲":"▼"}</text></g>)}</svg>
+    ),
+    "faq-simple": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,16,28,40].map(y=><g key={y}><rect x="6" y={y} width="48" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="6" y={y+6} width="60" height="3" rx="1" fill="currentColor" opacity=".12"/></g>)}</svg>
+    ),
+    "faq-columns": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="8" rx="2" fill="currentColor" opacity=".15"/><rect x="4" y="17" width="34" height="8" rx="2" fill="currentColor" opacity=".1"/><rect x="4" y="28" width="34" height="8" rx="2" fill="currentColor" opacity=".1"/><rect x="42" y="6" width="34" height="8" rx="2" fill="currentColor" opacity=".15"/><rect x="42" y="17" width="34" height="8" rx="2" fill="currentColor" opacity=".1"/><rect x="42" y="28" width="34" height="8" rx="2" fill="currentColor" opacity=".1"/></svg>
+    ),
+    // Gallery
+    "gallery-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><rect key={`${x}${y}`} x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".2"/>))}</svg>
+    ),
+    "gallery-masonry": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="22" height="28" rx="2" fill="currentColor" opacity=".2"/><rect x="30" y="4" width="22" height="18" rx="2" fill="currentColor" opacity=".2"/><rect x="56" y="4" width="22" height="24" rx="2" fill="currentColor" opacity=".2"/><rect x="30" y="26" width="22" height="16" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "gallery-carousel": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="10" y="6" width="60" height="30" rx="3" fill="currentColor" opacity=".2"/><text x="8" y="25" fontSize="12" fill="currentColor" opacity=".5">‹</text><text x="68" y="25" fontSize="12" fill="currentColor" opacity=".5">›</text><circle cx="33" cy="42" r="2" fill="currentColor" opacity=".4"/><circle cx="40" cy="42" r="2" fill="currentColor" opacity=".2"/><circle cx="47" cy="42" r="2" fill="currentColor" opacity=".2"/></svg>
+    ),
+    // Menu
+    "menu-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+11} width="18" height="3" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+    "menu-compact": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,12,20,28,36].map(y=><g key={y}><rect x="6" y={y} width="48" height="6" rx="1" fill="currentColor" opacity=".1"/><rect x="8" y={y+2} width="28" height="2" rx="1" fill="currentColor" opacity=".25"/><rect x="58" y={y+1} width="14" height="4" rx="1" fill="currentColor" opacity=".2"/></g>)}</svg>
+    ),
+    "menu-cards": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,42].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="32" height="18" rx="3" fill="currentColor" opacity=".12" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.2"/><rect x={x} y={y} width="32" height="10" rx="3" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+12} width="22" height="2" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+    "menu-text-list": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,14,22,30,38].map(y=><g key={y}><rect x="6" y={y} width="44" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x="54" y={y} width="20" height="3" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "menu-compact-list": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,14,24,34].map(y=><g key={y}><rect x="4" y={y} width="10" height="8" rx="1" fill="currentColor" opacity=".2"/><rect x="18" y={y+1} width="36" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x="58" y={y+1} width="16" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="18" y={y+5} width="24" height="2" rx="1" fill="currentColor" opacity=".12"/></g>)}</svg>
+    ),
+    "menu-tabs-by-category": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".3"/><rect x="25" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="46" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="4" y="14" width="72" height="1" fill="currentColor" opacity=".2"/>{[18,28,38].map(y=><g key={y}><rect x="6" y={y} width="48" height="6" rx="1" fill="currentColor" opacity=".1"/><rect x="8" y={y+2} width="28" height="2" rx="1" fill="currentColor" opacity=".2"/></g>)}</svg>
+    ),
+    "menu-accordion-by-category": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,18,32].map((y,i)=><g key={y}><rect x="4" y={y} width="72" height="11" rx="2" fill="currentColor" opacity={i===0?".18":".1"}/><rect x="8" y={y+4} width="36" height="3" rx="1" fill="currentColor" opacity=".25"/><text x="70" y={y+9} fontSize="8" fill="currentColor" opacity=".4">{i===0?"▲":"▼"}</text>{i===0&&<><rect x="8" y="18" width="48" height="2" rx="1" fill="currentColor" opacity=".1"/><rect x="8" y="22" width="40" height="2" rx="1" fill="currentColor" opacity=".1"/></>}</g>)}</svg>
+    ),
+    // Catalog
+    "catalog-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+11} width="18" height="3" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+    "catalog-compact": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,12,20,28,36].map(y=><g key={y}><rect x="6" y={y} width="52" height="6" rx="1" fill="currentColor" opacity=".1"/><rect x="8" y={y+2} width="28" height="2" rx="1" fill="currentColor" opacity=".25"/><rect x="58" y={y+1} width="14" height="4" rx="1" fill="currentColor" opacity=".2"/></g>)}</svg>
+    ),
+    "catalog-cards": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,42].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="32" height="18" rx="3" fill="currentColor" opacity=".12" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.2"/><rect x={x} y={y} width="32" height="10" rx="3" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+12} width="22" height="2" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+    "catalog-grid-dense": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,21,38].map(y=>[4,22,40,58].map(x=><rect key={`${x}${y}`} x={x} y={y} width="16" height="15" rx="1" fill="currentColor" opacity=".15"/>))}</svg>
+    ),
+    "catalog-showcase-featured": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="44" height="32" rx="3" fill="currentColor" opacity=".2"/><rect x="4" y="4" width="44" height="12" rx="3" fill="currentColor" opacity=".1"/><text x="8" y="14" fontSize="6" fill="currentColor" opacity=".5">★ UNGGULAN</text><rect x="52" y="4" width="24" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="21" width="24" height="14" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "catalog-tabs-by-category": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".3"/><rect x="25" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="46" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="4" y="14" width="72" height="1" fill="currentColor" opacity=".2"/>{[4,28].map(y=>[4,28,52].map(x=><rect key={`${x}${y}`} x={x} y={y+16} width="22" height="14" rx="2" fill="currentColor" opacity=".12"/>))}</svg>
+    ),
+    // Contact
+    "contact-classic-split": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".08" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".2"/>{[10,19,28,37].map(y=><rect key={y} x="8" y={y} width="26" height="5" rx="1" fill="currentColor" opacity=".12"/>)}<rect x="42" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".08"/><rect x="46" y="10" width="26" height="4" rx="1" fill="currentColor" opacity=".2"/>{[16,22,28,34].map(y=><rect key={y} x="46" y={y} width="22" height="3" rx="1" fill="currentColor" opacity=".12"/>)}</svg>
+    ),
+    "contact-minimal-centered": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="20" y="6" width="40" height="6" rx="1" fill="currentColor" opacity=".25"/><rect x="24" y="16" width="14" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y="22" width="18" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y="28" width="16" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y="38" width="32" height="6" rx="2" fill="currentColor" opacity=".25"/></svg>
+    ),
+    "contact-overlay-map": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="44" rx="3" fill="currentColor" opacity=".08"/>{[[10,10],[25,25],[45,15],[60,30],[20,38]].map(([x,y])=><circle key={`${x}${y}`} cx={x} cy={y} r="2" fill="currentColor" opacity=".15"/>)}<line x1="2" y1="2" x2="76" y2="44" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".05"/><rect x="10" y="14" width="28" height="20" rx="3" fill="currentColor" opacity=".25" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".3"/><rect x="13" y="18" width="20" height="3" rx="1" fill="currentColor" opacity=".3"/><rect x="13" y="24" width="16" height="2" rx="1" fill="currentColor" opacity=".2"/></svg>
+    ),
+    "contact-bento-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="34" height="20" rx="3" fill="currentColor" opacity=".15"/><rect x="42" y="4" width="34" height="9" rx="2" fill="currentColor" opacity=".12"/><rect x="42" y="16" width="34" height="9" rx="2" fill="currentColor" opacity=".12"/><rect x="4" y="28" width="16" height="16" rx="2" fill="currentColor" opacity=".1"/><rect x="24" y="28" width="16" height="16" rx="2" fill="currentColor" opacity=".1"/><rect x="44" y="28" width="32" height="16" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "contact-dark-split": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="44" rx="3" fill="currentColor" opacity=".2"/><rect x="2" y="2" width="36" height="44" rx="3" fill="currentColor" opacity=".1"/><rect x="8" y="10" width="24" height="5" rx="1" fill="currentColor" opacity=".3"/>{[18,24,30].map(y=><rect key={y} x="8" y={y} width="20" height="3" rx="1" fill="currentColor" opacity=".2"/>)}<rect x="44" y="8" width="28" height="32" rx="2" fill="currentColor" opacity=".08" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".2"/>{[12,20,28,36].map(y=><rect key={y} x="48" y={y} width="20" height="4" rx="1" fill="currentColor" opacity=".12"/>)}</svg>
+    ),
+  };
+
+  const diagram = diagrams[id];
+  return (
+    <div className={`h-16 flex items-center justify-center ${diagram ? "bg-gradient-to-br from-primary/5 to-muted/30" : "bg-muted/20"} text-muted-foreground/60`}>
+      {diagram ?? <span className="text-[10px] font-mono opacity-40">{id}</span>}
+    </div>
+  );
+}
+
+// Mirror of SECTION_VARIANT_OPTIONS from the editor — single source of truth for admin UI
+const SECTION_VARIANT_OPTIONS: Record<string, { value: string; label: string; description: string }[]> = {
+  about: [
+    { value: "classic", label: "Klasik", description: "Teks di kiri, konten bersih tanpa gambar besar." },
+    { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar besar di kanan." },
+    { value: "stat-heavy", label: "Statistik", description: "Tampilkan angka highlight dan statistik bisnis." },
+  ],
+  benefits: [
+    { value: "grid", label: "Grid", description: "Kartu ikon tersusun grid rapi." },
+    { value: "stat-grid", label: "Grid Statistik", description: "Grid dengan angka/statistik di tiap item." },
+    { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
+  ],
+  testimonials: [
+    { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
+    { value: "compact", label: "Ringkas", description: "Avatar kecil + kutipan singkat dalam satu baris." },
+    { value: "grid", label: "Grid", description: "Semua testimoni tampil sekaligus dalam grid." },
+  ],
+  cta: [
+    { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
+    { value: "card", label: "Kartu", description: "Kotak terpusat dengan shadow dan border." },
+    { value: "centered", label: "Tengah", description: "Teks dan tombol rata tengah tanpa background." },
+  ],
+  faq: [
+    { value: "accordion", label: "Akordion", description: "Expand/collapse per item, hemat ruang." },
+    { value: "simple", label: "Sederhana", description: "Semua Q&A tampil terbuka tanpa interaksi." },
+    { value: "columns", label: "Kolom", description: "2 kolom Q&A berdampingan." },
+  ],
+  gallery: [
+    { value: "grid", label: "Grid", description: "Foto dalam kotak seragam tersusun rapi." },
+    { value: "masonry", label: "Masonry", description: "Tinggi foto bervariasi seperti Pinterest." },
+    { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
+  ],
+  menu: [
+    { value: "grid", label: "Grid", description: "Kartu produk dalam grid dengan foto." },
+    { value: "compact", label: "Ringkas", description: "List kompak nama + harga tanpa foto besar." },
+    { value: "cards", label: "Kartu", description: "Kartu besar dengan foto dan deskripsi." },
+    { value: "text-list", label: "Teks List", description: "Daftar teks minimalis, tanpa gambar." },
+    { value: "compact-list", label: "List Ringkas", description: "Baris kompak dengan thumbnail kecil." },
+    { value: "tabs-by-category", label: "Tab Kategori", description: "Tab per kategori menu di atas." },
+    { value: "accordion-by-category", label: "Akordion Kategori", description: "Tiap kategori bisa di-expand." },
+  ],
+  catalog: [
+    { value: "grid", label: "Grid", description: "Kartu produk standar dalam grid." },
+    { value: "compact", label: "Ringkas", description: "List kompak nama + harga." },
+    { value: "cards", label: "Kartu", description: "Kartu besar dengan foto dan badge." },
+    { value: "grid-dense", label: "Grid Padat", description: "Grid lebih rapat, lebih banyak produk per baris." },
+    { value: "showcase-featured", label: "Showcase Unggulan", description: "Produk berbadge ditampilkan lebih besar." },
+    { value: "tabs-by-category", label: "Tab Kategori", description: "Tab per kategori produk." },
+  ],
+  contact: [
+    { value: "classic-split", label: "Klasik Split", description: "Form kiri, info kontak kanan." },
+    { value: "minimal-centered", label: "Minimal Tengah", description: "Kontak terpusat tanpa peta." },
+    { value: "overlay-map", label: "Overlay Peta", description: "Peta penuh dengan info overlay di atas." },
+    { value: "bento-grid", label: "Bento Grid", description: "Kartu info tersusun bento." },
+    { value: "dark-split", label: "Dark Split", description: "Split gelap premium, form + kontak." },
+  ],
+};
 
 type Tab = "sections" | "pairings" | "patterns" | "presets";
 
@@ -70,85 +262,162 @@ function VisibilityBadge({ hidden }: { hidden: boolean }) {
 
 // ─── Sections Tab ─────────────────────────────────────────────────────────────
 function SectionsTab({
-  hiddenSections, requiredSections,
-  onToggleHide, onToggleRequired, onReset,
+  hiddenSections, requiredSections, hiddenVariants,
+  onToggleHide, onToggleRequired, onToggleVariant, onReset,
 }: {
   hiddenSections: Set<string>;
   requiredSections: Set<string>;
+  hiddenVariants: Record<string, string[]>;
   onToggleHide: (key: string, hide: boolean) => void;
   onToggleRequired: (key: string, required: boolean) => void;
+  onToggleVariant: (section: string, variant: string, hide: boolean) => void;
   onReset: () => void;
 }) {
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          Kelola section mana yang tersedia di editor website. Section yang disembunyikan tidak muncul di sidebar editor pengguna.
-        </p>
-        <Button variant="outline" size="sm" onClick={onReset} className="gap-1.5 shrink-0">
-          <RotateCcw className="size-3.5" /> Reset Default
-        </Button>
+    <div className="space-y-8">
+      {/* ── Section visibility ── */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Visibilitas Section</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Section yang disembunyikan tidak muncul di sidebar editor.</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={onReset} className="gap-1.5 shrink-0">
+            <RotateCcw className="size-3.5" /> Reset Default
+          </Button>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {MANAGEABLE_SECTIONS.map((key) => {
+            const meta = SECTION_META[key];
+            const isHidden = hiddenSections.has(key);
+            const isRequired = requiredSections.has(key);
+            const isOptional = OPTIONAL_SECTION_KEYS.includes(key);
+            const Icon = meta?.icon;
+            const hasVariants = !!SECTION_VARIANT_OPTIONS[key];
+            const variantCount = SECTION_VARIANT_OPTIONS[key]?.length ?? 0;
+            const hiddenVariantCount = (hiddenVariants[key] ?? []).length;
+            const isExpanded = expandedSection === key;
+
+            return (
+              <Card key={key} className={`border transition-all ${isHidden ? "opacity-50 border-border/30" : "border-border/50 hover:border-border/80"}`}>
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
+                      <div>
+                        <p className="font-semibold text-sm">{meta?.label ?? key}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground uppercase">{key}</p>
+                      </div>
+                    </div>
+                    <VisibilityBadge hidden={isHidden} />
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {isOptional && <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">Opsional</Badge>}
+                    {isRequired && (
+                      <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/40 text-amber-500 font-semibold gap-0.5">
+                        <Lock className="size-2" /> Wajib
+                      </Badge>
+                    )}
+                    {hasVariants && (
+                      <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-semibold gap-0.5 cursor-pointer hover:bg-muted/50"
+                        onClick={() => setExpandedSection(isExpanded ? null : key)}>
+                        {variantCount - hiddenVariantCount}/{variantCount} variasi aktif
+                      </Badge>
+                    )}
+                  </div>
+
+                  <Separator className="bg-border/30" />
+
+                  <div className="flex gap-2">
+                    <Button size="sm" variant={isHidden ? "default" : "outline"}
+                      className="flex-1 h-7 text-[11px] font-semibold gap-1"
+                      disabled={isRequired && !isHidden}
+                      onClick={() => onToggleHide(key, !isHidden)}>
+                      {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                    </Button>
+                    <Button size="sm" variant={isRequired ? "secondary" : "outline"}
+                      className="flex-1 h-7 text-[11px] font-semibold gap-1"
+                      onClick={() => onToggleRequired(key, !isRequired)}>
+                      {isRequired ? <><Unlock className="size-3" /> Lepas Wajib</> : <><Lock className="size-3" /> Wajibkan</>}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {MANAGEABLE_SECTIONS.map((key) => {
-          const meta = SECTION_META[key];
-          const isHidden = hiddenSections.has(key);
-          const isRequired = requiredSections.has(key);
-          const isOptional = OPTIONAL_SECTION_KEYS.includes(key);
-          const Icon = meta?.icon;
+      {/* ── Variasi Tampilan ── */}
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm font-semibold text-foreground">Variasi Tampilan</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Kelola variasi tampilan per section. Variasi yang disembunyikan tidak muncul di dropdown editor.
+          </p>
+        </div>
 
-          return (
-            <Card key={key} className={`border transition-all ${isHidden ? "opacity-50 border-border/30" : "border-border/50 hover:border-border/80"}`}>
-              <CardContent className="p-4 space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
-                    <div>
-                      <p className="font-semibold text-sm">{meta?.label ?? key}</p>
-                      <p className="text-[10px] font-mono text-muted-foreground uppercase">{key}</p>
-                    </div>
-                  </div>
-                  <VisibilityBadge hidden={isHidden} />
+        <div className="space-y-6">
+          {Object.entries(SECTION_VARIANT_OPTIONS).map(([sectionKey, variants]) => {
+            const meta = SECTION_META[sectionKey];
+            const Icon = meta?.icon;
+            const hiddenForSection = new Set(hiddenVariants[sectionKey] ?? []);
+            const activeCount = variants.filter(v => !hiddenForSection.has(v.value)).length;
+
+            return (
+              <div key={sectionKey} className="border border-border/40 rounded-xl overflow-hidden">
+                {/* Section header */}
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/20 border-b border-border/30">
+                  {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
+                  <span className="font-semibold text-sm">{meta?.label ?? sectionKey}</span>
+                  <Badge variant="secondary" className="text-[9px] h-4 px-1.5 ml-auto">
+                    {activeCount}/{variants.length} aktif
+                  </Badge>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5">
-                  {isOptional && (
-                    <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">Opsional</Badge>
-                  )}
-                  {isRequired && (
-                    <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/40 text-amber-500 font-semibold gap-0.5">
-                      <Lock className="size-2" /> Wajib
-                    </Badge>
-                  )}
-                </div>
+                {/* Variant cards */}
+                <div className="grid gap-3 p-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {variants.map((variant) => {
+                    const isHidden = hiddenForSection.has(variant.value);
+                    return (
+                      <div key={variant.value}
+                        className={`relative rounded-xl border transition-all overflow-hidden ${isHidden ? "opacity-50 border-border/20 bg-muted/10" : "border-border/40 bg-card hover:border-border/70"}`}>
+                        {/* Visual preview */}
+                        <div className={`border-b border-border/20 select-none overflow-hidden ${isHidden ? "opacity-40" : ""}`}>
+                          <VariantPreview id={`${sectionKey}-${variant.value}`} />
+                        </div>
 
-                <Separator className="bg-border/30" />
+                        <div className="p-3 space-y-2">
+                          <div className="flex items-start justify-between gap-1">
+                            <div className="min-w-0">
+                              <p className="font-semibold text-xs truncate">{variant.label}</p>
+                              <p className="text-[10px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">{variant.description}</p>
+                            </div>
+                            <VisibilityBadge hidden={isHidden} />
+                          </div>
+                          <p className="text-[9px] font-mono text-muted-foreground/60">{variant.value}</p>
 
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant={isHidden ? "default" : "outline"}
-                    className="flex-1 h-7 text-[11px] font-semibold gap-1"
-                    disabled={isRequired && !isHidden}
-                    onClick={() => onToggleHide(key, !isHidden)}
-                  >
-                    {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant={isRequired ? "secondary" : "outline"}
-                    className="flex-1 h-7 text-[11px] font-semibold gap-1"
-                    onClick={() => onToggleRequired(key, !isRequired)}
-                    title={isRequired ? "Lepas wajib (bisa disembunyikan)" : "Jadikan wajib (tidak bisa disembunyikan)"}
-                  >
-                    {isRequired ? <><Unlock className="size-3" /> Lepas Wajib</> : <><Lock className="size-3" /> Wajibkan</>}
-                  </Button>
+                          <Button
+                            size="sm"
+                            variant={isHidden ? "default" : "outline"}
+                            className="w-full h-6 text-[10px] font-semibold gap-1"
+                            onClick={() => onToggleVariant(sectionKey, variant.value, !isHidden)}
+                          >
+                            {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -650,6 +919,7 @@ export default function DesignAssetsPage() {
   const [hiddenPresets, setHiddenPresets] = useState<Set<string>>(new Set());
   const [hiddenSections, setHiddenSections] = useState<Set<string>>(new Set());
   const [requiredSections, setRequiredSections] = useState<Set<string>>(new Set(REQUIRED_SECTIONS_DEFAULT));
+  const [hiddenVariants, setHiddenVariants] = useState<Record<string, string[]>>({});
   const [customPairings, setCustomPairings] = useState<TypographyPairing[]>([]);
   const [customPatterns, setCustomPatterns] = useState<ColorPattern[]>([]);
   const [customPresets, setCustomPresets] = useState<IndustryPreset[]>([]);
@@ -666,6 +936,7 @@ export default function DesignAssetsPage() {
       setHiddenPresets(new Set(cfg.hidden_presets));
       setHiddenSections(new Set(cfg.hidden_sections));
       setRequiredSections(new Set(cfg.required_sections));
+      setHiddenVariants(cfg.hidden_variants ?? {});
       setCustomPairings(cfg.custom_pairings ?? []);
       setCustomPatterns(cfg.custom_patterns ?? []);
       setCustomPresets(cfg.custom_presets ?? []);
@@ -681,6 +952,7 @@ export default function DesignAssetsPage() {
     setHiddenPresets(new Set(next.hidden_presets));
     setHiddenSections(new Set(next.hidden_sections));
     setRequiredSections(new Set(next.required_sections));
+    setHiddenVariants(next.hidden_variants ?? {});
     setCustomPairings(next.custom_pairings ?? []);
     setCustomPatterns(next.custom_patterns ?? []);
     setCustomPresets(next.custom_presets ?? []);
@@ -748,12 +1020,13 @@ export default function DesignAssetsPage() {
             try {
               const cfg = authToken
                 ? await resetDesignAssetsConfig(authToken)
-                : (() => { updateCache({ hidden_pairings: [], hidden_patterns: [], hidden_presets: [], hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, custom_pairings: [], custom_patterns: [], custom_presets: [] }); return loadConfig(); })();
+                : (() => { updateCache({ hidden_pairings: [], hidden_patterns: [], hidden_presets: [], hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {}, custom_pairings: [], custom_patterns: [], custom_presets: [] }); return loadConfig(); })();
               setHiddenPairings(new Set(cfg.hidden_pairings));
               setHiddenPatterns(new Set(cfg.hidden_patterns));
               setHiddenPresets(new Set(cfg.hidden_presets));
               setHiddenSections(new Set(cfg.hidden_sections));
               setRequiredSections(new Set(cfg.required_sections));
+              setHiddenVariants(cfg.hidden_variants ?? {});
               setCustomPairings(cfg.custom_pairings ?? []);
               setCustomPatterns(cfg.custom_patterns ?? []);
               setCustomPresets(cfg.custom_presets ?? []);
@@ -796,6 +1069,7 @@ export default function DesignAssetsPage() {
         <SectionsTab
           hiddenSections={hiddenSections}
           requiredSections={requiredSections}
+          hiddenVariants={hiddenVariants}
           onToggleHide={(key, hide) => {
             if (hide && requiredSections.has(key)) {
               pushToast(`Section "${key}" wajib aktif dan tidak bisa disembunyikan.`, "error");
@@ -819,8 +1093,22 @@ export default function DesignAssetsPage() {
             });
             pushToast(required ? `Section "${key}" dijadikan wajib.` : `Section "${key}" bisa disembunyikan.`, "success");
           }}
+          onToggleVariant={(section, variant, hide) => {
+            syncAndPersist((cfg) => {
+              const current = new Set((cfg.hidden_variants ?? {})[section] ?? []);
+              hide ? current.add(variant) : current.delete(variant);
+              return {
+                ...cfg,
+                hidden_variants: { ...(cfg.hidden_variants ?? {}), [section]: Array.from(current) },
+              };
+            });
+            pushToast(
+              hide ? `Variasi "${variant}" pada "${section}" disembunyikan.` : `Variasi "${variant}" pada "${section}" ditampilkan.`,
+              "success"
+            );
+          }}
           onReset={() => {
-            syncAndPersist((cfg) => ({ ...cfg, hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT }));
+            syncAndPersist((cfg) => ({ ...cfg, hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {} }));
             pushToast("Pengaturan sections direset.", "success");
           }}
         />

@@ -66,6 +66,8 @@ export interface DesignAssetsConfig {
   hidden_presets: string[];
   hidden_sections: string[];
   required_sections: string[];
+  /** hidden_variants: { "about": ["stat-heavy"], "contact": ["dark-split"] } */
+  hidden_variants: Record<string, string[]>;
   custom_pairings: TypographyPairing[];
   custom_patterns: ColorPattern[];
   custom_presets: IndustryPreset[];
@@ -130,6 +132,7 @@ const DEFAULT_CONFIG: DesignAssetsConfig = {
   hidden_presets: [],
   hidden_sections: [],
   required_sections: REQUIRED_SECTIONS_DEFAULT,
+  hidden_variants: {},
   custom_pairings: [],
   custom_patterns: [],
   custom_presets: [],
@@ -295,4 +298,19 @@ export function getHiddenSections(): string[] {
 
 export function getRequiredSections(): string[] {
   return loadConfig().required_sections;
+}
+
+/**
+ * Returns the list of enabled variant values for a given section key.
+ * E.g. getEnabledVariants("about") → ["classic", "split-image"] (if "stat-heavy" is hidden)
+ * Returns null if no variants are configured for this section (caller should show all).
+ */
+export function getEnabledVariants(sectionKey: string, allVariants: string[]): string[] {
+  const cfg = loadConfig();
+  const hidden = new Set((cfg.hidden_variants ?? {})[sectionKey] ?? []);
+  return allVariants.filter((v) => !hidden.has(v));
+}
+
+export function getHiddenVariants(): Record<string, string[]> {
+  return loadConfig().hidden_variants ?? {};
 }

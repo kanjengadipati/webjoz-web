@@ -89,6 +89,7 @@ import {
  getEnabledColorPatterns,
  getEnabledIndustryPresets,
  getHiddenSections,
+ getEnabledVariants,
 } from "@/lib/design-assets-config";
 
 function TypographyPairingPicker({
@@ -1447,11 +1448,18 @@ export default function SiteEditorPage() {
       { value: "grid", label: "Grid" },
       { value: "compact", label: "Ringkas" },
       { value: "cards", label: "Kartu" },
+      { value: "text-list", label: "Teks List" },
+      { value: "compact-list", label: "List Ringkas" },
+      { value: "tabs-by-category", label: "Tab Kategori" },
+      { value: "accordion-by-category", label: "Akordion Kategori" },
     ],
     catalog: [
       { value: "grid", label: "Grid" },
       { value: "compact", label: "Ringkas" },
       { value: "cards", label: "Kartu" },
+      { value: "grid-dense", label: "Grid Padat" },
+      { value: "showcase-featured", label: "Showcase Unggulan" },
+      { value: "tabs-by-category", label: "Tab Kategori" },
     ],
     contact: [
       { value: "classic-split", label: "Klasik Split" },
@@ -2365,20 +2373,25 @@ export default function SiteEditorPage() {
                   />
 
                   {/* Variasi tampilan per section */}
-                  {SECTION_VARIANT_OPTIONS[activeTab] && (
-                    <div className="pt-3 border-t border-white/10 space-y-1.5">
-                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
-                      <select
-                        value={designToken?.layout?.section_variants?.[activeTab] || SECTION_VARIANT_OPTIONS[activeTab][0].value}
-                        onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
-                        className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
-                      >
-                        {SECTION_VARIANT_OPTIONS[activeTab].map((opt) => (
-                          <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
+                    const allVars = SECTION_VARIANT_OPTIONS[activeTab];
+                    const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
+                    if (enabledOpts.length <= 1) return null;
+                    return (
+                      <div className="pt-3 border-t border-white/10 space-y-1.5">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
+                        <select
+                          value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
+                          onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
+                          className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                        >
+                          {enabledOpts.map((opt) => (
+                            <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })()}
 
                 </div>
 
@@ -3038,20 +3051,25 @@ export default function SiteEditorPage() {
                   siteId={siteId}
                 />
                 {/* Variasi tampilan per section */}
-                {SECTION_VARIANT_OPTIONS[activeTab] && (
-                  <div className="pt-3 border-t border-white/10 space-y-1.5">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
-                    <select
-                      value={designToken?.layout?.section_variants?.[activeTab] || SECTION_VARIANT_OPTIONS[activeTab][0].value}
-                      onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
-                    >
-                      {SECTION_VARIANT_OPTIONS[activeTab].map((opt) => (
-                        <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+                {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
+                  const allVars = SECTION_VARIANT_OPTIONS[activeTab];
+                  const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
+                  if (enabledOpts.length <= 1) return null;
+                  return (
+                    <div className="pt-3 border-t border-white/10 space-y-1.5">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
+                      <select
+                        value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
+                        onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
+                        className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                      >
+                        {enabledOpts.map((opt) => (
+                          <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })()}
                 </>
               ) : (
                 <div className="space-y-3 pb-2">
