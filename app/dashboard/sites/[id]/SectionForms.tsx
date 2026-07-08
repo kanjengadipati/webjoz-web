@@ -522,7 +522,7 @@ export default function SectionForms({
   // Auto-initialize floating_button default when user opens the floating tab
   React.useEffect(() => {
     if (activeTab === "floating" && designToken?.layout?.floating_button === undefined) {
-      updateDesignTokenLayout?.("floating_button", "contact_link");
+      updateDesignTokenLayout?.("floating_button", "whatsapp");
     }
   }, [activeTab]);
   const businessType = content?.header?.brand_name ? "" : "";
@@ -2044,7 +2044,7 @@ export default function SectionForms({
                 { value: "chat_bubble",  label: "Chat Bubble", icon: "✨",    desc: "Widget chat interaktif" },
                 { value: "contact_link", label: "Link Kontak", icon: "📋", desc: "Scroll ke section Kontak" },
               ] as const).map((opt) => {
-                const current = designToken?.layout?.floating_button ?? "contact_link";
+                const current = designToken?.layout?.floating_button ?? "whatsapp";
                 const isActive = current === opt.value;
                 const isProGated = opt.value === "chat_bubble" && !isPremium;
                 return (
