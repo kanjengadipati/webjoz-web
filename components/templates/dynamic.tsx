@@ -108,7 +108,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ hero: h, dt }} render={(data) => {
               const { hero: hh, dt: dd } = data;
-              return <HeroSection hero={hh} design_token={dd} />;
+              return <HeroSection hero={hh} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -119,7 +119,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ about: a, dt }} render={(data) => {
               const { about: aa } = data;
-              return <AboutSectionInner about={aa} />;
+              return <AboutSectionInner about={aa} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -130,7 +130,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ benefits: b, dt }} render={(data) => {
               const { benefits: bb } = data;
-              return <BenefitsSectionInner benefits={bb} />;
+              return <BenefitsSectionInner benefits={bb} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -141,7 +141,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ faq: f, dt }} render={(data) => {
               const { faq: ff } = data;
-              return <FaqSectionInner faq={ff} />;
+              return <FaqSectionInner faq={ff} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -152,7 +152,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ cta: c, dt }} render={(data) => {
               const { cta: cc } = data;
-              return <CtaSectionInner cta={cc} />;
+              return <CtaSectionInner cta={cc} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -163,7 +163,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, dt }} render={(data) => {
               const { contact: cc, onSubmitLead: osl, leadSubmitting: ls, leadSuccess: lsc, leadError: le } = data;
-              return <ContactSectionInner contact={cc} onSubmitLead={osl} leadSubmitting={ls} leadSuccess={lsc} leadError={le} />;
+              return <ContactSectionInner contact={cc} design_token={dt} onSubmitLead={osl} leadSubmitting={ls} leadSuccess={lsc} leadError={le} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -174,7 +174,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ testimonials: t, dt }} render={(data) => {
               const { testimonials: tt } = data;
-              return <TestimonialsSectionInner testimonials={tt} />;
+              return <TestimonialsSectionInner testimonials={tt} design_token={dt} />;
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -184,7 +184,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         return (
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={m} render={(menuData) => (
-              <MenuSectionInner menu={menuData} />
+              <MenuSectionInner menu={menuData} design_token={dt} />
             )} />
           </MemoPreviewSectionWrapper>
         );
@@ -194,7 +194,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         return (
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={c} render={(catalogData) => (
-              <CatalogSectionInner catalog={catalogData} />
+              <CatalogSectionInner catalog={catalogData} design_token={dt} />
             )} />
           </MemoPreviewSectionWrapper>
         );
