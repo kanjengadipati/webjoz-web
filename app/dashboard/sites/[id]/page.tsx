@@ -2965,9 +2965,7 @@ export default function SiteEditorPage() {
               </div>
             ) : (
               /* Desktop: full width, no padding — site fills the canvas edge-to-edge */
-              <div className="w-full overflow-hidden relative"
-                style={{ minHeight: "100%" }}
-              >
+              <div className="w-full overflow-hidden">
                 <TemplateComponent
                   content={content}
                   design_token={designToken ?? null}

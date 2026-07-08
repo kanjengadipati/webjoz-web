@@ -303,7 +303,7 @@ const WAFloatingButton: React.FC<{
         href={isEditorMode ? "#" : "#contact"}
         onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
         aria-label="Hubungi Kami"
-        className={`${isEditorMode ? "absolute" : "fixed"} bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none`}
+        className="fixed bottom-24 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
         style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-primary-foreground, #fff)" }}
       >
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
@@ -320,7 +320,7 @@ const WAFloatingButton: React.FC<{
         <div
           aria-label="Chat via WhatsApp (nomor belum diisi)"
           title="Isi nomor WhatsApp di editor untuk mengaktifkan tombol ini"
-          className={`${isEditorMode ? "absolute" : "fixed"} bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full cursor-not-allowed select-none`}
+          className="fixed bottom-24 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full cursor-not-allowed select-none"
           style={{ background: "#25D366", opacity: 0.35, filter: "grayscale(30%)" }}
         >
           <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
@@ -341,7 +341,7 @@ const WAFloatingButton: React.FC<{
         rel="noopener noreferrer"
         onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
         aria-label="Chat via WhatsApp"
-        className={`${isEditorMode ? "absolute" : "fixed"} bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2`}
+        className="fixed bottom-24 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
         style={{ background: "#25D366" }}
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
@@ -365,7 +365,7 @@ const WAFloatingButton: React.FC<{
 
   return (
     <>
-      <div className={`${isEditorMode ? "absolute" : "fixed"} bottom-6 right-6 z-[9999] flex flex-col items-end`}>
+      <div className="fixed bottom-24 right-6 z-[9999] flex flex-col items-end">
         {/* Chat Window Panel */}
         {isWidgetOpen && (
           <div
