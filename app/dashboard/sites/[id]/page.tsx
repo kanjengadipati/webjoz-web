@@ -2539,6 +2539,10 @@ export default function SiteEditorPage() {
         <div
           className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${mobileView === "preview" ? "translate-x-0" : "translate-x-full"
             }`}
+          style={{
+            // Floating button clears the mobile bottom sheet drawer
+            "--floating-bottom-mobile": sheetCollapsed ? "3.5rem" : sheetExpanded ? "90vh" : "50vh",
+          } as React.CSSProperties}
         >
           {/* Mobile topbar */}
           <div className="flex md:hidden h-[52px] flex-shrink-0 items-center gap-2.5 border-b border-white/10 bg-[#111318] px-3 pt-2">
