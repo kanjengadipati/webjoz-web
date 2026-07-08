@@ -303,13 +303,12 @@ const WAFloatingButton: React.FC<{
         href={isEditorMode ? "#" : "#contact"}
         onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
         aria-label="Hubungi Kami"
-        className="fixed bottom-6 right-6 z-[150] flex items-center gap-2 px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm font-semibold"
+        className="fixed bottom-6 right-6 z-[150] flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
         style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-primary-foreground, #fff)" }}
       >
-        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
         </svg>
-        Kontak Kami
       </a>
     );
   }
