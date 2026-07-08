@@ -2364,6 +2364,22 @@ export default function SiteEditorPage() {
                     siteId={siteId}
                   />
 
+                  {/* Variasi tampilan per section */}
+                  {SECTION_VARIANT_OPTIONS[activeTab] && (
+                    <div className="pt-3 border-t border-white/10 space-y-1.5">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
+                      <select
+                        value={designToken?.layout?.section_variants?.[activeTab] || SECTION_VARIANT_OPTIONS[activeTab][0].value}
+                        onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
+                        className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                      >
+                        {SECTION_VARIANT_OPTIONS[activeTab].map((opt) => (
+                          <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
                 </div>
 
                 {/* ── AI Prompt bar inside field panel ── */}
@@ -3010,6 +3026,7 @@ export default function SiteEditorPage() {
             {/* Form scrollable area */}
             <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-2.5 scrollbar-none">
               {editorTab === "content" ? (
+                <>
                 <SectionForms
                   activeTab={activeTab}
                   content={content}
@@ -3020,6 +3037,22 @@ export default function SiteEditorPage() {
                   activeTenantId={activeTenantId}
                   siteId={siteId}
                 />
+                {/* Variasi tampilan per section */}
+                {SECTION_VARIANT_OPTIONS[activeTab] && (
+                  <div className="pt-3 border-t border-white/10 space-y-1.5">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
+                    <select
+                      value={designToken?.layout?.section_variants?.[activeTab] || SECTION_VARIANT_OPTIONS[activeTab][0].value}
+                      onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                    >
+                      {SECTION_VARIANT_OPTIONS[activeTab].map((opt) => (
+                        <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                </>
               ) : (
                 <div className="space-y-3 pb-2">
                   {/* Palette */}
@@ -3095,21 +3128,6 @@ export default function SiteEditorPage() {
                     <option value="minimal" className="bg-[#111318]">Hero: Minimalist</option>
                   </select>
                 <div className="border-t border-white/10 my-2" />
-                <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Seksi</p>
-                {Object.keys(SECTION_VARIANT_OPTIONS).map((section) => {
-                  const options = SECTION_VARIANT_OPTIONS[section];
-                  return (
-                    <select key={section}
-                      value={designToken?.layout?.section_variants?.[section] || options[0].value}
-                      onChange={(e) => updateSectionVariant(section, e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
-                    >
-                      {options.map((opt) => (
-                        <option key={opt.value} value={opt.value} className="bg-[#111318]">{SECTION_META[section]?.label || section}: {opt.label}</option>
-                      ))}
-                    </select>
-                  );
-                })}
                 </div>
               )}
             </div>
@@ -3150,29 +3168,7 @@ export default function SiteEditorPage() {
               </div>
             </div>
           </div>
-                    </div>
-
-                    <div className="border-t border-white/10 my-2" />
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Variasi Seksi</p>
-                    {Object.keys(SECTION_VARIANT_OPTIONS).map((section) => {
-                      const options = SECTION_VARIANT_OPTIONS[section];
-                      return (
-                        <div key={section} className="space-y-1">
-                          <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{SECTION_META[section]?.label || section}</label>
-                          <select
-                            value={designToken?.layout?.section_variants?.[section] || options[0].value}
-                            onChange={(e) => updateSectionVariant(section, e.target.value)}
-                            className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
-                          >
-                            {options.map((opt) => (
-                              <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
-                            ))}
-                          </select>
-                        </div>
-                      );
-                    })}
-
-                  </div>
+        </div>
       {/* Desktop floating publish / apply button — placed outside any transformed container so fixed works */}
       {siteDetails?.status === "published" ? (
         <button
@@ -3222,6 +3218,7 @@ export default function SiteEditorPage() {
           }}
         />
       )}
+      </div>
     </div>
   );
 }
