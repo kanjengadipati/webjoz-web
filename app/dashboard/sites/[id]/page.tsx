@@ -2842,7 +2842,7 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-0"
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
               // Collapse sheet when user taps the preview area on mobile
               const target = e.target as HTMLElement;
@@ -3240,38 +3240,50 @@ export default function SiteEditorPage() {
               </div>
             </div>
           </div>
-        </div>
-      {/* Desktop floating publish / apply button — placed outside any transformed container so fixed works */}
-      {siteDetails?.status === "published" ? (
-        <button
-          type="button"
-          onClick={() => setConfirmPublishOpen(true)}
-          disabled={publishing}
-          className="hidden md:flex fixed bottom-6 right-6 z-50 items-center gap-2.5 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95 disabled:opacity-70"
-          style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-        >
-          {publishing ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+        {/* Desktop sticky publish footer — inside canvas */}
+        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-3">
+          <div className="flex items-center gap-2 text-[11px] text-slate-500">
+            {siteDetails?.status === "published" ? (
+              <>
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                </span>
+                <span className="text-emerald-400 font-medium">Website sedang live</span>
+              </>
+            ) : (
+              <span>Draft — belum dipublikasikan</span>
+            )}
+          </div>
+          {siteDetails?.status === "published" ? (
+            <button
+              type="button"
+              onClick={() => setConfirmPublishOpen(true)}
+              disabled={publishing}
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
+              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+            >
+              {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                </span>
+              )}
+              {publishing ? "Menerapkan..." : "Terapkan ke Live"}
+            </button>
           ) : (
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-            </span>
+            <button
+              type="button"
+              onClick={() => setPublishModalOpen(true)}
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
+              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+            >
+              <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+              Publikasikan Website
+            </button>
           )}
-          {publishing ? "Menerapkan..." : "Terapkan ke Live"}
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setPublishModalOpen(true)}
-          className="hidden md:flex fixed bottom-6 right-6 z-50 items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold text-primary-foreground shadow-[0_14px_35px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-          style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-        >
-          <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-          Publikasikan Website
-        </button>
-      )}
-
+        </div>
+        </div>
       {publishModalOpen && siteDetails && (
         <PublishModal
           site={siteDetails}
