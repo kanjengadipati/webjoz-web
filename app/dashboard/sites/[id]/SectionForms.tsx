@@ -4,6 +4,16 @@ import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
 import { isPlaceholderValue } from "./editor-utils";
 import { request } from "@/lib/api/client";
+import { getEnabledMapTiles } from "@/lib/design-assets-config";
+
+const ALL_MAP_TILES = [
+  { key: "default", label: "OSM" },
+  { key: "cyclosm", label: "CyclOSM" },
+  { key: "light", label: "Terang" },
+  { key: "dark", label: "Gelap" },
+  { key: "esri", label: "Esri" },
+  { key: "satelit", label: "Satelit" },
+];
 
 export interface SectionFormsProps {
   activeTab: string;
@@ -1309,7 +1319,9 @@ export default function SectionForms({
           <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
             <div className="flex gap-1">
-              {[{ key: "default", label: "OSM" }, { key: "cyclosm", label: "CyclOSM" }, { key: "light", label: "Terang" }, { key: "dark", label: "Gelap" }, { key: "esri", label: "Esri" }, { key: "satelit", label: "Satelit" }].map((opt) => (
+              {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
+                const opt = ALL_MAP_TILES.find(o => o.key === key)!;
+                return (
                 <button
                   key={opt.key}
                   onClick={() => updateField("contact", "map_tile_style", opt.key)}
@@ -1321,7 +1333,8 @@ export default function SectionForms({
                 >
                   {opt.label}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
           <div className="space-y-1">

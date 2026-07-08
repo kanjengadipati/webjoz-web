@@ -262,15 +262,17 @@ function VisibilityBadge({ hidden }: { hidden: boolean }) {
 
 // ─── Sections Tab ─────────────────────────────────────────────────────────────
 function SectionsTab({
-  hiddenSections, requiredSections, hiddenVariants,
-  onToggleHide, onToggleRequired, onToggleVariant, onReset,
+  hiddenSections, requiredSections, hiddenVariants, hiddenMapTiles,
+  onToggleHide, onToggleRequired, onToggleVariant, onToggleMapTile, onReset,
 }: {
   hiddenSections: Set<string>;
   requiredSections: Set<string>;
   hiddenVariants: Record<string, string[]>;
+  hiddenMapTiles: string[];
   onToggleHide: (key: string, hide: boolean) => void;
   onToggleRequired: (key: string, required: boolean) => void;
   onToggleVariant: (section: string, variant: string, hide: boolean) => void;
+  onToggleMapTile: (tile: string, hide: boolean) => void;
   onReset: () => void;
 }) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
@@ -418,6 +420,75 @@ function SectionsTab({
             );
           })}
         </div>
+      </div>
+
+      {/* ── Gaya Peta (Map Tiles) ── */}
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm font-semibold text-foreground">Gaya Peta</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Kelola pilihan gaya peta yang muncul di editor section Kontak.
+          </p>
+        </div>
+
+        {(() => {
+          const ALL_TILES = [
+            { key: "default",  label: "OSM",      description: "OpenStreetMap standar, detail dan gratis.", bg: "#e8f4f8", accent: "#3b82f6" },
+            { key: "cyclosm",  label: "CyclOSM",  description: "OSM dengan jalur sepeda, warna lebih cerah.", bg: "#f0f9ef", accent: "#22c55e" },
+            { key: "light",    label: "Terang",   description: "Peta minimalis terang dari CartoCDN.", bg: "#fafafa", accent: "#94a3b8" },
+            { key: "dark",     label: "Gelap",    description: "Peta gelap elegan dari CartoCDN.", bg: "#1e293b", accent: "#94a3b8" },
+            { key: "esri",     label: "Esri",     description: "Peta jalan bergaya Esri / ArcGIS.", bg: "#fff8f0", accent: "#f97316" },
+            { key: "satelit",  label: "Satelit",  description: "Citra satelit dari Esri World Imagery.", bg: "#0f172a", accent: "#10b981" },
+          ];
+          const hiddenSet = new Set(hiddenMapTiles);
+          return (
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {ALL_TILES.map((tile) => {
+                const isHidden = hiddenSet.has(tile.key);
+                return (
+                  <div key={tile.key}
+                    className={`rounded-xl border overflow-hidden transition-all ${isHidden ? "opacity-50 border-border/20" : "border-border/40 hover:border-border/70"}`}>
+                    {/* Visual map preview */}
+                    <div className="h-20 relative overflow-hidden border-b border-border/20" style={{ background: tile.bg }}>
+                      <svg viewBox="0 0 120 60" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+                        <line x1="0" y1="20" x2="120" y2="22" stroke={tile.accent} strokeWidth="2" strokeOpacity="0.25"/>
+                        <line x1="0" y1="40" x2="120" y2="38" stroke={tile.accent} strokeWidth="1" strokeOpacity="0.15"/>
+                        <line x1="30" y1="0" x2="28" y2="60" stroke={tile.accent} strokeWidth="2" strokeOpacity="0.2"/>
+                        <line x1="75" y1="0" x2="77" y2="60" stroke={tile.accent} strokeWidth="1.5" strokeOpacity="0.15"/>
+                        <rect x="33" y="5" width="40" height="12" rx="1" fill={tile.accent} fillOpacity="0.08"/>
+                        <rect x="33" y="26" width="40" height="9" rx="1" fill={tile.accent} fillOpacity="0.06"/>
+                        <rect x="80" y="5" width="16" height="30" rx="1" fill={tile.accent} fillOpacity="0.07"/>
+                        <rect x="5" y="25" width="20" height="18" rx="1" fill={tile.accent} fillOpacity="0.07"/>
+                        <circle cx="55" cy="28" r="5" fill={tile.accent} fillOpacity="0.9"/>
+                        <circle cx="55" cy="28" r="2.5" fill="white" fillOpacity="0.9"/>
+                        <line x1="55" y1="33" x2="55" y2="40" stroke={tile.accent} strokeWidth="1.5" strokeOpacity="0.7"/>
+                      </svg>
+                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ background: tile.accent + "33", color: tile.accent, border: `1px solid ${tile.accent}44` }}>
+                        {tile.label}
+                      </span>
+                    </div>
+                    <div className="p-3 space-y-2">
+                      <div className="flex items-start justify-between gap-1">
+                        <div>
+                          <p className="font-semibold text-xs">{tile.label}</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2">{tile.description}</p>
+                        </div>
+                        <VisibilityBadge hidden={isHidden} />
+                      </div>
+                      <p className="text-[9px] font-mono text-muted-foreground/50">{tile.key}</p>
+                      <Button size="sm" variant={isHidden ? "default" : "outline"}
+                        className="w-full h-6 text-[10px] font-semibold gap-1"
+                        onClick={() => onToggleMapTile(tile.key, !isHidden)}>
+                        {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -920,6 +991,7 @@ export default function DesignAssetsPage() {
   const [hiddenSections, setHiddenSections] = useState<Set<string>>(new Set());
   const [requiredSections, setRequiredSections] = useState<Set<string>>(new Set(REQUIRED_SECTIONS_DEFAULT));
   const [hiddenVariants, setHiddenVariants] = useState<Record<string, string[]>>({});
+  const [hiddenMapTiles, setHiddenMapTiles] = useState<string[]>([]);
   const [customPairings, setCustomPairings] = useState<TypographyPairing[]>([]);
   const [customPatterns, setCustomPatterns] = useState<ColorPattern[]>([]);
   const [customPresets, setCustomPresets] = useState<IndustryPreset[]>([]);
@@ -937,6 +1009,7 @@ export default function DesignAssetsPage() {
       setHiddenSections(new Set(cfg.hidden_sections));
       setRequiredSections(new Set(cfg.required_sections));
       setHiddenVariants(cfg.hidden_variants ?? {});
+      setHiddenMapTiles(cfg.hidden_map_tiles ?? []);
       setCustomPairings(cfg.custom_pairings ?? []);
       setCustomPatterns(cfg.custom_patterns ?? []);
       setCustomPresets(cfg.custom_presets ?? []);
@@ -953,6 +1026,7 @@ export default function DesignAssetsPage() {
     setHiddenSections(new Set(next.hidden_sections));
     setRequiredSections(new Set(next.required_sections));
     setHiddenVariants(next.hidden_variants ?? {});
+    setHiddenMapTiles(next.hidden_map_tiles ?? []);
     setCustomPairings(next.custom_pairings ?? []);
     setCustomPatterns(next.custom_patterns ?? []);
     setCustomPresets(next.custom_presets ?? []);
@@ -1020,13 +1094,14 @@ export default function DesignAssetsPage() {
             try {
               const cfg = authToken
                 ? await resetDesignAssetsConfig(authToken)
-                : (() => { updateCache({ hidden_pairings: [], hidden_patterns: [], hidden_presets: [], hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {}, custom_pairings: [], custom_patterns: [], custom_presets: [] }); return loadConfig(); })();
+                : (() => { updateCache({ hidden_pairings: [], hidden_patterns: [], hidden_presets: [], hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {}, hidden_map_tiles: [], custom_pairings: [], custom_patterns: [], custom_presets: [] }); return loadConfig(); })();
               setHiddenPairings(new Set(cfg.hidden_pairings));
               setHiddenPatterns(new Set(cfg.hidden_patterns));
               setHiddenPresets(new Set(cfg.hidden_presets));
               setHiddenSections(new Set(cfg.hidden_sections));
               setRequiredSections(new Set(cfg.required_sections));
               setHiddenVariants(cfg.hidden_variants ?? {});
+              setHiddenMapTiles(cfg.hidden_map_tiles ?? []);
               setCustomPairings(cfg.custom_pairings ?? []);
               setCustomPatterns(cfg.custom_patterns ?? []);
               setCustomPresets(cfg.custom_presets ?? []);
@@ -1070,8 +1145,7 @@ export default function DesignAssetsPage() {
           hiddenSections={hiddenSections}
           requiredSections={requiredSections}
           hiddenVariants={hiddenVariants}
-          onToggleHide={(key, hide) => {
-            if (hide && requiredSections.has(key)) {
+          onToggleHide={(key, hide) => {            if (hide && requiredSections.has(key)) {
               pushToast(`Section "${key}" wajib aktif dan tidak bisa disembunyikan.`, "error");
               return;
             }
@@ -1108,8 +1182,17 @@ export default function DesignAssetsPage() {
             );
           }}
           onReset={() => {
-            syncAndPersist((cfg) => ({ ...cfg, hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {} }));
+            syncAndPersist((cfg) => ({ ...cfg, hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {}, hidden_map_tiles: [] }));
             pushToast("Pengaturan sections direset.", "success");
+          }}
+          hiddenMapTiles={hiddenMapTiles}
+          onToggleMapTile={(tile, hide) => {
+            syncAndPersist((cfg) => {
+              const s = new Set(cfg.hidden_map_tiles ?? []);
+              hide ? s.add(tile) : s.delete(tile);
+              return { ...cfg, hidden_map_tiles: Array.from(s) };
+            });
+            pushToast(hide ? `Gaya peta "${tile}" disembunyikan.` : `Gaya peta "${tile}" ditampilkan.`, "success");
           }}
         />
       )}

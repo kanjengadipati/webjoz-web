@@ -68,6 +68,8 @@ export interface DesignAssetsConfig {
   required_sections: string[];
   /** hidden_variants: { "about": ["stat-heavy"], "contact": ["dark-split"] } */
   hidden_variants: Record<string, string[]>;
+  /** hidden_map_tiles: tile style keys hidden from the Gaya Peta selector */
+  hidden_map_tiles: string[];
   custom_pairings: TypographyPairing[];
   custom_patterns: ColorPattern[];
   custom_presets: IndustryPreset[];
@@ -133,6 +135,7 @@ const DEFAULT_CONFIG: DesignAssetsConfig = {
   hidden_sections: [],
   required_sections: REQUIRED_SECTIONS_DEFAULT,
   hidden_variants: {},
+  hidden_map_tiles: [],
   custom_pairings: [],
   custom_patterns: [],
   custom_presets: [],
@@ -313,4 +316,13 @@ export function getEnabledVariants(sectionKey: string, allVariants: string[]): s
 
 export function getHiddenVariants(): Record<string, string[]> {
   return loadConfig().hidden_variants ?? {};
+}
+
+export function getEnabledMapTiles(allTiles: string[]): string[] {
+  const hidden = new Set(loadConfig().hidden_map_tiles ?? []);
+  return allTiles.filter((t) => !hidden.has(t));
+}
+
+export function getHiddenMapTiles(): string[] {
+  return loadConfig().hidden_map_tiles ?? [];
 }
