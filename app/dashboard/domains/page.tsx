@@ -40,7 +40,8 @@ export default function DomainsPage() {
   const token         = useAuthToken();
   const router        = useRouter();
   const { pushToast } = useToast();
-  const { activeTenantId } = useActiveTenant();
+  const { activeTenantId, activeTenant } = useActiveTenant();
+  const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const [domains,       setDomains]       = useState<Domain[]>([]);
   const [sites,         setSites]         = useState<Site[]>([]);
@@ -112,8 +113,12 @@ export default function DomainsPage() {
       pushToast("Format domain tidak valid. Contoh: domainanda.com", "error");
       return;
     }
-    // Show upselling modal before linking
-    setShowUpsellModal(true);
+    // Show upselling modal before linking (only for free users)
+    if (isPremium) {
+      await proceedAddDomain(trimmed);
+    } else {
+      setShowUpsellModal(true);
+    }
   };
 
   const handleVerify = async (id: number) => {
