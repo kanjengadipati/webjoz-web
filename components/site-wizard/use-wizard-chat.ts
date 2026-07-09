@@ -25,6 +25,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
+  const [mood, setMood] = useState("");
 
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
@@ -42,9 +43,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const descriptionRef = useRef(description);
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
+  const moodRef = useRef(mood);
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => { businessNameRef.current = businessName; }, [businessName]);
+  useEffect(() => { moodRef.current = mood; }, [mood]);
 
   // Cancel any active typing animation on unmount
   useEffect(() => {
@@ -153,12 +156,35 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
+    ]);
+
+    setChatStage("mood");
+    setTimeout(() => {
+      typeMessage("Pilih suasana (mood) yang cocok untuk website Anda:", () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
+        ]);
+      });
+    }, 500);
+  };
+
+  const handleSelectMood = (
+    selectedMood: string,
+    onGenerate: (name: string, type: string, overrides: any) => void
+  ) => {
+    setMood(selectedMood);
+    setInputValue("");
+
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString(), sender: "user", text: selectedMood },
       { id: `ai-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
     ]);
 
     setChatStage("done");
 
-    onGenerate(businessName, businessType, { businessSubType: subType });
+    onGenerate(businessName, businessType, { businessSubType, mood: selectedMood });
   };
 
   const handleConfirmInference = (
@@ -172,10 +198,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       const subType = inferenceResult.subType;
       setMessages((prev) => [
         ...prev,
-        { id: `ai-done-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
+        { id: `ai-mood-${Date.now()}`, sender: "ai", text: "Pilih suasana (mood) yang cocok untuk website Anda:" },
       ]);
-      setChatStage("done");
-      onGenerate(businessName, inferenceResult.type, { businessSubType: subType, description: descriptionRef.current });
+      setChatStage("mood");
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
+        ]);
+      }, 500);
     } else {
       const inferredType = inferenceResult?.type || "";
       if (inferredType) setBusinessType(inferredType);
@@ -242,12 +273,17 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setTimeout(() => {
         typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
           if (prefill?.businessType && prefill?.businessSubType) {
-            setChatStage("done");
+            setChatStage("mood");
             setMessages((prev) => [
               ...prev,
-              { id: `ai-prefill-${Date.now()}`, sender: "ai", text: `Baik, kita pakai ${prefill.businessSubType} ya. AI sedang menyiapkan website Anda...` },
+              { id: `ai-mood-${Date.now()}`, sender: "ai", text: "Pilih suasana (mood) yang cocok untuk website Anda:" },
             ]);
-            onGenerate(capitalized, prefill.businessType, { businessSubType: prefill.businessSubType });
+            setTimeout(() => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
+              ]);
+            }, 500);
           } else {
             setMessages((prev) => [
               ...prev,
@@ -339,6 +375,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     description?: string;
     whatsapp?: string;
     serviceArea?: string;
+    mood?: string;
   }) => {
     if (overrides.businessName !== undefined) businessNameRef.current = overrides.businessName;
     if (overrides.businessType !== undefined) businessTypeRef.current = overrides.businessType;
@@ -346,6 +383,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (overrides.description !== undefined) descriptionRef.current = overrides.description;
     if (overrides.whatsapp !== undefined) whatsappRef.current = overrides.whatsapp;
     if (overrides.serviceArea !== undefined) serviceAreaRef.current = overrides.serviceArea;
+    if (overrides.mood !== undefined) moodRef.current = overrides.mood;
   };
 
   return {
@@ -369,6 +407,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setWhatsapp,
     serviceArea,
     setServiceArea,
+    mood,
+    setMood,
     isAiTyping,
     isInitialTyping,
     awaitingNameConfirm,
@@ -387,10 +427,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     descriptionRef,
     whatsappRef,
     serviceAreaRef,
+    moodRef,
     // Handlers
     handleSendText,
     handleSelectType,
     handleSelectSubType,
+    handleSelectMood,
     handleConfirmInference,
     typeMessage,
     // Utilities

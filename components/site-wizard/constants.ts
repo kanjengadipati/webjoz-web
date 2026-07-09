@@ -1,6 +1,16 @@
-import type { BusinessTypeItem, SubTypeItem } from "./types";
+import type { BusinessTypeItem, SubTypeItem, MoodItem } from "./types";
 
 export const PENDING_KEY = "webjoz_pending_wizard_data";
+
+export const MOOD_OPTIONS: MoodItem[] = [
+  { value: "clean-modern", emoji: "✨", label: "Profesional & Modern", desc: "Bersih, minimalis, dan profesional" },
+  { value: "warm-earthy", emoji: "🌿", label: "Natural & Hangat", desc: "Hangat, alami, dan bersahaja" },
+  { value: "bold-vibrant", emoji: "🎨", label: "Fun & Colorful", desc: "Ceria, berani, dan penuh warna" },
+  { value: "dark-premium", emoji: "🌙", label: "Elegan & Mewah", desc: "Gelap, elegan, dan premium" },
+  { value: "bold-dark", emoji: "⚡", label: "Bold & Tegas", desc: "Tegas, maskulin, dan berenergi" },
+  { value: "retro", emoji: "📼", label: "Retro & Vintage", desc: "Klasik, nostalgia, dan unik" },
+  { value: "futuristic", emoji: "🤖", label: "Futuristic & Tech", desc: "Modern, teknologi, dan futuristik" },
+];
 
 export const INITIAL_MESSAGE = "🤖 Halo! Saya akan membantu membuat website bisnis Anda. Apa nama bisnis Anda?";
 

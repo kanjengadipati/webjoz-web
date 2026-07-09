@@ -2,17 +2,17 @@
  * Design Assets Config Store
  *
  * Single source of truth for all customizable picker assets:
- *   - Typography Pairings
- *   - Color Patterns (palettes)
- *   - Industry Presets
+ *   - Typography Pairings (from backend builtins + admin custom)
+ *   - Color Patterns (palettes) (from backend builtins + admin custom)
+ *   - Industry Presets (hardcoded — only store IDs, not color/font data)
  *   - Sections (visibility + required flags)
  *
- * Storage: API → GET/PUT /admin/platform-config/design-assets (superadmin only).
- * Falls back to localStorage under key "design_assets_config" when the API is
- * unavailable (unauthenticated editor reads, offline, etc.).
+ * Storage: API → GET /design-assets/builtin (public) for builtins,
+ *          GET/PUT /admin/platform-config/design-assets (superadmin) for custom/hidden.
+ * Falls back to localStorage when the API is unavailable.
  *
  * Editor pickers call getEnabled* synchronously — they read from an in-memory
- * cache that is populated once on admin page mount via loadDesignAssetsConfig().
+ * cache that is populated once on page mount via loadDesignAssetsConfig() and loadBuiltinAssets().
  * Built-in items can be hidden but not deleted.
  * Custom items (is_custom: true) can be both hidden and deleted.
  */
@@ -75,39 +75,36 @@ export interface DesignAssetsConfig {
   custom_presets: IndustryPreset[];
 }
 
-// ─── Built-in data ────────────────────────────────────────────────────────────
+// ─── Built-in data (loaded from backend) ──────────────────────────────────────
+// These arrays are populated by loadBuiltinAssets() from the public API.
+// Emergency fallbacks used when the API is unavailable on first load.
 
-export const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
-  { id: "neo-clean", name: "Neo Clean", description: "Jernih dan modern, cocok untuk semua jenis bisnis", heading_font: "Inter", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "jakarta-pro", name: "Jakarta Pro", description: "Elegan korporat, premium dan mudah dibaca", heading_font: "Plus Jakarta Sans", body_font: "DM Sans", heading_weight: "800", heading_size_hero: "3rem" },
-  { id: "editorial-elegance", name: "Editorial Elegan", description: "Serif kontras tinggi, cocok untuk bisnis premium & butik", heading_font: "Playfair Display", body_font: "DM Sans", heading_weight: "600", heading_size_hero: "3.5rem", heading_style: "italic" },
-  { id: "bold-display", name: "Bold Display", description: "Tegas dan berenergi, cocok untuk toko & produk", heading_font: "Montserrat", body_font: "Open Sans", heading_weight: "800", heading_size_hero: "3.5rem", heading_transform: "uppercase", heading_tracking: "-0.02em" },
-  { id: "cinematic", name: "Sinematik", description: "Megah dan berkarakter, cocok untuk resto & event", heading_font: "Cinzel", body_font: "Lato", heading_weight: "700", heading_size_hero: "3rem", heading_transform: "uppercase", heading_tracking: "0.12em" },
-  { id: "organic-warm", name: "Organik Hangat", description: "Alami dan ramah, cocok untuk kuliner & produk lokal", heading_font: "Lora", body_font: "Work Sans", heading_weight: "600", heading_size_hero: "3rem" },
-  { id: "tech-forward", name: "Tech Modern", description: "Geometris digital, cocok untuk bisnis teknologi & jasa", heading_font: "Space Grotesk", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem", heading_tracking: "-0.03em" },
-  { id: "friendly-round", name: "Ramah & Bulat", description: "Hangat dan mudah didekati, cocok untuk pendidikan & klinik", heading_font: "Poppins", body_font: "Lato", heading_weight: "700", heading_size_hero: "2.5rem" },
-  { id: "luxury-serif", name: "Mewah Klasik", description: "Anggun tinggi, cocok untuk salon, hotel & jasa premium", heading_font: "Cormorant Garamond", body_font: "Work Sans", heading_weight: "600", heading_size_hero: "3.5rem", heading_style: "italic", heading_tracking: "0.04em" },
-  { id: "urban-street", name: "Urban Street", description: "Padat dan bertenaga, cocok untuk streetwear & otomotif", heading_font: "Oswald", body_font: "Open Sans", heading_weight: "700", heading_size_hero: "3.5rem", heading_transform: "uppercase", heading_tracking: "0.02em" },
-  { id: "fraunces-organic", name: "Fraunces Organic", description: "Serif hangat dan alami, cocok untuk produk organik & F&B", heading_font: "Fraunces", body_font: "DM Sans", heading_weight: "600", heading_size_hero: "3.5rem" },
-  { id: "bricolage-playful", name: "Bricolage Playful", description: "Penuh karakter dan dinamis, cocok untuk brand kreatif & anak muda", heading_font: "Bricolage Grotesque", body_font: "DM Sans", heading_weight: "800", heading_size_hero: "3rem", heading_tracking: "-0.03em" },
-  { id: "sora-industrial", name: "Sora Industrial", description: "Tegas kotak dengan struktur modern, cocok untuk tech & industri", heading_font: "Sora", body_font: "Inter", heading_weight: "800", heading_size_hero: "3rem", heading_tracking: "-0.03em" },
-  { id: "urbanist-clean", name: "Urbanist Clean", description: "Geometris modern yang sangat sleek, cocok untuk startup & digital", heading_font: "Urbanist", body_font: "Urbanist", heading_weight: "700", heading_size_hero: "3rem", heading_tracking: "-0.03em" },
-  { id: "schibsted-technical", name: "Schibsted Technical", description: "Grotesk Skandinavia dipasangkan dengan monospace teknis", heading_font: "Schibsted Grotesk", body_font: "JetBrains Mono", heading_weight: "700", heading_size_hero: "3rem", heading_tracking: "-0.03em" },
-  { id: "cyber-developer", name: "Cyber Developer", description: "Monospace mentah dan terstruktur, cocok untuk developer & SaaS", heading_font: "JetBrains Mono", body_font: "JetBrains Mono", heading_weight: "600", heading_size_hero: "2.5rem", heading_tracking: "-0.03em" },
+const BUILTIN_API_PATH = "/design-assets/builtin";
+
+interface BuiltinAssetsResponse {
+  font_pairings: TypographyPairing[];
+  color_patterns: ColorPattern[];
+}
+
+// Emergency fallback — minimal set used only when both API and localStorage are empty.
+const EMERGENCY_FONT_PAIRINGS: TypographyPairing[] = [
+  { id: "neo-clean", name: "Neo Clean", description: "Jernih dan modern", heading_font: "Inter", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "organic-warm", name: "Organik Hangat", description: "Alami dan ramah", heading_font: "Lora", body_font: "Work Sans", heading_weight: "600", heading_size_hero: "3rem" },
+  { id: "bold-display", name: "Bold Display", description: "Tegas dan berenergi", heading_font: "Montserrat", body_font: "Open Sans", heading_weight: "800", heading_size_hero: "3.5rem" },
+  { id: "tech-forward", name: "Tech Modern", description: "Geometris digital", heading_font: "Space Grotesk", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem" },
 ];
 
-export const COLOR_PATTERNS: ColorPattern[] = [
-  { id: "profesional", name: "Profesional", description: "Biru elegan, cocok untuk jasa & korporat", palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
-  { id: "hangat", name: "Hangat", description: "Cokelat hangat, cocok untuk kuliner & UMKM", palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
-  { id: "malam", name: "Malam Gelap", description: "Gelap elegan dengan aksen emas", palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
-  { id: "segar", name: "Segar Alami", description: "Hijau alami, cocok untuk gaya hidup & organik", palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
-  { id: "laut", name: "Laut Tenang", description: "Biru laut yang menenangkan", palette: { primary: "#0369A1", accent: "#0284C7", background: "#F0F9FF", surface: "#FFFFFF", text: "#0C4A6E" }, theme_mode: "light" },
-  { id: "modern-gelap", name: "Modern Gelap", description: "Gelap modern dengan aksen ungu neon", palette: { primary: "#8B5CF6", accent: "#6D28D9", background: "#0B0E17", surface: "#161B2B", text: "#E2E8F0" }, theme_mode: "dark" },
-  { id: "mentari", name: "Mentari Pagi", description: "Oranye cerah ceria untuk F&B & kreatif", palette: { primary: "#EA580C", accent: "#F97316", background: "#FFF7ED", surface: "#FFFFFF", text: "#2D1B0E" }, theme_mode: "light" },
-  { id: "mawar", name: "Mawar Merah", description: "Merah berani untuk fashion & event", palette: { primary: "#BE123C", accent: "#E11D48", background: "#FFF1F2", surface: "#FFFFFF", text: "#1F0A0C" }, theme_mode: "light" },
-  { id: "tenang-abu", name: "Abu Tenang", description: "Monokrom minimalis, profesional", palette: { primary: "#475569", accent: "#64748B", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
-  { id: "lembayung", name: "Lembayung", description: "Lembut kreatif untuk beauty & lifestyle", palette: { primary: "#7E22CE", accent: "#A855F7", background: "#FAF5FF", surface: "#FFFFFF", text: "#2E1065" }, theme_mode: "light" },
+const EMERGENCY_COLOR_PATTERNS: ColorPattern[] = [
+  { id: "profesional", name: "Profesional", description: "Biru elegan", palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
+  { id: "hangat", name: "Hangat", description: "Cokelat hangat", palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
+  { id: "malam", name: "Malam Gelap", description: "Gelap elegan", palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
+  { id: "segar", name: "Segar Alami", description: "Hijau alami", palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
 ];
+
+// In-memory builtin cache (populated by loadBuiltinAssets)
+let _builtinPairings: TypographyPairing[] = [];
+let _builtinPatterns: ColorPattern[] = [];
+let _builtinLoaded = false;
 
 export const INDUSTRY_PRESETS: IndustryPreset[] = [
   { id: "resto", name: "Restoran", description: "Hangat alami untuk restoran, bakery & catering", icon: "🍜", pairing_id: "organic-warm", pattern_id: "hangat" },
@@ -180,10 +177,62 @@ interface ApiDesignAssetsResponse {
 }
 
 /**
+ * Fetch builtin assets from the public API. Populates the in-memory builtin cache.
+ * Call this once on app mount (wizard, editor, admin).
+ * Falls back to localStorage → emergency fallback on error.
+ */
+export async function loadBuiltinAssets(): Promise<void> {
+  if (_builtinLoaded) return;
+  try {
+    const res = await fetch(BUILTIN_API_PATH);
+    if (res.ok) {
+      const data: { data: BuiltinAssetsResponse } = await res.json();
+      _builtinPairings = data.data.font_pairings || [];
+      _builtinPatterns = data.data.color_patterns || [];
+      _builtinLoaded = true;
+      return;
+    }
+  } catch {}
+  // Fallback: try localStorage
+  if (isClient()) {
+    try {
+      const raw = localStorage.getItem("builtin_assets");
+      if (raw) {
+        const parsed: BuiltinAssetsResponse = JSON.parse(raw);
+        _builtinPairings = parsed.font_pairings || [];
+        _builtinPatterns = parsed.color_patterns || [];
+        _builtinLoaded = true;
+        return;
+      }
+    } catch {}
+  }
+  // Emergency fallback
+  _builtinPairings = EMERGENCY_FONT_PAIRINGS;
+  _builtinPatterns = EMERGENCY_COLOR_PATTERNS;
+  _builtinLoaded = true;
+}
+
+/**
+ * Save builtins to localStorage for offline fallback.
+ */
+function saveBuiltinsToLocalStorage(data: BuiltinAssetsResponse): void {
+  if (!isClient()) return;
+  try {
+    localStorage.setItem("builtin_assets", JSON.stringify(data));
+  } catch {}
+}
+
+
+/**
  * Fetch config from the API. Falls back to localStorage on error.
+ * Also populates builtin assets cache.
  * Call this once on admin page mount — it populates the in-memory cache.
  */
 export async function loadDesignAssetsConfig(token?: string | null): Promise<DesignAssetsConfig> {
+  // Ensure builtins are loaded too
+  if (!_builtinLoaded) {
+    await loadBuiltinAssets();
+  }
   if (token) {
     try {
       const res = await request<ApiDesignAssetsResponse>(API_PATH, {}, token);
@@ -271,10 +320,21 @@ export function resetConfig(): void {
 
 // ─── Helpers — used by editor pickers (synchronous) ──────────────────────────
 
+export function getBuiltinTypographyPairings(): TypographyPairing[] {
+  if (_builtinLoaded) return _builtinPairings;
+  // Emergency fallback if loadBuiltinAssets was never called
+  return EMERGENCY_FONT_PAIRINGS;
+}
+
+export function getBuiltinColorPatterns(): ColorPattern[] {
+  if (_builtinLoaded) return _builtinPatterns;
+  return EMERGENCY_COLOR_PATTERNS;
+}
+
 export function getEnabledTypographyPairings(): TypographyPairing[] {
   const cfg = loadConfig();
   const hidden = new Set(cfg.hidden_pairings);
-  const builtins = TYPOGRAPHY_PAIRINGS.filter((p) => !hidden.has(p.id));
+  const builtins = getBuiltinTypographyPairings().filter((p) => !hidden.has(p.id));
   const customs = (cfg.custom_pairings || []).filter((p) => !hidden.has(p.id));
   return [...builtins, ...customs];
 }
@@ -282,7 +342,7 @@ export function getEnabledTypographyPairings(): TypographyPairing[] {
 export function getEnabledColorPatterns(): ColorPattern[] {
   const cfg = loadConfig();
   const hidden = new Set(cfg.hidden_patterns);
-  const builtins = COLOR_PATTERNS.filter((p) => !hidden.has(p.id));
+  const builtins = getBuiltinColorPatterns().filter((p) => !hidden.has(p.id));
   const customs = (cfg.custom_patterns || []).filter((p) => !hidden.has(p.id));
   return [...builtins, ...customs];
 }
