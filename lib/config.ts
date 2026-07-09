@@ -78,3 +78,8 @@ export const ENV_NAME = IS_LOCAL ? "Local" : "Production";
 
 export const MIDTRANS_CLIENT_KEY = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "";
 export const MIDTRANS_MERCHANT_ID = process.env.NEXT_PUBLIC_MIDTRANS_MERCHANT_ID || "";
+
+export const MIDTRANS_SNAP_BASE_URL =
+  process.env.NEXT_PUBLIC_MIDTRANS_ENV === "production"
+    ? "https://app.midtrans.com"
+    : "https://app.sandbox.midtrans.com";
