@@ -153,7 +153,32 @@ export default function SiteEditorPage() {
   const [recentInstructions, setRecentInstructions] = useState<string[]>([]);
   const [aiDesignPromptOpen, setAiDesignPromptOpen] = useState(false);
   const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
+  const [upgradeContext, setUpgradeContext] = useState<"ai_regenerate" | "ai_design" | "ai_suggestion">("ai_regenerate");
   const [aiDesignInstructions, setAiDesignInstructions] = useState("");
+
+  const UPGRADE_COPY: Record<string, { title: string; body: string }> = {
+    ai_regenerate: {
+      title: "Regenerasi AI — fitur Pro",
+      body: "Regenerasi ulang konten section dengan AI tersedia tanpa batas di paket Pro.",
+    },
+    ai_design: {
+      title: "Desain ulang dengan AI — fitur Pro",
+      body: "Minta AI mengubah gaya, warna, dan layout website Anda secara instan di paket Pro.",
+    },
+    ai_suggestion: {
+      title: "Saran instruksi AI — fitur Pro",
+      body: "Gunakan saran instruksi siap pakai untuk mempercepat proses AI di paket Pro.",
+    },
+  };
+
+  const requirePremium = useCallback((context: "ai_regenerate" | "ai_design" | "ai_suggestion", action: () => void) => {
+    if (!isPremium) {
+      setUpgradeContext(context);
+      setUpgradePromptOpen(true);
+      return;
+    }
+    action();
+  }, [isPremium]);
 
   // ── Inline AI prompt modal (replaces window.prompt) ─────────────────────────
   const [aiPromptModal, setAiPromptModal] = useState<{
@@ -797,9 +822,8 @@ export default function SiteEditorPage() {
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
   const handleRegenWithPremiumCheck = useCallback((section: string) => {
-    if (!isPremium) { setUpgradePromptOpen(true); return; }
-    return handleAiRegenerateForSection(section);
-  }, [isPremium, handleAiRegenerateForSection]);
+    requirePremium("ai_regenerate", () => handleAiRegenerateForSection(section));
+  }, [requirePremium, handleAiRegenerateForSection]);
 
   const handleAiRegenerateDesign = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1295,8 +1319,7 @@ export default function SiteEditorPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (!isPremium) { setUpgradePromptOpen(true); return; }
-                        setAiDesignPromptOpen(true);
+                        requirePremium("ai_design", () => setAiDesignPromptOpen(true));
                       }}
                       disabled={aiLoading || !!pendingDiff}
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
@@ -1895,8 +1918,7 @@ export default function SiteEditorPage() {
                             key={suggestion}
                             type="button"
                             onClick={() => {
-                              if (!isPremium) { setUpgradePromptOpen(true); return; }
-                              setAiInstructions(suggestion);
+                              requirePremium("ai_suggestion", () => setAiInstructions(suggestion));
                             }}
                             disabled={!!pendingDiff}
                             className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-left text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50 disabled:pointer-events-none"
@@ -1928,8 +1950,7 @@ export default function SiteEditorPage() {
                           onChange={(e) => setAiInstructions(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && !pendingDiff) {
-                              if (!isPremium) { setUpgradePromptOpen(true); return; }
-                              handleAiRegenerateSection();
+                              requirePremium("ai_regenerate", handleAiRegenerateSection);
                             }
                           }}
                           placeholder={aiPlaceholder}
@@ -1938,8 +1959,7 @@ export default function SiteEditorPage() {
                         />
                         <button
                           onClick={() => {
-                            if (!isPremium) { setUpgradePromptOpen(true); return; }
-                            handleAiRegenerateSection();
+                            requirePremium("ai_regenerate", handleAiRegenerateSection);
                           }}
                           disabled={aiLoading || !!pendingDiff}
                           className="h-8 px-3 flex items-center justify-center gap-1 rounded-md bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 whitespace-nowrap"
@@ -2648,8 +2668,7 @@ export default function SiteEditorPage() {
                     <button
                       key={chip} type="button"
                       onClick={() => {
-                        if (!isPremium) { setUpgradePromptOpen(true); return; }
-                        setAiInstructions(chip);
+                        requirePremium("ai_suggestion", () => setAiInstructions(chip));
                       }}
                       disabled={!!pendingDiff}
                       className="flex-shrink-0 px-2 py-1 rounded-full border border-primary/20 bg-primary/10 text-[9px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
@@ -2665,8 +2684,7 @@ export default function SiteEditorPage() {
                   onChange={(e) => setAiInstructions(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !pendingDiff) {
-                      if (!isPremium) { setUpgradePromptOpen(true); return; }
-                      handleAiRegenerateSection();
+                      requirePremium("ai_regenerate", handleAiRegenerateSection);
                     }
                   }}
                   placeholder={aiPlaceholder}
@@ -2676,8 +2694,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (!isPremium) { setUpgradePromptOpen(true); return; }
-                    handleAiRegenerateSection();
+                    requirePremium("ai_regenerate", handleAiRegenerateSection);
                   }}
                   disabled={aiLoading || !!pendingDiff}
                   className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-primary text-primary-foreground disabled:opacity-50"
@@ -2754,7 +2771,7 @@ export default function SiteEditorPage() {
       <Dialog
         open={upgradePromptOpen}
         onOpenChange={setUpgradePromptOpen}
-        title="Fitur AI Only untuk Pro"
+        title={UPGRADE_COPY[upgradeContext]?.title || "Fitur AI Only untuk Pro"}
         footer={
           <>
             <Button
@@ -2782,7 +2799,7 @@ export default function SiteEditorPage() {
             </div>
           </div>
           <div>
-            <p className="text-[14px] font-semibold text-slate-100">Fitur AI hanya tersedia untuk pengguna Pro</p>
+            <p className="text-[14px] font-semibold text-slate-100">{UPGRADE_COPY[upgradeContext]?.body || "Fitur AI hanya tersedia untuk pengguna Pro."}</p>
             <p className="text-[12px] text-slate-400 mt-1">Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.</p>
           </div>
         </div>
