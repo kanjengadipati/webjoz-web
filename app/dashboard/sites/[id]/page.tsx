@@ -2360,6 +2360,19 @@ export default function SiteEditorPage() {
             </div>
           )}
 
+          {/* ── AI Loading bar ── */}
+          {aiLoading && !pendingDiff && (
+            <div className="flex-shrink-0 border-b border-primary/20 bg-[#0b0f1a] px-4 py-2.5 flex items-center gap-3">
+              <Loader2 className="w-4 h-4 text-primary animate-spin flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-semibold text-slate-200">AI sedang memproses...</p>
+                <div className="h-1 rounded-full bg-white/10 mt-1.5 overflow-hidden max-w-xs">
+                  <div className="h-full rounded-full bg-primary animate-pulse" style={{ width: "40%" }} />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
           <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
