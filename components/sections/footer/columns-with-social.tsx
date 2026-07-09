@@ -3,14 +3,14 @@ import React from "react";
 import type { FooterVariantProps } from "./types";
 import { SocialIcon, SOCIAL_PLATFORMS } from "../social-platforms";
 
-const FOOTER_BG = "color-mix(in srgb, var(--dt-text) 20%, var(--dt-bg))";
+const FOOTER_BG = "var(--dt-surface)";
 const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
 const TXT_MED = "color-mix(in srgb, var(--dt-text) 50%, transparent)";
 const TXT_LOW = "color-mix(in srgb, var(--dt-text) 40%, transparent)";
 const TXT_BASE = "color-mix(in srgb, var(--dt-text) 65%, transparent)";
 const TXT_SOCIAL = "color-mix(in srgb, var(--dt-text) 60%, transparent)";
 const TXT_SOCIAL_HOVER = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
-const BORDER_LIGHT = "color-mix(in srgb, var(--dt-text) 12%, transparent)";
+const BORDER_LIGHT = "var(--dt-border)";
 
 export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
