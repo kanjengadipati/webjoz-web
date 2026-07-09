@@ -174,6 +174,20 @@ function getUnsplashPool(businessType: string): string[] {
   return UNSPLASH_POOLS.business;
 }
 
+// ─── Collapsible Group ──────────────────────────────────────────────────────────
+function CollapsibleGroup({ label, defaultOpen = false, children }: { label: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border border-white/10 rounded-md bg-white/[0.02]">
+      <button type="button" onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-wide font-semibold text-slate-400 cursor-pointer">
+        <span>{label}</span>
+        {open ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+      </button>
+      {open && <div className="px-3 pb-3 space-y-2">{children}</div>}
+    </div>
+  );
+}
+
 // ─── Keywords Input ────────────────────────────────────────────────────────────
 interface KeywordsInputProps {
   keywords: string[];
@@ -935,6 +949,44 @@ export default function SectionForms({
               );
             })}
           </div>
+          {/* Milestones */}
+          <CollapsibleGroup label="Milestones / Timeline" defaultOpen={false}>
+            {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (
+              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Milestone {idx + 1}</span>
+                  <button type="button" onClick={() => {
+                    const arr = [...(content.about?.milestones || [])];
+                    arr.splice(idx, 1);
+                    updateField("about", "milestones", arr);
+                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                </div>
+                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none" />
+              </div>
+            ))}
+            <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: "", title: "", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
+          </CollapsibleGroup>
+          {/* Team Members */}
+          <CollapsibleGroup label="Anggota Tim" defaultOpen={false}>
+            {((content.about?.team_members as any[]) || []).map((m: any, idx: number) => (
+              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Anggota {idx + 1}</span>
+                  <button type="button" onClick={() => {
+                    const arr = [...(content.about?.team_members || [])];
+                    arr.splice(idx, 1);
+                    updateField("about", "team_members", arr);
+                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                </div>
+                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
+              </div>
+            ))}
+            <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "", role: "", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Anggota</button>
+          </CollapsibleGroup>
         </div>
       )}
 
@@ -1071,6 +1123,34 @@ export default function SectionForms({
           >
             <Plus className="w-3.5 h-3.5" /> Tambah
           </button>
+          {/* Comparison table */}
+          <CollapsibleGroup label="Tabel Perbandingan" defaultOpen={false}>
+            {(content.benefits?.comparison?.column_a_label !== undefined) || false ? null : null}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-0.5">
+                <label className="text-[10px] text-slate-500 uppercase">Label Kolom A (Kami)</label>
+                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+              </div>
+              <div className="space-y-0.5">
+                <label className="text-[10px] text-slate-500 uppercase">Label Kolom B (Lainnya)</label>
+                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+              </div>
+            </div>
+            {((content.benefits?.comparison?.rows as any[]) || []).map((row: any, idx: number) => (
+              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Baris {idx + 1}</span>
+                  <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                </div>
+                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                </div>
+              </div>
+            ))}
+            <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || []), { label: "", value_a: "✓", value_b: "✗" }]; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Baris</button>
+          </CollapsibleGroup>
         </div>
       )}
 
@@ -1124,6 +1204,17 @@ export default function SectionForms({
                 }} 
                 placeholder="Jawaban" 
                 className={fieldClass(`faq.items.${idx}.answer`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-primary/60 resize-none")} 
+              />
+              <input 
+                type="text" 
+                value={item.category || ""} 
+                onChange={(e) => { 
+                  const n = [...content.faq.items]; 
+                  n[idx] = { ...n[idx], category: e.target.value }; 
+                  updateField("faq", "items", n); 
+                }} 
+                placeholder="Kategori (opsional, untuk variant sidebar-category)" 
+                className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" 
               />
             </div>
           ))}
@@ -1184,7 +1275,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Kepercayaan <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Trust Signal <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.cta?.trust_signal || ""}
@@ -1192,6 +1283,10 @@ export default function SectionForms({
               placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
               className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Gambar CTA <span className="text-slate-600 font-normal normal-case">(opsional, untuk variant split-image)</span></label>
+            <FileUpload label="" value={content.cta?.image_url || ""} onChange={(val) => updateField("cta", "image_url", val)} placeholder="https://..." maxWidth={800} maxHeight={800} quality={0.85} />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
@@ -1732,6 +1827,16 @@ export default function SectionForms({
               className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
             />
           </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <input
+              type="text"
+              value={content.testimonials?.subtitle || ""}
+              onChange={(e) => updateField("testimonials", "subtitle", e.target.value)}
+              placeholder="cth. Ulasan dari pelanggan setia kami"
+              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+            />
+          </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
             <div key={idx} className="border border-white/10 p-3 rounded-xl space-y-2.5 bg-white/[0.02]">
               <div className="flex items-center justify-between">
@@ -1840,6 +1945,37 @@ export default function SectionForms({
                   </div>
                 </div>
               </div>
+              {/* Company + Logo URL */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Perusahaan <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+                  <input
+                    type="text"
+                    value={item.company || ""}
+                    onChange={(e) => {
+                      const n = [...content.testimonials.items];
+                      n[idx] = { ...n[idx], company: e.target.value };
+                      updateField("testimonials", "items", n);
+                    }}
+                    placeholder="cth. PT Maju Jaya"
+                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Logo URL <span className="text-slate-600 font-normal normal-case">(opsional, untuk variant logo-wall)</span></label>
+                  <input
+                    type="text"
+                    value={item.logo_url || ""}
+                    onChange={(e) => {
+                      const n = [...content.testimonials.items];
+                      n[idx] = { ...n[idx], logo_url: e.target.value };
+                      updateField("testimonials", "items", n);
+                    }}
+                    placeholder="https://..."
+                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                  />
+                </div>
+              </div>
             </div>
           ))}
           <button
@@ -1848,7 +1984,7 @@ export default function SectionForms({
               const current = content.testimonials?.items || [];
               updateField("testimonials", "items", [
                 ...current,
-                { quote: "", name: "", role: "", avatar_initials: "", avatar_color: "var(--primary)" }
+                { quote: "", name: "", role: "", avatar_initials: "", avatar_color: "var(--primary)", company: "", logo_url: "" }
               ]);
             }}
             className="w-full text-[12px] py-2 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
