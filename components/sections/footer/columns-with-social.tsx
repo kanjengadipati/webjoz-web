@@ -3,7 +3,14 @@ import React from "react";
 import type { FooterVariantProps } from "./types";
 import { SocialIcon, SOCIAL_PLATFORMS } from "../social-platforms";
 
-const DARK_BG = "color-mix(in srgb, var(--dt-text) 92%, black)";
+const FOOTER_BG = "var(--dt-surface)";
+const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
+const TXT_MED = "color-mix(in srgb, var(--dt-text) 50%, transparent)";
+const TXT_LOW = "color-mix(in srgb, var(--dt-text) 40%, transparent)";
+const TXT_BASE = "color-mix(in srgb, var(--dt-text) 65%, transparent)";
+const TXT_SOCIAL = "color-mix(in srgb, var(--dt-text) 60%, transparent)";
+const TXT_SOCIAL_HOVER = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
+const BORDER_LIGHT = "var(--dt-border)";
 
 export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
@@ -13,17 +20,17 @@ export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantP
   return (
     <footer
       className="py-10 px-6 text-xs"
-      style={{ background: DARK_BG, color: "rgba(255,255,255,0.65)" }}
+      style={{ background: FOOTER_BG, color: TXT_BASE, borderTop: `1px solid ${BORDER_LIGHT}` }}
     >
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-2">
-          <p className="text-sm font-bold text-white/90">{displayBrand}</p>
-          {displayTagline && <p className="text-white/50">{displayTagline}</p>}
+          <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
+          {displayTagline && <p style={{ color: TXT_MED }}>{displayTagline}</p>}
         </div>
 
         {links.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: TXT_LOW }}>
               Media Sosial
             </p>
             <div className="flex flex-wrap gap-3">
@@ -36,7 +43,10 @@ export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantP
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-white/60 hover:text-white/90 transition-colors"
+                    className="flex items-center gap-1.5 transition-colors"
+                    style={{ color: TXT_SOCIAL }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = TXT_SOCIAL_HOVER}
+                    onMouseLeave={(e) => e.currentTarget.style.color = TXT_SOCIAL}
                     title={label}
                   >
                     <SocialIcon platform={link.platform} size={14} />
@@ -49,7 +59,7 @@ export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantP
         )}
       </div>
 
-      <div className="mt-8 pt-4 text-center text-white/40 border-t border-white/10">
+      <div className="mt-8 pt-4 text-center" style={{ color: TXT_LOW, borderTop: `1px solid ${BORDER_LIGHT}` }}>
         {footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
       </div>
     </footer>

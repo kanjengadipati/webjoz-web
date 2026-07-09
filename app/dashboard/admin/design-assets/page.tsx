@@ -13,9 +13,9 @@ import {
   Card, CardContent, Button, Badge, Input, Separator,
 } from "@/components/ui";
 import {
-  TYPOGRAPHY_PAIRINGS, COLOR_PATTERNS, INDUSTRY_PRESETS,
+  getBuiltinTypographyPairings, getBuiltinColorPatterns, INDUSTRY_PRESETS,
   type TypographyPairing, type ColorPattern, type IndustryPreset,
-  loadDesignAssetsConfig, saveDesignAssetsConfig, resetDesignAssetsConfig,
+  loadDesignAssetsConfig, loadBuiltinAssets, saveDesignAssetsConfig, resetDesignAssetsConfig,
   loadConfig, updateCache,
   REQUIRED_SECTIONS_DEFAULT,
   type DesignAssetsConfig,
@@ -539,7 +539,7 @@ function PairingsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
-  const allPairings = [...TYPOGRAPHY_PAIRINGS, ...customPairings];
+  const allPairings = [...getBuiltinTypographyPairings(), ...customPairings];
   const filtered = allPairings.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.heading_font.toLowerCase().includes(search.toLowerCase())
   );
@@ -691,7 +691,7 @@ function PatternsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
-  const allPatterns = [...COLOR_PATTERNS, ...customPatterns];
+  const allPatterns = [...getBuiltinColorPatterns(), ...customPatterns];
   const filtered = allPatterns.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
   );
@@ -810,7 +810,7 @@ function AddPresetForm({
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">Pasangan Font</label>
             <select value={pairingId} onChange={(e) => setPairingId(e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {enabledPairingIds.map((id) => {
-                const p = TYPOGRAPHY_PAIRINGS.find((t) => t.id === id);
+                const p = getBuiltinTypographyPairings().find((t) => t.id === id);
                 return <option key={id} value={id}>{p?.name ?? id}</option>;
               })}
             </select>
@@ -819,7 +819,7 @@ function AddPresetForm({
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">Palet Warna</label>
             <select value={patternId} onChange={(e) => setPatternId(e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {enabledPatternIds.map((id) => {
-                const p = COLOR_PATTERNS.find((c) => c.id === id);
+                const p = getBuiltinColorPatterns().find((c) => c.id === id);
                 return <option key={id} value={id}>{p?.name ?? id}</option>;
               })}
             </select>
@@ -852,8 +852,8 @@ function PresetsTab({
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
   const allPresets = [...INDUSTRY_PRESETS, ...customPresets];
-  const allPairings = [...TYPOGRAPHY_PAIRINGS, ...customPairings];
-  const allPatterns = [...COLOR_PATTERNS, ...customPatterns];
+  const allPairings = [...getBuiltinTypographyPairings(), ...customPairings];
+  const allPatterns = [...getBuiltinColorPatterns(), ...customPatterns];
   const filtered = allPresets.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -1035,8 +1035,8 @@ export default function DesignAssetsPage() {
 
   const TABS: { id: Tab; label: string; icon: React.ElementType; count: number }[] = [
     { id: "sections", label: "Sections", icon: LayoutGrid, count: MANAGEABLE_SECTIONS.length - hiddenSections.size },
-    { id: "pairings", label: "Tipografi", icon: Type, count: TYPOGRAPHY_PAIRINGS.length + customPairings.length - hiddenPairings.size },
-    { id: "patterns", label: "Palet Warna", icon: Palette, count: COLOR_PATTERNS.length + customPatterns.length - hiddenPatterns.size },
+    { id: "pairings", label: "Tipografi", icon: Type, count: getBuiltinTypographyPairings().length + customPairings.length - hiddenPairings.size },
+    { id: "patterns", label: "Palet Warna", icon: Palette, count: getBuiltinColorPatterns().length + customPatterns.length - hiddenPatterns.size },
     { id: "presets", label: "Paket Tampilan", icon: Layers, count: INDUSTRY_PRESETS.length + customPresets.length - hiddenPresets.size },
   ];
 
