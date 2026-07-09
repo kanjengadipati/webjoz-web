@@ -133,6 +133,7 @@ export default function UpgradePage() {
           headers: { "X-Tenant-ID": activeTenant.tenant.id.toString() },
           body: JSON.stringify({
             plan_id: plan.id,
+            callback_url: `${window.location.origin}/dashboard/upgrade/success`,
           }),
         },
         token,
