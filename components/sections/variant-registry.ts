@@ -72,6 +72,16 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "bento-grid", label: "Bento Grid", description: "Kartu info tersusun bento." },
     { value: "dark-split", label: "Dark Split", description: "Split gelap premium, form + kontak." },
   ],
+  header: [
+    { value: "left-logo-inline-nav", label: "Logo Kiri + Nav Inline", description: "Logo di kiri, navigasi sejajar di kanan, CTA tombol." },
+    { value: "centered-logo", label: "Logo Tengah", description: "Logo di tengah, navigasi di bawahnya, CTA tombol." },
+    { value: "transparent-overlay", label: "Transparan (Hero Overlay)", description: "Transparan di atas hero, solid setelah scroll." },
+  ],
+  footer: [
+    { value: "minimal-band", label: "Band Minimal", description: "Brand + tagline + copyright dalam satu baris gelap." },
+    { value: "columns-with-social", label: "Kolom + Sosial Media", description: "Multi-kolom dengan link media sosial." },
+    { value: "newsletter-cta", label: "Newsletter CTA", description: "Ajakan hubungi kami + copyright." },
+  ],
 };
 
 export function getVariantLabel(section: string, value: string): string {

@@ -91,6 +91,8 @@ export interface DesignToken {
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
       contact?: "classic-split" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
+      header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay";
+      footer?: "minimal-band" | "columns-with-social" | "newsletter-cta";
     };
     section_order?: string[];
     hidden_sections?: string[];

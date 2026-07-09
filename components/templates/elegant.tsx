@@ -1,15 +1,17 @@
 "use client";
 
 import React from "react";
-import { Award, Star, MapPin, Phone, Mail, ArrowRight, Globe, Utensils, Image as ImageIcon, Sparkles, Leaf } from "lucide-react";
+import { Award, ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
+  SeoEditorPreview, FaqAccordion, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
+import HeaderSection from "../sections/header";
+import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -369,18 +371,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       </div>
 
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md px-6 py-4 flex items-center justify-between gap-4 relative" style={{ background: `${darkBg}cc`, borderBottom: `1px solid ${gold}15` }}>
-            <span className="text-base font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: gold }}>
-              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={Globe} iconClass="shrink-0" imgClass="h-8 w-auto shrink-0 object-contain" />
-              {h.brand_name}
-            </span>
-            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="" drawerStyle={{ background: darkCard, borderTop: `1px solid ${gold}20` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all hover:brightness-110  " style={{ background: gold, color: ctaText }}>
-              {h.nav_cta_text || "Hubungi Kami"}
-            </a>
-          </header>
-        )} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)
@@ -406,11 +397,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand: header?.brand_name }} render={(f) => (
-          <footer className="py-10 text-center   border-t" style={{ background: "#070707", borderColor: `${gold}15` }}>
-            <p className="text-[10px] uppercase tracking-widest" style={{ color: `${gold}40` }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}. All rights reserved.`}</p>
-          </footer>
-        )} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: gold, color: ctaText }} />

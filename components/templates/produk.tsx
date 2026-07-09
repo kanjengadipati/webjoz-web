@@ -1,15 +1,17 @@
 "use client";
 
 import React from "react";
-import { Globe, ArrowRight, Check, MapPin, Phone, Mail, Image as ImageIcon, Utensils, Star, Sparkles } from "lucide-react";
+import { Globe, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
+  SeoEditorPreview, FaqAccordion, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
+import HeaderSection from "../sections/header";
+import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -313,32 +315,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
     <div className="bg-slate-950 text-slate-100 overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
-          <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative">
-            <span className="min-w-0 text-base sm:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] tracking-wider flex items-center gap-2">
-              <LogoImage
-                url={headerData.logo_url}
-                icon={headerData.icon}
-                defaultIcon={Utensils}
-                iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
-                imgClass="h-8 w-auto shrink-0 object-contain"
-              />
-              <span className="min-w-0">
-                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
-                {headerData.tagline && <span className="block text-[10px] font-normal text-[var(--dt-primary)]/60 tracking-wide truncate">{headerData.tagline}</span>}
-              </span>
-            </span>
-            <NavMenu
-              sectionOrder={sectionOrder}
-              hiddenSections={dt?.layout?.hidden_sections}
-              linkClass="text-slate-300"
-              drawerStyle={{ background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.08)" }}
-            />
-            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-5 py-2.5 bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] rounded-full text-xs font-bold hover:brightness-110 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-slate-950" style={{ color: "var(--dt-cta-text)" }}>
-              {headerData.nav_cta_text || "Hubungi Kami"}
-            </a>
-          </header>
-        )} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)
@@ -347,17 +324,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
-          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Produk Kami";
-          const displayTagline = footerData.tagline || "Kualitas produk terbaik untuk memenuhi kenyamanan Anda";
-          return (
-            <footer className="bg-slate-950 text-slate-650 text-center py-10 text-xs border-t border-slate-900 space-y-1">
-              <p className="text-sm font-bold text-slate-400">{displayBrand}</p>
-              <p className="text-slate-650">{displayTagline}</p>
-              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
-            </footer>
-          );
-        }} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>

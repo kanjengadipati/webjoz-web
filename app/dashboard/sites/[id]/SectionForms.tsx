@@ -5,6 +5,7 @@ import LocationPicker from "@/components/location-picker";
 import { isPlaceholderValue } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
+import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -1436,16 +1437,6 @@ export default function SectionForms({
       {activeTab === "footer" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Brand</label>
-            <input 
-              id="field-footer.brand_name"
-              type="text" 
-              value={content.footer?.brand_name || ""} 
-              onChange={(e) => updateField("footer", "brand_name", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" 
-            />
-          </div>
-          <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline</label>
             <input 
               id="field-footer.tagline"
@@ -1464,6 +1455,79 @@ export default function SectionForms({
               onChange={(e) => updateField("footer", "copyright_text", e.target.value)} 
               className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" 
             />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Media Sosial</label>
+            {(content.footer?.social_links || []).map((link: any, idx: number) => {
+              const isCustom = link.platform && !SOCIAL_PLATFORMS[link.platform];
+              return (
+                <div key={idx} className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-8 justify-center">
+                    {link.platform && SOCIAL_PLATFORMS[link.platform] ? (
+                      <SocialIcon platform={link.platform} className="shrink-0" size={18} />
+                    ) : (
+                      <Globe className="w-4 h-4 text-slate-500 shrink-0" />
+                    )}
+                  </div>
+                  <div className="flex-1 flex items-center gap-1.5">
+                    {isCustom ? (
+                      <input
+                        type="text"
+                        value={link.platform || ""}
+                        onChange={(e) => {
+                          const n = [...(content.footer?.social_links || [])];
+                          n[idx] = { ...n[idx], platform: e.target.value };
+                          updateField("footer", "social_links", n);
+                        }}
+                        placeholder="Nama platform"
+                        className="w-1/3 px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"
+                      />
+                    ) : (
+                      <SocialPlatformSelect
+                        value={link.platform || ""}
+                        onChange={(v) => {
+                          const n = [...(content.footer?.social_links || [])];
+                          n[idx] = { ...n[idx], platform: v === "__custom__" ? "" : v };
+                          updateField("footer", "social_links", n);
+                        }}
+                        className="w-1/3 px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      value={link.url || ""}
+                      onChange={(e) => {
+                        const n = [...(content.footer?.social_links || [])];
+                        n[idx] = { ...n[idx], url: e.target.value };
+                        updateField("footer", "social_links", n);
+                      }}
+                      placeholder="URL (e.g. https://instagram.com/...)"
+                      className="flex-1 px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const n = content.footer?.social_links?.filter((_: any, i: number) => i !== idx) || [];
+                      updateField("footer", "social_links", n);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-xs shrink-0"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => {
+                const n = [...(content.footer?.social_links || []), { platform: "", url: "" }];
+                updateField("footer", "social_links", n);
+              }}
+              className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-white/20 rounded-md hover:border-primary/60 transition-colors"
+            >
+              + Tambah Media Sosial
+            </button>
           </div>
         </div>
       )}

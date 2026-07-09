@@ -1,13 +1,9 @@
 "use client";
 
 import React from "react";
-import {
-  Globe,
-} from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage,
-  WAFloatingButton, BackToTop, SeoEditorPreview, navCtaHref, CartFab,
+  WAFloatingButton, BackToTop, SeoEditorPreview, CartFab,
   CartProvider,
 } from "./shared";
 
@@ -25,6 +21,8 @@ import MenuSectionInner from "../sections/menu";
 import CatalogSectionInner from "../sections/catalog";
 import TestimonialsSectionInner from "../sections/testimonials";
 import GallerySection from "../sections/gallery";
+import HeaderSection from "../sections/header";
+import FooterSection from "../sections/footer";
 
 // Phase 3: Dual-schema support — normalize flat content to sections[] format
 // Phase 4: Layout engine defaults
@@ -220,32 +218,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   return (
     <div style={rootStyle}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ header, dt }} render={(data) => {
-          const { header: h } = data;
-          return (
-            <header className="sticky top-0 z-50 backdrop-blur-md px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-2 md:gap-4 relative" style={{ background: `color-mix(in srgb, var(--dt-bg) 85%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}>
-              <span className="flex items-center gap-1.5 md:gap-2 min-w-0 text-sm md:text-lg font-bold" style={{ display: "flex", alignItems: "center", fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}>
-                <LogoImage url={h?.logo_url} icon={h?.icon} defaultIcon={Globe} iconClass="shrink-0" imgClass="h-8 w-auto shrink-0 object-contain" />
-                <span style={{ overflow: "hidden" }}>
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{h?.brand_name || "Brand Kami"}</span>
-                  {h?.tagline && <span style={{ display: "block", fontSize: "0.65rem", fontFamily: "var(--dt-body-font)", color: "var(--dt-text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{h.tagline}</span>}
-                </span>
-              </span>
-              <NavMenu
-                sectionOrder={sectionOrder}
-                hiddenSections={dt?.layout?.hidden_sections}
-                linkClass=""
-                drawerStyle={{ background: "var(--dt-surface, #fff)", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)` }}
-              />
-              <a href={navCtaHref(h?.nav_cta_text)} className="px-3 py-1.5 md:px-5 md:py-2 text-[11px] md:text-sm font-semibold flex-shrink-0 transition-opacity hover:opacity-85" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none" }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                {h?.nav_cta_text || "Hubungi Kami"}
-              </a>
-            </header>
-          );
-        }} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
       </MemoPreviewSectionWrapper>
 
       {resolvedSections
@@ -270,30 +243,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ footer, brand_name_fallback: header?.brand_name, dt }} render={(data) => {
-          const { footer: f, brand_name_fallback: bFallback } = data;
-          const displayBrand = f?.brand_name || bFallback || "Bisnis Kami";
-          const displayTagline = f?.tagline || "Memberikan layanan dan produk terbaik untuk memenuhi kebutuhan Anda";
-          return (
-            <footer style={{
-              background: "color-mix(in srgb, var(--dt-bg) 95%, var(--dt-text))",
-              color: "var(--dt-text-muted)",
-              textAlign: "center",
-              padding: "2.5rem 1.5rem",
-              borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`,
-              fontSize: "0.8rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.375rem"
-            }}>
-              <p style={{ fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{displayBrand}</p>
-              <p style={{ color: "var(--dt-text-muted)", margin: 0 }}>{displayTagline}</p>
-              <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--dt-text-muted)" }}>
-                {f?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
-              </p>
-            </footer>
-          );
-        }} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
       </MemoPreviewSectionWrapper>
 
       {isEditorMode && (

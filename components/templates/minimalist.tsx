@@ -1,15 +1,17 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, MapPin, Phone, Mail, ChevronDown, Utensils, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage, LeadForm, TestimonialsSection, MenuCatalogCard,
+  LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, navCtaHref, ctaHref, FaqAccordion,
+  SeoEditorPreview, ctaHref, FaqAccordion,
   ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
+import HeaderSection from "../sections/header";
+import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -343,23 +345,8 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: bg, color: zinc900, fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
-      {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(h) => (
-          <header className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between gap-4 relative border-b" style={{ background: `${surface}F0`, borderColor: zinc200, backdropFilter: "blur(8px)" }}>
-            <span className="flex shrink-0 items-center gap-3 text-sm font-medium tracking-widest uppercase" style={{ color: zinc900 }}>
-              <LogoImage url={h.logo_url} icon={undefined} defaultIcon={ImageIcon} iconClass="h-8 w-8 shrink-0" imgClass="h-8 w-8 shrink-0 rounded-full object-cover" />
-              <span className="min-w-0">
-                <span className="block truncate">{h.brand_name}</span>
-                {h.tagline && <span className="block text-[9px] font-light uppercase tracking-widest" style={{ color: zinc500 }}>{h.tagline}</span>}
-              </span>
-            </span>
-            <NavMenu sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} linkClass="text-zinc-600 text-xs tracking-widest uppercase font-medium" drawerStyle={{ background: surface, borderTop: `1px solid ${zinc200}` }} />
-            <a href={navCtaHref(h.nav_cta_text)} className="px-4 py-2 border text-[10px] font-semibold uppercase tracking-widest transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-900" style={{ borderColor: zinc900, color: zinc900 }}>
-              {h.nav_cta_text || "Hubungi"}
-            </a>
-          </header>
-        )} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)
@@ -383,14 +370,8 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
           );
         })}
 
-      {/* Footer */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand: header?.brand_name, copyright_text: footer?.copyright_text }} render={(f) => (
-          <footer className="py-8 px-6 md:px-12 border-t flex items-center justify-between" style={{ background: bg, borderColor: zinc200 }}>
-            <p className="text-[10px] font-light uppercase tracking-widest" style={{ color: zinc500 }}>{f.copyright_text || `© ${new Date().getFullYear()} ${f.brand}`}</p>
-            <span className="text-[9px] font-mono" style={{ color: zinc500 }}>Made with care</span>
-          </footer>
-        )} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: zinc900, color: "#fff" }} />

@@ -1,15 +1,17 @@
 "use client";
 
 import React from "react";
-import { Utensils, Clock, ArrowRight, MapPin, Phone, Mail, Globe, Star, Send, Sparkles } from "lucide-react";
+import { Utensils, Clock, ArrowRight, MapPin, Phone, Mail, Star, Send, Sparkles } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  NavMenu, LogoImage, DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, navCtaHref, ctaHref,
+  SeoEditorPreview, FaqAccordion, ctaHref,
   ContactSection, BenefitsSection,
 } from "./shared";
 import GallerySection from "../sections/gallery";
+import HeaderSection from "../sections/header";
+import FooterSection from "../sections/footer";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -300,35 +302,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       style={{ ...cssVars, background: "var(--dt-bg)", color: "var(--dt-text)", fontFamily: "var(--dt-body-font)" }}
     >
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: header?.brand_name, nav_cta_text: header?.nav_cta_text, logo_url: header?.logo_url, icon: header?.icon, tagline: header?.tagline, _hidden: dt?.layout?.hidden_sections }} render={(headerData) => (
-          <header
-            className="sticky top-0 z-50 backdrop-blur-md border-b px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative"
-            style={{ background: "color-mix(in srgb, var(--dt-bg) 80%, transparent)", borderColor: "var(--dt-border)" }}
-          >
-            <span className="min-w-0 text-lg sm:text-xl font-bold  text-[var(--dt-text)] tracking-wide flex items-center gap-2">
-              <LogoImage
-                url={headerData.logo_url}
-                icon={headerData.icon}
-                defaultIcon={Utensils}
-                iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
-                imgClass="h-8 w-auto shrink-0 object-contain"
-              />
-              <span className="min-w-0">
-                <span className="truncate block">{headerData.brand_name || "Brand Kami"}</span>
-                {headerData.tagline && <span className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate">{headerData.tagline}</span>}
-              </span>
-            </span>
-            <NavMenu
-              sectionOrder={sectionOrder}
-              hiddenSections={dt?.layout?.hidden_sections}
-              linkClass="text-[var(--dt-text)]"
-              drawerStyle={{ background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
-            />
-            <a href={navCtaHref(headerData.nav_cta_text)} aria-label={`Hubungi ${headerData.brand_name || "brand ini"}`} className="min-h-11 shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-medium hover:bg-[var(--dt-primary-hover)] transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]" style={{ color: "var(--dt-cta-text)" }}>
-              {headerData.nav_cta_text || "Hubungi Kami"}
-            </a>
-          </header>
-        )} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)
@@ -336,24 +310,8 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         .filter((key) => !arrivedSections || arrivedSections.includes(key))
         .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
 
-      {/*
-        Footer is left as a fixed dark amber band intentionally, not wired to
-        the design token: it's a self-contained inverted-contrast block (light
-        text on dark bg). Driving it from an arbitrary AI palette risks
-        producing unreadable combinations we can't visually verify here.
-      */}
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={{ brand_name: footer?.brand_name, tagline: footer?.tagline, copyright_text: footer?.copyright_text, brand_name_fallback: header?.brand_name }} render={(footerData) => {
-          const displayBrand = footerData.brand_name || footerData.brand_name_fallback || "Bisnis Kuliner Kami";
-          const displayTagline = footerData.tagline || "Cita rasa autentik untuk kebersamaan keluarga Anda";
-          return (
-            <footer className="bg-amber-950 text-amber-100/70 text-center py-10 text-xs border-t border-amber-900/30 space-y-1">
-              <p className="text-sm font-bold text-amber-100">{displayBrand}</p>
-              <p className="text-amber-100/50">{displayTagline}</p>
-              <p>{footerData.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}</p>
-            </footer>
-          );
-        }} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
