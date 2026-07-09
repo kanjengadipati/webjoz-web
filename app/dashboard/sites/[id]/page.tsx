@@ -8,7 +8,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import {
-  Save, Loader2, Sparkles, Zap,
+  Save, Loader2, Sparkles, Zap, Database,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
@@ -155,6 +155,14 @@ export default function SiteEditorPage() {
   const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
   const [upgradeContext, setUpgradeContext] = useState<"ai_regenerate" | "ai_design" | "ai_suggestion">("ai_regenerate");
   const [aiDesignInstructions, setAiDesignInstructions] = useState("");
+
+  // Usage meter
+  const [tenantUsage, setTenantUsage] = useState<{
+    usage: { generate_count: number; regen_count: number };
+    max_ai_generates: number;
+    max_ai_regens: number;
+    max_sites: number;
+  } | null>(null);
 
   const UPGRADE_COPY: Record<string, { title: string; body: string }> = {
     ai_regenerate: {
@@ -305,6 +313,16 @@ export default function SiteEditorPage() {
 
       // Fetch custom templates library
       void fetchCustomTemplates(true);
+
+      // Fetch usage data
+      try {
+        const usageRes = await request<any>(`/tenants/${activeTenantId}/usage`, {}, token);
+        if (usageRes.status === "success" && usageRes.data) {
+          setTenantUsage(usageRes.data);
+        }
+      } catch {
+        // silently fail — usage meter is non-critical
+      }
 
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat situs", "error");
@@ -1868,6 +1886,56 @@ export default function SiteEditorPage() {
                   })()}
 
                 </div>
+
+                {/* ── Usage Meter ── */}
+                {tenantUsage && (
+                  <div className="border-t border-white/10 px-3.5 py-2.5 space-y-2">
+                    <div className="flex items-center gap-1.5">
+                      <Database className="h-3 w-3 text-primary" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        AI Usage
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      <div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400">Generate</span>
+                          <span className="font-semibold text-slate-200">
+                            {tenantUsage.usage.generate_count} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                            style={{
+                              width: tenantUsage.max_ai_generates <= 0
+                                ? 100
+                                : Math.min((tenantUsage.usage.generate_count / tenantUsage.max_ai_generates) * 100, 100),
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400">Regenerasi</span>
+                          <span className="font-semibold text-slate-200">
+                            {tenantUsage.usage.regen_count} / {tenantUsage.max_ai_regens <= 0 ? "∞" : tenantUsage.max_ai_regens}
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-violet-500 transition-all duration-500"
+                            style={{
+                              width: tenantUsage.max_ai_regens <= 0
+                                ? 100
+                                : Math.min((tenantUsage.usage.regen_count / tenantUsage.max_ai_regens) * 100, 100),
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* ── AI Prompt bar inside field panel ── */}
                 <div className={`border-t border-white/10 flex-shrink-0 bg-[#111318] flex flex-col px-3.5 transition-all duration-300 ${aiPromptCollapsed ? 'py-2' : 'py-2.5 space-y-2'}`}>

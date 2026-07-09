@@ -59,6 +59,17 @@ interface Site {
   updated_at?: string;
 }
 
+interface PlanDetail {
+  id: number;
+  name: string;
+  slug: string;
+  max_sites: number;
+  max_ai_generates: number;
+  max_ai_regens: number;
+  max_members: number;
+  max_storage_mb: number;
+}
+
 interface Lead {
   id: number;
   created_at: string;
@@ -132,6 +143,12 @@ export default function DashboardOverviewPage() {
   const [sites, setSites] = useState<Site[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [plans, setPlans] = useState<PlanDetail[]>([]);
+  const [tenantUsage, setTenantUsage] = useState<{
+    usage: { generate_count: number; regen_count: number };
+    max_ai_generates: number;
+    max_ai_regens: number;
+  } | null>(null);
   const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
   const refresh = useCallback(async (showToast = false) => {
@@ -159,7 +176,7 @@ export default function DashboardOverviewPage() {
         ? { "X-Tenant-ID": activeTenantId.toString() }
         : {};
 
-      const [profileRes, sitesRes, leadsRes, analyticsRes] = await Promise.allSettled([
+      const [profileRes, sitesRes, leadsRes, analyticsRes, plansRes, usageRes] = await Promise.allSettled([
         fetchProfile(token),
         activeTenantId
           ? request<Site[]>("/sites", { headers: tenantHeaders }, token)
@@ -170,12 +187,18 @@ export default function DashboardOverviewPage() {
         activeTenantId
           ? request<AnalyticsData>(`/analytics?from=${fromDate}&to=${toDate}`, { headers: tenantHeaders }, token)
           : Promise.reject(new Error("No tenant")),
+        request<PlanDetail[]>("/plans/active", {}, token),
+        activeTenantId
+          ? request<any>(`/tenants/${activeTenantId}/usage`, {}, token)
+          : Promise.reject(new Error("No tenant")),
       ]);
 
       if (profileRes.status === "fulfilled") setProfile(profileRes.value.data);
       if (sitesRes.status === "fulfilled") setSites(sitesRes.value.data || []);
       if (leadsRes.status === "fulfilled") setLeads(leadsRes.value.data || []);
       if (analyticsRes.status === "fulfilled") setAnalytics(analyticsRes.value.data);
+      if (plansRes.status === "fulfilled") setPlans(plansRes.value.data || []);
+      if (usageRes.status === "fulfilled" && usageRes.value.data) setTenantUsage(usageRes.value.data);
     }
 
     setState(SectionState.SUCCESS);
@@ -199,6 +222,11 @@ export default function DashboardOverviewPage() {
     const totalViews = analytics?.total_pageviews ?? 0;
     return { totalSites: sites.length, publishedSites: publishedSites.length, drafts, totalLeads: leads.length, totalViews };
   }, [sites, leads, analytics]);
+
+  const currentPlan = useMemo(() => {
+    if (!activeTenant?.tenant?.plan || plans.length === 0) return null;
+    return plans.find((p) => p.slug === activeTenant.tenant.plan) || null;
+  }, [plans, activeTenant]);
 
   const barData = useMemo(() => {
     const byDate = analytics?.pageviews_by_date || [];
@@ -444,6 +472,59 @@ export default function DashboardOverviewPage() {
         <StatCard label="Visitors" value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-emerald-500" sub="This week" />
         <StatCard label="Health" value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub="All systems normal" />
       </section>
+
+      {currentPlan && (
+        <section>
+          <h3 className="text-lg font-bold tracking-tight mb-4 flex items-center gap-2">
+            <Database className="size-4 text-primary" />
+            Usage Meter
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-muted-foreground">Website</span>
+                <span className="text-sm font-bold">{metrics.totalSites} / {currentPlan.max_sites <= 0 ? "∞" : currentPlan.max_sites}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{
+                    width: currentPlan.max_sites <= 0 ? "100%" : `${Math.min((metrics.totalSites / currentPlan.max_sites) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-muted-foreground">AI Generate</span>
+                <span className="text-sm font-bold">{tenantUsage?.usage.generate_count ?? 0} / {currentPlan.max_ai_generates <= 0 ? "∞" : currentPlan.max_ai_generates}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                  style={{
+                    width: currentPlan.max_ai_generates <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.generate_count ?? 0) / currentPlan.max_ai_generates) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-muted-foreground">AI Regenerasi</span>
+                <span className="text-sm font-bold">{tenantUsage?.usage.regen_count ?? 0} / {currentPlan.max_ai_regens <= 0 ? "∞" : currentPlan.max_ai_regens}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-violet-500 transition-all duration-500"
+                  style={{
+                    width: currentPlan.max_ai_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.regen_count ?? 0) / currentPlan.max_ai_regens) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="grid lg:grid-cols-2 gap-6">
         <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">

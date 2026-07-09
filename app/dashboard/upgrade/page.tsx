@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { MIDTRANS_CLIENT_KEY } from "@/lib/config";
+import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL } from "@/lib/config";
 import { useToast } from "@/components/toast-provider";
 import { Loader2, Check, X, ArrowLeft, Zap, Globe, Users, HardDrive, RefreshCw } from "lucide-react";
 import Link from "next/link";
@@ -60,7 +60,7 @@ function loadSnapScript(): Promise<void> {
       return;
     }
     const script = document.createElement("script");
-    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.src = `${MIDTRANS_SNAP_BASE_URL}/snap/snap.js`;
     script.setAttribute("data-client-key", MIDTRANS_CLIENT_KEY);
     script.onload = () => resolve();
     script.onerror = () => reject(new Error("Gagal memuat Midtrans Snap"));
@@ -114,14 +114,13 @@ export default function UpgradePage() {
       pushToast("Paket Free sudah aktif", "info");
       return;
     }
+    // Try to pre-load Snap JS; if it fails we'll fall back to redirect
     if (!snapReady) {
-      pushToast("Memproses pembayaran...", "info");
       try {
         await loadSnapScript();
         setSnapReady(true);
       } catch {
-        pushToast("Gagal memuat pembayaran, refresh halaman", "error");
-        return;
+        // Snap JS blocked (e.g. CSP) — will redirect instead
       }
     }
 
@@ -140,35 +139,45 @@ export default function UpgradePage() {
       );
 
       const payment = res.data;
-      if (!payment?.snap_token) {
+      if (!payment?.snap_token && !payment?.snap_redirect_url) {
         pushToast("Gagal mendapatkan token pembayaran", "error");
         setPaying(null);
         return;
       }
 
-      (window as any).snap.pay(payment.snap_token, {
-        onSuccess: async () => {
-          pushToast("Pembayaran berhasil! Meng-upgrade paket...", "success");
-          setPaymentDone(true);
-          await refreshTenant();
-          await new Promise((r) => setTimeout(r, 2000));
-          router.push("/dashboard");
-        },
-        onPending: () => {
-          pushToast("Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.", "info");
-          setPaying(null);
-        },
-        onError: () => {
-          pushToast("Pembayaran gagal, silakan coba lagi", "error");
-          setPaying(null);
-        },
-        onClose: () => {
-          if (!paymentDone) {
-            pushToast("Pembayaran dibatalkan", "info");
+      // Use popup if Snap JS loaded successfully; otherwise fall back to redirect
+      if ((window as any).snap && payment.snap_token) {
+        (window as any).snap.pay(payment.snap_token, {
+          onSuccess: async () => {
+            pushToast("Pembayaran berhasil! Meng-upgrade paket...", "success");
+            setPaymentDone(true);
+            await refreshTenant();
+            await new Promise((r) => setTimeout(r, 2000));
+            router.push("/dashboard");
+          },
+          onPending: () => {
+            pushToast("Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.", "info");
             setPaying(null);
-          }
-        },
-      });
+          },
+          onError: () => {
+            pushToast("Pembayaran gagal, silakan coba lagi", "error");
+            setPaying(null);
+          },
+          onClose: () => {
+            if (!paymentDone) {
+              pushToast("Pembayaran dibatalkan", "info");
+              setPaying(null);
+            }
+          },
+        });
+      } else if (payment.snap_redirect_url) {
+        // Fallback: redirect to Midtrans hosted payment page
+        pushToast("Mengarahkan ke halaman pembayaran...", "info");
+        window.location.href = payment.snap_redirect_url;
+      } else {
+        pushToast("Gagal memproses pembayaran", "error");
+        setPaying(null);
+      }
     } catch (err: any) {
       pushToast(err.message || "Gagal memproses pembayaran", "error");
       setPaying(null);
