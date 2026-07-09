@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
+import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Loader2, Check, X, ArrowLeft, Zap, Globe, Users, HardDrive, RefreshCw } from "lucide-react";
+import { Loader2, Check, X, ArrowLeft, Zap } from "lucide-react";
 import { Button } from "@/components/ui";
 
 interface Transaction {
@@ -19,68 +20,80 @@ interface Transaction {
   settlement_time: string;
 }
 
-const STATUS_MAP: Record<string, { label: string; color: string; icon: any }> = {
-  settlement: { label: "Pembayaran Berhasil", color: "text-emerald-400", icon: Check },
-  capture: { label: "Pembayaran Berhasil", color: "text-emerald-400", icon: Check },
-  pending: { label: "Menunggu Pembayaran", color: "text-amber-400", icon: Loader2 },
-  deny: { label: "Pembayaran Ditolak", color: "text-red-400", icon: X },
-  expired: { label: "Pembayaran Kadaluarsa", color: "text-red-400", icon: X },
-  refund: { label: "Pembayaran Dikembalikan", color: "text-blue-400", icon: RefreshCw },
-  failed: { label: "Pembayaran Gagal", color: "text-red-400", icon: X },
-};
+const SETTLEMENT_STATUSES = new Set(["settlement", "capture"]);
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const token = useAuthToken();
+  const { activeTenant, refresh: refreshTenant } = useActiveTenant();
 
   const orderId = searchParams.get("order_id");
-  const transactionStatus = searchParams.get("transaction_status");
 
   const [tx, setTx] = useState<Transaction | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [settled, setSettled] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState("");
+  const settledRef = useRef(false);
+  const tenantRef = useRef(activeTenant);
+  tenantRef.current = activeTenant;
 
+  // Poll transaction until settlement
   useEffect(() => {
-    if (!token || !orderId) {
-      setLoading(false);
-      setError(!orderId ? "ID transaksi tidak ditemukan" : "Silakan login terlebih dahulu");
-      return;
-    }
+    if (!token || !orderId) return;
+    let cancelled = false;
 
-    const fetchTx = async () => {
-      try {
-        const res = await request<Transaction>(`/payments/order/${orderId}`, {}, token);
-        setTx(res.data);
-      } catch {
-        // retry once after a delay (notification may still be processing)
-        await new Promise((r) => setTimeout(r, 2000));
+    const poll = async () => {
+      for (let i = 0; i < 30; i++) {
+        if (cancelled) return;
         try {
           const res = await request<Transaction>(`/payments/order/${orderId}`, {}, token);
-          setTx(res.data);
+          if (SETTLEMENT_STATUSES.has(res.data.status)) {
+            if (!cancelled) {
+              setTx(res.data);
+              setSettled(true);
+              settledRef.current = true;
+            }
+            return;
+          }
         } catch {
-          setError("Gagal memuat detail transaksi. Silakan cek di halaman transaksi.");
+          // not found yet — keep polling
         }
-      } finally {
-        setLoading(false);
+        await new Promise((r) => setTimeout(r, 1500));
       }
+      if (!cancelled) setError("Konfirmasi memakan waktu lama. Silakan refresh.");
     };
 
-    fetchTx();
+    poll();
+    return () => { cancelled = true; };
   }, [token, orderId]);
 
-  const status = transactionStatus || tx?.status || "";
-  const statusInfo = STATUS_MAP[status] || { label: status, color: "text-slate-400", icon: Loader2 };
-  const StatusIcon = statusInfo.icon;
+  // Once settled, poll tenant until plan changes
+  useEffect(() => {
+    if (!settled || !refreshTenant) return;
+    let cancelled = false;
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
-        <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-sm text-muted-foreground">Memuat detail pembayaran...</p>
-      </div>
-    );
-  }
+    const pollTenant = async () => {
+      for (let i = 0; i < 10; i++) {
+        if (cancelled) return;
+        await refreshTenant();
+        // read from ref, which tracks the latest render
+        if (tenantRef.current?.tenant?.plan !== "free") {
+          if (!cancelled) setConfirmed(true);
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+      if (!cancelled) setConfirmed(true);
+    };
+
+    // small delay to let notification propagate
+    const timer = setTimeout(pollTenant, 1000);
+    return () => { cancelled = true; clearTimeout(timer); };
+    // activeTenant not in deps — we use ref to re-read latest value inside the loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settled, refreshTenant]);
+
+  const isPending = !settled && !error;
 
   return (
     <div className="max-w-lg mx-auto space-y-6 pt-12">
@@ -92,42 +105,36 @@ export default function PaymentSuccessPage() {
       </Link>
 
       <div className="bg-card border border-border/60 rounded-3xl p-8 text-center space-y-6 shadow-sm">
-        <div className={`size-16 rounded-full bg-white/5 flex items-center justify-center mx-auto border border-white/10`}>
-          {status === "settlement" || status === "capture" ? (
-            <div className="size-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
-              <Check className="size-8 text-emerald-400" />
-            </div>
-          ) : status === "pending" ? (
+        <div className="flex justify-center">
+          {isPending ? (
             <div className="size-16 rounded-full bg-amber-500/20 flex items-center justify-center">
               <Loader2 className="size-8 text-amber-400 animate-spin" />
             </div>
-          ) : (
+          ) : error ? (
             <div className="size-16 rounded-full bg-red-500/20 flex items-center justify-center">
               <X className="size-8 text-red-400" />
+            </div>
+          ) : (
+            <div className="size-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
+              <Check className="size-8 text-emerald-400" />
             </div>
           )}
         </div>
 
         <div className="space-y-1">
-          <h1 className={`text-2xl font-bold tracking-tight ${statusInfo.color}`}>
-            {statusInfo.label}
+          <h1 className={`text-2xl font-bold tracking-tight ${isPending ? "text-amber-400" : error ? "text-red-400" : "text-emerald-400"}`}>
+            {isPending ? "Memproses Pembayaran..." : error ? "Perlu Tindakan" : "Pembayaran Berhasil!"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {status === "settlement" || status === "capture"
-              ? "Paket Anda telah di-upgrade. Nikmati semua fitur Pro sekarang!"
-              : status === "pending"
-                ? "Pembayaran sedang diproses. Kami akan meng-upgrade paket Anda secara otomatis."
-                : "Silakan coba lagi atau hubungi tim support kami."}
+            {isPending
+              ? "Menunggu konfirmasi pembayaran dari Midtrans..."
+              : error
+                ? error
+                : "Paket Anda telah di-upgrade. Nikmati semua fitur Pro sekarang!"}
           </p>
         </div>
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
-            <p className="text-sm text-red-400">{error}</p>
-          </div>
-        )}
-
-        {tx && (
+        {tx && settled && (
           <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 space-y-3 text-left">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               Detail Transaksi
@@ -162,18 +169,27 @@ export default function PaymentSuccessPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
-          <Link href="/dashboard">
-            <Button className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
-              <Zap className="size-4 mr-2" /> Ke Dashboard
-            </Button>
-          </Link>
-          <Link href="/dashboard/upgrade">
-            <Button variant="secondary" className="w-full h-12 rounded-xl font-bold bg-background text-foreground hover:bg-background/80 border border-border/60">
-              Lihat Paket Lain
-            </Button>
-          </Link>
-        </div>
+        {settled && (
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/dashboard"
+              onClick={(e) => {
+                e.preventDefault();
+                // Hard navigation to force tenant store re-fetch
+                window.location.href = "/dashboard";
+              }}
+            >
+              <Button className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
+                <Zap className="size-4 mr-2" /> Ke Dashboard
+              </Button>
+            </Link>
+            <Link href="/dashboard/upgrade">
+              <Button variant="secondary" className="w-full h-12 rounded-xl font-bold bg-background text-foreground hover:bg-background/80 border border-border/60">
+                Lihat Paket Lain
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

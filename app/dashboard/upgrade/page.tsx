@@ -72,7 +72,7 @@ export default function UpgradePage() {
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
-  const { activeTenant, refresh: refreshTenant } = useActiveTenant();
+  const { activeTenant } = useActiveTenant();
 
   const [plans, setPlans] = useState<PlanItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,11 +150,8 @@ export default function UpgradePage() {
       if ((window as any).snap && payment.snap_token) {
         (window as any).snap.pay(payment.snap_token, {
           onSuccess: async () => {
-            pushToast("Pembayaran berhasil! Meng-upgrade paket...", "success");
             setPaymentDone(true);
-            await refreshTenant();
-            await new Promise((r) => setTimeout(r, 2000));
-            router.push("/dashboard");
+            router.push(`/dashboard/upgrade/success?order_id=${payment.order_id}`);
           },
           onPending: () => {
             pushToast("Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.", "info");
