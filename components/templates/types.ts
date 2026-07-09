@@ -4,6 +4,8 @@ export interface TestimonialItem {
   role: string;
   avatar_initials: string;
   avatar_color: string;
+  company?: string | null;
+  logo_url?: string | null;
 }
 
 export interface BenefitItem {
@@ -17,6 +19,7 @@ export interface BenefitItem {
 export interface FaqItem {
   question: string;
   answer: string;
+  category?: string | null;
 }
 
 export interface ImageCredit {
@@ -82,11 +85,11 @@ export interface DesignToken {
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
-      about?: "classic" | "split-image" | "stat-heavy";
-      benefits?: "grid" | "stat-grid" | "checklist";
-      testimonials?: "carousel" | "compact" | "grid";
-      cta?: "banner" | "card" | "centered";
-      faq?: "accordion" | "simple" | "columns";
+      about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
+      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table";
+      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight";
+      cta?: "banner" | "card" | "centered" | "split-image";
+      faq?: "accordion" | "simple" | "columns" | "sidebar-category";
       gallery?: "grid" | "masonry" | "carousel";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
@@ -152,6 +155,8 @@ export interface TemplateProps {
       highlight_stat_1?: { value: string; label: string };
       highlight_stat_2?: { value: string; label: string };
       highlight_stat_3?: { value: string; label: string };
+      milestones?: Array<{ year: string; title: string; description?: string }>;
+      team_members?: Array<{ name: string; role: string; photo_url?: string | null }>;
     };
     benefits: {
       title: string;
@@ -159,12 +164,18 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       textAlign?: "left" | "center" | "right";
+      comparison?: {
+        column_a_label: string;
+        column_b_label: string;
+        rows: Array<{ label: string; value_a: string; value_b: string }>;
+      };
     };
     testimonials?: {
       title: string;
       eyebrow?: string;
       items: TestimonialItem[];
       variant?: string;
+      subtitle?: string;
     };
     faq: {
       title: string;
@@ -177,6 +188,7 @@ export interface TemplateProps {
       eyebrow?: string;
       subheadline?: string;
       trust_signal?: string;
+      image_url?: string | null;
     };
     contact: {
       title: string;

@@ -5,11 +5,15 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import TestimonialsClassic from "./classic";
 import TestimonialsCompact from "./compact";
 import TestimonialsGrid from "./grid";
+import TestimonialsLogoWall from "./logo-wall";
+import TestimonialsFeaturedSpotlight from "./featured-spotlight";
 
 const variants: Record<string, ComponentType<{ testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }>> = {
   carousel: TestimonialsClassic,
   compact: TestimonialsCompact,
   grid: TestimonialsGrid,
+  "logo-wall": TestimonialsLogoWall,
+  "featured-spotlight": TestimonialsFeaturedSpotlight,
 };
 
 export default function TestimonialsSection({ testimonials, design_token }: { testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }) {
