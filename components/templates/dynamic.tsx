@@ -183,9 +183,10 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         const m = sec.data as TemplateProps["content"]["menu"];
         return (
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-            <MemoSectionContent content={m} render={(menuData) => (
-              <MenuSectionInner menu={menuData} design_token={dt} />
-            )} />
+            <MemoSectionContent content={{ menu: m, dt }} render={(data) => {
+              const { menu: mm } = data;
+              return <MenuSectionInner menu={mm} design_token={dt} />;
+            }} />
           </MemoPreviewSectionWrapper>
         );
       }
@@ -193,9 +194,10 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         const c = sec.data as TemplateProps["content"]["catalog"];
         return (
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-            <MemoSectionContent content={c} render={(catalogData) => (
-              <CatalogSectionInner catalog={catalogData} design_token={dt} />
-            )} />
+            <MemoSectionContent content={{ catalog: c, dt }} render={(data) => {
+              const { catalog: cc } = data;
+              return <CatalogSectionInner catalog={cc} design_token={dt} />;
+            }} />
           </MemoPreviewSectionWrapper>
         );
       }

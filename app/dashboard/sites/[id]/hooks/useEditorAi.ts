@@ -108,6 +108,7 @@ export function useEditorAi(
 
     try {
       setAiLoading(true);
+      const currentVariant = designTokenRef.current?.layout?.section_variants?.[section];
       const res = await request<any>("/ai/regenerate-section", {
         method: "POST",
         body: JSON.stringify({
@@ -115,6 +116,7 @@ export function useEditorAi(
           section,
           instructions,
           tenant_id: activeTenantId,
+          section_variant: currentVariant || "",
         }),
       }, token);
 

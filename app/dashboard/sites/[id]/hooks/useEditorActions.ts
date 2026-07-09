@@ -9,64 +9,10 @@ import {
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import { BODY_SECTION_KEYS, getOrderedSections } from "../editor-utils";
 import { getHiddenSections } from "@/lib/design-assets-config";
+import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 
-// Section variant options used by the variant picker in the design tab
-export const SECTION_VARIANT_OPTIONS: Record<string, { value: string; label: string }[]> = {
-  about: [
-    { value: "classic", label: "Klasik" },
-    { value: "split-image", label: "Split + Gambar" },
-    { value: "stat-heavy", label: "Statistik" },
-  ],
-  benefits: [
-    { value: "grid", label: "Grid" },
-    { value: "stat-grid", label: "Grid Statistik" },
-    { value: "checklist", label: "Checklist" },
-  ],
-  testimonials: [
-    { value: "carousel", label: "Carousel" },
-    { value: "compact", label: "Ringkas" },
-    { value: "grid", label: "Grid" },
-  ],
-  cta: [
-    { value: "banner", label: "Banner" },
-    { value: "card", label: "Kartu" },
-    { value: "centered", label: "Tengah" },
-  ],
-  faq: [
-    { value: "accordion", label: "Akordion" },
-    { value: "simple", label: "Sederhana" },
-    { value: "columns", label: "Kolom" },
-  ],
-  gallery: [
-    { value: "grid", label: "Grid" },
-    { value: "masonry", label: "Masonry" },
-    { value: "carousel", label: "Carousel" },
-  ],
-  menu: [
-    { value: "grid", label: "Grid" },
-    { value: "compact", label: "Ringkas" },
-    { value: "cards", label: "Kartu" },
-    { value: "text-list", label: "Teks List" },
-    { value: "compact-list", label: "List Ringkas" },
-    { value: "tabs-by-category", label: "Tab Kategori" },
-    { value: "accordion-by-category", label: "Akordion Kategori" },
-  ],
-  catalog: [
-    { value: "grid", label: "Grid" },
-    { value: "compact", label: "Ringkas" },
-    { value: "cards", label: "Kartu" },
-    { value: "grid-dense", label: "Grid Padat" },
-    { value: "showcase-featured", label: "Showcase Unggulan" },
-    { value: "tabs-by-category", label: "Tab Kategori" },
-  ],
-  contact: [
-    { value: "classic-split", label: "Klasik Split" },
-    { value: "minimal-centered", label: "Minimal Tengah" },
-    { value: "overlay-map", label: "Overlay Peta" },
-    { value: "bento-grid", label: "Bento Grid" },
-    { value: "dark-split", label: "Dark Split" },
-  ],
-};
+// Backward-compat re-export
+export { SECTION_VARIANT_OPTIONS };
 
 export interface EditorActionsState {
   globalUndo: any[];

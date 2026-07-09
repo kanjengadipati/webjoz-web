@@ -9,6 +9,9 @@ import MenuTextList from "./text-list";
 import MenuCompactList from "./compact-list";
 import MenuTabsByCategory from "./tabs-by-category";
 import MenuAccordionByCategory from "./accordion-by-category";
+import MenuBentoPhotoGrid from "./bento-photo-grid";
+import MenuVisualShowcaseHero from "./visual-showcase-hero";
+import MenuSidebarScrollspyPhoto from "./sidebar-scrollspy-photo";
 
 const variants: Record<string, ComponentType<{ menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }>> = {
   // existing
@@ -20,6 +23,9 @@ const variants: Record<string, ComponentType<{ menu: TemplateProps["content"]["m
   "compact-list": MenuCompactList,
   "tabs-by-category": MenuTabsByCategory,
   "accordion-by-category": MenuAccordionByCategory,
+  "bento-photo-grid": MenuBentoPhotoGrid,
+  "visual-showcase-hero": MenuVisualShowcaseHero,
+  "sidebar-scrollspy-photo": MenuSidebarScrollspyPhoto,
 };
 
 export default function MenuSection({ menu, design_token }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }) {

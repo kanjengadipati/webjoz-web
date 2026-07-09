@@ -48,6 +48,7 @@ import {
  getHiddenSections,
  getEnabledVariants,
 } from "@/lib/design-assets-config";
+import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
@@ -741,6 +742,7 @@ export default function SiteEditorPage() {
 
     try {
       setAiLoading(true);
+      const currentVariant = designTokenRef.current?.layout?.section_variants?.[section];
       const res = await request<any>("/ai/regenerate-section", {
         method: "POST",
         body: JSON.stringify({
@@ -748,6 +750,7 @@ export default function SiteEditorPage() {
           section: section,
           instructions: instructions,
           tenant_id: activeTenantId,
+          section_variant: currentVariant || "",
         }),
       }, token);
 
@@ -888,63 +891,6 @@ export default function SiteEditorPage() {
     });
   };
 
-  const SECTION_VARIANT_OPTIONS: Record<string, { value: string; label: string }[]> = {
-    about: [
-      { value: "classic", label: "Klasik" },
-      { value: "split-image", label: "Split + Gambar" },
-      { value: "stat-heavy", label: "Statistik" },
-    ],
-    benefits: [
-      { value: "grid", label: "Grid" },
-      { value: "stat-grid", label: "Grid Statistik" },
-      { value: "checklist", label: "Checklist" },
-    ],
-    testimonials: [
-      { value: "carousel", label: "Carousel" },
-      { value: "compact", label: "Ringkas" },
-      { value: "grid", label: "Grid" },
-    ],
-    cta: [
-      { value: "banner", label: "Banner" },
-      { value: "card", label: "Kartu" },
-      { value: "centered", label: "Tengah" },
-    ],
-    faq: [
-      { value: "accordion", label: "Akordion" },
-      { value: "simple", label: "Sederhana" },
-      { value: "columns", label: "Kolom" },
-    ],
-    gallery: [
-      { value: "grid", label: "Grid" },
-      { value: "masonry", label: "Masonry" },
-      { value: "carousel", label: "Carousel" },
-    ],
-    menu: [
-      { value: "grid", label: "Grid" },
-      { value: "compact", label: "Ringkas" },
-      { value: "cards", label: "Kartu" },
-      { value: "text-list", label: "Teks List" },
-      { value: "compact-list", label: "List Ringkas" },
-      { value: "tabs-by-category", label: "Tab Kategori" },
-      { value: "accordion-by-category", label: "Akordion Kategori" },
-    ],
-    catalog: [
-      { value: "grid", label: "Grid" },
-      { value: "compact", label: "Ringkas" },
-      { value: "cards", label: "Kartu" },
-      { value: "grid-dense", label: "Grid Padat" },
-      { value: "showcase-featured", label: "Showcase Unggulan" },
-      { value: "tabs-by-category", label: "Tab Kategori" },
-    ],
-    contact: [
-      { value: "classic-split", label: "Klasik Split" },
-      { value: "minimal-centered", label: "Minimal Tengah" },
-      { value: "overlay-map", label: "Overlay Peta" },
-      { value: "bento-grid", label: "Bento Grid" },
-      { value: "dark-split", label: "Dark Split" },
-    ],
-  };
-
   const updateSectionVariant = (section: string, value: string) => {
     pushGlobalUndo();
     setDesignToken((prev: any) => {
@@ -956,16 +902,21 @@ export default function SiteEditorPage() {
           [section]: value,
         },
       };
-      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
-        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
-        Object.assign(next, defaults, next);
-        next.palette = { ...defaults.palette, ...(next.palette || {}) };
-        next.typography = { ...defaults.typography, ...(next.typography || {}) };
-        next.layout = { ...defaults.layout, ...next.layout };
-        setSiteDetails((prev: any) => ({ ...prev, template_id: "TEMPLATE_DYNAMIC" }));
-      }
       return next;
     });
+
+    // If using a legacy template, switch to dynamic engine so the section component renders the variant
+    if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+      const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+      setDesignToken((prev: any) => {
+        const next = prev ? JSON.parse(JSON.stringify(prev)) : {};
+        next.palette = { ...defaults.palette, ...(next.palette || {}) };
+        next.typography = { ...defaults.typography, ...(next.typography || {}) };
+        next.theme_mode = defaults.theme_mode;
+        return next;
+      });
+      setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
+    }
   };
 
   const pushGlobalUndo = () => {
@@ -1869,9 +1820,25 @@ export default function SiteEditorPage() {
                           onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
                           className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
                         >
-                          {enabledOpts.map((opt) => (
-                            <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
-                          ))}
+                          {(() => {
+                            const groups: { label?: string; options: typeof enabledOpts }[] = [];
+                            let cur: { label?: string; options: typeof enabledOpts } | null = null;
+                            for (const opt of enabledOpts) {
+                              if (opt.group) {
+                                if (!cur || cur.label !== opt.group) { cur = { label: opt.group, options: [] }; groups.push(cur); }
+                                cur.options.push(opt);
+                              } else { cur = null; groups.push({ options: [opt] }); }
+                            }
+                            return groups.map((g) =>
+                              g.label ? (
+                                <optgroup key={g.label} label={g.label}>
+                                  {g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)}
+                                </optgroup>
+                              ) : (
+                                g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)
+                              )
+                            );
+                          })()}
                         </select>
                       </div>
                     );
@@ -2570,9 +2537,25 @@ export default function SiteEditorPage() {
                         onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
                         className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
                       >
-                        {enabledOpts.map((opt) => (
-                          <option key={opt.value} value={opt.value} className="bg-[#111318]">{opt.label}</option>
-                        ))}
+                        {(() => {
+                          const groups: { label?: string; options: typeof enabledOpts }[] = [];
+                          let cur: { label?: string; options: typeof enabledOpts } | null = null;
+                          for (const opt of enabledOpts) {
+                            if (opt.group) {
+                              if (!cur || cur.label !== opt.group) { cur = { label: opt.group, options: [] }; groups.push(cur); }
+                              cur.options.push(opt);
+                            } else { cur = null; groups.push({ options: [opt] }); }
+                          }
+                          return groups.map((g) =>
+                            g.label ? (
+                              <optgroup key={g.label} label={g.label}>
+                                {g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)}
+                              </optgroup>
+                            ) : (
+                              g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)
+                            )
+                          );
+                        })()}
                       </select>
                     </div>
                   );

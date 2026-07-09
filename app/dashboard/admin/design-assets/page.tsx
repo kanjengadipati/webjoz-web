@@ -24,6 +24,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 import { SECTION_META, BODY_SECTION_KEYS, OPTIONAL_SECTION_KEYS } from "@/app/dashboard/sites/[id]/editor-utils";
 import { loadGoogleFont } from "@/components/templates/helpers";
+import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 
 const GOOGLE_FONTS_WHITELIST = [
   "Inter", "Roboto", "Open Sans", "Montserrat", "Lato",
@@ -126,6 +127,15 @@ function VariantPreview({ id }: { id: string }) {
     "menu-accordion-by-category": (
       <svg viewBox="0 0 80 48" className="w-full h-full">{[4,18,32].map((y,i)=><g key={y}><rect x="4" y={y} width="72" height="11" rx="2" fill="currentColor" opacity={i===0?".18":".1"}/><rect x="8" y={y+4} width="36" height="3" rx="1" fill="currentColor" opacity=".25"/><text x="70" y={y+9} fontSize="8" fill="currentColor" opacity=".4">{i===0?"▲":"▼"}</text>{i===0&&<><rect x="8" y="18" width="48" height="2" rx="1" fill="currentColor" opacity=".1"/><rect x="8" y="22" width="40" height="2" rx="1" fill="currentColor" opacity=".1"/></>}</g>)}</svg>
     ),
+    "menu-bento-photo-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="36" height="22" rx="2" fill="currentColor" opacity=".2"/><rect x="42" y="2" width="36" height="10" rx="2" fill="currentColor" opacity=".15"/><rect x="42" y="14" width="17" height="10" rx="2" fill="currentColor" opacity=".15"/><rect x="61" y="14" width="17" height="10" rx="2" fill="currentColor" opacity=".12"/><rect x="2" y="26" width="17" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x="21" y="26" width="17" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="42" y="26" width="36" height="18" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "menu-visual-showcase-hero": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="22" rx="3" fill="currentColor" opacity=".2"/><rect x="4" y="4" width="72" height="8" rx="3" fill="currentColor" opacity=".1"/><rect x="8" y="14" width="20" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="18" width="14" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="4" y="30" width="22" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="29" y="30" width="22" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="54" y="30" width="22" height="14" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "menu-sidebar-scrollspy-photo": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="16" height="40" rx="2" fill="currentColor" opacity=".1"/>{[6,12,18,24,30,36].map(y=><rect key={y} x="4" y={y} width="12" height="3" rx="1" fill="currentColor" opacity=".2"/>)}<rect x="22" y="4" width="26" height="18" rx="2" fill="currentColor" opacity=".18"/><rect x="52" y="4" width="26" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="22" y="26" width="26" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="26" width="26" height="18" rx="2" fill="currentColor" opacity=".18"/></svg>
+    ),
     // Catalog
     "catalog-grid": (
       <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+11} width="18" height="3" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
@@ -144,6 +154,24 @@ function VariantPreview({ id }: { id: string }) {
     ),
     "catalog-tabs-by-category": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".3"/><rect x="25" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="46" y="4" width="18" height="7" rx="2" fill="currentColor" opacity=".12"/><rect x="4" y="14" width="72" height="1" fill="currentColor" opacity=".2"/>{[4,28].map(y=>[4,28,52].map(x=><rect key={`${x}${y}`} x={x} y={y+16} width="22" height="14" rx="2" fill="currentColor" opacity=".12"/>))}</svg>
+    ),
+    "catalog-editorial-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="36" height="26" rx="2" fill="currentColor" opacity=".2"/><rect x="42" y="4" width="36" height="12" rx="2" fill="currentColor" opacity=".15"/><rect x="42" y="18" width="17" height="12" rx="2" fill="currentColor" opacity=".12"/><rect x="61" y="18" width="17" height="12" rx="2" fill="currentColor" opacity=".15"/><rect x="2" y="32" width="17" height="12" rx="2" fill="currentColor" opacity=".12"/><rect x="21" y="32" width="17" height="12" rx="2" fill="currentColor" opacity=".15"/><rect x="42" y="32" width="36" height="12" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "catalog-masonry-flow": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="24" height="18" rx="2" fill="currentColor" opacity=".18"/><rect x="28" y="4" width="24" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="54" y="4" width="24" height="26" rx="2" fill="currentColor" opacity=".2"/><rect x="2" y="24" width="24" height="20" rx="2" fill="currentColor" opacity=".15"/><rect x="28" y="20" width="24" height="24" rx="2" fill="currentColor" opacity=".18"/></svg>
+    ),
+    "catalog-instagram-square-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[2,20,38].map(y=>[2,20,38,56].map(x=><rect key={`${x}${y}`} x={x} y={y} width="16" height="14" rx="2" fill="currentColor" opacity=".15"/>))}</svg>
+    ),
+    "catalog-split-hero-catalog": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="46" height="44" rx="3" fill="currentColor" opacity=".2"/><rect x="2" y="2" width="46" height="10" rx="3" fill="currentColor" opacity=".1"/><rect x="6" y="16" width="14" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="6" y="22" width="24" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="6" y="28" width="20" height="2" rx="1" fill="currentColor" opacity=".15"/><rect x="52" y="2" width="26" height="20" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="24" width="26" height="20" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "catalog-neo-brutalist-matrix": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="24" height="18" rx="1" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".3"/><rect x="30" y="2" width="22" height="14" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".2"/><rect x="56" y="6" width="22" height="18" rx="1" fill="currentColor" opacity=".15" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".25"/><rect x="2" y="26" width="22" height="18" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".2"/><rect x="30" y="20" width="22" height="18" rx="1" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".3"/><rect x="56" y="28" width="22" height="14" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".2"/></svg>
+    ),
+    "catalog-horizontal-swipe-carousel": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="34" rx="3" fill="currentColor" opacity=".18"/><rect x="4" y="4" width="72" height="12" rx="3" fill="currentColor" opacity=".1"/><text x="8" y="14" fontSize="8" fill="currentColor" opacity=".5">‹</text><text x="68" y="14" fontSize="8" fill="currentColor" opacity=".5">›</text><rect x="8" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="30" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><circle cx="30" cy="42" r="2" fill="currentColor" opacity=".4"/><circle cx="40" cy="42" r="2" fill="currentColor" opacity=".2"/><circle cx="50" cy="42" r="2" fill="currentColor" opacity=".2"/></svg>
     ),
     // Contact
     "contact-classic-split": (
@@ -170,64 +198,6 @@ function VariantPreview({ id }: { id: string }) {
     </div>
   );
 }
-
-// Mirror of SECTION_VARIANT_OPTIONS from the editor — single source of truth for admin UI
-const SECTION_VARIANT_OPTIONS: Record<string, { value: string; label: string; description: string }[]> = {
-  about: [
-    { value: "classic", label: "Klasik", description: "Teks di kiri, konten bersih tanpa gambar besar." },
-    { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar besar di kanan." },
-    { value: "stat-heavy", label: "Statistik", description: "Tampilkan angka highlight dan statistik bisnis." },
-  ],
-  benefits: [
-    { value: "grid", label: "Grid", description: "Kartu ikon tersusun grid rapi." },
-    { value: "stat-grid", label: "Grid Statistik", description: "Grid dengan angka/statistik di tiap item." },
-    { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
-  ],
-  testimonials: [
-    { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
-    { value: "compact", label: "Ringkas", description: "Avatar kecil + kutipan singkat dalam satu baris." },
-    { value: "grid", label: "Grid", description: "Semua testimoni tampil sekaligus dalam grid." },
-  ],
-  cta: [
-    { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
-    { value: "card", label: "Kartu", description: "Kotak terpusat dengan shadow dan border." },
-    { value: "centered", label: "Tengah", description: "Teks dan tombol rata tengah tanpa background." },
-  ],
-  faq: [
-    { value: "accordion", label: "Akordion", description: "Expand/collapse per item, hemat ruang." },
-    { value: "simple", label: "Sederhana", description: "Semua Q&A tampil terbuka tanpa interaksi." },
-    { value: "columns", label: "Kolom", description: "2 kolom Q&A berdampingan." },
-  ],
-  gallery: [
-    { value: "grid", label: "Grid", description: "Foto dalam kotak seragam tersusun rapi." },
-    { value: "masonry", label: "Masonry", description: "Tinggi foto bervariasi seperti Pinterest." },
-    { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
-  ],
-  menu: [
-    { value: "grid", label: "Grid", description: "Kartu produk dalam grid dengan foto." },
-    { value: "compact", label: "Ringkas", description: "List kompak nama + harga tanpa foto besar." },
-    { value: "cards", label: "Kartu", description: "Kartu besar dengan foto dan deskripsi." },
-    { value: "text-list", label: "Teks List", description: "Daftar teks minimalis, tanpa gambar." },
-    { value: "compact-list", label: "List Ringkas", description: "Baris kompak dengan thumbnail kecil." },
-    { value: "tabs-by-category", label: "Tab Kategori", description: "Tab per kategori menu di atas." },
-    { value: "accordion-by-category", label: "Akordion Kategori", description: "Tiap kategori bisa di-expand." },
-  ],
-  catalog: [
-    { value: "grid", label: "Grid", description: "Kartu produk standar dalam grid." },
-    { value: "compact", label: "Ringkas", description: "List kompak nama + harga." },
-    { value: "cards", label: "Kartu", description: "Kartu besar dengan foto dan badge." },
-    { value: "grid-dense", label: "Grid Padat", description: "Grid lebih rapat, lebih banyak produk per baris." },
-    { value: "showcase-featured", label: "Showcase Unggulan", description: "Produk berbadge ditampilkan lebih besar." },
-    { value: "tabs-by-category", label: "Tab Kategori", description: "Tab per kategori produk." },
-  ],
-  contact: [
-    { value: "classic-split", label: "Klasik Split", description: "Form kiri, info kontak kanan." },
-    { value: "minimal-centered", label: "Minimal Tengah", description: "Kontak terpusat tanpa peta." },
-    { value: "overlay-map", label: "Overlay Peta", description: "Peta penuh dengan info overlay di atas." },
-    { value: "bento-grid", label: "Bento Grid", description: "Kartu info tersusun bento." },
-    { value: "dark-split", label: "Dark Split", description: "Split gelap premium, form + kontak." },
-  ],
-};
 
 type Tab = "sections" | "pairings" | "patterns" | "presets";
 
