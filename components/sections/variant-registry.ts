@@ -13,26 +13,33 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "classic", label: "Klasik", description: "Teks di kiri, konten bersih tanpa gambar besar." },
     { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar besar di kanan." },
     { value: "stat-heavy", label: "Statistik", description: "Tampilkan angka highlight dan statistik bisnis." },
+    { value: "timeline", label: "Timeline", description: "Kronologi perjalanan bisnis (membutuhkan milestones)." },
+    { value: "team-grid", label: "Grid Tim", description: "Grid anggota tim (membutuhkan team_members)." },
   ],
   benefits: [
     { value: "grid", label: "Grid", description: "Kartu ikon tersusun grid rapi." },
     { value: "stat-grid", label: "Grid Statistik", description: "Grid dengan angka/statistik di tiap item." },
     { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
+    { value: "comparison-table", label: "Tabel Perbandingan", description: "Perbandingan A vs B dalam tabel (membutuhkan comparison)." },
   ],
   testimonials: [
     { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
     { value: "compact", label: "Ringkas", description: "Avatar kecil + kutipan singkat dalam satu baris." },
     { value: "grid", label: "Grid", description: "Semua testimoni tampil sekaligus dalam grid." },
+    { value: "logo-wall", label: "Logo Klien", description: "Logo perusahaan klien (membutuhkan logo_url)." },
+    { value: "featured-spotlight", label: "Sorotan", description: "Satu testimoni utama ditonjolkan." },
   ],
   cta: [
     { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
     { value: "card", label: "Kartu", description: "Kotak terpusat dengan shadow dan border." },
     { value: "centered", label: "Tengah", description: "Teks dan tombol rata tengah tanpa background." },
+    { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar di kanan (membutuhkan image_url)." },
   ],
   faq: [
     { value: "accordion", label: "Akordion", description: "Expand/collapse per item, hemat ruang." },
     { value: "simple", label: "Sederhana", description: "Semua Q&A tampil terbuka tanpa interaksi." },
     { value: "columns", label: "Kolom", description: "2 kolom Q&A berdampingan." },
+    { value: "sidebar-category", label: "Kategori Sidebar", description: "Filter Q&A per kategori (membutuhkan category)." },
   ],
   gallery: [
     { value: "grid", label: "Grid", description: "Foto dalam kotak seragam tersusun rapi." },

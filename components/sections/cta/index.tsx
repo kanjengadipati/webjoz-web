@@ -5,11 +5,13 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import CtaClassic from "./classic";
 import CtaCard from "./card";
 import CtaCentered from "./centered";
+import CtaSplitImage from "./split-image";
 
 const variants: Record<string, ComponentType<{ cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null }>> = {
   banner: CtaClassic,
   card: CtaCard,
   centered: CtaCentered,
+  "split-image": CtaSplitImage,
 };
 
 export default function CtaSection({ cta, design_token }: { cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null }) {
