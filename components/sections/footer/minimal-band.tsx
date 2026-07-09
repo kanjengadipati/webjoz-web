@@ -2,7 +2,12 @@
 import React from "react";
 import type { FooterVariantProps } from "./types";
 
-const DARK_BG = "color-mix(in srgb, var(--dt-text) 92%, black)";
+const FOOTER_BG = "var(--dt-surface)";
+const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
+const TXT_MED = "color-mix(in srgb, var(--dt-text) 50%, transparent)";
+const TXT_LOW = "color-mix(in srgb, var(--dt-text) 40%, transparent)";
+const TXT_BASE = "color-mix(in srgb, var(--dt-text) 65%, transparent)";
+const BORDER_TOP = "var(--dt-border)";
 
 export default function MinimalBand({ footer, brand_name }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
@@ -10,11 +15,11 @@ export default function MinimalBand({ footer, brand_name }: FooterVariantProps) 
   return (
     <footer
       className="text-center py-10 text-xs space-y-1"
-      style={{ background: DARK_BG, color: "rgba(255,255,255,0.65)" }}
+      style={{ background: FOOTER_BG, color: TXT_BASE, borderTop: `1px solid ${BORDER_TOP}` }}
     >
-      <p className="text-sm font-bold text-white/90">{displayBrand}</p>
-      {displayTagline && <p className="text-white/50">{displayTagline}</p>}
-      <p className="text-white/40">
+      <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
+      {displayTagline && <p style={{ color: TXT_MED }}>{displayTagline}</p>}
+      <p style={{ color: TXT_LOW }}>
         {footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
       </p>
     </footer>

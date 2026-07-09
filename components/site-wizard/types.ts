@@ -15,7 +15,7 @@ export type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips";
+  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips" | "mood-chips";
 };
 
 export type PreviewData = {
@@ -24,7 +24,7 @@ export type PreviewData = {
   template_id?: string;
 };
 
-export type ChatStage = "name" | "description" | "type" | "done";
+export type ChatStage = "name" | "description" | "type" | "mood" | "done";
 export type InferenceConfidence = "high" | "medium" | "low";
 export type InferenceResult = {
   type?: string;
@@ -47,4 +47,11 @@ export type SubTypeItem = {
   value: string;
   emoji: string;
   label: string;
+};
+
+export type MoodItem = {
+  value: string;
+  emoji: string;
+  label: string;
+  desc: string;
 };

@@ -120,6 +120,7 @@ export function calculateProgress(chatStage: string): number {
     case "name": return 10;
     case "description": return 25;
     case "type": return 40;
+    case "mood": return 55;
     case "done": return 100;
     default: return 100;
   }
@@ -130,7 +131,8 @@ export function getStageNumber(chatStage: string): number {
     case "name": return 1;
     case "description": return 2;
     case "type": return 3;
-    case "done": return 3;
+    case "mood": return 4;
+    case "done": return 4;
     default: return 1;
   }
 }

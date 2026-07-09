@@ -13,13 +13,13 @@ import {
   Plus,
   RefreshCw,
   Smartphone,
-  Tablet,
   Sparkles,
+  Tablet,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
-import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, INITIAL_MESSAGE } from "./constants";
+import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
@@ -207,12 +207,13 @@ export function SiteWizard({
   const handleGenerate = async (
     bName = chat.businessName,
     bType = chat.businessType,
-    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string } = {}
+    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string } = {}
   ) => {
     const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsapp;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceArea;
     const nextDescription = overrides.description ?? chat.descriptionRef.current;
+    const nextMood = overrides.mood ?? chat.mood;
 
     preview.setStreamedSections({});
     preview.setStreamedDesignToken(null);
@@ -232,19 +233,20 @@ export function SiteWizard({
       businessSubType: nextBusinessSubType,
       whatsapp: nextWhatsapp,
       serviceArea: nextServiceArea,
+      mood: nextMood,
     });
     if (nextDescription) chat.descriptionRef.current = nextDescription;
 
     localStorage.setItem(PENDING_KEY, JSON.stringify({
       businessName: bName, businessType: bType, businessSubType: nextBusinessSubType,
       description: nextDescription || "",
-      whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
+      whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "", mood: nextMood || "",
     }));
 
     await generate.startStream({
       business_name: bName, business_type: bType, business_sub_type: nextBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
-      description: nextDescription || undefined,
+      description: nextDescription || undefined, mood: nextMood || undefined,
     });
   };
 
@@ -259,6 +261,13 @@ export function SiteWizard({
       preview.setRegenCount(0);
       preview.setHasUnsavedEdits(false);
       generate.didGenerateRef.current = true;
+    });
+  };
+  const handleSelectMood = (mood: string) => {
+    chat.handleSelectMood(mood, (name, type, overrides) => {
+      preview.setRegenCount(0);
+      preview.setHasUnsavedEdits(false);
+      generate.didGenerateRef.current = true;
       void handleGenerate(name, type, overrides);
     });
   };
@@ -267,7 +276,6 @@ export function SiteWizard({
       preview.setRegenCount(0);
       preview.setHasUnsavedEdits(false);
       generate.didGenerateRef.current = true;
-      void handleGenerate(name, type, overrides);
     });
   };
 
@@ -276,7 +284,7 @@ export function SiteWizard({
       localStorage.setItem(PENDING_KEY, JSON.stringify({
         businessName: chat.businessName, businessType: chat.businessType,
         businessSubType: chat.businessSubType, description: chat.description, whatsapp: chat.whatsapp,
-        service_area: chat.serviceArea || "",
+        service_area: chat.serviceArea || "", mood: chat.mood || "",
         templateId: preview.previewData?.template_id, previewContent: preview.previewData?.content,
         previewDesignToken: preview.previewData?.design_token,
       }));
@@ -480,6 +488,34 @@ export function SiteWizard({
               );
             }
 
+            if (m.widget === "mood-chips") {
+              const isLocked = chat.chatStage !== "mood";
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+                  <div className="flex flex-wrap gap-1.5">
+                    {MOOD_OPTIONS.map((mo) => {
+                      const isSelected = chat.mood === mo.value;
+                      return (
+                        <button
+                          key={mo.value}
+                          type="button"
+                          onClick={() => !isLocked && handleSelectMood(mo.value)}
+                          disabled={isLocked}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all ${isSelected ? "text-white border-primary/60" : isLocked ? "text-slate-600 border-white/5 cursor-not-allowed" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white cursor-pointer active:scale-95"}`}
+                          style={{ background: isSelected ? "rgba(99,102,241,0.2)" : isLocked ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)" }}
+                        >
+                          <span>{mo.emoji}</span>
+                          <span>{mo.label}</span>
+                          {isSelected && <span className="text-primary text-[10px]">✓</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[10px] text-slate-500 px-0.5">Pilih mood yang sesuai dengan brand Anda</p>
+                </div>
+              );
+            }
+
             if (m.widget === "type-chips") {
               const isLocked = chat.chatStage !== "type";
               const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : null;
@@ -569,7 +605,7 @@ export function SiteWizard({
         </div>
 
         {/* Chat Input */}
-        {chat.chatStage !== "type" && chat.chatStage !== "done" && (
+        {chat.chatStage !== "type" && chat.chatStage !== "mood" && chat.chatStage !== "done" && (
           <div className="shrink-0 px-4 pb-12 pt-2 md:py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <form onSubmit={handleSendText} className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <input
@@ -603,7 +639,7 @@ export function SiteWizard({
               className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"}`}
             />
             <span className="transition-all duration-300">
-              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type") && "Menunggu input..."}
+              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type" || chat.chatStage === "mood") && "Menunggu input..."}
               {preview.previewState === "loading" && "AI sedang generate..."}
               {preview.previewState === "result" && "Preview siap ✓"}
               {preview.previewState === "wireframe" && chat.chatStage === "done" && "Menyiapkan AI..."}
