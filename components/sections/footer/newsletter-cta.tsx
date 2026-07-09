@@ -2,7 +2,11 @@
 import React from "react";
 import type { FooterVariantProps } from "./types";
 
-const DARK_BG = "color-mix(in srgb, var(--dt-text) 92%, black)";
+const FOOTER_BG = "color-mix(in srgb, var(--dt-bg) 92%, black)";
+const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
+const TXT_MED = "color-mix(in srgb, var(--dt-text) 50%, transparent)";
+const TXT_LOW = "color-mix(in srgb, var(--dt-text) 40%, transparent)";
+const TXT_BASE = "color-mix(in srgb, var(--dt-text) 65%, transparent)";
 
 export default function NewsletterCta({ footer, brand_name }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
@@ -11,11 +15,11 @@ export default function NewsletterCta({ footer, brand_name }: FooterVariantProps
   return (
     <footer
       className="py-12 px-6 text-center text-xs"
-      style={{ background: DARK_BG, color: "rgba(255,255,255,0.65)" }}
+      style={{ background: FOOTER_BG, color: TXT_BASE }}
     >
       <div className="max-w-lg mx-auto space-y-4">
-        <p className="text-lg font-bold text-white/90">{displayBrand}</p>
-        {displayTagline && <p className="text-white/50 text-sm">{displayTagline}</p>}
+        <p className="text-lg font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
+        {displayTagline && <p className="text-sm" style={{ color: TXT_MED }}>{displayTagline}</p>}
 
         <div className="pt-2">
           <a
@@ -27,7 +31,7 @@ export default function NewsletterCta({ footer, brand_name }: FooterVariantProps
           </a>
         </div>
 
-        <p className="text-white/40 pt-4">
+        <p className="pt-4" style={{ color: TXT_LOW }}>
           {footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
         </p>
       </div>
