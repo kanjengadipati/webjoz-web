@@ -395,13 +395,20 @@ export default function LandingPage() {
               Mulai gratis, kembangkan kapan pun Anda siap.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
             <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative">
               <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Gratis</div>
               <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
-              <p className="text-sm text-muted-foreground mb-6">Selamanya</p>
+              <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
               <ul className="space-y-2.5 text-sm text-left mb-8">
-                {["1 website aktif", "Semua template & AI fitur", "Subdomain .webjoz.app", "Hosting & SSL gratis", "Edit kapan saja"].map(item => (
+                {[
+                  "1 website",
+                  "AI Generate 10x/bulan",
+                  "AI Regenerasi 20x/bulan",
+                  "Subdomain .webjoz.app",
+                  "Hosting & SSL gratis",
+                  "Semua template",
+                ].map(item => (
                   <li key={item} className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     <span>{item}</span>
@@ -414,21 +421,51 @@ export default function LandingPage() {
             </Card>
             <Card className="border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 px-6 py-8 text-center shadow-lg shadow-primary/10 relative overflow-hidden">
               <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
-                Segera
+                Terpopuler
               </div>
               <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Pro</div>
-              <div className="text-4xl font-bold text-foreground mb-1">?</div>
-              <p className="text-sm text-muted-foreground mb-6">Harga menyusul</p>
+              <div className="text-4xl font-bold text-foreground mb-1">Rp 149</div>
+              <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 1.499.000/tahun</p>
               <ul className="space-y-2.5 text-sm text-left mb-8">
-                {["Custom domain", "Hapus branding Webjoz", "Semua fitur Gratis +", "Prioritas support", "Multi-website"].map(item => (
+                {[
+                  "5 website",
+                  "AI Generate 100x/bulan",
+                  "AI Regenerasi 200x/bulan",
+                  "3 custom domain",
+                  "SEO Booster",
+                  "Hapus branding Webjoz",
+                ].map(item => (
                   <li key={item} className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    <span className="text-muted-foreground">{item}</span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" disabled className="w-full rounded-full font-bold opacity-60">
-                Segera Hadir
+              <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
+                Pilih Pro
+              </Button>
+            </Card>
+            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative">
+              <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Enterprise</div>
+              <div className="text-4xl font-bold text-foreground mb-1">Rp 499</div>
+              <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 4.999.000/tahun</p>
+              <ul className="space-y-2.5 text-sm text-left mb-8">
+                {[
+                  "20 website",
+                  "500 AI Generate/bulan",
+                  "1.000 regenerasi",
+                  "10 custom domain",
+                  "SEO Booster",
+                  "Prioritas support",
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
+                Pilih Enterprise
               </Button>
             </Card>
           </div>
