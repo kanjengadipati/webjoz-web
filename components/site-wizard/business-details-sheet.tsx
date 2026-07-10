@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MapPin, Sparkles } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import { normalizeWhatsapp } from "./helpers";
 
 interface BusinessDetailsSheetProps {
@@ -88,8 +88,7 @@ export function BusinessDetailsSheet({
             onClick={handleSaveAndRegenerate}
             className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95 disabled:opacity-40"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Re-generate
+            Simpan
           </button>
         </div>
       </div>
