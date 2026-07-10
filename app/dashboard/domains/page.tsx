@@ -47,26 +47,30 @@ export default function DomainsPage() {
   const [sites,         setSites]         = useState<Site[]>([]);
   const [loading,       setLoading]       = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [currentPlan,   setCurrentPlan]   = useState<any>(null);
 
   // Form states
-  const [siteId,      setSiteId]      = useState("");
-  const [domainInput, setDomainInput] = useState("");
-  const [submitting,  setSubmitting]  = useState(false);
-  const [copied,      setCopied]      = useState(false);
+  const [siteId,         setSiteId]         = useState("");
+  const [domainInput,    setDomainInput]    = useState("");
+  const [submitting,     setSubmitting]     = useState(false);
+  const [copied,         setCopied]         = useState(false);
   const [showUpsellModal, setShowUpsellModal] = useState(false);
+  const [showLimitModal,  setShowLimitModal]  = useState(false);
 
   // ────────────────────────────────────────────────────────
   const fetchData = async () => {
     if (!token || !activeTenantId) return;
     try {
       setLoading(true);
-      const [dr, sr] = await Promise.all([
+      const [dr, sr, pr] = await Promise.all([
         request<Domain[]>("/domains", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
         request<Site[]>  ("/sites",   { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
+        request<any>("/plans/active", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
       ]);
       setDomains(dr.data || []);
       const list = sr.data || [];
       setSites(list);
+      setCurrentPlan(pr.data || null);
 
       const params  = new URLSearchParams(window.location.search);
       const qSiteId = params.get("site_id");
@@ -113,8 +117,9 @@ export default function DomainsPage() {
       pushToast("Format domain tidak valid. Contoh: domainanda.com", "error");
       return;
     }
-    // Show upselling modal before linking (only for free users)
-    if (isPremium) {
+    if (domainLimitReached) {
+      setShowLimitModal(true);
+    } else if (isPremium) {
       await proceedAddDomain(trimmed);
     } else {
       setShowUpsellModal(true);
@@ -165,6 +170,9 @@ export default function DomainsPage() {
   // Published sites (have a real subdomain)
   const publishedSites = sites.filter(s => s.status === "published" && s.subdomain && !s.subdomain.startsWith("draft-"));
 
+  const maxDomains = currentPlan?.max_custom_domain ?? 0;
+  const domainLimitReached = isPremium && maxDomains > 0 && domains.length >= maxDomains;
+
   // ── Upselling Modal Footer ───────────────────────────────
   const upsellFooter = (
     <div className="flex w-full gap-3">
@@ -191,6 +199,29 @@ export default function DomainsPage() {
     </div>
   );
 
+  // ── Limit Modal Footer ─────────────────────────────────
+  const limitFooter = (
+    <div className="flex w-full gap-3">
+      <button
+        type="button"
+        onClick={() => setShowLimitModal(false)}
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
+      >
+        Tutup
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setShowLimitModal(false);
+          router.push("/dashboard/upgrade");
+        }}
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
+      >
+        Upgrade Paket
+      </button>
+    </div>
+  );
+
   // ────────────────────────────────────────────────────────
   if (loading && domains.length === 0) {
     return (
@@ -212,6 +243,11 @@ export default function DomainsPage() {
           <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
             Custom Domain Terhubung ({domains.length})
           </h2>
+          {isPremium && maxDomains > 0 && (
+            <p className="text-[11px] text-[#6b6b75] m-0 mt-0.5" title={`Paket ${activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro"}: maksimal ${maxDomains} domain per akun, tidak per website`}>
+              Kuota: {domains.length} / {maxDomains} custom domain
+            </p>
+          )}
           <div className="flex flex-col gap-2">
             {domains.map(dom => {
               const site = sites.find(s => s.id === dom.site_id);
@@ -230,7 +266,11 @@ export default function DomainsPage() {
                       </span>
                     </div>
                     <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5 truncate">
-                      → {site?.name || `Site #${dom.site_id}`}
+                      → {site ? (
+                        <Link href={`/dashboard/sites/${site.id}`} className="hover:text-primary transition-colors">
+                          {site.name}
+                        </Link>
+                      ) : `Site #${dom.site_id}`}
                       {!ok && " · menunggu propagasi DNS"}
                     </p>
                   </div>
@@ -371,7 +411,23 @@ export default function DomainsPage() {
                           >
                             {copied ? <Check className="w-3 h-3 text-[#5fe3a0]" /> : <Copy className="w-3 h-3" />}
                           </button>
-                        </div>
+      {/* Limit Reached Dialog */}
+      <Dialog
+        open={showLimitModal}
+        onOpenChange={setShowLimitModal}
+        title="Batas Custom Domain Tercapai"
+        footer={limitFooter}
+      >
+        <div className="space-y-4">
+          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+            Paket {activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro"} Anda hanya mencakup <strong>{maxDomains} custom domain</strong> (berlaku untuk seluruh akun, bukan per website).
+          </p>
+          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+            Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.
+          </p>
+        </div>
+      </Dialog>
+    </div>
                       </div>
                     </div>
                     <p className="text-[11px] text-[#6b6b75] m-0 italic">
@@ -397,9 +453,9 @@ export default function DomainsPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!inputValid || submitting || !siteId}
+              disabled={!inputValid || submitting || !siteId || domainLimitReached}
               className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
-                !inputValid || submitting || !siteId
+                !inputValid || submitting || !siteId || domainLimitReached
                   ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
               }`}
