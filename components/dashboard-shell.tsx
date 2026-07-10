@@ -94,6 +94,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   const isAdmin = userRole === "superadmin" || userRole === "admin";
   const isSuperAdmin = userRole === "superadmin";
+  const isPremiumPlan = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
   const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => {
     if ("superAdminOnly" in item && item.superAdminOnly && !isSuperAdmin) return false;
     if ("adminOnly" in item && item.adminOnly && !isAdmin) return false;
@@ -183,7 +184,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}>
                     {item.label}
                   </span>
-                  {"premium" in item && item.premium && (
+                  {"premium" in item && item.premium && !isPremiumPlan && (
                     <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                       Pro
                     </span>
@@ -313,7 +314,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
                                   {item.label}
                                 </span>
-                                {"premium" in item && item.premium && (
+                  {"premium" in item && item.premium && !isPremiumPlan && (
                                   <span className="ml-auto text-[8px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                                     Pro
                                   </span>
