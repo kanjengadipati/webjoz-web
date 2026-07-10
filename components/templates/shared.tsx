@@ -1349,23 +1349,14 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
   </section>
 );
 
-function toEmbedUrl(url: string): string | null {
-  if (/\/maps\/embed\?pb=/.test(url)) return url;
-
-  const coordMatch = url.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (coordMatch) {
-    const [, lat, lng] = coordMatch;
-    const latF = parseFloat(lat);
-    const lngF = parseFloat(lng);
-    if (isNaN(latF) || isNaN(lngF)) return null;
-    const minLat = (latF - 0.005).toFixed(6);
-    const maxLat = (latF + 0.005).toFixed(6);
-    const minLng = (lngF - 0.005).toFixed(6);
-    const maxLng = (lngF + 0.005).toFixed(6);
-    return `https://www.openstreetmap.org/export/embed.html?bbox=${minLng},${minLat},${maxLng},${maxLat}&layer=mapnik&marker=${lat},${lng}`;
-  }
-
-  return null;
+function parseGoogleMapsCoords(url?: string | null): { lat: number; lng: number } | null {
+  if (!url) return null;
+  const m = url.match(/@?(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (!m) return null;
+  const lat = parseFloat(m[1]);
+  const lng = parseFloat(m[2]);
+  if (isNaN(lat) || isNaN(lng)) return null;
+  return { lat, lng };
 }
 
 // ─── Contact Section ───────────────────────────────────────────────────────────
@@ -1404,7 +1395,7 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
       L.marker([lat, lng]).addTo(map);
       setTimeout(() => map.invalidateSize(), 200);
     });
-    return () => { if (mapRef.current) { mapRef.current.remove(); } };
+    return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; } };
   }, [lat, lng]);
 
   useEffect(() => {
@@ -1453,7 +1444,7 @@ interface ContactSectionProps {
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
-  title, address, phone, email,
+  title, address, phone, email, mapsUrl,
   align = "center",
   showLeadForm, showMap, mapTileStyle, onSubmitLead, leadSubmitting, leadSuccess, leadError,
   wrapperClass = "py-16 px-6", wrapperStyle,
@@ -1474,9 +1465,11 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const containerWidthClass = hasLeadForm ? "max-w-5xl" : isCenter ? "max-w-xl" : "max-w-5xl";
   const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
 
-  // Always show map with detected location or Jakarta fallback
-  const [mapCoords, setMapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
+  // Use mapsUrl coords as initial, fall back to geolocation or Jakarta
+  const urlCoords = parseGoogleMapsCoords(mapsUrl);
+  const [mapCoords, setMapCoords] = useState(urlCoords || { lat: -6.2088, lng: 106.8456 });
   useEffect(() => {
+    if (urlCoords) return;
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
