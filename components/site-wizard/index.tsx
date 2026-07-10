@@ -352,7 +352,7 @@ export function SiteWizard({
     }
   };
 
-  const handleDetailsSheetRegenerate = (whatsapp: string, serviceArea: string) => {
+  const handleDetailsSheetSave = (whatsapp: string, serviceArea: string) => {
     chat.setWhatsapp(whatsapp);
     chat.setServiceArea(serviceArea);
     setSheetOpen(false);
@@ -797,7 +797,7 @@ export function SiteWizard({
         isOpen={sheetOpen}
         onClose={() => setSheetOpen(false)}
         chat={chat}
-        onRegenerate={handleDetailsSheetRegenerate}
+        onSave={handleDetailsSheetSave}
       />
     </div>
   );

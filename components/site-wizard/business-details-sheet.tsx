@@ -13,14 +13,14 @@ interface BusinessDetailsSheetProps {
     businessName: string;
     businessType: string;
   };
-  onRegenerate: (whatsapp: string, serviceArea: string) => void;
+  onSave: (whatsapp: string, serviceArea: string) => void;
 }
 
 export function BusinessDetailsSheet({
   isOpen,
   onClose,
   chat,
-  onRegenerate,
+  onSave,
 }: BusinessDetailsSheetProps) {
   const [waDraft, setWaDraft] = useState(chat.whatsapp || "");
   const [areaDraft, setAreaDraft] = useState(chat.serviceArea || "");
@@ -29,9 +29,9 @@ export function BusinessDetailsSheet({
 
   const isUnchanged = waDraft === (chat.whatsapp || "") && areaDraft === (chat.serviceArea || "");
 
-  const handleSaveAndRegenerate = () => {
+  const handleSave = () => {
     const finalWa = waDraft ? normalizeWhatsapp(waDraft) : "";
-    onRegenerate(finalWa, areaDraft);
+    onSave(finalWa, areaDraft);
   };
 
   return (
@@ -85,7 +85,7 @@ export function BusinessDetailsSheet({
           <button
             type="button"
             disabled={isUnchanged}
-            onClick={handleSaveAndRegenerate}
+            onClick={handleSave}
             className="flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95 disabled:opacity-40"
           >
             Simpan
