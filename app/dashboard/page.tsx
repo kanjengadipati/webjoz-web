@@ -447,9 +447,6 @@ export default function DashboardOverviewPage() {
             <Link href="/dashboard/sites/new">
               <Button className="h-12 rounded-xl px-6 font-bold shadow-lg shadow-primary/20">+ Website Baru</Button>
             </Link>
-            <Link href="/dashboard/sites/new?ai=true">
-              <Button variant="secondary" className="h-12 rounded-xl px-6 font-bold bg-background text-foreground hover:bg-background/80 shadow-sm border border-border/60">✨ Generate AI</Button>
-            </Link>
           </div>
         </div>
       </section>

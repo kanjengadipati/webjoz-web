@@ -753,6 +753,18 @@ export default function SiteEditorPage() {
 
   const hiddenSections: string[] = designToken?.layout?.hidden_sections ?? [];
 
+  const refreshTenantUsage = useCallback(async () => {
+    if (!token || !activeTenantId) return;
+    try {
+      const usageRes = await request<any>(`/tenants/${activeTenantId}/usage`, {}, token);
+      if (usageRes.status === "success" && usageRes.data) {
+        setTenantUsage(usageRes.data);
+      }
+    } catch {
+      // silently fail — usage meter is non-critical
+    }
+  }, [token, activeTenantId]);
+
   const toggleSectionVisibility = (key: string) => {
     // header, footer, seo cannot be hidden
     if (["header", "footer", "seo"].includes(key)) return;
@@ -818,6 +830,7 @@ export default function SiteEditorPage() {
         });
         pushToast(`AI selesai menulis ${section}. Cek diff sebelum dipakai.`, "success");
         setAiInstructions("");
+        void refreshTenantUsage();
       } else {
         throw new Error(res.message || "AI gagal memproses.");
       }
@@ -885,6 +898,7 @@ export default function SiteEditorPage() {
         pushToast("AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.", "success");
         setAiDesignInstructions("");
         setAiDesignPromptOpen(false);
+        void refreshTenantUsage();
       } else {
         throw new Error(res.message || "AI gagal memproses desain.");
       }
@@ -1846,6 +1860,7 @@ export default function SiteEditorPage() {
                     onUpgradeRequired={() => setUpgradePromptOpen(true)}
                     designToken={designToken}
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
+                    onAiSuccess={refreshTenantUsage}
                   />
 
                   {/* Variasi tampilan per section */}
@@ -2624,6 +2639,7 @@ export default function SiteEditorPage() {
                   onUpgradeRequired={() => setUpgradePromptOpen(true)}
                   designToken={designToken}
                   updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
+                  onAiSuccess={refreshTenantUsage}
                 />
                 {/* Variasi tampilan per section */}
                 {SECTION_VARIANT_OPTIONS[activeTab] && (() => {

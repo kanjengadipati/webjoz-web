@@ -7,7 +7,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL } from "@/lib/config";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, Check, X, ArrowLeft, Zap, Globe, Users, HardDrive, RefreshCw } from "lucide-react";
+import { Loader2, Check, X, ArrowLeft, Zap, Globe, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 interface PlanItem {
@@ -33,24 +33,6 @@ interface PaymentResponse {
   order_id: string;
   gross_amount: number;
   status: string;
-}
-
-const FEATURE_LABELS: Record<string, string> = {
-  max_sites: "Jumlah Website",
-  max_ai_generates: "AI Generate / bulan",
-  max_ai_regens: "AI Regenerasi / bulan",
-  max_members: "Anggota Tim",
-  max_custom_domain: "Custom Domain",
-  max_storage_mb: "Penyimpanan",
-};
-
-function formatFeatureValue(key: string, value: number): string {
-  if (key === "max_storage_mb") {
-    return value >= 1024 ? `${(value / 1024).toFixed(0)} GB` : `${value} MB`;
-  }
-  if (value === 0) return "—";
-  if (value >= 1000) return "Tak terbatas";
-  return value.toString();
 }
 
 function loadSnapScript(): Promise<void> {
@@ -326,14 +308,6 @@ export default function UpgradePage() {
                 <li className="flex items-center gap-2">
                   <Globe className="size-4 text-primary shrink-0" />
                   <span>{plan.max_custom_domain > 0 ? `${plan.max_custom_domain} Custom Domain` : "Tidak ada custom domain"}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Users className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_members} Anggota Tim</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <HardDrive className="size-4 text-primary shrink-0" />
-                  <span>{formatFeatureValue("max_storage_mb", plan.max_storage_mb)} Penyimpanan</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-emerald-400 shrink-0" />
