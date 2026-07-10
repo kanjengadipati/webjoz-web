@@ -183,11 +183,56 @@ function filterPoolByBusiness(pool: string[], businessLower: string): string[] {
   return reordered;
 }
 
+// Maps mood slugs to pool keys — avoids substring collisions (e.g. "modern & minimalis"
+// matching "modern" instead of "profesional").
+const MOOD_SLUG_TO_POOL_KEY: Record<string, string> = {
+  "clean-modern": "profesional",
+  "dark-premium": "elegan",
+  "bold-vibrant": "fun",
+  "bold-dark":    "bold",
+  "warm-earthy":  "natural",
+  "retro":        "retro",
+  "futuristic":   "futuristic",
+};
+
+function normalizeMoodSlug(mood: string): string {
+  const map: Record<string, string> = {
+    "modern & minimalis": "clean-modern",
+    "modern minimalis":   "clean-modern",
+    "minimalis":          "clean-modern",
+    "profesional":        "clean-modern",
+    "bersih & modern":    "clean-modern",
+    "natural & hangat":   "warm-earthy",
+    "natural hangat":     "warm-earthy",
+    "elegan & mewah":     "dark-premium",
+    "elegan mewah":       "dark-premium",
+    "fun & colorful":     "bold-vibrant",
+    "fun colorful":       "bold-vibrant",
+    "bold & tegas":       "bold-dark",
+    "bold tegas":         "bold-dark",
+    "retro & vintage":    "retro",
+    "retro vintage":      "retro",
+    "futuristic & tech":  "futuristic",
+    "futuristic tech":    "futuristic",
+  };
+  return map[mood.toLowerCase().trim()] || mood;
+}
+
 export function getTemplatePool(businessType: string, mood: string): string[] {
-  const lm = mood.toLowerCase();
   const lower = businessType.toLowerCase();
 
-  // 1. Mood pool (highest priority)
+  // 1. Try slug-based pool lookup (most reliable, avoids substring collisions)
+  const slug = normalizeMoodSlug(mood);
+  const poolKey = MOOD_SLUG_TO_POOL_KEY[slug];
+  if (poolKey) {
+    const pool = MOOD_TEMPLATE_POOLS[poolKey];
+    if (pool) {
+      return filterPoolByBusiness(pool, lower);
+    }
+  }
+
+  // 2. Fallback: substring match (for backward compatibility with any edge cases)
+  const lm = mood.toLowerCase();
   for (const [key, pool] of Object.entries(MOOD_TEMPLATE_POOLS)) {
     if (lm.includes(key)) {
       return filterPoolByBusiness(pool, lower);
