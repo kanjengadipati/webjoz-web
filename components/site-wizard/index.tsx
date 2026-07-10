@@ -345,6 +345,12 @@ export function SiteWizard({
     } catch (err: any) {
       console.error(err);
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
+        pushToast("Batas situs tercapai", "error", {
+          message: "Anda sudah mencapai jumlah situs maksimal untuk paket saat ini. Upgrade untuk membuat situs baru.",
+          actionLabel: "Lihat Paket",
+          actionHref: "/dashboard/upgrade",
+          autoClose: false,
+        });
         router.push("/dashboard/upgrade");
         return;
       }
