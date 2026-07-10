@@ -30,6 +30,7 @@ export interface SectionFormsProps {
   updateDesignTokenLayout?: (key: string, value: any) => void;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
+  onAiSuccess?: () => void;
 }
 
 // ─── Icon Picker ──────────────────────────────────────────────────────────────
@@ -527,6 +528,7 @@ export default function SectionForms({
   updateDesignTokenLayout,
   isPremium = false,
   onUpgradeRequired,
+  onAiSuccess,
 }: SectionFormsProps) {
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
@@ -550,7 +552,10 @@ export default function SectionForms({
     setAiLoadingField(loadKey);
     try {
       const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, prompt);
-      if (result) updateField(section, fieldKey, result);
+      if (result) {
+        updateField(section, fieldKey, result);
+        onAiSuccess?.();
+      }
     } finally {
       setAiLoadingField(null);
     }
@@ -579,6 +584,7 @@ export default function SectionForms({
           const targetItem = targetItems[itemIdx];
           if (targetItem?.description) {
             updateField(activeTab, "categories", cats);
+            onAiSuccess?.();
           }
         }
       }

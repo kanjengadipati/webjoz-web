@@ -344,6 +344,10 @@ export function SiteWizard({
       router.push(`/dashboard/sites/${siteId}`);
     } catch (err: any) {
       console.error(err);
+      if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
+        router.push("/dashboard/upgrade");
+        return;
+      }
       pushToast(err.message || "Terjadi kesalahan. Silakan coba lagi.", "error");
     }
   };

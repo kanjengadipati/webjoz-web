@@ -160,33 +160,34 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           document.head.appendChild(canonical);
         }
 
-        // JSON-LD structured data
-        const header = envelope.data?.content?.header || {};
-        const hero = envelope.data?.content?.hero || {};
-        const contact = envelope.data?.content?.contact || {};
-        const brandName = header?.brand_name || siteName;
-        const businessDesc = seo?.description || hero?.subheadline || "";
-        const schemaType = templateId?.toLowerCase().includes("kuliner") || envelope.data?.content?.menu ? "Restaurant" : "LocalBusiness";
-
-        const jsonLd = {
-          "@context": "https://schema.org",
-          "@type": schemaType,
-          name: brandName,
-          url: window.location.href,
-          ...(seo?.og_image_url ? { image: seo.og_image_url } : {}),
-          ...(businessDesc ? { description: businessDesc } : {}),
-          ...(contact?.phone ? { telephone: contact.phone } : {}),
-          ...(contact?.email ? { email: contact.email } : {}),
-          ...(contact?.address ? { address: { "@type": "PostalAddress", streetAddress: contact.address } } : {}),
-        };
-
-        let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
-        if (!script) {
-          script = document.createElement("script");
-          script.type = "application/ld+json";
-          document.head.appendChild(script);
+        // JSON-LD structured data — prefer server-side if available (Pro/Enterprise)
+        let ldScript = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
+        if (!ldScript) {
+          ldScript = document.createElement("script");
+          ldScript.type = "application/ld+json";
+          document.head.appendChild(ldScript);
         }
-        script.textContent = JSON.stringify(jsonLd);
+        if (envelope.data.json_ld) {
+          ldScript.textContent = JSON.stringify(envelope.data.json_ld);
+        } else {
+          const header = envelope.data?.content?.header || {};
+          const hero = envelope.data?.content?.hero || {};
+          const contact = envelope.data?.content?.contact || {};
+          const brandName = header?.brand_name || siteName;
+          const businessDesc = seo?.description || hero?.subheadline || "";
+          const schemaType = templateId?.toLowerCase().includes("kuliner") || envelope.data?.content?.menu ? "Restaurant" : "LocalBusiness";
+          ldScript.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": schemaType,
+            name: brandName,
+            url: window.location.href,
+            ...(seo?.og_image_url ? { image: seo.og_image_url } : {}),
+            ...(businessDesc ? { description: businessDesc } : {}),
+            ...(contact?.phone ? { telephone: contact.phone } : {}),
+            ...(contact?.email ? { email: contact.email } : {}),
+            ...(contact?.address ? { address: { "@type": "PostalAddress", streetAddress: contact.address } } : {}),
+          });
+        }
 
         // Track pageview on success
         try {
