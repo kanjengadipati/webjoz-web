@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 export const PreviewSectionWrapper: React.FC<{
   section: string;
@@ -47,7 +47,7 @@ export const PreviewSectionWrapper: React.FC<{
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <Sparkles className="w-2.5 h-2.5" />
+          <SparkleIcon className="w-4 h-4" />
           Regen
         </button>
         {children}

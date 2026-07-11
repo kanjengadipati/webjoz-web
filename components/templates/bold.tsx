@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Zap, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   DynamicIcon, LeadForm, TestimonialsSection,
@@ -207,7 +208,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                       <div key={ii} className="flex gap-4 p-4 transition-all duration-300 group hover:translate-y-[-2px]" style={{ background: card, border: `2px solid ${border}`, boxShadow: `4px 4px 0 ${borderRed}` }}>
                         {item.image_url
                           ? <><img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover flex-shrink-0 border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><PhotoCredit credit={item.image_credit} /></>
-                          : <div className="w-16 h-16 flex-shrink-0 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-6 h-6" style={{ color: `${red}50` }} /></div>}
+                          : <div className="w-16 h-16 flex-shrink-0 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><SparkleIcon className="w-9 h-9" /></div>}
                         <div className="flex-1 min-w-0 space-y-1">
                           <div className="flex justify-between gap-2 items-start">
                             <p className="font-black text-sm uppercase text-white group-hover:text-[var(--dt-accent)] transition-colors">{item.name}</p>
@@ -256,7 +257,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
                         {item.badge && <span className="inline-block text-[9px] font-black uppercase tracking-wider px-2 py-0.5" style={{ color: ctaText, background: red }}>{item.badge}</span>}
                         {item.image_url
                           ? <div className="relative"><img src={item.image_url} alt={item.name} className="w-full h-36 object-cover border-2" style={{ borderColor: border }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={item.image_credit} /></div></div>
-                          : <div className="w-full h-36 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><Sparkles className="w-10 h-10" style={{ color: `${red}40` }} /></div>}
+                          : <div className="w-full h-36 border-2 flex items-center justify-center" style={{ borderColor: border, background: `${red}10` }}><SparkleIcon className="w-10 h-10" /></div>}
                         <p className="font-black text-sm uppercase text-white group-hover:text-[var(--dt-accent)] transition-colors">{item.name}</p>
                         {item.description && <p className="text-[11px] font-light leading-relaxed" style={{ color: textMuted }}>{item.description}</p>}
                         {!isPlaceholderPrice(item.price) && item.price && <span className="inline-block font-black text-xs px-2 py-0.5" style={{ color: ctaText, background: red }}>{item.price}</span>}

@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
 import { getInsight } from "./helpers";
 
@@ -33,7 +34,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
             <div className={`rounded-xl bg-primary flex items-center justify-center ${center ? "w-6 h-6" : "w-8 h-8"}`}>
-              <Sparkles className={`text-primary-foreground ${center ? "w-3 h-3" : "w-4 h-4"}`} />
+              <SparkleIcon className={`${center ? "w-[18px] h-[18px]" : "w-6 h-6"}`} />
             </div>
             <div className="min-w-0">
               <h3 className={`font-extrabold text-white m-0 leading-tight ${center ? "text-[12px]" : "text-sm"}`}>
@@ -104,7 +105,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
         {!center && loadingStep >= 3 && (
           <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
             <div className="flex items-center gap-1.5 mb-1.5">
-              <Sparkles className="w-3 h-3 text-primary" />
+              <SparkleIcon className="w-[18px] h-[18px]" />
               <span className="text-[11px] font-bold text-primary">AI Insight</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType)}</p>

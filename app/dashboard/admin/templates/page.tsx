@@ -10,7 +10,6 @@ import { useToast } from "@/components/toast-provider";
 import { 
   Palette, 
   Layers, 
-  Sparkles, 
   Trash2, 
   Eye, 
   Search, 
@@ -21,6 +20,7 @@ import {
   Plus,
   Loader2
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { 
   Card, 
   CardContent, 
@@ -206,7 +206,7 @@ export default function TemplateGalleryPage() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Sparkles className="size-4" />
+            <SparkleIcon className="size-6" />
             Design Token Seeds ({loading ? "..." : seeds.length})
           </button>
         </div>
@@ -423,7 +423,7 @@ export default function TemplateGalleryPage() {
           </div>
         ) : filteredSeeds.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 bg-muted/10 border border-border/30 rounded-2xl">
-            <Sparkles className="size-10 opacity-30 animate-pulse" />
+            <SparkleIcon className="size-10 opacity-30 animate-pulse" />
             <p className="text-sm font-medium">{seeds.length === 0 ? "Tidak ada design token seeds di database." : "Tidak ada seeds yang cocok dengan kata kunci."}</p>
             {seeds.length > 0 && (
               <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }}>Reset Pencarian</Button>

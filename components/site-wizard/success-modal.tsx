@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, Sparkles, Eye, ArrowRight } from "lucide-react";
+import { CheckCircle2, Eye, ArrowRight } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 interface WizardSuccessModalProps {
   open: boolean;
@@ -30,7 +31,7 @@ export function WizardSuccessModal({
           {/* Decorative Icon */}
           <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
             <CheckCircle2 className="h-8 w-8" />
-            <Sparkles className="absolute -top-1.5 -right-1.5 h-4 w-4 text-amber-400 animate-pulse" />
+            <SparkleIcon className="absolute -top-1.5 -right-1.5 h-6 w-6 animate-pulse" />
           </div>
 
           {/* Title & Description */}

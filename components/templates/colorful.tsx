@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sparkles, ArrowRight, ChevronDown, Utensils, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, ChevronDown, Utensils, Image as ImageIcon } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   LeadForm, TestimonialsSection, MenuCatalogCard,
@@ -56,7 +57,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             <div className="md:col-span-7 space-y-5">
               {h.eyebrow && (
                 <span className="inline-flex items-center gap-1.5 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000", background: `color-mix(in srgb, ${yellow} 35%, white)`, color: black }}>
-                  <Sparkles className="w-3 h-3" /> {h.eyebrow}
+                  <SparkleIcon className="w-[18px] h-[18px]" /> {h.eyebrow}
                 </span>
               )}
               <h1 className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tight" style={{ color: black, ...headingVars }}>

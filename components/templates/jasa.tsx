@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Shield, ArrowRight, Sparkles } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
@@ -189,7 +190,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                         image_url={item.image_url}
                         image_credit={item.image_credit}
                         badge={item.badge}
-                        icon={Sparkles}
+                        icon={SparkleIcon}
                         className="group bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] rounded-[var(--dt-radius-lg)] p-5 space-y-4 shadow-sm hover:border-[var(--dt-primary)] hover:shadow-md transition-all"
                         imageClassName="w-full h-40 object-cover rounded-[var(--dt-radius)] border border-[var(--dt-border)]"
                         imageStyle={{ borderRadius: "var(--dt-radius)" }}

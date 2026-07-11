@@ -4,7 +4,7 @@ import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
-  Sparkles, MapPin, Phone, Mail, Globe,
+  MapPin, Phone, Mail, Globe,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
