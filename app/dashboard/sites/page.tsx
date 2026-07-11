@@ -20,9 +20,10 @@ interface DeleteModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   loading: boolean;
+  isFreePlan: boolean;
 }
 
-function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteModalProps) {
+function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan }: DeleteModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
@@ -74,6 +75,16 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading }: DeleteMo
             Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.
           </p>
         </div>
+
+        {isFreePlan && (
+          <div className="flex items-start gap-2.5 bg-amber-950/20 border border-amber-500/20 rounded-xl px-4 py-3">
+            <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-300 leading-relaxed">
+              Kamu pakai paket Free — kuota 1 website ini <span className="font-semibold">tidak akan kembali</span> setelah dihapus.
+              Kamu hanya bisa membuat 1 website gratis seumur hidup.
+            </p>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3 pt-1">
@@ -419,7 +430,7 @@ export default function SitesPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
   const {
-    activeTenantId, loading: tenantLoading
+    activeTenantId, activeTenant, loading: tenantLoading
   } = useActiveTenant();
 
   const [sites, setSites] = useState<Site[]>([]);
@@ -735,6 +746,7 @@ export default function SitesPage() {
           onConfirm={handleDeleteSite}
           onCancel={() => setDeleteTarget(null)}
           loading={actionLoading === deleteTarget.id}
+          isFreePlan={activeTenant?.tenant?.plan === "free"}
         />
       )}
 
