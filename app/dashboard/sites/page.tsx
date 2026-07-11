@@ -997,6 +997,19 @@ export default function SitesPage() {
                       </button>
                     )}
                   </div>
+
+                  {/* Secondary action links */}
+                  <div className="flex gap-2 mt-2">
+                    <Link href={`/dashboard/sites/${site.id}/blog`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
+                      Blog
+                    </Link>
+                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
+                      Integrasi
+                    </Link>
+                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
+                      Testimoni
+                    </Link>
+                  </div>
                 </div>
               );
             })}
