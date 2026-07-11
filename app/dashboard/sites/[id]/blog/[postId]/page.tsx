@@ -9,11 +9,12 @@ import { request } from "@/lib/api/client";
 import { Button, Input } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
+import FileUpload from "@/components/file-upload";
 import { marked } from "marked";
 import {
   Loader2, Bold, Italic, Heading2, Heading3,
   Link as LinkIcon, Image, List, ListOrdered, Quote,
-  Eye, Edit3, Lock, ArrowLeft, Save, Upload,
+  Eye, Edit3, Lock, ArrowLeft, Save,
 } from "lucide-react";
 
 interface BlogPost {
@@ -83,7 +84,6 @@ export default function EditBlogPostPage() {
   const [html, setHtml] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const coverFileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -157,12 +157,27 @@ export default function EditBlogPostPage() {
   const markDirty = () => { if (!dirty) setDirty(true); };
 
   const uploadFile = async (file: File): Promise<string> => {
-    const fd = new FormData();
-    fd.append("file", file);
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    if (!cloudName || !uploadPreset) {
+      throw new Error("Konfigurasi Cloudinary belum lengkap di env.");
+    }
     setUploading(true);
     try {
-      const res = await request<{ url: string }>(`/upload/image`, { method: "POST", body: fd, headers: tenantHeaders }, token);
-      return res.data.url;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", uploadPreset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: fd,
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody?.error?.message || "Gagal mengupload gambar ke Cloudinary.");
+      }
+      const body = await res.json();
+      if (!body.secure_url) throw new Error("Format respon Cloudinary tidak valid.");
+      return body.secure_url;
     } finally {
       setUploading(false);
     }
@@ -171,23 +186,18 @@ export default function EditBlogPostPage() {
   const handleToolbarImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await uploadFile(file);
-    const ta = textareaRef.current;
-    if (ta) {
-      const newContent = insertAtCursor(ta, content, `![${file.name}](${url})`);
-      setContent(newContent);
-      markDirty();
+    try {
+      const url = await uploadFile(file);
+      const ta = textareaRef.current;
+      if (ta) {
+        const newContent = insertAtCursor(ta, content, `![${file.name}](${url})`);
+        setContent(newContent);
+        markDirty();
+      }
+    } catch (err: any) {
+      pushToast(err.message || "Gagal mengupload gambar.", "error");
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = await uploadFile(file);
-    setCoverImageUrl(url);
-    markDirty();
-    if (coverFileInputRef.current) coverFileInputRef.current.value = "";
   };
 
   const toolbar = () => {
@@ -372,37 +382,13 @@ export default function EditBlogPostPage() {
 
         {/* Cover Image */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-            Cover Image URL
-          </label>
-          <div className="flex gap-2">
-            <Input
-              value={coverImageUrl}
-              onChange={e => { setCoverImageUrl(e.target.value); markDirty(); }}
-              placeholder="https://..."
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => coverFileInputRef.current?.click()}
-              disabled={uploading}
-              title="Upload image"
-            >
-              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-            </Button>
-          </div>
-          <input ref={coverFileInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
-          {coverImageUrl && (
-            <div className="mt-2 rounded-xl overflow-hidden border h-32 bg-muted">
-              <img
-                src={coverImageUrl}
-                alt="Cover preview"
-                className="w-full h-full object-cover"
-                onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-            </div>
-          )}
+          <FileUpload
+            label="Cover Image"
+            value={coverImageUrl}
+            onChange={(val) => { setCoverImageUrl(val); markDirty(); }}
+            placeholder="https://..."
+            previewSize="md"
+          />
         </div>
 
         {/* SEO */}
