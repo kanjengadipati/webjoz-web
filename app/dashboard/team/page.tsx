@@ -14,7 +14,8 @@ interface Member {
   id: number;
   user_id: number;
   role: string;
-  user?: { name: string; email: string };
+  name: string;
+  email: string;
 }
 
 interface Invitation {
@@ -130,11 +131,11 @@ export default function TeamPage() {
               <div key={m.id} className="flex items-center justify-between py-2 border-b last:border-none">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                    {(m.user?.name || m.user?.email || "?")[0].toUpperCase()}
+                    {(m.name || m.email || "?")[0].toUpperCase()}
                   </div>
                   <div>
-                    <div className="text-sm font-medium">{m.user?.name || m.user?.email || "Unknown"}</div>
-                    <div className="text-xs text-muted-foreground">{m.user?.email || ""}</div>
+                  <div className="text-sm font-medium">{m.name || m.email || "Unknown"}</div>
+                  <div className="text-xs text-muted-foreground">{m.email || ""}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
