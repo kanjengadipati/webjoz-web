@@ -12,7 +12,8 @@ export const DASHBOARD_NAVIGATION = [
   { id: "domains", href: "/dashboard/domains", label: "Custom Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },
   { id: "analytics", href: "/dashboard/analytics", label: "Web Statistik", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
-  { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },
+   { id: "team", href: "/dashboard/team", label: "Tim", permission: "", icon: "users", section: "Website Builder", groupStart: false },
+   { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },
 
   { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;

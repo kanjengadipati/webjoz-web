@@ -1,0 +1,172 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useAuthToken } from "@/lib/auth-store";
+import { useActiveTenant } from "@/lib/tenant-store";
+import { request } from "@/lib/api/client";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
+import { Badge } from "@/components/ui/badge";
+import { Dialog } from "@/components/ui/dialog";
+import { useToast } from "@/components/toast-provider";
+import { Loader2, Sparkles, Plus, FileText } from "lucide-react";
+import Link from "next/link";
+
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: string;
+  published_at: string | null;
+  created_at: string;
+}
+
+export default function BlogManagerPage() {
+  const { id } = useParams();
+  const token = useAuthToken();
+  const { activeTenantId } = useActiveTenant();
+  const { pushToast } = useToast();
+
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [topic, setTopic] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
+
+  const siteId = Number(id);
+
+  const fetchPosts = async () => {
+    if (!token || !activeTenantId) return;
+    try {
+      const res = await request<BlogPost[]>(`/sites/${siteId}/blog-posts`, {}, token);
+      setPosts(res.data || []);
+    } catch (err: any) {
+      pushToast(err.message || "Gagal memuat blog", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchPosts(); }, [siteId]);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setGenerating(true);
+    try {
+      const res = await request<BlogPost>(`/sites/${siteId}/blog-posts/generate`, {
+        method: "POST",
+        body: JSON.stringify({ topic }),
+      }, token);
+      setPosts(p => [res.data, ...p]);
+      setTopic("");
+      pushToast("Draft blog berhasil dibuat", "success");
+    } catch (err: any) {
+      if (err.message?.includes("limit") || err.code === "ERR_PLAN_LIMIT") {
+        setShowUpsell(true);
+      } else {
+        pushToast(err.message || "Gagal generate blog", "error");
+      }
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handlePublish = async (postId: number) => {
+    try {
+      await request(`/blog-posts/${postId}/publish`, { method: "POST" }, token);
+      pushToast("Postingan diterbitkan", "success");
+      fetchPosts();
+    } catch (err: any) {
+      pushToast(err.message || "Gagal menerbitkan", "error");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-80">
+        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm font-bold flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            Buat Konten Blog dengan AI
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Topik: mis. 5 tips memilih jasa konsultasi pajak"
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+              className="flex-1"
+            />
+            <Button onClick={handleGenerate} disabled={generating || !topic.trim()}>
+              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              Generate
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3">
+        {posts.map(post => (
+          <Card key={post.id}>
+            <CardContent className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-3">
+                <FileText className="w-5 h-5 text-muted-foreground shrink-0" />
+                <div>
+                  <div className="font-semibold text-sm">{post.title}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {post.status === "published"
+                      ? `Terbit ${post.published_at ? new Date(post.published_at).toLocaleDateString("id-ID") : ""}`
+                      : "Draft · " + new Date(post.created_at).toLocaleDateString("id-ID")}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant={post.status === "published" ? "default" : "secondary"}>
+                  {post.status === "published" ? "Terbit" : "Draft"}
+                </Badge>
+                <Link href={`/dashboard/sites/${siteId}/blog/${post.id}`} className="inline-flex items-center justify-center text-sm font-medium rounded-xl px-3 py-1.5 border hover:bg-accent transition-colors">
+                  Edit
+                </Link>
+                {post.status === "draft" && (
+                  <Button size="sm" onClick={() => handlePublish(post.id)}>Terbitkan</Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+        {posts.length === 0 && (
+          <div className="text-sm text-muted-foreground text-center py-12">
+            Belum ada konten blog. Gunakan AI di atas untuk membuat draft pertama.
+          </div>
+        )}
+      </div>
+
+      <Dialog
+        open={showUpsell}
+        onOpenChange={setShowUpsell}
+        title="Fitur Blog — Pro"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setShowUpsell(false)}>Nanti Saja</Button>
+            <Button onClick={() => { window.open("/dashboard/upgrade", "_blank"); setShowUpsell(false); }}>
+              <Sparkles className="w-4 h-4" /> Upgrade ke Pro
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm">Fitur blog AI tersedia untuk pengguna Pro. Upgrade untuk mengaksesnya.</p>
+      </Dialog>
+    </div>
+  );
+}
