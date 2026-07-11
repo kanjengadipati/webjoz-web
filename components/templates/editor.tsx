@@ -43,11 +43,11 @@ export const PreviewSectionWrapper: React.FC<{
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-2 right-2 z-[80] bg-slate-900/80 backdrop-blur-sm text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary ${
+          className={`absolute top-2 right-2 z-[80] bg-slate-900/80 backdrop-blur-sm text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <SparkleIcon className="w-4 h-4" />
+          <SparkleIcon className="w-4 h-4 brightness-0 invert group-hover/regen:brightness-100 group-hover/regen:invert-0 transition-all duration-150" />
           Regen
         </button>
         {children}
