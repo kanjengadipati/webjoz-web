@@ -184,7 +184,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}>
                     {item.label}
                   </span>
-                  {"premium" in item && item.premium && !isPremiumPlan && (
+                  {(item as any).premium && !isPremiumPlan && (
                     <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                       Pro
                     </span>
@@ -314,7 +314,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
                                   {item.label}
                                 </span>
-                  {"premium" in item && item.premium && !isPremiumPlan && (
+                  {(item as any).premium && !isPremiumPlan && (
                                   <span className="ml-auto text-[8px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                                     Pro
                                   </span>

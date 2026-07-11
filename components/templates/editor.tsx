@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { SparkleGenAI } from "@/components/sparkle-icon";
 
 export const PreviewSectionWrapper: React.FC<{
   section: string;
@@ -47,7 +47,7 @@ export const PreviewSectionWrapper: React.FC<{
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <SparkleIcon className="w-4 h-4" />
+          <SparkleGenAI className="w-4 h-4" />
           Regen
         </button>
         {children}

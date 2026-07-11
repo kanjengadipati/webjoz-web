@@ -9,7 +9,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "design-assets", href: "/dashboard/admin/design-assets", label: "Design Assets", permission: "tenant:manage", icon: "palette", section: "Dashboard", groupStart: false, superAdminOnly: true },
   { id: "metrics", href: "/dashboard/admin/metrics", label: "Metrics", permission: "tenant:manage", icon: "activity", section: "Dashboard", groupStart: false, superAdminOnly: true },
   { id: "sites", href: "/dashboard/sites", label: "Website Saya", permission: "site:view", icon: "globe", section: "Website Builder", groupStart: false },
-  { id: "domains", href: "/dashboard/domains", label: "Custom Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false, premium: true },
+  { id: "domains", href: "/dashboard/domains", label: "Custom Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },
   { id: "analytics", href: "/dashboard/analytics", label: "Web Statistik", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
   { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },

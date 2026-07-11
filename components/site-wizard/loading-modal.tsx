@@ -33,7 +33,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
         {/* Header row: icon + title + percentage */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <div className={`rounded-xl bg-primary flex items-center justify-center ${center ? "w-6 h-6" : "w-8 h-8"}`}>
+            <div className={`rounded-xl bg-primary flex items-center justify-center shrink-0 ${center ? "w-6 h-6" : "w-8 h-8"} text-primary-foreground`}>
               <SparkleIcon className={`${center ? "w-[18px] h-[18px]" : "w-6 h-6"}`} />
             </div>
             <div className="min-w-0">
@@ -104,7 +104,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
         {/* AI Insight — only on desktop */}
         {!center && loadingStep >= 3 && (
           <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
-            <div className="flex items-center gap-1.5 mb-1.5">
+            <div className="flex items-center gap-1.5 mb-1.5 text-primary">
               <SparkleIcon className="w-[18px] h-[18px]" />
               <span className="text-[11px] font-bold text-primary">AI Insight</span>
             </div>
