@@ -9,7 +9,8 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { Badge } from "@/components/ui/badge";
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, Sparkles, Plus, FileText } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
+import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 
 interface BlogPost {
@@ -98,7 +99,7 @@ export default function BlogManagerPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-bold flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
+            <SparkleGenAI className="w-4 h-4 text-primary" />
             Buat Konten Blog dengan AI
           </CardTitle>
         </CardHeader>
@@ -111,7 +112,7 @@ export default function BlogManagerPage() {
               className="flex-1"
             />
             <Button onClick={handleGenerate} disabled={generating || !topic.trim()}>
-              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
               Generate
             </Button>
           </div>
@@ -162,7 +163,7 @@ export default function BlogManagerPage() {
           <>
             <Button variant="outline" onClick={() => setShowUpsell(false)}>Nanti Saja</Button>
             <Button onClick={() => { window.open("/dashboard/upgrade", "_blank"); setShowUpsell(false); }}>
-              <Sparkles className="w-4 h-4" /> Upgrade ke Pro
+              <SparkleGenAI className="w-4 h-4" /> Upgrade ke Pro
             </Button>
           </>
         }
