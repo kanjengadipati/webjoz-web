@@ -111,22 +111,54 @@ function PublicWizardContent() {
           Math.floor(Math.random() * 9000 + 1000);
 
         // 1. Create site entry (no AI re-generation!)
-        const createRes = await request<any>(
-          "/sites",
-          {
-            method: "POST",
-            headers: { "X-Tenant-ID": tenantId.toString() },
-            body: JSON.stringify({
-              name: pending.businessName,
-              template_id: pending.templateId || "TEMPLATE_DYNAMIC",
-              subdomain,
-            }),
-          },
-          token
-        );
-        if (createRes.status !== "success") throw new Error(createRes.message);
-        const siteId = createRes.data.id;
-
+        let siteId: string;
+        try {
+          const createRes = await request<any>(
+            "/sites",
+            {
+              method: "POST",
+              headers: { "X-Tenant-ID": tenantId.toString() },
+              body: JSON.stringify({
+                name: pending.businessName,
+                template_id: pending.templateId || "TEMPLATE_DYNAMIC",
+                subdomain,
+              }),
+            },
+            token
+          );
+          siteId = createRes.data.id;
+        } catch (err: any) {
+          // If existing tenant is at its site limit, auto-create a new tenant and retry
+          if (err.code === "ERR_SITE_LIMIT" && createTenant) {
+            const slug =
+              pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
+              "-" +
+              Math.floor(Math.random() * 1000);
+            const created = await createTenant(pending.businessName + " Workspace", slug);
+            if (!created?.id) throw new Error("Gagal membuat workspace baru.");
+            const subdomain2 =
+              pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
+              "-" +
+              Math.floor(Math.random() * 9000 + 1000);
+            const retryRes = await request<any>(
+              "/sites",
+              {
+                method: "POST",
+                headers: { "X-Tenant-ID": created.id.toString() },
+                body: JSON.stringify({
+                  name: pending.businessName,
+                  template_id: pending.templateId || "TEMPLATE_DYNAMIC",
+                  subdomain: subdomain2,
+                }),
+              },
+              token
+            );
+            siteId = retryRes.data.id;
+            tenantId = created.id;
+          } else {
+            throw err;
+          }
+        }
         // 2. Restore the AI-generated content from localStorage (saved before login)
         // PENTING: pending.previewContent itu konten mentah dari AI/stream — bisa ada
         // field kosong. Jalankan buildFullContent dulu, sama seperti yang dipakai untuk
