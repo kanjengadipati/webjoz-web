@@ -27,6 +27,7 @@ export default function TestimonialModerationPage() {
   const { pushToast } = useToast();
 
   const siteId = Number(id);
+  const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const shareLink = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/testimoni/${siteId}`;
@@ -35,7 +36,7 @@ export default function TestimonialModerationPage() {
     if (!token || !activeTenantId) return;
     try {
       const q = status ? `?status=${status}` : "";
-      const res = await request<Submission[]>(`/sites/${siteId}/testimonial-submissions${q}`, {}, token);
+      const res = await request<Submission[]>(`/sites/${siteId}/testimonial-submissions${q}`, { headers: tenantHeaders }, token);
       setSubmissions(res.data || []);
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat testimoni", "error");
@@ -48,7 +49,7 @@ export default function TestimonialModerationPage() {
 
   const handleApprove = async (subId: number) => {
     try {
-      await request(`/sites/${siteId}/testimonial-submissions/${subId}/approve`, { method: "POST" }, token);
+      await request(`/sites/${siteId}/testimonial-submissions/${subId}/approve`, { method: "POST", headers: tenantHeaders }, token);
       pushToast("Testimoni disetujui", "success");
       fetchData("pending");
     } catch (err: any) {
@@ -58,7 +59,7 @@ export default function TestimonialModerationPage() {
 
   const handleReject = async (subId: number) => {
     try {
-      await request(`/sites/${siteId}/testimonial-submissions/${subId}/reject`, { method: "POST" }, token);
+      await request(`/sites/${siteId}/testimonial-submissions/${subId}/reject`, { method: "POST", headers: tenantHeaders }, token);
       pushToast("Testimoni ditolak", "success");
       fetchData("pending");
     } catch (err: any) {

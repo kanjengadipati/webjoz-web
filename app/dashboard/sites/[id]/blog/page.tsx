@@ -36,11 +36,12 @@ export default function BlogManagerPage() {
   const [pendingAction, setPendingAction] = useState<string | null>(null);
 
   const siteId = Number(id);
+  const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
 
   const fetchPosts = async () => {
     if (!token || !activeTenantId) return;
     try {
-      const res = await request<BlogPost[]>(`/sites/${siteId}/blog-posts`, {}, token);
+      const res = await request<BlogPost[]>(`/sites/${siteId}/blog-posts`, { headers: tenantHeaders }, token);
       setPosts(res.data || []);
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat blog", "error");
@@ -57,6 +58,7 @@ export default function BlogManagerPage() {
     try {
       const res = await request<BlogPost>(`/sites/${siteId}/blog-posts/generate`, {
         method: "POST",
+        headers: tenantHeaders,
         body: JSON.stringify({ topic }),
       }, token);
       setPosts(p => [res.data, ...p]);
@@ -75,7 +77,7 @@ export default function BlogManagerPage() {
 
   const handlePublish = async (postId: number) => {
     try {
-      await request(`/blog-posts/${postId}/publish`, { method: "POST" }, token);
+      await request(`/blog-posts/${postId}/publish`, { method: "POST", headers: tenantHeaders }, token);
       pushToast("Postingan diterbitkan", "success");
       fetchPosts();
     } catch (err: any) {
