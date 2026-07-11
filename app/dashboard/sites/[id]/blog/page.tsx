@@ -7,9 +7,8 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { Badge } from "@/components/ui/badge";
-import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, FileText } from "lucide-react";
+import { Loader2, FileText, Plus, Sparkles } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 
@@ -26,15 +25,20 @@ interface BlogPost {
 export default function BlogManagerPage() {
   const { id } = useParams();
   const token = useAuthToken();
-  const { activeTenantId } = useActiveTenant();
+  const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
+  const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [topic, setTopic] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [showUpsell, setShowUpsell] = useState(false);
-  const [pendingAction, setPendingAction] = useState<string | null>(null);
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
 
   const siteId = Number(id);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
@@ -66,13 +70,30 @@ export default function BlogManagerPage() {
       setTopic("");
       pushToast("Draft blog berhasil dibuat", "success");
     } catch (err: any) {
-      if (err.message?.includes("limit") || err.code === "ERR_PLAN_LIMIT") {
-        setShowUpsell(true);
-      } else {
-        pushToast(err.message || "Gagal generate blog", "error");
-      }
+      pushToast(err.message || "Gagal generate blog", "error");
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleCreateManual = async () => {
+    if (!title.trim()) return;
+    setCreating(true);
+    try {
+      const res = await request<BlogPost>(`/sites/${siteId}/blog-posts`, {
+        method: "POST",
+        headers: tenantHeaders,
+        body: JSON.stringify({ title, content, excerpt: content.slice(0, 200) }),
+      }, token);
+      setPosts(p => [res.data, ...p]);
+      setTitle("");
+      setContent("");
+      setManualOpen(false);
+      pushToast("Postingan berhasil dibuat", "success");
+    } catch (err: any) {
+      pushToast(err.message || "Gagal membuat postingan", "error");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -96,28 +117,81 @@ export default function BlogManagerPage() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-bold flex items-center gap-2">
-            <SparkleGenAI className="w-4 h-4 text-primary" />
-            Buat Konten Blog dengan AI
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-lg font-bold">Blog Postingan</h2>
+        <Button onClick={() => setManualOpen(true)}>
+          <Plus className="w-4 h-4" /> Tambah Baru
+        </Button>
+      </div>
+
+      {manualOpen && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-bold">Tulis Postingan Baru</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
             <Input
-              placeholder="Topik: mis. 5 tips memilih jasa konsultasi pajak"
-              value={topic}
-              onChange={e => setTopic(e.target.value)}
-              className="flex-1"
+              placeholder="Judul postingan"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
             />
-            <Button onClick={handleGenerate} disabled={generating || !topic.trim()}>
-              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
-              Generate
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            <textarea
+              placeholder="Konten (Markdown)"
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              rows={6}
+              className="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-background resize-y"
+            />
+            <div className="flex gap-2">
+              <Button onClick={handleCreateManual} disabled={creating || !title.trim()}>
+                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Simpan Postingan
+              </Button>
+              <Button variant="outline" onClick={() => setManualOpen(false)}>Batal</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {isPremium && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <SparkleGenAI className="w-4 h-4 text-primary" />
+              Buat Konten Blog dengan AI
+              <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">Pro</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Topik: mis. 5 tips memilih jasa konsultasi pajak"
+                value={topic}
+                onChange={e => setTopic(e.target.value)}
+                className="flex-1"
+              />
+              <Button onClick={handleGenerate} disabled={generating || !topic.trim()}>
+                {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
+                Generate
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {!isPremium && (
+        <Card>
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+              <span>Generate konten dengan AI tersedia di paket <strong>Pro</strong>.</span>
+              <Link href="/dashboard/upgrade" className="ml-auto text-primary font-semibold hover:underline whitespace-nowrap">
+                Upgrade →
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-3">
         {posts.map(post => (
@@ -150,26 +224,10 @@ export default function BlogManagerPage() {
         ))}
         {posts.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-12">
-            Belum ada konten blog. Gunakan AI di atas untuk membuat draft pertama.
+            Belum ada konten blog. Klik <strong>Tambah Baru</strong> untuk membuat postingan pertama.
           </div>
         )}
       </div>
-
-      <Dialog
-        open={showUpsell}
-        onOpenChange={setShowUpsell}
-        title="Fitur Blog — Pro"
-        footer={
-          <>
-            <Button variant="outline" onClick={() => setShowUpsell(false)}>Nanti Saja</Button>
-            <Button onClick={() => { window.open("/dashboard/upgrade", "_blank"); setShowUpsell(false); }}>
-              <SparkleGenAI className="w-4 h-4" /> Upgrade ke Pro
-            </Button>
-          </>
-        }
-      >
-        <p className="text-sm">Fitur blog AI tersedia untuk pengguna Pro. Upgrade untuk mengaksesnya.</p>
-      </Dialog>
     </div>
   );
 }
