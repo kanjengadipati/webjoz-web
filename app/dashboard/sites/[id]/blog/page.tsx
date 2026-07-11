@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, FileText, Plus, Sparkles } from "lucide-react";
+import { Loader2, FileText, Plus, Sparkles, ChevronLeft } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 
@@ -118,7 +118,12 @@ export default function BlogManagerPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-bold">Blog Postingan</h2>
+        <div className="flex items-center gap-3">
+          <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ChevronLeft className="w-4 h-4" /> Web
+          </Link>
+          <h2 className="text-lg font-bold">Blog Postingan</h2>
+        </div>
         <Button onClick={() => setManualOpen(true)}>
           <Plus className="w-4 h-4" /> Tambah Baru
         </Button>
