@@ -11,6 +11,7 @@ import { useToast } from "@/components/toast-provider";
 import { Loader2, FileText, Plus, Sparkles, ChevronLeft } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
+import { SiteSubNav } from "@/components/site-sub-nav";
 
 interface BlogPost {
   id: number;
@@ -117,6 +118,7 @@ export default function BlogManagerPage() {
 
   return (
     <div className="space-y-6">
+      <SiteSubNav siteId={siteId} />
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">

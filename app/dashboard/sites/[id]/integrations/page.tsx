@@ -8,6 +8,7 @@ import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { Loader2, Save, Code } from "lucide-react";
+import { SiteSubNav } from "@/components/site-sub-nav";
 
 export default function IntegrationsPage() {
   const { id } = useParams();
@@ -69,6 +70,7 @@ export default function IntegrationsPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
+      <SiteSubNav siteId={siteId} />
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-bold flex items-center gap-2">
