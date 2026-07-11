@@ -9,6 +9,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
 import { Loader2, Check, X, Copy, Star, ExternalLink } from "lucide-react";
+import { SiteSubNav } from "@/components/site-sub-nav";
 
 interface Submission {
   id: number;
@@ -82,6 +83,7 @@ export default function TestimonialModerationPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
+      <SiteSubNav siteId={siteId} />
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-bold">Bagikan Link Testimoni</CardTitle>
