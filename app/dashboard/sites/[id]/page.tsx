@@ -13,7 +13,7 @@ import {
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
 } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
@@ -1357,7 +1357,7 @@ export default function SiteEditorPage() {
                       disabled={aiLoading || !!pendingDiff}
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
                     >
-                      <SparkleIcon className="h-[18px] w-[18px]" />
+                      <SparkleGenAI className="h-[18px] w-[18px]" />
                       Regenerate dengan AI
                     </button>
                   ) : (
@@ -1392,7 +1392,7 @@ export default function SiteEditorPage() {
                         {aiLoading ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
                         ) : (
-                          <SparkleIcon className="w-[18px] h-[18px]" />
+                          <SparkleGenAI className="w-[18px] h-[18px]" />
                         )}
                         {aiLoading ? "Memproses..." : "Terapkan Gaya"}
                       </button>
@@ -1788,7 +1788,7 @@ export default function SiteEditorPage() {
                   {pendingDiff ? (
                     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
                       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <SparkleIcon className="h-9 w-9 animate-pulse" />
+                        <SparkleGenAI className="h-9 w-9 animate-pulse" />
                       </div>
                       <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
                       <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
@@ -1960,7 +1960,7 @@ export default function SiteEditorPage() {
                     className={`flex items-center justify-between gap-2 ${aiPromptCollapsed ? 'cursor-pointer select-none' : ''}`}
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <SparkleIcon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <SparkleGenAI className="h-5 w-5 text-primary flex-shrink-0" />
                       <span className="truncate text-[10px] font-bold uppercase tracking-widest text-primary">
                         AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
@@ -2051,7 +2051,7 @@ export default function SiteEditorPage() {
                           {aiLoading ? (
                             <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
                           ) : (
-                            <SparkleIcon className="w-[18px] h-[18px] flex-shrink-0" />
+                            <SparkleGenAI className="w-[18px] h-[18px] flex-shrink-0" />
                           )}
                           Regen
                         </button>
@@ -2332,7 +2332,7 @@ export default function SiteEditorPage() {
               <div className="flex items-start gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <SparkleIcon className="h-5 w-5 text-primary" />
+                    <SparkleGenAI className="h-5 w-5 text-primary" />
                     <p className="text-[12px] font-bold text-slate-100">
                       Diff AI: {SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section}
                     </p>
@@ -2797,7 +2797,7 @@ export default function SiteEditorPage() {
                   disabled={aiLoading || !!pendingDiff}
                   className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-primary text-primary-foreground disabled:opacity-50"
                 >
-                  {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SparkleIcon className="w-5 h-5" />}
+                  {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SparkleGenAI className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -2916,7 +2916,7 @@ export default function SiteEditorPage() {
             {/* Header */}
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
-                <SparkleIcon className="h-6 w-6 text-primary" />
+                <SparkleGenAI className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
@@ -2982,7 +2982,7 @@ export default function SiteEditorPage() {
                 }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)]"
               >
-                <SparkleIcon className="h-5 w-5" />
+                <SparkleGenAI className="h-5 w-5" />
                 Generate AI
               </button>
             </div>

@@ -398,7 +398,7 @@ export function SiteWizard({
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0 text-primary-foreground">
                     <SparkleIcon className="w-[27px] h-[27px]" />
                   </div>
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
@@ -593,7 +593,7 @@ export function SiteWizard({
             return (
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
-                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
                     <SparkleIcon className="w-[21px] h-[21px]" />
                   </div>
                 )}

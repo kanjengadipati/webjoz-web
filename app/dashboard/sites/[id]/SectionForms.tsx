@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
 import { isPlaceholderValue } from "./editor-utils";
@@ -290,7 +290,7 @@ function AiFieldButton({ onGenerate, onUpgradeRequired, loading, title = "Genera
     >
       {loading
         ? <Loader2 className="w-3 h-3 animate-spin" />
-        : <SparkleIcon className="w-[18px] h-[18px]" />
+        : <SparkleGenAI className="w-[18px] h-[18px]" />
       }
     </button>
   );
