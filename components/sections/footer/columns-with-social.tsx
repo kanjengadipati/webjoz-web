@@ -12,7 +12,7 @@ const TXT_SOCIAL = "color-mix(in srgb, var(--dt-text) 60%, transparent)";
 const TXT_SOCIAL_HOVER = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
 const BORDER_LIGHT = "var(--dt-border)";
 
-export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantProps) {
+export default function ColumnsWithSocial({ footer, brand_name, hasBlog }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
   const displayTagline = footer?.tagline || "";
   const links = footer?.social_links ?? [];
@@ -26,6 +26,11 @@ export default function ColumnsWithSocial({ footer, brand_name }: FooterVariantP
         <div className="space-y-2">
           <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
           {displayTagline && <p style={{ color: TXT_MED }}>{displayTagline}</p>}
+          {hasBlog && (
+            <a href="#blog" className="block text-xs transition-colors hover:opacity-80" style={{ color: TXT_HIGH }}>
+              Blog
+            </a>
+          )}
         </div>
 
         {links.length > 0 && (

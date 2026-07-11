@@ -6,7 +6,7 @@ import type { HeaderVariantProps } from "./types";
 
 export default function LeftLogoInlineNav({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle,
+  navLinkClass = "", drawerStyle, extraLinks,
 }: HeaderVariantProps) {
   return (
     <header
@@ -36,6 +36,7 @@ export default function LeftLogoInlineNav({
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
+        extraLinks={extraLinks}
         linkClass={navLinkClass || "text-[var(--dt-text)]"}
         drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
       />

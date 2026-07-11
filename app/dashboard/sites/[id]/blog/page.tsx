@@ -8,10 +8,28 @@ import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, FileText, Plus, Sparkles, ChevronLeft } from "lucide-react";
+import { LayoutGrid, List, Star, AlignLeft, Loader2, FileText, Plus, Sparkles, ChevronLeft, Check } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 import { SiteSubNav } from "@/components/site-sub-nav";
+import type { BlogLayout } from "@/components/templates/types";
+
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: string;
+  published_at: string | null;
+  created_at: string;
+}
+
+const LAYOUT_OPTIONS: { value: BlogLayout; label: string; icon: any; desc: string }[] = [
+  { value: "grid", label: "Grid", icon: LayoutGrid, desc: "Kartu dalam 3 kolom" },
+  { value: "list", label: "List", icon: List, desc: "Horizontal dengan gambar" },
+  { value: "featured", label: "Unggulan", icon: Star, desc: "Hero + grid di bawah" },
+  { value: "minimal", label: "Minimal", icon: AlignLeft, desc: "Daftar judul & tanggal" },
+];
 
 interface BlogPost {
   id: number;
@@ -41,8 +59,27 @@ export default function BlogManagerPage() {
   const [creating, setCreating] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
 
+  const [blogLayout, setBlogLayout] = useState<BlogLayout>("grid");
+  const [layoutSaving, setLayoutSaving] = useState(false);
+  const [layoutIsAiPick, setLayoutIsAiPick] = useState(false);
+
   const siteId = Number(id);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
+
+  const fetchBlogLayout = async () => {
+    if (!token || !activeTenantId) return;
+    try {
+      const res = await request<{ design_token: any }>(`/sites/${siteId}/content`, { headers: tenantHeaders }, token);
+      const layout = res.data?.design_token?.layout;
+      if (layout?.blog_index_variant) {
+        setBlogLayout(layout.blog_index_variant as BlogLayout);
+        // Show AI badge only when variant has never been manually overridden
+        setLayoutIsAiPick(layout.blog_index_variant_manual !== true);
+      }
+    } catch {}
+  };
+
+  useEffect(() => { fetchBlogLayout(); }, [siteId]);
 
   const fetchPosts = async () => {
     if (!token || !activeTenantId) return;
@@ -84,7 +121,7 @@ export default function BlogManagerPage() {
       const res = await request<BlogPost>(`/sites/${siteId}/blog-posts`, {
         method: "POST",
         headers: tenantHeaders,
-        body: JSON.stringify({ title, content, excerpt: content.slice(0, 200) }),
+        body: JSON.stringify({ title, content, excerpt: content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200) }),
       }, token);
       setPosts(p => [res.data, ...p]);
       setTitle("");
@@ -105,6 +142,27 @@ export default function BlogManagerPage() {
       fetchPosts();
     } catch (err: any) {
       pushToast(err.message || "Gagal menerbitkan", "error");
+    }
+  };
+
+  const handleLayoutChange = async (layout: BlogLayout) => {
+    const prev = blogLayout;
+    setBlogLayout(layout);
+    setLayoutIsAiPick(false);
+    setLayoutSaving(true);
+    try {
+      await request(`/sites/${siteId}/blog-index-variant`, {
+        method: "PATCH",
+        headers: tenantHeaders,
+        body: JSON.stringify({ variant: layout }),
+      }, token);
+      pushToast("Tampilan blog diperbarui", "success");
+    } catch (err: any) {
+      setBlogLayout(prev);
+      setLayoutIsAiPick(prev === blogLayout ? layoutIsAiPick : false);
+      pushToast(err.message || "Gagal menyimpan tampilan", "error");
+    } finally {
+      setLayoutSaving(false);
     }
   };
 
@@ -130,6 +188,48 @@ export default function BlogManagerPage() {
           <Plus className="w-4 h-4" /> Tambah Baru
         </Button>
       </div>
+
+      {/* Layout selector */}
+      <Card>
+        <CardContent className="py-3">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">Tampilan Blog</span>
+            <div className="flex gap-1">
+              {LAYOUT_OPTIONS.map(opt => {
+                const active = blogLayout === opt.value;
+                const Icon = opt.icon;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleLayoutChange(opt.value)}
+                    disabled={layoutSaving}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      active
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    }`}
+                    title={opt.desc}
+                  >
+                    {active && layoutSaving ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : active ? (
+                      <Check className="w-3.5 h-3.5" />
+                    ) : (
+                      <Icon className="w-3.5 h-3.5" />
+                    )}
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {layoutIsAiPick && (
+            <p className="text-[11px] text-muted-foreground mt-2 text-right">
+              ✨ Direkomendasikan AI untuk gaya situs Anda
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {manualOpen && (
         <Card>

@@ -669,6 +669,7 @@ export default function SectionForms({
                 ["faq", "FAQ"],
                 ["cta", "Promo"],
                 ["contact", "Kontak"],
+                ["blog", "Blog"],
               ] as const).map(([key, label]) => {
                 const hidden = designToken?.layout?.nav_hidden_sections?.includes(key);
                 return (
