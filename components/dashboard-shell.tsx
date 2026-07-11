@@ -242,11 +242,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
                     <Image
-                      src="/logo.png"
+                      src="/logo2.png"
                       alt="Webjoz logo"
-                      width={36}
-                      height={36}
-                      className="h-9 w-9 object-contain"
+                      width={120}
+                      height={72}
+                      className="h-8 w-auto object-contain"
                       priority
                     />
                     <CardTitle className="text-2xl font-bold tracking-tighter">Webjoz Console</CardTitle>

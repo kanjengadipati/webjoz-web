@@ -117,11 +117,11 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Image
-              src="/logo.png"
+              src="/logo2.png"
               alt="Webjoz"
-              width={28}
-              height={28}
-              className="h-7 w-7 rounded-lg object-contain"
+              width={120}
+              height={72}
+              className="h-9 w-auto object-contain"
               priority
             />
             <span className="text-sm font-semibold tracking-tight text-foreground">
@@ -527,7 +527,7 @@ export default function LandingPage() {
       <footer className="border-t border-border/40 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Webjoz" width={24} height={24} className="h-6 w-6 rounded-md object-contain" />
+            <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
             <span className="text-sm font-semibold text-foreground">Webjoz</span>
           </div>
           <p className="text-xs text-muted-foreground text-center">
