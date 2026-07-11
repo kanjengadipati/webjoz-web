@@ -270,18 +270,39 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
   }
 
   const { content, template_id, design_token, is_premium } = siteData;
+  const siteInfo = siteData.site;
 
   const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
 
+  const showDomainBanner = siteId && siteInfo?.status === "published";
+  const domainUrl = siteInfo?.subdomain
+    ? `https://${siteInfo.subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`
+    : null;
+
   return (
-    <TemplateComponent
-      content={content}
-      design_token={design_token ?? null}
-      onSubmitLead={handleSubmitLead}
-      leadSubmitting={leadSubmitting}
-      leadSuccess={leadSuccess}
-      leadError={leadError}
-      isPremium={is_premium === true}
-    />
+    <>
+      {showDomainBanner && domainUrl && (
+        <div className="w-full bg-emerald-600/10 border-b border-emerald-600/20 px-4 py-2 text-center text-sm text-emerald-400">
+          Situs ini sudah live di{" "}
+          <a
+            href={domainUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline hover:text-emerald-300"
+          >
+            {domainUrl}
+          </a>
+        </div>
+      )}
+      <TemplateComponent
+        content={content}
+        design_token={design_token ?? null}
+        onSubmitLead={handleSubmitLead}
+        leadSubmitting={leadSubmitting}
+        leadSuccess={leadSuccess}
+        leadError={leadError}
+        isPremium={is_premium === true}
+      />
+    </>
   );
 }
