@@ -1,6 +1,7 @@
 import { 
-  Layout, User, Award, HelpCircle, Sparkles, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 export const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -35,7 +36,7 @@ export const SECTION_META: Record<string, { label: string; icon: any }> = {
   catalog:      { label: "Katalog",      icon: ShoppingBag },
   gallery:      { label: "Galeri",       icon: Camera },
   faq:          { label: "FAQ",          icon: HelpCircle },
-  cta:          { label: "CTA",          icon: Sparkles },
+  cta:          { label: "CTA",          icon: SparkleIcon },
   contact:      { label: "Kontak",       icon: Mail },
   footer:       { label: "Footer",       icon: BookOpen },
   seo:          { label: "SEO",          icon: Globe },

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Utensils, Clock, ArrowRight, MapPin, Phone, Mail, Star, Send, Sparkles } from "lucide-react";
+import { Utensils, Clock, ArrowRight, MapPin, Phone, Mail, Star, Send } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   DynamicIcon, LeadForm, TestimonialsSection,

@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Wand2, Loader2 } from "lucide-react";
+import { Wand2, Loader2 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { BUSINESS_TYPES, SUB_TYPES } from "./constants";
 import type { ChatStage, PreviewState } from "./types";
 
@@ -92,7 +93,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
   return (
     <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
       <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
-        <Sparkles className="w-3 h-3 text-primary-foreground" />
+        <SparkleIcon className="w-[18px] h-[18px]" />
       </div>
       <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="px-3 pt-2.5 pb-1.5 flex items-center justify-between">

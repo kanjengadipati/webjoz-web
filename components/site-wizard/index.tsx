@@ -13,9 +13,9 @@ import {
   Plus,
   RefreshCw,
   Smartphone,
-  Sparkles,
   Tablet,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
@@ -343,7 +343,6 @@ export function SiteWizard({
       localStorage.removeItem(PENDING_KEY);
       router.push(`/dashboard/sites/${siteId}`);
     } catch (err: any) {
-      console.error(err);
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
         pushToast("Batas situs tercapai", "error", {
           message: "Anda sudah mencapai jumlah situs maksimal untuk paket saat ini. Upgrade untuk membuat situs baru.",
@@ -400,7 +399,7 @@ export function SiteWizard({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                    <Sparkles className="w-[18px] h-[18px] text-primary-foreground" />
+                    <SparkleIcon className="w-[27px] h-[27px]" />
                   </div>
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
                 </div>
@@ -595,7 +594,7 @@ export function SiteWizard({
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
                   <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
-                    <Sparkles className="w-[14px] h-[14px] text-primary-foreground" />
+                    <SparkleIcon className="w-[21px] h-[21px]" />
                   </div>
                 )}
                 <div

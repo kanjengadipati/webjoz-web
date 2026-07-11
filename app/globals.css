@@ -216,6 +216,15 @@ body::before {
   border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
+.text-primary-foreground {
+  color: var(--primary-foreground) !important;
+}
+
+.bg-primary-foreground {
+  background-color: var(--primary-foreground) !important;
+}
+
+
 .btn-primary:hover:not(:disabled) {
   background:
     linear-gradient(180deg,
