@@ -16,6 +16,7 @@ export default function IntegrationsPage() {
   const { pushToast } = useToast();
 
   const siteId = Number(id);
+  const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
   const [ga4Id, setGa4Id] = useState("");
   const [metaPixelId, setMetaPixelId] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ export default function IntegrationsPage() {
     if (!token || !activeTenantId) return;
     (async () => {
       try {
-        const res = await request<{ content?: { tracking_codes?: Record<string, string> } }>(`/sites/${siteId}/content`, {}, token);
+        const res = await request<{ content?: { tracking_codes?: Record<string, string> } }>(`/sites/${siteId}/content`, { headers: tenantHeaders }, token);
         const codes = res.data?.content?.tracking_codes || {};
         setGa4Id((codes as any).ga4_id || "");
         setMetaPixelId((codes as any).meta_pixel_id || "");
@@ -42,6 +43,7 @@ export default function IntegrationsPage() {
     try {
       await request(`/sites/${siteId}/content`, {
         method: "PUT",
+        headers: tenantHeaders,
         body: JSON.stringify({
           tracking_codes: {
             ga4_id: ga4Id,

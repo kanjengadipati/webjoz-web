@@ -37,13 +37,15 @@ export default function TeamPage() {
   const [inviteRole, setInviteRole] = useState("editor");
   const [showUpsell, setShowUpsell] = useState(false);
 
+  const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
+
   const fetchData = async () => {
     if (!token || !activeTenantId) return;
     try {
       setLoading(true);
       const [mRes, iRes] = await Promise.all([
-        request<Member[]>(`/tenants/${activeTenantId}/members`, {}, token),
-        request<Invitation[]>(`/tenants/${activeTenantId}/invitations`, {}, token),
+        request<Member[]>(`/tenants/${activeTenantId}/members`, { headers: tenantHeaders }, token),
+        request<Invitation[]>(`/tenants/${activeTenantId}/invitations`, { headers: tenantHeaders }, token),
       ]);
       setMembers(mRes.data || []);
       setInvitations(iRes.data || []);
@@ -61,6 +63,7 @@ export default function TeamPage() {
     try {
       await request(`/tenants/${activeTenantId}/invitations`, {
         method: "POST",
+        headers: tenantHeaders,
         body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
       }, token);
       pushToast("Undangan terkirim", "success");
@@ -79,6 +82,7 @@ export default function TeamPage() {
     try {
       await request(`/tenants/${activeTenantId}/invitations/${invId}`, {
         method: "DELETE",
+        headers: tenantHeaders,
       }, token);
       pushToast("Undangan dibatalkan", "success");
       fetchData();
@@ -91,6 +95,7 @@ export default function TeamPage() {
     try {
       await request(`/tenants/${activeTenantId}/members/${userId}`, {
         method: "DELETE",
+        headers: tenantHeaders,
       }, token);
       pushToast("Anggota dihapus", "success");
       fetchData();
