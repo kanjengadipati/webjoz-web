@@ -99,7 +99,7 @@ export default function BlogManagerPage() {
 
   const handlePublish = async (postId: number) => {
     try {
-      await request(`/blog-posts/${postId}/publish`, { method: "POST", headers: tenantHeaders }, token);
+      await request(`/sites/${siteId}/blog-posts/${postId}/publish`, { method: "POST", headers: tenantHeaders }, token);
       pushToast("Postingan diterbitkan", "success");
       fetchPosts();
     } catch (err: any) {
