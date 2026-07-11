@@ -18,6 +18,7 @@ import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
+import { setEditorSiteId } from "@/components/templates/shared";
 import {
   stripRegeneratedMarkers,
   BODY_SECTION_KEYS,
@@ -38,6 +39,7 @@ import SectionForms from "./SectionForms";
 import FontPicker from "./components/FontPicker";
 import PublishModal from "./modals/PublishModal";
 import CongratsModal from "./modals/CongratsModal";
+import { SiteSubNav } from "@/components/site-sub-nav";
 
 import {
  type TypographyPairing,
@@ -212,6 +214,19 @@ export default function SiteEditorPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
 
+      // Fetch blog posts
+      let blogPosts: any[] = [];
+      try {
+        const blogRes = await request<any>(`/sites/${siteId}/blog-posts`, {
+          headers: { "X-Tenant-ID": activeTenantId.toString() }
+        }, token);
+        if (blogRes.status === "success" && Array.isArray(blogRes.data)) {
+          blogPosts = blogRes.data;
+        }
+      } catch (e) {
+        console.warn("Failed to load blog posts:", e);
+      }
+
       // Fallback empty content scaffold if empty
       const data = stripRegeneratedMarkers(contentRes.data?.content || {});
       const fetchedDesignToken = contentRes.data?.design_token || null;
@@ -275,6 +290,7 @@ export default function SiteEditorPage() {
         ...(data.testimonials ? { testimonials: data.testimonials } : {}),
         ...(data.menu ? { menu: data.menu } : {}),
         ...(data.catalog ? { catalog: data.catalog } : {}),
+        blog: blogPosts.length > 0 ? { posts: blogPosts } : undefined,
       };
 
       setContent(finalContent);
@@ -1037,6 +1053,14 @@ export default function SiteEditorPage() {
   const handleColorChange = (colorKey: string, value: string) => {
     updateDesignTokenField("palette", colorKey, value);
   };
+
+  // Inform shared NavMenu of the current siteId so the Blog nav link
+  // resolves to /preview/[id]/blog instead of an absolute /blog.
+  // Must be unconditional — placed before any early returns.
+  React.useEffect(() => {
+    setEditorSiteId(siteId);
+    return () => setEditorSiteId(null);
+  }, [siteId]);
 
   if (loading) {
     return (
@@ -2468,6 +2492,7 @@ export default function SiteEditorPage() {
                       content={content}
                       design_token={designToken ?? null}
                       isEditorMode={true}
+                      editorSiteId={siteId}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
@@ -2502,6 +2527,7 @@ export default function SiteEditorPage() {
                       content={content}
                       design_token={designToken ?? null}
                       isEditorMode={true}
+                      editorSiteId={siteId}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
@@ -2803,47 +2829,48 @@ export default function SiteEditorPage() {
             </div>
           </div>
         {/* Desktop sticky publish footer — inside canvas */}
-        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-3">
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
+        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
+          <SiteSubNav siteId={siteId!} compact />
+          <div className="flex items-center gap-3 flex-shrink-0">
             {siteDetails?.status === "published" ? (
-              <>
+              <span className="flex items-center gap-1.5 text-[11px]">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-emerald-400 font-medium">Website sedang live</span>
-              </>
+                <span className="text-emerald-400 font-medium">Live</span>
+              </span>
             ) : (
-              <span>Draft — belum dipublikasikan</span>
+              <span className="text-[11px] text-slate-500">Draft</span>
+            )}
+            {siteDetails?.status === "published" ? (
+              <button
+                type="button"
+                onClick={() => setConfirmPublishOpen(true)}
+                disabled={publishing}
+                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
+                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+              >
+                {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                  </span>
+                )}
+                {publishing ? "Menerapkan..." : "Terapkan ke Live"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setPublishModalOpen(true)}
+                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
+                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+              >
+                <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+                Publikasikan
+              </button>
             )}
           </div>
-          {siteDetails?.status === "published" ? (
-            <button
-              type="button"
-              onClick={() => setConfirmPublishOpen(true)}
-              disabled={publishing}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
-              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-            >
-              {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-                </span>
-              )}
-              {publishing ? "Menerapkan..." : "Terapkan ke Live"}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setPublishModalOpen(true)}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
-              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-            >
-              <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-              Publikasikan Website
-            </button>
-          )}
         </div>
         </div>
       {publishModalOpen && siteDetails && (

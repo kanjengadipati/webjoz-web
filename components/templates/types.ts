@@ -62,6 +62,7 @@ export interface GalleryItem {
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
+export type BlogLayout = "grid" | "list" | "featured" | "minimal";
 
 export interface DesignToken {
   palette?: {
@@ -123,6 +124,19 @@ export interface ContentSection {
 export interface TemplateProps {
   content: {
     sections?: ContentSection[];
+    blog_layout?: BlogLayout;
+    blog?: {
+      posts: Array<{
+        id: number;
+        title: string;
+        slug: string;
+        excerpt: string;
+        content_html: string;
+        cover_image_url?: string;
+        published_at: string;
+        created_at: string;
+      }>;
+    };
     header: {
       brand_name: string;
       nav_cta_text: string;
@@ -267,4 +281,9 @@ export interface TemplateProps {
    * Belum diwire dari plan backend — menyusul. Default: false.
    */
   isPremium?: boolean;
+  /**
+   * Hanya diisi ketika template dirender dalam dashboard editor.
+   * Dipakai untuk meng-resolve URL /preview/[id]/blog.
+   */
+  editorSiteId?: number | null;
 }

@@ -89,6 +89,12 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "columns-with-social", label: "Kolom + Sosial Media", description: "Multi-kolom dengan link media sosial." },
     { value: "newsletter-cta", label: "Newsletter CTA", description: "Ajakan hubungi kami + copyright." },
   ],
+  blog: [
+    { value: "grid", label: "Grid", description: "Kartu dalam 3 kolom rapi." },
+    { value: "list", label: "List", description: "Horizontal dengan gambar di kiri, teks di kanan." },
+    { value: "featured", label: "Unggulan", description: "Satu postingan besar hero + grid kecil di bawah." },
+    { value: "minimal", label: "Minimal", description: "Daftar judul dan tanggal tanpa gambar." },
+  ],
 };
 
 export function getVariantLabel(section: string, value: string): string {

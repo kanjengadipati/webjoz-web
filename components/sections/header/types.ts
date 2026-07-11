@@ -14,4 +14,5 @@ export interface HeaderVariantProps {
   hiddenSections?: string[];
   navLinkClass?: string;
   drawerStyle?: React.CSSProperties;
+  extraLinks?: { label: string; href: string }[];
 }

@@ -11,12 +11,12 @@ const TABS = [
   { href: "/testimonials", label: "Testimoni", icon: Star },
 ] as const;
 
-export function SiteSubNav({ siteId }: { siteId: number }) {
+export function SiteSubNav({ siteId, compact }: { siteId: number; compact?: boolean }) {
   const pathname = usePathname();
   const current = pathname.replace(`/dashboard/sites/${siteId}`, "") || "";
 
   return (
-    <nav className="flex gap-1 border-b pb-3 mb-6 overflow-x-auto">
+    <nav className={`flex gap-1 overflow-x-auto ${compact ? "" : "border-b pb-3 mb-6"}`}>
       {TABS.map(({ href, label, icon: Icon }) => {
         const isActive = href === ""
           ? current === "" || (!current.startsWith("/") && current.length === 0)

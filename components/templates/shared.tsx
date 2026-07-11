@@ -1,4 +1,4 @@
-"use client";
+"use client";"use client";
 
 import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars } from "./helpers";
@@ -11,6 +11,12 @@ import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/co
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
+
+// Global variable to store editorSiteId (only used in dashboard editor)
+let EDITOR_SITE_ID: number | null = null;
+export function setEditorSiteId(id: number | null) {
+  EDITOR_SITE_ID = id;
+}
 
 export function isPlaceholderPhone(phone: string | null | undefined): boolean {
   if (!phone) return true;
@@ -153,6 +159,7 @@ const NAV_LABELS: Record<string, string> = {
   catalog: "Katalog",
   gallery: "Galeri",
   testimonials: "Testimoni",
+  blog: "Blog",
   faq: "FAQ",
   cta: "Promo",
   contact: "Kontak",
@@ -164,6 +171,7 @@ interface NavMenuProps {
   linkClass?: string;
   activeColor?: string;
   drawerStyle?: React.CSSProperties;
+  extraLinks?: { label: string; href: string }[];
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -171,22 +179,23 @@ const NavMenu: React.FC<NavMenuProps> = ({
   hiddenSections = [],
   linkClass = "text-slate-700",
   drawerStyle,
+  extraLinks = [],
 }) => {
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  const navItems = sectionOrder
-    .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && NAV_LABELS[k])
-    .map(k => ({ key: k, label: NAV_LABELS[k] }));
+  const navItems = [
+    ...sectionOrder
+      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && NAV_LABELS[k])
+      .map(k => ({ key: k, label: NAV_LABELS[k], href: k === "blog" ? "__blog__" : "" })),
+    ...extraLinks.map(l => ({ key: l.href, label: l.label, href: l.href }))
+  ];
 
   if (navItems.length === 0) return null;
 
   const handleToggle = () => {
     if (!open && btnRef.current) {
-      // Find the nearest header/nav ancestor to get its bottom position.
-      // Using fixed positioning avoids iOS Safari's known bug where absolute
-      // children of sticky+backdrop-filter parents are clipped.
       const header = btnRef.current.closest("header") ?? btnRef.current.closest("nav") ?? btnRef.current;
       const rect = header.getBoundingClientRect();
       setDrawerTop(rect.bottom);
@@ -194,24 +203,77 @@ const NavMenu: React.FC<NavMenuProps> = ({
     setOpen(v => !v);
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>, item: { key: string; label: string; href: string }) => {
+    if (item.href === "__blog__") {
+      // Editor mode: siteId is set via setEditorSiteId() → use /preview/[id]/blog
+      if (EDITOR_SITE_ID) {
+        window.location.href = `/preview/${EDITOR_SITE_ID}/blog`;
+        return;
+      }
+
+      // Resolve the blog index URL relative to the current site path.
+      const parts = window.location.pathname.split("/").filter(Boolean);
+
+      // Path-based local dev: /s/[subdomain] → /s/[subdomain]/blog
+      if (parts[0] === "s" && parts[1]) {
+        window.location.href = `/${parts[0]}/${parts[1]}/blog`;
+        return;
+      }
+
+      // Production rewrite: /site/[subdomain] → /site/[subdomain]/blog
+      if (parts[0] === "site" && parts[1]) {
+        window.location.href = `/${parts[0]}/${parts[1]}/blog`;
+        return;
+      }
+
+      // Preview mode: /preview/[id] → /preview/[id]/blog
+      if (parts[0] === "preview" && parts[1]) {
+        window.location.href = `/preview/${parts[1]}/blog`;
+        return;
+      }
+
+      // Custom domain: relative /blog works on same domain
+      window.location.href = "/blog";
+      return;
+    }
+    if (item.href) {
+      window.location.href = item.href;
+      return;
+    }
     setOpen(false);
+    const isBlogPage = typeof window !== "undefined" && /\/blog($|\/)/.test(window.location.pathname);
+    if (isBlogPage) {
+      const parts = window.location.pathname.split("/").filter(Boolean);
+      let homeUrl = "/";
+      if (parts[0] === "s" && parts[1]) {
+        homeUrl = `/${parts[0]}/${parts[1]}`;
+      } else if (parts[0] === "site" && parts[1]) {
+        homeUrl = `/${parts[0]}/${parts[1]}`;
+      } else if (parts[0] === "preview" && parts[1]) {
+        homeUrl = `/preview/${parts[1]}`;
+      }
+      window.location.href = `${homeUrl}#${item.key}`;
+      return;
+    }
     const doc = e.currentTarget.ownerDocument || document;
-    const el = doc.getElementById(key);
+    let el = doc.getElementById(`section-${item.key}`);
+    if (!el) {
+      el = doc.getElementById(item.key);
+    }
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <>
       <nav className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
-        {navItems.map(({ key, label }) => (
+        {navItems.map((item) => (
           <button
-            key={key}
+            key={item.key}
             type="button"
-            onClick={(e) => handleClick(e, key)}
+            onClick={(e) => handleClick(e, item)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
           >
-            {label}
+            {item.label}
           </button>
         ))}
       </nav>
@@ -240,14 +302,14 @@ const NavMenu: React.FC<NavMenuProps> = ({
             className="md:hidden fixed left-0 right-0 z-[60] shadow-lg py-2"
             style={{ top: drawerTop, ...(drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }) }}
           >
-            {navItems.map(({ key, label }) => (
+            {navItems.map((item) => (
               <button
-                key={key}
+                key={item.key}
                 type="button"
-                onClick={(e) => handleClick(e, key)}
+                onClick={(e) => handleClick(e, item)}
                 className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
               >
-                {label}
+                {item.label}
               </button>
             ))}
           </div>
@@ -506,11 +568,26 @@ const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
 
 function navCtaHref(navCtaText?: string): string {
   const lower = (navCtaText || "").toLowerCase();
-  if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) return "#catalog";
-  if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) return "#menu";
-  if (lower.includes("tentang") || lower.includes("about")) return "#about";
-  if (lower.includes("keunggulan") || lower.includes("benefit")) return "#benefits";
-  return "#contact";
+  let hash = "#contact";
+  if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) hash = "#catalog";
+  else if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) hash = "#menu";
+  else if (lower.includes("tentang") || lower.includes("about")) hash = "#about";
+  else if (lower.includes("keunggulan") || lower.includes("benefit")) hash = "#benefits";
+
+  const isBlogPage = typeof window !== "undefined" && /\/blog($|\/)/.test(window.location.pathname);
+  if (isBlogPage) {
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    let homeUrl = "/";
+    if (parts[0] === "s" && parts[1]) {
+      homeUrl = `/${parts[0]}/${parts[1]}`;
+    } else if (parts[0] === "site" && parts[1]) {
+      homeUrl = `/${parts[0]}/${parts[1]}`;
+    } else if (parts[0] === "preview" && parts[1]) {
+      homeUrl = `/preview/${parts[1]}`;
+    }
+    return `${homeUrl}${hash}`;
+  }
+  return hash;
 }
 
 // ─── Hero CTA href helper — WhatsApp jika ada phone, fallback ke cta_url ────

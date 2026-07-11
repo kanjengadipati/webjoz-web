@@ -80,15 +80,31 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           throw new Error(envelope.message || "Gagal memuat situs.");
         }
 
+        const siteInfo = envelope.data?.site;
+        let blogPosts: any[] = [];
+        if (siteInfo?.id) {
+          try {
+            const blogRes = await fetch(`${API_BASE_URL}/public/sites/${siteInfo.id}/blog-posts`);
+            if (blogRes.ok) {
+              const blogEnvelope = await blogRes.json();
+              if (blogEnvelope.status === "success" && Array.isArray(blogEnvelope.data)) {
+                blogPosts = blogEnvelope.data;
+              }
+            }
+          } catch {}
+        }
+
         setSiteData({
           ...envelope.data,
-          content: stripRegeneratedMarkers(envelope.data.content),
+          content: {
+            ...stripRegeneratedMarkers(envelope.data.content),
+            blog: blogPosts.length > 0 ? { posts: blogPosts } : undefined,
+          },
         });
         setError(null);
 
         // Apply dynamic SEO meta from content
         const seo = envelope.data?.content?.seo;
-        const siteInfo = envelope.data?.site;
         const siteName = siteInfo?.name || "";
         const subdomain = siteInfo?.subdomain || "";
         const templateId = envelope.data?.template_id || "";
