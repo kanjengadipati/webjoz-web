@@ -99,6 +99,7 @@ export interface DesignToken {
     };
     section_order?: string[];
     hidden_sections?: string[];
+    nav_hidden_sections?: string[];
     engine?: "default" | "storytelling" | "showcase" | "minimal";
     /**
      * Controls which floating action button appears on the live site.

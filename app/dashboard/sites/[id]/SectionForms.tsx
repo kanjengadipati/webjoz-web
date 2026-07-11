@@ -651,6 +651,50 @@ export default function SectionForms({
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Ikon</label>
             <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" placeholder="cth. Utensils" />
           </div>
+
+          {/* Nav Menu Items */}
+          <div className="pt-2 space-y-2">
+            <div>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Menu Navigasi</label>
+              <p className="text-[10px] text-slate-500 mt-0.5">Atur item yang tampil di navbar</p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {([
+                ["about", "Tentang"],
+                ["benefits", "Keunggulan"],
+                ["menu", "Menu"],
+                ["catalog", "Katalog"],
+                ["gallery", "Galeri"],
+                ["testimonials", "Testimoni"],
+                ["faq", "FAQ"],
+                ["cta", "Promo"],
+                ["contact", "Kontak"],
+              ] as const).map(([key, label]) => {
+                const hidden = designToken?.layout?.nav_hidden_sections?.includes(key);
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => {
+                      const current: string[] = designToken?.layout?.nav_hidden_sections ?? [];
+                      const next = hidden
+                        ? current.filter((s: string) => s !== key)
+                        : [...current, key];
+                      updateDesignTokenLayout?.("nav_hidden_sections", next);
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium border transition-all ${
+                      hidden
+                        ? "border-white/5 bg-white/[0.03] text-slate-600 line-through"
+                        : "border-primary/20 bg-primary/10 text-primary"
+                    }`}
+                  >
+                    {hidden ? "🙈" : "👁️"}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 
