@@ -66,6 +66,8 @@ export function clearAuthSession() {
   setStoredValue(TOKEN_STORAGE_KEY, "");
   setStoredValue(REFRESH_STORAGE_KEY, "");
   setStoredValue("webjoz_active_tenant_id", "");
+  setStoredValue("webjoz_login_redirect", "");
+  setStoredValue("webjoz_wizard_prefill", "");
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event("storage_tenant_changed"));
   }

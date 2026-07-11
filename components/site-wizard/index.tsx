@@ -52,6 +52,7 @@ export function SiteWizard({
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const isSavingRef = React.useRef(false);
   // Ref to the preview container so confetti canvas can size itself correctly
   const previewContainerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -280,6 +281,9 @@ export function SiteWizard({
   };
 
   const handleGoToEditor = async () => {
+    if (isSavingRef.current) return; // prevent double-click / race condition
+    isSavingRef.current = true;
+
     if (!token) {
       localStorage.setItem(PENDING_KEY, JSON.stringify({
         businessName: chat.businessName, businessType: chat.businessType,
@@ -350,12 +354,15 @@ export function SiteWizard({
           actionHref: "/dashboard/upgrade",
           autoClose: false,
         });
+        isSavingRef.current = false; // allow retry after navigation
         router.push("/dashboard/upgrade");
         return;
       }
+      isSavingRef.current = false; // allow retry on generic error
       pushToast(err.message || "Terjadi kesalahan. Silakan coba lagi.", "error");
     }
   };
+
 
   const handleDetailsSheetSave = (whatsapp: string, serviceArea: string) => {
     chat.setWhatsapp(whatsapp);

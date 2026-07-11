@@ -15,5 +15,7 @@ const variants: Record<string, ComponentType<HeaderVariantProps>> = {
 export default function HeaderSection(props: HeaderVariantProps) {
   const variant = props.design_token?.layout?.section_variants?.header ?? "left-logo-inline-nav";
   const Renderer = variants[variant] ?? LeftLogoInlineNav;
-  return <Renderer {...props} />;
+  const navHidden = props.design_token?.layout?.nav_hidden_sections ?? [];
+  const mergedHiddenSections = [...new Set([...(props.hiddenSections ?? []), ...navHidden])];
+  return <Renderer {...props} hiddenSections={mergedHiddenSections} />;
 }
