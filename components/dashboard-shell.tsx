@@ -106,7 +106,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     ? "Create Website"
     : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
 
-  const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new";
+  const pathParts = pathname.split("/").filter(Boolean);
+  const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new" && pathParts.length <= 3;
   const isNewSitePage = pathname === "/dashboard/sites/new";
   const isFullscreenWorkspace = isEditPage || isNewSitePage;
 
