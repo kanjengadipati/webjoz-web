@@ -125,48 +125,49 @@ export default function TeamPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {members.map(m => (
-            <div key={m.id} className="flex items-center justify-between py-2 border-b last:border-none">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                  {(m.user?.name || m.user?.email || "?")[0].toUpperCase()}
-                </div>
-                <div>
-                  <div className="text-sm font-medium">{m.user?.name || m.user?.email || "Unknown"}</div>
-                  <div className="text-xs text-muted-foreground">{m.user?.email || ""}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant={m.role === "owner" ? "default" : "secondary"}>{m.role}</Badge>
-                {m.role !== "owner" && (
-                  <Button variant="ghost" size="sm" onClick={() => handleRemoveMember(m.user_id)}>
-                    <X className="w-4 h-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {pendingInvites.map(inv => (
-            <div key={inv.id} className="flex items-center justify-between py-2 border-b last:border-none text-muted-foreground">
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4" />
-                <div>
-                  <div className="text-sm">{inv.email}</div>
-                  <div className="text-xs">Undangan menunggu · role: {inv.role}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline">Menunggu</Badge>
-                <Button variant="ghost" size="sm" onClick={() => handleRevoke(inv.id)}>
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-
-          {members.length === 0 && pendingInvites.length === 0 && (
+          {members.length === 0 && pendingInvites.length === 0 ? (
             <div className="text-sm text-muted-foreground text-center py-6">Belum ada anggota tim.</div>
+          ) : (
+            <>
+              {members.map(m => (
+                <div key={m.id} className="flex items-center justify-between py-2 border-b last:border-none">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                      {(m.user?.name || m.user?.email || "?")[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">{m.user?.name || m.user?.email || "Unknown"}</div>
+                      <div className="text-xs text-muted-foreground">{m.user?.email || ""}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={m.role === "owner" ? "default" : "secondary"}>{m.role}</Badge>
+                    {m.role !== "owner" && (
+                      <Button variant="ghost" size="sm" onClick={() => handleRemoveMember(m.user_id)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {pendingInvites.map(inv => (
+                <div key={inv.id} className="flex items-center justify-between py-2 border-b last:border-none text-muted-foreground">
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-4 h-4" />
+                    <div>
+                      <div className="text-sm">{inv.email}</div>
+                      <div className="text-xs">Undangan menunggu · role: {inv.role}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">Menunggu</Badge>
+                    <Button variant="ghost" size="sm" onClick={() => handleRevoke(inv.id)}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </>
           )}
         </CardContent>
       </Card>
