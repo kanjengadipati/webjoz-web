@@ -3,7 +3,7 @@ import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2,
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
-import { isPlaceholderValue } from "./editor-utils";
+import { isPlaceholderValue, AI_SUGGESTIONS } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
@@ -539,6 +539,14 @@ export default function SectionForms({
   const [resolveError, setResolveError] = React.useState<string | null>(null);
   const [showLocationPicker, setShowLocationPicker] = React.useState(false);
 
+  const [fieldPromptModal, setFieldPromptModal] = React.useState<{
+    section: string;
+    fieldKey: string;
+    label: string;
+    resolve: (val: string | null) => void;
+  } | null>(null);
+  const [fieldPromptInput, setFieldPromptInput] = React.useState("");
+
   // Auto-initialize floating_button default when user opens the floating tab
   React.useEffect(() => {
     if (activeTab === "floating" && designToken?.layout?.floating_button === undefined) {
@@ -549,12 +557,22 @@ export default function SectionForms({
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
 
-  const handleAiText = async (section: string, fieldKey: string, prompt: string) => {
+  const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
+
+    const customPrompt = await new Promise<string | null>((resolve) => {
+      setFieldPromptInput("");
+      setFieldPromptModal({ section, fieldKey, label, resolve });
+    });
+    if (customPrompt === null) return;
+
     const loadKey = `${section}.${fieldKey}`;
     setAiLoadingField(loadKey);
     try {
-      const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, prompt);
+      const fullPrompt = customPrompt.trim()
+        ? `${prompt} dengan instruksi khusus tambahan: "${customPrompt}"`
+        : prompt;
+      const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, fullPrompt);
       if (result) {
         updateField(section, fieldKey, result);
         onAiSuccess?.();
@@ -565,7 +583,7 @@ export default function SectionForms({
       } else {
         pushToast?.(err.message || "AI gagal meregenerasi teks field ini.", "error");
       }
-      throw err; // rethrow to let AiFieldButton catch and process
+      throw err;
     } finally {
       setAiLoadingField(null);
     }
@@ -573,15 +591,28 @@ export default function SectionForms({
 
   const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string) => {
     if (!token || !activeTenantId || !siteId) return;
+
+    const customPrompt = await new Promise<string | null>((resolve) => {
+      setFieldPromptInput("");
+      setFieldPromptModal({
+        section: activeTab,
+        fieldKey: `categories.${catIdx}.items.${itemIdx}.description`,
+        label: `Deskripsi: ${itemName}`,
+        resolve,
+      });
+    });
+    if (customPrompt === null) return;
+
     const loadKey = `${catIdx}_${itemIdx}`;
     setAiLoadingDesc(loadKey);
     try {
+      const instructions = `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.${customPrompt.trim() ? ` Instruksi tambahan: "${customPrompt}"` : ""}`;
       const res = await request<any>("/ai/regenerate-section", {
         method: "POST",
         body: JSON.stringify({
           site_id: siteId,
           section: activeTab,
-          instructions: `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.`,
+          instructions,
           tenant_id: activeTenantId,
         }),
       }, String(token));
@@ -784,7 +815,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "hero.headline"}
-                onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata")}
+                onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata", "Headline")}
                 title="AI: generate headline"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -818,7 +849,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "hero.subheadline"}
-                onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata")}
+                onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata", "Subheadline")}
                 title="AI: generate subheadline"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -986,7 +1017,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "about.title"}
-                onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis")}
+                onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis", "Judul Tentang")}
                 title="AI: generate judul"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1006,7 +1037,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "about.body"}
-                onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.")}
+                onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.", "Deskripsi")}
                 title="AI: generate deskripsi"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1346,8 +1377,8 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "cta.headline"}
-                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli")}
-                title="AI: generate headline CTA"
+                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli", "Headline CTA")}
+                title="AI: generate headline"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -1813,7 +1844,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.title"}
-                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.")}
+                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
                 title="AI: generate SEO title"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1840,7 +1871,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.description"}
-                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.")}
+                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
                 title="AI: generate meta description"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1864,7 +1895,7 @@ export default function SectionForms({
             keywords={content.seo?.keywords || []}
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
-            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.")}
+            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO")}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
@@ -1878,7 +1909,7 @@ export default function SectionForms({
               <span>OG Type</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.og_type"}
-                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.")}
+                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.", "OG Type")}
                 title="AI: suggest OG type"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1902,7 +1933,7 @@ export default function SectionForms({
               <span>Twitter Card</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.twitter_card"}
-                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.")}
+                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.", "Twitter Card")}
                 title="AI: suggest Twitter card"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -2466,6 +2497,83 @@ export default function SectionForms({
               {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── AI Prompt Modal ── */}
+      {fieldPromptModal && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+                <SparkleGenAI className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                  Instruksi AI — {fieldPromptModal.label}
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Tambahkan instruksi khusus atau langsung klik Generate.
+                </p>
+              </div>
+            </div>
+
+            {/* Text input */}
+            <input
+              autoFocus
+              type="text"
+              value={fieldPromptInput}
+              onChange={(e) => setFieldPromptInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }
+                if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
+              }}
+              placeholder='cth. "buat lebih kasual dan ramah"'
+              className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+            />
+
+            {/* Quick suggestions */}
+            {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).slice(0, 3).map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => setFieldPromptInput(chip)}
+                    className="px-2.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={() => { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <SparkleGenAI className="h-4 w-4" />
+                Generate
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
