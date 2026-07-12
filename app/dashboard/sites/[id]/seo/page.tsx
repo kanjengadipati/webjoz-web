@@ -28,10 +28,11 @@ export default function SeoManagerPage() {
   const [loading, setLoading]       = useState(true);
   const [saving, setSaving]         = useState(false);
   const [savedAt, setSavedAt]       = useState<Date | null>(null);
-  const [seoData, setSeoData]       = useState<any>({});
-  const [subdomain, setSubdomain]   = useState<string>("");
+  const [seoData, setSeoData]           = useState<any>({});
+  const [subdomain, setSubdomain]       = useState<string>("");
+  const [gscVerification, setGscVerification] = useState<string>("");
   const [aiLoadingField, setAiLoadingField] = useState<string | null>(null);
-  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen]   = useState(false);
 
   // Prompt modal state (same pattern as editor)
   const [promptModal, setPromptModal] = useState<{
@@ -55,6 +56,9 @@ export default function SeoManagerPage() {
       fullContentRef.current = content;
       setSeoData(content.seo ?? {});
       seoRef.current = content.seo ?? {};
+      // GSC verification from tracking_codes
+      const trackingCodes = (res.data as any)?.tracking_codes ?? {};
+      setGscVerification(trackingCodes.gsc_verification ?? "");
       // Fetch site details for subdomain (for SERP preview)
       try {
         const siteRes = await request<any>(`/sites/${siteId}`, { headers: tenantHeaders }, token);
@@ -103,6 +107,24 @@ export default function SeoManagerPage() {
       return next;
     });
   }, [scheduleAutosave]);
+
+  // ── GSC save ───────────────────────────────────────────────────────────────
+  const handleGscSave = useCallback(async (code: string) => {
+    if (!token || !activeTenantId) return;
+    // Fetch current tracking_codes first to avoid wiping GA4 / Meta Pixel
+    let existingCodes: Record<string, string> = {};
+    try {
+      const res = await request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, token);
+      existingCodes = (res.data as any)?.tracking_codes ?? {};
+    } catch { /* fall back to empty */ }
+    await request(`/sites/${siteId}/tracking-codes`, {
+      method: "PATCH",
+      headers: tenantHeaders,
+      body: JSON.stringify({ tracking_codes: { ...existingCodes, gsc_verification: code } }),
+    }, token);
+    setGscVerification(code);
+    pushToast("Kode GSC berhasil disimpan", "success");
+  }, [token, activeTenantId, siteId, pushToast]);
 
   // ── AI text handler (mirrors editor handleAiText) ──────────────────────────
   const handleAiText = useCallback(async (fieldKey: string, prompt: string, label: string) => {
@@ -191,6 +213,8 @@ export default function SeoManagerPage() {
         aiLoadingField={aiLoadingField}
         onAiText={handleAiText}
         subdomain={subdomain || undefined}
+        gscVerification={gscVerification}
+        onGscSave={handleGscSave}
       />
 
       {/* AI prompt modal — same style as editor */}
