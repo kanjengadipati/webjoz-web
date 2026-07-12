@@ -2823,14 +2823,6 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                         <div className="flex items-center justify-between mb-1">
                           <label className={inputLabel}>Deskripsi</label>
                           <div className="flex items-center gap-1.5 text-[10px]">
-                            {onAiDescription && (
-                              <AiFieldButton
-                                loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
-                                title="AI: generate deskripsi"
-                                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                              />
-                            )}
                             <button
                               type="button"
                               onClick={() => {
@@ -2912,6 +2904,18 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                                 </div>
                               )}
                             </div>
+
+                            {onAiDescription && (
+                              <>
+                                <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
+                                <AiFieldButton
+                                  loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
+                                  onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
+                                  title="AI: generate deskripsi"
+                                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                                />
+                              </>
+                            )}
                           </div>
                         </div>
                         <textarea
