@@ -114,6 +114,7 @@ export default function TestimonialModerationPage() {
   };
 
   // ── Google Reviews (Opsi B) ───────────────────────────────────────────────
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [googleApiKey, setGoogleApiKey] = useState("");
   const [googlePlaceId, setGooglePlaceId] = useState("");
   const [googleCache, setGoogleCache] = useState<GoogleCache | null>(null);
@@ -283,27 +284,43 @@ export default function TestimonialModerationPage() {
         </CardContent>
       </Card>
 
-      {/* ── Opsi B: Google Reviews ── */}
+      {/* ── Opsi B: Google Reviews — Advanced ── */}
       <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        {/* Collapsible header with advanced toggle */}
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(o => !o)}
+          className="w-full flex items-center justify-between px-4 py-3 border-b border-white/10 hover:bg-white/[0.03] transition-colors cursor-pointer"
+        >
           <div className="flex items-center gap-2">
             <GoogleLogo />
-            <div>
+            <div className="text-left">
               <p className="text-[13px] font-bold text-slate-100">Import dari Google Reviews</p>
-              <p className="text-[11px] text-slate-500">Gunakan API key Google Places milik Anda sendiri</p>
+              <p className="text-[11px] text-slate-500">Fitur lanjutan — butuh Google Cloud API Key</p>
             </div>
           </div>
-          {googleCache && (
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <StarRow rating={Math.round(googleCache.rating)} />
-              <span className="font-semibold text-slate-300">{googleCache.rating.toFixed(1)}</span>
-              <span>({googleCache.total_ratings?.toLocaleString()})</span>
-            </div>
-          )}
-        </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {googleCache && (
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                <StarRow rating={Math.round(googleCache.rating)} />
+                <span className="font-semibold text-slate-300">{googleCache.rating.toFixed(1)}</span>
+              </div>
+            )}
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-white/5 px-2 py-0.5 rounded">
+              {showAdvanced ? "Sembunyikan" : "Tampilkan"}
+            </span>
+          </div>
+        </button>
 
+        {showAdvanced && (
         <div className="p-4 space-y-4">
+
+          {/* 5-review limit notice */}
+          <div className="rounded-lg bg-amber-500/8 border border-amber-500/20 px-3 py-2.5 text-[11px] text-amber-300/80 space-y-1">
+            <p className="font-semibold text-amber-300">ℹ️ Batasan Google Places API</p>
+            <p>API ini mengembalikan <strong>maksimal 5 review</strong> yang dipilih algoritma Google — bukan yang terbaru atau rating tertinggi, dan tidak bisa dikustomisasi. Import tidak otomatis update; harus fetch ulang dan import manual jika ada review baru.</p>
+          </div>
+
           {/* Credentials */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1">
@@ -409,6 +426,7 @@ export default function TestimonialModerationPage() {
             </p>
           )}
         </div>
+        )}
       </div>
 
       {/* ── Opsi C: Manual Import ── */}
