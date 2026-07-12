@@ -28,6 +28,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "grid", label: "Grid", description: "Semua testimoni tampil sekaligus dalam grid." },
     { value: "logo-wall", label: "Logo Klien", description: "Logo perusahaan klien (membutuhkan logo_url)." },
     { value: "featured-spotlight", label: "Sorotan", description: "Satu testimoni utama ditonjolkan." },
+    { value: "google-reviews", label: "Google Reviews", description: "Kartu gaya Google: foto profil, bintang, badge Google." },
   ],
   cta: [
     { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
