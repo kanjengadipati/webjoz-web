@@ -1056,7 +1056,10 @@ export default function SectionForms({
             </div>
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("about", "eyebrow")}
+            </label>
             <input
               type="text"
               value={content.about?.eyebrow || ""}
@@ -1070,12 +1073,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "about.title"}
-                onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis", "Judul Tentang")}
-                title="AI: generate judul"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("about", "title", (
+                <AiFieldButton
+                  loading={aiLoadingField === "about.title"}
+                  onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis", "Judul Tentang")}
+                  title="AI: generate judul"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <input 
               id="field-about.title"
@@ -1090,12 +1095,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "about.body"}
-                onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.", "Deskripsi")}
-                title="AI: generate deskripsi"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("about", "body", (
+                <AiFieldButton
+                  loading={aiLoadingField === "about.body"}
+                  onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.", "Deskripsi")}
+                  title="AI: generate deskripsi"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <textarea 
               id="field-about.body"
@@ -1349,8 +1356,9 @@ export default function SectionForms({
       {activeTab === "faq" && content?.faq && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("faq", "title")}
             </label>
             <input 
               type="text" 
@@ -2238,7 +2246,10 @@ export default function SectionForms({
       {activeTab === "testimonials" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("testimonials", "eyebrow")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.eyebrow || ""}
@@ -2248,7 +2259,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Section</span>
+              {renderFieldActions("testimonials", "title")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.title || ""}
@@ -2258,7 +2272,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("testimonials", "subtitle")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.subtitle || ""}
@@ -2445,6 +2462,8 @@ export default function SectionForms({
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            fieldUndoStacks={fieldUndoStacks}
+            undoField={undoField}
           />
         </>
       )}
@@ -2459,8 +2478,9 @@ export default function SectionForms({
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("gallery", "title")}
             </label>
             <input
               id="field-gallery.title"
@@ -2471,7 +2491,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow</span>
+              {renderFieldActions("gallery", "eyebrow")}
+            </label>
             <input
               id="field-gallery.eyebrow"
               type="text" value={content.gallery?.eyebrow || ""}
@@ -2654,6 +2677,8 @@ export default function SectionForms({
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            fieldUndoStacks={fieldUndoStacks}
+            undoField={undoField}
           />
         </>
       )}

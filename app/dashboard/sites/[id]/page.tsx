@@ -102,6 +102,7 @@ export default function SiteEditorPage() {
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
 
   const [globalUndo, setGlobalUndo] = useState<any[]>([]);
+  const [fieldUndoStacks, setFieldUndoStacks] = useState<Record<string, string[]>>({});
   const [designTokenScore, setDesignTokenScore] = useState(0);
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
@@ -932,7 +933,52 @@ export default function SiteEditorPage() {
   };
 
   // Helper updates for form fields
+  const lastFieldUndoPushRef = useRef<Record<string, { val: string; time: number }>>({});
+
+  const pushFieldUndo = (section: string, key: string, currentVal: string) => {
+    const fieldPath = `${section}.${key}`;
+    const now = Date.now();
+    const last = lastFieldUndoPushRef.current[fieldPath];
+
+    if (!last || now - last.time > 1500) {
+      setFieldUndoStacks(prev => {
+        const stack = prev[fieldPath] || [];
+        if (stack[0] === currentVal) return prev;
+        return {
+          ...prev,
+          [fieldPath]: [currentVal, ...stack].slice(0, 3)
+        };
+      });
+      lastFieldUndoPushRef.current[fieldPath] = { val: currentVal, time: now };
+    }
+  };
+
+  const undoField = (section: string, key: string) => {
+    const fieldPath = `${section}.${key}`;
+    const stack = fieldUndoStacks[fieldPath];
+    if (!stack || stack.length === 0) return;
+
+    const [prevVal, ...rest] = stack;
+
+    setContent((prev: any) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [key]: prevVal
+      }
+    }));
+
+    setFieldUndoStacks(prev => ({
+      ...prev,
+      [fieldPath]: rest
+    }));
+  };
+
   const updateField = (section: string, key: string, val: any) => {
+    const currentVal = contentRef.current?.[section]?.[key] || "";
+    if (typeof val === "string" && val !== currentVal) {
+      pushFieldUndo(section, key, currentVal);
+    }
     setContent((prev: any) => ({
       ...prev,
       [section]: {
@@ -1892,6 +1938,8 @@ export default function SiteEditorPage() {
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                     onAiSuccess={refreshTenantUsage}
                     subdomain={siteDetails?.subdomain}
+                    fieldUndoStacks={fieldUndoStacks}
+                    undoField={undoField}
                   />
 
                   {/* Variasi tampilan per section */}
@@ -2255,10 +2303,10 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={handleGlobalUndo}
                 className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
-                title="Undo perubahan terakhir"
+                title="Undo perubahan desain"
               >
                 <RotateCcw className="h-3 w-3" />
-                Undo
+                Undo Desain
               </button>
             )}
 
@@ -2692,6 +2740,8 @@ export default function SiteEditorPage() {
                   updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                   onAiSuccess={refreshTenantUsage}
                   subdomain={siteDetails?.subdomain}
+                  fieldUndoStacks={fieldUndoStacks}
+                  undoField={undoField}
                 />
                 {/* Variasi tampilan per section */}
                 {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
