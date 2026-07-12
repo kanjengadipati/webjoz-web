@@ -14,7 +14,7 @@ import { marked } from "marked";
 import {
   Loader2, Bold, Italic, Heading2, Heading3,
   Link as LinkIcon, Image, List, ListOrdered, Quote,
-  Eye, Edit3, Lock, ArrowLeft, Save, FileText,
+  Eye, Edit3, Lock, ArrowLeft, Save,
 } from "lucide-react";
 
 interface BlogPost {
@@ -280,7 +280,6 @@ export default function EditBlogPostPage() {
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <FileText className="w-5 h-5 text-primary shrink-0" />
           <div className="min-w-0">
             <Input
               value={title}
