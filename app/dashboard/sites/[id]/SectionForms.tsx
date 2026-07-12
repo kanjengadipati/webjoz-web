@@ -7,6 +7,7 @@ import { isPlaceholderValue } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
+import { useToast } from "@/components/toast-provider";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -273,19 +274,23 @@ interface AiFieldButtonProps {
   isPremium?: boolean;
 }
 
-function AiFieldButton({ onGenerate, onUpgradeRequired, loading, title = "Generate dengan AI", isPremium }: AiFieldButtonProps) {
+function AiFieldButton({ onGenerate, onUpgradeRequired, loading, title = "Generate dengan AI" }: AiFieldButtonProps) {
+  const handleClick = async () => {
+    try {
+      await onGenerate();
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        onUpgradeRequired?.();
+      }
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={() => {
-        if (isPremium) {
-          void onGenerate();
-        } else {
-          onUpgradeRequired?.();
-        }
-      }}
-      disabled={loading && !!isPremium}
-      title={!isPremium ? "Pro only – upgrade untuk AI Generate" : title}
+      onClick={handleClick}
+      disabled={loading}
+      title={title}
       className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 hover:text-primary transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
     >
       {loading
@@ -332,23 +337,19 @@ async function generateFieldText(
   currentContent: any,
   prompt: string
 ): Promise<string | null> {
-  try {
-    const res = await request<any>("/ai/regenerate-section", {
-      method: "POST",
-      body: JSON.stringify({
-        site_id: siteId,
-        section,
-        instructions: `Fokus hanya pada field "${fieldKey}": ${prompt}. Jaga field lain tetap sama.`,
-        tenant_id: activeTenantId,
-      }),
-    }, token);
-    if (res.status !== "success" || !res.data?.section) return null;
-    const updated = res.data.section;
-    // Return the specific field value from the updated section
-    return updated[fieldKey] ?? null;
-  } catch {
-    return null;
-  }
+  const res = await request<any>("/ai/regenerate-section", {
+    method: "POST",
+    body: JSON.stringify({
+      site_id: siteId,
+      section,
+      instructions: `Fokus hanya pada field "${fieldKey}": ${prompt}. Jaga field lain tetap sama.`,
+      tenant_id: activeTenantId,
+    }),
+  }, token);
+  if (res.status !== "success" || !res.data?.section) return null;
+  const updated = res.data.section;
+  // Return the specific field value from the updated section
+  return updated[fieldKey] ?? null;
 }
 
 interface LinkTypeInputProps {
@@ -531,6 +532,7 @@ export default function SectionForms({
   onUpgradeRequired,
   onAiSuccess,
 }: SectionFormsProps) {
+  const { pushToast } = useToast();
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
   const [resolvingMaps, setResolvingMaps] = React.useState(false);
@@ -557,6 +559,13 @@ export default function SectionForms({
         updateField(section, fieldKey, result);
         onAiSuccess?.();
       }
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        onUpgradeRequired?.();
+      } else {
+        pushToast?.(err.message || "AI gagal meregenerasi teks field ini.", "error");
+      }
+      throw err; // rethrow to let AiFieldButton catch and process
     } finally {
       setAiLoadingField(null);
     }
@@ -589,8 +598,13 @@ export default function SectionForms({
           }
         }
       }
-    } catch {
-      // silently fail
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        onUpgradeRequired?.();
+      } else {
+        pushToast?.(err.message || "AI gagal meregenerasi deskripsi item.", "error");
+      }
+      throw err;
     } finally {
       setAiLoadingDesc(null);
     }
