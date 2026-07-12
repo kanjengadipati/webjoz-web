@@ -413,6 +413,8 @@ interface Site {
   status: "draft" | "published";
   published_at?: string;
   subdomain: string;
+  has_catalog: boolean;
+  has_menu: boolean;
 }
 
 interface Domain {
@@ -1015,6 +1017,16 @@ export default function SitesPage() {
                     <Link href={`/dashboard/sites/${site.id}/blog`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
                       Blog
                     </Link>
+                    {site.has_catalog && (
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
+                        Katalog
+                      </Link>
+                    )}
+                    {site.has_menu && (
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
+                        Menu
+                      </Link>
+                    )}
                     <Link href={`/dashboard/sites/${site.id}/integrations`} className="flex-1 py-1.5 px-2 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium text-center">
                       Integrasi
                     </Link>
