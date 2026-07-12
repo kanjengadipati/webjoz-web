@@ -8,7 +8,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { Dialog } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
-import { UserPlus, Mail, X, Sparkles, Loader2 } from "lucide-react";
+import { UserPlus, Mail, X, Sparkles, Loader2, Copy } from "lucide-react";
 
 interface Member {
   id: number;
@@ -23,6 +23,7 @@ interface Invitation {
   email: string;
   role: string;
   status: string;
+  token: string;
   created_at: string;
 }
 
@@ -159,6 +160,12 @@ export default function TeamPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">Menunggu</Badge>
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/invitations/${inv.token}`);
+                    pushToast("Link undangan disalin", "success");
+                  }}>
+                    <Copy className="w-4 h-4" />
+                  </Button>
                   <Button variant="ghost" size="sm" onClick={() => handleRevoke(inv.id)}>
                     <X className="w-4 h-4" />
                   </Button>

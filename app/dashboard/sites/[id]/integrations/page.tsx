@@ -28,7 +28,7 @@ export default function IntegrationsPage() {
     (async () => {
       try {
         const res = await request<{ content?: { tracking_codes?: Record<string, string> } }>(`/sites/${siteId}/content`, { headers: tenantHeaders }, token);
-        const codes = res.data?.content?.tracking_codes || {};
+        const codes = (res.data as any)?.tracking_codes || res.data?.content?.tracking_codes || {};
         setGa4Id((codes as any).ga4_id || "");
         setMetaPixelId((codes as any).meta_pixel_id || "");
       } catch (err: any) {
@@ -42,8 +42,8 @@ export default function IntegrationsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await request(`/sites/${siteId}/content`, {
-        method: "PUT",
+      await request(`/sites/${siteId}/tracking-codes`, {
+        method: "PATCH",
         headers: tenantHeaders,
         body: JSON.stringify({
           tracking_codes: {
