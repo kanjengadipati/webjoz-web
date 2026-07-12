@@ -2662,6 +2662,12 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
 
   const inputBase = "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
   const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
+  // Strip AI-generated literal null strings (e.g. "null", ",null,", "null,")
+  const normStr = (v: any): string => {
+    if (v === null || v === undefined) return "";
+    const s = String(v).replace(/\bnull\b/gi, "").replace(/^[,\s]+|[,\s]+$/g, "").trim();
+    return s;
+  };
 
   return (
     <div className="space-y-4">
@@ -2802,8 +2808,8 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                             <label className={inputLabel}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
                             <input
                               type="text"
-                              value={item.badge ?? ""}
-                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
+                              value={normStr(item.badge)}
+                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)}
                               placeholder="cth. Best Seller, Baru, Promo, Populer"
                               className={inputBase}
                             />
