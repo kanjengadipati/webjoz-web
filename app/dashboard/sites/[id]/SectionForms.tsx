@@ -543,6 +543,7 @@ export default function SectionForms({
     section: string;
     fieldKey: string;
     label: string;
+    imageUrl?: string;
     resolve: (val: string | null) => void;
   } | null>(null);
   const [fieldPromptInput, setFieldPromptInput] = React.useState("");
@@ -598,6 +599,7 @@ export default function SectionForms({
         section: activeTab,
         fieldKey: `categories.${catIdx}.items.${itemIdx}.description`,
         label: `Deskripsi: ${itemName}`,
+        imageUrl: imageUrl || undefined,
         resolve,
       });
     });
@@ -2539,6 +2541,21 @@ export default function SectionForms({
               placeholder='cth. "buat lebih kasual dan ramah"'
               className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
             />
+
+            {/* Image chip — shown only when item has a photo */}
+            {fieldPromptModal.imageUrl && (
+              <button
+                type="button"
+                onClick={() => setFieldPromptInput("Tulis deskripsi berdasarkan foto produk ini")}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
+              >
+                <span className="text-base leading-none">📸</span>
+                <span>Tulis deskripsi dari foto produk</span>
+                <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-white/10">
+                  <img src={fieldPromptModal.imageUrl} alt="" className="w-full h-full object-cover" />
+                </span>
+              </button>
+            )}
 
             {/* Quick suggestions */}
             {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).length > 0 && (
