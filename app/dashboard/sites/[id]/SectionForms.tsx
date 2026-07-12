@@ -2819,111 +2819,111 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                       </div>
 
                       {/* Deskripsi spans full-width at the bottom */}
-                      <div className="col-span-full space-y-1 mt-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <label className={inputLabel}>Deskripsi</label>
-                          <div className="flex items-center gap-1.5 text-[10px]">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const cur = item.description ?? "";
-                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
-                              }}
-                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1"
-                              title="Tambah List Bulat"
-                            >
-                              <span>•</span> List
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const cur = item.description ?? "";
-                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
-                              }}
-                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px]"
-                              title="Tambah List Angka"
-                            >
-                              1. List
-                            </button>
-                            <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
-                            
-                            {/* Expandable Emoji & Symbol Popover Picker */}
-                            <div className="relative">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  if (activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx) {
-                                    setActiveEmojiPicker(null);
-                                  } else {
-                                    setActiveEmojiPicker({ catIdx, itemIdx });
-                                  }
-                                }}
-                                className={`px-2 py-0.5 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 ${
-                                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-slate-800 hover:bg-slate-700 text-slate-300"
-                                }`}
-                              >
-                                😀 Emoji & Simbol
-                              </button>
+                      <div className="col-span-full space-y-1.5 mt-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] uppercase tracking-wide font-bold text-slate-500">Deskripsi</label>
+                          {onAiDescription && (
+                            <AiFieldButton
+                              loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
+                              onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
+                              title="AI: generate deskripsi"
+                              onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                            />
+                          )}
+                        </div>
 
-                              {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                                <div className="absolute right-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                                  <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                                    <button
-                                      type="button"
-                                      onClick={() => setActiveEmojiPicker(null)}
-                                      className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer"
-                                    >
-                                      Tutup
-                                    </button>
-                                  </div>
-                                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
-                                    {EMOJI_GROUPS.map((group) => (
-                                      <div key={group.name} className="space-y-1">
-                                        <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
-                                        <div className="grid grid-cols-7 gap-1">
-                                          {group.emojis.map((emoji) => (
-                                            <button
-                                              key={emoji}
-                                              type="button"
-                                              onClick={() => {
-                                                const cur = item.description ?? "";
-                                                updateItem(catIdx, itemIdx, "description", cur + emoji);
-                                              }}
-                                              className="h-7 w-7 rounded bg-white/[0.03] hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
-                                            >
-                                              {emoji}
-                                            </button>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
+                        {/* Editor Toolbar */}
+                        <div className="flex items-center gap-1.5 bg-white/[0.02] border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const cur = item.description ?? "";
+                              updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
+                            }}
+                            className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border border-white/5"
+                            title="Tambah List Bulat"
+                          >
+                            <span>•</span> List
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const cur = item.description ?? "";
+                              updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
+                            }}
+                            className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] select-none border border-white/5"
+                            title="Tambah List Angka"
+                          >
+                            1. List
+                          </button>
+                          
+                          <div className="w-px h-3.5 bg-white/10 mx-0.5 select-none" />
+                          
+                          {/* Expandable Emoji & Symbol Popover Picker */}
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx) {
+                                  setActiveEmojiPicker(null);
+                                } else {
+                                  setActiveEmojiPicker({ catIdx, itemIdx });
+                                }
+                              }}
+                              className={`px-2 py-1 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border ${
+                                activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
+                                  ? "bg-primary/20 text-primary border-primary/30"
+                                  : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"
+                              }`}
+                            >
+                              😀 Emoji & Simbol
+                            </button>
+
+                            {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
+                              <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
+                                <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setActiveEmojiPicker(null)}
+                                    className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer"
+                                  >
+                                    Tutup
+                                  </button>
                                 </div>
-                              )}
-                            </div>
-
-                            {onAiDescription && (
-                              <>
-                                <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
-                                <AiFieldButton
-                                  loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                                  onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
-                                  title="AI: generate deskripsi"
-                                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                                />
-                              </>
+                                <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
+                                  {EMOJI_GROUPS.map((group) => (
+                                    <div key={group.name} className="space-y-1">
+                                      <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
+                                      <div className="grid grid-cols-7 gap-1">
+                                        {group.emojis.map((emoji) => (
+                                          <button
+                                            key={emoji}
+                                            type="button"
+                                            onClick={() => {
+                                              const cur = item.description ?? "";
+                                              updateItem(catIdx, itemIdx, "description", cur + emoji);
+                                            }}
+                                            className="h-7 w-7 rounded bg-white/[0.03] hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
+                                          >
+                                            {emoji}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             )}
                           </div>
                         </div>
+
                         <textarea
                           rows={4}
                           value={item.description ?? ""}
                           onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
                           placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
-                          className={`${inputBase} w-full resize-y min-h-[80px]`}
+                          className={`${inputBase} w-full resize-y min-h-[80px] rounded-t-none border-t-0`}
                         />
                       </div>
                     </div>
