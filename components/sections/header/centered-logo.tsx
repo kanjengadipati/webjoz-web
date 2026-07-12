@@ -27,14 +27,16 @@ export default function CenteredLogo({
           />
           <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
         </span>
-        <a
-          href={navCtaHref(header?.nav_cta_text)}
-          aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-          className="shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center sm:hidden"
-          style={{ color: "var(--dt-primary-foreground)" }}
-        >
-          {header?.nav_cta_text || "Hubungi"}
-        </a>
+        {!header?.nav_cta_hidden && (
+          <a
+            href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            className="shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center sm:hidden"
+            style={{ color: "var(--dt-primary-foreground)" }}
+          >
+            {header?.nav_cta_text || "Hubungi"}
+          </a>
+        )}
       </div>
       <div className="flex items-center justify-between w-full gap-4">
         <NavMenu
@@ -44,14 +46,16 @@ export default function CenteredLogo({
           linkClass={navLinkClass || "text-[var(--dt-text-muted)] text-sm"}
           drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
         />
-        <a
-          href={navCtaHref(header?.nav_cta_text)}
-          aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-          className="hidden sm:inline-flex shrink-0 px-5 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm items-center"
-          style={{ color: "var(--dt-primary-foreground)" }}
-        >
-          {header?.nav_cta_text || "Hubungi Kami"}
-        </a>
+        {!header?.nav_cta_hidden && (
+          <a
+            href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            className="hidden sm:inline-flex shrink-0 px-5 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm items-center"
+            style={{ color: "var(--dt-primary-foreground)" }}
+          >
+            {header?.nav_cta_text || "Hubungi Kami"}
+          </a>
+        )}
       </div>
       {header?.tagline && (
         <p className="text-[11px] text-[var(--dt-text-muted)] text-center w-full -mt-1">

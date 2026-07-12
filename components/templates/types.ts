@@ -140,6 +140,8 @@ export interface TemplateProps {
     header: {
       brand_name: string;
       nav_cta_text: string;
+      nav_cta_hidden?: boolean;
+      nav_cta_href?: string;
       icon?: string;
       logo_url?: string;
       tagline?: string;
