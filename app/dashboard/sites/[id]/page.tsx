@@ -1891,6 +1891,7 @@ export default function SiteEditorPage() {
                     designToken={designToken}
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                     onAiSuccess={refreshTenantUsage}
+                    subdomain={siteDetails?.subdomain}
                   />
 
                   {/* Variasi tampilan per section */}
@@ -2690,6 +2691,7 @@ export default function SiteEditorPage() {
                   designToken={designToken}
                   updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                   onAiSuccess={refreshTenantUsage}
+                  subdomain={siteDetails?.subdomain}
                 />
                 {/* Variasi tampilan per section */}
                 {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
