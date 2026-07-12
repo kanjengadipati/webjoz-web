@@ -41,10 +41,11 @@ interface KeywordsInputProps {
   onAiGenerate?: () => Promise<void>;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
+  renderFieldActions?: (key: string, aiButton?: React.ReactNode) => React.ReactNode;
 }
 
 export function KeywordsInput({
-  keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired,
+  keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired, renderFieldActions,
 }: KeywordsInputProps) {
   const [input, setInput] = useState("");
 
@@ -68,7 +69,17 @@ export function KeywordsInput({
     <div className="space-y-1">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
         <span>Keywords</span>
-        {onAiGenerate && (
+        {renderFieldActions ? (
+          renderFieldActions("keywords", onAiGenerate && (
+            <AiFieldButton
+              loading={!!aiLoading}
+              onGenerate={onAiGenerate}
+              title="AI: generate keywords"
+              onUpgradeRequired={onUpgradeRequired}
+              isPremium={isPremium}
+            />
+          ))
+        ) : onAiGenerate ? (
           <AiFieldButton
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
@@ -76,7 +87,7 @@ export function KeywordsInput({
             onUpgradeRequired={onUpgradeRequired}
             isPremium={isPremium}
           />
-        )}
+        ) : null}
       </label>
       <div className="flex flex-wrap gap-1.5 min-h-[32px] px-2 py-1.5 border border-white/10 rounded-md bg-transparent">
         {keywords.map((kw, idx) => (
@@ -287,11 +298,13 @@ export interface SeoFormProps {
   gscVerification?: string;
   /** Called when user saves the GSC verification code */
   onGscSave?: (code: string) => Promise<void>;
+  fieldUndoStacks?: Record<string, string[]>;
+  undoField?: (section: string, key: string) => void;
 }
 
 export function SeoForm({
   seo, updateField, isPremium, onUpgradeRequired, aiLoadingField, onAiText, subdomain,
-  gscVerification, onGscSave,
+  gscVerification, onGscSave, fieldUndoStacks, undoField,
 }: SeoFormProps) {
   const titleLen = (seo?.title?.length || 0);
   const descLen  = (seo?.description?.length || 0);
@@ -316,6 +329,27 @@ export function SeoForm({
   };
 
   const fieldBase = "w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600";
+
+  const renderFieldActions = (key: string, aiButton?: React.ReactNode) => {
+    const fieldPath = `seo.${key}`;
+    const stack = fieldUndoStacks?.[fieldPath] || [];
+    if (stack.length === 0 && !aiButton) return null;
+    return (
+      <div className="flex items-center gap-1.5 shrink-0">
+        {stack.length > 0 && (
+          <button
+            type="button"
+            onClick={() => undoField?.("seo", key)}
+            className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
+            title={`Undo perubahan field ini (${stack.length} kali)`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {aiButton}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-5">
@@ -402,13 +436,13 @@ export function SeoForm({
       <div className="space-y-1">
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           <span>Meta Title</span>
-          {onAiText && (
+          {renderFieldActions("title", onAiText && (
             <AiFieldButton
               loading={aiLoadingField === "seo.title"}
               onGenerate={() => onAiText("title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
               title="AI: generate SEO title" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
             />
-          )}
+          ))}
         </label>
         <input type="text" value={seo?.title || ""} onChange={(e) => updateField("seo", "title", e.target.value)} className={fieldBase} placeholder="cth. Toko Bangunan Maju — Bahan Bangunan Berkualitas di Surabaya" />
         <div className="flex justify-end">
@@ -420,13 +454,13 @@ export function SeoForm({
       <div className="space-y-1">
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           <span>Meta Description</span>
-          {onAiText && (
+          {renderFieldActions("description", onAiText && (
             <AiFieldButton
               loading={aiLoadingField === "seo.description"}
               onGenerate={() => onAiText("description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
               title="AI: generate meta description" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
             />
-          )}
+          ))}
         </label>
         <textarea rows={3} value={seo?.description || ""} onChange={(e) => updateField("seo", "description", e.target.value)} className={`${fieldBase} resize-none`} placeholder="cth. Dapatkan bahan bangunan terlengkap dan terpercaya di Surabaya. Harga grosir, pengiriman cepat." />
         <div className="flex justify-end">
@@ -435,26 +469,37 @@ export function SeoForm({
       </div>
 
       {/* Keywords */}
-      <KeywordsInput
-        keywords={seo?.keywords || []}
-        onChange={(kws) => updateField("seo", "keywords", kws)}
-        aiLoading={aiLoadingField === "seo.keywords"}
-        onAiGenerate={onAiText ? () => onAiText("keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
-        isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
-      />
+      <div className="space-y-1">
+        <KeywordsInput
+          keywords={seo?.keywords || []}
+          onChange={(kws) => updateField("seo", "keywords", kws)}
+          aiLoading={aiLoadingField === "seo.keywords"}
+          onAiGenerate={onAiText ? () => onAiText("keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
+          isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
+          renderFieldActions={renderFieldActions}
+        />
+      </div>
 
       {/* Favicon + OG Image */}
-      <FileUpload label="Favicon" value={seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
-      <FileUpload label="OG Image (1200×630)" value={seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+      <div className="space-y-1">
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>Favicon</span>
+          {renderFieldActions("favicon_url")}
+        </label>
+        <FileUpload value={seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
+      </div>
+
+      <div className="space-y-1">
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>OG Image (1200×630)</span>
+          {renderFieldActions("og_image_url")}
+        </label>
+        <FileUpload value={seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+      </div>
 
       {/* OG Type */}
       <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>OG Type</span>
-          {onAiText && (
-            <AiFieldButton loading={aiLoadingField === "seo.og_type"} onGenerate={() => onAiText("og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.", "OG Type")} title="AI: suggest OG type" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired} />
-          )}
-        </label>
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Type</label>
         <select value={seo?.og_type || "website"} onChange={(e) => updateField("seo", "og_type", e.target.value)} className={fieldBase}>
           <option value="website">website</option>
           <option value="article">article</option>
@@ -466,12 +511,7 @@ export function SeoForm({
 
       {/* Twitter Card */}
       <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>Twitter Card</span>
-          {onAiText && (
-            <AiFieldButton loading={aiLoadingField === "seo.twitter_card"} onGenerate={() => onAiText("twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.", "Twitter Card")} title="AI: suggest Twitter card" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired} />
-          )}
-        </label>
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Twitter Card</label>
         <select value={seo?.twitter_card || "summary_large_image"} onChange={(e) => updateField("seo", "twitter_card", e.target.value)} className={fieldBase}>
           <option value="summary_large_image">summary_large_image</option>
           <option value="summary">summary</option>
@@ -482,7 +522,10 @@ export function SeoForm({
 
       {/* Robots */}
       <div className="space-y-1">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Robots</label>
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>Robots</span>
+          {renderFieldActions("robots")}
+        </label>
         <select value={seo?.robots || "index, follow"} onChange={(e) => updateField("seo", "robots", e.target.value)} className={fieldBase}>
           <option value="index, follow">index, follow</option>
           <option value="noindex, follow">noindex, follow</option>
@@ -493,19 +536,28 @@ export function SeoForm({
 
       {/* OG Locale */}
       <div className="space-y-1">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Locale</label>
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>OG Locale</span>
+          {renderFieldActions("og_locale")}
+        </label>
         <input type="text" value={seo?.og_locale || "id_ID"} onChange={(e) => updateField("seo", "og_locale", e.target.value)} className={fieldBase} placeholder="id_ID" />
       </div>
 
       {/* OG Site Name */}
       <div className="space-y-1">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Site Name</label>
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>OG Site Name</span>
+          {renderFieldActions("og_site_name")}
+        </label>
         <input type="text" value={seo?.og_site_name || ""} onChange={(e) => updateField("seo", "og_site_name", e.target.value)} className={fieldBase} placeholder="Nama bisnis" />
       </div>
 
       {/* Canonical Path */}
       <div className="space-y-1">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Canonical Path</label>
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>Canonical Path</span>
+          {renderFieldActions("canonical_path")}
+        </label>
         <input type="text" value={seo?.canonical_path || "/"} onChange={(e) => updateField("seo", "canonical_path", e.target.value)} className={fieldBase} placeholder="/" />
       </div>
 
