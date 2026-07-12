@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard } from "lucide-react";
+import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard, SearchIcon } from "lucide-react";
 
 interface SiteSubNavProps {
   siteId: number;
@@ -37,6 +37,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
     ...ALWAYS_TABS.slice(0, 2),
     ...(showCatalogTab ? [{ href: "/katalog" as const, label: catalogLabel, icon: CatalogIcon }] : []),
     ...ALWAYS_TABS.slice(2),
+    { href: "/seo" as const, label: "SEO", icon: SearchIcon },
   ];
 
   return (
