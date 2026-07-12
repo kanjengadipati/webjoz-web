@@ -359,78 +359,6 @@ export function SeoForm({
         <p className="font-semibold text-cyan-50">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari &amp; saat link dibagikan.</p>
       </div>
 
-      {/* SEO Booster upsell / active card */}
-      {isPremium ? (
-        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
-          <div className="flex items-center gap-2 font-semibold text-emerald-400">
-            <CheckCircle className="w-4 h-4" />
-            SEO Booster Aktif
-          </div>
-          <p className="mt-1 text-emerald-200/80">
-            Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
-          </p>
-        </div>
-      ) : (() => {
-        const siteTitle = seo?.title || "Nama Bisnis — Layanan";
-        const siteDesc = seo?.description || "Deskripsi singkat bisnis dan layanan.";
-        const siteName = siteTitle.split(/[-—|]/)[0].trim() || "Nama Bisnis";
-        const cleanSubdomain = subdomain || "namabisnis";
-
-        const demoBusiness = {
-          name: siteName,
-          subdomain: cleanSubdomain,
-          title: siteTitle,
-          description: siteDesc,
-          rating: "4.8",
-          reviewCount: "128",
-          priceRange: "Rp50.000–Rp200.000",
-          status: "Buka",
-        };
-
-        return (
-          <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                <Search className="w-4 h-4 text-amber-400" />
-                <span>SEO BOOSTER (PRO)</span>
-              </div>
-              <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
-                Premium
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 p-5">
-              <div>
-                <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
-                <div className="opacity-60 grayscale-[30%]">
-                  <GoogleSnippetPreview variant="plain" business={demoBusiness} />
-                </div>
-              </div>
-              <div className="relative">
-                <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-                  ✨ Rich Result
-                </div>
-                <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
-                <GoogleSnippetPreview variant="rich" business={demoBusiness} />
-              </div>
-            </div>
-
-            <div className="px-5 pb-5">
-              <p className="text-xs text-amber-200/70 text-center mb-2">
-                Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
-              </p>
-              <button
-                type="button"
-                onClick={() => onUpgradeRequired?.()}
-                className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
-              </button>
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Meta Title */}
       <div className="space-y-1">
@@ -563,6 +491,79 @@ export function SeoForm({
 
       {/* ── Live Preview ── */}
       <SeoPreview seo={seo} subdomain={subdomain} />
+
+      {/* SEO Booster upsell / active card */}
+      {isPremium ? (
+        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
+          <div className="flex items-center gap-2 font-semibold text-emerald-400">
+            <CheckCircle className="w-4 h-4" />
+            SEO Booster Aktif
+          </div>
+          <p className="mt-1 text-emerald-200/80">
+            Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+          </p>
+        </div>
+      ) : (() => {
+        const siteTitle = seo?.title || "Nama Bisnis — Layanan";
+        const siteDesc = seo?.description || "Deskripsi singkat bisnis dan layanan.";
+        const siteName = siteTitle.split(/[-—|]/)[0].trim() || "Nama Bisnis";
+        const cleanSubdomain = subdomain || "namabisnis";
+
+        const demoBusiness = {
+          name: siteName,
+          subdomain: cleanSubdomain,
+          title: siteTitle,
+          description: siteDesc,
+          rating: "4.8",
+          reviewCount: "128",
+          priceRange: "Rp50.000–Rp200.000",
+          status: "Buka",
+        };
+
+        return (
+          <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                <Search className="w-4 h-4 text-amber-400" />
+                <span>SEO BOOSTER (PRO)</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
+                Premium
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 p-5">
+              <div>
+                <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                <div className="opacity-60 grayscale-[30%]">
+                  <GoogleSnippetPreview variant="plain" business={demoBusiness} />
+                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                  ✨ Rich Result
+                </div>
+                <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                <GoogleSnippetPreview variant="rich" business={demoBusiness} />
+              </div>
+            </div>
+
+            <div className="px-5 pb-5">
+              <p className="text-xs text-amber-200/70 text-center mb-2">
+                Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+              </p>
+              <button
+                type="button"
+                onClick={() => onUpgradeRequired?.()}
+                className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── Google Search Console ── */}
       <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
