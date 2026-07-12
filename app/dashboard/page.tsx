@@ -65,7 +65,8 @@ interface PlanDetail {
   slug: string;
   max_sites: number;
   max_ai_generates: number;
-  max_ai_regens: number;
+  max_section_regens: number;
+  max_design_regens: number;
   max_members: number;
   max_storage_mb: number;
 }
@@ -145,9 +146,10 @@ export default function DashboardOverviewPage() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [plans, setPlans] = useState<PlanDetail[]>([]);
   const [tenantUsage, setTenantUsage] = useState<{
-    usage: { generate_count: number; regen_count: number };
+    usage: { generate_count: number; section_regen_count: number; design_regen_count: number };
     max_ai_generates: number;
-    max_ai_regens: number;
+    max_section_regens: number;
+    max_design_regens: number;
   } | null>(null);
   const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
@@ -507,14 +509,28 @@ export default function DashboardOverviewPage() {
             </div>
             <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">AI Regenerasi</span>
-                <span className="text-sm font-bold">{tenantUsage?.usage.regen_count ?? 0} / {currentPlan.max_ai_regens <= 0 ? "∞" : currentPlan.max_ai_regens}</span>
+                <span className="text-sm font-semibold text-muted-foreground">Section Regen</span>
+                <span className="text-sm font-bold">{tenantUsage?.usage.section_regen_count ?? 0} / {currentPlan.max_section_regens <= 0 ? "∞" : currentPlan.max_section_regens}</span>
               </div>
               <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-violet-500 transition-all duration-500"
                   style={{
-                    width: currentPlan.max_ai_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.regen_count ?? 0) / currentPlan.max_ai_regens) * 100, 100)}%`,
+                    width: currentPlan.max_section_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.section_regen_count ?? 0) / currentPlan.max_section_regens) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-muted-foreground">Design Regen</span>
+                <span className="text-sm font-bold">{tenantUsage?.usage.design_regen_count ?? 0} / {currentPlan.max_design_regens <= 0 ? "∞" : currentPlan.max_design_regens}</span>
+              </div>
+              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                  style={{
+                    width: currentPlan.max_design_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.design_regen_count ?? 0) / currentPlan.max_design_regens) * 100, 100)}%`,
                   }}
                 />
               </div>

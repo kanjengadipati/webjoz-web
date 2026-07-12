@@ -17,7 +17,8 @@ interface PlanItem {
   price_yearly: number;
   max_sites: number;
   max_ai_generates: number;
-  max_ai_regens: number;
+  max_section_regens: number;
+  max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
   max_storage_mb: number;
@@ -34,7 +35,8 @@ interface PlanForm {
   price_yearly: number;
   max_sites: number;
   max_ai_generates: number;
-  max_ai_regens: number;
+  max_section_regens: number;
+  max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
   max_storage_mb: number;
@@ -44,7 +46,7 @@ interface PlanForm {
 
 const emptyForm: PlanForm = {
   name: "", slug: "", description: "", price_monthly: 0, price_yearly: 0,
-  max_sites: 1, max_ai_generates: 10, max_ai_regens: 20, max_members: 1,
+  max_sites: 1, max_ai_generates: 10, max_section_regens: 20, max_design_regens: 5, max_members: 1,
   max_custom_domain: 0, max_storage_mb: 100, features: "", active: true,
 };
 
@@ -94,7 +96,8 @@ export default function AdminPlansPage() {
       price_yearly: plan.price_yearly,
       max_sites: plan.max_sites,
       max_ai_generates: plan.max_ai_generates,
-      max_ai_regens: plan.max_ai_regens,
+      max_section_regens: plan.max_section_regens,
+      max_design_regens: plan.max_design_regens,
       max_members: plan.max_members,
       max_custom_domain: plan.max_custom_domain,
       max_storage_mb: plan.max_storage_mb,
@@ -342,8 +345,11 @@ export default function AdminPlansPage() {
             <FormField label="AI Generates">
               <Input type="number" value={form.max_ai_generates} onChange={(e) => setNum("max_ai_generates", e.target.value)} />
             </FormField>
-            <FormField label="AI Regenerations">
-              <Input type="number" value={form.max_ai_regens} onChange={(e) => setNum("max_ai_regens", e.target.value)} />
+            <FormField label="Section Regens">
+              <Input type="number" value={form.max_section_regens} onChange={(e) => setNum("max_section_regens", e.target.value)} />
+            </FormField>
+            <FormField label="Design Regens">
+              <Input type="number" value={form.max_design_regens} onChange={(e) => setNum("max_design_regens", e.target.value)} />
             </FormField>
             <FormField label="Max Members">
               <Input type="number" value={form.max_members} onChange={(e) => setNum("max_members", e.target.value)} />

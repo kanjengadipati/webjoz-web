@@ -566,13 +566,28 @@ const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
 
 // ─── Nav CTA href helper ─────────────────────────────────────────────────────
 
-function navCtaHref(navCtaText?: string): string {
-  const lower = (navCtaText || "").toLowerCase();
-  let hash = "#contact";
-  if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) hash = "#catalog";
-  else if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) hash = "#menu";
-  else if (lower.includes("tentang") || lower.includes("about")) hash = "#about";
-  else if (lower.includes("keunggulan") || lower.includes("benefit")) hash = "#benefits";
+function navCtaHref(navCtaText?: string, customHref?: string): string {
+  let hash: string;
+
+  if (customHref && customHref.trim()) {
+    // Use the explicit override — ensure it starts with # or is a full URL
+    const h = customHref.trim();
+    hash = h.startsWith("#") || h.startsWith("http") || h.startsWith("/") ? h : `#${h}`;
+  } else {
+    // Infer section from button text
+    const lower = (navCtaText || "").toLowerCase();
+    hash = "#contact";
+    if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) hash = "#catalog";
+    else if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) hash = "#menu";
+    else if (lower.includes("tentang") || lower.includes("about")) hash = "#about";
+    else if (lower.includes("keunggulan") || lower.includes("benefit")) hash = "#benefits";
+    else if (lower.includes("galeri") || lower.includes("gallery")) hash = "#gallery";
+    else if (lower.includes("testimoni") || lower.includes("review")) hash = "#testimonials";
+    else if (lower.includes("faq")) hash = "#faq";
+  }
+
+  // If already a full URL, return as-is (no blog-page rebase needed)
+  if (hash.startsWith("http") || hash.startsWith("/s/") || hash.startsWith("/site/")) return hash;
 
   const isBlogPage = typeof window !== "undefined" && /\/blog($|\/)/.test(window.location.pathname);
   if (isBlogPage) {

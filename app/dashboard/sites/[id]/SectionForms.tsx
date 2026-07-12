@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
@@ -617,18 +617,70 @@ export default function SectionForms({
               className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
-            </label>
-            <input 
-              id="field-header.nav_cta_text"
-              type="text" 
-              value={content.header?.nav_cta_text || ""} 
-              onChange={(e) => updateField("header", "nav_cta_text", e.target.value)} 
-              className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
-            />
+          <div className="space-y-2 rounded-lg border border-white/8 p-3 bg-white/3">
+            {/* Header: label + hide toggle */}
+            <div className="flex items-center justify-between gap-2">
+              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
+              </label>
+              <button
+                type="button"
+                onClick={() => updateField("header", "nav_cta_hidden", !(content.header as any)?.nav_cta_hidden)}
+                className={`flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all ${
+                  (content.header as any)?.nav_cta_hidden
+                    ? "border-slate-600 text-slate-500 bg-slate-800/40"
+                    : "border-primary/40 text-primary bg-primary/10"
+                }`}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${(content.header as any)?.nav_cta_hidden ? "bg-slate-600" : "bg-primary"}`} />
+                {(content.header as any)?.nav_cta_hidden ? "Tersembunyi" : "Tampil"}
+              </button>
+            </div>
+
+            {/* Button text */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 font-medium">Teks Tombol</label>
+              <input
+                id="field-header.nav_cta_text"
+                type="text"
+                value={content.header?.nav_cta_text || ""}
+                onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
+                disabled={(content.header as any)?.nav_cta_hidden}
+                placeholder="cth. Hubungi Kami"
+                className={`w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent transition-opacity ${
+                  (content.header as any)?.nav_cta_hidden ? "opacity-40 cursor-not-allowed" : ""
+                } ${fieldClass("header.nav_cta_text", "")}`}
+              />
+            </div>
+
+            {/* Section link */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 font-medium">Link ke Section</label>
+              <select
+                value={(content.header as any)?.nav_cta_href || ""}
+                onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
+                disabled={(content.header as any)?.nav_cta_hidden}
+                className={`w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300 transition-opacity ${
+                  (content.header as any)?.nav_cta_hidden ? "opacity-40 cursor-not-allowed" : ""
+                }`}
+              >
+                <option value="">— Otomatis dari teks —</option>
+                <option value="#hero">Hero (Atas)</option>
+                <option value="#about">Tentang Kami</option>
+                <option value="#benefits">Keunggulan</option>
+                <option value="#catalog">Katalog / Produk</option>
+                <option value="#menu">Menu</option>
+                <option value="#gallery">Galeri</option>
+                <option value="#testimonials">Testimoni</option>
+                <option value="#faq">FAQ</option>
+                <option value="#contact">Kontak</option>
+              </select>
+              <p className="text-[10px] text-slate-600 leading-snug">
+                Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
+              </p>
+            </div>
           </div>
+
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
             <input
@@ -1688,6 +1740,69 @@ export default function SectionForms({
               Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.
             </p>
           </div>
+
+          {/* ── SEO Booster Upsell Card ── */}
+          {isPremium ? (
+            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
+              <div className="flex items-center gap-2 font-semibold text-emerald-400">
+                <CheckCircle className="w-4 h-4" />
+                SEO Booster Aktif
+              </div>
+              <p className="mt-1 text-emerald-200/80">
+                Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-amber-500/10">
+                <div className="flex items-center gap-1.5">
+                  <Search className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">SEO Booster (Pro)</span>
+                </div>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-amber-500/70 bg-amber-500/10 px-1.5 py-0.5 rounded">Premium</span>
+              </div>
+              <div className="grid grid-cols-2 divide-x divide-amber-500/10">
+                {/* Tanpa SEO Booster */}
+                <div className="px-3 py-2.5 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Tanpa SEO Booster</p>
+                  <div className="bg-[#1a1d26] rounded border border-white/5 p-2 space-y-1">
+                    <p className="text-[11px] font-semibold text-slate-300 leading-tight">{content.seo?.title || "Nama Bisnis — Layanan"}</p>
+                    <p className="text-[10px] text-slate-500 leading-tight line-clamp-2">{content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan."}</p>
+                    <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
+                  </div>
+                </div>
+                {/* Dengan SEO Booster */}
+                <div className="px-3 py-2.5 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Dengan SEO Booster</p>
+                  <div className="bg-[#1a1d26] rounded border border-emerald-500/20 p-2 space-y-1">
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className={`w-2.5 h-2.5 ${i < 4 ? "text-amber-400 fill-amber-400" : "text-slate-600"}`} />
+                      ))}
+                      <span className="text-[9px] text-slate-400 ml-0.5">4.0</span>
+                      <span className="text-[9px] text-slate-600">(128 ulasan)</span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-200 leading-tight">{content.seo?.title || "Nama Bisnis — Layanan"}</p>
+                    <p className="text-[10px] text-slate-400 leading-tight line-clamp-2">{content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan."}</p>
+                    <div className="flex items-center gap-1.5 text-[9px] text-emerald-400">
+                      <span>👍 Rp50.000–Rp200.000</span>
+                      <span className="text-slate-600">•</span>
+                      <span>🕐 Buka</span>
+                    </div>
+                    <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onUpgradeRequired?.()}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[12px] font-semibold transition-all border-t border-amber-500/10"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                Upgrade untuk aktifkan SEO Booster
+              </button>
+            </div>
+          )}
 
           {/* Meta Title + Char Count */}
           <div className="space-y-1">

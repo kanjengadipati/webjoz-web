@@ -161,9 +161,10 @@ export default function SiteEditorPage() {
 
   // Usage meter
   const [tenantUsage, setTenantUsage] = useState<{
-    usage: { generate_count: number; regen_count: number };
+    usage: { generate_count: number; section_regen_count: number; design_regen_count: number };
     max_ai_generates: number;
-    max_ai_regens: number;
+    max_section_regens: number;
+    max_design_regens: number;
     max_sites: number;
   } | null>(null);
 
@@ -1945,7 +1946,7 @@ export default function SiteEditorPage() {
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-400">Generate</span>
                           <span className="font-semibold text-slate-200">
-                            {tenantUsage.usage.generate_count} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
+                            {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
@@ -1954,25 +1955,43 @@ export default function SiteEditorPage() {
                             style={{
                               width: tenantUsage.max_ai_generates <= 0
                                 ? 100
-                                : Math.min((tenantUsage.usage.generate_count / tenantUsage.max_ai_generates) * 100, 100),
+                                : Math.min(((tenantUsage.usage.generate_count ?? 0) / tenantUsage.max_ai_generates) * 100, 100),
                             }}
                           />
                         </div>
                       </div>
                       <div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Regenerasi</span>
+                          <span className="text-slate-400">Section Regen</span>
                           <span className="font-semibold text-slate-200">
-                            {tenantUsage.usage.regen_count} / {tenantUsage.max_ai_regens <= 0 ? "∞" : tenantUsage.max_ai_regens}
+                            {(tenantUsage.usage.section_regen_count ?? 0)} / {tenantUsage.max_section_regens <= 0 ? "∞" : tenantUsage.max_section_regens}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                           <div
                             className="h-full rounded-full bg-violet-500 transition-all duration-500"
                             style={{
-                              width: tenantUsage.max_ai_regens <= 0
+                              width: tenantUsage.max_section_regens <= 0
                                 ? 100
-                                : Math.min((tenantUsage.usage.regen_count / tenantUsage.max_ai_regens) * 100, 100),
+                                : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100),
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400">Design Regen</span>
+                          <span className="font-semibold text-slate-200">
+                            {(tenantUsage.usage.design_regen_count ?? 0)} / {tenantUsage.max_design_regens <= 0 ? "∞" : tenantUsage.max_design_regens}
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                            style={{
+                              width: tenantUsage.max_design_regens <= 0
+                                ? 100
+                                : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100),
                             }}
                           />
                         </div>
