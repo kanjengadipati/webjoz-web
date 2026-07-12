@@ -205,6 +205,48 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           });
         }
 
+        // Inject GA4  script
+        const trackingCodes = envelope.data?.tracking_codes;
+        if (trackingCodes?.ga4_id) {
+          if (!document.querySelector(`script[src*="gtag/js?id=${trackingCodes.ga4_id}"]`)) {
+            const gaScript = document.createElement("script");
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${trackingCodes.ga4_id}`;
+            document.head.appendChild(gaScript);
+          }
+          if (!window.hasOwnProperty("gtag")) {
+            const inline = document.createElement("script");
+            inline.textContent = `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${trackingCodes.ga4_id}');
+            `;
+            document.head.appendChild(inline);
+          }
+        }
+
+        // Inject Meta Pixel script
+        if (trackingCodes?.meta_pixel_id) {
+          if (!document.querySelector(`script[data-pixel-id="${trackingCodes.meta_pixel_id}"]`)) {
+            const pixelScript = document.createElement("script");
+            pixelScript.setAttribute("data-pixel-id", trackingCodes.meta_pixel_id);
+            pixelScript.textContent = `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${trackingCodes.meta_pixel_id}');
+              fbq('track', 'PageView');
+            `;
+            document.head.appendChild(pixelScript);
+          }
+        }
+
         // Track pageview on success
         try {
           await fetch(`${API_BASE_URL}/public/pageview`, {
