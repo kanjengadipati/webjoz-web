@@ -589,7 +589,7 @@ export default function SectionForms({
     }
   };
 
-  const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string) => {
+  const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string, imageUrl?: string) => {
     if (!token || !activeTenantId || !siteId) return;
 
     const customPrompt = await new Promise<string | null>((resolve) => {
@@ -606,7 +606,8 @@ export default function SectionForms({
     const loadKey = `${catIdx}_${itemIdx}`;
     setAiLoadingDesc(loadKey);
     try {
-      const instructions = `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.${customPrompt.trim() ? ` Instruksi tambahan: "${customPrompt}"` : ""}`;
+      const imageContext = imageUrl ? ` Gambar item tersedia di: ${imageUrl} — gunakan URL ini sebagai konteks visual untuk menulis deskripsi yang akurat dan menggugah selera.` : "";
+      const instructions = `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.${imageContext}${customPrompt.trim() ? ` Instruksi tambahan: "${customPrompt}"` : ""}`;
       const res = await request<any>("/ai/regenerate-section", {
         method: "POST",
         body: JSON.stringify({
@@ -2589,7 +2590,7 @@ interface MenuCatalogFormProps {
   hasBadge: boolean;
   data: any;
   updateField: (section: string, key: string, val: any) => void;
-  onAiDescription?: (catIdx: number, itemIdx: number, itemName: string, catName: string) => Promise<void>;
+  onAiDescription?: (catIdx: number, itemIdx: number, itemName: string, catName: string, imageUrl?: string) => Promise<void>;
   aiLoadingDesc?: string | null;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
@@ -2801,7 +2802,7 @@ function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBad
                             {onAiDescription && (
                               <AiFieldButton
                                 loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "")}
+                                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
                                 title="AI: generate deskripsi"
                                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                               />
