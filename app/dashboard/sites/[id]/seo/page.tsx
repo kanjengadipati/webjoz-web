@@ -100,13 +100,55 @@ export default function SeoManagerPage() {
     autosaveTimer.current = setTimeout(() => { void saveContent(data); }, 2000);
   }, [saveContent]);
 
-  const updateField = useCallback((_section: string, key: string, val: any) => {
+  const [fieldUndoStacks, setFieldUndoStacks] = useState<Record<string, string[]>>({});
+  const lastFieldUndoPushRef = useRef<Record<string, { val: string; time: number }>>({});
+
+  const pushFieldUndo = useCallback((section: string, key: string, currentVal: string) => {
+    const fieldPath = `${section}.${key}`;
+    const now = Date.now();
+    const last = lastFieldUndoPushRef.current[fieldPath];
+
+    if (!last || now - last.time > 1500) {
+      setFieldUndoStacks(prev => {
+        const stack = prev[fieldPath] || [];
+        if (stack[0] === currentVal) return prev;
+        return {
+          ...prev,
+          [fieldPath]: [currentVal, ...stack].slice(0, 3)
+        };
+      });
+      lastFieldUndoPushRef.current[fieldPath] = { val: currentVal, time: now };
+    }
+  }, []);
+
+  const undoField = useCallback((section: string, key: string) => {
+    const fieldPath = `${section}.${key}`;
+    const stack = fieldUndoStacks[fieldPath];
+    if (!stack || stack.length === 0) return;
+
+    const [prevVal, ...rest] = stack;
     setSeoData((prev: any) => {
+      const next = { ...prev, [key]: prevVal };
+      scheduleAutosave(next);
+      return next;
+    });
+    setFieldUndoStacks(prev => ({
+      ...prev,
+      [fieldPath]: rest
+    }));
+  }, [fieldUndoStacks, scheduleAutosave]);
+
+  const updateField = useCallback((section: string, key: string, val: any) => {
+    setSeoData((prev: any) => {
+      const currentVal = prev[key] || "";
+      if (typeof val === "string" && val !== currentVal) {
+        pushFieldUndo(section, key, currentVal);
+      }
       const next = { ...prev, [key]: val };
       scheduleAutosave(next);
       return next;
     });
-  }, [scheduleAutosave]);
+  }, [pushFieldUndo, scheduleAutosave]);
 
   // ── GSC save ───────────────────────────────────────────────────────────────
   const handleGscSave = useCallback(async (code: string) => {
@@ -215,6 +257,8 @@ export default function SeoManagerPage() {
         subdomain={subdomain || undefined}
         gscVerification={gscVerification}
         onGscSave={handleGscSave}
+        fieldUndoStacks={fieldUndoStacks}
+        undoField={undoField}
       />
 
       {/* AI prompt modal — same style as editor */}

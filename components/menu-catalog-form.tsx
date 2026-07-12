@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2 } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2, RotateCcw } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 
@@ -170,11 +170,14 @@ export interface MenuCatalogFormProps {
   aiLoadingDesc?: string | null;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
+  fieldUndoStacks?: Record<string, string[]>;
+  undoField?: (section: string, key: string) => void;
 }
 
 export function MenuCatalogForm({
   sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge,
   data, updateField, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
+  fieldUndoStacks, undoField,
 }: MenuCatalogFormProps) {
   const [expandedCat, setExpandedCat] = useState<number | null>(0);
   const [activeEmojiPicker, setActiveEmojiPicker] = useState<{ catIdx: number; itemIdx: number } | null>(null);
@@ -221,21 +224,46 @@ export function MenuCatalogForm({
     updateCategories(next);
   };
 
+  const renderFieldActions = (key: string) => {
+    const fieldPath = `${sectionKey}.${key}`;
+    const stack = fieldUndoStacks?.[fieldPath] || [];
+    if (stack.length === 0) return null;
+    return (
+      <button
+        type="button"
+        onClick={() => undoField?.(sectionKey, key)}
+        className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
+        title={`Undo (${stack.length} steps)`}
+      >
+        <RotateCcw className="w-3.5 h-3.5" />
+      </button>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Section header fields */}
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-white/[0.02] p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1 space-y-2">
-            <label className={MCF_INPUT_LABEL}>Judul Section</label>
+            <div className="flex items-center justify-between">
+              <label className={MCF_INPUT_LABEL}>Judul Section</label>
+              {renderFieldActions("title")}
+            </div>
             <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. Menu ${sectionTitle}`} className={`${MCF_INPUT_BASE} bg-white/[0.04]`} />
           </div>
           <div className="space-y-2">
-            <label className={MCF_INPUT_LABEL}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <div className="flex items-center justify-between">
+              <label className={MCF_INPUT_LABEL}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+              {renderFieldActions("eyebrow")}
+            </div>
             <input type="text" value={data?.eyebrow ?? ""} onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)} placeholder={`cth. Pilihan ${sectionTitle}`} className={MCF_INPUT_BASE} />
           </div>
           <div className="space-y-2">
-            <label className={MCF_INPUT_LABEL}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <div className="flex items-center justify-between">
+              <label className={MCF_INPUT_LABEL}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+              {renderFieldActions("subtitle")}
+            </div>
             <input type="text" value={data?.subtitle ?? ""} onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)} placeholder="cth. Nikmati berbagai pilihan menu terbaik kami" className={MCF_INPUT_BASE} />
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">
