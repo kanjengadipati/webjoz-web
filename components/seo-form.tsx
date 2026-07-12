@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle, Lock, Search, Star, Loader2, Check } from "lucide-react";
+import { CheckCircle, Lock, Search, Star, Loader2, Check, RotateCcw } from "lucide-react";
 import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
@@ -486,7 +486,7 @@ export function SeoForm({
           <span>Favicon</span>
           {renderFieldActions("favicon_url")}
         </label>
-        <FileUpload value={seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
+        <FileUpload label="Favicon" value={seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
       </div>
 
       <div className="space-y-1">
@@ -494,7 +494,7 @@ export function SeoForm({
           <span>OG Image (1200×630)</span>
           {renderFieldActions("og_image_url")}
         </label>
-        <FileUpload value={seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+        <FileUpload label="OG Image (1200×630)" value={seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
       </div>
 
       {/* OG Type */}
