@@ -617,69 +617,56 @@ export default function SectionForms({
               className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="space-y-2 rounded-lg border border-white/8 p-3 bg-white/3">
-            {/* Header: label + hide toggle */}
-            <div className="flex items-center justify-between gap-2">
-              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-                Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
-              </label>
-              <button
-                type="button"
-                onClick={() => updateField("header", "nav_cta_hidden", !(content.header as any)?.nav_cta_hidden)}
-                className={`flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all ${
-                  (content.header as any)?.nav_cta_hidden
-                    ? "border-slate-600 text-slate-500 bg-slate-800/40"
-                    : "border-primary/40 text-primary bg-primary/10"
-                }`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${(content.header as any)?.nav_cta_hidden ? "bg-slate-600" : "bg-primary"}`} />
-                {(content.header as any)?.nav_cta_hidden ? "Tersembunyi" : "Tampil"}
-              </button>
-            </div>
-
-            {/* Button text */}
-            <div className="space-y-1">
-              <label className="text-[10px] text-slate-500 font-medium">Teks Tombol</label>
-              <input
-                id="field-header.nav_cta_text"
-                type="text"
-                value={content.header?.nav_cta_text || ""}
-                onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
-                disabled={(content.header as any)?.nav_cta_hidden}
-                placeholder="cth. Hubungi Kami"
-                className={`w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent transition-opacity ${
-                  (content.header as any)?.nav_cta_hidden ? "opacity-40 cursor-not-allowed" : ""
-                } ${fieldClass("header.nav_cta_text", "")}`}
-              />
-            </div>
-
-            {/* Section link */}
-            <div className="space-y-1">
-              <label className="text-[10px] text-slate-500 font-medium">Link ke Section</label>
-              <select
-                value={(content.header as any)?.nav_cta_href || ""}
-                onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
-                disabled={(content.header as any)?.nav_cta_hidden}
-                className={`w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300 transition-opacity ${
-                  (content.header as any)?.nav_cta_hidden ? "opacity-40 cursor-not-allowed" : ""
-                }`}
-              >
-                <option value="">— Otomatis dari teks —</option>
-                <option value="#hero">Hero (Atas)</option>
-                <option value="#about">Tentang Kami</option>
-                <option value="#benefits">Keunggulan</option>
-                <option value="#catalog">Katalog / Produk</option>
-                <option value="#menu">Menu</option>
-                <option value="#gallery">Galeri</option>
-                <option value="#testimonials">Testimoni</option>
-                <option value="#faq">FAQ</option>
-                <option value="#contact">Kontak</option>
-              </select>
-              <p className="text-[10px] text-slate-600 leading-snug">
-                Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
-              </p>
-            </div>
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
+            <input 
+              type="checkbox" 
+              checked={!(content.header as any)?.nav_cta_hidden} 
+              onChange={(e) => updateField("header", "nav_cta_hidden", !e.target.checked)} 
+              className="w-4 h-4 accent-primary cursor-pointer" 
+            />
           </div>
+
+          {!(content.header as any)?.nav_cta_hidden && (
+            <>
+              <div className="space-y-1">
+                <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                  Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
+                </label>
+                <input
+                  id="field-header.nav_cta_text"
+                  type="text"
+                  value={content.header?.nav_cta_text || ""}
+                  onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
+                  placeholder="cth. Hubungi Kami"
+                  className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600")}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link ke Section</label>
+                <select
+                  value={(content.header as any)?.nav_cta_href || ""}
+                  onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
+                  className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300"
+                >
+                  <option value="">— Otomatis dari teks —</option>
+                  <option value="#hero">Hero (Atas)</option>
+                  <option value="#about">Tentang Kami</option>
+                  <option value="#benefits">Keunggulan</option>
+                  <option value="#catalog">Katalog / Produk</option>
+                  <option value="#menu">Menu</option>
+                  <option value="#gallery">Galeri</option>
+                  <option value="#testimonials">Testimoni</option>
+                  <option value="#faq">FAQ</option>
+                  <option value="#contact">Kontak</option>
+                </select>
+                <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">
+                  Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
+                </p>
+              </div>
+            </>
+          )}
 
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
