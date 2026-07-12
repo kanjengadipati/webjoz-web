@@ -182,6 +182,7 @@ export default function BlogManagerPage() {
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ChevronLeft className="w-4 h-4" /> Web
           </Link>
+          <FileText className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-bold">Blog Postingan</h2>
         </div>
         <Button onClick={() => setManualOpen(true)}>
