@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
-import { LayoutGrid, List, Star, AlignLeft, Loader2, FileText, Plus, Sparkles, ChevronLeft, Check } from "lucide-react";
+import { LayoutGrid, List, Star, AlignLeft, Loader2, FileText, Plus, ChevronLeft, Check } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 import { SiteSubNav } from "@/components/site-sub-nav";
@@ -76,7 +76,7 @@ export default function BlogManagerPage() {
         // Show AI badge only when variant has never been manually overridden
         setLayoutIsAiPick(layout.blog_index_variant_manual !== true);
       }
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => { fetchBlogLayout(); }, [siteId]);
@@ -182,7 +182,6 @@ export default function BlogManagerPage() {
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ChevronLeft className="w-4 h-4" /> Web
           </Link>
-          <FileText className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-bold">Blog Postingan</h2>
         </div>
         <Button onClick={() => setManualOpen(true)}>
@@ -204,11 +203,10 @@ export default function BlogManagerPage() {
                     key={opt.value}
                     onClick={() => handleLayoutChange(opt.value)}
                     disabled={layoutSaving}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      active
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${active
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    }`}
+                      }`}
                     title={opt.desc}
                   >
                     {active && layoutSaving ? (
@@ -291,7 +289,7 @@ export default function BlogManagerPage() {
         <Card>
           <CardContent className="py-4">
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+              <SparkleGenAI className="w-5 h-5 text-primary shrink-0" />
               <span>Generate konten dengan AI tersedia di paket <strong>Pro</strong>.</span>
               <Link href="/dashboard/upgrade" className="ml-auto text-primary font-semibold hover:underline whitespace-nowrap">
                 Upgrade →
