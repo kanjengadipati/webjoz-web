@@ -6,6 +6,10 @@ export interface TestimonialItem {
   avatar_color: string;
   company?: string | null;
   logo_url?: string | null;
+  /** Set when imported from Google Reviews or manual copy */
+  avatar_url?: string | null;
+  rating?: number | null;
+  source?: "google" | "manual" | null;
 }
 
 export interface BenefitItem {
@@ -88,7 +92,7 @@ export interface DesignToken {
     section_variants?: {
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table";
-      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight";
+      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
       cta?: "banner" | "card" | "centered" | "split-image";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category";
       gallery?: "grid" | "masonry" | "carousel";
