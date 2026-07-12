@@ -617,6 +617,7 @@ export default function SectionForms({
           section: activeTab,
           instructions,
           tenant_id: activeTenantId,
+          image_url: imageUrl || undefined,
         }),
       }, String(token));
       if (res.status === "success" && res.data?.section) {
