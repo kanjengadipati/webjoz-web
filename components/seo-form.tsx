@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { CheckCircle, Lock, Search, Star, Loader2, Check } from "lucide-react";
 import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
+import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { request } from "@/lib/api/client";
 
 // ─── generateFieldText ────────────────────────────────────────────────────────
@@ -103,7 +104,9 @@ export function KeywordsInput({
 // ─── SeoForm ──────────────────────────────────────────────────────────────────
 
 // ─── SeoPreview ───────────────────────────────────────────────────────────────
-// Live SERP + OG card — updates in real-time as user types.
+// Tabbed preview: Google SERP | Social share — updates live as user types.
+
+type PreviewTab = "google" | "social";
 
 interface SeoPreviewProps {
   seo: any;
@@ -111,60 +114,159 @@ interface SeoPreviewProps {
 }
 
 export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPreviewProps) {
+  const [tab, setTab] = useState<PreviewTab>("google");
+
   const title    = seo?.title       || "";
   const desc     = seo?.description || "";
   const ogImage  = seo?.og_image_url || "";
-  const ogType   = (seo?.og_type    || "website").toUpperCase();
   const titleLen = title.length;
   const descLen  = desc.length;
 
   return (
-    <div className="space-y-4">
-      {/* Google SERP */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Preview di Google</p>
-        <div className="rounded-2xl border border-white/10 bg-[#202124] px-4 py-3.5 space-y-1 font-mono">
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-            <span className="w-4 h-4 rounded-sm bg-slate-600 flex items-center justify-center text-[8px] font-bold text-white shrink-0">W</span>
-            <span>{subdomain} › bisnis</span>
-          </div>
-          <p className={`text-[15px] font-semibold leading-snug ${title ? "text-[#8ab4f8]" : "text-slate-600 italic"}`}>
-            {title || "Judul SEO belum diisi"}
-          </p>
-          <p className={`text-[12px] leading-relaxed line-clamp-2 ${desc ? "text-[#bdc1c6]" : "text-slate-600 italic"}`}>
-            {desc || "Deskripsi SEO belum diisi"}
-          </p>
-          <div className="flex gap-3 pt-1">
-            <span className={`text-[10px] font-mono ${titleLen > 60 ? "text-red-400" : "text-slate-500"}`}>Title: {titleLen}/60</span>
-            <span className={`text-[10px] font-mono ${descLen > 155 ? "text-red-400" : "text-slate-500"}`}>Desc: {descLen}/155</span>
-          </div>
-        </div>
+    <div className="rounded-2xl border border-white/10 bg-[#161920] overflow-hidden">
+      {/* Tab bar */}
+      <div className="flex border-b border-white/8">
+        <button
+          type="button"
+          onClick={() => setTab("google")}
+          className={`flex-1 py-2.5 text-[11px] font-bold tracking-wide transition-colors ${
+            tab === "google"
+              ? "bg-white/5 text-slate-100 border-b-2 border-[#8ab4f8]"
+              : "text-slate-500 hover:text-slate-300"
+          }`}
+        >
+          🔍 Google
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("social")}
+          className={`flex-1 py-2.5 text-[11px] font-bold tracking-wide transition-colors ${
+            tab === "social"
+              ? "bg-white/5 text-slate-100 border-b-2 border-emerald-400"
+              : "text-slate-500 hover:text-slate-300"
+          }`}
+        >
+          📣 WA / FB / X
+        </button>
       </div>
 
-      {/* OG / Social share card */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Preview saat link dibagikan (WhatsApp / Sosmed)</p>
-        <div className="rounded-2xl border border-white/10 bg-[#1a1d26] overflow-hidden">
-          <div className="w-full aspect-[1200/630] bg-[#111318] relative overflow-hidden">
-            {ogImage ? (
-              <img src={ogImage} alt="OG preview" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <p className="text-[11px] text-slate-600 italic">OG Image belum diatur</p>
+      {/* Google SERP tab */}
+      {tab === "google" && (
+        <div className="p-4 space-y-3">
+          <div className="rounded-xl border border-white/8 bg-[#202124] px-4 py-3.5 space-y-1" style={{ fontFamily: "arial, sans-serif" }}>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-5 h-5 rounded-full bg-slate-600 flex items-center justify-center text-[8px] font-bold text-white shrink-0">W</span>
+              <div className="leading-tight">
+                <p className="text-[11px] text-slate-300 font-medium">webjoz.com</p>
+                <p className="text-[10px] text-slate-500">{subdomain} › bisnis</p>
               </div>
-            )}
-          </div>
-          <div className="px-3.5 py-2.5 space-y-0.5">
-            <p className="text-[10px] uppercase tracking-wider text-slate-500">{ogType}</p>
-            <p className={`text-[13px] font-semibold leading-snug ${title ? "text-slate-100" : "text-slate-600 italic"}`}>
+            </div>
+            <p className={`text-[16px] font-medium leading-snug hover:underline cursor-pointer ${
+              title ? "text-[#8ab4f8]" : "text-slate-600 italic"
+            }`}>
               {title || "Judul SEO belum diisi"}
             </p>
-            <p className={`text-[11px] leading-relaxed line-clamp-2 ${desc ? "text-slate-400" : "text-slate-600 italic"}`}>
+            <p className={`text-[13px] leading-relaxed line-clamp-2 ${
+              desc ? "text-[#bdc1c6]" : "text-slate-600 italic"
+            }`}>
               {desc || "Deskripsi SEO belum diisi"}
             </p>
           </div>
+          {/* Char counters */}
+          <div className="flex gap-4 px-1">
+            <span className={`text-[10px] font-mono ${
+              titleLen > 60 ? "text-red-400" : "text-slate-500"
+            }`}>Title: {titleLen}/60 {titleLen > 60 ? "⚠️" : ""}</span>
+            <span className={`text-[10px] font-mono ${
+              descLen > 155 ? "text-red-400" : "text-slate-500"
+            }`}>Desc: {descLen}/155 {descLen > 155 ? "⚠️" : ""}</span>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Social share tab */}
+      {tab === "social" && (
+        <div className="p-4 space-y-3">
+          {/* WhatsApp / iMessage */}
+          <div className="rounded-xl overflow-hidden border border-white/8 bg-[#1a1d26]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+              <span className="text-[10px] font-bold text-emerald-400">💬 WhatsApp / iMessage</span>
+            </div>
+            <div className="flex overflow-hidden">
+              <div className="w-[72px] h-[72px] shrink-0 bg-[#111318] relative overflow-hidden">
+                {ogImage ? (
+                  <img src={ogImage} alt="OG" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-xl opacity-20">🖼️</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
+                <p className="text-[9px] text-slate-500 truncate uppercase tracking-wide">{subdomain}</p>
+                <p className={`text-[12px] font-semibold leading-snug line-clamp-2 ${
+                  title ? "text-slate-100" : "text-slate-600 italic"
+                }`}>{title || "Judul belum diisi"}</p>
+                <p className={`text-[10px] line-clamp-2 leading-tight ${
+                  desc ? "text-slate-400" : "text-slate-600 italic"
+                }`}>{desc || "Deskripsi belum diisi"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Facebook / LinkedIn */}
+          <div className="rounded-xl overflow-hidden border border-white/8 bg-[#1a1d26]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+              <span className="text-[10px] font-bold text-blue-400">👍 Facebook / LinkedIn</span>
+            </div>
+            <div className="w-full aspect-[1.91/1] bg-[#111318] relative overflow-hidden">
+              {ogImage ? (
+                <img src={ogImage} alt="OG" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-3xl opacity-20">🖼️</span>
+                  <p className="text-[10px] text-slate-600 italic">Upload OG Image (1200×630)</p>
+                </div>
+              )}
+            </div>
+            <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
+              <p className="text-[9px] uppercase tracking-widest text-slate-500">{subdomain}</p>
+              <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${
+                title ? "text-slate-100" : "text-slate-600 italic"
+              }`}>{title || "Judul belum diisi"}</p>
+              <p className={`text-[10px] line-clamp-2 leading-snug ${
+                desc ? "text-slate-400" : "text-slate-600 italic"
+              }`}>{desc || "Deskripsi belum diisi"}</p>
+            </div>
+          </div>
+
+          {/* Twitter / X */}
+          <div className="rounded-xl overflow-hidden border border-white/8 bg-[#1a1d26]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+              <span className="text-[10px] font-bold text-slate-300">𝕏 Twitter / X</span>
+            </div>
+            <div className="relative">
+              <div className="w-full aspect-[2/1] bg-[#111318] relative overflow-hidden">
+                {ogImage ? (
+                  <img src={ogImage} alt="OG" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-3xl opacity-20">🖼️</span>
+                  </div>
+                )}
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/65 backdrop-blur-sm">
+                <p className={`text-[12px] font-semibold leading-tight truncate ${
+                  title ? "text-white" : "text-slate-500 italic"
+                }`}>{title || "Judul belum diisi"}</p>
+                <p className="text-[10px] text-slate-400 truncate">{subdomain}</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-[10px] text-slate-600 text-center">Preview diperbarui otomatis saat Anda mengisi Title, Deskripsi, &amp; OG Image.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -218,9 +320,6 @@ export function SeoForm({
   return (
     <div className="space-y-5">
 
-      {/* Live previews */}
-      <SeoPreview seo={seo} subdomain={subdomain} />
-
       {/* Info banner */}
       <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/10 px-3 py-2.5 text-[12px] leading-relaxed text-cyan-100">
         <p className="font-semibold text-cyan-50">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari &amp; saat link dibagikan.</p>
@@ -237,54 +336,67 @@ export function SeoForm({
             Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
           </p>
         </div>
-      ) : (
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 overflow-hidden">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-amber-500/10">
-            <div className="flex items-center gap-1.5">
-              <Search className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">SEO Booster (Pro)</span>
+      ) : (() => {
+        const siteTitle = seo?.title || "Nama Bisnis — Layanan";
+        const siteDesc = seo?.description || "Deskripsi singkat bisnis dan layanan.";
+        const siteName = siteTitle.split(/[-—|]/)[0].trim() || "Nama Bisnis";
+        const cleanSubdomain = subdomain || "namabisnis";
+
+        const demoBusiness = {
+          name: siteName,
+          subdomain: cleanSubdomain,
+          title: siteTitle,
+          description: siteDesc,
+          rating: "4.8",
+          reviewCount: "128",
+          priceRange: "Rp50.000–Rp200.000",
+          status: "Buka",
+        };
+
+        return (
+          <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                <Search className="w-4 h-4 text-amber-400" />
+                <span>SEO BOOSTER (PRO)</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
+                Premium
+              </span>
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-amber-500/70 bg-amber-500/10 px-1.5 py-0.5 rounded">Premium</span>
-          </div>
-          <div className="grid grid-cols-2 divide-x divide-amber-500/10">
-            <div className="px-3 py-2.5 space-y-1.5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Tanpa SEO Booster</p>
-              <div className="bg-[#1a1d26] rounded border border-white/5 p-2 space-y-1">
-                <p className="text-[11px] font-semibold text-slate-300 leading-tight">{seo?.title || "Nama Bisnis — Layanan"}</p>
-                <p className="text-[10px] text-slate-500 leading-tight line-clamp-2">{seo?.description || "Deskripsi singkat bisnis dan layanan."}</p>
-                <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
+
+            <div className="grid grid-cols-2 gap-4 p-5">
+              <div>
+                <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                <div className="opacity-60 grayscale-[30%]">
+                  <GoogleSnippetPreview variant="plain" business={demoBusiness} />
+                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                  ✨ Rich Result
+                </div>
+                <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                <GoogleSnippetPreview variant="rich" business={demoBusiness} />
               </div>
             </div>
-            <div className="px-3 py-2.5 space-y-1.5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Dengan SEO Booster</p>
-              <div className="bg-[#1a1d26] rounded border border-emerald-500/20 p-2 space-y-1">
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={`w-2.5 h-2.5 ${i < 4 ? "text-amber-400 fill-amber-400" : "text-slate-600"}`} />
-                  ))}
-                  <span className="text-[9px] text-slate-400 ml-0.5">4.0</span>
-                  <span className="text-[9px] text-slate-600">(128 ulasan)</span>
-                </div>
-                <p className="text-[11px] font-semibold text-slate-200 leading-tight">{seo?.title || "Nama Bisnis — Layanan"}</p>
-                <p className="text-[10px] text-slate-400 leading-tight line-clamp-2">{seo?.description || "Deskripsi singkat bisnis dan layanan."}</p>
-                <div className="flex items-center gap-1.5 text-[9px] text-emerald-400">
-                  <span>👍 Rp50.000–Rp200.000</span>
-                  <span className="text-slate-600">•</span>
-                  <span>🕐 Buka</span>
-                </div>
-                <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
-              </div>
+
+            <div className="px-5 pb-5">
+              <p className="text-xs text-amber-200/70 text-center mb-2">
+                Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+              </p>
+              <button
+                type="button"
+                onClick={() => onUpgradeRequired?.()}
+                className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+              </button>
             </div>
           </div>
-          <button
-            type="button" onClick={() => onUpgradeRequired?.()}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[12px] font-semibold transition-all border-t border-amber-500/10"
-          >
-            <Lock className="w-3.5 h-3.5" />
-            Upgrade untuk aktifkan SEO Booster
-          </button>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Meta Title */}
       <div className="space-y-1">
@@ -397,39 +509,31 @@ export function SeoForm({
         <input type="text" value={seo?.canonical_path || "/"} onChange={(e) => updateField("seo", "canonical_path", e.target.value)} className={fieldBase} placeholder="/" />
       </div>
 
-      {/* ── Google Search Console ── */}
-      <div className="relative rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
-        {/* Pro lock overlay */}
-        {!isPremium && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-[#0d0f14]/80 backdrop-blur-[2px] rounded-xl">
-            <Lock className="w-5 h-5 text-amber-400" />
-            <p className="text-[12px] font-semibold text-slate-300">Google Search Console — Pro</p>
-            <button
-              type="button"
-              onClick={() => onUpgradeRequired?.()}
-              className="mt-1 px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[11px] font-bold hover:bg-amber-500/30 transition-colors cursor-pointer"
-            >
-              Upgrade ke Pro
-            </button>
-          </div>
-        )}
+      {/* ── Live Preview ── */}
+      <SeoPreview seo={seo} subdomain={subdomain} />
 
-        <div className={`p-4 space-y-3 ${!isPremium ? "opacity-30 pointer-events-none select-none" : ""}`}>
+      {/* ── Google Search Console ── */}
+      <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+        <div className="p-4 space-y-3">
           {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 shrink-0">
-              {/* GSC / Google icon */}
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 shrink-0">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
+                <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
+              </div>
             </div>
-            <div>
-              <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
-              <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
-            </div>
+            {!isPremium && (
+              <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">Pro</span>
+            )}
           </div>
 
           {/* How-to steps */}
@@ -462,7 +566,10 @@ export function SeoForm({
             />
             <button
               type="button"
-              onClick={handleGscSave}
+              onClick={() => {
+                if (!isPremium) { onUpgradeRequired?.(); return; }
+                handleGscSave();
+              }}
               disabled={gscSaving || !gscInput.trim()}
               className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
