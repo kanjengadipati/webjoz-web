@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
@@ -36,6 +36,8 @@ export interface SectionFormsProps {
   onUpgradeRequired?: () => void;
   onAiSuccess?: () => void;
   subdomain?: string;
+  fieldUndoStacks?: Record<string, string[]>;
+  undoField?: (section: string, key: string) => void;
 }
 
 // ─── Icon Picker ──────────────────────────────────────────────────────────────
@@ -183,9 +185,10 @@ interface KeywordsInputProps {
   onAiGenerate?: () => Promise<void>;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
+  renderFieldActions?: (section: string, key: string, aiButton?: React.ReactNode) => React.ReactNode;
 }
 
-function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired }: KeywordsInputProps) {
+function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired, renderFieldActions }: KeywordsInputProps) {
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -210,14 +213,23 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
     <div className="space-y-1">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
         <span>Keywords</span>
-        {onAiGenerate && (
+        {renderFieldActions ? (
+          renderFieldActions("seo", "keywords", onAiGenerate && (
+            <AiFieldButton
+              loading={!!aiLoading}
+              onGenerate={onAiGenerate}
+              title="AI: generate keywords"
+              onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            />
+          ))
+        ) : onAiGenerate ? (
           <AiFieldButton
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
             title="AI: generate keywords"
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
-        )}
+        ) : null}
       </label>
       <div className="flex flex-wrap gap-1.5 min-h-[32px] px-2 py-1.5 border rounded-md bg-transparent">
         {keywords.map((kw, idx) => (
@@ -480,8 +492,30 @@ export default function SectionForms({
   onUpgradeRequired,
   onAiSuccess,
   subdomain,
+  fieldUndoStacks,
+  undoField,
 }: SectionFormsProps) {
   const { pushToast } = useToast();
+  const renderFieldActions = (section: string, key: string, aiButton?: React.ReactNode) => {
+    const fieldPath = `${section}.${key}`;
+    const stack = fieldUndoStacks?.[fieldPath] || [];
+    if (stack.length === 0 && !aiButton) return null;
+    return (
+      <div className="flex items-center gap-1.5 shrink-0">
+        {stack.length > 0 && (
+          <button
+            type="button"
+            onClick={() => undoField?.(section, key)}
+            className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
+            title={`Undo perubahan field ini (${stack.length} kali)`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {aiButton}
+      </div>
+    );
+  };
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
   const [resolvingMaps, setResolvingMaps] = React.useState(false);
@@ -496,6 +530,51 @@ export default function SectionForms({
     resolve: (val: string | null) => void;
   } | null>(null);
   const [fieldPromptInput, setFieldPromptInput] = React.useState("");
+
+  // ─── GSC state (self-contained) ─────────────────────────────────────────────────
+  const [gscInput, setGscInput]   = React.useState("");
+  const [gscSaving, setGscSaving] = React.useState(false);
+  const [gscSaved, setGscSaved]   = React.useState(false);
+
+  // Fetch current GSC code when the SEO tab is opened
+  React.useEffect(() => {
+    if (activeTab !== "seo" || !token || !activeTenantId || !siteId) return;
+    const tenantHeaders = { "X-Tenant-ID": String(activeTenantId) };
+    request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, String(token))
+      .then((res) => {
+        const code = res.data?.tracking_codes?.gsc_verification ?? "";
+        setGscInput(code);
+      })
+      .catch(() => { /* non-critical */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  const handleGscSave = async () => {
+    if (!token || !activeTenantId || !siteId) return;
+    setGscSaving(true);
+    setGscSaved(false);
+    const tenantHeaders = { "X-Tenant-ID": String(activeTenantId) };
+    try {
+      // Fetch existing codes first so we don’t wipe GA4 / Meta Pixel
+      let existingCodes: Record<string, string> = {};
+      try {
+        const res = await request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, String(token));
+        existingCodes = res.data?.tracking_codes ?? {};
+      } catch { /* fall back to empty */ }
+      await request(`/sites/${siteId}/tracking-codes`, {
+        method: "PATCH",
+        headers: tenantHeaders,
+        body: JSON.stringify({ tracking_codes: { ...existingCodes, gsc_verification: gscInput.trim() } }),
+      }, String(token));
+      setGscSaved(true);
+      pushToast?.("Kode GSC berhasil disimpan", "success");
+      setTimeout(() => setGscSaved(false), 3000);
+    } catch (err: any) {
+      pushToast?.(err.message || "Gagal menyimpan kode GSC", "error");
+    } finally {
+      setGscSaving(false);
+    }
+  };
 
   // Auto-initialize floating_button default when user opens the floating tab
   React.useEffect(() => {
@@ -604,8 +683,9 @@ export default function SectionForms({
       {activeTab === "header" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("header", "brand_name")}
             </label>
             <input 
               id="field-header.brand_name"
@@ -628,8 +708,9 @@ export default function SectionForms({
           {!(content.header as any)?.nav_cta_hidden && (
             <>
               <div className="space-y-1">
-                <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-                  Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
+                <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                  <span>Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+                  {renderFieldActions("header", "nav_cta_text")}
                 </label>
                 <input
                   id="field-header.nav_cta_text"
@@ -750,7 +831,10 @@ export default function SectionForms({
           </div>
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "eyebrow")}
+            </label>
             <input
               id="field-hero.eyebrow"
               type="text"
@@ -766,12 +850,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "hero.headline"}
-                onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata", "Headline")}
-                title="AI: generate headline"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("hero", "headline", (
+                <AiFieldButton
+                  loading={aiLoadingField === "hero.headline"}
+                  onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata", "Headline")}
+                  title="AI: generate headline"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <input 
               id="field-hero.headline"
@@ -782,8 +868,9 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">
-              Matra / Tagline
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Matra / Tagline</span>
+              {renderFieldActions("hero", "matra")}
             </label>
             <input
               id="field-hero.matra"
@@ -793,19 +880,21 @@ export default function SectionForms({
               placeholder="cth. Cita Rasa Jogja · Sejak 2010"
               className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline dan subheadline dengan garis dekoratif.</p>
+            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1">
                 Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "hero.subheadline"}
-                onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata", "Subheadline")}
-                title="AI: generate subheadline"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("hero", "subheadline", (
+                <AiFieldButton
+                  loading={aiLoadingField === "hero.subheadline"}
+                  onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata", "Subheadline")}
+                  title="AI: generate subheadline"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <textarea 
               id="field-hero.subheadline"
@@ -816,8 +905,9 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("hero", "cta_text")}
             </label>
             <input 
               id="field-hero.cta_text"
@@ -844,7 +934,10 @@ export default function SectionForms({
           />
           {/* Secondary CTA (optional, used by Futuristic and some templates) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "cta_secondary_text")}
+            </label>
             <input
               id="field-hero.cta_secondary_text"
               type="text"
@@ -857,7 +950,10 @@ export default function SectionForms({
           </div>
           {/* Secondary CTA URL */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "cta_secondary_url")}
+            </label>
             <input
               id="field-hero.cta_secondary_url"
               type="text"
@@ -870,7 +966,10 @@ export default function SectionForms({
           </div>
           {/* Badge text (small text below CTA, used by Futuristic template) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "badge_text")}
+            </label>
             <input
               id="field-hero.badge_text"
               type="text"
@@ -883,7 +982,10 @@ export default function SectionForms({
           </div>
           {/* Opening hours (used by Bold template) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "opening_hours")}
+            </label>
             <input
               id="field-hero.opening_hours"
               type="text"
@@ -1726,79 +1828,6 @@ export default function SectionForms({
             </p>
           </div>
 
-          {/* ── SEO Booster Upsell Card ── */}
-          {isPremium ? (
-            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
-              <div className="flex items-center gap-2 font-semibold text-emerald-400">
-                <CheckCircle className="w-4 h-4" />
-                SEO Booster Aktif
-              </div>
-              <p className="mt-1 text-emerald-200/80">
-                Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
-              </p>
-            </div>
-          ) : (() => {
-            const siteTitle = content.seo?.title || "Nama Bisnis — Layanan";
-            const siteDesc = content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan.";
-            const siteName = siteTitle.split(/[-—|]/)[0].trim() || content.header?.brand_name || "Nama Bisnis";
-            const cleanSubdomain = subdomain || "namabisnis";
-
-            const demoBusiness = {
-              name: siteName,
-              subdomain: cleanSubdomain,
-              title: siteTitle,
-              description: siteDesc,
-              rating: "4.8",
-              reviewCount: "128",
-              priceRange: "Rp50.000–Rp200.000",
-              status: "Buka",
-            };
-
-            return (
-              <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-                  <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                    <Search className="w-4 h-4 text-amber-400" />
-                    <span>SEO BOOSTER (PRO)</span>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
-                    Premium
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 p-5">
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
-                    <div className="opacity-60 grayscale-[30%]">
-                      <GoogleSnippetPreview variant="plain" business={demoBusiness} />
-                    </div>
-                  </div>
-                  <div className="relative">
-                    <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-                      ✨ Rich Result
-                    </div>
-                    <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
-                    <GoogleSnippetPreview variant="rich" business={demoBusiness} />
-                  </div>
-                </div>
-
-                <div className="px-5 pb-5">
-                  <p className="text-xs text-amber-200/70 text-center mb-2">
-                    Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => onUpgradeRequired?.()}
-                    className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Lock className="w-3.5 h-3.5" />
-                    🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
-
           {/* Meta Title + Char Count */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
@@ -2055,6 +2084,152 @@ export default function SectionForms({
               className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
               placeholder="/"
             />
+          </div>
+
+          {/* ── SEO Booster Upsell Card ── */}
+          {isPremium ? (
+            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
+              <div className="flex items-center gap-2 font-semibold text-emerald-400">
+                <CheckCircle className="w-4 h-4" />
+                SEO Booster Aktif
+              </div>
+              <p className="mt-1 text-emerald-200/80">
+                Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+              </p>
+            </div>
+          ) : (() => {
+            const siteTitle = content.seo?.title || "Nama Bisnis — Layanan";
+            const siteDesc = content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan.";
+            const siteName = siteTitle.split(/[-—|]/)[0].trim() || content.header?.brand_name || "Nama Bisnis";
+            const cleanSubdomain = subdomain || "namabisnis";
+
+            const demoBusiness = {
+              name: siteName,
+              subdomain: cleanSubdomain,
+              title: siteTitle,
+              description: siteDesc,
+              rating: "4.8",
+              reviewCount: "128",
+              priceRange: "Rp50.000–Rp200.000",
+              status: "Buka",
+            };
+
+            return (
+              <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                    <Search className="w-4 h-4 text-amber-400" />
+                    <span>SEO BOOSTER (PRO)</span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
+                    Premium
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 p-5">
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                    <div className="opacity-60 grayscale-[30%]">
+                      <GoogleSnippetPreview variant="plain" business={demoBusiness} />
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                      ✨ Rich Result
+                    </div>
+                    <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                    <GoogleSnippetPreview variant="rich" business={demoBusiness} />
+                  </div>
+                </div>
+
+                <div className="px-5 pb-5">
+                  <p className="text-xs text-amber-200/70 text-center mb-2">
+                    Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => onUpgradeRequired?.()}
+                    className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── Google Search Console ── */}
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+            <div className="p-4 space-y-3">
+              {/* Header */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 shrink-0">
+                    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
+                    <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
+                  </div>
+                </div>
+                {!isPremium && (
+                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">Pro</span>
+                )}
+              </div>
+
+              {/* How-to steps */}
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
+                <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
+                <ol className="space-y-1 list-decimal list-inside">
+                  <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
+                  <li>Klik <strong className="text-slate-200">Tambah properti</strong> → pilih <strong className="text-slate-200">Awalan URL</strong></li>
+                  <li>Masukkan URL website Anda, lalu pilih metode <strong className="text-slate-200">Tag HTML</strong></li>
+                  <li>Salin nilai <code className="bg-white/5 px-1 rounded text-slate-300">content</code> dari meta tag yang diberikan</li>
+                  <li>Tempel di field di bawah, lalu klik Simpan &amp; Verifikasi</li>
+                </ol>
+              </div>
+
+              {/* Meta tag preview */}
+              {gscInput.trim() && (
+                <div className="rounded-md bg-[#0d0f14] border border-white/5 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+                  {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
+                </div>
+              )}
+
+              {/* Input + save button */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={gscInput}
+                  onChange={(e) => setGscInput(e.target.value)}
+                  placeholder="Tempel kode verifikasi di sini..."
+                  className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isPremium) { onUpgradeRequired?.(); return; }
+                    handleGscSave();
+                  }}
+                  disabled={gscSaving || !gscInput.trim()}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                >
+                  {gscSaving ? (
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...</>
+                  ) : gscSaved ? (
+                    <><Check className="w-3.5 h-3.5" /> Tersimpan</>
+                  ) : (
+                    "Simpan & Verifikasi"
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
