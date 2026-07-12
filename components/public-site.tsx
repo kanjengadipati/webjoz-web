@@ -205,8 +205,20 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           });
         }
 
-        // Inject GA4  script
+        // Inject Google Search Console verification meta tag
         const trackingCodes = envelope.data?.tracking_codes;
+        if (trackingCodes?.gsc_verification) {
+          const gscMeta = 'meta[name="google-site-verification"]';
+          let el = document.querySelector(gscMeta) as HTMLMetaElement;
+          if (!el) {
+            el = document.createElement("meta");
+            el.name = "google-site-verification";
+            document.head.appendChild(el);
+          }
+          el.content = trackingCodes.gsc_verification;
+        }
+
+        // Inject GA4  script
         if (trackingCodes?.ga4_id) {
           if (!document.querySelector(`script[src*="gtag/js?id=${trackingCodes.ga4_id}"]`)) {
             const gaScript = document.createElement("script");
