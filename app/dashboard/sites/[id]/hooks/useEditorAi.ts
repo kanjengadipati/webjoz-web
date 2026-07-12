@@ -150,6 +150,9 @@ export function useEditorAi(
         throw new Error(res.message || "AI gagal memproses.");
       }
     } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        throw err;
+      }
       pushToast(err.message || "AI gagal meregenerasi bagian ini.", "error");
     } finally {
       setAiLoading(false);
@@ -207,6 +210,9 @@ export function useEditorAi(
         throw new Error(res.message || "AI gagal memproses desain.");
       }
     } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        throw err;
+      }
       pushToast(err.message || "AI gagal meregenerasi gaya website.", "error");
     } finally {
       setAiLoading(false);

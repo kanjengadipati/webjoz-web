@@ -182,14 +182,18 @@ export default function SiteEditorPage() {
     },
   };
 
-  const requirePremium = useCallback((context: "ai_regenerate" | "ai_design" | "ai_suggestion", action: () => void) => {
-    if (!isPremium) {
-      setUpgradeContext(context);
-      setUpgradePromptOpen(true);
-      return;
+  const requirePremium = useCallback(async (context: "ai_regenerate" | "ai_design" | "ai_suggestion", action: () => any) => {
+    try {
+      await action();
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        setUpgradeContext(context);
+        setUpgradePromptOpen(true);
+        return;
+      }
+      throw err;
     }
-    action();
-  }, [isPremium]);
+  }, []);
 
   // ── Inline AI prompt modal (replaces window.prompt) ─────────────────────────
   const [aiPromptModal, setAiPromptModal] = useState<{
