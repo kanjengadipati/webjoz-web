@@ -4,6 +4,7 @@ import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2,
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
+import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, AI_SUGGESTIONS } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
@@ -34,6 +35,7 @@ export interface SectionFormsProps {
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
   onAiSuccess?: () => void;
+  subdomain?: string;
 }
 
 // ─── Icon Picker ──────────────────────────────────────────────────────────────
@@ -477,6 +479,7 @@ export default function SectionForms({
   isPremium = false,
   onUpgradeRequired,
   onAiSuccess,
+  subdomain,
 }: SectionFormsProps) {
   const { pushToast } = useToast();
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
@@ -1734,57 +1737,67 @@ export default function SectionForms({
                 Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
               </p>
             </div>
-          ) : (
-            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 overflow-hidden">
-              <div className="flex items-center justify-between px-3 py-2 border-b border-amber-500/10">
-                <div className="flex items-center gap-1.5">
-                  <Search className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">SEO Booster (Pro)</span>
+          ) : (() => {
+            const siteTitle = content.seo?.title || "Nama Bisnis — Layanan";
+            const siteDesc = content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan.";
+            const siteName = siteTitle.split(/[-—|]/)[0].trim() || content.header?.brand_name || "Nama Bisnis";
+            const cleanSubdomain = subdomain || "namabisnis";
+
+            const demoBusiness = {
+              name: siteName,
+              subdomain: cleanSubdomain,
+              title: siteTitle,
+              description: siteDesc,
+              rating: "4.8",
+              reviewCount: "128",
+              priceRange: "Rp50.000–Rp200.000",
+              status: "Buka",
+            };
+
+            return (
+              <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                    <Search className="w-4 h-4 text-amber-400" />
+                    <span>SEO BOOSTER (PRO)</span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
+                    Premium
+                  </span>
                 </div>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-amber-500/70 bg-amber-500/10 px-1.5 py-0.5 rounded">Premium</span>
-              </div>
-              <div className="grid grid-cols-2 divide-x divide-amber-500/10">
-                {/* Tanpa SEO Booster */}
-                <div className="px-3 py-2.5 space-y-1.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Tanpa SEO Booster</p>
-                  <div className="bg-[#1a1d26] rounded border border-white/5 p-2 space-y-1">
-                    <p className="text-[11px] font-semibold text-slate-300 leading-tight">{content.seo?.title || "Nama Bisnis — Layanan"}</p>
-                    <p className="text-[10px] text-slate-500 leading-tight line-clamp-2">{content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan."}</p>
-                    <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
+
+                <div className="grid grid-cols-2 gap-4 p-5">
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                    <div className="opacity-60 grayscale-[30%]">
+                      <GoogleSnippetPreview variant="plain" business={demoBusiness} />
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                      ✨ Rich Result
+                    </div>
+                    <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                    <GoogleSnippetPreview variant="rich" business={demoBusiness} />
                   </div>
                 </div>
-                {/* Dengan SEO Booster */}
-                <div className="px-3 py-2.5 space-y-1.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Dengan SEO Booster</p>
-                  <div className="bg-[#1a1d26] rounded border border-emerald-500/20 p-2 space-y-1">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`w-2.5 h-2.5 ${i < 4 ? "text-amber-400 fill-amber-400" : "text-slate-600"}`} />
-                      ))}
-                      <span className="text-[9px] text-slate-400 ml-0.5">4.0</span>
-                      <span className="text-[9px] text-slate-600">(128 ulasan)</span>
-                    </div>
-                    <p className="text-[11px] font-semibold text-slate-200 leading-tight">{content.seo?.title || "Nama Bisnis — Layanan"}</p>
-                    <p className="text-[10px] text-slate-400 leading-tight line-clamp-2">{content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan."}</p>
-                    <div className="flex items-center gap-1.5 text-[9px] text-emerald-400">
-                      <span>👍 Rp50.000–Rp200.000</span>
-                      <span className="text-slate-600">•</span>
-                      <span>🕐 Buka</span>
-                    </div>
-                    <p className="text-[9px] text-slate-600">"namabisnis.webjoz.com"</p>
-                  </div>
+
+                <div className="px-5 pb-5">
+                  <p className="text-xs text-amber-200/70 text-center mb-2">
+                    Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => onUpgradeRequired?.()}
+                    className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+                  </button>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => onUpgradeRequired?.()}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[12px] font-semibold transition-all border-t border-amber-500/10"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                Upgrade untuk aktifkan SEO Booster
-              </button>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Meta Title + Char Count */}
           <div className="space-y-1">
@@ -1852,6 +1865,99 @@ export default function SectionForms({
           {/* Favicon + OG Image row */}
           <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
           <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+
+          {/* ── Social Share Preview ── */}
+          {(() => {
+            const ogTitle = content.seo?.title || "";
+            const ogDesc  = content.seo?.description || "";
+            const ogImg   = content.seo?.og_image_url || "";
+            const ogDomain = subdomain ? `${subdomain}.webjoz.com` : "namabisnis.webjoz.com";
+            return (
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Preview Saat Link Dibagikan</p>
+
+                {/* WhatsApp / iMessage style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-emerald-400">💬 WhatsApp / iMessage</span>
+                  </div>
+                  <div className="flex gap-0 overflow-hidden">
+                    {/* image thumbnail */}
+                    <div className="w-20 h-20 shrink-0 bg-[#111318] relative overflow-hidden">
+                      {ogImg ? (
+                        <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[18px] opacity-20">🖼️</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
+                      <p className="text-[10px] text-slate-500 truncate">{ogDomain}</p>
+                      <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                        {ogTitle || "Judul belum diisi"}
+                      </p>
+                      <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                        {ogDesc || "Deskripsi belum diisi"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Facebook style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-blue-400">👍 Facebook / LinkedIn</span>
+                  </div>
+                  <div className="w-full aspect-[1.91/1] bg-[#111318] relative overflow-hidden">
+                    {ogImg ? (
+                      <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                        <span className="text-[28px] opacity-20">🖼️</span>
+                        <p className="text-[10px] text-slate-600 italic">OG Image belum diatur (1200×630 px)</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
+                    <p className="text-[9px] uppercase tracking-widest text-slate-500">{ogDomain}</p>
+                    <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                      {ogTitle || "Judul belum diisi"}
+                    </p>
+                    <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                      {ogDesc || "Deskripsi belum diisi"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Twitter/X style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-slate-300">𝕏 Twitter / X</span>
+                  </div>
+                  <div className="relative">
+                    <div className="w-full aspect-[2/1] bg-[#111318] relative overflow-hidden">
+                      {ogImg ? (
+                        <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[28px] opacity-20">🖼️</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/60 backdrop-blur-sm">
+                      <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-slate-500 italic"}`}>
+                        {ogTitle || "Judul belum diisi"}
+                      </p>
+                      <p className="text-[9px] text-slate-400 truncate">{ogDomain}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-slate-600 text-center">Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, &amp; OG Image.</p>
+              </div>
+            );
+          })()}
 
           {/* OG Type Dropdown */}
           <div className="space-y-1">
