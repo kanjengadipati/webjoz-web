@@ -19,7 +19,8 @@ interface PlanItem {
   price_yearly: number;
   max_sites: number;
   max_ai_generates: number;
-  max_ai_regens: number;
+  max_section_regens: number;
+  max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
   max_storage_mb: number;
@@ -234,7 +235,11 @@ export default function UpgradePage() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-emerald-400 shrink-0" />
-                <span>{freePlan.max_ai_regens} Regenerasi / bln</span>
+                <span>{freePlan.max_section_regens} Section Regen / bln</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="size-4 text-emerald-400 shrink-0" />
+                <span>{freePlan.max_design_regens} Design Regen / bln</span>
               </li>
               <li className="flex items-center gap-2">
                 <X className="size-4 text-muted-foreground/40 shrink-0" />
@@ -303,7 +308,11 @@ export default function UpgradePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <RefreshCw className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_ai_regens} Regenerasi / bln</span>
+                  <span>{plan.max_section_regens} Section Regen / bln</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <RefreshCw className="size-4 text-primary shrink-0" />
+                  <span>{plan.max_design_regens} Design Regen / bln</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Globe className="size-4 text-primary shrink-0" />

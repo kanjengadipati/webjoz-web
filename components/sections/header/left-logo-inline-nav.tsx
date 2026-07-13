@@ -6,7 +6,7 @@ import type { HeaderVariantProps } from "./types";
 
 export default function LeftLogoInlineNav({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle,
+  navLinkClass = "", drawerStyle, extraLinks,
 }: HeaderVariantProps) {
   return (
     <header
@@ -36,17 +36,20 @@ export default function LeftLogoInlineNav({
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
+        extraLinks={extraLinks}
         linkClass={navLinkClass || "text-[var(--dt-text)]"}
         drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
       />
-      <a
-        href={navCtaHref(header?.nav_cta_text)}
-        aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-        className="min-h-11 shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
-        style={{ color: "var(--dt-primary-foreground)" }}
-      >
-        {header?.nav_cta_text || "Hubungi Kami"}
-      </a>
+      {!header?.nav_cta_hidden && (
+        <a
+          href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+          aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+          className="min-h-11 shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
+          style={{ color: "var(--dt-primary-foreground)" }}
+        >
+          {header?.nav_cta_text || "Hubungi Kami"}
+        </a>
+      )}
     </header>
   );
 }

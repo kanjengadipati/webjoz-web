@@ -28,7 +28,8 @@ interface AIUsage {
   tenant_id: number;
   year_month: string;
   generate_count: number;
-  regen_count: number;
+  section_regen_count: number;
+  design_regen_count: number;
   token_input: number;
   token_output: number;
 }
@@ -211,8 +212,12 @@ export default function AdminTenantDetailPage() {
                 <p className="text-2xl font-bold">{usage.generate_count}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Regenerations</p>
-                <p className="text-2xl font-bold">{usage.regen_count}</p>
+                <p className="text-xs font-medium text-muted-foreground">Section Regens</p>
+                <p className="text-2xl font-bold">{usage.section_regen_count}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Design Regens</p>
+                <p className="text-2xl font-bold">{usage.design_regen_count}</p>
               </div>
               <div>
                 <p className="text-xs font-medium text-muted-foreground">Token Input</p>

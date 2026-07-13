@@ -413,6 +413,8 @@ interface Site {
   status: "draft" | "published";
   published_at?: string;
   subdomain: string;
+  has_catalog: boolean;
+  has_menu: boolean;
 }
 
 interface Domain {
@@ -1008,6 +1010,33 @@ export default function SitesPage() {
                         )}
                       </button>
                     )}
+                  </div>
+
+                  {/* Secondary action links */}
+                  <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-none">
+                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      Blog
+                    </Link>
+                    {site.has_catalog && (
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                        Katalog
+                      </Link>
+                    )}
+                    {site.has_menu && (
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                        Menu
+                      </Link>
+                    )}
+                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      SEO
+                    </Link>
+                    <div className="shrink-0 w-px bg-white/[0.06] self-stretch mx-0.5" />
+                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      Integrasi
+                    </Link>
+                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      Testimoni
+                    </Link>
                   </div>
                 </div>
               );

@@ -80,15 +80,31 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
           throw new Error(envelope.message || "Gagal memuat situs.");
         }
 
+        const siteInfo = envelope.data?.site;
+        let blogPosts: any[] = [];
+        if (siteInfo?.id) {
+          try {
+            const blogRes = await fetch(`${API_BASE_URL}/public/sites/${siteInfo.id}/blog-posts`);
+            if (blogRes.ok) {
+              const blogEnvelope = await blogRes.json();
+              if (blogEnvelope.status === "success" && Array.isArray(blogEnvelope.data)) {
+                blogPosts = blogEnvelope.data;
+              }
+            }
+          } catch {}
+        }
+
         setSiteData({
           ...envelope.data,
-          content: stripRegeneratedMarkers(envelope.data.content),
+          content: {
+            ...stripRegeneratedMarkers(envelope.data.content),
+            blog: blogPosts.length > 0 ? { posts: blogPosts } : undefined,
+          },
         });
         setError(null);
 
         // Apply dynamic SEO meta from content
         const seo = envelope.data?.content?.seo;
-        const siteInfo = envelope.data?.site;
         const siteName = siteInfo?.name || "";
         const subdomain = siteInfo?.subdomain || "";
         const templateId = envelope.data?.template_id || "";
@@ -187,6 +203,60 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
             ...(contact?.email ? { email: contact.email } : {}),
             ...(contact?.address ? { address: { "@type": "PostalAddress", streetAddress: contact.address } } : {}),
           });
+        }
+
+        // Inject Google Search Console verification meta tag
+        const trackingCodes = envelope.data?.tracking_codes;
+        if (trackingCodes?.gsc_verification) {
+          const gscMeta = 'meta[name="google-site-verification"]';
+          let el = document.querySelector(gscMeta) as HTMLMetaElement;
+          if (!el) {
+            el = document.createElement("meta");
+            el.name = "google-site-verification";
+            document.head.appendChild(el);
+          }
+          el.content = trackingCodes.gsc_verification;
+        }
+
+        // Inject GA4  script
+        if (trackingCodes?.ga4_id) {
+          if (!document.querySelector(`script[src*="gtag/js?id=${trackingCodes.ga4_id}"]`)) {
+            const gaScript = document.createElement("script");
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${trackingCodes.ga4_id}`;
+            document.head.appendChild(gaScript);
+          }
+          if (!window.hasOwnProperty("gtag")) {
+            const inline = document.createElement("script");
+            inline.textContent = `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${trackingCodes.ga4_id}');
+            `;
+            document.head.appendChild(inline);
+          }
+        }
+
+        // Inject Meta Pixel script
+        if (trackingCodes?.meta_pixel_id) {
+          if (!document.querySelector(`script[data-pixel-id="${trackingCodes.meta_pixel_id}"]`)) {
+            const pixelScript = document.createElement("script");
+            pixelScript.setAttribute("data-pixel-id", trackingCodes.meta_pixel_id);
+            pixelScript.textContent = `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${trackingCodes.meta_pixel_id}');
+              fbq('track', 'PageView');
+            `;
+            document.head.appendChild(pixelScript);
+          }
         }
 
         // Track pageview on success

@@ -10,3 +10,4 @@ export { Separator } from "./separator";
 export { SkeletonBlock } from "./skeleton";
 export { StatusBadge } from "./status-badge";
 export { SubtleStat } from "./subtle-stat";
+export { DatePicker } from "./date-picker";

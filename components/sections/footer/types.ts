@@ -9,4 +9,5 @@ export interface FooterVariantProps {
   };
   design_token?: DesignToken | null;
   brand_name?: string;
+  hasBlog?: boolean;
 }

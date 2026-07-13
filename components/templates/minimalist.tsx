@@ -13,6 +13,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import { BlogPostsSection } from "./blog-section";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -36,6 +37,8 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     if (menu    && !order.includes("menu"))    afterHero("menu");
     if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
+    if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
+    if (!order.includes("blog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "blog");
     return order;
   })();
 
@@ -340,6 +343,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         }} />
       </MemoPreviewSectionWrapper>
     ) : null,
+    blog: null,
   };
 
   return (

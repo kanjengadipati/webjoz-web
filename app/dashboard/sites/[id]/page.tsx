@@ -13,11 +13,12 @@ import {
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
 } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
+import { setEditorSiteId } from "@/components/templates/shared";
 import {
   stripRegeneratedMarkers,
   BODY_SECTION_KEYS,
@@ -38,6 +39,7 @@ import SectionForms from "./SectionForms";
 import FontPicker from "./components/FontPicker";
 import PublishModal from "./modals/PublishModal";
 import CongratsModal from "./modals/CongratsModal";
+import { SiteSubNav } from "@/components/site-sub-nav";
 
 import {
  type TypographyPairing,
@@ -100,6 +102,8 @@ export default function SiteEditorPage() {
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
 
   const [globalUndo, setGlobalUndo] = useState<any[]>([]);
+  const [designOnlyUndo, setDesignOnlyUndo] = useState<any[]>([]);
+  const [fieldUndoStacks, setFieldUndoStacks] = useState<Record<string, string[]>>({});
   const [designTokenScore, setDesignTokenScore] = useState(0);
   const [pendingDiff, setPendingDiff] = useState<{
     section: string;
@@ -159,9 +163,10 @@ export default function SiteEditorPage() {
 
   // Usage meter
   const [tenantUsage, setTenantUsage] = useState<{
-    usage: { generate_count: number; regen_count: number };
+    usage: { generate_count: number; section_regen_count: number; design_regen_count: number };
     max_ai_generates: number;
-    max_ai_regens: number;
+    max_section_regens: number;
+    max_design_regens: number;
     max_sites: number;
   } | null>(null);
 
@@ -180,14 +185,18 @@ export default function SiteEditorPage() {
     },
   };
 
-  const requirePremium = useCallback((context: "ai_regenerate" | "ai_design" | "ai_suggestion", action: () => void) => {
-    if (!isPremium) {
-      setUpgradeContext(context);
-      setUpgradePromptOpen(true);
-      return;
+  const requirePremium = useCallback(async (context: "ai_regenerate" | "ai_design" | "ai_suggestion", action: () => any) => {
+    try {
+      await action();
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        setUpgradeContext(context);
+        setUpgradePromptOpen(true);
+        return;
+      }
+      throw err;
     }
-    action();
-  }, [isPremium]);
+  }, []);
 
   // ── Inline AI prompt modal (replaces window.prompt) ─────────────────────────
   const [aiPromptModal, setAiPromptModal] = useState<{
@@ -211,6 +220,19 @@ export default function SiteEditorPage() {
       const contentRes = await request<any>(`/sites/${siteId}/content`, {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
+
+      // Fetch blog posts
+      let blogPosts: any[] = [];
+      try {
+        const blogRes = await request<any>(`/sites/${siteId}/blog-posts`, {
+          headers: { "X-Tenant-ID": activeTenantId.toString() }
+        }, token);
+        if (blogRes.status === "success" && Array.isArray(blogRes.data)) {
+          blogPosts = blogRes.data;
+        }
+      } catch (e) {
+        console.warn("Failed to load blog posts:", e);
+      }
 
       // Fallback empty content scaffold if empty
       const data = stripRegeneratedMarkers(contentRes.data?.content || {});
@@ -275,6 +297,7 @@ export default function SiteEditorPage() {
         ...(data.testimonials ? { testimonials: data.testimonials } : {}),
         ...(data.menu ? { menu: data.menu } : {}),
         ...(data.catalog ? { catalog: data.catalog } : {}),
+        blog: blogPosts.length > 0 ? { posts: blogPosts } : undefined,
       };
 
       setContent(finalContent);
@@ -736,6 +759,7 @@ export default function SiteEditorPage() {
 
   const handleReorderSection = (source: string, target: string) => {
     if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
+    pushGlobalUndo({ force: true });
     const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key));
     const nextOrder = [...currentOrder];
     const from = nextOrder.indexOf(source);
@@ -889,6 +913,10 @@ export default function SiteEditorPage() {
           rows: diffRows,
         });
 
+        // Snapshot before applying AI result
+        pushGlobalUndo({ force: true });
+        pushDesignUndo();
+
         // Temporarily apply the design token in preview
         setDesignToken(newDesignToken);
         setLatestAiDesignToken(newDesignToken);
@@ -911,7 +939,53 @@ export default function SiteEditorPage() {
   };
 
   // Helper updates for form fields
+  const lastFieldUndoPushRef = useRef<Record<string, { val: string; time: number }>>({});
+
+  const pushFieldUndo = (section: string, key: string, currentVal: string) => {
+    const fieldPath = `${section}.${key}`;
+    const now = Date.now();
+    const last = lastFieldUndoPushRef.current[fieldPath];
+
+    if (!last || now - last.time > 1500) {
+      setFieldUndoStacks(prev => {
+        const stack = prev[fieldPath] || [];
+        if (stack[0] === currentVal) return prev;
+        return {
+          ...prev,
+          [fieldPath]: [currentVal, ...stack].slice(0, 3)
+        };
+      });
+      lastFieldUndoPushRef.current[fieldPath] = { val: currentVal, time: now };
+    }
+  };
+
+  const undoField = (section: string, key: string) => {
+    const fieldPath = `${section}.${key}`;
+    const stack = fieldUndoStacks[fieldPath];
+    if (!stack || stack.length === 0) return;
+
+    const [prevVal, ...rest] = stack;
+
+    setContent((prev: any) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [key]: prevVal
+      }
+    }));
+
+    setFieldUndoStacks(prev => ({
+      ...prev,
+      [fieldPath]: rest
+    }));
+  };
+
   const updateField = (section: string, key: string, val: any) => {
+    const currentVal = contentRef.current?.[section]?.[key] || "";
+    if (typeof val === "string" && val !== currentVal) {
+      pushFieldUndo(section, key, currentVal);
+      pushGlobalUndo();
+    }
     setContent((prev: any) => ({
       ...prev,
       [section]: {
@@ -921,8 +995,41 @@ export default function SiteEditorPage() {
     }));
   };
 
+  const globalUndoLastPushRef = useRef<number>(0);
+
+  const pushGlobalUndo = (opts?: { force?: boolean }) => {
+    if (!designTokenRef.current) return;
+    const now = Date.now();
+    if (!opts?.force && now - globalUndoLastPushRef.current < 1500) return;
+    globalUndoLastPushRef.current = now;
+    const snapContent = contentRef.current ? JSON.parse(JSON.stringify(contentRef.current)) : null;
+    const snapDesign = JSON.parse(JSON.stringify(designTokenRef.current));
+    setGlobalUndo(prev => [{ content: snapContent, designToken: snapDesign }, ...prev].slice(0, 3));
+  };
+
+  const handleGlobalUndo = () => {
+    if (!globalUndo.length) return;
+    const [prev, ...rest] = globalUndo;
+    if (prev.content !== null) setContent(prev.content);
+    setDesignToken(prev.designToken);
+    setGlobalUndo(rest);
+  };
+
+  const pushDesignUndo = () => {
+    if (!designTokenRef.current) return;
+    setDesignOnlyUndo(prev => [JSON.parse(JSON.stringify(designTokenRef.current)), ...prev].slice(0, 5));
+  };
+
+  const handleDesignUndo = () => {
+    if (!designOnlyUndo.length) return;
+    const [prev, ...rest] = designOnlyUndo;
+    setDesignToken(prev);
+    setDesignOnlyUndo(rest);
+  };
+
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       let next = { ...(prev || {}) };
 
@@ -949,7 +1056,8 @@ export default function SiteEditorPage() {
   };
 
   const updateSectionVariant = (section: string, value: string) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = prev ? JSON.parse(JSON.stringify(prev)) : {};
       next.layout = {
@@ -976,20 +1084,9 @@ export default function SiteEditorPage() {
     }
   };
 
-  const pushGlobalUndo = () => {
-    if (!designToken) return;
-    setGlobalUndo(prev => [JSON.parse(JSON.stringify(designToken)), ...prev].slice(0, 3));
-  };
-
-  const handleGlobalUndo = () => {
-    if (!globalUndo.length) return;
-    const [prev, ...rest] = globalUndo;
-    setDesignToken(prev);
-    setGlobalUndo(rest);
-  };
-
   const applyTypographyBatch = (fields: Record<string, any>) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.typography = { ...(next.typography || {}), ...fields };
@@ -998,7 +1095,8 @@ export default function SiteEditorPage() {
   };
 
   const applyColorPattern = (pattern: ColorPattern) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1013,7 +1111,8 @@ export default function SiteEditorPage() {
     const pairing = getEnabledTypographyPairings().find((p) => p.id === preset.pairing_id);
     const pattern = getEnabledColorPatterns().find((p) => p.id === preset.pattern_id);
     if (!pairing || !pattern) return;
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1037,6 +1136,14 @@ export default function SiteEditorPage() {
   const handleColorChange = (colorKey: string, value: string) => {
     updateDesignTokenField("palette", colorKey, value);
   };
+
+  // Inform shared NavMenu of the current siteId so the Blog nav link
+  // resolves to /preview/[id]/blog instead of an absolute /blog.
+  // Must be unconditional — placed before any early returns.
+  React.useEffect(() => {
+    setEditorSiteId(siteId);
+    return () => setEditorSiteId(null);
+  }, [siteId]);
 
   if (loading) {
     return (
@@ -1168,7 +1275,19 @@ export default function SiteEditorPage() {
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
-                {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handleDesignUndo}
+                    disabled={designOnlyUndo.length === 0}
+                    aria-label="Undo Desain"
+                    title={designOnlyUndo.length > 0 ? "Urungkan perubahan desain terakhir" : "Belum ada perubahan desain"}
+                    className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
+                  >
+                    <RotateCcw className="h-2.5 w-2.5" />
+                  </button>
+                  {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+                </div>
               </div>
               <button
                 type="button"
@@ -1357,7 +1476,7 @@ export default function SiteEditorPage() {
                       disabled={aiLoading || !!pendingDiff}
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
                     >
-                      <SparkleIcon className="h-[18px] w-[18px]" />
+                      <SparkleGenAI className="h-[18px] w-[18px]" />
                       Regenerate dengan AI
                     </button>
                   ) : (
@@ -1392,7 +1511,7 @@ export default function SiteEditorPage() {
                         {aiLoading ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
                         ) : (
-                          <SparkleIcon className="w-[18px] h-[18px]" />
+                          <SparkleGenAI className="w-[18px] h-[18px]" />
                         )}
                         {aiLoading ? "Memproses..." : "Terapkan Gaya"}
                       </button>
@@ -1507,7 +1626,8 @@ export default function SiteEditorPage() {
                       onApply={applyColorPattern}
                       onRestoreAi={() => {
                         if (!latestAiDesignToken?.palette) return;
-                        pushGlobalUndo();
+                        pushGlobalUndo({ force: true });
+                        pushDesignUndo();
                         setDesignToken((prev: any) => {
                           const next = { ...(prev || {}) };
                           next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
@@ -1657,7 +1777,8 @@ export default function SiteEditorPage() {
                     onApply={applyIndustryPreset}
                     onRestoreAi={() => {
                       if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
-                      pushGlobalUndo();
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
                       setDesignToken((prev: any) => {
                         const next = { ...(prev || {}) };
                         next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
@@ -1690,7 +1811,8 @@ export default function SiteEditorPage() {
                     }}
                     onRestoreAi={() => {
                       if (!latestAiDesignToken?.typography) return;
-                      pushGlobalUndo();
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
                       setDesignToken((prev: any) => {
                         const next = { ...(prev || {}) };
                         next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
@@ -1788,7 +1910,7 @@ export default function SiteEditorPage() {
                   {pendingDiff ? (
                     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
                       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <SparkleIcon className="h-9 w-9 animate-pulse" />
+                        <SparkleGenAI className="h-9 w-9 animate-pulse" />
                       </div>
                       <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
                       <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
@@ -1862,6 +1984,9 @@ export default function SiteEditorPage() {
                     designToken={designToken}
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                     onAiSuccess={refreshTenantUsage}
+                    subdomain={siteDetails?.subdomain}
+                    fieldUndoStacks={fieldUndoStacks}
+                    undoField={undoField}
                   />
 
                   {/* Variasi tampilan per section */}
@@ -1917,7 +2042,7 @@ export default function SiteEditorPage() {
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-400">Generate</span>
                           <span className="font-semibold text-slate-200">
-                            {tenantUsage.usage.generate_count} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
+                            {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
@@ -1926,25 +2051,43 @@ export default function SiteEditorPage() {
                             style={{
                               width: tenantUsage.max_ai_generates <= 0
                                 ? 100
-                                : Math.min((tenantUsage.usage.generate_count / tenantUsage.max_ai_generates) * 100, 100),
+                                : Math.min(((tenantUsage.usage.generate_count ?? 0) / tenantUsage.max_ai_generates) * 100, 100),
                             }}
                           />
                         </div>
                       </div>
                       <div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Regenerasi</span>
+                          <span className="text-slate-400">Section Regen</span>
                           <span className="font-semibold text-slate-200">
-                            {tenantUsage.usage.regen_count} / {tenantUsage.max_ai_regens <= 0 ? "∞" : tenantUsage.max_ai_regens}
+                            {(tenantUsage.usage.section_regen_count ?? 0)} / {tenantUsage.max_section_regens <= 0 ? "∞" : tenantUsage.max_section_regens}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                           <div
                             className="h-full rounded-full bg-violet-500 transition-all duration-500"
                             style={{
-                              width: tenantUsage.max_ai_regens <= 0
+                              width: `${tenantUsage.max_section_regens <= 0
                                 ? 100
-                                : Math.min((tenantUsage.usage.regen_count / tenantUsage.max_ai_regens) * 100, 100),
+                                : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400">Design Regen</span>
+                          <span className="font-semibold text-slate-200">
+                            {(tenantUsage.usage.design_regen_count ?? 0)} / {tenantUsage.max_design_regens <= 0 ? "∞" : tenantUsage.max_design_regens}
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                            style={{
+                              width: `${tenantUsage.max_design_regens <= 0
+                                ? 100
+                                : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100)}%`,
                             }}
                           />
                         </div>
@@ -1960,7 +2103,7 @@ export default function SiteEditorPage() {
                     className={`flex items-center justify-between gap-2 ${aiPromptCollapsed ? 'cursor-pointer select-none' : ''}`}
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <SparkleIcon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <SparkleGenAI className="h-5 w-5 text-primary flex-shrink-0" />
                       <span className="truncate text-[10px] font-bold uppercase tracking-widest text-primary">
                         AI untuk {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
@@ -2051,7 +2194,7 @@ export default function SiteEditorPage() {
                           {aiLoading ? (
                             <Loader2 className="w-3 h-3 flex-shrink-0 animate-spin" />
                           ) : (
-                            <SparkleIcon className="w-[18px] h-[18px] flex-shrink-0" />
+                            <SparkleGenAI className="w-[18px] h-[18px] flex-shrink-0" />
                           )}
                           Regen
                         </button>
@@ -2171,7 +2314,8 @@ export default function SiteEditorPage() {
             <div className="relative group">
               <button
                 onClick={() => {
-                  pushGlobalUndo();
+                  pushGlobalUndo({ force: true });
+                  pushDesignUndo();
                   setDesignToken((prev: any) => ({
                     ...(prev || {}),
                     theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
@@ -2206,8 +2350,9 @@ export default function SiteEditorPage() {
               <button
                 type="button"
                 onClick={handleGlobalUndo}
+                aria-label="Undo"
+                title="Urungkan perubahan terakhir (teks, desain, atau urutan section)"
                 className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
-                title="Undo perubahan terakhir"
               >
                 <RotateCcw className="h-3 w-3" />
                 Undo
@@ -2332,7 +2477,7 @@ export default function SiteEditorPage() {
               <div className="flex items-start gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <SparkleIcon className="h-5 w-5 text-primary" />
+                    <SparkleGenAI className="h-5 w-5 text-primary" />
                     <p className="text-[12px] font-bold text-slate-100">
                       Diff AI: {SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section}
                     </p>
@@ -2468,6 +2613,7 @@ export default function SiteEditorPage() {
                       content={content}
                       design_token={designToken ?? null}
                       isEditorMode={true}
+                      editorSiteId={siteId}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
@@ -2502,6 +2648,7 @@ export default function SiteEditorPage() {
                       content={content}
                       design_token={designToken ?? null}
                       isEditorMode={true}
+                      editorSiteId={siteId}
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
@@ -2606,6 +2753,17 @@ export default function SiteEditorPage() {
               >
                 Desain
               </button>
+              {editorTab === "design" && designOnlyUndo.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleDesignUndo}
+                  aria-label="Undo Desain"
+                  title="Urungkan perubahan desain terakhir"
+                  className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[7px] text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
 
             {/* Quality bar (Konten tab only) */}
@@ -2641,6 +2799,9 @@ export default function SiteEditorPage() {
                   designToken={designToken}
                   updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                   onAiSuccess={refreshTenantUsage}
+                  subdomain={siteDetails?.subdomain}
+                  fieldUndoStacks={fieldUndoStacks}
+                  undoField={undoField}
                 />
                 {/* Variasi tampilan per section */}
                 {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
@@ -2797,53 +2958,54 @@ export default function SiteEditorPage() {
                   disabled={aiLoading || !!pendingDiff}
                   className="w-9 h-9 flex items-center justify-center rounded-[10px] bg-primary text-primary-foreground disabled:opacity-50"
                 >
-                  {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SparkleIcon className="w-5 h-5" />}
+                  {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SparkleGenAI className="w-5 h-5" />}
                 </button>
               </div>
             </div>
           </div>
         {/* Desktop sticky publish footer — inside canvas */}
-        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-3">
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
+        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
+          <SiteSubNav siteId={siteId!} compact />
+          <div className="flex items-center gap-3 flex-shrink-0">
             {siteDetails?.status === "published" ? (
-              <>
+              <span className="flex items-center gap-1.5 text-[11px]">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-emerald-400 font-medium">Website sedang live</span>
-              </>
+                <span className="text-emerald-400 font-medium">Live</span>
+              </span>
             ) : (
-              <span>Draft — belum dipublikasikan</span>
+              <span className="text-[11px] text-slate-500">Draft</span>
+            )}
+            {siteDetails?.status === "published" ? (
+              <button
+                type="button"
+                onClick={() => setConfirmPublishOpen(true)}
+                disabled={publishing}
+                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
+                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+              >
+                {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                  </span>
+                )}
+                {publishing ? "Menerapkan..." : "Terapkan ke Live"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setPublishModalOpen(true)}
+                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
+                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+              >
+                <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+                Publikasikan
+              </button>
             )}
           </div>
-          {siteDetails?.status === "published" ? (
-            <button
-              type="button"
-              onClick={() => setConfirmPublishOpen(true)}
-              disabled={publishing}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
-              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-            >
-              {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-                </span>
-              )}
-              {publishing ? "Menerapkan..." : "Terapkan ke Live"}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setPublishModalOpen(true)}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
-              style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-            >
-              <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-              Publikasikan Website
-            </button>
-          )}
         </div>
         </div>
       {publishModalOpen && siteDetails && (
@@ -2916,7 +3078,7 @@ export default function SiteEditorPage() {
             {/* Header */}
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
-                <SparkleIcon className="h-6 w-6 text-primary" />
+                <SparkleGenAI className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
@@ -2982,7 +3144,7 @@ export default function SiteEditorPage() {
                 }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)]"
               >
-                <SparkleIcon className="h-5 w-5" />
+                <SparkleGenAI className="h-5 w-5" />
                 Generate AI
               </button>
             </div>

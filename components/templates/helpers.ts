@@ -160,6 +160,7 @@ export function filterEmptySections(sectionOrder: string[], content: any, isEdit
     if (key === "gallery") return (content.gallery?.items?.length ?? 0) > 0;
     if (key === "menu") return (content.menu?.categories?.length ?? 0) > 0;
     if (key === "catalog") return (content.catalog?.categories?.length ?? 0) > 0;
+    if (key === "blog") return (content.blog?.posts?.length ?? 0) > 0;
     return true;
   });
 }

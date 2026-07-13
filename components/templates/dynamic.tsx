@@ -6,6 +6,7 @@ import {
   WAFloatingButton, BackToTop, SeoEditorPreview, CartFab,
   CartProvider,
 } from "./shared";
+import { BlogPostsSection } from "./blog-section";
 
 import { buildCssVars, loadGoogleFont, filterEmptySections } from "./helpers";
 import type { TemplateProps, DesignToken, ContentSection } from "./types";
@@ -40,7 +41,7 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 
   const engine = dt?.layout?.engine || "default";
   const baseOrder: string[] = dt?.layout?.section_order ?? ENGINE_ORDER[engine] ?? ENGINE_ORDER.default;
-  const extras = (["menu", "catalog", "testimonials", "gallery"] as const).filter(
+  const extras = (["menu", "catalog", "testimonials", "gallery", "blog"] as const).filter(
     (key) => content[key] && !baseOrder.includes(key)
   );
   const order = (() => {
@@ -95,7 +96,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       hero: "Hero", about: "Tentang", benefits: "Keunggulan",
       faq: "FAQ", cta: "CTA", contact: "Kontak",
       testimonials: "Testimoni", menu: "Menu", catalog: "Katalog",
-      gallery: "Galeri",
+      gallery: "Galeri", blog: "Blog",
     };
     const label = labelMap[key] || key;
 
@@ -210,6 +211,12 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           </MemoPreviewSectionWrapper>
         );
       }
+      case "blog": {
+        const b = sec.data as TemplateProps["content"]["blog"];
+        return (
+          <BlogPostsSection posts={b?.posts ?? []} layout={content.blog_layout} />
+        );
+      }
       default:
         return null;
     }
@@ -243,7 +250,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} hasBlog={!!(content.blog?.posts?.length)} />
       </MemoPreviewSectionWrapper>
 
       {isEditorMode && (

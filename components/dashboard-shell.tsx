@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -106,7 +106,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     ? "Create Website"
     : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
 
-  const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new";
+  const pathParts = pathname.split("/").filter(Boolean);
+  const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new" && pathParts.length <= 3;
   const isNewSitePage = pathname === "/dashboard/sites/new";
   const isFullscreenWorkspace = isEditPage || isNewSitePage;
 
@@ -123,6 +124,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     megaphone: Megaphone,
     building: Building2,
     palette: Palette,
+    users: Users,
   };
 
   return (
@@ -184,7 +186,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}>
                     {item.label}
                   </span>
-                  {"premium" in item && item.premium && !isPremiumPlan && (
+                  {(item as any).premium && !isPremiumPlan && (
                     <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                       Pro
                     </span>
@@ -314,7 +316,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
                                   {item.label}
                                 </span>
-                  {"premium" in item && item.premium && !isPremiumPlan && (
+                  {(item as any).premium && !isPremiumPlan && (
                                   <span className="ml-auto text-[8px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
                                     Pro
                                   </span>
