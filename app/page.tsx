@@ -124,17 +124,17 @@ export default function LandingPage() {
               className="h-9 w-auto object-contain"
               priority
             />
-            <span className="text-sm font-semibold tracking-tight text-foreground">
+            <span className="hidden sm:block text-sm font-semibold tracking-tight text-foreground">
               Webjoz
             </span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {authReady && (
               isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+                  className="hidden sm:block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
                 >
                   Dashboard
                 </Link>
@@ -147,7 +147,7 @@ export default function LandingPage() {
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="rounded-full px-4 py-2 text-sm shadow-lg shadow-primary/20">
+            <Button onClick={() => startWizard()} className="rounded-full px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm shadow-lg shadow-primary/20">
               {isLoggedIn ? "Buat Website Baru" : "Mulai Gratis"}
             </Button>
           </div>
