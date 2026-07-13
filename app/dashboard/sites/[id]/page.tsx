@@ -2215,7 +2215,7 @@ export default function SiteEditorPage() {
           style={{
             // Mobile: float above the bottom sheet drawer
             // Desktop: float just above the sticky publish footer (~56px = 3.5rem)
-            "--floating-bottom-mobile": sheetCollapsed ? "3.5rem" : sheetExpanded ? "90vh" : "50vh",
+            "--floating-bottom-mobile": sheetCollapsed ? "4rem" : sheetExpanded ? "90vh" : "50vh",
             "--floating-bottom-desktop": "5rem",
           } as React.CSSProperties}
         >          {/* Mobile topbar */}
@@ -2679,11 +2679,11 @@ export default function SiteEditorPage() {
           <div
             data-mobile-sheet
             className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden"
-            style={{ maxHeight: sheetCollapsed ? "52px" : sheetExpanded ? "88%" : "48%" }}
+            style={{ maxHeight: sheetCollapsed ? "64px" : sheetExpanded ? "88%" : "48%" }}
           >
             {/* Drag handle / collapse bar — also shows section title when collapsed */}
             <div
-              className="flex items-center justify-between px-4 pt-2.5 pb-2 flex-shrink-0 cursor-pointer select-none"
+              className="flex items-center justify-between px-4 pt-2 pb-1.5 flex-shrink-0 cursor-pointer select-none"
               onClick={() => {
                 if (sheetCollapsed) {
                   setSheetCollapsed(false);
