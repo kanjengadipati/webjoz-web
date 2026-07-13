@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw } from "lucide-react";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
-import { isPlaceholderValue } from "./editor-utils";
+import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
+import { isPlaceholderValue, AI_SUGGESTIONS } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
+import { useToast } from "@/components/toast-provider";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -32,6 +35,9 @@ export interface SectionFormsProps {
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
   onAiSuccess?: () => void;
+  subdomain?: string;
+  fieldUndoStacks?: Record<string, string[]>;
+  undoField?: (section: string, key: string) => void;
 }
 
 // ─── Icon Picker ──────────────────────────────────────────────────────────────
@@ -83,25 +89,6 @@ function IconPicker({ value, onChange }: { value?: string; onChange: (name: stri
     </div>
   );
 }
-
-const EMOJI_GROUPS = [
-  {
-    name: "Populer & Bisnis",
-    emojis: ["✨", "🔥", "✅", "⭐", "📍", "📦", "💬", "📞", "⏰", "🚀", "💯", "💡", "📢"]
-  },
-  {
-    name: "Makanan & Minuman",
-    emojis: ["🍕", "🍔", "🍟", "🌭", "🍳", "🍜", "🍣", "🍱", "🧁", "🎂", "🍎", "☕", "🥤", "🍺"]
-  },
-  {
-    name: "Jasa, Belanja & Produk",
-    emojis: ["🛠️", "🧹", "💈", "💇", "💅", "🧼", "🔑", "🚗", "🏠", "🏢", "🏷️", "🎁", "🛍️", "👕", "👟", "👜", "⌚", "💻", "📱"]
-  },
-  {
-    name: "Simbol & Panah",
-    emojis: ["✔️", "❌", "➕", "➖", "➜", "➔", "⚡", "✦", "❖", "💚", "❤️", "💙", "👍"]
-  }
-];
 
 // ─── Unsplash image pool (mirrors the API backend pool) ───────────────────────
 const UNSPLASH_POOLS: Record<string, string[]> = {
@@ -198,9 +185,10 @@ interface KeywordsInputProps {
   onAiGenerate?: () => Promise<void>;
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
+  renderFieldActions?: (section: string, key: string, aiButton?: React.ReactNode) => React.ReactNode;
 }
 
-function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired }: KeywordsInputProps) {
+function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired, renderFieldActions }: KeywordsInputProps) {
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -225,14 +213,23 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
     <div className="space-y-1">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
         <span>Keywords</span>
-        {onAiGenerate && (
+        {renderFieldActions ? (
+          renderFieldActions("seo", "keywords", onAiGenerate && (
+            <AiFieldButton
+              loading={!!aiLoading}
+              onGenerate={onAiGenerate}
+              title="AI: generate keywords"
+              onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            />
+          ))
+        ) : onAiGenerate ? (
           <AiFieldButton
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
             title="AI: generate keywords"
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
-        )}
+        ) : null}
       </label>
       <div className="flex flex-wrap gap-1.5 min-h-[32px] px-2 py-1.5 border rounded-md bg-transparent">
         {keywords.map((kw, idx) => (
@@ -261,38 +258,6 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
         />
       </div>
     </div>
-  );
-}
-
-// ─── AI Field Button ──────────────────────────────────────────────────────────
-interface AiFieldButtonProps {
-  onGenerate: () => Promise<void>;
-  onUpgradeRequired?: () => void;
-  loading: boolean;
-  title?: string;
-  isPremium?: boolean;
-}
-
-function AiFieldButton({ onGenerate, onUpgradeRequired, loading, title = "Generate dengan AI", isPremium }: AiFieldButtonProps) {
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        if (isPremium) {
-          void onGenerate();
-        } else {
-          onUpgradeRequired?.();
-        }
-      }}
-      disabled={loading && !!isPremium}
-      title={!isPremium ? "Pro only – upgrade untuk AI Generate" : title}
-      className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 hover:text-primary transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
-    >
-      {loading
-        ? <Loader2 className="w-3 h-3 animate-spin" />
-        : <SparkleIcon className="w-[18px] h-[18px]" />
-      }
-    </button>
   );
 }
 
@@ -332,23 +297,22 @@ async function generateFieldText(
   currentContent: any,
   prompt: string
 ): Promise<string | null> {
-  try {
-    const res = await request<any>("/ai/regenerate-section", {
-      method: "POST",
-      body: JSON.stringify({
-        site_id: siteId,
-        section,
-        instructions: `Fokus hanya pada field "${fieldKey}": ${prompt}. Jaga field lain tetap sama.`,
-        tenant_id: activeTenantId,
-      }),
-    }, token);
-    if (res.status !== "success" || !res.data?.section) return null;
-    const updated = res.data.section;
-    // Return the specific field value from the updated section
-    return updated[fieldKey] ?? null;
-  } catch {
-    return null;
+  const res = await request<any>("/ai/regenerate-section", {
+    method: "POST",
+    body: JSON.stringify({
+      site_id: siteId,
+      section,
+      instructions: `Fokus hanya pada field "${fieldKey}": ${prompt}. Jaga field lain tetap sama.`,
+      tenant_id: activeTenantId,
+    }),
+  }, token);
+  if (res.status !== "success") {
+    throw new Error(res.message || "AI gagal memproses.");
   }
+  if (!res.data?.section) return null;
+  const updated = res.data.section;
+  // Return the specific field value from the updated section
+  return updated[fieldKey] ?? null;
 }
 
 interface LinkTypeInputProps {
@@ -530,12 +494,90 @@ export default function SectionForms({
   isPremium = false,
   onUpgradeRequired,
   onAiSuccess,
+  subdomain,
+  fieldUndoStacks,
+  undoField,
 }: SectionFormsProps) {
+  const { pushToast } = useToast();
+  const renderFieldActions = (section: string, key: string, aiButton?: React.ReactNode) => {
+    const fieldPath = `${section}.${key}`;
+    const stack = fieldUndoStacks?.[fieldPath] || [];
+    if (stack.length === 0 && !aiButton) return null;
+    return (
+      <div className="flex items-center gap-1.5 shrink-0">
+        {stack.length > 0 && (
+          <button
+            type="button"
+            onClick={() => undoField?.(section, key)}
+            className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
+            title={`Undo perubahan field ini (${stack.length} kali)`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {aiButton}
+      </div>
+    );
+  };
   const [aiLoadingField, setAiLoadingField] = React.useState<string | null>(null);
   const [aiLoadingDesc, setAiLoadingDesc] = React.useState<string | null>(null);
   const [resolvingMaps, setResolvingMaps] = React.useState(false);
   const [resolveError, setResolveError] = React.useState<string | null>(null);
   const [showLocationPicker, setShowLocationPicker] = React.useState(false);
+
+  const [fieldPromptModal, setFieldPromptModal] = React.useState<{
+    section: string;
+    fieldKey: string;
+    label: string;
+    imageUrl?: string;
+    resolve: (val: string | null) => void;
+  } | null>(null);
+  const [fieldPromptInput, setFieldPromptInput] = React.useState("");
+
+  // ─── GSC state (self-contained) ─────────────────────────────────────────────────
+  const [gscInput, setGscInput]   = React.useState("");
+  const [gscSaving, setGscSaving] = React.useState(false);
+  const [gscSaved, setGscSaved]   = React.useState(false);
+
+  // Fetch current GSC code when the SEO tab is opened
+  React.useEffect(() => {
+    if (activeTab !== "seo" || !token || !activeTenantId || !siteId) return;
+    const tenantHeaders = { "X-Tenant-ID": String(activeTenantId) };
+    request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, String(token))
+      .then((res) => {
+        const code = res.data?.tracking_codes?.gsc_verification ?? "";
+        setGscInput(code);
+      })
+      .catch(() => { /* non-critical */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  const handleGscSave = async () => {
+    if (!token || !activeTenantId || !siteId) return;
+    setGscSaving(true);
+    setGscSaved(false);
+    const tenantHeaders = { "X-Tenant-ID": String(activeTenantId) };
+    try {
+      // Fetch existing codes first so we don’t wipe GA4 / Meta Pixel
+      let existingCodes: Record<string, string> = {};
+      try {
+        const res = await request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, String(token));
+        existingCodes = res.data?.tracking_codes ?? {};
+      } catch { /* fall back to empty */ }
+      await request(`/sites/${siteId}/tracking-codes`, {
+        method: "PATCH",
+        headers: tenantHeaders,
+        body: JSON.stringify({ tracking_codes: { ...existingCodes, gsc_verification: gscInput.trim() } }),
+      }, String(token));
+      setGscSaved(true);
+      pushToast?.("Kode GSC berhasil disimpan", "success");
+      setTimeout(() => setGscSaved(false), 3000);
+    } catch (err: any) {
+      pushToast?.(err.message || "Gagal menyimpan kode GSC", "error");
+    } finally {
+      setGscSaving(false);
+    }
+  };
 
   // Auto-initialize floating_button default when user opens the floating tab
   React.useEffect(() => {
@@ -547,33 +589,66 @@ export default function SectionForms({
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
 
-  const handleAiText = async (section: string, fieldKey: string, prompt: string) => {
+  const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
+
+    const customPrompt = await new Promise<string | null>((resolve) => {
+      setFieldPromptInput("");
+      setFieldPromptModal({ section, fieldKey, label, resolve });
+    });
+    if (customPrompt === null) return;
+
     const loadKey = `${section}.${fieldKey}`;
     setAiLoadingField(loadKey);
     try {
-      const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, prompt);
+      const fullPrompt = customPrompt.trim()
+        ? `${prompt} dengan instruksi khusus tambahan: "${customPrompt}"`
+        : prompt;
+      const result = await generateFieldText(String(token), activeTenantId, siteId, section, fieldKey, content, fullPrompt);
       if (result) {
         updateField(section, fieldKey, result);
         onAiSuccess?.();
       }
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        onUpgradeRequired?.();
+      } else {
+        pushToast?.(err.message || "AI gagal meregenerasi teks field ini.", "error");
+      }
+      throw err;
     } finally {
       setAiLoadingField(null);
     }
   };
 
-  const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string) => {
+  const handleAiItemDescription = async (catIdx: number, itemIdx: number, itemName: string, catName: string, imageUrl?: string) => {
     if (!token || !activeTenantId || !siteId) return;
+
+    const customPrompt = await new Promise<string | null>((resolve) => {
+      setFieldPromptInput("");
+      setFieldPromptModal({
+        section: activeTab,
+        fieldKey: `categories.${catIdx}.items.${itemIdx}.description`,
+        label: `Deskripsi: ${itemName}`,
+        imageUrl: imageUrl || undefined,
+        resolve,
+      });
+    });
+    if (customPrompt === null) return;
+
     const loadKey = `${catIdx}_${itemIdx}`;
     setAiLoadingDesc(loadKey);
     try {
+      const imageContext = imageUrl ? ` Gambar item tersedia di: ${imageUrl} — gunakan URL ini sebagai konteks visual untuk menulis deskripsi yang akurat dan menggugah selera.` : "";
+      const instructions = `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.${imageContext}${customPrompt.trim() ? ` Instruksi tambahan: "${customPrompt}"` : ""}`;
       const res = await request<any>("/ai/regenerate-section", {
         method: "POST",
         body: JSON.stringify({
           site_id: siteId,
           section: activeTab,
-          instructions: `Fokus hanya pada deskripsi item "${itemName}" di kategori "${catName}" (index kategori=${catIdx}, index item=${itemIdx}). Buat deskripsi yang menarik dan informatif, 1-3 kalimat. Jaga field lain tetap sama.`,
+          instructions,
           tenant_id: activeTenantId,
+          image_url: imageUrl || undefined,
         }),
       }, String(token));
       if (res.status === "success" && res.data?.section) {
@@ -589,8 +664,13 @@ export default function SectionForms({
           }
         }
       }
-    } catch {
-      // silently fail
+    } catch (err: any) {
+      if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+        onUpgradeRequired?.();
+      } else {
+        pushToast?.(err.message || "AI gagal meregenerasi deskripsi item.", "error");
+      }
+      throw err;
     } finally {
       setAiLoadingDesc(null);
     }
@@ -606,8 +686,9 @@ export default function SectionForms({
       {activeTab === "header" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("header", "brand_name")}
             </label>
             <input 
               id="field-header.brand_name"
@@ -617,18 +698,58 @@ export default function SectionForms({
               className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}
-            </label>
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
             <input 
-              id="field-header.nav_cta_text"
-              type="text" 
-              value={content.header?.nav_cta_text || ""} 
-              onChange={(e) => updateField("header", "nav_cta_text", e.target.value)} 
-              className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="checkbox" 
+              checked={!(content.header as any)?.nav_cta_hidden} 
+              onChange={(e) => updateField("header", "nav_cta_hidden", !e.target.checked)} 
+              className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
+
+          {!(content.header as any)?.nav_cta_hidden && (
+            <>
+              <div className="space-y-1">
+                <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                  <span>Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+                  {renderFieldActions("header", "nav_cta_text")}
+                </label>
+                <input
+                  id="field-header.nav_cta_text"
+                  type="text"
+                  value={content.header?.nav_cta_text || ""}
+                  onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
+                  placeholder="cth. Hubungi Kami"
+                  className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600")}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link ke Section</label>
+                <select
+                  value={(content.header as any)?.nav_cta_href || ""}
+                  onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
+                  className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300"
+                >
+                  <option value="">— Otomatis dari teks —</option>
+                  <option value="#hero">Hero (Atas)</option>
+                  <option value="#about">Tentang Kami</option>
+                  <option value="#benefits">Keunggulan</option>
+                  <option value="#catalog">Katalog / Produk</option>
+                  <option value="#menu">Menu</option>
+                  <option value="#gallery">Galeri</option>
+                  <option value="#testimonials">Testimoni</option>
+                  <option value="#faq">FAQ</option>
+                  <option value="#contact">Kontak</option>
+                </select>
+                <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">
+                  Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
+                </p>
+              </div>
+            </>
+          )}
+
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
             <input
@@ -669,6 +790,7 @@ export default function SectionForms({
                 ["faq", "FAQ"],
                 ["cta", "Promo"],
                 ["contact", "Kontak"],
+                ["blog", "Blog"],
               ] as const).map(([key, label]) => {
                 const hidden = designToken?.layout?.nav_hidden_sections?.includes(key);
                 return (
@@ -712,7 +834,10 @@ export default function SectionForms({
           </div>
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "eyebrow")}
+            </label>
             <input
               id="field-hero.eyebrow"
               type="text"
@@ -728,12 +853,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "hero.headline"}
-                onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata")}
-                title="AI: generate headline"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("hero", "headline", (
+                <AiFieldButton
+                  loading={aiLoadingField === "hero.headline"}
+                  onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata", "Headline")}
+                  title="AI: generate headline"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <input 
               id="field-hero.headline"
@@ -744,8 +871,9 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">
-              Matra / Tagline
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Matra / Tagline</span>
+              {renderFieldActions("hero", "matra")}
             </label>
             <input
               id="field-hero.matra"
@@ -755,19 +883,21 @@ export default function SectionForms({
               placeholder="cth. Cita Rasa Jogja · Sejak 2010"
               className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline dan subheadline dengan garis dekoratif.</p>
+            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1">
                 Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "hero.subheadline"}
-                onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata")}
-                title="AI: generate subheadline"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("hero", "subheadline", (
+                <AiFieldButton
+                  loading={aiLoadingField === "hero.subheadline"}
+                  onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata", "Subheadline")}
+                  title="AI: generate subheadline"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <textarea 
               id="field-hero.subheadline"
@@ -778,8 +908,9 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("hero", "cta_text")}
             </label>
             <input 
               id="field-hero.cta_text"
@@ -806,7 +937,10 @@ export default function SectionForms({
           />
           {/* Secondary CTA (optional, used by Futuristic and some templates) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "cta_secondary_text")}
+            </label>
             <input
               id="field-hero.cta_secondary_text"
               type="text"
@@ -819,7 +953,10 @@ export default function SectionForms({
           </div>
           {/* Secondary CTA URL */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "cta_secondary_url")}
+            </label>
             <input
               id="field-hero.cta_secondary_url"
               type="text"
@@ -832,7 +969,10 @@ export default function SectionForms({
           </div>
           {/* Badge text (small text below CTA, used by Futuristic template) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "badge_text")}
+            </label>
             <input
               id="field-hero.badge_text"
               type="text"
@@ -845,7 +985,10 @@ export default function SectionForms({
           </div>
           {/* Opening hours (used by Bold template) */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "opening_hours")}
+            </label>
             <input
               id="field-hero.opening_hours"
               type="text"
@@ -916,7 +1059,10 @@ export default function SectionForms({
             </div>
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("about", "eyebrow")}
+            </label>
             <input
               type="text"
               value={content.about?.eyebrow || ""}
@@ -930,12 +1076,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "about.title"}
-                onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis")}
-                title="AI: generate judul"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("about", "title", (
+                <AiFieldButton
+                  loading={aiLoadingField === "about.title"}
+                  onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis", "Judul Tentang")}
+                  title="AI: generate judul"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <input 
               id="field-about.title"
@@ -950,12 +1098,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "about.body"}
-                onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.")}
-                title="AI: generate deskripsi"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {renderFieldActions("about", "body", (
+                <AiFieldButton
+                  loading={aiLoadingField === "about.body"}
+                  onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.", "Deskripsi")}
+                  title="AI: generate deskripsi"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              ))}
             </label>
             <textarea 
               id="field-about.body"
@@ -1209,8 +1359,9 @@ export default function SectionForms({
       {activeTab === "faq" && content?.faq && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("faq", "title")}
             </label>
             <input 
               type="text" 
@@ -1292,8 +1443,8 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "cta.headline"}
-                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli")}
-                title="AI: generate headline CTA"
+                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli", "Headline CTA")}
+                title="AI: generate headline"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -1696,7 +1847,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.title"}
-                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.")}
+                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
                 title="AI: generate SEO title"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1723,7 +1874,7 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.description"}
-                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.")}
+                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
                 title="AI: generate meta description"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1747,7 +1898,7 @@ export default function SectionForms({
             keywords={content.seo?.keywords || []}
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
-            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.")}
+            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO")}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
@@ -1755,13 +1906,106 @@ export default function SectionForms({
           <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
           <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
 
+          {/* ── Social Share Preview ── */}
+          {(() => {
+            const ogTitle = content.seo?.title || "";
+            const ogDesc  = content.seo?.description || "";
+            const ogImg   = content.seo?.og_image_url || "";
+            const ogDomain = subdomain ? `${subdomain}.webjoz.com` : "namabisnis.webjoz.com";
+            return (
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Preview Saat Link Dibagikan</p>
+
+                {/* WhatsApp / iMessage style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-emerald-400">💬 WhatsApp / iMessage</span>
+                  </div>
+                  <div className="flex gap-0 overflow-hidden">
+                    {/* image thumbnail */}
+                    <div className="w-20 h-20 shrink-0 bg-[#111318] relative overflow-hidden">
+                      {ogImg ? (
+                        <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[18px] opacity-20">🖼️</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
+                      <p className="text-[10px] text-slate-500 truncate">{ogDomain}</p>
+                      <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                        {ogTitle || "Judul belum diisi"}
+                      </p>
+                      <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                        {ogDesc || "Deskripsi belum diisi"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Facebook style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-blue-400">👍 Facebook / LinkedIn</span>
+                  </div>
+                  <div className="w-full aspect-[1.91/1] bg-[#111318] relative overflow-hidden">
+                    {ogImg ? (
+                      <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                        <span className="text-[28px] opacity-20">🖼️</span>
+                        <p className="text-[10px] text-slate-600 italic">OG Image belum diatur (1200×630 px)</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
+                    <p className="text-[9px] uppercase tracking-widest text-slate-500">{ogDomain}</p>
+                    <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                      {ogTitle || "Judul belum diisi"}
+                    </p>
+                    <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                      {ogDesc || "Deskripsi belum diisi"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Twitter/X style */}
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                    <span className="text-[10px] font-bold text-slate-300">𝕏 Twitter / X</span>
+                  </div>
+                  <div className="relative">
+                    <div className="w-full aspect-[2/1] bg-[#111318] relative overflow-hidden">
+                      {ogImg ? (
+                        <img src={ogImg} alt="OG" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[28px] opacity-20">🖼️</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/60 backdrop-blur-sm">
+                      <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-slate-500 italic"}`}>
+                        {ogTitle || "Judul belum diisi"}
+                      </p>
+                      <p className="text-[9px] text-slate-400 truncate">{ogDomain}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-slate-600 text-center">Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, &amp; OG Image.</p>
+              </div>
+            );
+          })()}
+
           {/* OG Type Dropdown */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span>OG Type</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.og_type"}
-                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.")}
+                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.", "OG Type")}
                 title="AI: suggest OG type"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1785,7 +2029,7 @@ export default function SectionForms({
               <span>Twitter Card</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.twitter_card"}
-                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.")}
+                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.", "Twitter Card")}
                 title="AI: suggest Twitter card"
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
@@ -1852,6 +2096,152 @@ export default function SectionForms({
               placeholder="/"
             />
           </div>
+
+          {/* ── SEO Booster Upsell Card ── */}
+          {isPremium ? (
+            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
+              <div className="flex items-center gap-2 font-semibold text-emerald-400">
+                <CheckCircle className="w-4 h-4" />
+                SEO Booster Aktif
+              </div>
+              <p className="mt-1 text-emerald-200/80">
+                Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+              </p>
+            </div>
+          ) : (() => {
+            const siteTitle = content.seo?.title || "Nama Bisnis — Layanan";
+            const siteDesc = content.seo?.description || "Deskripsi singkat bisnis dan layanan yang ditawarkan.";
+            const siteName = siteTitle.split(/[-—|]/)[0].trim() || content.header?.brand_name || "Nama Bisnis";
+            const cleanSubdomain = subdomain || "namabisnis";
+
+            const demoBusiness = {
+              name: siteName,
+              subdomain: cleanSubdomain,
+              title: siteTitle,
+              description: siteDesc,
+              rating: "4.8",
+              reviewCount: "128",
+              priceRange: "Rp50.000–Rp200.000",
+              status: "Buka",
+            };
+
+            return (
+              <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                    <Search className="w-4 h-4 text-amber-400" />
+                    <span>SEO BOOSTER (PRO)</span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
+                    Premium
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 p-5">
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                    <div className="opacity-60 grayscale-[30%]">
+                      <GoogleSnippetPreview variant="plain" business={demoBusiness} />
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                      ✨ Rich Result
+                    </div>
+                    <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                    <GoogleSnippetPreview variant="rich" business={demoBusiness} />
+                  </div>
+                </div>
+
+                <div className="px-5 pb-5">
+                  <p className="text-xs text-amber-200/70 text-center mb-2">
+                    Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => onUpgradeRequired?.()}
+                    className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── Google Search Console ── */}
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+            <div className="p-4 space-y-3">
+              {/* Header */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 shrink-0">
+                    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
+                    <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
+                  </div>
+                </div>
+                {!isPremium && (
+                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">Pro</span>
+                )}
+              </div>
+
+              {/* How-to steps */}
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
+                <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
+                <ol className="space-y-1 list-decimal list-inside">
+                  <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
+                  <li>Klik <strong className="text-slate-200">Tambah properti</strong> → pilih <strong className="text-slate-200">Awalan URL</strong></li>
+                  <li>Masukkan URL website Anda, lalu pilih metode <strong className="text-slate-200">Tag HTML</strong></li>
+                  <li>Salin nilai <code className="bg-white/5 px-1 rounded text-slate-300">content</code> dari meta tag yang diberikan</li>
+                  <li>Tempel di field di bawah, lalu klik Simpan &amp; Verifikasi</li>
+                </ol>
+              </div>
+
+              {/* Meta tag preview */}
+              {gscInput.trim() && (
+                <div className="rounded-md bg-[#0d0f14] border border-white/5 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+                  {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
+                </div>
+              )}
+
+              {/* Input + save button */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={gscInput}
+                  onChange={(e) => setGscInput(e.target.value)}
+                  placeholder="Tempel kode verifikasi di sini..."
+                  className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isPremium) { onUpgradeRequired?.(); return; }
+                    handleGscSave();
+                  }}
+                  disabled={gscSaving || !gscInput.trim()}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                >
+                  {gscSaving ? (
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...</>
+                  ) : gscSaved ? (
+                    <><Check className="w-3.5 h-3.5" /> Tersimpan</>
+                  ) : (
+                    "Simpan & Verifikasi"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1859,7 +2249,10 @@ export default function SectionForms({
       {activeTab === "testimonials" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("testimonials", "eyebrow")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.eyebrow || ""}
@@ -1869,7 +2262,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Section</span>
+              {renderFieldActions("testimonials", "title")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.title || ""}
@@ -1879,7 +2275,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("testimonials", "subtitle")}
+            </label>
             <input
               type="text"
               value={content.testimonials?.subtitle || ""}
@@ -2066,6 +2465,8 @@ export default function SectionForms({
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            fieldUndoStacks={fieldUndoStacks}
+            undoField={undoField}
           />
         </>
       )}
@@ -2080,8 +2481,9 @@ export default function SectionForms({
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("gallery", "title")}
             </label>
             <input
               id="field-gallery.title"
@@ -2092,7 +2494,10 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow</span>
+              {renderFieldActions("gallery", "eyebrow")}
+            </label>
             <input
               id="field-gallery.eyebrow"
               type="text" value={content.gallery?.eyebrow || ""}
@@ -2275,6 +2680,8 @@ export default function SectionForms({
             onAiDescription={handleAiItemDescription}
             aiLoadingDesc={aiLoadingDesc}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+            fieldUndoStacks={fieldUndoStacks}
+            undoField={undoField}
           />
         </>
       )}
@@ -2351,353 +2758,98 @@ export default function SectionForms({
           )}
         </div>
       )}
+
+      {/* ── AI Prompt Modal ── */}
+      {fieldPromptModal && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+                <SparkleGenAI className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                  Instruksi AI — {fieldPromptModal.label}
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Tambahkan instruksi khusus atau langsung klik Generate.
+                </p>
+              </div>
+            </div>
+
+            {/* Text input */}
+            <input
+              autoFocus
+              type="text"
+              value={fieldPromptInput}
+              onChange={(e) => setFieldPromptInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }
+                if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
+              }}
+              placeholder='cth. "buat lebih kasual dan ramah"'
+              className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+            />
+
+            {/* Image chip — shown only when item has a photo */}
+            {fieldPromptModal.imageUrl && (
+              <button
+                type="button"
+                onClick={() => setFieldPromptInput("Tulis deskripsi berdasarkan foto produk ini")}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
+              >
+                <span className="text-base leading-none">📸</span>
+                <span>Tulis deskripsi dari foto produk</span>
+                <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-white/10">
+                  <img src={fieldPromptModal.imageUrl} alt="" className="w-full h-full object-cover" />
+                </span>
+              </button>
+            )}
+
+            {/* Quick suggestions */}
+            {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).slice(0, 3).map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => setFieldPromptInput(chip)}
+                    className="px-2.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={() => { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <SparkleGenAI className="h-4 w-4" />
+                Generate
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
-
-// ─── Shared Menu / Catalog Editor ───────────────────────────────────────────
-interface MenuCatalogFormProps {
-  sectionKey: "menu" | "catalog";
-  sectionTitle: string;
-  itemLabel: string;
-  hasPrice: boolean;
-  hasBadge: boolean;
-  data: any;
-  updateField: (section: string, key: string, val: any) => void;
-  onAiDescription?: (catIdx: number, itemIdx: number, itemName: string, catName: string) => Promise<void>;
-  aiLoadingDesc?: string | null;
-  isPremium?: boolean;
-  onUpgradeRequired?: () => void;
-}
-
-function MenuCatalogForm({ sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge, data, updateField, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired }: MenuCatalogFormProps) {
-  const [expandedCat, setExpandedCat] = React.useState<number | null>(0);
-  const [activeEmojiPicker, setActiveEmojiPicker] = React.useState<{ catIdx: number; itemIdx: number } | null>(null);
-
-  const categories: any[] = data?.categories ?? [];
-
-  const updateCategories = (next: any[]) => updateField(sectionKey, "categories", next);
-
-  const addCategory = () => {
-    const next = [...categories, { name: `Kategori ${categories.length + 1}`, items: [] }];
-    updateCategories(next);
-    setExpandedCat(next.length - 1);
-  };
-
-  const removeCategory = (catIdx: number) => {
-    updateCategories(categories.filter((_, i) => i !== catIdx));
-    setExpandedCat(null);
-  };
-
-  const updateCategoryName = (catIdx: number, name: string) => {
-    const next = [...categories];
-    next[catIdx] = { ...next[catIdx], name };
-    updateCategories(next);
-  };
-
-  const addItem = (catIdx: number) => {
-    const next = [...categories];
-    const newItem: any = { name: "", description: "", price: "", image_url: null };
-    if (hasBadge) newItem.badge = null;
-    next[catIdx] = { ...next[catIdx], items: [...(next[catIdx].items ?? []), newItem] };
-    updateCategories(next);
-  };
-
-  const removeItem = (catIdx: number, itemIdx: number) => {
-    const next = [...categories];
-    next[catIdx] = { ...next[catIdx], items: next[catIdx].items.filter((_: any, i: number) => i !== itemIdx) };
-    updateCategories(next);
-  };
-
-  const updateItem = (catIdx: number, itemIdx: number, field: string, value: any) => {
-    const next = [...categories];
-    const items = [...(next[catIdx].items ?? [])];
-    items[itemIdx] = { ...items[itemIdx], [field]: value };
-    next[catIdx] = { ...next[catIdx], items };
-    updateCategories(next);
-  };
-
-  const inputBase = "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
-  const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-white/[0.02] p-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex-1 space-y-2">
-            <label className={inputLabel}>Judul Section</label>
-            <input
-              type="text"
-              value={data?.title ?? ""}
-              onChange={(e) => updateField(sectionKey, "title", e.target.value)}
-              placeholder={`cth. Menu ${sectionTitle}`}
-              className={`${inputBase} bg-white/[0.04]`}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className={inputLabel}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
-            <input
-              type="text"
-              value={data?.eyebrow ?? ""}
-              onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)}
-              placeholder={`cth. Pilihan ${sectionTitle}`}
-              className={inputBase}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className={inputLabel}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
-            <input
-              type="text"
-              value={data?.subtitle ?? ""}
-              onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
-              placeholder="cth. Nikmati berbagai pilihan menu terbaik kami"
-              className={inputBase}
-            />
-          </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">
-            {sectionKey === "menu" ? "Kuliner" : "Produk"} · {categories.length} kategori
-          </div>
-        </div>
-      </div>
-
-      {categories.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 text-center">
-          <p className="text-sm font-semibold text-slate-200">Belum ada kategori</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">Tambahkan kategori agar {itemLabel} bisa ditampilkan lebih rapi di website.</p>
-        </div>
-      )}
-
-      {categories.map((cat: any, catIdx: number) => {
-        const itemCount = cat.items?.length ?? 0;
-
-        return (
-          <div key={catIdx} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
-            <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-white/10">
-              <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
-              <input
-                type="text"
-                value={cat.name ?? ""}
-                onChange={(e) => updateCategoryName(catIdx, e.target.value)}
-                placeholder="Nama kategori"
-                className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
-              />
-              <span className="text-[10px] text-slate-500 flex-shrink-0">{itemCount} item</span>
-              <button
-                type="button"
-                onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)}
-                className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer"
-              >
-                {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              </button>
-              <button
-                type="button"
-                onClick={() => removeCategory(catIdx)}
-                className="text-red-500/60 hover:text-red-400 p-1 cursor-pointer"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {expandedCat === catIdx && (
-              <div className="p-3 space-y-3">
-                {(cat.items ?? []).length === 0 && (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center text-xs text-slate-500">
-                    Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
-                  </div>
-                )}
-
-                {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
-                      <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
-                      <FileUpload
-                        label="Foto"
-                        value={item.image_url ?? ""}
-                        onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
-                        placeholder="https://..."
-                        maxWidth={800}
-                        maxHeight={600}
-                        quality={0.8}
-                        previewSize="sm"
-                      />
-
-                      <div className="space-y-3">
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div>
-                            <label className={inputLabel}>Nama</label>
-                            <input
-                              type="text"
-                              value={item.name ?? ""}
-                              onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
-                              placeholder={`Nama ${itemLabel}`}
-                              className={inputBase}
-                            />
-                          </div>
-
-                          {hasPrice && (
-                            <div>
-                              <label className={inputLabel}>Harga</label>
-                              <input
-                                type="text"
-                                value={item.price ?? ""}
-                                onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)}
-                                placeholder="cth. Rp 25.000"
-                                className={inputBase}
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                        {hasBadge && (
-                          <div>
-                            <label className={inputLabel}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
-                            <input
-                              type="text"
-                              value={item.badge ?? ""}
-                              onChange={(e) => updateItem(catIdx, itemIdx, "badge", e.target.value || null)}
-                              placeholder="cth. Best Seller, Baru, Promo, Populer"
-                              className={inputBase}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Deskripsi spans full-width at the bottom */}
-                      <div className="col-span-full space-y-1 mt-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <label className={inputLabel}>Deskripsi</label>
-                          <div className="flex items-center gap-1.5 text-[10px]">
-                            {onAiDescription && (
-                              <AiFieldButton
-                                loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "")}
-                                title="AI: generate deskripsi"
-                                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                              />
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const cur = item.description ?? "";
-                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
-                              }}
-                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1"
-                              title="Tambah List Bulat"
-                            >
-                              <span>•</span> List
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const cur = item.description ?? "";
-                                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
-                              }}
-                              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px]"
-                              title="Tambah List Angka"
-                            >
-                              1. List
-                            </button>
-                            <div className="w-px h-3 bg-white/10 mx-1 self-center select-none" />
-                            
-                            {/* Expandable Emoji & Symbol Popover Picker */}
-                            <div className="relative">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  if (activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx) {
-                                    setActiveEmojiPicker(null);
-                                  } else {
-                                    setActiveEmojiPicker({ catIdx, itemIdx });
-                                  }
-                                }}
-                                className={`px-2 py-0.5 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 ${
-                                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-slate-800 hover:bg-slate-700 text-slate-300"
-                                }`}
-                              >
-                                😀 Emoji & Simbol
-                              </button>
-
-                              {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                                <div className="absolute right-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                                  <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                                    <button
-                                      type="button"
-                                      onClick={() => setActiveEmojiPicker(null)}
-                                      className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer"
-                                    >
-                                      Tutup
-                                    </button>
-                                  </div>
-                                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
-                                    {EMOJI_GROUPS.map((group) => (
-                                      <div key={group.name} className="space-y-1">
-                                        <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
-                                        <div className="grid grid-cols-7 gap-1">
-                                          {group.emojis.map((emoji) => (
-                                            <button
-                                              key={emoji}
-                                              type="button"
-                                              onClick={() => {
-                                                const cur = item.description ?? "";
-                                                updateItem(catIdx, itemIdx, "description", cur + emoji);
-                                              }}
-                                              className="h-7 w-7 rounded bg-white/[0.03] hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
-                                            >
-                                              {emoji}
-                                            </button>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <textarea
-                          rows={4}
-                          value={item.description ?? ""}
-                          onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-                          placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
-                          className={`${inputBase} w-full resize-y min-h-[80px]`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={() => addItem(catIdx)}
-                  className="w-full text-[12px] py-2 border border-dashed border-primary/20 rounded-xl text-primary/80 hover:bg-primary/10 hover:border-primary/40 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      })}
-
-      <button
-        type="button"
-        onClick={addCategory}
-        className="w-full text-[12px] py-2.5 border border-white/10 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-      >
-        <Plus className="w-3.5 h-3.5" /> Tambah Kategori
-      </button>
-    </div>
-  );
-}
-
-// (this export lets page.tsx import the FLOATING_FORM inline instead)

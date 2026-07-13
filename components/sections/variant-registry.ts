@@ -28,6 +28,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "grid", label: "Grid", description: "Semua testimoni tampil sekaligus dalam grid." },
     { value: "logo-wall", label: "Logo Klien", description: "Logo perusahaan klien (membutuhkan logo_url)." },
     { value: "featured-spotlight", label: "Sorotan", description: "Satu testimoni utama ditonjolkan." },
+    { value: "google-reviews", label: "Google Reviews", description: "Kartu gaya Google: foto profil, bintang, badge Google." },
   ],
   cta: [
     { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
@@ -88,6 +89,12 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "minimal-band", label: "Band Minimal", description: "Brand + tagline + copyright dalam satu baris gelap." },
     { value: "columns-with-social", label: "Kolom + Sosial Media", description: "Multi-kolom dengan link media sosial." },
     { value: "newsletter-cta", label: "Newsletter CTA", description: "Ajakan hubungi kami + copyright." },
+  ],
+  blog: [
+    { value: "grid", label: "Grid", description: "Kartu dalam 3 kolom rapi." },
+    { value: "list", label: "List", description: "Horizontal dengan gambar di kiri, teks di kanan." },
+    { value: "featured", label: "Unggulan", description: "Satu postingan besar hero + grid kecil di bawah." },
+    { value: "minimal", label: "Minimal", description: "Daftar judul dan tanggal tanpa gambar." },
   ],
 };
 

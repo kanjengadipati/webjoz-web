@@ -7,6 +7,7 @@ import TestimonialsCompact from "./compact";
 import TestimonialsGrid from "./grid";
 import TestimonialsLogoWall from "./logo-wall";
 import TestimonialsFeaturedSpotlight from "./featured-spotlight";
+import TestimonialsGoogleReviews from "./google-reviews";
 
 const variants: Record<string, ComponentType<{ testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }>> = {
   carousel: TestimonialsClassic,
@@ -14,6 +15,7 @@ const variants: Record<string, ComponentType<{ testimonials: TemplateProps["cont
   grid: TestimonialsGrid,
   "logo-wall": TestimonialsLogoWall,
   "featured-spotlight": TestimonialsFeaturedSpotlight,
+  "google-reviews": TestimonialsGoogleReviews,
 };
 
 export default function TestimonialsSection({ testimonials, design_token }: { testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }) {

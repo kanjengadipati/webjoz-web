@@ -9,7 +9,7 @@ const TXT_LOW = "color-mix(in srgb, var(--dt-text) 40%, transparent)";
 const TXT_BASE = "color-mix(in srgb, var(--dt-text) 65%, transparent)";
 const BORDER_TOP = "var(--dt-border)";
 
-export default function NewsletterCta({ footer, brand_name }: FooterVariantProps) {
+export default function NewsletterCta({ footer, brand_name, hasBlog }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
   const displayTagline = footer?.tagline || "";
 
@@ -21,6 +21,12 @@ export default function NewsletterCta({ footer, brand_name }: FooterVariantProps
       <div className="max-w-lg mx-auto space-y-4">
         <p className="text-lg font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
         {displayTagline && <p className="text-sm" style={{ color: TXT_MED }}>{displayTagline}</p>}
+
+        {hasBlog && (
+          <a href="#blog" className="inline-block text-sm transition-colors hover:opacity-80" style={{ color: TXT_HIGH }}>
+            Blog
+          </a>
+        )}
 
         <div className="pt-2">
           <a

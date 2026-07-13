@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { 
-  BarChart3, Loader2, Calendar, Globe, ArrowUpRight, 
-  Eye, MousePointerClick, RefreshCw, Filter, TrendingUp
+import Link from "next/link";
+import {
+  BarChart3, Loader2, Globe, ArrowUpRight,
+  MousePointerClick, TrendingUp, X, Sparkles
 } from "lucide-react";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker } from "@/components/ui";
+import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/toast-provider";
 
 interface PageViewStat {
@@ -28,14 +30,40 @@ interface ReferrerStat {
 
 interface AnalyticsData {
   total_pageviews: number;
+  total_pageviews_previous_period: number;
+  unique_visitors: number;
+  avg_session_seconds: number;
+  total_leads: number;
+  plan: string;
   pageviews_by_date: PageViewStat[];
   pageviews_by_path: PathStat[];
   pageviews_by_referrer: ReferrerStat[];
 }
 
+function formatDuration(seconds: number): string {
+  if (!seconds || seconds <= 0) return "0d";
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return m > 0 ? `${m}m ${s}d` : `${s}d`;
+}
+
 interface Site {
   id: number;
   name: string;
+}
+
+const PRESETS = [
+  { label: "7 Hari", days: 7 },
+  { label: "30 Hari", days: 30 },
+  { label: "90 Hari", days: 90 },
+];
+
+const fmt = (d: Date) => d.toISOString().split("T")[0];
+
+function periodComparison(current: number, previous: number): { pct: number; up: boolean } | null {
+  if (previous <= 0) return null;
+  const pct = Math.round(((current - previous) / previous) * 100);
+  return { pct: Math.abs(pct), up: pct >= 0 };
 }
 
 export default function AnalyticsPage() {
@@ -46,26 +74,26 @@ export default function AnalyticsPage() {
   const [sites, setSites] = useState<Site[]>([]);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
-  // Accessibility & animation state for the chart
   const [activePoint, setActivePoint] = useState<number | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
-  const [pathAnimated, setPathAnimated] = useState(false);
 
-  // Filters
-  const [selectedSiteId, setSelectedSiteId] = useState("");
-  const [fromStr, setFromStr] = useState(
-    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
-  );
-  const [toStr, setToStr] = useState(
-    new Date().toISOString().split("T")[0]
+  const [selectedSiteId, setSelectedSiteId] = useState("all");
+  const [fromStr, setFromStr] = useState(fmt(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)));
+  const [toStr, setToStr] = useState(fmt(new Date()));
+
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [pendingRange, setPendingRange] = useState<{ from: string; to: string } | null>(null);
+
+  const isFreePlan = data?.plan === "free";
+  const maxDays = isFreePlan ? 7 : 90;
+  const currentPreset = PRESETS.find(
+    (p) => fromStr === fmt(new Date(Date.now() - p.days * 24 * 60 * 60 * 1000)) && toStr === fmt(new Date())
   );
 
   const fetchData = async () => {
     if (!token || !activeTenantId) return;
     try {
       setLoading(true);
-
-      // Fetch sites list if not loaded yet
       if (sites.length === 0) {
         const sitesRes = await request<Site[]>("/sites", {
           headers: { "X-Tenant-ID": activeTenantId.toString() }
@@ -73,18 +101,15 @@ export default function AnalyticsPage() {
         setSites(sitesRes.data || []);
       }
 
-      // Construct query URL
       let query = `/analytics?from=${fromStr}&to=${toStr}`;
       if (selectedSiteId && selectedSiteId !== "all") {
         query += `&site_id=${selectedSiteId}`;
       }
 
-      // Fetch analytics stats
       const statsRes = await request<AnalyticsData>(query, {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
       setData(statsRes.data);
-
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat data analitik", "error");
     } finally {
@@ -98,6 +123,32 @@ export default function AnalyticsPage() {
     }
   }, [activeTenantId, selectedSiteId, fromStr, toStr]);
 
+  const handlePreset = (days: number) => {
+    const from = fmt(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
+    const to = fmt(new Date());
+    if (days > maxDays) {
+      setPendingRange({ from, to });
+      setShowUpsell(true);
+      return;
+    }
+    setFromStr(from);
+    setToStr(to);
+  };
+
+  const handleManualDate = (type: "from" | "to", value: string) => {
+    const nextFrom = type === "from" ? value : fromStr;
+    const nextTo = type === "to" ? value : toStr;
+    const diffMs = new Date(nextTo).getTime() - new Date(nextFrom).getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays > maxDays) {
+      setPendingRange({ from: nextFrom, to: nextTo });
+      setShowUpsell(true);
+      return;
+    }
+    if (type === "from") setFromStr(value);
+    else setToStr(value);
+  };
+
   if (loading && !data) {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
@@ -107,7 +158,6 @@ export default function AnalyticsPage() {
     );
   }
 
-  // Draw custom SVG chart helper
   const renderLineChart = (chartData: PageViewStat[]) => {
     if (!chartData || chartData.length === 0) {
       return (
@@ -119,7 +169,7 @@ export default function AnalyticsPage() {
 
     const maxCount = Math.max(...chartData.map(d => d.count), 10);
     const height = 220;
-    const width = 720; // viewBox width
+    const width = 720;
     const paddingLeft = 44;
     const paddingRight = 20;
     const paddingTop = 20;
@@ -128,7 +178,6 @@ export default function AnalyticsPage() {
     const graphHeight = height - paddingTop - paddingBottom;
     const graphWidth = width - paddingLeft - paddingRight;
 
-    // Generate points in viewbox coordinates
     const points = chartData.map((d, idx) => {
       const x = paddingLeft + (idx / (chartData.length - 1 || 1)) * graphWidth;
       const y = paddingTop + graphHeight - (d.count / maxCount) * graphHeight;
@@ -148,20 +197,16 @@ export default function AnalyticsPage() {
             </linearGradient>
           </defs>
 
-          {/* Grid lines */}
           <line x1={paddingLeft} y1={paddingTop} x2={width - paddingRight} y2={paddingTop} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
           <line x1={paddingLeft} y1={paddingTop + graphHeight / 2} x2={width - paddingRight} y2={paddingTop + graphHeight / 2} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
           <line x1={paddingLeft} y1={paddingTop + graphHeight} x2={width - paddingRight} y2={paddingTop + graphHeight} className="stroke-slate-300" strokeWidth="1" />
 
-          {/* Y Axis Labels */}
           <text x={paddingLeft - 12} y={paddingTop + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{maxCount}</text>
           <text x={paddingLeft - 12} y={paddingTop + graphHeight / 2 + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{Math.round(maxCount / 2)}</text>
           <text x={paddingLeft - 12} y={paddingTop + graphHeight + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">0</text>
 
-          {/* Area fill */}
           {areaD && <path d={areaD} fill="url(#chartGradient)" />}
 
-          {/* Line path (use currentColor for easy theming) with animation */}
           {pathD && (
             <path
               ref={(el) => { pathRef.current = el; }}
@@ -171,17 +216,14 @@ export default function AnalyticsPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               stroke="var(--primary)"
-              style={{ transition: pathAnimated ? "stroke-dashoffset 700ms ease-out" : undefined }}
             />
           )}
 
-          {/* Data Points & Accessible Tooltips */}
           {points.map((p, idx) => {
             const isActive = activePoint === idx;
             const tooltipId = `pv-tooltip-${idx}`;
             return (
               <g key={idx} className="group/point">
-                {/* Make the circle keyboard focusable */}
                 <circle
                   cx={p.x}
                   cy={p.y}
@@ -209,12 +251,10 @@ export default function AnalyticsPage() {
                   }}
                 />
 
-                {/* Tooltip: visible when focused/hovered */}
                 <g
                   id={tooltipId}
                   className={`pointer-events-none transition-opacity duration-150 ${isActive ? "opacity-100" : "opacity-0"}`}
                 >
-                  {/* Accessible focus ring behind the tooltip for keyboard users */}
                   {isActive && (
                     <circle cx={p.x} cy={p.y} r={12} fill="none" stroke="var(--primary-foreground)" strokeWidth={2} opacity={0.18} />
                   )}
@@ -225,7 +265,6 @@ export default function AnalyticsPage() {
             );
           })}
 
-          {/* X Axis Labels */}
           {points.filter((_, i) => i % Math.max(Math.round(points.length / 5), 1) === 0 || i === points.length - 1).map((p, idx) => {
             let shortDate = p.label;
             try { shortDate = new Date(p.label).toLocaleDateString("id-ID", { day: "numeric", month: "short" }); } catch {}
@@ -238,19 +277,17 @@ export default function AnalyticsPage() {
     );
   };
 
-  
+  const comp = data ? periodComparison(data.total_pageviews, data.total_pageviews_previous_period) : null;
 
   return (
     <div className="space-y-6">
-      {/* Announce active point for screen readers */}
       <div aria-live="polite" className="sr-only">
         {activePoint !== null ? `Tanggal ${data?.pageviews_by_date?.[activePoint]?.date || ''}, ${data?.pageviews_by_date?.[activePoint]?.count || 0} pageviews` : ''}
       </div>
-      {/* Filter toolbar */}
+
       <div className="flex flex-wrap items-center gap-3">
-        {/* Site Filter */}
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-500" />
+          <Globe className="w-4 h-4 text-slate-500" />
           <select
             value={selectedSiteId}
             onChange={(e) => setSelectedSiteId(e.target.value)}
@@ -266,27 +303,32 @@ export default function AnalyticsPage() {
           </select>
         </div>
 
-        {/* Date filters */}
         <div className="flex items-center gap-2">
-          <input
-            type="date"
-            value={fromStr}
-            onChange={(e) => setFromStr(e.target.value)}
-            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
-            aria-label="Dari tanggal"
-          />
+          {PRESETS.map((p) => {
+            const isActive = currentPreset?.days === p.days;
+            return (
+              <button
+                key={p.days}
+                onClick={() => handlePreset(p.days)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${
+                  isActive
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-muted-foreground border-border hover:border-primary/50"
+                }`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <DatePicker value={fromStr} onChange={(v) => handleManualDate("from", v)} />
           <span className="text-sm font-semibold text-slate-400">s/d</span>
-          <input
-            type="date"
-            value={toStr}
-            onChange={(e) => setToStr(e.target.value)}
-            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
-            aria-label="Sampai tanggal"
-          />
+          <DatePicker value={toStr} onChange={(v) => handleManualDate("to", v)} />
         </div>
       </div>
 
-      {/* Main stats card list */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
@@ -294,36 +336,45 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-3xl font-black text-foreground">{data?.total_pageviews || 0}</div>
-            <div className="text-[10px] text-primary font-bold flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5 text-primary" />
-              Tumbuh Positif
-            </div>
+            {comp ? (
+              <div className={`text-[10px] font-bold flex items-center gap-1 ${comp.up ? "text-green-600" : "text-red-500"}`}>
+                <TrendingUp className={`w-3.5 h-3.5 ${comp.up ? "" : "rotate-180"}`} />
+                {comp.up ? "Naik" : "Turun"} {comp.pct}% dari periode sebelumnya
+              </div>
+            ) : (
+              <div className="text-[10px] text-slate-400">Perbandingan periode sebelumnya</div>
+            )}
           </CardContent>
         </Card>
+
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
-            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Kunjungan Unik (Est.)</CardDescription>
+            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Kunjungan Unik</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-foreground">{Math.round((data?.total_pageviews || 0) * 0.72)}</div>
-            <div className="text-[10px] text-slate-400">Estimasi rasio pengunjung unik 72%</div>
+            <div className="text-3xl font-black text-foreground">{data?.unique_visitors ?? 0}</div>
+            <div className="text-[10px] text-slate-400">Estimasi berbasis IP + perangkat</div>
           </CardContent>
         </Card>
+
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Rata-Rata Durasi</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-foreground">2m 14s</div>
-            <div className="text-[10px] text-slate-400">Rata-rata waktu keterlibatan sesi</div>
+            <div className="text-3xl font-black text-foreground">{formatDuration(data?.avg_session_seconds ?? 0)}</div>
+            <div className="text-[10px] text-slate-400">Termasuk kunjungan 1 halaman (0 detik)</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Grid: Chart & Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
-        {/* Line Chart Card */}
-        <Card className="border-border/40 shadow-sm">
+        <Card className="border-border/40 shadow-sm relative">
+          {loading && (
+            <div className="absolute inset-0 z-10 bg-background/60 flex items-center justify-center rounded-xl">
+              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+            </div>
+          )}
           <CardHeader>
             <CardTitle className="text-base font-bold flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary" />
@@ -336,49 +387,53 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
 
-        {/* Path and Referrers tables */}
         <div className="space-y-6">
-          {/* Top Pages */}
           <Card className="border-border/40 shadow-sm">
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <MousePointerClick className="w-4 h-4 text-primary" />
-                Halaman Teratas
+                Leads Masuk
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
-              {data?.pageviews_by_path && data.pageviews_by_path.length > 0 ? (
-                <div className="space-y-3">
-                  {data.pageviews_by_path.map((p, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-xs py-1 border-b last:border-none">
-                      <span className="font-mono text-slate-600 truncate max-w-[200px]">{p.path}</span>
-                      <span className="font-bold">{p.count} PVs</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-xs text-muted-foreground text-center py-6">Belum ada data halaman.</div>
-              )}
+            <CardContent className="p-4 space-y-1">
+              <div className="text-3xl font-black text-foreground">{data?.total_leads ?? 0}</div>
+              <div className="text-[10px] text-slate-400">
+                Dari form kontak di situs Anda
+                {data?.total_pageviews ? ` · konversi ${((data.total_leads / data.total_pageviews) * 100).toFixed(1)}%` : ""}
+              </div>
+              <Link href="/dashboard/leads" className="text-xs text-primary font-semibold hover:underline inline-block mt-2">
+                Lihat semua leads →
+              </Link>
             </CardContent>
           </Card>
 
-          {/* Top Referrers */}
           <Card className="border-border/40 shadow-sm">
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <ArrowUpRight className="w-4 h-4 text-primary" />
-                Sumber Pengunjung (Referrers)
+                Sumber Pengunjung
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
               {data?.pageviews_by_referrer && data.pageviews_by_referrer.length > 0 ? (
                 <div className="space-y-3">
-                  {data.pageviews_by_referrer.map((r, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-xs py-1 border-b last:border-none">
-                      <span className="font-semibold text-slate-600">{r.referrer || "Direct / Unknown"}</span>
-                      <span className="font-bold">{r.count} PVs</span>
-                    </div>
-                  ))}
+                  {(() => {
+                    const maxCount = Math.max(...data.pageviews_by_referrer.map(r => r.count), 1);
+                    return data.pageviews_by_referrer.map((r, idx) => (
+                      <div key={idx} className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-semibold text-slate-600">{r.referrer}</span>
+                          <span className="font-bold">{r.count} PVs</span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-muted/40 overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full transition-all"
+                            style={{ width: `${(r.count / maxCount) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    ));
+                  })()}
                 </div>
               ) : (
                 <div className="text-xs text-muted-foreground text-center py-6">Belum ada data rujukan.</div>
@@ -387,6 +442,55 @@ export default function AnalyticsPage() {
           </Card>
         </div>
       </div>
+
+      <Dialog
+        open={showUpsell}
+        onOpenChange={setShowUpsell}
+        title="Buka Akses Analytics Penuh"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setShowUpsell(false)}>
+              Nanti Saja
+            </Button>
+            <Button onClick={() => {
+              window.open("/dashboard/settings/billing", "_blank");
+              setShowUpsell(false);
+            }}>
+              <Sparkles className="w-4 h-4" />
+              Upgrade ke Pro
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4 text-sm">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+            <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
+              <X className="w-3 h-3 text-white" />
+            </div>
+            <div>
+              <p className="font-semibold text-amber-800">Paket Free — Maksimal 7 Hari</p>
+              <p className="text-amber-700 mt-1">
+                Akun Free hanya bisa melihat data analytics maksimal 7 hari ke belakang.
+                {pendingRange && (
+                  <> Kamu memilih rentang <strong>{pendingRange.from}</strong> s/d <strong>{pendingRange.to}</strong>.</>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+            <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+              <Sparkles className="w-3 h-3 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="font-semibold text-blue-800">Upgrade ke Pro</p>
+              <p className="text-blue-700 mt-1">
+                Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

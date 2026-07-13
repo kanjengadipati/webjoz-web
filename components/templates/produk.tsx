@@ -13,6 +13,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import { BlogPostsSection } from "./blog-section";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -20,7 +21,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials, gallery } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials, gallery, blog, blog_layout } = content;
   const dt = design_token ?? null;
   const cssVars = buildCssVars(dt);
 
@@ -42,6 +43,10 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     if (gallery && !order.includes("gallery")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "gallery");
+    }
+    if (blog && blog.posts?.length && !order.includes("blog")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "blog");
     }
     return order;
   })();
@@ -307,6 +312,9 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         }} />
       </MemoPreviewSectionWrapper>
     ) : null,
+    blog: (blog?.posts?.length ?? 0) > 0 ? (
+      <BlogPostsSection posts={blog!.posts!} layout={blog_layout} />
+    ) : null,
   } as Record<string, React.ReactNode>;
 
   const waPhone = contact?.phone ?? "";
@@ -324,7 +332,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} hasBlog={!!(blog?.posts?.length)} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>

@@ -18,13 +18,13 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "blog", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
 // (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery", "faq"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery", "blog", "faq"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
   header:       { label: "Header",       icon: Layout },
@@ -35,6 +35,7 @@ export const SECTION_META: Record<string, { label: string; icon: any }> = {
   menu:         { label: "Menu",         icon: UtensilsCrossed },
   catalog:      { label: "Katalog",      icon: ShoppingBag },
   gallery:      { label: "Galeri",       icon: Camera },
+  blog:         { label: "Blog",         icon: BookOpen },
   faq:          { label: "FAQ",          icon: HelpCircle },
   cta:          { label: "CTA",          icon: SparkleIcon },
   contact:      { label: "Kontak",       icon: Mail },
@@ -240,10 +241,11 @@ export const getAutoHiddenSections = (
 ): string[] => {
   const result: string[] = [];
 
-  const OPTIONAL = ["faq", "testimonials", "gallery", "menu", "catalog"] as const;
+  const OPTIONAL = ["faq", "testimonials", "gallery", "menu", "catalog", "blog"] as const;
 
   const isEmpty = (key: string): boolean => {
     if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);
+    if (key === "blog") return !(content?.[key]?.posts?.length);
     return !(content?.[key]?.items?.length);
   };
 

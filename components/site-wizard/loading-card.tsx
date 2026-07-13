@@ -15,7 +15,7 @@ interface LoadingCardProps {
 export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
   return (
     <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
-      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
               <SparkleIcon className="w-[18px] h-[18px]" />
       </div>
       <div
@@ -85,7 +85,7 @@ export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
 
         {loadingStep >= 3 && (
           <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
-            <div className="flex items-center gap-1.5 mb-1.5">
+            <div className="flex items-center gap-1.5 mb-1.5 text-primary">
         <SparkleIcon className="w-[18px] h-[18px]" />
               <span className="text-[11px] font-bold text-primary">AI Insight</span>
             </div>

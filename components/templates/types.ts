@@ -6,6 +6,10 @@ export interface TestimonialItem {
   avatar_color: string;
   company?: string | null;
   logo_url?: string | null;
+  /** Set when imported from Google Reviews or manual copy */
+  avatar_url?: string | null;
+  rating?: number | null;
+  source?: "google" | "manual" | null;
 }
 
 export interface BenefitItem {
@@ -62,6 +66,7 @@ export interface GalleryItem {
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
+export type BlogLayout = "grid" | "list" | "featured" | "minimal";
 
 export interface DesignToken {
   palette?: {
@@ -87,7 +92,7 @@ export interface DesignToken {
     section_variants?: {
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table";
-      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight";
+      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
       cta?: "banner" | "card" | "centered" | "split-image";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category";
       gallery?: "grid" | "masonry" | "carousel";
@@ -123,9 +128,24 @@ export interface ContentSection {
 export interface TemplateProps {
   content: {
     sections?: ContentSection[];
+    blog_layout?: BlogLayout;
+    blog?: {
+      posts: Array<{
+        id: number;
+        title: string;
+        slug: string;
+        excerpt: string;
+        content_html: string;
+        cover_image_url?: string;
+        published_at: string;
+        created_at: string;
+      }>;
+    };
     header: {
       brand_name: string;
       nav_cta_text: string;
+      nav_cta_hidden?: boolean;
+      nav_cta_href?: string;
       icon?: string;
       logo_url?: string;
       tagline?: string;
@@ -267,4 +287,9 @@ export interface TemplateProps {
    * Belum diwire dari plan backend — menyusul. Default: false.
    */
   isPremium?: boolean;
+  /**
+   * Hanya diisi ketika template dirender dalam dashboard editor.
+   * Dipakai untuk meng-resolve URL /preview/[id]/blog.
+   */
+  editorSiteId?: number | null;
 }
