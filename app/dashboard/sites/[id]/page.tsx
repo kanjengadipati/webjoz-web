@@ -2367,8 +2367,8 @@ export default function SiteEditorPage() {
           </div>
 
           {pendingDiff && (
-            <div className="flex-shrink-0 border-b border-primary/20 bg-[#0b0f1a] px-3 py-2">
-              <div className="flex items-start gap-3">
+            <div className="hidden md:flex flex-shrink-0 border-b border-primary/20 bg-[#0b0f1a] px-3 py-2">
+              <div className="flex items-start gap-3 w-full">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <SparkleGenAI className="h-5 w-5 text-primary" />
