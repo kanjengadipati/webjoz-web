@@ -3055,41 +3055,24 @@ export default function SiteEditorPage() {
 
             {/* AI Usage meter — mobile drawer */}
             {tenantUsage && (
-              <div className="flex-shrink-0 border-t border-white/10 px-3.5 py-2.5 space-y-2 bg-[#111318]">
-                <div className="flex items-center gap-1.5">
-                  <Database className="h-3 w-3 text-primary" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AI Usage</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <div className="flex items-center justify-between text-[10px] mb-1">
-                      <span className="text-slate-400">Generate</span>
-                      <span className="font-semibold text-slate-200">{tenantUsage.usage.generate_count ?? 0}/{tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}</span>
-                    </div>
-                    <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full bg-amber-500 transition-all duration-500"
-                        style={{ width: `${tenantUsage.max_ai_generates <= 0 ? 100 : Math.min(((tenantUsage.usage.generate_count ?? 0) / tenantUsage.max_ai_generates) * 100, 100)}%` }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between text-[10px] mb-1">
-                      <span className="text-slate-400">Section</span>
-                      <span className="font-semibold text-slate-200">{tenantUsage.usage.section_regen_count ?? 0}/{(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}</span>
-                    </div>
-                    <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full bg-violet-500 transition-all duration-500"
-                        style={{ width: `${(tenantUsage.max_section_regens ?? 0) <= 0 ? 100 : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%` }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between text-[10px] mb-1">
-                      <span className="text-slate-400">Design</span>
-                      <span className="font-semibold text-slate-200">{tenantUsage.usage.design_regen_count ?? 0}/{(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}</span>
-                    </div>
-                    <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full bg-cyan-500 transition-all duration-500"
-                        style={{ width: `${(tenantUsage.max_design_regens ?? 0) <= 0 ? 100 : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100)}%` }} />
-                    </div>
+              <div className="flex-shrink-0 border-t border-white/10 px-3.5 py-2 bg-[#111318]">
+                <div className="flex items-center gap-2.5">
+                  <Database className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                  <div className="flex flex-1 items-center gap-3">
+                    {[
+                      { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-amber-500" },
+                      { label: "Section", count: tenantUsage.usage.section_regen_count ?? 0, max: tenantUsage.max_section_regens ?? 0, color: "bg-violet-500" },
+                      { label: "Design", count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-cyan-500" },
+                    ].map(({ label, count, max, color }) => (
+                      <div key={label} className="flex-1 flex items-center gap-1.5 min-w-0">
+                        <span className="text-[9px] text-slate-500 shrink-0">{label}</span>
+                        <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                          <div className={`h-full rounded-full ${color} transition-all duration-500`}
+                            style={{ width: `${max <= 0 ? 100 : Math.min((count / max) * 100, 100)}%` }} />
+                        </div>
+                        <span className="text-[9px] font-semibold text-slate-400 shrink-0">{count}/{max <= 0 ? "∞" : max}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
