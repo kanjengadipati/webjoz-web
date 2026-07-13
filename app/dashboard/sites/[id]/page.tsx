@@ -102,6 +102,7 @@ export default function SiteEditorPage() {
   const [undoStack, setUndoStack] = useState<Array<{ section: string; previousContent: any; previousDesignToken: any }>>([]);
 
   const [globalUndo, setGlobalUndo] = useState<any[]>([]);
+  const [designOnlyUndo, setDesignOnlyUndo] = useState<any[]>([]);
   const [fieldUndoStacks, setFieldUndoStacks] = useState<Record<string, string[]>>({});
   const [designTokenScore, setDesignTokenScore] = useState(0);
   const [pendingDiff, setPendingDiff] = useState<{
@@ -758,6 +759,7 @@ export default function SiteEditorPage() {
 
   const handleReorderSection = (source: string, target: string) => {
     if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
+    pushGlobalUndo({ force: true });
     const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key));
     const nextOrder = [...currentOrder];
     const from = nextOrder.indexOf(source);
@@ -911,6 +913,10 @@ export default function SiteEditorPage() {
           rows: diffRows,
         });
 
+        // Snapshot before applying AI result
+        pushGlobalUndo({ force: true });
+        pushDesignUndo();
+
         // Temporarily apply the design token in preview
         setDesignToken(newDesignToken);
         setLatestAiDesignToken(newDesignToken);
@@ -978,6 +984,7 @@ export default function SiteEditorPage() {
     const currentVal = contentRef.current?.[section]?.[key] || "";
     if (typeof val === "string" && val !== currentVal) {
       pushFieldUndo(section, key, currentVal);
+      pushGlobalUndo();
     }
     setContent((prev: any) => ({
       ...prev,
@@ -988,8 +995,41 @@ export default function SiteEditorPage() {
     }));
   };
 
+  const globalUndoLastPushRef = useRef<number>(0);
+
+  const pushGlobalUndo = (opts?: { force?: boolean }) => {
+    if (!designTokenRef.current) return;
+    const now = Date.now();
+    if (!opts?.force && now - globalUndoLastPushRef.current < 1500) return;
+    globalUndoLastPushRef.current = now;
+    const snapContent = contentRef.current ? JSON.parse(JSON.stringify(contentRef.current)) : null;
+    const snapDesign = JSON.parse(JSON.stringify(designTokenRef.current));
+    setGlobalUndo(prev => [{ content: snapContent, designToken: snapDesign }, ...prev].slice(0, 3));
+  };
+
+  const handleGlobalUndo = () => {
+    if (!globalUndo.length) return;
+    const [prev, ...rest] = globalUndo;
+    if (prev.content !== null) setContent(prev.content);
+    setDesignToken(prev.designToken);
+    setGlobalUndo(rest);
+  };
+
+  const pushDesignUndo = () => {
+    if (!designTokenRef.current) return;
+    setDesignOnlyUndo(prev => [JSON.parse(JSON.stringify(designTokenRef.current)), ...prev].slice(0, 5));
+  };
+
+  const handleDesignUndo = () => {
+    if (!designOnlyUndo.length) return;
+    const [prev, ...rest] = designOnlyUndo;
+    setDesignToken(prev);
+    setDesignOnlyUndo(rest);
+  };
+
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       let next = { ...(prev || {}) };
 
@@ -1016,7 +1056,8 @@ export default function SiteEditorPage() {
   };
 
   const updateSectionVariant = (section: string, value: string) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = prev ? JSON.parse(JSON.stringify(prev)) : {};
       next.layout = {
@@ -1043,20 +1084,9 @@ export default function SiteEditorPage() {
     }
   };
 
-  const pushGlobalUndo = () => {
-    if (!designToken) return;
-    setGlobalUndo(prev => [JSON.parse(JSON.stringify(designToken)), ...prev].slice(0, 3));
-  };
-
-  const handleGlobalUndo = () => {
-    if (!globalUndo.length) return;
-    const [prev, ...rest] = globalUndo;
-    setDesignToken(prev);
-    setGlobalUndo(rest);
-  };
-
   const applyTypographyBatch = (fields: Record<string, any>) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.typography = { ...(next.typography || {}), ...fields };
@@ -1065,7 +1095,8 @@ export default function SiteEditorPage() {
   };
 
   const applyColorPattern = (pattern: ColorPattern) => {
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1080,7 +1111,8 @@ export default function SiteEditorPage() {
     const pairing = getEnabledTypographyPairings().find((p) => p.id === preset.pairing_id);
     const pattern = getEnabledColorPatterns().find((p) => p.id === preset.pattern_id);
     if (!pairing || !pattern) return;
-    pushGlobalUndo();
+    pushGlobalUndo({ force: true });
+    pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1243,7 +1275,19 @@ export default function SiteEditorPage() {
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
-                {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handleDesignUndo}
+                    disabled={designOnlyUndo.length === 0}
+                    aria-label="Undo Desain"
+                    title={designOnlyUndo.length > 0 ? "Urungkan perubahan desain terakhir" : "Belum ada perubahan desain"}
+                    className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
+                  >
+                    <RotateCcw className="h-2.5 w-2.5" />
+                  </button>
+                  {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+                </div>
               </div>
               <button
                 type="button"
@@ -1582,7 +1626,8 @@ export default function SiteEditorPage() {
                       onApply={applyColorPattern}
                       onRestoreAi={() => {
                         if (!latestAiDesignToken?.palette) return;
-                        pushGlobalUndo();
+                        pushGlobalUndo({ force: true });
+                        pushDesignUndo();
                         setDesignToken((prev: any) => {
                           const next = { ...(prev || {}) };
                           next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
@@ -1732,7 +1777,8 @@ export default function SiteEditorPage() {
                     onApply={applyIndustryPreset}
                     onRestoreAi={() => {
                       if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
-                      pushGlobalUndo();
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
                       setDesignToken((prev: any) => {
                         const next = { ...(prev || {}) };
                         next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
@@ -1765,7 +1811,8 @@ export default function SiteEditorPage() {
                     }}
                     onRestoreAi={() => {
                       if (!latestAiDesignToken?.typography) return;
-                      pushGlobalUndo();
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
                       setDesignToken((prev: any) => {
                         const next = { ...(prev || {}) };
                         next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
@@ -2020,9 +2067,9 @@ export default function SiteEditorPage() {
                           <div
                             className="h-full rounded-full bg-violet-500 transition-all duration-500"
                             style={{
-                              width: tenantUsage.max_section_regens <= 0
+                              width: `${tenantUsage.max_section_regens <= 0
                                 ? 100
-                                : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100),
+                                : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%`,
                             }}
                           />
                         </div>
@@ -2038,9 +2085,9 @@ export default function SiteEditorPage() {
                           <div
                             className="h-full rounded-full bg-cyan-500 transition-all duration-500"
                             style={{
-                              width: tenantUsage.max_design_regens <= 0
+                              width: `${tenantUsage.max_design_regens <= 0
                                 ? 100
-                                : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100),
+                                : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100)}%`,
                             }}
                           />
                         </div>
@@ -2267,7 +2314,8 @@ export default function SiteEditorPage() {
             <div className="relative group">
               <button
                 onClick={() => {
-                  pushGlobalUndo();
+                  pushGlobalUndo({ force: true });
+                  pushDesignUndo();
                   setDesignToken((prev: any) => ({
                     ...(prev || {}),
                     theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
@@ -2302,11 +2350,12 @@ export default function SiteEditorPage() {
               <button
                 type="button"
                 onClick={handleGlobalUndo}
+                aria-label="Undo"
+                title="Urungkan perubahan terakhir (teks, desain, atau urutan section)"
                 className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
-                title="Undo perubahan desain"
               >
                 <RotateCcw className="h-3 w-3" />
-                Undo Desain
+                Undo
               </button>
             )}
 
@@ -2704,6 +2753,17 @@ export default function SiteEditorPage() {
               >
                 Desain
               </button>
+              {editorTab === "design" && designOnlyUndo.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleDesignUndo}
+                  aria-label="Undo Desain"
+                  title="Urungkan perubahan desain terakhir"
+                  className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[7px] text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
 
             {/* Quality bar (Konten tab only) */}
