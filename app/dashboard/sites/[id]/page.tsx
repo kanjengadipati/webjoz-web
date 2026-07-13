@@ -2694,9 +2694,6 @@ export default function SiteEditorPage() {
             >
               {sheetCollapsed ? (
                 <>
-                  <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">
-                    {pageOrderSections.find(s => s.key === activeTab)?.label ?? activeTab}
-                  </span>
                   <div className="flex items-center gap-1.5">
                     <div className="w-9 h-1 rounded-full bg-white/20" />
                     <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
