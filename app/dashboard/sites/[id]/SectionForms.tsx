@@ -306,7 +306,10 @@ async function generateFieldText(
       tenant_id: activeTenantId,
     }),
   }, token);
-  if (res.status !== "success" || !res.data?.section) return null;
+  if (res.status !== "success") {
+    throw new Error(res.message || "AI gagal memproses.");
+  }
+  if (!res.data?.section) return null;
   const updated = res.data.section;
   // Return the specific field value from the updated section
   return updated[fieldKey] ?? null;
