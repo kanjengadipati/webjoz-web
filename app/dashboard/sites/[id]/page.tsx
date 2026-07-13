@@ -2032,7 +2032,7 @@ export default function SiteEditorPage() {
                 {tenantUsage && (
                   <div className="border-t border-white/10 px-3.5 py-2.5 space-y-2">
                     <div className="flex items-center gap-1.5">
-                      <Database className="h-3 w-3 text-primary" />
+                      <SparkleGenAI className="h-3 w-3 text-primary" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         AI Usage
                       </span>
@@ -3057,7 +3057,8 @@ export default function SiteEditorPage() {
             {tenantUsage && (
               <div className="flex-shrink-0 border-t border-white/10 px-3.5 py-2 bg-[#111318]">
                 <div className="flex items-center gap-2.5">
-                  <Database className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                  <SparkleGenAI className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary shrink-0">AI Usage</span>
                   <div className="flex flex-1 items-center gap-3">
                     {[
                       { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-amber-500" },
