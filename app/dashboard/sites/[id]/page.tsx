@@ -2060,14 +2060,14 @@ export default function SiteEditorPage() {
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-400">Section Regen</span>
                           <span className="font-semibold text-slate-200">
-                            {(tenantUsage.usage.section_regen_count ?? 0)} / {tenantUsage.max_section_regens <= 0 ? "∞" : tenantUsage.max_section_regens}
+                            {(tenantUsage.usage.section_regen_count ?? 0)} / {(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                           <div
                             className="h-full rounded-full bg-violet-500 transition-all duration-500"
                             style={{
-                              width: `${tenantUsage.max_section_regens <= 0
+                              width: `${(tenantUsage.max_section_regens ?? 0) <= 0
                                 ? 100
                                 : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%`,
                             }}
@@ -2078,7 +2078,7 @@ export default function SiteEditorPage() {
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-400">Design Regen</span>
                           <span className="font-semibold text-slate-200">
-                            {(tenantUsage.usage.design_regen_count ?? 0)} / {tenantUsage.max_design_regens <= 0 ? "∞" : tenantUsage.max_design_regens}
+                            {(tenantUsage.usage.design_regen_count ?? 0)} / {(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
