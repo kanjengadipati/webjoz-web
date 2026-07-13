@@ -2914,7 +2914,8 @@ export default function SiteEditorPage() {
               )}
             </div>
 
-            {/* AI bar sticky bottom */}
+            {/* AI bar sticky bottom — hanya tampil kalau aiPromptCollapsed=false */}
+            {!aiPromptCollapsed && (
             <div className="flex-shrink-0 px-3.5 pb-3 pt-2 border-t border-white/10 bg-[#111318] space-y-1.5">
               {activeSuggestions.length > 0 && (
                 <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
@@ -2957,7 +2958,23 @@ export default function SiteEditorPage() {
                 </button>
               </div>
             </div>
+            )}
           </div>
+
+          {/* Floating AI button — mobile only, melayang tepat di atas drawer */}
+          {!sheetCollapsed && (
+            <button
+              type="button"
+              onClick={() => setAiPromptCollapsed(prev => !prev)}
+              className={`md:hidden absolute right-4 z-[49] flex items-center justify-center w-10 h-10 rounded-full shadow-lg transition-all active:scale-95 ${aiPromptCollapsed ? "bg-primary text-primary-foreground" : "bg-primary/20 border border-primary/40 text-primary"}`}
+              style={{ bottom: `calc(${sheetExpanded ? "88%" : "48%"} + 12px)` }}
+              aria-label="Toggle AI Prompt"
+              title={aiPromptCollapsed ? "Buka AI Prompt" : "Tutup AI Prompt"}
+            >
+              {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SparkleGenAI className="w-5 h-5" />}
+            </button>
+          )}
+
         {/* Desktop sticky publish footer — inside canvas */}
         <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
           <SiteSubNav siteId={siteId!} compact />
