@@ -2693,12 +2693,10 @@ export default function SiteEditorPage() {
               }}
             >
               {sheetCollapsed ? (
-                <>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-9 h-1 rounded-full bg-white/20" />
-                    <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
-                  </div>
-                </>
+                <div className="flex w-full justify-center items-center gap-1.5">
+                  <div className="w-9 h-1 rounded-full bg-white/20" />
+                  <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
+                </div>
               ) : (
                 <div className="flex w-full justify-center">
                   <div className="w-9 h-1 rounded-full bg-white/20" />
