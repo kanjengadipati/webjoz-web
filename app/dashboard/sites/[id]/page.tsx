@@ -2674,6 +2674,86 @@ export default function SiteEditorPage() {
             <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-2.5 scrollbar-none">
               {editorTab === "content" ? (
                 <>
+                {/* Show/Hide section toggle */}
+                {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
+                  <div className="flex items-center justify-between py-1 border-b border-white/10">
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => toggleSectionVisibility(activeTab)}
+                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                      style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
+                    >
+                      {hiddenSections.includes(activeTab)
+                        ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
+                        : <><Eye className="w-3 h-3" /> Sembunyikan</>
+                      }
+                    </button>
+                  </div>
+                )}
+
+                {/* Quality issues detail */}
+                {quality.issues.length > 0 && (
+                  <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-amber-300">⚠️ {quality.issues.length} field perlu dicek</span>
+                      <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold text-amber-200">{quality.score}%</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {quality.issues.map((issue) => (
+                        <button
+                          key={issue.path}
+                          type="button"
+                          onClick={() => {
+                            const section = issue.path.split(".")[0];
+                            selectSection(section);
+                            setTimeout(() => {
+                              const el = document.getElementById(`field-${issue.path}`);
+                              if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+                            }, 100);
+                          }}
+                          className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition"
+                        >
+                          {issue.label} <span className="text-[9px] opacity-60">→</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Section reorder — up/down arrows */}
+                {BODY_SECTION_KEYS.includes(activeTab) && (
+                  <div className="flex items-center gap-2 py-1 border-b border-white/10">
+                    <span className="text-[10px] text-slate-500 flex-1">Urutan section</span>
+                    {(() => {
+                      const order = getOrderedSections(designToken, content, getHiddenSections()).filter(k => BODY_SECTION_KEYS.includes(k));
+                      const idx = order.indexOf(activeTab);
+                      return (
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            disabled={idx <= 0 || !!pendingDiff}
+                            onClick={() => handleReorderSection(activeTab, order[idx - 1])}
+                            className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                          >
+                            <ChevronUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx >= order.length - 1 || !!pendingDiff}
+                            onClick={() => handleReorderSection(activeTab, order[idx + 1])}
+                            className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                          >
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
                 <SectionForms
                   activeTab={activeTab}
                   content={content}
@@ -2731,79 +2811,244 @@ export default function SiteEditorPage() {
                 </>
               ) : (
                 <div className="space-y-3 pb-2">
-                  {/* Palette */}
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
-                  {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
-                    <div key={colorKey} className="flex items-center gap-2">
-                      <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-20 shrink-0">
-                        {colorKey === "primary" ? "Primary" : colorKey === "accent" ? "Accent" : colorKey === "background" ? "Latar" : colorKey === "surface" ? "Surface" : "Teks"}
-                      </label>
-                      <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
-                        <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
-                          onChange={(e) => handleColorChange(colorKey, e.target.value)}
-                          ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
-                        <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
+                  {/* Dark/Light mode toggle */}
+                  <button
+                    onClick={() => {
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => ({
+                        ...(prev || {}),
+                        theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
+                      }));
+                    }}
+                    className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
+                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                      : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+                  >
+                    {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                    {designToken?.theme_mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                  </button>
+
+                  {/* Gaya Situs */}
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
+                      <div className="flex items-center gap-1.5">
+                        {designOnlyUndo.length > 0 && (
+                          <button type="button" onClick={handleDesignUndo} aria-label="Undo Desain"
+                            className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white">
+                            <RotateCcw className="h-2.5 w-2.5" />
+                          </button>
+                        )}
+                        {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
                       </div>
-                      <input type="text" value={designToken?.palette?.[colorKey] || ""}
-                        onChange={(e) => handleColorChange(colorKey, e.target.value)}
-                        onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
-                        className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
                     </div>
-                  ))}
-                  {/* Typography */}
-                  <div className="border-t border-white/10 my-2" />
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tipografi</p>
+                    <button type="button"
+                      onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
+                      disabled={templateSaving || !!pendingDiff}
+                      className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-10 flex-shrink-0">
+                        <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
+                        <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
+                      </div>
+                      <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {templatePickerOpen && (
+                      <div className="mt-2 space-y-2 max-h-64 overflow-y-auto pr-1">
+                        {dynamicTemplate && (() => {
+                          const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
+                          return (
+                            <button key="top-dynamic-template" type="button"
+                              onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
+                              disabled={templateSaving}
+                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
+                              <div className="mt-1.5 flex items-start gap-2">
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-[11px] font-bold text-slate-100">AI Design Engine</p>
+                                  <p className="truncate text-[10px] text-slate-500">Latest AI Generated</p>
+                                </div>
+                                {isTopActive && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
+                              </div>
+                            </button>
+                          );
+                        })()}
+                        {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
+                          const active = template.id === siteDetails.template_id;
+                          return (
+                            <button key={template.id} type="button"
+                              onClick={() => void handleTemplateChange(template.id)}
+                              disabled={templateSaving}
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
+                              <div className="mt-1.5 flex items-start gap-2">
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-[11px] font-bold text-slate-100">{template.name}</p>
+                                  <p className="mt-0.5 line-clamp-1 text-[10px] text-slate-500">{template.description}</p>
+                                </div>
+                                {active && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {!templatePickerOpen && (
+                      <div className="mt-1.5">
+                        {!aiDesignPromptOpen ? (
+                          <button type="button"
+                            onClick={() => requirePremium("ai_design", () => setAiDesignPromptOpen(true))}
+                            disabled={aiLoading || !!pendingDiff}
+                            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50">
+                            <SparkleGenAI className="h-[16px] w-[16px]" />
+                            Regenerate dengan AI
+                          </button>
+                        ) : (
+                          <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-primary">AI Design Prompt</span>
+                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-slate-400 hover:text-slate-200">Batal</button>
+                            </div>
+                            <input type="text" value={aiDesignInstructions}
+                              onChange={(e) => setAiDesignInstructions(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign(); }}
+                              placeholder="cth: tema kopi vintage hangat..."
+                              className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
+                              disabled={aiLoading || !!pendingDiff} />
+                            <button type="button" onClick={() => void handleAiRegenerateDesign()}
+                              disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
+                              className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground text-[11px] font-semibold disabled:opacity-50">
+                              {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <SparkleGenAI className="w-[16px] h-[16px]" />}
+                              {aiLoading ? "Memproses..." : "Terapkan Gaya"}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="border-t border-white/10" />
+
+                  {/* ColorPatternPicker */}
+                  <ColorPatternPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={applyColorPattern}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.palette) return;
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                        if (latestAiDesignToken.theme_mode) next.theme_mode = latestAiDesignToken.theme_mode;
+                        return next;
+                      });
+                    }}
+                  />
+
+                  {/* Manual color pickers */}
                   <div className="space-y-2">
-                    <div className="space-y-1">
-                      <FontPicker
-                        value={designToken?.typography?.heading_font || "Inter"}
-                        onChange={(v) => updateDesignTokenField("typography", "heading_font", v)}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <FontPicker
-                        value={designToken?.typography?.body_font || "Inter"}
-                        onChange={(v) => updateDesignTokenField("typography", "body_font", v)}
-                      />
-                    </div>
-                    <select value={designToken?.typography?.heading_weight || "700"}
-                      onChange={(e) => updateDesignTokenField("typography", "heading_weight", e.target.value)}
+                    {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
+                      <div key={colorKey} className="flex items-center gap-2">
+                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-16 shrink-0">
+                          {colorKey === "primary" ? "Primary" : colorKey === "accent" ? "Accent" : colorKey === "background" ? "Latar" : colorKey === "surface" ? "Surface" : "Teks"}
+                        </label>
+                        <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
+                          <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
+                            onChange={(e) => handleColorChange(colorKey, e.target.value)}
+                            ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
+                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                          <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
+                        </div>
+                        <input type="text" value={designToken?.palette?.[colorKey] || ""}
+                          onChange={(e) => handleColorChange(colorKey, e.target.value)}
+                          onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
+                          className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-white/10" />
+
+                  {/* IndustryPresetPicker */}
+                  <IndustryPresetPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={applyIndustryPreset}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                        if (latestAiDesignToken.theme_mode) next.theme_mode = latestAiDesignToken.theme_mode;
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
+                      });
+                    }}
+                  />
+
+                  <div className="border-t border-white/10" />
+
+                  {/* TypographyPairingPicker */}
+                  <TypographyPairingPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={(pairing) => applyTypographyBatch({
+                      heading_font: pairing.heading_font,
+                      body_font: pairing.body_font,
+                      heading_weight: pairing.heading_weight,
+                      heading_size_hero: pairing.heading_size_hero,
+                      heading_style: pairing.heading_style ?? "normal",
+                      heading_transform: pairing.heading_transform ?? "none",
+                      heading_tracking: pairing.heading_tracking ?? "normal",
+                    })}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.typography) return;
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
+                      });
+                    }}
+                    onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
+                  />
+
+                  <div className="border-t border-white/10" />
+
+                  {/* Tata Letak */}
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tata Letak</p>
+                    <select value={designToken?.layout?.corner_radius || "soft"}
+                      onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      {["400", "500", "600", "700", "800"].map((w) => <option key={w} value={w} className="bg-[#111318]">Weight {w}</option>)}
+                      <option value="sharp">Tajam (0px)</option><option value="soft">Lembut (8px)</option><option value="rounded">Bulat (20px)</option>
                     </select>
-                    <select value={designToken?.typography?.heading_size_hero || "3rem"}
-                      onChange={(e) => updateDesignTokenField("typography", "heading_size_hero", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 text-[11px]">
-                      <option value="2rem" className="bg-[#111318]">Ukuran Hero: Kecil</option>
-                      <option value="2.5rem" className="bg-[#111318]">Ukuran Hero: Sedang</option>
-                      <option value="3rem" className="bg-[#111318]">Ukuran Hero: Besar</option>
-                      <option value="3.5rem" className="bg-[#111318]">Ukuran Hero: Sangat Besar</option>
-                      <option value="4rem" className="bg-[#111318]">Ukuran Hero: Maksimal</option>
+                    <select value={designToken?.layout?.section_spacing || "normal"}
+                      onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
+                      <option value="compact">Rapat</option><option value="normal">Normal</option><option value="relaxed">Longgar</option>
+                    </select>
+                    <select value={designToken?.layout?.hero_style || "centered"}
+                      onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
+                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
+                      <option value="centered" className="bg-[#111318]">Hero: Centered</option>
+                      <option value="split" className="bg-[#111318]">Hero: Split Screen</option>
+                      <option value="full-bleed" className="bg-[#111318]">Hero: Full Bleed</option>
+                      <option value="minimal" className="bg-[#111318]">Hero: Minimalist</option>
                     </select>
                   </div>
-                  {/* Layout */}
-                  <div className="border-t border-white/10 my-2" />
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tata Letak</p>
-                  <select value={designToken?.layout?.corner_radius || "soft"}
-                    onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                    <option value="sharp">Tajam (0px)</option><option value="soft">Lembut (8px)</option><option value="rounded">Bulat (20px)</option>
-                  </select>
-                  <select value={designToken?.layout?.section_spacing || "normal"}
-                    onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                    <option value="compact">Rapat</option><option value="normal">Normal</option><option value="relaxed">Longgar</option>
-                  </select>
-                  <select value={designToken?.layout?.hero_style || "centered"}
-                    onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                    className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                    <option value="centered" className="bg-[#111318]">Hero: Centered</option>
-                    <option value="split" className="bg-[#111318]">Hero: Split Screen</option>
-                    <option value="full-bleed" className="bg-[#111318]">Hero: Full Bleed</option>
-                    <option value="minimal" className="bg-[#111318]">Hero: Minimalist</option>
-                  </select>
-                <div className="border-t border-white/10 my-2" />
                 </div>
               )}
             </div>
