@@ -214,7 +214,11 @@ export function SocialAuthButtons({
 
     if (layout === "grid") {
       const hidden = document.getElementById(hiddenGoogleContainerId);
-      if (!hidden) return;
+      if (!hidden) {
+        // DOM not ready yet — retry on next frame
+        requestAnimationFrame(() => renderGoogleButton());
+        return;
+      }
       hidden.innerHTML = "";
       google.accounts.id.renderButton(hidden, {
         theme: "outline",
@@ -228,7 +232,11 @@ export function SocialAuthButtons({
     }
 
     const container = document.getElementById(googleContainerId);
-    if (!container) return;
+    if (!container) {
+      // DOM not ready yet — retry on next frame
+      requestAnimationFrame(() => renderGoogleButton());
+      return;
+    }
     container.innerHTML = "";
     google.accounts.id.renderButton(container, {
       theme: "filled_blue",
@@ -281,9 +289,17 @@ export function SocialAuthButtons({
           },
         });
       }
+      // Always re-render the button — container may have been re-mounted
       renderGoogleButton();
     }
   }, [pushToast, router, mode, onErrorMessageChange, setLocalLoading, renderGoogleButton]);
+
+  // Reset google initialized flag on unmount so re-mounting reinitializes properly
+  useEffect(() => {
+    return () => {
+      window.__googleInitialized = false;
+    };
+  }, []);
 
   // If the GIS script loads after a route transition, initialize/render once.
   useEffect(() => {
