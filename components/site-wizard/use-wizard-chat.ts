@@ -34,6 +34,47 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
 
+  // ── Voice Input (STT) ──
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const startRecording = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "id-ID";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+
+    recognition.onresult = (event: any) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      setInputValue(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onerror = () => {
+      setIsRecording(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    setIsRecording(true);
+    recognition.start();
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  };
+
   const hasAskedNameConfirmRef = useRef(false);
 
   // Refs for stale closure protection (synced by callers via syncChatRefs)
@@ -54,6 +95,9 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     return () => {
       if (activeTypingCancellerRef.current) {
         activeTypingCancellerRef.current();
+      }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
       }
     };
   }, []);
@@ -417,6 +461,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     awaitingInferenceConfirm,
     typeWasInferred,
     setTypeWasInferred,
+    // Voice Input
+    isRecording,
+    startRecording,
+    stopRecording,
     // Refs
     inputRef,
     chatEndRef,
