@@ -385,7 +385,7 @@ export function SocialAuthButtons({
       )}
 
       {layout === "grid" ? (
-        <div className="grid grid-cols-2 gap-3.5 my-4">
+        <div className={`grid gap-3.5 my-4 ${hasGoogle && hasFacebook ? "grid-cols-2" : "grid-cols-1"}`}>
           {hasGoogle && (
             <div className="relative">
               <div
