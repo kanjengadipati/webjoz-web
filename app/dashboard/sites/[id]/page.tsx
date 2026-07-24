@@ -2135,12 +2135,24 @@ export default function SiteEditorPage() {
                 </span>
               )}
               {siteDetails?.status === "published" ? (
-                <span className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    Live
                   </span>
-                  Live
+                  <button
+                    type="button"
+                    onClick={() => setConfirmPublishOpen(true)}
+                    disabled={publishing}
+                    className="flex h-7 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
+                    style={{ background: "var(--primary)" }}
+                  >
+                    <Rocket className="w-3 h-3" />
+                    Terapkan
+                  </button>
                 </span>
               ) : (
                 <button
@@ -2294,24 +2306,36 @@ export default function SiteEditorPage() {
             </button>
             {/* Publish button / Live badge — right side */}
             {siteDetails?.status === "published" ? (
-              <button
-                type="button"
-                onClick={() => {
-                  if (!siteDetails?.subdomain) return;
-                  const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
-                  const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
-                    ? "webjoz.com"
-                    : host.substring(host.indexOf(".") + 1);
-                  window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
-                }}
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
-              >
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                Live
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!siteDetails?.subdomain) return;
+                    const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
+                    const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
+                      ? "webjoz.com"
+                      : host.substring(host.indexOf(".") + 1);
+                    window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
+                  }}
+                  className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
+                >
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  Live
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmPublishOpen(true)}
+                  disabled={publishing}
+                  className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
+                  style={{ background: "var(--primary)" }}
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  Publikasikan
+                </button>
+              </div>
             ) : (
               <button
                 type="button"
