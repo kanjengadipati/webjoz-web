@@ -83,6 +83,7 @@ export default function SiteEditorPage() {
   const [qualityModalOpen, setQualityModalOpen] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
 
+  const isInlineEditingRef = useRef(false);
   const collapseSheetForInlineEdit = useCallback(() => {
     setSheetCollapsed(true);
     setSheetExpanded(false);
@@ -2431,6 +2432,7 @@ export default function SiteEditorPage() {
               }
             }}
             onScroll={() => {
+              if (isInlineEditingRef.current) return;
               if (sheetExpanded) { setSheetExpanded(false); return; }
               const container = document.getElementById("preview-scroll-container");
               if (!container) return;
@@ -2502,6 +2504,9 @@ export default function SiteEditorPage() {
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
+                      onUpdateField={updateField}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
                       isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
@@ -2537,6 +2542,9 @@ export default function SiteEditorPage() {
                       activeSection={activeTab}
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
+                      onUpdateField={updateField}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
                       isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
@@ -2553,6 +2561,9 @@ export default function SiteEditorPage() {
                   activeSection={activeTab}
                   onSelectSection={handlePreviewSelectSection}
                   onRegenSection={handleRegenWithPremiumCheck}
+                  onUpdateField={updateField}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                   onSubmitLead={async () => { }}
                   isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                 />

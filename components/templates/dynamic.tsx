@@ -62,7 +62,8 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 export const TemplateDynamic: React.FC<TemplateProps> = ({
   content, design_token,
   onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
+  isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const dt = design_token ?? null;
   const { header, footer, seo } = content;
@@ -107,7 +108,17 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ hero: h, dt }} render={(data) => {
               const { hero: hh, dt: dd } = data;
-              return <HeroSection hero={hh} design_token={dt} />;
+              return (
+                <HeroSection
+                  hero={hh}
+                  design_token={dt}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "hero"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
             }} />
           </MemoPreviewSectionWrapper>
         );
@@ -118,7 +129,17 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ about: a, dt }} render={(data) => {
               const { about: aa } = data;
-              return <AboutSectionInner about={aa} design_token={dt} />;
+              return (
+                <AboutSectionInner
+                  about={aa}
+                  design_token={dt}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "about"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
             }} />
           </MemoPreviewSectionWrapper>
         );

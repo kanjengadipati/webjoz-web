@@ -4,8 +4,20 @@ import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
+import { InlineText } from "../../templates/shared";
 
-export default function ClassicSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
+export default function ClassicSplit({
+  contact: c,
+  onSubmitLead,
+  leadSubmitting,
+  leadSuccess,
+  leadError,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: ContactVariantProps) {
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
@@ -43,9 +55,18 @@ export default function ClassicSplit({ contact: c, onSubmitLead, leadSubmitting,
             <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}>
               Hubungi Kami
             </span>
-            <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: 0, marginBottom: "1rem" } as any}>
-              {c.title}
-            </h2>
+            <InlineText
+              section="contact"
+              fieldKey="title"
+              value={c.title}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: 0, marginBottom: "1rem" } as any}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
             <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
               Punya pertanyaan atau ingin diskusi? Kirim pesan dan kami akan merespons dalam waktu 24 jam.
             </p>

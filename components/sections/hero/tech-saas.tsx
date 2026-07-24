@@ -24,7 +24,17 @@ const TAB_LABELS: Record<Tab, string> = {
  * Auto-cycles through dashboard tabs every 2.5s.
  * Business filter: only used for tech/startup/digital businesses.
  */
-export default function HeroTechSaaS({ hero: h, design_token }: HeroVariantProps) {
+import { InlineText, InlineImage } from "../../templates/shared";
+
+export default function HeroTechSaaS({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
@@ -115,36 +125,56 @@ export default function HeroTechSaaS({ hero: h, design_token }: HeroVariantProps
           </motion.div>
         )}
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            fontFamily: "var(--dt-heading-font)",
-            fontWeight: "var(--dt-heading-weight)" as any,
-            fontSize: "clamp(2.25rem, 6vw, 4rem)",
-            lineHeight: 1.1,
-            color: "var(--dt-text)",
-            margin: 0,
-          }}
         >
-          {h.headline}
-        </motion.h1>
+          <InlineText
+            section="hero"
+            fieldKey="headline"
+            value={h.headline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h1"
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(2.25rem, 6vw, 4rem)",
+              lineHeight: 1.1,
+              color: "var(--dt-text)",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          style={{
-            fontSize: "clamp(0.9rem, 2vw, 1.05rem)",
-            color: "var(--dt-text-muted)",
-            lineHeight: 1.7,
-            maxWidth: "34rem",
-            margin: 0,
-          }}
         >
-          {h.subheadline}
-        </motion.p>
+          <InlineText
+            section="hero"
+            fieldKey="subheadline"
+            value={h.subheadline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="p"
+            style={{
+              fontSize: "clamp(0.9rem, 2vw, 1.05rem)",
+              color: "var(--dt-text-muted)",
+              lineHeight: 1.7,
+              maxWidth: "34rem",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -167,7 +197,17 @@ export default function HeroTechSaaS({ hero: h, design_token }: HeroVariantProps
               fontSize: "0.875rem",
             }}
           >
-            {h.cta_text} <ArrowRight style={{ width: 16, height: 16 }} />
+            <InlineText
+              section="hero"
+              fieldKey="cta_text"
+              value={h.cta_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            /> <ArrowRight style={{ width: 16, height: 16 }} />
           </a>
           {hasSecondary && (
             <a

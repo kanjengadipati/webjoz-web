@@ -8,7 +8,9 @@ import AboutStatHeavy from "./stat-heavy";
 import AboutTimeline from "./timeline";
 import AboutTeamGrid from "./team-grid";
 
-const variants: Record<string, ComponentType<{ about: TemplateProps["content"]["about"]; design_token?: DesignToken | null }>> = {
+import type { AboutVariantProps } from "./classic";
+
+const variants: Record<string, ComponentType<AboutVariantProps>> = {
   classic: AboutClassic,
   "split-image": AboutSplitImage,
   "stat-heavy": AboutStatHeavy,
@@ -16,8 +18,26 @@ const variants: Record<string, ComponentType<{ about: TemplateProps["content"]["
   "team-grid": AboutTeamGrid,
 };
 
-export default function AboutSection({ about, design_token }: { about: TemplateProps["content"]["about"]; design_token?: DesignToken | null }) {
+export default function AboutSection({
+  about,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: AboutVariantProps) {
   const variant = design_token?.layout?.section_variants?.about ?? "classic";
   const Renderer = variants[variant] ?? AboutClassic;
-  return <Renderer about={about} design_token={design_token} />;
+  return (
+    <Renderer
+      about={about}
+      design_token={design_token}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }
