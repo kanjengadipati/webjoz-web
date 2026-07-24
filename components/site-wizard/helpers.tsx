@@ -335,6 +335,12 @@ export function isLikelyGibberish(input: string): boolean {
   return score >= 2;
 }
 
+// Escape regex special chars, then match as whole word (word boundary)
+function matchesKeyword(text: string, keyword: string): boolean {
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+}
+
 // Suggest business type/subtype from name keywords. Uses NAME_TYPE_HINTS from constants.
 import { NAME_TYPE_HINTS } from "./constants";
 import type { InferenceResult } from "./types";
@@ -343,7 +349,7 @@ export function suggestTypeFromName(name: string): { type?: string; subType?: st
   const s = (name || "").toLowerCase();
   if (!s) return null;
   for (const key of Object.keys(NAME_TYPE_HINTS)) {
-    if (s.includes(key)) return NAME_TYPE_HINTS[key];
+    if (matchesKeyword(s, key)) return NAME_TYPE_HINTS[key];
   }
   return null;
 }
@@ -402,7 +408,7 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
   const typeScores: Record<string, { totalWeight: number; matchedSubTypes: Set<string> }> = {};
 
   for (const hint of DESC_HINTS) {
-    if (hint.keywords.some(k => s.includes(k))) {
+    if (hint.keywords.some(k => matchesKeyword(s, k))) {
       if (!typeScores[hint.type]) typeScores[hint.type] = { totalWeight: 0, matchedSubTypes: new Set() };
       typeScores[hint.type].totalWeight += hint.weight;
       if (hint.subType) typeScores[hint.type].matchedSubTypes.add(hint.subType);
@@ -411,7 +417,7 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
 
   // Broader type-only keywords (lower weight)
   for (const hint of DESC_TYPE_HINTS) {
-    if (hint.keywords.some(k => s.includes(k))) {
+    if (hint.keywords.some(k => matchesKeyword(s, k))) {
       if (!typeScores[hint.type]) typeScores[hint.type] = { totalWeight: 0, matchedSubTypes: new Set() };
       typeScores[hint.type].totalWeight += hint.weight;
     }
@@ -429,7 +435,7 @@ export function inferTypeFromDescription(desc: string): InferenceResult {
 
   // After determining topType, find the best subType *within that type*:
   const bestSubTypeForTopType = DESC_HINTS
-    .filter(h => h.type === topType && h.subType && h.keywords.some(k => s.includes(k)))
+    .filter(h => h.type === topType && h.subType && h.keywords.some(k => matchesKeyword(s, k)))
     .sort((a, b) => b.weight - a.weight)[0];
 
   // Confidence determination
