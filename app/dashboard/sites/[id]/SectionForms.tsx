@@ -1845,12 +1845,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "seo.title"}
-                onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
-                title="AI: generate SEO title"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {isPremium && (
+                <AiFieldButton
+                  loading={aiLoadingField === "seo.title"}
+                  onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
+                  title="AI: generate SEO title"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              )}
             </label>
             <input 
               id="field-seo.title"
@@ -1872,12 +1874,14 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiFieldButton
-                loading={aiLoadingField === "seo.description"}
-                onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
-                title="AI: generate meta description"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
+              {isPremium && (
+                <AiFieldButton
+                  loading={aiLoadingField === "seo.description"}
+                  onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
+                  title="AI: generate meta description"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
+              )}
             </label>
             <textarea 
               id="field-seo.description"
@@ -1898,7 +1902,7 @@ export default function SectionForms({
             keywords={content.seo?.keywords || []}
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
-            onAiGenerate={() => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO")}
+            onAiGenerate={isPremium ? () => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
@@ -2092,9 +2096,39 @@ export default function SectionForms({
               type="text"
               value={content.seo?.canonical_path || "/"}
               onChange={(e) => updateField("seo", "canonical_path", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
               placeholder="/"
             />
+          </div>
+
+          {/* Custom Robots.txt (Pro) */}
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span className="flex items-center gap-1.5">
+                Custom Robots.txt
+                {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
+              </span>
+            </label>
+            {isPremium ? (
+              <textarea
+                rows={5}
+                value={content.seo?.custom_robots_txt || ""}
+                onChange={(e) => updateField("seo", "custom_robots_txt", e.target.value)}
+                className="w-full px-2.5 py-1.5 border rounded-md text-[11px] font-mono outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none"
+                placeholder={"User-agent: *\nAllow: /\n\nSitemap: https://namabisnis.webjoz.com/sitemap.xml"}
+              />
+            ) : (
+              <div
+                className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+                onClick={() => onUpgradeRequired?.()}
+              >
+                <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
+                  <Lock className="w-3 h-3" />
+                  Kustomisasi robots.txt untuk situs Anda
+                </div>
+                <p>Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.</p>
+              </div>
+            )}
           </div>
 
           {/* ── SEO Booster Upsell Card ── */}

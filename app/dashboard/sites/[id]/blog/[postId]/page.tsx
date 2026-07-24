@@ -26,6 +26,7 @@ interface BlogPost {
   cover_image_url: string;
   seo_title: string;
   seo_description: string;
+  noindex: boolean;
   status: string;
   published_at: string | null;
   created_at: string;
@@ -60,12 +61,13 @@ export default function EditBlogPostPage() {
   const { id, postId } = useParams();
   const router = useRouter();
   const token = useAuthToken();
-  const { activeTenantId } = useActiveTenant();
+  const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const siteId = Number(id);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
+  const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -80,6 +82,7 @@ export default function EditBlogPostPage() {
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  const [noindex, setNoindex] = useState(false);
 
   const [html, setHtml] = useState("");
 
@@ -100,6 +103,7 @@ export default function EditBlogPostPage() {
           setCoverImageUrl(p.cover_image_url || "");
           setSeoTitle(p.seo_title || "");
           setSeoDescription(p.seo_description || "");
+          setNoindex(p.noindex || false);
         }
       } catch (err: any) {
         pushToast(err.message || "Gagal memuat postingan", "error");
@@ -131,7 +135,7 @@ export default function EditBlogPostPage() {
       await request(`/sites/${siteId}/blog-posts/${postId}`, {
         method: "PUT",
         headers: tenantHeaders,
-        body: JSON.stringify({ title, content, excerpt, cover_image_url: coverImageUrl, seo_title: seoTitle, seo_description: seoDescription }),
+        body: JSON.stringify({ title, content, excerpt, cover_image_url: coverImageUrl, seo_title: seoTitle, seo_description: seoDescription, noindex }),
       }, token);
       setLastSaved(new Date());
       setDirty(false);
@@ -140,7 +144,7 @@ export default function EditBlogPostPage() {
     } finally {
       setSaving(false);
     }
-  }, [siteId, postId, token, activeTenantId, title, content, excerpt, coverImageUrl, seoTitle, seoDescription]);
+  }, [siteId, postId, token, activeTenantId, title, content, excerpt, coverImageUrl, seoTitle, seoDescription, noindex]);
 
   const handleSave = () => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -415,6 +419,35 @@ export default function EditBlogPostPage() {
               maxLength={500}
               className="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-background resize-y"
             />
+          </div>
+          {/* Noindex toggle (Pro) */}
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-medium text-muted-foreground">Noindex (Sembunyi dari Google)</span>
+                {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
+              </div>
+              <p className="text-[10px] text-muted-foreground/60">Halaman ini tidak akan muncul di hasil pencarian Google.</p>
+            </div>
+            {isPremium ? (
+              <button
+                type="button"
+                role="switch"
+                aria-checked={noindex}
+                onClick={() => { setNoindex(!noindex); markDirty(); }}
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${noindex ? "bg-primary" : "bg-white/20"}`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${noindex ? "translate-x-4" : "translate-x-1"}`} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => router.push("/dashboard/upgrade")}
+                className="flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-semibold hover:bg-amber-500/20 transition-colors cursor-pointer"
+              >
+                <Lock className="w-3 h-3" /> Pro
+              </button>
+            )}
           </div>
         </div>
       </div>
