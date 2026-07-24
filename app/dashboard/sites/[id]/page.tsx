@@ -78,12 +78,15 @@ export default function SiteEditorPage() {
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [mobileView, setMobileView] = useState<"edit" | "preview">(
-    typeof window !== "undefined" && window.innerWidth < 768 ? "preview" : "edit"
-  );
   const [sheetExpanded, setSheetExpanded] = useState(false);
-  const [sheetCollapsed, setSheetCollapsed] = useState(false);
+  const [sheetCollapsed, setSheetCollapsed] = useState(true);
+  const [qualityModalOpen, setQualityModalOpen] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
+
+  const collapseSheetForInlineEdit = useCallback(() => {
+    setSheetCollapsed(true);
+    setSheetExpanded(false);
+  }, []);
   const [aiPromptCollapsed, setAiPromptCollapsed] = useState(true);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
@@ -870,9 +873,6 @@ export default function SiteEditorPage() {
     selectSection(section, false);
     if (window.innerWidth < 768) {
       setSheetCollapsed(false);
-      setSheetExpanded(true);
-    } else {
-      setMobileView("edit");
     }
   }, [selectSection]);
 
@@ -1226,10 +1226,9 @@ export default function SiteEditorPage() {
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
-        {/* ════ LEFT SIDEBAR ════ */}
+        {/* ════ LEFT SIDEBAR (Desktop) ════ */}
         <div
-          className={`absolute inset-0 z-20 flex h-full w-full flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${mobileView === "preview" ? "-translate-x-full" : "translate-x-0"
-            }`}
+          className="hidden md:flex md:w-[380px] md:relative md:inset-auto md:z-10 flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl"
           style={{ borderColor: "rgba(255,255,255,0.07)" }}
         >
 
@@ -2104,8 +2103,7 @@ export default function SiteEditorPage() {
 
         {/* ════ RIGHT CANVAS ════ */}
         <div
-          className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${mobileView === "preview" ? "translate-x-0" : "translate-x-full"
-            }`}
+          className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14]"
           style={{
             // Mobile: float above the bottom sheet drawer
             // Desktop: float just above the sticky publish footer (~56px = 3.5rem)
@@ -2113,11 +2111,11 @@ export default function SiteEditorPage() {
             "--floating-bottom-desktop": "5rem",
           } as React.CSSProperties}
         >          {/* Mobile topbar */}
-          <div className="flex md:hidden h-[52px] flex-shrink-0 items-center gap-2.5 border-b border-white/10 bg-[#111318] px-3 pt-2">
+          <div className="flex md:hidden h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#111318] px-3">
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95"
               aria-label="Kembali"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -2128,10 +2126,20 @@ export default function SiteEditorPage() {
             </div>
             <div className="flex items-center gap-1.5">
               {autosaveStatus !== "idle" && (
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${autosaveStatus === "saving" ? "text-amber-300" : autosaveStatus === "saved" ? "text-emerald-400" : "text-red-300"}`}>
-                  {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
-                  {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
-                  {autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal"}
+                <span
+                  title={autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal menyimpan"}
+                  aria-label={autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal menyimpan"}
+                  className={`flex h-6 w-6 items-center justify-center rounded-full border ${
+                    autosaveStatus === "saving"
+                      ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
+                      : autosaveStatus === "saved"
+                      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                      : "border-red-500/30 bg-red-500/10 text-red-300"
+                  }`}
+                >
+                  {autosaveStatus === "saving" && <Loader2 className="h-3 w-3 animate-spin" />}
+                  {autosaveStatus === "saved" && <Check className="h-3 w-3" />}
+                  {autosaveStatus === "error" && <AlertCircle className="h-3 w-3" />}
                 </span>
               )}
               {siteDetails?.status === "published" ? (
@@ -2555,103 +2563,130 @@ export default function SiteEditorPage() {
           {/* Mobile bottom sheet */}
           <div
             data-mobile-sheet
-            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden"
-            style={{ maxHeight: sheetCollapsed ? "64px" : sheetExpanded ? "88%" : "48%" }}
+            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
+            style={{ maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%" }}
           >
-            {/* Drag handle / collapse bar — also shows section title when collapsed */}
-            <div
-              className="flex items-center justify-between px-4 pt-2 pb-1.5 flex-shrink-0 cursor-pointer select-none"
-              onClick={() => {
-                if (sheetCollapsed) {
-                  setSheetCollapsed(false);
-                } else {
-                  setSheetExpanded(!sheetExpanded);
-                }
-              }}
-            >
-              {sheetCollapsed ? (
-                <div className="flex w-full justify-center items-center gap-1.5">
-                  <div className="w-9 h-1 rounded-full bg-white/20" />
-                  <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
-                </div>
+            {/* Drag handle & header bar */}
+            <div className="flex items-center justify-between px-3 pt-1.5 pb-1 flex-shrink-0 select-none">
+              {/* Quality score badge (Left) */}
+              {quality.issues.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setQualityModalOpen(true);
+                  }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95"
+                  title="Lihat kelengkapan konten"
+                >
+                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                  <span>{quality.score}%</span>
+                </button>
               ) : (
-                <div className="flex w-full justify-center">
-                  <div className="w-9 h-1 rounded-full bg-white/20" />
-                </div>
+                <div className="w-12 flex-shrink-0" />
               )}
+
+              {/* Drag handle bar (Center) */}
+              <div
+                className="flex items-center justify-center py-1 cursor-pointer flex-1"
+                onClick={() => {
+                  if (sheetCollapsed) {
+                    setSheetCollapsed(false);
+                    setSheetExpanded(false);
+                  } else {
+                    setSheetExpanded(!sheetExpanded);
+                  }
+                }}
+              >
+                <div className="w-9 h-1 rounded-full bg-white/20" />
+              </div>
+
+              {/* Expand / Collapse toggle button (Right) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (sheetCollapsed) {
+                    setSheetCollapsed(false);
+                    setSheetExpanded(false);
+                  } else {
+                    setSheetCollapsed(true);
+                    setSheetExpanded(false);
+                  }
+                }}
+                className="flex h-6 w-6 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors flex-shrink-0"
+                aria-label={sheetCollapsed ? "Buka sheet" : "Tutup sheet"}
+              >
+                <ChevronUp className={`h-3.5 w-3.5 transition-transform ${sheetCollapsed ? "" : "rotate-180"}`} />
+              </button>
             </div>
 
-            {/* Section pills row */}
-            <div id="mobile-section-pills" className="flex gap-1.5 px-3.5 py-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
-              {pageOrderSections.map((sec) => (
-                <button
-                  key={sec.key}
-                  data-section-key={sec.key}
-                  type="button"
-                  onClick={() => selectSection(sec.key)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[10px] font-semibold transition-all ${activeTab === sec.key
-                      ? "bg-primary/15 border-primary/30 text-primary"
-                      : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200"
-                    }`}
-                >
-                  <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7px] font-bold"
+            {/* Consolidated Section Dropdown + Tab Switcher Bar */}
+            <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-white/5 bg-white/[0.02]">
+              {/* Active Section Chip / Native Dropdown */}
+              <div className="relative flex items-center min-w-0">
+                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-white/10 bg-white/[0.04] text-xs font-semibold text-slate-200 min-w-0">
+                  <span
+                    className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
                     style={{
-                      background: activeTab === sec.key ? "var(--primary)" : "rgba(255,255,255,0.08)",
-                      color: activeTab === sec.key ? "white" : "#64748b"
+                      background: "var(--primary)",
+                      color: "white"
                     }}
                   >
-                    {sec.num}
+                    {pageOrderSections.findIndex(s => s.key === activeTab) + 1}
                   </span>
-                  <span>{sec.label}</span>
-                </button>
-              ))}
-            </div>
+                  <span className="max-w-[110px] truncate text-[11px] font-semibold text-slate-200">
+                    {SECTION_META[activeTab]?.label ?? activeTab}
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                </div>
+                <select
+                  value={activeTab}
+                  onChange={(e) => selectSection(e.target.value)}
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer text-xs"
+                  aria-label="Pilih Section"
+                >
+                  {pageOrderSections.map((sec) => (
+                    <option key={sec.key} value={sec.key} className="bg-[#111318] text-slate-100">
+                      {sec.num}. {sec.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Tab switcher */}
-            <div className="flex mx-3.5 mt-1 rounded-[10px] p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.04)" }}>
-              <button
-                type="button"
-                onClick={() => setEditorTab("content")}
-                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${editorTab === "content" ? "bg-primary text-primary-foreground" : "text-slate-400"
-                  }`}
-              >
-                Konten
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditorTab("design")}
-                className={`flex-1 h-7 flex items-center justify-center rounded-[7px] text-[11px] font-bold transition-all ${editorTab === "design" ? "bg-primary text-primary-foreground" : "text-slate-400"
-                  }`}
-              >
-                Desain
-              </button>
-              {editorTab === "design" && designOnlyUndo.length > 0 && (
+              {/* Segmented Konten / Desain Tab Switcher */}
+              <div className="flex items-center rounded-lg p-0.5 bg-white/[0.04] border border-white/5 flex-shrink-0">
                 <button
                   type="button"
-                  onClick={handleDesignUndo}
-                  aria-label="Undo Desain"
-                  title="Urungkan perubahan desain terakhir"
-                  className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[7px] text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                  onClick={() => setEditorTab("content")}
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${
+                    editorTab === "content" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  }`}
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  Konten
                 </button>
-              )}
-            </div>
-
-            {/* Quality bar (Konten tab only) */}
-            {editorTab === "content" && quality.issues.length > 0 && (
-              <div className="flex items-center gap-2 mx-3.5 mt-2 px-2.5 py-1.5 rounded-lg flex-shrink-0"
-                style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}
-              >
-                <span className="text-[10px] font-bold text-amber-400">{quality.score}%</span>
-                <span className="flex-1 text-[9px] text-amber-200/80">{quality.issues.length} field perlu diisi</span>
-                <div className="flex gap-1">
-                  {quality.issues.slice(0, 4).map((_, i) => (
-                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-amber-400/40" />
-                  ))}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditorTab("design")}
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${
+                    editorTab === "design" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  Desain
+                </button>
+                {editorTab === "design" && designOnlyUndo.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleDesignUndo}
+                    aria-label="Undo Desain"
+                    title="Urungkan perubahan desain terakhir"
+                    className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:text-white transition-colors"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                  </button>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Form scrollable area */}
             <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-2.5 scrollbar-none">
@@ -3293,6 +3328,48 @@ export default function SiteEditorPage() {
           </div>
         </div>
       )}
+
+      {/* ── Quality Issues Modal ── */}
+      <Dialog
+        open={qualityModalOpen}
+        onOpenChange={setQualityModalOpen}
+        title={`Kelengkapan Konten (${quality.score}%)`}
+      >
+        <div className="space-y-3 py-1">
+          <p className="text-xs text-slate-400">
+            {quality.issues.length} field perlu diisi agar tampilan website kamu maksimal:
+          </p>
+          <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+            {quality.issues.map((issue, idx) => {
+              const secKey = issue.path.split(".")[0];
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-200"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-amber-300">{issue.label}</p>
+                    <p className="text-[10px] text-amber-200/70 truncate">Field belum diisi atau berisi teks contoh</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (secKey) {
+                        selectSection(secKey);
+                        setSheetCollapsed(false);
+                      }
+                      setQualityModalOpen(false);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-bold transition-all hover:bg-amber-300"
+                  >
+                    Isi
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Dialog>
 
       </div>
     </div>
