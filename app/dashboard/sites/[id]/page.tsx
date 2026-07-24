@@ -3161,6 +3161,7 @@ export default function SiteEditorPage() {
       {showCongrats && siteDetails && (
         <CongratsModal
           site={siteDetails}
+          onContinueEditing={() => setShowCongrats(false)}
           onClose={() => {
             setShowCongrats(false);
             router.push("/dashboard/sites");

@@ -11,13 +11,14 @@ export interface CongratsModalProps {
     subdomain: string;
   };
   onClose: () => void;
+  onContinueEditing?: () => void;
   /** Pre-computed display domain, e.g. "mysite.webjoz.com" */
   displayDomain?: string;
   /** Pre-computed full site URL */
   siteUrl?: string;
 }
 
-export default function CongratsModal({ site, onClose, displayDomain: displayDomainProp, siteUrl: siteUrlProp }: CongratsModalProps) {
+export default function CongratsModal({ site, onClose, onContinueEditing, displayDomain: displayDomainProp, siteUrl: siteUrlProp }: CongratsModalProps) {
   const [copied, setCopied] = useState(false);
 
   const displayDomain = displayDomainProp ?? (() => {
@@ -117,6 +118,16 @@ export default function CongratsModal({ site, onClose, displayDomain: displayDom
 
         {/* CTA Buttons */}
         <div className="flex gap-3 max-w-sm mx-auto pt-2">
+          {onContinueEditing && (
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+              onClick={onContinueEditing}
+            >
+              Lanjut Edit
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"
