@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 const DASHBOARD_HOST = 'app.webjoz.com'
 const BASE_DOMAIN = 'webjoz.com'
-const MARKETING_HOSTS = new Set([BASE_DOMAIN, `www.${BASE_DOMAIN}`])
+const MARKETING_HOSTS = new Set([BASE_DOMAIN, `www.${BASE_DOMAIN}`, `stg.${BASE_DOMAIN}`])
 
 export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
