@@ -10,7 +10,17 @@ import PhotoCredit from "../PhotoCredit";
  * Suited for: architecture, fashion, wellness, premium services.
  * Layout: full-width editorial with large serif headline + side image column.
  */
-export default function HeroMinimalistElegant({ hero: h, design_token }: HeroVariantProps) {
+import { InlineText, InlineImage } from "../../templates/shared";
+
+export default function HeroMinimalistElegant({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
   return (
@@ -55,22 +65,32 @@ export default function HeroMinimalistElegant({ hero: h, design_token }: HeroVar
           </motion.span>
         )}
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            fontFamily: "var(--dt-heading-font)",
-            fontWeight: "var(--dt-heading-weight)" as any,
-            fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-            lineHeight: 1.08,
-            letterSpacing: "-0.02em",
-            color: "var(--dt-text)",
-            margin: 0,
-          }}
         >
-          {h.headline}
-        </motion.h1>
+          <InlineText
+            section="hero"
+            fieldKey="headline"
+            value={h.headline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h1"
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.02em",
+              color: "var(--dt-text)",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         {/* Thin divider */}
         <motion.div
@@ -84,20 +104,30 @@ export default function HeroMinimalistElegant({ hero: h, design_token }: HeroVar
           }}
         />
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
-          style={{
-            fontSize: "clamp(0.9rem, 1.8vw, 1.05rem)",
-            color: "var(--dt-text-muted)",
-            lineHeight: 1.7,
-            maxWidth: "32rem",
-            margin: 0,
-          }}
         >
-          {h.subheadline}
-        </motion.p>
+          <InlineText
+            section="hero"
+            fieldKey="subheadline"
+            value={h.subheadline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="p"
+            style={{
+              fontSize: "clamp(0.9rem, 1.8vw, 1.05rem)",
+              color: "var(--dt-text-muted)",
+              lineHeight: 1.7,
+              maxWidth: "32rem",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -121,7 +151,17 @@ export default function HeroMinimalistElegant({ hero: h, design_token }: HeroVar
               textTransform: "uppercase",
             }}
           >
-            {h.cta_text} <ArrowRight style={{ width: 14, height: 14 }} />
+            <InlineText
+              section="hero"
+              fieldKey="cta_text"
+              value={h.cta_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            /> <ArrowRight style={{ width: 14, height: 14 }} />
           </a>
           {hasSecondary && (
             <a
@@ -166,13 +206,19 @@ export default function HeroMinimalistElegant({ hero: h, design_token }: HeroVar
       >
         {h.image_url ? (
           <>
-            <img
+            <InlineImage
+              section="hero"
+              fieldKey="image_url"
               src={h.image_url}
               alt={h.headline}
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full"
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
-            <div style={{ position: "absolute", bottom: 8, right: 12 }}>
+            <div style={{ position: "absolute", bottom: 8, right: 12, zIndex: 20 }}>
               <PhotoCredit credit={h.image_credit} />
             </div>
           </>

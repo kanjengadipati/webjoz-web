@@ -1,18 +1,19 @@
-"use client";
 import React from "react";
 import { Award, TrendingUp, Users, Target } from "lucide-react";
-import { DynamicIcon } from "../../templates/shared";
+import { DynamicIcon, InlineText, InlineImage } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
-import type { DesignToken, TemplateProps } from "../../templates/types";
-
-interface AboutVariantProps {
-  about: TemplateProps["content"]["about"];
-  design_token?: DesignToken | null;
-}
+import type { AboutVariantProps } from "./classic";
 
 const statIcons = [TrendingUp, Users, Target];
 
-export default function AboutStatHeavy({ about: a }: AboutVariantProps) {
+export default function AboutStatHeavy({
+  about: a,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: AboutVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const stats = [a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean) as { value: string; label: string }[];
   return (
@@ -36,18 +37,47 @@ export default function AboutStatHeavy({ about: a }: AboutVariantProps) {
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", textAlign: "center", alignItems: "center", maxWidth: "48rem", margin: "0 auto" }}>
         <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{a.eyebrow || "Mengenal Kami"}</span>
-        <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", margin: 0 }}>{a.title}</h2>
-        <p style={{ color: "var(--dt-text-muted)", lineHeight: 1.7, margin: 0, whiteSpace: "pre-line" }}>{a.body}</p>
+        <InlineText
+          section="about"
+          fieldKey="title"
+          value={a.title}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          as="h2"
+          style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", margin: 0 }}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+        <InlineText
+          section="about"
+          fieldKey="body"
+          value={a.body}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          multiline={true}
+          as="p"
+          style={{ color: "var(--dt-text-muted)", lineHeight: 1.7, margin: 0, whiteSpace: "pre-line" }}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       </div>
       {a.image_url && (
         <div style={{ position: "relative", marginTop: "2.5rem", borderRadius: "var(--dt-radius-lg)", overflow: "hidden", maxHeight: "300px" }}>
-          <img
+          <InlineImage
+            section="about"
+            fieldKey="image_url"
             src={a.image_url}
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            style={{ width: "100%", height: "300px", objectFit: "cover" }}
             alt="About"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            className="w-full h-[300px]"
+            style={{ width: "100%", height: "300px", objectFit: "cover" }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
-          <div style={{ position: "absolute", bottom: 4, right: 8 }}>
+          <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>
             <PhotoCredit credit={a.image_credit} />
           </div>
         </div>

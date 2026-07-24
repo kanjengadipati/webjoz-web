@@ -8,7 +8,7 @@ import {
   DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab,
   WAFloatingButton, BackToTop, ctaHref, FaqAccordion, SeoEditorPreview,
-  ContactSection, BenefitsSection,
+  ContactSection, BenefitsSection, InlineText, InlineImage,
 } from "./shared";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
@@ -20,7 +20,8 @@ import type { TemplateProps } from "./types";
 
 export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
+  isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, catalog, gallery, blog, blog_layout } = content;
   const dt = design_token ?? null;
@@ -62,27 +63,63 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(hero) => (
           <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-[var(--dt-bg)] via-[var(--dt-bg)] to-[var(--dt-primary-soft)] overflow-hidden" style={hero.background_color ? { background: hero.background_color } : undefined}>
             {hero.image_url && (
-              <img
-                src={hero.image_url}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity"
-                alt="Hero"
-              />
+              <div className="absolute inset-0 w-full h-full opacity-30 mix-blend-luminosity">
+                <InlineImage
+                  section="hero"
+                  fieldKey="image_url"
+                  src={hero.image_url}
+                  alt="Hero"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "hero"}
+                  className="w-full h-full object-cover"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                />
+              </div>
             )}
             <div className="max-w-4xl text-center space-y-6 relative z-10">
-              <h1 className="text-4xl md:text-6xl font-black text-[var(--dt-text)] tracking-tight leading-tight" style={headingVars}>
-                {hero.headline}
-              </h1>
-              <p className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed">
-                {hero.subheadline}
-              </p>
+              <InlineText
+                section="hero"
+                fieldKey="headline"
+                value={hero.headline}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "hero"}
+                as="h1"
+                className="text-4xl md:text-6xl font-black text-[var(--dt-text)] tracking-tight leading-tight"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <InlineText
+                section="hero"
+                fieldKey="subheadline"
+                value={hero.subheadline}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "hero"}
+                as="p"
+                className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
               <div className="pt-4">
                 <a
                   href={ctaHref(contact.phone, hero.cta_url)}
                   className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
                   style={{ color: "var(--dt-cta-text)" }}
                 >
-                  {hero.cta_text}
+                  <InlineText
+                    section="hero"
+                    fieldKey="cta_text"
+                    value={hero.cta_text}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={activeSection === "hero"}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -110,11 +147,16 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                 </div>
                 {about.image_url && (
                   <>
-                    <img
+                    <InlineImage
+                      section="about"
+                      fieldKey="image_url"
                       src={about.image_url}
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                      className="w-full h-full object-cover absolute inset-0 z-10"
                       alt="About"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={activeSection === "about"}
+                      className="w-full h-full object-cover absolute inset-0 z-10"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                     />
                     <div className="absolute bottom-2 right-2 z-20">
                       <PhotoCredit credit={about.image_credit} />
@@ -125,8 +167,32 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
             <div className="space-y-6" style={{ textAlign: about.textAlign || "left" }}>
               <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Profil</span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{about.title}</h2>
-              <p className="text-[var(--dt-text-muted)] leading-relaxed text-justify whitespace-pre-line">{about.body}</p>
+              <InlineText
+                section="about"
+                fieldKey="title"
+                value={about.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "about"}
+                as="h2"
+                className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <InlineText
+                section="about"
+                fieldKey="body"
+                value={about.body}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "about"}
+                multiline={true}
+                as="p"
+                className="text-[var(--dt-text-muted)] leading-relaxed text-justify whitespace-pre-line"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </div>
           </section>
         )} />
@@ -157,6 +223,11 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             cardDescClass="text-sm leading-relaxed"
             cardDescStyle={{ color: "var(--dt-on-dark-muted)" }}
             accentColor="var(--dt-on-dark-accent)"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "benefits"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -168,7 +239,19 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-14">
               <div className="text-center space-y-3">
                 {catalogData.eyebrow && <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{catalogData.title}</h2>
+                <InlineText
+                  section="catalog"
+                  fieldKey="title"
+                  value={catalogData.title}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "catalog"}
+                  as="h2"
+                  className="text-3xl md:text-4xl font-extrabold text-[var(--dt-text)] tracking-tight"
+                  style={headingVars}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 {catalogData.subtitle && <p className="text-[var(--dt-text-muted)] max-w-2xl mx-auto">{catalogData.subtitle}</p>}
                 <div className="flex items-center justify-center gap-2 pt-1">
                   <span className="w-6 h-0.5 rounded-full" style={{ background: "var(--dt-primary)" }} />
@@ -224,7 +307,19 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
               <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Solusi Pertanyaan</span>
-              <h2 className="text-3xl font-extrabold text-[var(--dt-text)] tracking-tight" style={headingVars}>{faq.title}</h2>
+              <InlineText
+                section="faq"
+                fieldKey="title"
+                value={faq.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "faq"}
+                as="h2"
+                className="text-3xl font-extrabold text-[var(--dt-text)] tracking-tight"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -241,13 +336,35 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <section className="px-6 py-16 max-w-6xl mx-auto">
             <div className="bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center space-y-6 relative overflow-hidden shadow-lg">
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--dt-cta-text)] tracking-tight" style={headingVars}>{cta.headline}</h2>
+                <InlineText
+                  section="cta"
+                  fieldKey="headline"
+                  value={cta.headline}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "cta"}
+                  as="h2"
+                  className="text-3xl md:text-4xl font-bold text-[var(--dt-cta-text)] tracking-tight"
+                  style={headingVars}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]" style={{ color: "var(--dt-cta-text)" }}
                   >
-                    {cta.button_text || "Hubungi Kami"}
+                    <InlineText
+                      section="cta"
+                      fieldKey="button_text"
+                      value={cta.button_text || "Hubungi Kami"}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={activeSection === "cta"}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -284,6 +401,11 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             leadTitleText="Kirim Pertanyaan Anda"
             leadFormBtnClass="bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] shadow-sm"
             leadFormInputClass="w-full px-4 py-2.5 bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm transition-all"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "contact"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -299,6 +421,11 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           quoteClass="text-[var(--dt-text-muted)]"
           nameClass="text-[var(--dt-text)]"
           roleClass="text-[var(--dt-text-muted)]"
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={activeSection === "testimonials"}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

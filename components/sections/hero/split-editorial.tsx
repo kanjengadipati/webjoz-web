@@ -11,14 +11,20 @@ import PhotoCredit from "../PhotoCredit";
  * Left: masonry image column. Right: text content + stats row.
  * Business filter: photography/studio/travel/content/media businesses.
  */
-export default function HeroSplitEditorial({ hero: h, design_token }: HeroVariantProps) {
+import { InlineText, InlineImage } from "../../templates/shared";
+
+export default function HeroSplitEditorial({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
-  // Stats: use launch_label hack for stats string "480+ Projects·99% Satisfaction·12 Awards"
-  // or fall back to a decorative row — real data comes from about.highlight_stat_* at render-time.
-  // Convention: pass stats via hero.badge_text as "VAL1|LABEL1,VAL2|LABEL2,VAL3|LABEL3"
-  // If not available, show placeholder decorative values.
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
         const [val, label] = s.split("|");
@@ -57,10 +63,15 @@ export default function HeroSplitEditorial({ hero: h, design_token }: HeroVarian
       >
         {h.image_url ? (
           <>
-            <img
+            <InlineImage
+              section="hero"
+              fieldKey="image_url"
               src={h.image_url}
               alt={h.headline}
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full"
               style={{
                 width: "100%",
                 height: "100%",
@@ -68,8 +79,9 @@ export default function HeroSplitEditorial({ hero: h, design_token }: HeroVarian
                 display: "block",
                 filter: "grayscale(15%)",
               }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
-            <div style={{ position: "absolute", bottom: 8, left: 12 }}>
+            <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
               <PhotoCredit credit={h.image_credit} />
             </div>
           </>
@@ -144,36 +156,56 @@ export default function HeroSplitEditorial({ hero: h, design_token }: HeroVarian
           </motion.div>
         )}
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            fontFamily: "var(--dt-heading-font)",
-            fontWeight: "var(--dt-heading-weight)" as any,
-            fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-            lineHeight: 1.05,
-            color: "var(--dt-text)",
-            margin: 0,
-          }}
         >
-          {h.headline}
-        </motion.h1>
+          <InlineText
+            section="hero"
+            fieldKey="headline"
+            value={h.headline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h1"
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              lineHeight: 1.05,
+              color: "var(--dt-text)",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          style={{
-            fontSize: "1rem",
-            color: "var(--dt-text-muted)",
-            lineHeight: 1.7,
-            maxWidth: "30rem",
-            margin: 0,
-          }}
         >
-          {h.subheadline}
-        </motion.p>
+          <InlineText
+            section="hero"
+            fieldKey="subheadline"
+            value={h.subheadline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="p"
+            style={{
+              fontSize: "1rem",
+              color: "var(--dt-text-muted)",
+              lineHeight: 1.7,
+              maxWidth: "30rem",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -197,7 +229,17 @@ export default function HeroSplitEditorial({ hero: h, design_token }: HeroVarian
               borderRadius: "var(--dt-radius)",
             }}
           >
-            {h.cta_text} <ArrowRight style={{ width: 15, height: 15 }} />
+            <InlineText
+              section="hero"
+              fieldKey="cta_text"
+              value={h.cta_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            /> <ArrowRight style={{ width: 15, height: 15 }} />
           </a>
           {hasSecondary && (
             <a

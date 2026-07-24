@@ -10,7 +10,17 @@ import PhotoCredit from "../PhotoCredit";
  * Warm earthy palette, soft SVG botanical decoration, centered layout.
  * Suited for: organic products, wellness, farm-to-table, eco brands.
  */
-export default function HeroNaturalOrganic({ hero: h, design_token }: HeroVariantProps) {
+import { InlineText, InlineImage } from "../../templates/shared";
+
+export default function HeroNaturalOrganic({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
   return (
@@ -114,21 +124,31 @@ export default function HeroNaturalOrganic({ hero: h, design_token }: HeroVarian
           </motion.div>
         )}
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            fontFamily: "var(--dt-heading-font)",
-            fontWeight: "var(--dt-heading-weight)" as any,
-            fontSize: "clamp(2.25rem, 6vw, 4rem)",
-            lineHeight: 1.15,
-            color: "var(--dt-text)",
-            margin: 0,
-          }}
         >
-          {h.headline}
-        </motion.h1>
+          <InlineText
+            section="hero"
+            fieldKey="headline"
+            value={h.headline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h1"
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(2.25rem, 6vw, 4rem)",
+              lineHeight: 1.15,
+              color: "var(--dt-text)",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         {/* Decorative leaf divider */}
         <motion.div
@@ -147,20 +167,30 @@ export default function HeroNaturalOrganic({ hero: h, design_token }: HeroVarian
           <span style={{ display: "block", width: "2.5rem", height: "1px", background: "currentColor", opacity: 0.5 }} />
         </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          style={{
-            fontSize: "clamp(0.9rem, 2vw, 1.05rem)",
-            color: "var(--dt-text-muted)",
-            lineHeight: 1.75,
-            maxWidth: "34rem",
-            margin: 0,
-          }}
         >
-          {h.subheadline}
-        </motion.p>
+          <InlineText
+            section="hero"
+            fieldKey="subheadline"
+            value={h.subheadline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="p"
+            style={{
+              fontSize: "clamp(0.9rem, 2vw, 1.05rem)",
+              color: "var(--dt-text-muted)",
+              lineHeight: 1.75,
+              maxWidth: "34rem",
+              margin: 0,
+            }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -186,7 +216,17 @@ export default function HeroNaturalOrganic({ hero: h, design_token }: HeroVarian
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            {h.cta_text} <ArrowRight style={{ width: 15, height: 15 }} />
+            <InlineText
+              section="hero"
+              fieldKey="cta_text"
+              value={h.cta_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            /> <ArrowRight style={{ width: 15, height: 15 }} />
           </a>
           {hasSecondary && (
             <a
@@ -245,13 +285,19 @@ export default function HeroNaturalOrganic({ hero: h, design_token }: HeroVarian
               marginTop: "0.5rem",
             }}
           >
-            <img
+            <InlineImage
+              section="hero"
+              fieldKey="image_url"
               src={h.image_url}
               alt={h.headline}
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
-            <div style={{ position: "absolute", bottom: 8, right: 8 }}>
+            <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
               <PhotoCredit credit={h.image_credit} />
             </div>
           </motion.div>

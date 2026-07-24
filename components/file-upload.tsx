@@ -17,7 +17,7 @@ interface FileUploadProps {
 }
 
 // Client-side image compression helper using Canvas
-function compressImage(
+export function compressImage(
   file: File,
   maxWidth: number,
   maxHeight: number,
@@ -79,6 +79,45 @@ function compressImage(
   });
 }
 
+export async function uploadImageFile(
+  file: File,
+  options: { maxWidth?: number; maxHeight?: number; quality?: number } = {}
+): Promise<string> {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error("Konfigurasi Cloudinary belum lengkap di env.");
+  }
+
+  const { maxWidth = 1600, maxHeight = 1600, quality = 0.8 } = options;
+  const processedFile = await compressImage(file, maxWidth, maxHeight, quality);
+
+  const formData = new FormData();
+  formData.append("file", processedFile);
+  formData.append("upload_preset", uploadPreset);
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || "Gagal mengupload gambar ke Cloudinary.");
+  }
+
+  const body = await res.json();
+  if (!body.secure_url) {
+    throw new Error("Format respon Cloudinary tidak valid.");
+  }
+
+  return body.secure_url;
+}
+
 export default function FileUpload({
   label,
   value,
@@ -96,9 +135,6 @@ export default function FileUpload({
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [imgError, setImgError] = useState(false);
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -107,44 +143,12 @@ export default function FileUpload({
     setStatus("idle");
     setImgError(false);
 
-    if (!cloudName || !uploadPreset) {
-      setError("Konfigurasi Cloudinary belum lengkap di env.");
-      setStatus("error");
-      return;
-    }
-
     try {
       setUploading(true);
-
-      // Perform local image compression
-      const processedFile = await compressImage(file, maxWidth, maxHeight, quality);
-
-      const formData = new FormData();
-      formData.append("file", processedFile);
-      formData.append("upload_preset", uploadPreset);
-
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody?.error?.message || "Gagal mengupload gambar ke Cloudinary.");
-      }
-
-      const body = await res.json();
-      if (!body.secure_url) {
-        throw new Error("Format respon Cloudinary tidak valid.");
-      }
-
-      onChange(body.secure_url);
+      const secureUrl = await uploadImageFile(file, { maxWidth, maxHeight, quality });
+      onChange(secureUrl);
       setStatus("success");
       setImgError(false);
-
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err: any) {
       setError(err.message || "Gagal mengunggah file.");
