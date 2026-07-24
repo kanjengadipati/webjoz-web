@@ -7,6 +7,7 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   ChevronLeft,
+  Mic,
   MessageCircle,
   Monitor,
   Pencil,
@@ -630,6 +631,7 @@ export function SiteWizard({
                 value={chat.inputValue}
                 onChange={(e) => chat.setInputValue(e.target.value)}
                 placeholder={
+                  chat.isRecording ? "Mendengarkan..." :
                   chat.awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
                     chat.chatStage === "description" ? "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar" :
                     "Ketik nama bisnis Anda..."
@@ -638,6 +640,26 @@ export function SiteWizard({
                 disabled={chat.isInitialTyping || chat.isAiTyping}
                 className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
               />
+              {chat.isRecording ? (
+                <button
+                  type="button"
+                  onClick={chat.stopRecording}
+                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-red-500/20 border border-red-500/40 text-red-400 transition-all shrink-0 animate-pulse"
+                  title="Berhenti merekam"
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={chat.startRecording}
+                  disabled={chat.isInitialTyping || chat.isAiTyping}
+                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 text-slate-500 transition-all disabled:opacity-30 hover:text-slate-300 shrink-0 active:scale-95"
+                  title="Bicara dengan mic"
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
                 type="submit"
                 disabled={chat.isInitialTyping || chat.isAiTyping || (chat.chatStage === "name" && !chat.inputValue.trim())}
