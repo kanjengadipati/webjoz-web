@@ -11,7 +11,17 @@ import PhotoCredit from "../PhotoCredit";
  * Business filter: tech/startup/product/digital businesses.
  * Stats: generalized from about.highlight_stat_* if available.
  */
-export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProps) {
+import { InlineText, InlineImage } from "../../templates/shared";
+
+export default function HeroBentoGrid({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const [metricValue, setMetricValue] = useState(72);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
@@ -26,9 +36,6 @@ export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProp
     return () => clearInterval(interval);
   }, []);
 
-  // Stat blocks — prefer about.highlight_stat_* data if passed via design_token context
-  // (stored by convention in design_token.mood as "{stat1|stat2|stat3}" — see generalization note)
-  // For now render decorative defaults; the AI fills these in the actual content.
   const stats = [
     { value: "98%", label: "Satisfaction" },
     { value: "10K+", label: "Users" },
@@ -105,7 +112,14 @@ export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProp
                 {h.eyebrow}
               </span>
             )}
-            <h1
+            <InlineText
+              section="hero"
+              fieldKey="headline"
+              value={h.headline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h1"
               style={{
                 fontFamily: "var(--dt-heading-font)",
                 fontWeight: "var(--dt-heading-weight)" as any,
@@ -114,12 +128,21 @@ export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProp
                 color: "var(--dt-text)",
                 margin: 0,
               }}
-            >
-              {h.headline}
-            </h1>
-            <p style={{ fontSize: "0.9rem", color: "var(--dt-text-muted)", lineHeight: 1.65, margin: 0 }}>
-              {h.subheadline}
-            </p>
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+            <InlineText
+              section="hero"
+              fieldKey="subheadline"
+              value={h.subheadline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              style={{ fontSize: "0.9rem", color: "var(--dt-text-muted)", lineHeight: 1.65, margin: 0 }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <a
                 href={h.cta_url}
@@ -136,7 +159,17 @@ export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProp
                   fontSize: "0.8rem",
                 }}
               >
-                {h.cta_text} <ArrowRight style={{ width: 14, height: 14 }} />
+                <InlineText
+                  section="hero"
+                  fieldKey="cta_text"
+                  value={h.cta_text}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                /> <ArrowRight style={{ width: 14, height: 14 }} />
               </a>
               {hasSecondary && (
                 <a
@@ -178,13 +211,19 @@ export default function HeroBentoGrid({ hero: h, design_token }: HeroVariantProp
           >
             {h.image_url ? (
               <>
-                <img
+                <InlineImage
+                  section="hero"
+                  fieldKey="image_url"
                   src={h.image_url}
                   alt={h.headline}
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  className="w-full h-full"
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                 />
-                <div style={{ position: "absolute", bottom: 8, right: 8 }}>
+                <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
                   <PhotoCredit credit={h.image_credit} />
                 </div>
               </>

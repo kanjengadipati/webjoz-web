@@ -271,6 +271,9 @@ export interface TemplateProps {
   activeSection?: string;
   onSelectSection?: (section: string) => void;
   onRegenSection?: (section: string) => void;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
   isEditorMode?: boolean;
   /**
    * Daftar nama section yang sudah diterima dari SSE stream.
