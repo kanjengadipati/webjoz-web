@@ -2347,47 +2347,6 @@ export default function SiteEditorPage() {
                 Publikasikan
               </button>
             )}
-
-            {/* Confirm apply to live modal */}
-            {confirmPublishOpen && siteDetails && (
-              <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-                <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
-                      <Rocket className="h-5 w-5 text-emerald-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-[14px] font-bold text-slate-100">Terapkan Perubahan ke Live?</h3>
-                      <p className="text-[11px] text-slate-400 mt-0.5">Pengunjung situs akan segera melihat versi terbaru.</p>
-                    </div>
-                  </div>
-                  <p className="text-[12px] text-slate-300 leading-relaxed">
-                    Semua perubahan draf yang sudah disimpan akan diterapkan ke website live{" "}
-                    <span className="font-semibold text-emerald-400">{siteDetails.subdomain}.webjoz.com</span>.
-                  </p>
-                  <div className="flex gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => setConfirmPublishOpen(false)}
-                      className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      type="button"
-                      disabled={publishing}
-                      onClick={async () => {
-                        setConfirmPublishOpen(false);
-                        await handlePublishWithSubdomain(siteDetails.subdomain);
-                      }}
-                      className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
-                    >
-                      {publishing ? "Menerapkan..." : "Ya, Terapkan"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {pendingDiff && (
@@ -3157,6 +3116,46 @@ export default function SiteEditorPage() {
           onCancel={() => setPublishModalOpen(false)}
           loading={publishing}
         />
+      )}
+
+      {confirmPublishOpen && siteDetails && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
+                <Rocket className="h-5 w-5 text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-100">Terapkan Perubahan ke Live?</h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">Pengunjung situs akan segera melihat versi terbaru.</p>
+              </div>
+            </div>
+            <p className="text-[12px] text-slate-300 leading-relaxed">
+              Semua perubahan draf yang sudah disimpan akan diterapkan ke website live{" "}
+              <span className="font-semibold text-emerald-400">{siteDetails.subdomain}.webjoz.com</span>.
+            </p>
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setConfirmPublishOpen(false)}
+                className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={publishing}
+                onClick={async () => {
+                  setConfirmPublishOpen(false);
+                  await handlePublishWithSubdomain(siteDetails.subdomain);
+                }}
+                className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
+              >
+                {publishing ? "Menerapkan..." : "Ya, Terapkan"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showCongrats && siteDetails && (
