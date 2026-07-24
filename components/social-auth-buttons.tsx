@@ -364,7 +364,7 @@ export function SocialAuthButtons({
   };
 
   const hasGoogle = SOCIAL_ACTIVE_PROVIDERS.includes("google") && !!GOOGLE_CLIENT_ID;
-  const hasFacebook = SOCIAL_ACTIVE_PROVIDERS.includes("facebook") && !!FACEBOOK_CLIENT_ID;
+  const hasFacebook = SOCIAL_ACTIVE_PROVIDERS.includes("facebook") && !!FACEBOOK_CLIENT_ID && mode !== "login";
   const hasAnySocial = hasGoogle || hasFacebook;
 
   if (!hasAnySocial) return null;
