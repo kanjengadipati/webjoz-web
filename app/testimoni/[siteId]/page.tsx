@@ -7,7 +7,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { useToast } from "@/components/toast-provider";
 import { Sparkles, Star, Loader2 } from "lucide-react";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 export default function PublicTestimoniPage() {
   const { siteId } = useParams();

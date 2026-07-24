@@ -364,7 +364,7 @@ export function SeoForm({
       <div className="space-y-1">
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           <span>Meta Title</span>
-          {renderFieldActions("title", onAiText && (
+          {renderFieldActions("title", onAiText && isPremium && (
             <AiFieldButton
               loading={aiLoadingField === "seo.title"}
               onGenerate={() => onAiText("title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
@@ -382,7 +382,7 @@ export function SeoForm({
       <div className="space-y-1">
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           <span>Meta Description</span>
-          {renderFieldActions("description", onAiText && (
+          {renderFieldActions("description", onAiText && isPremium && (
             <AiFieldButton
               loading={aiLoadingField === "seo.description"}
               onGenerate={() => onAiText("description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
@@ -402,7 +402,7 @@ export function SeoForm({
           keywords={seo?.keywords || []}
           onChange={(kws) => updateField("seo", "keywords", kws)}
           aiLoading={aiLoadingField === "seo.keywords"}
-          onAiGenerate={onAiText ? () => onAiText("keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
+          onAiGenerate={onAiText && isPremium ? () => onAiText("keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
           isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
           renderFieldActions={renderFieldActions}
         />
@@ -460,6 +460,36 @@ export function SeoForm({
           <option value="index, nofollow">index, nofollow</option>
           <option value="noindex, nofollow">noindex, nofollow</option>
         </select>
+      </div>
+
+      {/* Custom robots.txt (Pro) */}
+      <div className="space-y-1">
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span className="flex items-center gap-1.5">
+            Custom Robots.txt
+            {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
+          </span>
+        </label>
+        {isPremium ? (
+          <textarea
+            rows={5}
+            value={seo?.custom_robots_txt || ""}
+            onChange={(e) => updateField("seo", "custom_robots_txt", e.target.value)}
+            className={`${fieldBase} resize-none font-mono text-[11px]`}
+            placeholder={"User-agent: *\nAllow: /\n\nSitemap: https://namabisnis.webjoz.com/sitemap.xml"}
+          />
+        ) : (
+          <div
+            className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+            onClick={() => onUpgradeRequired?.()}
+          >
+            <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
+              <Lock className="w-3 h-3" />
+              Kustomisasi robots.txt untuk situs Anda
+            </div>
+            <p>Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.</p>
+          </div>
+        )}
       </div>
 
       {/* OG Locale */}
