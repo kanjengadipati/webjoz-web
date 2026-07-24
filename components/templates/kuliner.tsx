@@ -7,7 +7,7 @@ import {
   DynamicIcon, LeadForm, TestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref,
-  ContactSection, BenefitsSection,
+  ContactSection, BenefitsSection, InlineText, InlineImage,
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import HeaderSection from "../sections/header";
@@ -18,7 +18,8 @@ import type { TemplateProps } from "./types";
 
 export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
+  isEditorMode = false, arrivedSections, isPremium = false
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery } = content;
   const dt = design_token ?? null;
@@ -52,20 +53,44 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(hero) => (
           <section className="relative min-h-[85vh] flex items-center justify-center text-center px-5 sm:px-6 py-[var(--dt-spacing)] bg-gradient-to-b from-[var(--dt-primary-soft)] to-[var(--dt-bg)] overflow-hidden" style={hero.background_color ? { background: hero.background_color } : undefined}>
             {hero.image_url && (
-              <img
+              <InlineImage
+                section="hero"
+                fieldKey="image_url"
                 src={hero.image_url}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="absolute inset-0 w-full h-full object-cover opacity-50"
                 alt="Hero"
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "hero"}
+                className="absolute inset-0 w-full h-full opacity-50"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               />
             )}
             <div className="max-w-4xl relative z-10 space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold  text-[var(--dt-text)] leading-tight" style={headingVars}>
-                {hero.headline}
-              </h1>
-              <p className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed">
-                {hero.subheadline}
-              </p>
+              <InlineText
+                section="hero"
+                fieldKey="headline"
+                value={hero.headline}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "hero"}
+                as="h1"
+                className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-[var(--dt-text)] leading-tight block"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <InlineText
+                section="hero"
+                fieldKey="subheadline"
+                value={hero.subheadline}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "hero"}
+                as="p"
+                className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed block"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
               {hero.opening_hours && (
                 <p className="inline-flex items-center gap-2 rounded-full border border-[var(--dt-border)] bg-white/70 px-4 py-2 text-sm font-semibold text-[var(--dt-text)] shadow-sm">
                   <Clock className="w-4 h-4 text-[var(--dt-primary)]" />
@@ -78,8 +103,18 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                   className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
                   style={{ color: "var(--dt-cta-text)" }}
                 >
-                  {hero.cta_text}
-                  <ArrowRight className="w-5 h-5" />
+                  <InlineText
+                    section="hero"
+                    fieldKey="cta_text"
+                    value={hero.cta_text}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={activeSection === "hero"}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                  <ArrowRight className="w-5 h-5 flex-shrink-0" />
                 </a>
               </div>
             </div>
@@ -94,8 +129,32 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-5 sm:px-6 py-[var(--dt-spacing)] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="about">
             <div className="space-y-6" style={{ textAlign: about.textAlign || "left" }}>
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs block">Mengenal Kami</span>
-              <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{about.title}</h2>
-              <p className="text-[var(--dt-text-muted)] leading-relaxed whitespace-pre-line sm:text-justify">{about.body}</p>
+              <InlineText
+                section="about"
+                fieldKey="title"
+                value={about.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "about"}
+                as="h2"
+                className="text-3xl md:text-4xl font-bold text-[var(--dt-text)] block"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <InlineText
+                section="about"
+                fieldKey="body"
+                value={about.body}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "about"}
+                multiline={true}
+                as="p"
+                className="text-[var(--dt-text-muted)] leading-relaxed whitespace-pre-line sm:text-justify block"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </div>
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-tr from-[var(--dt-primary-soft-strong)] to-[var(--dt-primary-soft)] rounded-[var(--dt-radius-lg)] -rotate-2 opacity-50 shadow-inner"></div>
@@ -109,11 +168,16 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                 </div>
                 {about.image_url && (
                   <>
-                    <img
+                    <InlineImage
+                      section="about"
+                      fieldKey="image_url"
                       src={about.image_url}
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                      className="w-full h-full object-cover absolute inset-0 z-10"
                       alt="About"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={activeSection === "about"}
+                      className="w-full h-full absolute inset-0 z-10"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                     />
                     <div className="absolute bottom-2 right-2 z-20">
                       <PhotoCredit credit={about.image_credit} />
@@ -140,6 +204,11 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             cardTitleClass="text-xl font-bold text-[var(--dt-text)] mb-3"
             cardDescClass="text-[var(--dt-text-muted)] text-sm leading-relaxed"
             accentColor="var(--dt-primary)"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "benefits"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -150,7 +219,19 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-12" id="faq">
             <div className="text-center space-y-2">
               <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs">Pertanyaan</span>
-              <h2 className="text-3xl font-bold  text-[var(--dt-text)]" style={headingVars}>{faq.title}</h2>
+              <InlineText
+                section="faq"
+                fieldKey="title"
+                value={faq.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={activeSection === "faq"}
+                as="h2"
+                className="text-3xl font-bold text-[var(--dt-text)]"
+                style={headingVars}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
@@ -168,14 +249,36 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="bg-[var(--dt-surface)] border border-[var(--dt-border)] p-8 md:p-16 rounded-[var(--dt-radius-lg)] text-center space-y-6 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-gradient-to-tr from-[var(--dt-primary-soft)] to-[var(--dt-accent-soft)] opacity-40"></div>
               <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold  text-[var(--dt-text)]" style={headingVars}>{cta.headline}</h2>
+                <InlineText
+                  section="cta"
+                  fieldKey="headline"
+                  value={cta.headline}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "cta"}
+                  as="h2"
+                  className="text-3xl md:text-4xl font-bold text-[var(--dt-text)]"
+                  style={headingVars}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <div className="pt-4">
                   <a
                     href={cta.button_url}
                     className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
                     style={{ color: "var(--dt-cta-text)" }}
                   >
-                    {cta.button_text || "Hubungi Kami"}
+                    <InlineText
+                      section="cta"
+                      fieldKey="button_text"
+                      value={cta.button_text || "Hubungi Kami"}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={activeSection === "cta"}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -204,14 +307,19 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             leadError={data.leadError}
             wrapperClass="px-6 py-[var(--dt-spacing)] border-t border-[var(--dt-border)]"
             wrapperStyle={{ background: "var(--dt-primary-soft)" }}
-            titleClass="text-3xl font-bold  text-[var(--dt-text)]"
+            titleClass="text-3xl font-bold text-[var(--dt-text)]"
             accentColor={dt?.palette?.primary ?? "#b45309"}
             textClass="text-[var(--dt-text-muted)]"
             leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
-            leadTitleClass="text-lg font-bold  text-[var(--dt-text)]"
+            leadTitleClass="text-lg font-bold text-[var(--dt-text)]"
             leadTitleText="Hubungi Kami / Reservasi"
             leadFormBtnClass="bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] shadow-sm hover:shadow"
             leadFormInputClass="w-full px-4 py-2.5 bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm transition-all"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "contact"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -227,6 +335,11 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           quoteClass="text-[var(--dt-text-muted)]"
           nameClass="text-[var(--dt-text)]"
           roleClass="text-[var(--dt-text-muted)]"
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={activeSection === "testimonials"}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
         />
       </MemoPreviewSectionWrapper>
     ) : null,
@@ -238,7 +351,19 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             <div className="max-w-6xl mx-auto space-y-10 relative">
               <div className="text-center space-y-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[var(--dt-border)] bg-[var(--dt-primary-soft)] px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-[var(--dt-primary)]">Pilihan Menu</span>
-                <h2 className="text-3xl md:text-5xl font-bold  text-[var(--dt-text)] max-w-3xl mx-auto leading-tight" style={headingVars}>{menuData.title}</h2>
+                <InlineText
+                  section="menu"
+                  fieldKey="title"
+                  value={menuData.title}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "menu"}
+                  as="h2"
+                  className="text-3xl md:text-5xl font-bold text-[var(--dt-text)] max-w-3xl mx-auto leading-tight"
+                  style={headingVars}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </div>
               {menuData.categories?.map((cat, catIdx) => (
                 <div key={catIdx} className="space-y-5">

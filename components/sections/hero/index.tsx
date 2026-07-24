@@ -29,8 +29,26 @@ const variants: Record<string, ComponentType<HeroVariantProps>> = {
   "natural-organic": HeroNaturalOrganic,
 };
 
-export default function HeroSection({ hero, design_token }: { hero: TemplateProps["content"]["hero"]; design_token?: DesignToken | null }) {
+export default function HeroSection({
+  hero,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const heroStyle = design_token?.layout?.hero_style ?? "centered";
   const Renderer = variants[heroStyle] ?? HeroCentered;
-  return <Renderer hero={hero} design_token={design_token} />;
+  return (
+    <Renderer
+      hero={hero}
+      design_token={design_token}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }

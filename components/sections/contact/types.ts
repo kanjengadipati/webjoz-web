@@ -9,4 +9,9 @@ export interface ContactVariantProps {
   leadSuccess?: boolean;
   leadError?: string | null;
   footer?: TemplateProps["content"]["footer"];
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }

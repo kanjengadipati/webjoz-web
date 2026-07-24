@@ -4,13 +4,22 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
+import { InlineText, InlineImage } from "../../templates/shared";
 
 /**
  * Neo-Brutalist — thick borders, offset shadows, sticker-style badges.
  * Suited for: creative agency, streetwear, independent designer, newsletter.
  * Business filter: creative/fashion/design/studio businesses.
  */
-export default function HeroNeoBrutalist({ hero: h, design_token }: HeroVariantProps) {
+export default function HeroNeoBrutalist({
+  hero: h,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: HeroVariantProps) {
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
   return (
@@ -26,23 +35,56 @@ export default function HeroNeoBrutalist({ hero: h, design_token }: HeroVariantP
         overflow: "hidden",
       }}
     >
+      {/* Neo-brutalist background decorative shapes */}
       <div
         style={{
-          maxWidth: "72rem",
+          position: "absolute",
+          top: "10%",
+          right: "5%",
+          width: "120px",
+          height: "120px",
+          background: "var(--dt-primary)",
+          border: "3px solid var(--dt-text)",
+          boxShadow: "4px 4px 0 var(--dt-text)",
+          transform: "rotate(6deg)",
+          opacity: 0.25,
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "12%",
+          left: "3%",
+          width: "80px",
+          height: "80px",
+          borderRadius: "50%",
+          background: "var(--dt-accent, var(--dt-primary))",
+          border: "3px solid var(--dt-text)",
+          opacity: 0.25,
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          maxWidth: "1100px",
           margin: "0 auto",
           width: "100%",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "3rem",
+          gap: "4rem",
           alignItems: "center",
+          position: "relative",
+          zIndex: 1,
         }}
-        className="grid-cols-1 lg:grid-cols-2"
+        className="flex-col lg:grid"
       >
         {/* Left */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {h.eyebrow && (
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
               style={{
@@ -63,38 +105,58 @@ export default function HeroNeoBrutalist({ hero: h, design_token }: HeroVariantP
             </motion.div>
           )}
 
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            style={{
-              fontFamily: "var(--dt-heading-font)",
-              fontWeight: 900,
-              fontSize: "clamp(2.5rem, 5.5vw, 4.5rem)",
-              lineHeight: 1.0,
-              color: "var(--dt-text)",
-              margin: 0,
-              textTransform: "uppercase",
-              letterSpacing: "-0.02em",
-            }}
           >
-            {h.headline}
-          </motion.h1>
+            <InlineText
+              section="hero"
+              fieldKey="headline"
+              value={h.headline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h1"
+              style={{
+                fontFamily: "var(--dt-heading-font)",
+                fontWeight: 900,
+                fontSize: "clamp(2.5rem, 5.5vw, 4.5rem)",
+                lineHeight: 1.0,
+                color: "var(--dt-text)",
+                margin: 0,
+                textTransform: "uppercase",
+                letterSpacing: "-0.02em",
+              }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </motion.div>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
-            style={{
-              fontSize: "1rem",
-              color: "var(--dt-text-muted)",
-              lineHeight: 1.65,
-              maxWidth: "28rem",
-              margin: 0,
-            }}
           >
-            {h.subheadline}
-          </motion.p>
+            <InlineText
+              section="hero"
+              fieldKey="subheadline"
+              value={h.subheadline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              style={{
+                fontSize: "1rem",
+                color: "var(--dt-text-muted)",
+                lineHeight: 1.65,
+                maxWidth: "28rem",
+                margin: 0,
+              }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -129,7 +191,17 @@ export default function HeroNeoBrutalist({ hero: h, design_token }: HeroVariantP
                 e.currentTarget.style.transform = "none";
               }}
             >
-              {h.cta_text} <ArrowRight style={{ width: 16, height: 16 }} />
+              <InlineText
+                section="hero"
+                fieldKey="cta_text"
+                value={h.cta_text}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              /> <ArrowRight style={{ width: 16, height: 16 }} />
             </a>
             {hasSecondary && (
               <a
@@ -205,13 +277,19 @@ export default function HeroNeoBrutalist({ hero: h, design_token }: HeroVariantP
           >
             {h.image_url ? (
               <>
-                <img
+                <InlineImage
+                  section="hero"
+                  fieldKey="image_url"
                   src={h.image_url}
                   alt={h.headline}
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  className="w-full h-full"
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                 />
-                <div style={{ position: "absolute", bottom: 8, right: 8 }}>
+                <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
                   <PhotoCredit credit={h.image_credit} />
                 </div>
               </>

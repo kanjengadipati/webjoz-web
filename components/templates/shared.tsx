@@ -4,10 +4,11 @@ import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
-  MapPin, Phone, Mail, Globe,
+  MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
+import { uploadImageFile } from "@/components/file-upload";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
@@ -642,6 +643,11 @@ interface TestimonialsSectionProps {
   roleClass?: string;
   roleStyle?: React.CSSProperties;
   accentColor?: string;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
@@ -663,6 +669,11 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   roleClass = "",
   roleStyle,
   accentColor = "var(--dt-primary)",
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
 }) => {
   if (!testimonials?.items?.length) return null;
 
@@ -680,8 +691,36 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       <div className="max-w-6xl mx-auto space-y-12">
         {(testimonials.eyebrow || testimonials.title) && (
           <div className="text-center space-y-2">
-            {testimonials.eyebrow && <span className={eyebrowClasses} style={eyebrowStyle}>{testimonials.eyebrow}</span>}
-            {testimonials.title && <h2 className={titleClasses} style={{ ...titleStyle, ...headingVars }}>{testimonials.title}</h2>}
+            {testimonials.eyebrow && (
+              <InlineText
+                section="testimonials"
+                fieldKey="eyebrow"
+                value={testimonials.eyebrow}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                className={eyebrowClasses}
+                style={eyebrowStyle}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
+            {testimonials.title && (
+              <InlineText
+                section="testimonials"
+                fieldKey="title"
+                value={testimonials.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h2"
+                className={titleClasses}
+                style={{ ...titleStyle, ...headingVars }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
           </div>
         )}
         <div className={gridClass}>
@@ -1534,6 +1573,11 @@ interface ContactSectionProps {
   leadFormBtnStyle?: React.CSSProperties;
   leadFormInputClass?: string;
   leadFormInputStyle?: React.CSSProperties;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -1548,6 +1592,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   leadTitleClass, leadTitleStyle, leadTitleText = "Hubungi Kami",
   leadFormBtnClass, leadFormBtnStyle,
   leadFormInputClass, leadFormInputStyle,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }) => {
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
@@ -1577,10 +1622,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const displayPhone = phone || "08xx-xxxx-xxxx";
   const displayEmail = email || "email@anda.com";
 
-  const infoItems: { icon: React.ElementType; text?: string; href?: string }[] = [
-    { icon: MapPin, text: displayAddress },
-    { icon: Phone, text: displayPhone, href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
-    { icon: Mail, text: displayEmail, href: `mailto:${displayEmail}` },
+  const infoItems: { icon: React.ElementType; text?: string; fieldKey?: string; href?: string }[] = [
+    { icon: MapPin, text: displayAddress, fieldKey: "address" },
+    { icon: Phone, text: displayPhone, fieldKey: "phone", href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
+    { icon: Mail, text: displayEmail, fieldKey: "email", href: `mailto:${displayEmail}` },
   ];
 
   return (
@@ -1588,16 +1633,46 @@ const ContactSection: React.FC<ContactSectionProps> = ({
       <div className={`${containerWidthClass} ${containerMarginClass} ${hasLeadForm ? "grid md:grid-cols-2 gap-10 md:gap-14" : textAlignClass}`}>
         {/* Contact info */}
         <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
-          <h2 className={titleClass} style={{ ...titleStyle, ...headingVars }}>{title}</h2>
+          {title && (
+            <InlineText
+              section="contact"
+              fieldKey="title"
+              value={title}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              className={titleClass}
+              style={{ ...titleStyle, ...headingVars }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          )}
           <div className="space-y-4">
-            {infoItems.map(({ icon: Icon, text, href }) => {
+            {infoItems.map(({ icon: Icon, text, fieldKey, href }) => {
               const inner = (
                 <div className="inline-flex gap-3 items-center">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
                   <div className={hasLeadForm ? "flex-1 min-w-0 pt-1" : "min-w-0"}>
-                    <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
+                    {fieldKey ? (
+                      <InlineText
+                        section="contact"
+                        fieldKey={fieldKey}
+                        value={text}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="p"
+                        className={`${textClass} break-words`}
+                        style={textStyle}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    ) : (
+                      <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
+                    )}
                   </div>
                 </div>
               );
@@ -1606,7 +1681,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
               ) : (
                 <div className={`flex ${justifyClass}`}>{inner}</div>
               );
-              if (href) {
+              if (href && !isEditorMode) {
                 return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{content}</a>;
               }
               return <div key={text}>{content}</div>;
@@ -1681,6 +1756,11 @@ interface BenefitsSectionProps {
   cardDescClass?: string;
   cardDescStyle?: React.CSSProperties;
   accentColor?: string;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 const BenefitsSection: React.FC<BenefitsSectionProps> = ({
@@ -1709,6 +1789,11 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
   cardDescClass = "text-xs leading-relaxed",
   cardDescStyle,
   accentColor = "var(--dt-primary)",
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
 }) => {
   const containerClass = variant === "compact" ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" :
     variant === "stats" ? "grid grid-cols-1 md:grid-cols-3 gap-6" :
@@ -1725,9 +1810,51 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
       <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
         {(b.eyebrow || b.title || b.subtitle) && (
           <div className="space-y-2">
-            {b.eyebrow && <span className={eyebrowClass} style={headerAlign}>{b.eyebrow}</span>}
-            {b.title && <h2 className={titleClass} style={{ ...titleStyle, ...headingVars, ...alignStyle }}>{b.title}</h2>}
-            {b.subtitle && <p className={subtitleClass} style={{ ...subtitleStyle, ...alignStyle }}>{b.subtitle}</p>}
+            {b.eyebrow && (
+              <InlineText
+                section="benefits"
+                fieldKey="eyebrow"
+                value={b.eyebrow}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                className={eyebrowClass}
+                style={headerAlign}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
+            {b.title && (
+              <InlineText
+                section="benefits"
+                fieldKey="title"
+                value={b.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h2"
+                className={titleClass}
+                style={{ ...titleStyle, ...headingVars, ...alignStyle }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
+            {b.subtitle && (
+              <InlineText
+                section="benefits"
+                fieldKey="subtitle"
+                value={b.subtitle}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="p"
+                className={subtitleClass}
+                style={{ ...subtitleStyle, ...alignStyle }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
           </div>
         )}
         <div className={containerClass}>
@@ -1785,6 +1912,241 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({
     </section>
   );
 };
+
+// ─── Inline Edit Primitive Components ──────────────────────────────────────────
+
+export interface InlineTextProps {
+  section: string;
+  fieldKey: string;
+  value?: string | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  multiline?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  as?: keyof React.JSX.IntrinsicElements;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+  placeholder?: string;
+  children?: React.ReactNode;
+}
+
+export function InlineText({
+  section,
+  fieldKey,
+  value,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  multiline = false,
+  className = "",
+  style,
+  as: Component = "span",
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  placeholder,
+  children,
+}: InlineTextProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftValue, setDraftValue] = useState(value || "");
+
+  useEffect(() => {
+    setDraftValue(value || "");
+  }, [value]);
+
+  if (!isEditorMode || !onUpdateField) {
+    return <Component className={className} style={style}>{children ?? value ?? placeholder}</Component>;
+  }
+
+  const handleStartEdit = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    onEditingStateChange?.(true);
+    setDraftValue(value || "");
+    setIsEditing(true);
+  };
+
+  const handleCommit = () => {
+    setIsEditing(false);
+    onEditingStateChange?.(false);
+    if (draftValue !== value) {
+      onUpdateField(section, fieldKey, draftValue);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    onEditingStateChange?.(false);
+    setDraftValue(value || "");
+  };
+
+  if (isEditing) {
+    if (multiline) {
+      return (
+        <textarea
+          autoFocus
+          value={draftValue}
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onChange={(e) => setDraftValue(e.target.value)}
+          onBlur={handleCommit}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") handleCancel();
+          }}
+          className={`w-full min-h-[80px] p-2 border-2 border-primary rounded-lg bg-slate-900/90 text-slate-100 font-sans text-sm outline-none resize-y z-50 ${className}`}
+          style={style}
+        />
+      );
+    }
+    return (
+      <input
+        autoFocus
+        type="text"
+        value={draftValue}
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onChange={(e) => setDraftValue(e.target.value)}
+        onBlur={handleCommit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleCommit();
+          if (e.key === "Escape") handleCancel();
+        }}
+        className={`w-full px-2 py-1 border-2 border-primary rounded-lg bg-slate-900/90 text-slate-100 font-sans text-sm outline-none z-50 ${className}`}
+        style={style}
+      />
+    );
+  }
+
+  return (
+    <Component className={`relative inline-flex items-center gap-1.5 group/inline ${className}`} style={style}>
+      <span>{children ?? value ?? placeholder}</span>
+      <button
+        type="button"
+        onClick={handleStartEdit}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        title="Edit teks ini"
+        aria-label="Edit teks ini"
+        className={`inline-flex h-6.5 w-6.5 items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
+          isSelected ? "opacity-100 scale-100" : "max-md:opacity-100 max-md:scale-100 opacity-0 md:group-hover:opacity-100 md:group-hover:scale-100 scale-90"
+        }`}
+        style={{
+          background: "var(--dt-primary, #7C3AED)",
+          color: "#ffffff",
+          border: "1.5px solid rgba(255,255,255,0.7)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.25)"
+        }}
+      >
+        <Pencil className="h-3.5 w-3.5 text-white flex-shrink-0 stroke-[2.5]" />
+      </button>
+    </Component>
+  );
+}
+
+export interface InlineImageProps {
+  section: string;
+  fieldKey: string;
+  src?: string | null;
+  alt?: string;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  collapseSheetForInlineEdit?: () => void;
+}
+
+export function InlineImage({
+  section,
+  fieldKey,
+  src,
+  alt = "",
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  className = "",
+  style,
+  collapseSheetForInlineEdit,
+}: InlineImageProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  if (!isEditorMode || !onUpdateField) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src || ""} alt={alt} className={className} style={style} />;
+  }
+
+  const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const secureUrl = await uploadImageFile(file);
+      onUpdateField(section, fieldKey, secureUrl);
+    } catch (err: any) {
+      console.error("Upload image error:", err);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
+      className={`relative group/inline-img ${className}`}
+      style={style}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src || ""} alt={alt} className="w-full h-full object-cover" />
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+
+      <button
+        type="button"
+        onClick={handleTriggerUpload}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        disabled={uploading}
+        className={`absolute inset-x-0 bottom-3 mx-auto w-max z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/30 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
+          isSelected ? "opacity-100" : "max-md:opacity-100 opacity-0 md:group-hover:opacity-100"
+        }`}
+      >
+        {uploading ? (
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+        ) : (
+          <Upload className="w-3.5 h-3.5 text-white" />
+        )}
+        <span>{uploading ? "Mengunggah..." : "Ganti Foto"}</span>
+      </button>
+    </div>
+  );
+}
 
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
