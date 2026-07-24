@@ -17,6 +17,9 @@ interface PlanItem {
   description: string;
   price_monthly: number;
   price_yearly: number;
+  promo_price_monthly: number;
+  promo_duration_months: number;
+  promo_label: string;
   max_sites: number;
   max_ai_generates: number;
   max_section_regens: number;
@@ -117,6 +120,9 @@ export default function UpgradePage() {
           body: JSON.stringify({
             plan_id: plan.id,
             callback_url: `${window.location.origin}/dashboard/upgrade/success`,
+            amount: plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
+              ? plan.promo_price_monthly
+              : undefined,
           }),
         },
         token,
@@ -277,8 +283,25 @@ export default function UpgradePage() {
                 <p className="text-sm text-muted-foreground">{plan.description}</p>
               </div>
               <div>
-                <span className="text-3xl font-bold">Rp {plan.price_monthly.toLocaleString("id-ID")}</span>
-                <span className="text-sm text-muted-foreground"> /bln</span>
+                {plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-bold">Rp {plan.promo_price_monthly.toLocaleString("id-ID")}</span>
+                      <span className="text-sm text-muted-foreground"> /bln</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground line-through">Rp {plan.price_monthly.toLocaleString("id-ID")}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                        {plan.promo_label || `Diskon ${plan.promo_duration_months} bulan`}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="text-3xl font-bold">Rp {plan.price_monthly.toLocaleString("id-ID")}</span>
+                    <span className="text-sm text-muted-foreground"> /bln</span>
+                  </div>
+                )}
               </div>
               {isCurrent ? (
                 <span className="block w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-primary/10 text-primary border border-primary/20">

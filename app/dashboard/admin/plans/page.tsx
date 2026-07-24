@@ -15,6 +15,9 @@ interface PlanItem {
   description: string;
   price_monthly: number;
   price_yearly: number;
+  promo_price_monthly: number;
+  promo_duration_months: number;
+  promo_label: string;
   max_sites: number;
   max_ai_generates: number;
   max_section_regens: number;
@@ -33,6 +36,9 @@ interface PlanForm {
   description: string;
   price_monthly: number;
   price_yearly: number;
+  promo_price_monthly: number;
+  promo_duration_months: number;
+  promo_label: string;
   max_sites: number;
   max_ai_generates: number;
   max_section_regens: number;
@@ -46,6 +52,7 @@ interface PlanForm {
 
 const emptyForm: PlanForm = {
   name: "", slug: "", description: "", price_monthly: 0, price_yearly: 0,
+  promo_price_monthly: 0, promo_duration_months: 0, promo_label: "",
   max_sites: 1, max_ai_generates: 10, max_section_regens: 20, max_design_regens: 5, max_members: 1,
   max_custom_domain: 0, max_storage_mb: 100, features: "", active: true,
 };
@@ -94,6 +101,9 @@ export default function AdminPlansPage() {
       description: plan.description || "",
       price_monthly: plan.price_monthly,
       price_yearly: plan.price_yearly,
+      promo_price_monthly: plan.promo_price_monthly,
+      promo_duration_months: plan.promo_duration_months,
+      promo_label: plan.promo_label || "",
       max_sites: plan.max_sites,
       max_ai_generates: plan.max_ai_generates,
       max_section_regens: plan.max_section_regens,
@@ -263,6 +273,12 @@ export default function AdminPlansPage() {
                               {p.price_yearly.toLocaleString("id-ID")}/yr
                             </div>
                           )}
+                          {p.promo_price_monthly > 0 && p.promo_duration_months > 0 && (
+                            <div className="text-xs text-emerald-600 font-medium">
+                              Promo: {p.promo_price_monthly.toLocaleString("id-ID")}/mo ({p.promo_duration_months} bln)
+                              {p.promo_label && <span className="text-muted-foreground ml-1">— {p.promo_label}</span>}
+                            </div>
+                          )}
                         </td>
                         <td className="px-6 py-4 text-center">
                           <span className="inline-flex items-center gap-1 text-muted-foreground">
@@ -335,6 +351,21 @@ export default function AdminPlansPage() {
             </FormField>
             <FormField label="Price (Yearly)">
               <Input type="number" value={form.price_yearly} onChange={(e) => setNum("price_yearly", e.target.value)} />
+            </FormField>
+          </div>
+
+          <div className="rounded-lg border border-dashed border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+            <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">Promo Pricing</div>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField label="Promo Price (Monthly)">
+                <Input type="number" value={form.promo_price_monthly} onChange={(e) => setNum("promo_price_monthly", e.target.value)} placeholder="0 = no promo" />
+              </FormField>
+              <FormField label="Duration (months)">
+                <Input type="number" value={form.promo_duration_months} onChange={(e) => setNum("promo_duration_months", e.target.value)} placeholder="0 = no promo" />
+              </FormField>
+            </div>
+            <FormField label="Promo Label">
+              <Input value={form.promo_label} onChange={(e) => setForm({ ...form, promo_label: e.target.value })} placeholder="e.g. Harga Perkenalan, Diskon Launching" />
             </FormField>
           </div>
 
