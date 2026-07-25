@@ -109,7 +109,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">11. Kontak</h2>
             <address className="not-italic space-y-1">
               <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo Malangan, Giwangan, Yogyakarta</p>
+              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
               <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
             </address>
           </section>

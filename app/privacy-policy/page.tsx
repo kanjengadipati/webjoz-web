@@ -106,7 +106,7 @@ export default function PrivacyPolicyPage() {
             <p>Jika Anda memiliki pertanyaan tentang kebijakan privasi ini, silakan hubungi:</p>
             <address className="not-italic mt-2 space-y-1">
               <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo Malangan, Giwangan, Yogyakarta</p>
+              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
               <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
             </address>
           </section>

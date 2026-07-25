@@ -514,7 +514,7 @@ export default function LandingPageClient() {
                 Mulai Gratis Sekarang
               </Button>
               <a
-                href="https://wa.me/6282298870033?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
+                href="https://wa.me/6285111221044?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -527,7 +527,7 @@ export default function LandingPageClient() {
             <p className="mt-6 text-sm text-muted-foreground">
               Butuh custom design atau company profile?{" "}
               <a
-                href="https://wa.me/6282298870033"
+                href="https://wa.me/6285111221044"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary underline-offset-4 hover:underline"
