@@ -86,7 +86,7 @@ export default function RefundPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">8. Kontak</h2>
             <address className="not-italic space-y-1">
               <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo Malangan, Giwangan, Yogyakarta</p>
+              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
               <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
               <p>Jam Operasional: Senin – Jumat, 09.00 – 17.00 WIB</p>
             </address>

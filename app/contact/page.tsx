@@ -29,14 +29,14 @@ export default function ContactPage() {
 
           {/* WhatsApp */}
           <a
-            href="https://wa.me/6282298870033"
+            href="https://wa.me/6285111221044"
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6 hover:border-border transition-colors group"
           >
             <div className="text-2xl">💬</div>
             <h2 className="font-semibold text-foreground">WhatsApp</h2>
-            <p className="text-sm text-muted-foreground">+62 822-9887-0033</p>
+            <p className="text-sm text-muted-foreground">+62 851-1122-1044</p>
             <span className="text-xs text-primary group-hover:underline mt-1">Chat sekarang →</span>
           </a>
 
@@ -45,8 +45,8 @@ export default function ContactPage() {
             <div className="text-2xl">📍</div>
             <h2 className="font-semibold text-foreground">Alamat</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Jl. Malang Wijoyo Malangan<br />
-              Giwangan, Yogyakarta<br />
+              Jl. Malang Wijoyo, Malangan,<br />
+              Giwangan, Umbulharjo, Yogyakarta,<br />
               Indonesia
             </p>
           </div>
