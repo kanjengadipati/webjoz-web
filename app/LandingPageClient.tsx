@@ -541,17 +541,25 @@ export default function LandingPageClient() {
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-border/40 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
-            <span className="text-sm font-semibold text-foreground">Webjoz</span>
+        <div className="mx-auto max-w-6xl flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
+              <span className="text-sm font-semibold text-foreground">Webjoz</span>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              &copy; {new Date().getFullYear()} Webjoz by Giwangan Studio. AI Website Builder untuk Bisnis Indonesia.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <Link href="/login" className="hover:text-foreground transition">Login</Link>
+              <Link href="/contact" className="hover:text-foreground transition">Kontak</Link>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            &copy; {new Date().getFullYear()} Webjoz. AI Website Builder untuk Bisnis Indonesia.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link href="/login" className="hover:text-foreground transition">Login</Link>
-            <a href="https://wa.me/6282298870033" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Kontak</a>
+          <div className="border-t border-border/30 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+            <Link href="/privacy-policy" className="hover:text-foreground transition">Kebijakan Privasi</Link>
+            <Link href="/terms" className="hover:text-foreground transition">Syarat &amp; Ketentuan</Link>
+            <Link href="/refund-policy" className="hover:text-foreground transition">Kebijakan Refund</Link>
+            <Link href="/contact" className="hover:text-foreground transition">Hubungi Kami</Link>
           </div>
         </div>
       </footer>
