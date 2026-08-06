@@ -3,7 +3,24 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Webjoz",
-  description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna.",
+  description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna platform AI website builder.",
+  keywords: ["privacy policy webjoz", "kebijakan privasi", "perlindungan data"],
+  alternates: {
+    canonical: "https://webjoz.com/privacy-policy",
+  },
+  openGraph: {
+    title: "Privacy Policy | Webjoz",
+    description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna.",
+    url: "https://webjoz.com/privacy-policy",
+    siteName: "Webjoz",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy | Webjoz",
+    description: "Kebijakan Privasi Webjoz — perlindungan data pengguna.",
+  },
 };
 
 export default function PrivacyPolicyPage() {

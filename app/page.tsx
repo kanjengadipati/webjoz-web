@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Webjoz | AI Website Builder untuk Bisnis Indonesia",
   description: "Buat website bisnis profesional hanya dalam 5 menit dengan AI. Tanpa coding, tanpa form panjang. Cocok untuk UMKM dan perusahaan Indonesia.",
   keywords: ["ai website builder", "buat website", "website bisnis", "umkm indonesia", "webjoz", "ai website generator"],
+  alternates: {
+    canonical: "https://webjoz.com",
+  },
   openGraph: {
     title: "Webjoz | AI Website Builder untuk Bisnis Indonesia",
     description: "Buat website bisnis profesional hanya dalam 5 menit dengan AI. Tanpa coding.",
