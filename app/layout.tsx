@@ -15,14 +15,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.webjoz.com"),
+  metadataBase: new URL("https://webjoz.com"),
   title: "Webjoz — AI Website Builder untuk Bisnis",
   description:
     "Buat website bisnis profesional dalam 5 menit dengan AI. Isi profil bisnis, pilih template, dan website Anda langsung aktif — tanpa coding, tanpa tunggu tim.",
+  keywords: [
+    "ai website builder",
+    "buat website bisnis",
+    "website UMKM",
+    "webjoz",
+    "website otomatis AI",
+    "website tanpa coding",
+    "landing page AI",
+    "website Indonesia",
+  ],
+  authors: [{ name: "Webjoz", url: "https://webjoz.com" }],
   openGraph: {
     title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
-    url: "https://app.webjoz.com",
+    url: "https://webjoz.com",
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
@@ -31,6 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
+    site: "@webjoz",
   },
   robots: {
     index: true,

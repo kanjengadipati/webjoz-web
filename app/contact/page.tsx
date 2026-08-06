@@ -3,7 +3,24 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Hubungi Kami | Webjoz",
-  description: "Hubungi tim Webjoz — Giwangan Studio. Kami siap membantu Anda.",
+  description: "Hubungi tim Webjoz — Giwangan Studio. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
+  keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website", "giwangan studio"],
+  alternates: {
+    canonical: "https://webjoz.com/contact",
+  },
+  openGraph: {
+    title: "Hubungi Kami | Webjoz",
+    description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan seputar platform AI website builder.",
+    url: "https://webjoz.com/contact",
+    siteName: "Webjoz",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Hubungi Kami | Webjoz",
+    description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan.",
+  },
 };
 
 export default function ContactPage() {

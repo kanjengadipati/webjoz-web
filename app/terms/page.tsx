@@ -4,6 +4,23 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan | Webjoz",
   description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
+  keywords: ["syarat ketentuan webjoz", "terms of service", "aturan penggunaan webjoz"],
+  alternates: {
+    canonical: "https://webjoz.com/terms",
+  },
+  openGraph: {
+    title: "Syarat & Ketentuan | Webjoz",
+    description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
+    url: "https://webjoz.com/terms",
+    siteName: "Webjoz",
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Syarat & Ketentuan | Webjoz",
+    description: "Syarat dan Ketentuan penggunaan layanan Webjoz.",
+  },
 };
 
 export default function TermsPage() {

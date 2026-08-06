@@ -119,12 +119,35 @@ export default function LandingPageClient() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Webjoz",
-            "url": "https://webjoz.com/",
+            "url": "https://webjoz.com",
             "potentialAction": {
               "@type": "SearchAction",
               "target": "https://webjoz.com/create?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Webjoz",
+            "url": "https://webjoz.com",
+            "logo": "https://webjoz.com/logo2.png",
+            "description": "Platform AI Website Builder untuk bisnis Indonesia. Buat website profesional dalam 5 menit tanpa coding.",
+            "areaServed": "Indonesia",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "availableLanguage": "Indonesian",
+              "url": "https://wa.me/6285111221044"
+            },
+            "sameAs": [
+              "https://webjoz.com"
+            ]
           }),
         }}
       />
