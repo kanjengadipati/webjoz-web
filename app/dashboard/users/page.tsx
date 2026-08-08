@@ -46,9 +46,8 @@ export default function UsersPage() {
     return () => window.clearTimeout(timeout);
   }, [loadUsers, token]);
 
-  async function handleToggleRole(user: User) {
-    if (!token) return;
-    const newRole = user.role === "admin" ? "user" : "admin";
+  async function handleChangeRole(user: User, newRole: string) {
+    if (!token || user.role === newRole) return;
     try {
       await updateUser(token, user.id, {
         name: user.name,
@@ -56,10 +55,10 @@ export default function UsersPage() {
         role: newRole,
         is_verified: user.is_verified
       });
-      pushToast(`User updated to ${newRole}`, "success");
+      pushToast(`Role ${user.name} diperbarui menjadi ${newRole}`, "success");
       void loadUsers();
     } catch {
-      pushToast("Failed to update user role", "error");
+      pushToast("Gagal memperbarui role user", "error");
     }
   }
 
@@ -122,14 +121,16 @@ export default function UsersPage() {
                       <StatusBadge status={user.role} />
                       <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl h-9"
-                      onClick={() => void handleToggleRole(user)}
+                    <select
+                      value={user.role}
+                      onChange={(e) => void handleChangeRole(user, e.target.value)}
+                      className="h-9 px-3 rounded-xl border border-input bg-background text-xs font-medium cursor-pointer hover:border-primary/50 transition-colors"
                     >
-                      {user.role === "admin" ? "Demote" : "Make Admin"}
-                    </Button>
+                      <option value="user">User</option>
+                      <option value="sales">Sales</option>
+                      <option value="admin">Admin</option>
+                      {currentRole === "superadmin" && <option value="superadmin">Superadmin</option>}
+                    </select>
                     {canDelete(user) && (
                       <Button
                         variant="destructive"
