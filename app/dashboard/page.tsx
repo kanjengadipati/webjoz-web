@@ -68,7 +68,6 @@ interface PlanDetail {
   max_section_regens: number;
   max_design_regens: number;
   max_members: number;
-  max_storage_mb: number;
 }
 
 interface Lead {

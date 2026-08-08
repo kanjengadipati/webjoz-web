@@ -90,6 +90,8 @@ export default function LandingPageClient() {
   const isLoggedIn = authReady && !!token;
   const [showFloatingCta, setShowFloatingCta] = useState(false);
 
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
+
   useEffect(() => {
     const handleScroll = () => {
       // Show floating CTA after scrolling past the main hero action button (approx 400px)
@@ -428,83 +430,150 @@ export default function LandingPageClient() {
       {/* ── Pricing ───────────────────────────────────────────────────────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-5xl">
-          <div className="text-center space-y-3 mb-12">
+          <div className="text-center space-y-3 mb-8">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Harga Sederhana</h2>
             <p className="text-muted-foreground text-base max-w-lg mx-auto">
               Mulai gratis, kembangkan kapan pun Anda siap.
             </p>
+
+            {/* Billing Cycle Switcher */}
+            <div className="pt-2 flex flex-col items-center justify-center gap-2">
+              <div className="inline-flex items-center p-1 bg-muted/80 dark:bg-muted/40 border border-border/50 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle("monthly")}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                    billingCycle === "monthly"
+                      ? "bg-background text-foreground shadow-sm font-bold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Bulanan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle("yearly")}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+                    billingCycle === "yearly"
+                      ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span>Tahunan</span>
+                  <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
+                    Hemat ~16%
+                  </span>
+                </button>
+              </div>
+              {billingCycle === "yearly" && (
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+                  🎉 Hemat hingga 2 bulan dengan langganan paket per tahun
+                </p>
+              )}
+            </div>
           </div>
+
           <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
-            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative">
-              <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Gratis</div>
-              <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
-              <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
-              <ul className="space-y-2.5 text-sm text-left mb-8">
-                {[
-                  "1 website",
-                  "AI Generate 10x/bulan",
-                  "AI Regenerasi 20x/bulan",
-                  "Subdomain .webjoz.app",
-                  "Hosting & SSL gratis",
-                  "Semua template",
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative flex flex-col justify-between">
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Gratis</div>
+                <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
+                <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
+                <ul className="space-y-2.5 text-sm text-left mb-8">
+                  {[
+                    "1 website",
+                    "AI Generate 10x/bulan",
+                    "AI Regenerasi 20x/bulan",
+                    "Subdomain .webjoz.app",
+                    "Hosting & SSL gratis",
+                    "Semua template",
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <Button onClick={() => startWizard()} className="w-full rounded-full font-bold">
                 Mulai Gratis
               </Button>
             </Card>
-            <Card className="border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 px-6 py-8 text-center shadow-lg shadow-primary/10 relative overflow-hidden">
-              <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
-                Terpopuler
+
+            <Card className="border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 px-6 py-8 text-center shadow-lg shadow-primary/10 relative overflow-hidden flex flex-col justify-between">
+              <div>
+                <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
+                  Terpopuler
+                </div>
+                <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Pro</div>
+                {billingCycle === "yearly" ? (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">Rp 1.499</div>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      ribu/tahun <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(Setara Rp 124.900/bln)</span>
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">Rp 149</div>
+                    <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 1.499.000/tahun</p>
+                  </>
+                )}
+                <ul className="space-y-2.5 text-sm text-left mb-8">
+                  {[
+                    "5 website",
+                    "AI Generate 100x/bulan",
+                    "AI Regenerasi 200x/bulan",
+                    "3 custom domain",
+                    "SEO Booster",
+                    "Hapus branding Webjoz",
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Pro</div>
-              <div className="text-4xl font-bold text-foreground mb-1">Rp 149</div>
-              <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 1.499.000/tahun</p>
-              <ul className="space-y-2.5 text-sm text-left mb-8">
-                {[
-                  "5 website",
-                  "AI Generate 100x/bulan",
-                  "AI Regenerasi 200x/bulan",
-                  "3 custom domain",
-                  "SEO Booster",
-                  "Hapus branding Webjoz",
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
               <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
-                Pilih Pro
+                Pilih Pro ({billingCycle === "yearly" ? "Tahunan" : "Bulanan"})
               </Button>
             </Card>
-            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative">
-              <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Enterprise</div>
-              <div className="text-4xl font-bold text-foreground mb-1">Rp 499</div>
-              <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 4.999.000/tahun</p>
-              <ul className="space-y-2.5 text-sm text-left mb-8">
-                {[
-                  "20 website",
-                  "500 AI Generate/bulan",
-                  "1.000 regenerasi",
-                  "10 custom domain",
-                  "SEO Booster",
-                  "Prioritas support",
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+
+            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative flex flex-col justify-between">
+              <div>
+                <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Enterprise</div>
+                {billingCycle === "yearly" ? (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">Rp 4.999</div>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      ribu/tahun <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(Setara Rp 416.500/bln)</span>
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">Rp 499</div>
+                    <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 4.999.000/tahun</p>
+                  </>
+                )}
+                <ul className="space-y-2.5 text-sm text-left mb-8">
+                  {[
+                    "20 website",
+                    "500 AI Generate/bulan",
+                    "1.000 regenerasi",
+                    "10 custom domain",
+                    "SEO Booster",
+                    "Prioritas support",
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
-                Pilih Enterprise
+                Pilih Enterprise ({billingCycle === "yearly" ? "Tahunan" : "Bulanan"})
               </Button>
             </Card>
           </div>

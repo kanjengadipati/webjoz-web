@@ -24,7 +24,6 @@ interface PlanItem {
   max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
-  max_storage_mb: number;
   features: string;
   active: boolean;
   created_at: string;
@@ -45,7 +44,6 @@ interface PlanForm {
   max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
-  max_storage_mb: number;
   features: string;
   active: boolean;
 }
@@ -54,7 +52,7 @@ const emptyForm: PlanForm = {
   name: "", slug: "", description: "", price_monthly: 0, price_yearly: 0,
   promo_price_monthly: 0, promo_duration_months: 0, promo_label: "",
   max_sites: 1, max_ai_generates: 10, max_section_regens: 20, max_design_regens: 5, max_members: 1,
-  max_custom_domain: 0, max_storage_mb: 100, features: "", active: true,
+  max_custom_domain: 0, features: "", active: true,
 };
 
 export default function AdminPlansPage() {
@@ -110,7 +108,6 @@ export default function AdminPlansPage() {
       max_design_regens: plan.max_design_regens,
       max_members: plan.max_members,
       max_custom_domain: plan.max_custom_domain,
-      max_storage_mb: plan.max_storage_mb,
       features: plan.features || "",
       active: plan.active,
     });
@@ -387,9 +384,6 @@ export default function AdminPlansPage() {
             </FormField>
             <FormField label="Custom Domains">
               <Input type="number" value={form.max_custom_domain} onChange={(e) => setNum("max_custom_domain", e.target.value)} />
-            </FormField>
-            <FormField label="Storage (MB)">
-              <Input type="number" value={form.max_storage_mb} onChange={(e) => setNum("max_storage_mb", e.target.value)} />
             </FormField>
           </div>
 
