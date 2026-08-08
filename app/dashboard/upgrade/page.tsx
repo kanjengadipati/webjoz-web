@@ -26,7 +26,6 @@ interface PlanItem {
   max_design_regens: number;
   max_members: number;
   max_custom_domain: number;
-  max_storage_mb: number;
   features: string;
 }
 
@@ -65,6 +64,7 @@ export default function UpgradePage() {
   const [paying, setPaying] = useState<number | null>(null);
   const [snapReady, setSnapReady] = useState(false);
   const [paymentDone, setPaymentDone] = useState(false);
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
 
   useEffect(() => {
     if (!token) return;
@@ -110,6 +110,15 @@ export default function UpgradePage() {
       }
     }
 
+    const isYearly = billingCycle === "yearly";
+    const targetAmount = isYearly
+      ? plan.price_yearly > 0
+        ? plan.price_yearly
+        : plan.price_monthly * 12
+      : plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
+        ? plan.promo_price_monthly
+        : plan.price_monthly;
+
     setPaying(plan.id);
     try {
       const res = await request<PaymentResponse>(
@@ -119,10 +128,9 @@ export default function UpgradePage() {
           headers: { "X-Tenant-ID": activeTenant.tenant.id.toString() },
           body: JSON.stringify({
             plan_id: plan.id,
+            billing_cycle: billingCycle,
             callback_url: `${window.location.origin}/dashboard/upgrade/success`,
-            amount: plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
-              ? plan.promo_price_monthly
-              : undefined,
+            amount: targetAmount,
           }),
         },
         token,
@@ -185,19 +193,50 @@ export default function UpgradePage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      <div className="flex items-center gap-4">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
-          aria-label="Back to dashboard"
-        >
-          <ArrowLeft className="size-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Upgrade Paket</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Pilih paket yang sesuai dengan kebutuhan website Anda.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
+            aria-label="Back to dashboard"
+          >
+            <ArrowLeft className="size-5" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Upgrade Paket</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Pilih paket langganan yang sesuai dengan skala bisnis Anda.
+            </p>
+          </div>
+        </div>
+
+        {/* Billing Cycle Switcher */}
+        <div className="inline-flex items-center p-1 bg-muted/80 dark:bg-muted/40 border border-border/50 rounded-2xl self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setBillingCycle("monthly")}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              billingCycle === "monthly"
+                ? "bg-background text-foreground shadow-sm font-bold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Bulanan
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingCycle("yearly")}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+              billingCycle === "yearly"
+                ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span>Tahunan</span>
+            <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
+              Hemat ~16%
+            </span>
+          </button>
         </div>
       </div>
 
@@ -262,6 +301,11 @@ export default function UpgradePage() {
         {paidPlans.map((plan) => {
           const isCurrent = currentPlan === plan.slug;
           const isBest = plan.slug === "pro";
+          const isYearly = billingCycle === "yearly";
+          const yearlyPrice = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
+          const monthlyEquivalent = Math.round(yearlyPrice / 12);
+          const yearlySavings = (plan.price_monthly * 12) - yearlyPrice;
+
           return (
             <div
               key={plan.id}
@@ -283,7 +327,22 @@ export default function UpgradePage() {
                 <p className="text-sm text-muted-foreground">{plan.description}</p>
               </div>
               <div>
-                {plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 ? (
+                {isYearly ? (
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold">Rp {yearlyPrice.toLocaleString("id-ID")}</span>
+                      <span className="text-sm text-muted-foreground"> /thn</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground flex flex-col gap-1">
+                      <span>Setara <strong>Rp {monthlyEquivalent.toLocaleString("id-ID")}</strong> /bln</span>
+                      {yearlySavings > 0 && (
+                        <span className="text-[10px] inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
+                          🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")} / tahun (2 Bulan Gratis)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ) : plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 ? (
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-3xl font-bold">Rp {plan.promo_price_monthly.toLocaleString("id-ID")}</span>
@@ -316,7 +375,7 @@ export default function UpgradePage() {
                   {paying === plan.id ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
-                    "Pilih " + plan.name
+                    `Pilih ${plan.name} (${isYearly ? "Tahunan" : "Bulanan"})`
                   )}
                 </button>
               )}
