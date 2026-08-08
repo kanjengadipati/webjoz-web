@@ -1511,6 +1511,7 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
   useEffect(() => {
     if (!ref.current || initRef.current) return;
     initRef.current = true;
+    let sizeTimer: ReturnType<typeof setTimeout> | null = null;
     import("leaflet").then((L) => {
       import("leaflet/dist/leaflet.css");
       if (!ref.current) return;
@@ -1525,9 +1526,12 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
       const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
       tileRef.current = L.tileLayer(info.url, { attribution: "" }).addTo(map);
       L.marker([lat, lng]).addTo(map);
-      setTimeout(() => map.invalidateSize(), 200);
+      sizeTimer = setTimeout(() => { if (mapRef.current) map.invalidateSize(); }, 200);
     });
-    return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; } };
+    return () => {
+      if (sizeTimer !== null) clearTimeout(sizeTimer);
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; }
+    };
   }, [lat, lng]);
 
   useEffect(() => {

@@ -57,6 +57,7 @@ export default function LeafletMap({
   useEffect(() => {
     if (!ref.current || initRef.current) return;
     initRef.current = true;
+    let sizeTimer: ReturnType<typeof setTimeout> | null = null;
 
     import("leaflet").then((L) => {
       import("leaflet/dist/leaflet.css");
@@ -90,10 +91,13 @@ export default function LeafletMap({
       tileRef.current = layer;
 
       L.marker([coords.lat, coords.lng]).addTo(map);
-      setTimeout(() => map.invalidateSize(), 200);
+      sizeTimer = setTimeout(() => { if (mapRef.current) map.invalidateSize(); }, 200);
     });
 
-    return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; } };
+    return () => {
+      if (sizeTimer !== null) clearTimeout(sizeTimer);
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; }
+    };
   }, [coords.lat, coords.lng]);
 
   // Hot-swap tile layer when tileStyle changes (editor "Gaya Peta" toggle)
