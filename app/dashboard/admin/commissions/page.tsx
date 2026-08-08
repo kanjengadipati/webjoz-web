@@ -128,33 +128,45 @@ export default function AdminCommissionsPage() {
       </div>
 
       {/* ── Commission Rate Settings ─────────────────────────────────────── */}
-      <Card className={`border-border/40 shadow-sm ${!isSuperAdmin ? "opacity-70" : ""}`}>
-        <CardHeader className="border-b border-border/20 pb-4">
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Settings className="size-4 text-primary/70" />
-            Pengaturan Persentase Komisi
-          </CardTitle>
+      <Card className="border-border/40 shadow-sm overflow-hidden">
+        <CardHeader className="border-b border-border/20 pb-4 bg-muted/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Settings className="size-4 text-emerald-500" />
+              Pengaturan Rate Komisi Sales
+            </CardTitle>
+            <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
+              <span>Rate Aktif:</span>
+              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                {config ? `${config.rate_percent.toFixed(0)}%` : "20%"}
+              </span>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="pt-5">
-          <div className="flex flex-wrap items-end gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+        <CardContent className="p-6 space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            {/* Left Column: Display current active rate */}
+            <div className="space-y-1">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Rate Komisi Saat Ini
-              </label>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-xl border border-input bg-muted/40 px-4 h-10 text-2xl font-bold text-emerald-600 dark:text-emerald-400 min-w-[80px]">
-                  {config ? `${config.rate_percent.toFixed(0)}%` : `${(0.20 * 100).toFixed(0)}%`}
-                </div>
-                <span className="text-xs text-muted-foreground">dari setiap pembayaran tenant</span>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                  {config ? `${config.rate_percent.toFixed(0)}%` : "20%"}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  diterima sales dari setiap transaksi pembayaran tenant
+                </span>
               </div>
             </div>
 
+            {/* Right Column: Update form for Superadmin */}
             {isSuperAdmin ? (
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="commission-rate-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  Ubah Rate (%)
+              <div className="space-y-1.5 md:text-right">
+                <label htmlFor="commission-rate-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
+                  Set Rate Baru (%)
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 md:justify-end">
                   <div className="relative">
                     <input
                       id="commission-rate-input"
@@ -164,7 +176,7 @@ export default function AdminCommissionsPage() {
                       step={1}
                       value={rateInput}
                       onChange={(e) => setRateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
-                      className="h-10 w-28 rounded-xl border border-input bg-background px-3 pr-7 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                      className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
                       placeholder="20"
                     />
                     <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
@@ -172,22 +184,27 @@ export default function AdminCommissionsPage() {
                   <Button
                     onClick={handleSaveConfig}
                     disabled={configLoading}
-                    className="h-10 gap-2"
+                    className="h-10 px-4 font-semibold gap-2"
                     size="sm"
                   >
                     {configLoading && <Loader2 className="size-3.5 animate-spin" />}
                     Simpan
                   </Button>
                 </div>
-                <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mt-1 max-w-sm">
-                  ⚠️ Perubahan rate hanya berlaku untuk transaksi <strong>baru</strong>. Komisi yang sudah tercatat tetap menggunakan rate saat transaksi terjadi.
-                </p>
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                Hanya <span className="font-semibold text-primary">Superadmin</span> yang dapat mengubah persentase komisi.
-              </p>
+              <div className="text-xs text-muted-foreground bg-muted/40 rounded-xl p-3 border border-border/30">
+                Hanya <span className="font-semibold text-foreground">Superadmin</span> yang dapat mengedit rate komisi.
+              </div>
             )}
+          </div>
+
+          {/* Alert Footer Banner */}
+          <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 flex items-start gap-3 text-xs text-amber-700 dark:text-amber-300">
+            <ShieldAlert className="size-4 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-semibold">Catatan Transaksi:</span> Perubahan rate komisi hanya berlaku untuk transaksi <strong>baru</strong>. Komisi transaksi sebelumnya tetap menggunakan rate yang berlaku saat transaksi dilakukan.
+            </div>
           </div>
         </CardContent>
       </Card>
