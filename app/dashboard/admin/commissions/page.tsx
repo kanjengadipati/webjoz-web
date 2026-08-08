@@ -3,11 +3,16 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
-import { fetchAllCommissions, Commission } from "@/lib/api/commissions";
+import {
+  fetchAllCommissions,
+  getCommissionConfig,
+  updateCommissionConfig,
+  Commission,
+  CommissionConfig,
+} from "@/lib/api/commissions";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { DollarSign, Loader2, ChevronLeft, ChevronRight, ShieldAlert, Users } from "lucide-react";
-import Link from "next/link";
+import { DollarSign, Loader2, ChevronLeft, ChevronRight, ShieldAlert, Users, Settings, Percent } from "lucide-react";
 
 export default function AdminCommissionsPage() {
   const token = useAuthToken();
@@ -19,6 +24,12 @@ export default function AdminCommissionsPage() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 10;
+
+  // Commission config state
+  const [config, setConfig] = useState<CommissionConfig | null>(null);
+  const [configLoading, setConfigLoading] = useState(false);
+  const [rateInput, setRateInput] = useState("");
+  const isSuperAdmin = role === "superadmin";
 
   const canReadAll = hasPermission("commission:read_all") || role === "superadmin" || role === "admin";
 
@@ -40,9 +51,41 @@ export default function AdminCommissionsPage() {
     }
   };
 
+  const loadConfig = async () => {
+    if (!token) return;
+    try {
+      const res = await getCommissionConfig(token);
+      setConfig(res.data);
+      setRateInput(res.data.rate_percent.toFixed(0));
+    } catch {
+      // ignore — config panel will show default
+    }
+  };
+
+  const handleSaveConfig = async () => {
+    if (!token) return;
+    const pct = parseFloat(rateInput);
+    if (isNaN(pct) || pct < 0 || pct > 100) {
+      pushToast("Persentase harus antara 0 dan 100", "error");
+      return;
+    }
+    try {
+      setConfigLoading(true);
+      const res = await updateCommissionConfig(token, pct);
+      setConfig(res.data);
+      setRateInput(res.data.rate_percent.toFixed(0));
+      pushToast(`Komisi berhasil diperbarui menjadi ${res.data.rate_percent.toFixed(0)}%`, "success");
+    } catch (err: any) {
+      pushToast(err.message || "Gagal memperbarui komisi", "error");
+    } finally {
+      setConfigLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (token && canReadAll) {
       loadData();
+      loadConfig();
     }
   }, [token, page, canReadAll]);
 
@@ -84,6 +127,69 @@ export default function AdminCommissionsPage() {
         </div>
       </div>
 
+      {/* ── Commission Rate Settings ─────────────────────────────────────── */}
+      <Card className={`border-border/40 shadow-sm ${!isSuperAdmin ? "opacity-70" : ""}`}>
+        <CardHeader className="border-b border-border/20 pb-4">
+          <CardTitle className="text-base font-semibold flex items-center gap-2">
+            <Settings className="size-4 text-primary/70" />
+            Pengaturan Persentase Komisi
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-5">
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                Rate Komisi Saat Ini
+              </label>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-xl border border-input bg-muted/40 px-4 h-10 text-2xl font-bold text-emerald-600 dark:text-emerald-400 min-w-[80px]">
+                  {config ? `${config.rate_percent.toFixed(0)}%` : `${(0.20 * 100).toFixed(0)}%`}
+                </div>
+                <span className="text-xs text-muted-foreground">dari setiap pembayaran tenant</span>
+              </div>
+            </div>
+
+            {isSuperAdmin ? (
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="commission-rate-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Ubah Rate (%)
+                </label>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <input
+                      id="commission-rate-input"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={rateInput}
+                      onChange={(e) => setRateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
+                      className="h-10 w-28 rounded-xl border border-input bg-background px-3 pr-7 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+                      placeholder="20"
+                    />
+                    <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+                  </div>
+                  <Button
+                    onClick={handleSaveConfig}
+                    disabled={configLoading}
+                    className="h-10 gap-2"
+                    size="sm"
+                  >
+                    {configLoading && <Loader2 className="size-3.5 animate-spin" />}
+                    Simpan
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                Hanya <span className="font-semibold text-primary">Superadmin</span> yang dapat mengubah persentase komisi.
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ── Commission List ──────────────────────────────────────────────── */}
       <Card className="border-border/40 shadow-sm">
         <CardHeader className="border-b border-border/20 pb-4 flex flex-row items-center justify-between">
           <CardTitle className="text-lg font-bold tracking-tight">
