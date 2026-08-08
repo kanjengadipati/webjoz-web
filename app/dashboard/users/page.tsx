@@ -91,7 +91,7 @@ export default function UsersPage() {
         </CardHeader>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" />
-          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (admin/user)" />
+          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (user/sales/admin)" />
         </CardContent>
       </Card>
 
