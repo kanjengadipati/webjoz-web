@@ -5,7 +5,7 @@ export interface SiteWizardProps {
   tenantLoading?: boolean;
   activeTenantId: number | string | null;
   memberships?: { tenant: { id: number | string } }[];
-  createTenant?: (name: string, slug: string) => Promise<{ id: number | string } | null>;
+  createTenant?: (name: string, slug: string, referralCode?: string) => Promise<{ id: number | string } | null>;
   onNeedAuth?: () => void;
   initialBusinessType?: string;
   initialBusinessSubType?: string;

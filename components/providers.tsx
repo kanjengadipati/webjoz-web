@@ -17,5 +17,15 @@ export function Providers({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("theme-blue", accent !== "monochrome");
   }, [accent]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get("ref") || urlParams.get("referral_code");
+      if (ref) {
+        localStorage.setItem("webjoz_referral_code", ref);
+      }
+    }
+  }, []);
+
   return <ToastProvider>{children}</ToastProvider>;
 }
