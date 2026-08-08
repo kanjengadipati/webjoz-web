@@ -18,6 +18,7 @@ interface PlanItem {
   price_monthly: number;
   price_yearly: number;
   promo_price_monthly: number;
+  promo_price_yearly: number;
   promo_duration_months: number;
   promo_label: string;
   max_sites: number;
@@ -112,9 +113,11 @@ export default function UpgradePage() {
 
     const isYearly = billingCycle === "yearly";
     const targetAmount = isYearly
-      ? plan.price_yearly > 0
-        ? plan.price_yearly
-        : plan.price_monthly * 12
+      ? plan.promo_price_yearly > 0
+        ? plan.promo_price_yearly
+        : plan.price_yearly > 0
+          ? plan.price_yearly
+          : plan.price_monthly * 12
       : plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
         ? plan.promo_price_monthly
         : plan.price_monthly;
@@ -302,9 +305,10 @@ export default function UpgradePage() {
           const isCurrent = currentPlan === plan.slug;
           const isBest = plan.slug === "pro";
           const isYearly = billingCycle === "yearly";
-          const yearlyPrice = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
-          const monthlyEquivalent = Math.round(yearlyPrice / 12);
-          const yearlySavings = (plan.price_monthly * 12) - yearlyPrice;
+          const normalYearlyPrice = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
+          const effectiveYearlyPrice = plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearlyPrice;
+          const monthlyEquivalent = Math.round(effectiveYearlyPrice / 12);
+          const yearlySavings = (plan.price_monthly * 12) - effectiveYearlyPrice;
 
           return (
             <div
@@ -330,14 +334,22 @@ export default function UpgradePage() {
                 {isYearly ? (
                   <div className="space-y-1">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-bold">Rp {yearlyPrice.toLocaleString("id-ID")}</span>
+                      <span className="text-3xl font-bold">Rp {effectiveYearlyPrice.toLocaleString("id-ID")}</span>
                       <span className="text-sm text-muted-foreground"> /thn</span>
                     </div>
                     <div className="text-xs text-muted-foreground flex flex-col gap-1">
+                      {plan.promo_price_yearly > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="line-through text-muted-foreground/60">Rp {normalYearlyPrice.toLocaleString("id-ID")}</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                            {plan.promo_label || "Promo Tahunan"}
+                          </span>
+                        </div>
+                      )}
                       <span>Setara <strong>Rp {monthlyEquivalent.toLocaleString("id-ID")}</strong> /bln</span>
                       {yearlySavings > 0 && (
                         <span className="text-[10px] inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
-                          🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")} / tahun (2 Bulan Gratis)
+                          🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")} / tahun
                         </span>
                       )}
                     </div>
