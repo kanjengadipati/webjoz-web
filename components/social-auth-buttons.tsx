@@ -68,7 +68,6 @@ type FacebookSdk = {
 declare global {
   interface Window {
     __fbAsyncInitSet?: boolean;
-    __googleInitialized?: boolean;
     fbAsyncInit?: () => void;
     FB?: FacebookSdk;
     google?: {
@@ -109,10 +108,8 @@ export function SocialAuthButtons({
   const router = useRouter();
   const { pushToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [googleReady, setGoogleReady] = useState(false);
   const reactId = useId();
   const googleContainerId = useMemo(() => `google-signin-${mode}-${reactId.replace(/[:]/g, "")}`, [mode, reactId]);
-  const hiddenGoogleContainerId = useMemo(() => `google-hidden-${mode}-${reactId.replace(/[:]/g, "")}`, [mode, reactId]);
 
   const setLocalLoading = useCallback((isLoading: boolean) => {
     setLoading(isLoading);
@@ -212,105 +209,85 @@ export function SocialAuthButtons({
     const google = window.google;
     if (!google?.accounts?.id) return;
 
-    if (layout === "grid") {
-      const hidden = document.getElementById(hiddenGoogleContainerId);
-      if (!hidden) {
-        // DOM not ready yet — retry on next frame
-        requestAnimationFrame(() => renderGoogleButton());
-        return;
-      }
-      hidden.innerHTML = "";
-      google.accounts.id.renderButton(hidden, {
-        theme: "outline",
-        size: "large",
-        type: "standard",
-        shape: "rectangular",
-        text: mode === "login" ? "signin" : "signup_with",
-      });
-      setGoogleReady(true);
-      return;
-    }
-
     const container = document.getElementById(googleContainerId);
     if (!container) {
-      // DOM not ready yet — retry on next frame
       requestAnimationFrame(() => renderGoogleButton());
       return;
     }
     container.innerHTML = "";
     google.accounts.id.renderButton(container, {
-      theme: "filled_blue",
+      theme: "outline",
       size: "large",
-      type: "icon",
-      shape: "circle",
+      type: layout === "grid" ? "standard" : "icon",
+      shape: layout === "grid" ? "rectangular" : "circle",
+      text: mode === "login" ? "signin" : "signup_with",
+      width: layout === "grid" ? 350 : undefined,
     });
-    setGoogleReady(true);
-  }, [googleContainerId, hiddenGoogleContainerId, layout, mode]);
+  }, [googleContainerId, layout, mode]);
 
   const initializeGoogle = useCallback(() => {
     if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined") return;
 
     const google = window.google;
     if (google?.accounts?.id) {
-      if (!window.__googleInitialized) {
-        window.__googleInitialized = true;
-        google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          itp_support: true,
-          use_fedcm_for_prompt: false,
-          callback: (response) => {
-            if (!response.credential) {
-              pushToast("Google did not return a credential.", "error");
-              return;
-            }
-            setLocalLoading(true);
-            onErrorMessageChange?.("");
-            socialLogin("google", response.credential)
-              .then((apiResponse) => {
-                persistAuthSession("", apiResponse.data.access_token);
-                pushToast(`Welcome! Google ${mode === "login" ? "login" : "signup"} successful.`, "success");
-                
-                const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-                const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
-                if (redirectParam) {
-                  router.push(redirectParam);
-                } else if (pendingWizard) {
-                  router.push("/create");
-                } else {
-                  router.push("/dashboard");
-                }
-              })
-              .catch((error: unknown) => {
-                setLocalLoading(false);
-                const msg = getErrorMessage(error, `Social ${mode === "login" ? "login" : "signup"} failed`);
-                onErrorMessageChange?.(msg);
-                pushToast(msg, "error");
-              });
-          },
-        });
-      }
-      // Always re-render the button — container may have been re-mounted
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        itp_support: true,
+        use_fedcm_for_prompt: false,
+        callback: (response) => {
+          if (!response.credential) {
+            pushToast("Google did not return a credential.", "error");
+            return;
+          }
+          setLocalLoading(true);
+          onErrorMessageChange?.("");
+          socialLogin("google", response.credential)
+            .then((apiResponse) => {
+              persistAuthSession("", apiResponse.data.access_token);
+              pushToast(`Welcome! Google ${mode === "login" ? "login" : "signup"} successful.`, "success");
+              
+              const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+              const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
+              if (redirectParam) {
+                router.push(redirectParam);
+              } else if (pendingWizard) {
+                router.push("/create");
+              } else {
+                router.push("/dashboard");
+              }
+            })
+            .catch((error: unknown) => {
+              setLocalLoading(false);
+              const msg = getErrorMessage(error, `Social ${mode === "login" ? "login" : "signup"} failed`);
+              onErrorMessageChange?.(msg);
+              pushToast(msg, "error");
+            });
+        },
+      });
+
       renderGoogleButton();
     }
   }, [pushToast, router, mode, onErrorMessageChange, setLocalLoading, renderGoogleButton]);
 
-  // Reset google initialized flag on unmount so re-mounting reinitializes properly
+  // Continuously check and ensure GIS initializes on route transitions and mounts
   useEffect(() => {
-    return () => {
-      window.__googleInitialized = false;
-    };
-  }, []);
-
-  // If the GIS script loads after a route transition, initialize/render once.
-  useEffect(() => {
-    if (googleReady) return;
     if (!GOOGLE_CLIENT_ID || !SOCIAL_ACTIVE_PROVIDERS.includes("google") || typeof window === "undefined") return;
-    if (window.google?.accounts?.id) {
-      window.setTimeout(initializeGoogle, 0);
-    }
-  }, [googleReady, initializeGoogle]);
 
+    const checkAndInit = () => {
+      if (window.google?.accounts?.id) {
+        initializeGoogle();
+      }
+    };
 
+    checkAndInit();
+    const timer = setInterval(checkAndInit, 300);
+    const stopTimer = setTimeout(() => clearInterval(timer), 4000);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(stopTimer);
+    };
+  }, [initializeGoogle]);
 
   const handleFacebookClick = () => {
     if (!FACEBOOK_CLIENT_ID) {
@@ -363,6 +340,14 @@ export function SocialAuthButtons({
     });
   };
 
+  const handleManualGoogleClick = () => {
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt();
+    } else {
+      pushToast("Memuat Google Sign-In...", "info");
+    }
+  };
+
   const hasGoogle = SOCIAL_ACTIVE_PROVIDERS.includes("google") && !!GOOGLE_CLIENT_ID;
   const hasFacebook = SOCIAL_ACTIVE_PROVIDERS.includes("facebook") && !!FACEBOOK_CLIENT_ID && mode !== "login";
   const hasAnySocial = hasGoogle || hasFacebook;
@@ -387,19 +372,11 @@ export function SocialAuthButtons({
       {layout === "grid" ? (
         <div className={`grid gap-3.5 my-4 ${hasGoogle && hasFacebook ? "grid-cols-2" : "grid-cols-1"}`}>
           {hasGoogle && (
-            <div className="relative">
-              <div
-                id={hiddenGoogleContainerId}
-                className="absolute opacity-0 pointer-events-none -left-[9999px]"
-              />
+            <div className="relative h-11 w-full overflow-hidden rounded-lg">
               <button
                 type="button"
-                disabled={loading || !googleReady}
-                onClick={() => {
-                  const hidden = document.getElementById(hiddenGoogleContainerId);
-                  const gisBtn = hidden?.querySelector<HTMLElement>("button, div[role=button]");
-                  gisBtn?.click();
-                }}
+                disabled={loading}
+                onClick={handleManualGoogleClick}
                 className="flex h-11 w-full items-center justify-center gap-2.5 rounded-lg bg-foreground/8 hover:bg-foreground/14 text-sm font-semibold text-foreground transition cursor-pointer disabled:opacity-50 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <svg className="size-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
@@ -410,6 +387,12 @@ export function SocialAuthButtons({
                 </svg>
                 Google
               </button>
+
+              {/* Transparent Google GSI overlay iframe */}
+              <div
+                id={googleContainerId}
+                className="absolute inset-0 opacity-[0.001] z-10 cursor-pointer overflow-hidden flex items-center justify-center [&_iframe]:!w-[500px] [&_iframe]:!h-[60px] [&_iframe]:!scale-150"
+              />
             </div>
           )}
           {hasFacebook && (
@@ -429,14 +412,18 @@ export function SocialAuthButtons({
       ) : (
         <div className="flex items-center justify-center gap-4 sm:gap-5 my-4">
           {hasGoogle && (
-            <div className={cn("relative size-10 rounded-full border border-border/60 bg-background/50 flex items-center justify-center transition-all duration-300", loading ? "pointer-events-none opacity-50" : "group cursor-pointer")}>
+            <div className={cn("relative size-10 rounded-full border border-border/60 bg-background/50 flex items-center justify-center transition-all duration-300 overflow-hidden", loading ? "pointer-events-none opacity-50" : "group cursor-pointer")}>
+              <svg className="size-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              {/* Transparent Google GSI overlay iframe */}
               <div
                 id={googleContainerId}
-                className={cn("absolute inset-0 rounded-full overflow-hidden transition-opacity duration-300", googleReady ? "opacity-100" : "opacity-0 pointer-events-none")}
+                className="absolute inset-0 opacity-[0.001] z-10 cursor-pointer overflow-hidden flex items-center justify-center [&_iframe]:!w-[100px] [&_iframe]:!h-[60px] [&_iframe]:!scale-150"
               />
-              {!googleReady && (
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-current/25 border-t-current/70" aria-hidden="true" />
-              )}
             </div>
           )}
           {hasFacebook && (
