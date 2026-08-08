@@ -179,6 +179,9 @@ export default function AdminCommissionsPage() {
                     Simpan
                   </Button>
                 </div>
+                <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mt-1 max-w-sm">
+                  ⚠️ Perubahan rate hanya berlaku untuk transaksi <strong>baru</strong>. Komisi yang sudah tercatat tetap menggunakan rate saat transaksi terjadi.
+                </p>
               </div>
             ) : (
               <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
