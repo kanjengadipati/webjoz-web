@@ -34,3 +34,20 @@ export async function fetchAllCommissions(token: string, query?: URLSearchParams
   const queryString = query ? `?${query.toString()}` : "";
   return request<Commission[]>(`/commissions${queryString}`, { method: "GET" }, token);
 }
+
+export interface CommissionConfig {
+  rate: number;
+  rate_percent: number;
+}
+
+export async function getCommissionConfig(token: string) {
+  return request<CommissionConfig>("/commissions/config", { method: "GET" }, token);
+}
+
+export async function updateCommissionConfig(token: string, ratePercent: number) {
+  return request<CommissionConfig>(
+    "/commissions/config",
+    { method: "PUT", body: JSON.stringify({ rate_percent: ratePercent }) },
+    token,
+  );
+}
