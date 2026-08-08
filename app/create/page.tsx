@@ -23,6 +23,19 @@ function PublicWizardContent() {
   const isSaveAction = searchParams.get("action") === "save";
   const initialBusinessType = searchParams.get("businessType") || undefined;
   const initialBusinessSubType = searchParams.get("businessSubType") || undefined;
+  const refParam = searchParams.get("ref") || searchParams.get("referral_code");
+
+  const [activeReferralCode, setActiveReferralCode] = useState<string>("");
+
+  useEffect(() => {
+    if (refParam && typeof window !== "undefined") {
+      localStorage.setItem("webjoz_referral_code", refParam);
+      setActiveReferralCode(refParam);
+    } else if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("webjoz_referral_code");
+      if (saved) setActiveReferralCode(saved);
+    }
+  }, [refParam]);
 
   // We track save state reactively to URL param changes
   const [pendingSave, setPendingSave] = useState(false);
@@ -215,9 +228,15 @@ function PublicWizardContent() {
   if (autoSaving) {
     return (
       <div
-        className="min-h-screen text-white flex flex-col items-center justify-center gap-8"
-        style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
-      >
+      className="min-h-screen text-white flex flex-col relative"
+      style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
+    >
+      {activeReferralCode && (
+        <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-2 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
+          <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono">{activeReferralCode}</span>)</span>
+        </div>
+      )}
+      <div className="flex-1 flex flex-col items-center justify-center gap-8">
         <div className="relative">
           <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
             <Loader2 className="w-9 h-9 text-primary animate-spin" />
@@ -226,9 +245,9 @@ function PublicWizardContent() {
         </div>
         <div className="text-center space-y-2">
           <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
-          <p className="text-slate-400 text-sm">Sebentar ya, kami sedang merakit website kamu ✨</p>
         </div>
       </div>
+    </div>
     );
   }
 
@@ -265,9 +284,14 @@ function PublicWizardContent() {
   // ── Main wizard page ──────────────────────────────────────────────────────
   return (
     <div
-      className="fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14]"
+      className="fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14] flex flex-col"
       style={{ height: "var(--webjoz-app-height, 100dvh)" }}
     >
+      {activeReferralCode && (
+        <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-1.5 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2 z-50">
+          <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono uppercase">{activeReferralCode}</span>)</span>
+        </div>
+      )}
       <SiteWizard
         mode="public"
         token={token}

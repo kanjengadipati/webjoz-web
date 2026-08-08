@@ -115,11 +115,16 @@ export function useActiveTenant() {
     setActiveTenantState(id);
   };
 
-  const createTenant = async (name: string, slug: string) => {
+  const createTenant = async (name: string, slug: string, referralCode?: string) => {
     if (!token) return null;
+    const refCode = referralCode || (typeof window !== "undefined" ? localStorage.getItem("webjoz_referral_code") || undefined : undefined);
+    const bodyData: Record<string, any> = { name, slug };
+    if (refCode) {
+      bodyData.referral_code = refCode;
+    }
     const res = await request<{ id: number }>("/tenants", {
       method: "POST",
-      body: JSON.stringify({ name, slug }),
+      body: JSON.stringify(bodyData),
     }, token);
     await fetchTenants();
     if (res.data?.id) {
