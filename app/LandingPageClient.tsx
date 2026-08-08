@@ -5,11 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { InteractiveMockup } from "@/components/interactive-mockup";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
+import { API_BASE_URL } from "@/lib/config";
 
 // ─── How it works steps ────────────────────────────────────────────────────────
 
@@ -81,6 +82,28 @@ const FEATURES = [
   },
 ];
 
+// ─── Plan data type ───────────────────────────────────────────────────────────
+
+interface PlanItem {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  price_monthly: number;
+  price_yearly: number;
+  promo_price_monthly: number;
+  promo_price_yearly: number;
+  promo_duration_months: number;
+  promo_label: string;
+  max_sites: number;
+  max_ai_generates: number;
+  max_section_regens: number;
+  max_design_regens: number;
+  max_custom_domain: number;
+  features: string;
+  active: boolean;
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function LandingPageClient() {
@@ -91,6 +114,20 @@ export default function LandingPageClient() {
   const [showFloatingCta, setShowFloatingCta] = useState(false);
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
+  const [plans, setPlans] = useState<PlanItem[]>([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/v1/plans/public`)
+      .then((res) => res.json())
+      .then((body) => {
+        if (body?.status === "success" && Array.isArray(body?.data)) {
+          setPlans(body.data);
+        }
+      })
+      .catch(() => {/* keep empty, will use fallback labels */})
+      .finally(() => setPlansLoading(false));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -473,110 +510,137 @@ export default function LandingPageClient() {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
-            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative flex flex-col justify-between">
-              <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Gratis</div>
-                <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
-                <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
-                <ul className="space-y-2.5 text-sm text-left mb-8">
-                  {[
-                    "1 website",
-                    "AI Generate 10x/bulan",
-                    "AI Regenerasi 20x/bulan",
-                    "Subdomain .webjoz.app",
-                    "Hosting & SSL gratis",
-                    "Semua template",
-                  ].map(item => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Button onClick={() => startWizard()} className="w-full rounded-full font-bold">
-                Mulai Gratis
-              </Button>
-            </Card>
+          {plansLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+              {plans.map((plan) => {
+                const isFree = plan.slug === "free";
+                const isPro = plan.slug === "pro";
+                const isYearly = billingCycle === "yearly";
 
-            <Card className="border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 px-6 py-8 text-center shadow-lg shadow-primary/10 relative overflow-hidden flex flex-col justify-between">
-              <div>
-                <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
-                  Terpopuler
-                </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Pro</div>
-                {billingCycle === "yearly" ? (
-                  <>
-                    <div className="text-4xl font-bold text-foreground mb-1">Rp 1.499</div>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      ribu/tahun <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(Setara Rp 124.900/bln)</span>
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-4xl font-bold text-foreground mb-1">Rp 149</div>
-                    <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 1.499.000/tahun</p>
-                  </>
-                )}
-                <ul className="space-y-2.5 text-sm text-left mb-8">
-                  {[
-                    "5 website",
-                    "AI Generate 100x/bulan",
-                    "AI Regenerasi 200x/bulan",
-                    "3 custom domain",
-                    "SEO Booster",
-                    "Hapus branding Webjoz",
-                  ].map(item => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
-                Pilih Pro ({billingCycle === "yearly" ? "Tahunan" : "Bulanan"})
-              </Button>
-            </Card>
+                // --- Price calculation ---
+                const normalYearly = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
+                const effectiveYearly = plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearly;
+                const effectiveMonthly = plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
+                  ? plan.promo_price_monthly
+                  : plan.price_monthly;
+                const monthlyEquivalent = Math.round(effectiveYearly / 12);
+                const yearlySavings = (plan.price_monthly * 12) - effectiveYearly;
 
-            <Card className="border-border/60 bg-card/60 px-6 py-8 text-center shadow-lg shadow-primary/5 relative flex flex-col justify-between">
-              <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Enterprise</div>
-                {billingCycle === "yearly" ? (
-                  <>
-                    <div className="text-4xl font-bold text-foreground mb-1">Rp 4.999</div>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      ribu/tahun <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(Setara Rp 416.500/bln)</span>
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-4xl font-bold text-foreground mb-1">Rp 499</div>
-                    <p className="text-sm text-muted-foreground mb-6">ribu/bulan · Rp 4.999.000/tahun</p>
-                  </>
-                )}
-                <ul className="space-y-2.5 text-sm text-left mb-8">
-                  {[
-                    "20 website",
-                    "500 AI Generate/bulan",
-                    "1.000 regenerasi",
-                    "10 custom domain",
-                    "SEO Booster",
-                    "Prioritas support",
-                  ].map(item => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
-                Pilih Enterprise ({billingCycle === "yearly" ? "Tahunan" : "Bulanan"})
-              </Button>
-            </Card>
-          </div>
+                // --- Feature list from API fields ---
+                const featureList = [
+                  plan.max_sites > 0 && `${plan.max_sites} website`,
+                  plan.max_ai_generates > 0 && `AI Generate ${plan.max_ai_generates}x/bulan`,
+                  plan.max_section_regens > 0 && `AI Regenerasi ${plan.max_section_regens}x/bulan`,
+                  plan.max_custom_domain > 0 && `${plan.max_custom_domain} custom domain`,
+                  "SEO Booster",
+                  !isFree && "Subdomain .webjoz.app",
+                  isFree && "Hosting & SSL gratis",
+                ].filter(Boolean) as string[];
+
+                return (
+                  <Card
+                    key={plan.id}
+                    className={`px-6 py-8 text-center shadow-lg relative flex flex-col justify-between ${
+                      isPro
+                        ? "border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 shadow-primary/10 overflow-hidden"
+                        : "border-border/60 bg-card/60 shadow-primary/5"
+                    }`}
+                  >
+                    {isPro && (
+                      <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
+                        Terpopuler
+                      </div>
+                    )}
+                    <div>
+                      <div className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPro ? "text-muted-foreground" : "text-primary"}`}>
+                        {plan.name}
+                      </div>
+
+                      {/* Price display */}
+                      {isFree ? (
+                        <>
+                          <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
+                          <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
+                        </>
+                      ) : isYearly ? (
+                        <div className="mb-6">
+                          <div className="text-4xl font-bold text-foreground mb-1">
+                            Rp {(effectiveYearly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}
+                            <span className="text-lg font-semibold">.000</span>
+                          </div>
+                          {plan.promo_price_yearly > 0 && (
+                            <div className="flex items-center justify-center gap-2 mb-1">
+                              <span className="text-sm text-muted-foreground line-through">
+                                Rp {normalYearly.toLocaleString("id-ID")}
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                                {plan.promo_label || "Promo"}
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-sm text-muted-foreground">
+                            /tahun{" "}
+                            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                              (Setara Rp {monthlyEquivalent.toLocaleString("id-ID")}/bln)
+                            </span>
+                          </p>
+                          {yearlySavings > 0 && (
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+                              🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")}/tahun
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mb-6">
+                          <div className="text-4xl font-bold text-foreground mb-1">
+                            Rp {(effectiveMonthly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}
+                            <span className="text-lg font-semibold">.000</span>
+                          </div>
+                          {plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 && (
+                            <div className="flex items-center justify-center gap-2 mb-1">
+                              <span className="text-sm text-muted-foreground line-through">
+                                Rp {plan.price_monthly.toLocaleString("id-ID")}
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                                {plan.promo_label || `Promo ${plan.promo_duration_months} bln`}
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-sm text-muted-foreground">
+                            /bulan · Rp {normalYearly.toLocaleString("id-ID")}/tahun
+                          </p>
+                        </div>
+                      )}
+
+                      <ul className="space-y-2.5 text-sm text-left mb-8">
+                        {featureList.map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {isFree ? (
+                      <Button onClick={() => startWizard()} className="w-full rounded-full font-bold">
+                        Mulai Gratis
+                      </Button>
+                    ) : (
+                      <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
+                        Pilih {plan.name} ({isYearly ? "Tahunan" : "Bulanan"})
+                      </Button>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+
         </div>
       </section>
 
