@@ -484,9 +484,8 @@ function UsersTab() {
     return () => window.clearTimeout(timeout);
   }, [loadUsers, token]);
 
-  async function handleToggleRole(user: User) {
-    if (!token) return;
-    const newRole = user.role === "admin" ? "user" : "admin";
+  async function handleChangeRole(user: User, newRole: string) {
+    if (!token || newRole === user.role) return;
     try {
       await updateUser(token, user.id, { name: user.name, email: user.email, role: newRole, is_verified: user.is_verified });
       pushToast(`User updated to ${newRole}`, "success");
@@ -525,7 +524,7 @@ function UsersTab() {
         </CardHeader>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" />
-          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (admin/user)" />
+          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (user/sales/admin)" />
         </CardContent>
       </Card>
 
@@ -555,9 +554,16 @@ function UsersTab() {
                         <StatusBadge status={user.role} />
                         <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                       </div>
-                      <Button variant="outline" size="sm" className="rounded-xl h-9" onClick={() => void handleToggleRole(user)}>
-                        {user.role === "admin" ? "Demote" : "Make Admin"}
-                      </Button>
+                      <select
+                        value={user.role}
+                        onChange={(e) => void handleChangeRole(user, e.target.value)}
+                        className="h-9 px-3 rounded-xl border border-input bg-background text-xs font-medium cursor-pointer hover:border-primary/50 transition-colors"
+                      >
+                        <option value="user">User</option>
+                        <option value="sales">Sales</option>
+                        <option value="admin">Admin</option>
+                        {currentRole === "superadmin" && <option value="superadmin">Superadmin</option>}
+                      </select>
                       {canDelete(user) && (
                         <Button variant="destructive" size="sm" className="rounded-xl h-9" onClick={() => void handleDeleteUser(user)}>
                           Delete
