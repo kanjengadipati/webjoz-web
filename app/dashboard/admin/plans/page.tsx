@@ -155,8 +155,9 @@ export default function AdminPlansPage() {
   }
 
   function setNum(key: keyof PlanForm, val: string) {
-    const num = parseInt(val) || 0;
-    setForm((prev) => ({ ...prev, [key]: num }));
+    const cleanVal = val.replace(/^0+(?=\d)/, "");
+    const num = parseInt(cleanVal, 10);
+    setForm((prev) => ({ ...prev, [key]: isNaN(num) ? 0 : num }));
   }
 
   if (!isAdmin) {
@@ -352,25 +353,25 @@ export default function AdminPlansPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Price (Monthly)">
-              <Input type="number" value={form.price_monthly} onChange={(e) => setNum("price_monthly", e.target.value)} />
+              <Input type="number" value={form.price_monthly || ""} onChange={(e) => setNum("price_monthly", e.target.value)} placeholder="0" />
             </FormField>
             <FormField label="Price (Yearly)">
-              <Input type="number" value={form.price_yearly} onChange={(e) => setNum("price_yearly", e.target.value)} />
+              <Input type="number" value={form.price_yearly || ""} onChange={(e) => setNum("price_yearly", e.target.value)} placeholder="0" />
             </FormField>
           </div>
 
-            <div className="rounded-lg border border-dashed border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+          <div className="rounded-lg border border-dashed border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
             <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">Promo Pricing</div>
             <div className="grid grid-cols-2 gap-4">
               <FormField label="Promo Price (Monthly)">
-                <Input type="number" value={form.promo_price_monthly} onChange={(e) => setNum("promo_price_monthly", e.target.value)} placeholder="0 = no promo" />
+                <Input type="number" value={form.promo_price_monthly || ""} onChange={(e) => setNum("promo_price_monthly", e.target.value)} placeholder="0 = no promo" />
               </FormField>
               <FormField label="Promo Price (Yearly)">
-                <Input type="number" value={form.promo_price_yearly} onChange={(e) => setNum("promo_price_yearly", e.target.value)} placeholder="0 = no promo" />
+                <Input type="number" value={form.promo_price_yearly || ""} onChange={(e) => setNum("promo_price_yearly", e.target.value)} placeholder="0 = no promo" />
               </FormField>
             </div>
             <FormField label="Duration (months, for monthly promo)">
-              <Input type="number" value={form.promo_duration_months} onChange={(e) => setNum("promo_duration_months", e.target.value)} placeholder="0 = no promo" />
+              <Input type="number" value={form.promo_duration_months || ""} onChange={(e) => setNum("promo_duration_months", e.target.value)} placeholder="0 = no promo" />
             </FormField>
             <FormField label="Promo Label">
               <Input value={form.promo_label} onChange={(e) => setForm({ ...form, promo_label: e.target.value })} placeholder="e.g. Harga Perkenalan, Diskon Launching" />
@@ -379,22 +380,22 @@ export default function AdminPlansPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormField label="Max Sites">
-              <Input type="number" value={form.max_sites} onChange={(e) => setNum("max_sites", e.target.value)} />
+              <Input type="number" value={form.max_sites || ""} onChange={(e) => setNum("max_sites", e.target.value)} placeholder="1" />
             </FormField>
             <FormField label="AI Generates">
-              <Input type="number" value={form.max_ai_generates} onChange={(e) => setNum("max_ai_generates", e.target.value)} />
+              <Input type="number" value={form.max_ai_generates || ""} onChange={(e) => setNum("max_ai_generates", e.target.value)} placeholder="0" />
             </FormField>
             <FormField label="Section Regens">
-              <Input type="number" value={form.max_section_regens} onChange={(e) => setNum("max_section_regens", e.target.value)} />
+              <Input type="number" value={form.max_section_regens || ""} onChange={(e) => setNum("max_section_regens", e.target.value)} placeholder="0" />
             </FormField>
             <FormField label="Design Regens">
-              <Input type="number" value={form.max_design_regens} onChange={(e) => setNum("max_design_regens", e.target.value)} />
+              <Input type="number" value={form.max_design_regens || ""} onChange={(e) => setNum("max_design_regens", e.target.value)} placeholder="0" />
             </FormField>
             <FormField label="Max Members">
-              <Input type="number" value={form.max_members} onChange={(e) => setNum("max_members", e.target.value)} />
+              <Input type="number" value={form.max_members || ""} onChange={(e) => setNum("max_members", e.target.value)} placeholder="1" />
             </FormField>
             <FormField label="Custom Domains">
-              <Input type="number" value={form.max_custom_domain} onChange={(e) => setNum("max_custom_domain", e.target.value)} />
+              <Input type="number" value={form.max_custom_domain || ""} onChange={(e) => setNum("max_custom_domain", e.target.value)} placeholder="0" />
             </FormField>
           </div>
 
