@@ -491,7 +491,7 @@ export default function LandingPageClient() {
                   onClick={() => setBillingCycle("monthly")}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     billingCycle === "monthly"
-                      ? "bg-background text-foreground shadow-sm font-bold"
+                      ? "bg-white text-slate-900 shadow-sm font-bold"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -502,7 +502,7 @@ export default function LandingPageClient() {
                   onClick={() => setBillingCycle("yearly")}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                     billingCycle === "yearly"
-                      ? "bg-background text-foreground shadow-sm font-bold"
+                      ? "bg-white text-slate-900 shadow-sm font-bold"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
