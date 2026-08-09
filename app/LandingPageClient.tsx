@@ -128,7 +128,7 @@ export default function LandingPageClient() {
   const [plansLoading, setPlansLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/v1/plans/public`)
+    fetch(`${API_BASE_URL}/plans/public`)
       .then((res) => res.json())
       .then((body) => {
         if (body?.status === "success" && Array.isArray(body?.data)) {
