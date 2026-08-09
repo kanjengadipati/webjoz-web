@@ -11,6 +11,7 @@ export interface Commission {
   order_id: string;
   gross_amount: number;
   rate: number;
+  tier: number;
   amount: number;
   status: CommissionStatus;
 }
@@ -36,18 +37,33 @@ export async function fetchAllCommissions(token: string, query?: URLSearchParams
 }
 
 export interface CommissionConfig {
-  rate: number;
-  rate_percent: number;
+  tier1_rate: number;
+  tier1_rate_percent: number;
+  tier2_rate: number;
+  tier2_rate_percent: number;
+  tier_threshold_months: number;
 }
 
 export async function getCommissionConfig(token: string) {
   return request<CommissionConfig>("/commissions/config", { method: "GET" }, token);
 }
 
-export async function updateCommissionConfig(token: string, ratePercent: number) {
+export async function updateCommissionConfig(
+  token: string,
+  tier1RatePercent: number,
+  tier2RatePercent: number,
+  tierThresholdMonths?: number,
+) {
+  const body: Record<string, number> = {
+    tier1_rate_percent: tier1RatePercent,
+    tier2_rate_percent: tier2RatePercent,
+  };
+  if (tierThresholdMonths != null) {
+    body.tier_threshold_months = tierThresholdMonths;
+  }
   return request<CommissionConfig>(
     "/commissions/config",
-    { method: "PUT", body: JSON.stringify({ rate_percent: ratePercent }) },
+    { method: "PUT", body: JSON.stringify(body) },
     token,
   );
 }
