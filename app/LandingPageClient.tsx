@@ -80,6 +80,16 @@ const FEATURES = [
     title: "Subdomain Instan",
     desc: "Setiap website langsung aktif di subdomain Webjoz. Tidak perlu setup server atau DNS manual.",
   },
+  {
+    icon: "📦",
+    title: "Katalog Produk",
+    desc: "Tampilkan koleksi produk atau layanan Anda dengan katalog yang rapi, profesional, dan menarik.",
+  },
+  {
+    icon: "🍽️",
+    title: "Menu Jualan",
+    desc: "Mudahkan pelanggan memesan dengan fitur menu interaktif yang siap digunakan untuk bertransaksi.",
+  },
 ];
 
 // ─── Plan data type ───────────────────────────────────────────────────────────
