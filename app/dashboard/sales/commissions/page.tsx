@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
-import { fetchMyCommissions, Commission, CommissionSummary } from "@/lib/api/commissions";
+import { fetchMyCommissions, Commission, CommissionSummary, getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
 import { fetchMyBonuses, SalesBonus, BonusSummary } from "@/lib/api/bonuses";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -29,6 +29,10 @@ export default function MyCommissionsPage() {
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [activeTab, setActiveTab] = useState<"commissions" | "bonuses">("commissions");
+
+  // Config state
+  const [config, setConfig] = useState<CommissionConfig | null>(null);
+  const [configLoading, setConfigLoading] = useState(true);
 
   // Commissions state
   const [commissions, setCommissions] = useState<Commission[]>([]);
@@ -61,14 +65,19 @@ export default function MyCommissionsPage() {
         page: page.toString(),
         limit: limit.toString(),
       });
-      const res = await fetchMyCommissions(token, params);
+      const [res, configRes] = await Promise.all([
+        fetchMyCommissions(token, params),
+        getCommissionConfig(token),
+      ]);
       setCommissions(res.data?.commissions || []);
       setSummary(res.data?.summary || { total_earned: 0, total_pending: 0, total_voided: 0 });
       setTotal((res.meta?.total as number) || 0);
+      setConfig(configRes.data);
     } catch (err: any) {
       pushToast(err.message || "Gagal memuat data komisi", "error");
     } finally {
       setLoading(false);
+      setConfigLoading(false);
     }
   };
 
@@ -129,6 +138,10 @@ export default function MyCommissionsPage() {
   const totalBonusPages = Math.ceil(bonusTotal / limit) || 1;
   const grandTotalEarned = summary.total_earned + bonusSummary.total_earned;
 
+  const t1 = config ? config.tier1_rate_percent.toFixed(0) : "20";
+  const t2 = config ? config.tier2_rate_percent.toFixed(0) : "10";
+  const months = config?.tier_threshold_months ?? 12;
+
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
@@ -141,7 +154,7 @@ export default function MyCommissionsPage() {
             Pendapatan Saya (Komisi & Bonus)
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Ringkasan komisi recurring 20% dan bonus onboarding/milestone dari tenant referensi Anda.
+            Ringkasan komisi bertingkat — Tier 1 {t1}% ({months} bulan pertama), lalu Tier 2 {t2}% — serta bonus onboarding/milestone dari tenant referensi Anda.
           </p>
         </div>
       </div>
@@ -174,7 +187,7 @@ export default function MyCommissionsPage() {
             <div className="text-2xl font-bold text-foreground">
               Rp {summary.total_earned.toLocaleString("id-ID")}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Komisi 20% per pembayaran</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Komisi per pembayaran: {t1}% (Tier 1) / {t2}% (Tier 2)</p>
           </CardContent>
         </Card>
 
