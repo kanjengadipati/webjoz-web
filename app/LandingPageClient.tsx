@@ -17,23 +17,23 @@ import { API_BASE_URL } from "@/lib/config";
 const STEPS = [
   {
     num: "01",
-    title: "Chat dengan AI",
-    desc: "Ceritakan bisnis Anda — nama, jenis usaha, dan area layanan. Cukup ngobrol santai seperti chatting dengan teman.",
+    title: "Kenalkan Bisnis Anda",
+    desc: "Chat dengan AI dan beri tahu nama serta apa bisnis yang Anda jalankan. Semuanya lewat percakapan santai.",
   },
   {
     num: "02",
-    title: "Pilih Jenis Usaha",
-    desc: "Pilih kategori bisnis dari 4 pilihan utama. AI otomatis mencocokkan template terbaik untuk usaha Anda.",
+    title: "Berikan Detail Singkat",
+    desc: "Ceritakan sedikit tentang layanan, area jangkauan, atau apa yang membuat bisnis Anda spesial.",
   },
   {
     num: "03",
-    title: "AI Generate",
-    desc: "Konten, layout, dan desain dibuat otomatis oleh AI. Hasilnya langsung bisa dilihat dalam hitungan detik.",
+    title: "Pilih Kategori & Mood",
+    desc: "Pilih jenis industri dan suasana (mood) desain yang cocok agar AI bisa menyesuaikan tampilan website Anda.",
   },
   {
     num: "04",
-    title: "Review & Publikasikan",
-    desc: "Edit per section, atur SEO, lalu publish. Website aktif di subdomain Webjoz, bisa hubungkan domain sendiri.",
+    title: "Generate & Publikasikan",
+    desc: "Website selesai dibuat dalam hitungan detik. Langsung review, edit bagian mana pun, dan publikasikan segera.",
   },
 ];
 
