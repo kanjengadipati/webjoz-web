@@ -502,7 +502,7 @@ export default function LandingPageClient() {
                   onClick={() => setBillingCycle("yearly")}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                     billingCycle === "yearly"
-                      ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                      ? "bg-background text-foreground shadow-sm font-bold"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
