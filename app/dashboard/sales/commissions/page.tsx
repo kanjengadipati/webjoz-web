@@ -281,7 +281,10 @@ export default function MyCommissionsPage() {
                           Rp {c.gross_amount.toLocaleString("id-ID")}
                         </td>
                         <td className="px-6 py-4 text-center text-xs">
-                          {(c.rate * 100).toFixed(0)}%
+                          <span className="inline-flex flex-col items-center leading-tight">
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Tier {c.tier}</span>
+                            <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
+                          </span>
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
                           Rp {c.amount.toLocaleString("id-ID")}

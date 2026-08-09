@@ -55,7 +55,8 @@ export default function AdminCommissionsPage() {
   // Commission config state
   const [config, setConfig] = useState<CommissionConfig | null>(null);
   const [configLoading, setConfigLoading] = useState(false);
-  const [rateInput, setRateInput] = useState("");
+  const [tier1RateInput, setTier1RateInput] = useState("");
+  const [tier2RateInput, setTier2RateInput] = useState("");
 
   // Bonus rules state
   const [bonusRules, setBonusRules] = useState<BonusRule[]>([]);
@@ -104,7 +105,8 @@ export default function AdminCommissionsPage() {
     try {
       const res = await getCommissionConfig(token);
       setConfig(res.data);
-      setRateInput(res.data.rate_percent.toFixed(0));
+      setTier1RateInput(res.data.tier1_rate_percent.toFixed(0));
+      setTier2RateInput(res.data.tier2_rate_percent.toFixed(0));
     } catch {
       // ignore
     }
@@ -127,17 +129,26 @@ export default function AdminCommissionsPage() {
 
   const handleSaveConfig = async () => {
     if (!token) return;
-    const pct = parseFloat(rateInput);
-    if (isNaN(pct) || pct < 0 || pct > 100) {
-      pushToast("Persentase harus antara 0 dan 100", "error");
+    const t1 = parseFloat(tier1RateInput);
+    const t2 = parseFloat(tier2RateInput);
+    if (isNaN(t1) || t1 < 0 || t1 > 100) {
+      pushToast("Persentase Tier 1 harus antara 0 dan 100", "error");
+      return;
+    }
+    if (isNaN(t2) || t2 < 0 || t2 > 100) {
+      pushToast("Persentase Tier 2 harus antara 0 dan 100", "error");
       return;
     }
     try {
       setConfigLoading(true);
-      const res = await updateCommissionConfig(token, pct);
+      const res = await updateCommissionConfig(token, t1, t2, config?.tier_threshold_months);
       setConfig(res.data);
-      setRateInput(res.data.rate_percent.toFixed(0));
-      pushToast(`Komisi berhasil diperbarui menjadi ${res.data.rate_percent.toFixed(0)}%`, "success");
+      setTier1RateInput(res.data.tier1_rate_percent.toFixed(0));
+      setTier2RateInput(res.data.tier2_rate_percent.toFixed(0));
+      pushToast(
+        `Komisi berhasil diperbarui: Tier 1 ${res.data.tier1_rate_percent.toFixed(0)}% · Tier 2 ${res.data.tier2_rate_percent.toFixed(0)}%`,
+        "success",
+      );
     } catch (err: any) {
       pushToast(err.message || "Gagal memperbarui komisi", "error");
     } finally {
@@ -221,9 +232,10 @@ export default function AdminCommissionsPage() {
               Pengaturan Rate Komisi Sales
             </CardTitle>
             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
-              <span>Rate Aktif:</span>
+              <span>Skema Aktif:</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                {config ? `${config.rate_percent.toFixed(0)}%` : "20%"}
+                Tier 1 {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"} · Tier 2{" "}
+                {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
               </span>
             </div>
           </div>
@@ -232,37 +244,70 @@ export default function AdminCommissionsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div className="space-y-1">
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Rate Komisi Saat Ini
+                Skema Komisi Bertingkat
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
-                  {config ? `${config.rate_percent.toFixed(0)}%` : "20%"}
+                  {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  diterima sales dari setiap transaksi pembayaran tenant
+                  tier 1 selama {config?.tier_threshold_months ?? 12} bulan pertama
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-extrabold text-emerald-500/80 tracking-tight">
+                  {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  tier 2 setelahnya (berlaku seterusnya)
                 </span>
               </div>
             </div>
 
             {isSuperAdmin ? (
-              <div className="space-y-1.5 md:text-right">
-                <label htmlFor="commission-rate-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-                  Set Rate Baru (%)
-                </label>
-                <div className="flex items-center gap-2 md:justify-end">
-                  <div className="relative">
-                    <input
-                      id="commission-rate-input"
-                      type="number"
-                      min={0}
-                      max={100}
-                      step={1}
-                      value={rateInput}
-                      onChange={(e) => setRateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
-                      className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
-                      placeholder="20"
-                    />
-                    <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+              <div className="space-y-3 md:text-right">
+                <div className="flex flex-col gap-2">
+                  <div className="space-y-1">
+                    <label htmlFor="commission-tier1-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
+                      Tier 1 — {config?.tier_threshold_months ?? 12} bulan pertama (%)
+                    </label>
+                    <div className="flex items-center gap-2 md:justify-end">
+                      <div className="relative">
+                        <input
+                          id="commission-tier1-input"
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={tier1RateInput}
+                          onChange={(e) => setTier1RateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
+                          className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
+                          placeholder="20"
+                        />
+                        <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="commission-tier2-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
+                      Tier 2 — setelahnya (%)
+                    </label>
+                    <div className="flex items-center gap-2 md:justify-end">
+                      <div className="relative">
+                        <input
+                          id="commission-tier2-input"
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={tier2RateInput}
+                          onChange={(e) => setTier2RateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
+                          className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
+                          placeholder="10"
+                        />
+                        <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+                      </div>
+                    </div>
                   </div>
                   <Button
                     onClick={handleSaveConfig}
@@ -277,7 +322,7 @@ export default function AdminCommissionsPage() {
               </div>
             ) : (
               <div className="text-xs text-muted-foreground bg-muted/40 rounded-xl p-3 border border-border/30">
-                Hanya <span className="font-semibold text-foreground">Superadmin</span> yang dapat mengedit rate komisi.
+                Hanya <span className="font-semibold text-foreground">Superadmin</span> yang dapat mengedit skema komisi.
               </div>
             )}
           </div>
@@ -447,7 +492,10 @@ export default function AdminCommissionsPage() {
                           Rp {c.gross_amount.toLocaleString("id-ID")}
                         </td>
                         <td className="px-6 py-4 text-center text-xs">
-                          {(c.rate * 100).toFixed(0)}%
+                          <span className="inline-flex flex-col items-center leading-tight">
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Tier {c.tier}</span>
+                            <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
+                          </span>
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
                           Rp {c.amount.toLocaleString("id-ID")}
