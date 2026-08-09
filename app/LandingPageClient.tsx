@@ -123,7 +123,7 @@ export default function LandingPageClient() {
   const isLoggedIn = authReady && !!token;
   const [showFloatingCta, setShowFloatingCta] = useState(false);
 
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [plans, setPlans] = useState<PlanItem[]>([]);
   const [plansLoading, setPlansLoading] = useState(true);
 
