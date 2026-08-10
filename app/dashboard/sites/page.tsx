@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -24,6 +25,7 @@ interface DeleteModalProps {
 }
 
 function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan }: DeleteModalProps) {
+  const { t } = useI18n();
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
@@ -43,7 +45,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
           <button
             onClick={onCancel}
             className="absolute top-4 right-4 text-[#65656f] hover:text-white transition-colors cursor-pointer"
-            aria-label="Tutup"
+            aria-label={t("dashboard.sites.close")}
           >
             <X className="w-4 h-4" />
           </button>
@@ -59,12 +61,10 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
         {/* Text */}
         <div className="text-center space-y-2">
           <h2 id="delete-modal-title" className="text-lg font-bold text-foreground">
-            Hapus Website?
+            {t("dashboard.sites.deleteTitle")}
           </h2>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
-            Anda akan menghapus website{" "}
-            <span className="text-foreground font-semibold">"{siteName}"</span> secara permanen.
-            Tindakan ini tidak dapat dibatalkan.
+            {t("dashboard.sites.deleteBody", undefined, { name: siteName })}
           </p>
         </div>
 
@@ -72,7 +72,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
         <div className="flex items-start gap-2.5 bg-red-950/20 border border-red-500/20 rounded-xl px-4 py-3">
           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-red-300 leading-relaxed">
-            Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.
+            {t("dashboard.sites.deleteWarning")}
           </p>
         </div>
 
@@ -80,8 +80,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
           <div className="flex items-start gap-2.5 bg-amber-950/20 border border-amber-500/20 rounded-xl px-4 py-3">
             <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-amber-300 leading-relaxed">
-              Kamu pakai paket Free — kuota 1 website ini <span className="font-semibold">tidak akan kembali</span> setelah dihapus.
-              Kamu hanya bisa membuat 1 website gratis seumur hidup.
+              {t("dashboard.sites.deleteFreeNotice")}
             </p>
           </div>
         )}
@@ -94,7 +93,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
             onClick={onCancel}
             disabled={loading}
           >
-            Batal
+            {t("dashboard.sites.cancel")}
           </Button>
           <Button
             className="flex-1 rounded-xl h-10 text-sm bg-red-600 hover:bg-red-700 text-foreground border-0 gap-2 cursor-pointer"
@@ -104,12 +103,12 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Menghapus...
+                {t("dashboard.sites.deleting")}
               </>
             ) : (
               <>
                 <Trash2 className="w-4 h-4" />
-                Ya, Hapus
+                {t("dashboard.sites.deleteConfirm")}
               </>
             )}
           </Button>
