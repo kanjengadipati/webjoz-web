@@ -435,7 +435,8 @@ export interface Translations {
       subdomainInvalidHint: string;
       subdomainHint: string;
       connectCustomDomain: string;
-      customDomainDesc: string;
+      customDomainDescPre: string;
+      customDomainDescPost: string;
       customDomainLink: string;
       launching: string;
       launchWebsite: string;
@@ -935,7 +936,8 @@ export const translations: Record<Locale, Translations> = {
         subdomainInvalidHint: "Gunakan huruf kecil, angka, atau tanda hubung (-)",
         subdomainHint: "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
         connectCustomDomain: "Hubungkan Custom Domain",
-        customDomainDesc: "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di {link} setelah website Anda live.",
+        customDomainDescPre: "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di",
+        customDomainDescPost: "setelah website Anda live.",
         customDomainLink: "Custom Domain",
         launching: "Meluncurkan...",
         launchWebsite: "Luncurkan Website",
@@ -1433,7 +1435,8 @@ export const translations: Record<Locale, Translations> = {
         subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
         subdomainHint: "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
         connectCustomDomain: "Connect Custom Domain",
-        customDomainDesc: "Want a more professional brand like domainanda.com? You can set it up in {link} after your website is live.",
+        customDomainDescPre: "Want a more professional brand like domainanda.com? You can set it up in",
+        customDomainDescPost: "after your website is live.",
         customDomainLink: "Custom Domain",
         launching: "Launching...",
         launchWebsite: "Launch Website",
