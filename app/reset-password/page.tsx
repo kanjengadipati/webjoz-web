@@ -7,10 +7,12 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { resetPassword } from "@/lib/api";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [token, setToken] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,14 +30,14 @@ export default function ResetPasswordPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!token) {
-      const nextMessage = "Reset token is missing from the URL.";
+      const nextMessage = t("auth.errorResetTokenMissing");
       setState("error");
       setMessage(nextMessage);
       pushToast(nextMessage, "error");
       return;
     }
     if (password !== confirmPassword) {
-      const nextMessage = "Passwords do not match.";
+      const nextMessage = t("auth.errorPasswordMismatch");
       setState("error");
       setMessage(nextMessage);
       pushToast(nextMessage, "error");
@@ -47,10 +49,10 @@ export default function ResetPasswordPage() {
 
     try {
       await resetPassword(token, password);
-      pushToast("Password updated successfully.", "success");
+      pushToast(t("auth.toastResetSuccess"), "success");
       router.push("/login?reset=success");
     } catch (error) {
-      const nextMessage = error instanceof Error ? error.message : "Failed to reset password";
+      const nextMessage = error instanceof Error ? error.message : t("auth.errorResetFailed");
       setState("error");
       setMessage(nextMessage);
       pushToast(nextMessage, "error");
@@ -59,34 +61,34 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthShell
-      badge="Reset Password"
-      title="Set a new password using the token issued by the backend."
-      description="This page consumes the password reset token from the email link and submits the new password directly to the Go API."
+      badge={t("auth.resetBadge")}
+      title={t("auth.resetTitle")}
+      description={t("auth.resetDesc")}
       stats={[
-        { label: "Token Source", value: "URL Query", helper: "The backend email links here with a `token` query parameter." },
-        { label: "Validation", value: "Backend-first", helper: "Expired or invalid tokens are rejected by the API." },
+        { label: t("auth.resetStat1Label"), value: t("auth.resetStat1Value"), helper: t("auth.resetStat1Helper") },
+        { label: t("auth.resetStat2Label"), value: t("auth.resetStat2Value"), helper: t("auth.resetStat2Helper") },
       ]}
-      cardEyebrow="Recovery"
-      cardTitle="Choose a New Password"
-      cardDescription={token ? "Enter your new password to complete the reset flow." : "Open this page from the password reset email so the token is included."}
+      cardEyebrow={t("auth.resetCardEyebrow")}
+      cardTitle={t("auth.resetCardTitle")}
+      cardDescription={token ? t("auth.resetCardDesc") : t("auth.resetCardDescNoToken")}
       footer={
         <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link href="/login" className="font-medium text-primary hover:opacity-80">Back to login</Link>
-          <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">Request another reset link</Link>
+          <Link href="/login" className="font-medium text-primary hover:opacity-80">{t("auth.resetFooterLogin")}</Link>
+          <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">{t("auth.resetFooterRequest")}</Link>
         </div>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
-          <Label htmlFor="password">New Password</Label>
-          <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Minimum 8 characters" />
+          <Label htmlFor="password">{t("auth.resetNewPassword")}</Label>
+          <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("auth.resetNewPasswordPlaceholder")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm New Password</Label>
+          <Label htmlFor="confirm-password">{t("auth.resetConfirmPassword")}</Label>
           <Input id="confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
         </div>
         <Button type="submit" disabled={state === "loading" || !token} className="w-full">
-          {state === "loading" ? "Updating password..." : "Update Password"}
+          {state === "loading" ? t("auth.resetUpdating") : t("auth.resetUpdate")}
         </Button>
       </form>
       {message ? <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{message}</div> : null}

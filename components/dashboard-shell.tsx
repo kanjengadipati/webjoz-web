@@ -18,12 +18,43 @@ import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/components/toast-provider";
 import { logoutCurrentSession } from "@/lib/api";
 import { useActiveTenant } from "@/lib/tenant-store";
+import { useI18n } from "@/lib/i18n/context";
+
+const NAV_LABEL_KEYS: Record<string, string> = {
+  overview: "dashboard.nav.overview",
+  notifications: "dashboard.nav.notifications",
+  plans: "dashboard.nav.plans",
+  health: "dashboard.nav.health",
+  announcements: "dashboard.nav.announcements",
+  "admin-commissions": "dashboard.nav.commissions",
+  tenants: "dashboard.nav.tenants",
+  templates: "dashboard.nav.templates",
+  "design-assets": "dashboard.nav.designAssets",
+  metrics: "dashboard.nav.metrics",
+  sites: "dashboard.nav.sites",
+  domains: "dashboard.nav.domains",
+  leads: "dashboard.nav.leads",
+  analytics: "dashboard.nav.analytics",
+  "sales-referral": "dashboard.nav.salesReferral",
+  "sales-commissions": "dashboard.nav.salesCommissions",
+  team: "dashboard.nav.team",
+  upgrade: "dashboard.nav.upgrade",
+  settings: "dashboard.nav.settings",
+};
+
+const NAV_SECTION_KEYS: Record<string, string> = {
+  Dashboard: "dashboard.nav.sectionDashboard",
+  "Website Builder": "dashboard.nav.sectionWebsiteBuilder",
+  "Sales & Referral": "dashboard.nav.sectionSalesReferral",
+  Sistem: "dashboard.nav.sectionSystem",
+};
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const authReady = useAuthReady();
   const token = useAuthToken();
+  const { t } = useI18n();
   const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
@@ -65,7 +96,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     try {
       await logoutCurrentSession(token);
     } catch {
-      pushToast("Signed out locally. The server session may still need review.", "info");
+      pushToast(t("dashboard.signedOutLocally"), "info");
     } finally {
       clearAuthSession();
       router.push("/login");
@@ -85,7 +116,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
         <div className="text-center">
           <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse">
-            Authenticating...
+            {t("dashboard.authenticating")}
           </p>
         </div>
       </div>
@@ -103,8 +134,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     return hasPermission(item.permission);
   });
   const activeLabel = pathname === "/dashboard/sites/new"
-    ? "Create Website"
-    : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || "Dashboard");
+    ? t("dashboard.createWebsite")
+    : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || t("common.dashboard"));
 
   const pathParts = pathname.split("/").filter(Boolean);
   const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new" && pathParts.length <= 3;
@@ -133,17 +164,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label="Main navigation">
+        <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label={t("dashboard.mainNav")}>
           <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-card/95 px-2 py-2 backdrop-blur-xl shadow-2xl shadow-black/20 dark:bg-background/85 dark:border-border/30 dark:shadow-black/40">
             {filteredNavItems.slice(0, 5).map((item) => {
               const active = pathname === item.href;
               const showBadge = item.id === "notifications" && unreadCount > 0;
+              const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
               const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  aria-label={item.label}
+                  aria-label={label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl",
@@ -186,11 +218,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     "text-[9px] font-semibold leading-none tracking-tight truncate w-full text-center",
                     active ? "text-primary" : "text-muted-foreground"
                   )}>
-                    {item.label}
+                    {label}
                   </span>
                   {(item as any).premium && !isPremiumPlan && (
                     <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
-                      Pro
+                      {t("dashboard.pro")}
                     </span>
                   )}
                 </Link>
@@ -205,7 +237,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               variant="ghost"
               size="icon"
               className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
-              aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
+              aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
               aria-pressed={!isMonochrome}
               onClick={toggleAccent}
             >
@@ -223,7 +255,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               variant="ghost"
               size="icon"
               className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
               aria-pressed={theme === "dark"}
               onClick={toggleTheme}
             >
@@ -253,22 +285,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       className="h-8 w-auto object-contain"
                       priority
                     />
-                    <CardTitle className="text-2xl font-bold tracking-tighter">Webjoz Console</CardTitle>
+                    <CardTitle className="text-2xl font-bold tracking-tighter">{t("dashboard.consoleTitle")}</CardTitle>
                   </div>
                   <CardDescription className="text-xs font-medium opacity-80">
-                    {ENV_NAME} Admin Workspace
+                    {t("dashboard.adminWorkspace", undefined, { env: ENV_NAME })}
                   </CardDescription>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 p-4">
                 <div className="rounded-2xl border border-border/30 bg-background/50 p-4 shadow-inner">
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <div className="text-xs font-medium text-muted-foreground/70">Mode</div>
+                    <div className="text-xs font-medium text-muted-foreground/70">{t("dashboard.mode")}</div>
                     <div className="flex items-center gap-2">
                       <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
                       {activeTenant?.tenant.plan === "free" && (
                         <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
-                          Upgrade
+                          {t("dashboard.upgrade")}
                         </Link>
                       )}
                       <div className={cn(
@@ -280,12 +312,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="text-sm font-bold tracking-tight">
                     {isAuthenticated ? (
                       <div className="flex items-center justify-between gap-2">
-                        <span>Authenticated</span>
+                        <span>{t("dashboard.authenticated")}</span>
                         <Badge variant="secondary" className="capitalize text-[9px] px-2 py-0 h-4 bg-primary/10 text-primary border-none font-bold">
                           {userRole}
                         </Badge>
                       </div>
-                    ) : "Locked"}
+                    ) : t("dashboard.locked")}
                   </div>
                 </div>
 
@@ -297,12 +329,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     return (
                       <div key={sectionName} className="space-y-2">
                         <h3 className="px-4 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/40">
-                          {sectionName}
+                          {t(NAV_SECTION_KEYS[sectionName] ?? "", sectionName)}
                         </h3>
                         <div className="grid gap-1">
                           {sectionItems.map((item) => {
                             const active = pathname === item.href;
                             const showBadge = item.id === "notifications" && unreadCount > 0;
+                            const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
                             return (
                               <Link
                                 key={item.href}
@@ -316,11 +349,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                                 aria-current={active ? "page" : undefined}
                               >
                                 <span className={cn(MOTION.transform, active ? "translate-x-1" : "group-hover:translate-x-1")}>
-                                  {item.label}
+                                  {label}
                                 </span>
                   {(item as any).premium && !isPremiumPlan && (
                                   <span className="ml-auto text-[8px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
-                                    Pro
+                                    {t("dashboard.pro")}
                                   </span>
                                 )}
                                 {showBadge && (
@@ -344,7 +377,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
                 <div className="grid gap-3">
                   <div className="rounded-2xl border border-border/40 bg-background/40 p-3">
-                    <div className="mb-3 text-xs font-medium text-muted-foreground/70">Appearance</div>
+                    <div className="mb-3 text-xs font-medium text-muted-foreground/70">{t("dashboard.appearance")}</div>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="ghost"
@@ -374,7 +407,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   </div>
                   {isAuthenticated && (
                     <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()}>
-                      Logout
+                      {t("dashboard.logout")}
                     </Button>
                   )}
                 </div>
@@ -393,7 +426,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       <Link
                         href="/dashboard/sites"
                         className="inline-flex items-center justify-center p-1.5 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
-                        aria-label="Back to websites list"
+                        aria-label={t("dashboard.backToWebsites")}
                       >
                         <ChevronLeft className="size-6" />
                       </Link>
@@ -402,12 +435,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   </div>
                   {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings") && (
                     <p className="text-xs text-muted-foreground">
-                      {pathname === "/dashboard" && "Pantau ringkasan performa dan aktivitas website Anda."}
-                      {pathname === "/dashboard/sites" && "Kelola dan kustomisasi seluruh website Anda."}
-                      {pathname === "/dashboard/domains" && "Hubungkan dan kelola domain kustom Anda agar situs tampil lebih profesional."}
-                      {pathname === "/dashboard/leads" && "Inkuiri kontak dan prospek dari pengunjung situs publik Anda."}
-                      {pathname === "/dashboard/analytics" && "Pantau volume kunjungan, asal lalu lintas, dan halaman paling populer."}
-                      {pathname === "/dashboard/settings" && "Kelola profil, keamanan akun, hak akses pengguna, dan log audit sistem."}
+                      {pathname === "/dashboard" && t("dashboard.subDashboard")}
+                      {pathname === "/dashboard/sites" && t("dashboard.subSites")}
+                      {pathname === "/dashboard/domains" && t("dashboard.subDomains")}
+                      {pathname === "/dashboard/leads" && t("dashboard.subLeads")}
+                      {pathname === "/dashboard/analytics" && t("dashboard.subAnalytics")}
+                      {pathname === "/dashboard/settings" && t("dashboard.subSettings")}
                     </p>
                   )}
                 </div>
@@ -415,7 +448,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
-                        <Plus className="w-4 h-4" /> Website AI Baru
+                        <Plus className="w-4 h-4" /> {t("dashboard.newWebsiteAi")}
                       </button>
                     </Link>
                   )}
@@ -440,10 +473,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </div>
                 <div className="text-center animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150 fill-mode-both">
                   <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse">
-                    Loading Console...
+                    {t("dashboard.loadingConsole")}
                   </p>
                   <p className="mt-1 text-[10px] text-muted-foreground/60 tracking-wider">
-                    Preparing secure workspace
+                    {t("dashboard.preparingWorkspace")}
                   </p>
                 </div>
               </div>

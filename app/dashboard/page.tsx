@@ -11,6 +11,7 @@ import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import {
   Building2, Users, Globe, CreditCard, Activity, Megaphone, TrendingUp,
   Loader2, Calendar, Zap, Database, Server, Cpu, ChevronRight,
@@ -129,6 +130,7 @@ function QuickLink({ href, label, icon: Icon, desc }: { href: string; label: str
 export default function DashboardOverviewPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { role } = usePermissions();
   const isAdmin = role === "superadmin" || role === "admin";
@@ -203,8 +205,8 @@ export default function DashboardOverviewPage() {
     }
 
     setState(SectionState.SUCCESS);
-    if (showToast) pushToast("Dashboard refreshed.", "success");
-  }, [pushToast, token, activeTenantId, isAdmin]);
+    if (showToast) pushToast(t("dashboard.refreshed"), "success");
+  }, [pushToast, token, activeTenantId, isAdmin, t]);
 
   useEffect(() => {
     if (!token || state !== SectionState.IDLE) return;
@@ -235,12 +237,13 @@ export default function DashboardOverviewPage() {
   }, [analytics]);
 
   const recentActivity = useMemo(() => {
+    const dateLocale = locale === "id" ? "id-ID" : "en-US";
     const items: Array<{ title: string; time: string; date: Date }> = [];
-    leads.forEach((l) => items.push({ title: `Lead baru: ${l.name}`, time: new Date(l.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }), date: new Date(l.created_at) }));
-    sites.forEach((s) => { if (s.updated_at) items.push({ title: `Website "${s.name}" diupdate`, time: new Date(s.updated_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }), date: new Date(s.updated_at) }); });
+    leads.forEach((l) => items.push({ title: t("dashboard.leadNew", undefined, { name: l.name }), time: new Date(l.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }), date: new Date(l.created_at) }));
+    sites.forEach((s) => { if (s.updated_at) items.push({ title: t("dashboard.siteUpdated", undefined, { name: s.name }), time: new Date(s.updated_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }), date: new Date(s.updated_at) }); });
     items.sort((a, b) => b.date.getTime() - a.date.getTime());
     return items.slice(0, 5);
-  }, [leads, sites]);
+  }, [leads, sites, t, locale]);
 
   if (state === SectionState.LOADING) {
     return (
@@ -268,24 +271,24 @@ export default function DashboardOverviewPage() {
               </div>
               <div>
                 <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                  Platform Overview
+                  {t("dashboard.admin.platformOverview")}
                 </h2>
                 <p className="text-muted-foreground mt-1">
                   {stats
-                    ? `${stats.total_tenants} tenants · ${stats.total_users} users · ${stats.total_sites} sites across the platform`
-                    : "Loading platform metrics..."}
+                    ? t("dashboard.admin.platformStats", undefined, { tenants: String(stats.total_tenants), users: String(stats.total_users), sites: String(stats.total_sites) })
+                    : t("dashboard.admin.loadingMetrics")}
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/dashboard/tenants">
                 <Button className="h-11 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">
-                  <Building2 className="size-4 mr-2" />All Tenants
+                  <Building2 className="size-4 mr-2" />{t("dashboard.admin.allTenants")}
                 </Button>
               </Link>
               <Link href="/dashboard/admin/plans">
                 <Button variant="secondary" className="h-11 rounded-xl px-5 font-bold bg-background text-foreground hover:bg-background/80 shadow-sm border border-border/60">
-                  <CreditCard className="size-4 mr-2" />Plans
+                  <CreditCard className="size-4 mr-2" />{t("dashboard.admin.plans")}
                 </Button>
               </Link>
             </div>
@@ -294,37 +297,37 @@ export default function DashboardOverviewPage() {
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard
-            label="Total Tenants"
+            label={t("dashboard.admin.totalTenants")}
             value={stats?.total_tenants ?? 0}
             icon={Building2}
             href="/dashboard/tenants"
             color="text-blue-500"
-            sub={stats ? `+${stats.new_tenants_7d} in 7 days` : undefined}
+            sub={stats ? t("dashboard.admin.in7Days", undefined, { count: String(stats.new_tenants_7d) }) : undefined}
           />
           <StatCard
-            label="Total Users"
+            label={t("dashboard.admin.totalUsers")}
             value={stats?.total_users ?? 0}
             icon={Users}
             href="/dashboard/users"
             color="text-emerald-500"
-            sub={stats ? `+${stats.new_users_7d} in 7 days` : undefined}
+            sub={stats ? t("dashboard.admin.in7Days", undefined, { count: String(stats.new_users_7d) }) : undefined}
           />
           <StatCard
-            label="Total Sites"
+            label={t("dashboard.admin.totalSites")}
             value={stats?.total_sites ?? 0}
             icon={Globe}
             href="/dashboard/sites"
             color="text-primary"
           />
           <StatCard
-            label="Active Plans"
+            label={t("dashboard.admin.activePlans")}
             value={planCount}
             icon={CreditCard}
             href="/dashboard/admin/plans"
             color="text-amber-500"
           />
           <StatCard
-            label="New Users (7d)"
+            label={t("dashboard.admin.newUsers7d")}
             value={stats?.new_users_7d ?? 0}
             icon={UserPlus}
             href="/dashboard/users"
@@ -337,14 +340,14 @@ export default function DashboardOverviewPage() {
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold tracking-tight flex items-center gap-2">
                 <Building2 className="size-4 text-primary" />
-                Recent Tenants
+                {t("dashboard.admin.recentTenants")}
               </h3>
               <Link href="/dashboard/tenants" className="text-xs font-medium text-primary hover:underline flex items-center gap-1">
-                View all <ArrowUpRight className="size-3" />
+                {t("dashboard.admin.viewAll")} <ArrowUpRight className="size-3" />
               </Link>
             </div>
             {tenants.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic py-12 text-center">No tenants registered yet.</p>
+              <p className="text-sm text-muted-foreground italic py-12 text-center">{t("dashboard.admin.noTenants")}</p>
             ) : (
               <div className="space-y-2">
                 {tenants.map((t) => (
@@ -377,12 +380,12 @@ export default function DashboardOverviewPage() {
             <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
               <h3 className="text-sm font-bold tracking-tight flex items-center gap-2 mb-4 uppercase tracking-wider text-muted-foreground/70">
                 <Activity className="size-3.5 text-primary" />
-                System Health
+                {t("dashboard.admin.systemHealth")}
               </h3>
               <div className="space-y-2.5">
-                {[{ name: "Database", status: health?.database || "unknown", icon: Database },
-                  { name: "Cache", status: health?.cache || "disabled", icon: Server },
-                  { name: "AI Provider", status: health?.ai || "unknown", icon: Cpu },
+                {[{ name: t("dashboard.admin.svcDatabase"), status: health?.database || "unknown", icon: Database },
+                  { name: t("dashboard.admin.svcCache"), status: health?.cache || "disabled", icon: Server },
+                  { name: t("dashboard.admin.svcAiProvider"), status: health?.ai || "unknown", icon: Cpu },
                 ].map((svc) => (
                   <div key={svc.name} className="flex items-center justify-between p-3 rounded-xl bg-muted/20">
                     <div className="flex items-center gap-3">
@@ -390,26 +393,26 @@ export default function DashboardOverviewPage() {
                       <span className="text-sm font-medium">{svc.name}</span>
                     </div>
                     <span className={`text-xs font-semibold ${svc.status === "ok" ? "text-green-600" : svc.status === "error" ? "text-red-500" : "text-yellow-500"}`}>
-                      {svc.status === "ok" ? "Healthy" : svc.status === "error" ? "Down" : svc.status === "disabled" ? "Disabled" : "Unknown"}
+                      {svc.status === "ok" ? t("dashboard.admin.statusHealthy") : svc.status === "error" ? t("dashboard.admin.statusDown") : svc.status === "disabled" ? t("dashboard.admin.statusDisabled") : t("dashboard.admin.statusUnknown")}
                     </span>
                   </div>
                 ))}
               </div>
-              <Link href="/dashboard/admin/health" className="block mt-3 text-xs font-medium text-primary hover:underline">View detailed status →</Link>
+              <Link href="/dashboard/admin/health" className="block mt-3 text-xs font-medium text-primary hover:underline">{t("dashboard.admin.viewDetailedStatus")}</Link>
             </div>
 
             <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
               <h3 className="text-sm font-bold tracking-tight flex items-center gap-2 mb-4 uppercase tracking-wider text-muted-foreground/70">
                 <Zap className="size-3.5 text-primary" />
-                Quick Actions
+                {t("dashboard.admin.quickActions")}
               </h3>
               <div className="grid grid-cols-2 gap-2">
-                <Link href="/dashboard/tenants" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">All Tenants</Link>
-                <Link href="/dashboard/admin/plans" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">Plans</Link>
-                <Link href="/dashboard/admin/health" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">Health</Link>
-                <Link href="/dashboard/admin/announcements" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">Announce</Link>
-                <Link href="/dashboard/users" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">Users</Link>
-                <Link href="/dashboard/logs" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">Audit Logs</Link>
+                <Link href="/dashboard/tenants" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.allTenants")}</Link>
+                <Link href="/dashboard/admin/plans" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.plans")}</Link>
+                <Link href="/dashboard/admin/health" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.qxHealth")}</Link>
+                <Link href="/dashboard/admin/announcements" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.qxAnnounce")}</Link>
+                <Link href="/dashboard/users" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.qxUsers")}</Link>
+                <Link href="/dashboard/logs" className="p-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors text-sm font-medium text-center">{t("dashboard.admin.qxAuditLogs")}</Link>
               </div>
             </div>
           </div>
@@ -418,13 +421,13 @@ export default function DashboardOverviewPage() {
         <section>
           <h3 className="text-lg font-bold tracking-tight mb-4 flex items-center gap-2">
             <ShieldCheck className="size-4 text-primary" />
-            Platform Management
+            {t("dashboard.admin.platformManagement")}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <QuickLink href="/dashboard/tenants" label="All Tenants" icon={Building2} desc="View & manage all tenant accounts" />
-            <QuickLink href="/dashboard/admin/plans" label="Plan Management" icon={CreditCard} desc="Define & assign subscription plans" />
-            <QuickLink href="/dashboard/admin/health" label="System Health" icon={Activity} desc="Database, cache & AI provider status" />
-            <QuickLink href="/dashboard/admin/announcements" label="Announcements" icon={Megaphone} desc="Broadcast messages to all tenants" />
+            <QuickLink href="/dashboard/tenants" label={t("dashboard.admin.allTenants")} icon={Building2} desc={t("dashboard.admin.qlTenantsDesc")} />
+            <QuickLink href="/dashboard/admin/plans" label={t("dashboard.nav.plans")} icon={CreditCard} desc={t("dashboard.admin.qlPlansDesc")} />
+            <QuickLink href="/dashboard/admin/health" label={t("dashboard.nav.health")} icon={Activity} desc={t("dashboard.admin.qlHealthDesc")} />
+            <QuickLink href="/dashboard/admin/announcements" label={t("dashboard.nav.announcements")} icon={Megaphone} desc={t("dashboard.admin.qlAnnounceDesc")} />
           </div>
         </section>
       </div>
@@ -438,15 +441,15 @@ export default function DashboardOverviewPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
           <div>
             <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl">
-              Selamat Datang{profile ? `, ${profile.name.split(" ")[0]}` : ""}
+              {t("dashboard.welcome", undefined, { name: profile ? `, ${profile.name.split(" ")[0]}` : "" })}
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
-              Kelola website, domain, dan leads Anda dari satu tempat.
+              {t("dashboard.welcomeDesc")}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link href="/dashboard/sites/new">
-              <Button className="h-12 rounded-xl px-6 font-bold shadow-lg shadow-primary/20">+ Website Baru</Button>
+              <Button className="h-12 rounded-xl px-6 font-bold shadow-lg shadow-primary/20">{t("dashboard.newWebsite")}</Button>
             </Link>
           </div>
         </div>
@@ -455,32 +458,32 @@ export default function DashboardOverviewPage() {
       {activeTenant?.tenant.plan === "free" && (
         <section className="bg-gradient-to-r from-primary/10 to-amber-500/10 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
           <div className="space-y-1">
-            <p className="text-sm font-bold text-foreground">Anda sedang menggunakan paket <span className="capitalize">Free</span></p>
-            <p className="text-xs text-muted-foreground">Upgrade ke Pro untuk custom domain, SEO optimasi, lebih banyak website, dan AI generates tanpa batas.</p>
+            <p className="text-sm font-bold text-foreground">{t("dashboard.usingFreePlan", undefined, { plan: "Free" })}</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.upgradeToProDesc")}</p>
           </div>
           <Link href="/dashboard/upgrade">
-            <Button className="shrink-0 h-10 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">Upgrade ke Pro</Button>
+            <Button className="shrink-0 h-10 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">{t("dashboard.upgradeToPro")}</Button>
           </Link>
         </section>
       )}
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <StatCard label="Website" value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-primary" sub={`${metrics.publishedSites} published`} />
-        <StatCard label="Leads" value={metrics.totalLeads} icon={Activity} href="/dashboard/leads" color="text-amber-500" sub={metrics.totalLeads > 0 ? "New prospects" : "Setup lead form"} />
-        <StatCard label="Visitors" value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-emerald-500" sub="This week" />
-        <StatCard label="Health" value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub="All systems normal" />
+        <StatCard label={t("dashboard.statWebsites")} value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-primary" sub={t("dashboard.sitesPublished", undefined, { count: String(metrics.publishedSites) })} />
+        <StatCard label={t("dashboard.statLeads")} value={metrics.totalLeads} icon={Activity} href="/dashboard/leads" color="text-amber-500" sub={metrics.totalLeads > 0 ? t("dashboard.newProspects") : t("dashboard.setupLeadForm")} />
+        <StatCard label={t("dashboard.statVisitors")} value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-emerald-500" sub={t("dashboard.thisWeek")} />
+        <StatCard label={t("dashboard.statHealth")} value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub={t("dashboard.allSystemsNormal")} />
       </section>
 
       {currentPlan && (
         <section>
           <h3 className="text-lg font-bold tracking-tight mb-4 flex items-center gap-2">
             <Database className="size-4 text-primary" />
-            Usage Meter
+            {t("dashboard.usageMeter")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">Website</span>
+                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterWebsites")}</span>
                 <span className="text-sm font-bold">{metrics.totalSites} / {currentPlan.max_sites <= 0 ? "∞" : currentPlan.max_sites}</span>
               </div>
               <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
@@ -494,7 +497,7 @@ export default function DashboardOverviewPage() {
             </div>
             <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">AI Generate</span>
+                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterAiGenerate")}</span>
                 <span className="text-sm font-bold">{tenantUsage?.usage.generate_count ?? 0} / {currentPlan.max_ai_generates <= 0 ? "∞" : currentPlan.max_ai_generates}</span>
               </div>
               <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
@@ -508,7 +511,7 @@ export default function DashboardOverviewPage() {
             </div>
             <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">Section Regen</span>
+                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterSectionRegen")}</span>
                 <span className="text-sm font-bold">{tenantUsage?.usage.section_regen_count ?? 0} / {currentPlan.max_section_regens <= 0 ? "∞" : currentPlan.max_section_regens}</span>
               </div>
               <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
@@ -522,7 +525,7 @@ export default function DashboardOverviewPage() {
             </div>
             <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">Design Regen</span>
+                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterDesignRegen")}</span>
                 <span className="text-sm font-bold">{tenantUsage?.usage.design_regen_count ?? 0} / {currentPlan.max_design_regens <= 0 ? "∞" : currentPlan.max_design_regens}</span>
               </div>
               <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
@@ -540,24 +543,24 @@ export default function DashboardOverviewPage() {
 
       <section className="grid lg:grid-cols-2 gap-6">
         <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
-          <h3 className="text-lg font-bold mb-4 tracking-tight">Recent Activity</h3>
+          <h3 className="text-lg font-bold mb-4 tracking-tight">{t("dashboard.recentActivity")}</h3>
           <div className="space-y-4">
             {recentActivity.length > 0 ? recentActivity.map((act, i) => (
               <div key={i}>
                 <p className="font-semibold text-foreground text-sm">{act.title}</p>
                 <p className="text-muted-foreground text-xs mt-0.5">{act.time}</p>
               </div>
-            )) : <p className="text-sm text-muted-foreground italic">Belum ada aktivitas.</p>}
+            )) : <p className="text-sm text-muted-foreground italic">{t("dashboard.noActivity")}</p>}
           </div>
         </div>
         <div className="bg-card rounded-3xl border border-border/60 p-6 shadow-sm">
-          <h3 className="text-lg font-bold mb-4 tracking-tight">AI Insights</h3>
+          <h3 className="text-lg font-bold mb-4 tracking-tight">{t("dashboard.aiInsights")}</h3>
           <div className="space-y-3">
             {metrics.totalViews > 0
-              ? <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">📈 Traffic terpantau masuk minggu ini sebanyak {metrics.totalViews} kunjungan.</div>
-              : <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">📉 Belum ada traffic signifikan minggu ini.</div>}
-            {metrics.totalLeads > 0 && <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">🔥 Anda memiliki {metrics.totalLeads} prospek baru!</div>}
-            {metrics.totalSites === 0 && <div className="bg-primary/10 text-primary border border-primary/20 p-3 rounded-xl text-sm font-medium">✨ Buat website pertama Anda dengan AI Builder!</div>}
+              ? <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">{t("dashboard.insightTraffic", undefined, { count: String(metrics.totalViews) })}</div>
+              : <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">{t("dashboard.insightNoTraffic")}</div>}
+            {metrics.totalLeads > 0 && <div className="bg-muted/40 border border-border/40 p-3 rounded-xl text-sm font-medium">{t("dashboard.insightLeads", undefined, { count: String(metrics.totalLeads) })}</div>}
+            {metrics.totalSites === 0 && <div className="bg-primary/10 text-primary border border-primary/20 p-3 rounded-xl text-sm font-medium">{t("dashboard.insightCreateSite")}</div>}
           </div>
         </div>
       </section>
