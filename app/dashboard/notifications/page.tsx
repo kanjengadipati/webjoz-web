@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import {
   fetchNotifications,
   markNotificationRead,
@@ -27,6 +28,7 @@ export default function NotificationsPage() {
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { unreadCount, refresh: refreshCount } = useUnreadNotifications();
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -40,11 +42,11 @@ export default function NotificationsPage() {
       const items = await fetchNotifications(token);
       setNotifications(items);
     } catch {
-      pushToast("Gagal memuat notifikasi", "error");
+      pushToast(t("dashboard.notifications.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
-  }, [token, pushToast]);
+  }, [token, pushToast, t]);
 
   useEffect(() => {
     void load();
@@ -59,7 +61,7 @@ export default function NotificationsPage() {
       );
       void refreshCount();
     } catch {
-      pushToast("Gagal menandai notifikasi", "error");
+      pushToast(t("dashboard.notifications.markReadFailed"), "error");
     }
   };
 
@@ -70,9 +72,9 @@ export default function NotificationsPage() {
       await markAllNotificationsRead(token);
       setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
       void refreshCount();
-      pushToast("Semua notifikasi telah dibaca", "success");
+      pushToast(t("dashboard.notifications.allRead"), "success");
     } catch {
-      pushToast("Gagal menandai semua notifikasi", "error");
+      pushToast(t("dashboard.notifications.markAllFailed"), "error");
     } finally {
       setMarkingAll(false);
     }
@@ -90,13 +92,13 @@ export default function NotificationsPage() {
       const now = new Date();
       const diffMs = now.getTime() - d.getTime();
       const diffMin = Math.floor(diffMs / 60000);
-      if (diffMin < 1) return "Baru saja";
-      if (diffMin < 60) return `${diffMin}m yang lalu`;
+      if (diffMin < 1) return t("dashboard.notifications.justNow");
+      if (diffMin < 60) return t("dashboard.notifications.minutesAgo", undefined, { n: String(diffMin) });
       const diffHour = Math.floor(diffMin / 60);
-      if (diffHour < 24) return `${diffHour}j yang lalu`;
+      if (diffHour < 24) return t("dashboard.notifications.hoursAgo", undefined, { n: String(diffHour) });
       const diffDay = Math.floor(diffHour / 24);
-      if (diffDay < 7) return `${diffDay}h yang lalu`;
-      return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+      if (diffDay < 7) return t("dashboard.notifications.daysAgo", undefined, { n: String(diffDay) });
+      return d.toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { day: "numeric", month: "short" });
     } catch {
       return iso;
     }
@@ -106,7 +108,7 @@ export default function NotificationsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Memuat notifikasi...</p>
+        <p className="text-xs text-muted-foreground">{t("dashboard.notifications.loading")}</p>
       </div>
     );
   }
@@ -117,9 +119,9 @@ export default function NotificationsPage() {
         <div className="w-16 h-16 bg-primary/5 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
           <Bell className="w-8 h-8 opacity-75" />
         </div>
-        <h2 className="text-xl font-bold mb-2">Tidak Ada Notifikasi</h2>
+        <h2 className="text-xl font-bold mb-2">{t("dashboard.notifications.emptyTitle")}</h2>
         <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-          Belum ada notifikasi. Anda akan mendapat pemberitahuan saat ada pengumuman baru atau lead masuk ke website Anda.
+          {t("dashboard.notifications.emptyDesc")}
         </p>
       </Card>
     );
@@ -133,11 +135,11 @@ export default function NotificationsPage() {
             <Bell className="size-5 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold">Notifikasi</CardTitle>
+            <CardTitle className="text-base font-bold">{t("dashboard.notifications.title")}</CardTitle>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {unreadCount > 0
-                ? `${unreadCount} notifikasi belum dibaca`
-                : "Tidak ada notifikasi baru"}
+                ? t("dashboard.notifications.unreadCount", undefined, { count: String(unreadCount) })
+                : t("dashboard.notifications.noNew")}
             </p>
           </div>
         </div>
@@ -154,7 +156,7 @@ export default function NotificationsPage() {
             ) : (
               <CheckCheck className="size-3.5" />
             )}
-            Tandai Semua Dibaca
+            {t("dashboard.notifications.markAllRead")}
           </Button>
         )}
       </CardHeader>
@@ -193,7 +195,7 @@ export default function NotificationsPage() {
                       <button
                         onClick={() => void handleMarkRead(n.id)}
                         className="size-8 rounded-xl hover:bg-primary/10 flex items-center justify-center transition-colors"
-                        title="Tandai dibaca"
+                        title={t("dashboard.notifications.markReadTooltip")}
                       >
                         <CheckCheck className="size-4 text-muted-foreground/50 hover:text-primary" />
                       </button>
@@ -202,7 +204,7 @@ export default function NotificationsPage() {
                       <button
                         onClick={() => router.push(link!)}
                         className="size-8 rounded-xl hover:bg-primary/10 flex items-center justify-center transition-colors"
-                        title="Lihat detail"
+                        title={t("dashboard.notifications.viewTooltip")}
                       >
                         <ArrowRight className="size-4 text-muted-foreground/50 hover:text-primary" />
                       </button>
@@ -211,7 +213,7 @@ export default function NotificationsPage() {
                 </div>
                 <div className="flex items-center gap-2.5 mt-2.5">
                   <span className="text-[10px] text-muted-foreground/50 font-medium uppercase tracking-wider">
-                    {n.type === "announcement" ? "Pengumuman" : n.type === "lead" ? "Lead" : "Sistem"}
+                    {n.type === "announcement" ? t("dashboard.notifications.typeAnnouncement") : n.type === "lead" ? t("dashboard.notifications.typeLead") : t("dashboard.notifications.typeSystem")}
                   </span>
                   <span className="size-1 rounded-full bg-muted-foreground/20" />
                   <span className="text-[10px] text-muted-foreground/60">{formatDate(n.created_at)}</span>

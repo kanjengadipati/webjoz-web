@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { usePermissions } from "@/hooks/use-permissions";
 import { deleteUser, fetchUsers, updateUser } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
@@ -12,6 +13,7 @@ import type { User } from "@/lib/types";
 export default function UsersPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
@@ -34,9 +36,9 @@ export default function UsersPage() {
       setState(SectionState.SUCCESS);
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load users", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.users.loadFailed"), "error");
     }
-  }, [pushToast, query, token]);
+  }, [pushToast, query, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -55,22 +57,22 @@ export default function UsersPage() {
         role: newRole,
         is_verified: user.is_verified
       });
-      pushToast(`Role ${user.name} diperbarui menjadi ${newRole}`, "success");
+      pushToast(t("dashboard.users.roleUpdated", undefined, { name: user.name, role: newRole }), "success");
       void loadUsers();
     } catch {
-      pushToast("Gagal memperbarui role user", "error");
+      pushToast(t("dashboard.users.roleUpdateFailed"), "error");
     }
   }
 
   async function handleDeleteUser(user: User) {
     if (!token) return;
-    if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+    if (!confirm(t("dashboard.users.deleteConfirm", undefined, { name: user.name }))) return;
     try {
       await deleteUser(token, user.id);
-      pushToast(`User ${user.name} deleted successfully`, "success");
+      pushToast(t("dashboard.users.deleted", undefined, { name: user.name }), "success");
       void loadUsers();
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to delete user", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.users.deleteFailed"), "error");
     }
   }
 
@@ -87,17 +89,17 @@ export default function UsersPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={state} title="User Management" action={<Button onClick={() => void loadUsers()}>Refresh</Button>} />
+          <SectionTitle eyebrow={state} title={t("dashboard.users.title")} action={<Button onClick={() => void loadUsers()}>{t("dashboard.users.refresh")}</Button>} />
         </CardHeader>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-          <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" />
-          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (user/sales/admin)" />
+          <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("dashboard.users.searchPlaceholder")} />
+          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder={t("dashboard.users.rolePlaceholder")} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={String(filteredUsers.length)} title="Admin-visible users" />
+          <SectionTitle eyebrow={String(filteredUsers.length)} title={t("dashboard.users.adminVisibleTitle")} />
         </CardHeader>
         <CardContent className="pt-6">
         {state === SectionState.LOADING ? (
@@ -106,7 +108,7 @@ export default function UsersPage() {
             <SkeletonBlock className="h-20" />
           </div>
         ) : filteredUsers.length === 0 ? (
-          <EmptyState text="No users matched the current query." />
+          <EmptyState text={t("dashboard.users.emptyDesc")} />
         ) : (
           <div className="grid gap-3">
             {filteredUsers.map((user) => (
@@ -138,7 +140,7 @@ export default function UsersPage() {
                         className="rounded-xl h-9"
                         onClick={() => void handleDeleteUser(user)}
                       >
-                        Delete
+                        {t("dashboard.users.delete")}
                       </Button>
                     )}
                   </div>

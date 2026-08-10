@@ -22,10 +22,12 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function MyCommissionsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [activeTab, setActiveTab] = useState<"commissions" | "bonuses">("commissions");
@@ -74,7 +76,7 @@ export default function MyCommissionsPage() {
       setTotal((res.meta?.total as number) || 0);
       setConfig(configRes.data);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat data komisi", "error");
+      pushToast(err.message || t("dashboard.salesCommissions.loadFailed"), "error");
     } finally {
       setLoading(false);
       setConfigLoading(false);
@@ -117,7 +119,7 @@ export default function MyCommissionsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
-        <p className="text-sm text-muted-foreground">Memuat data pendapatan...</p>
+        <p className="text-sm text-muted-foreground">{t("dashboard.salesCommissions.loading")}</p>
       </div>
     );
   }
@@ -126,9 +128,9 @@ export default function MyCommissionsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-4 text-center">
         <ShieldAlert className="size-12 text-destructive/60" />
-        <h2 className="text-xl font-bold">Akses Dibatasi</h2>
+        <h2 className="text-xl font-bold">{t("dashboard.salesCommissions.accessDeniedTitle")}</h2>
         <p className="text-sm text-muted-foreground max-w-md">
-          Anda belum memiliki akses ke halaman komisi & bonus. Hubungi admin untuk mengaktifkan akses sales.
+          {t("dashboard.salesCommissions.accessDeniedDesc")}
         </p>
       </div>
     );
@@ -151,10 +153,10 @@ export default function MyCommissionsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <DollarSign className="size-6 text-emerald-500" />
-            Pendapatan Saya (Komisi & Bonus)
+            {t("dashboard.salesCommissions.pageTitle")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Ringkasan komisi bertingkat — Tier 1 {t1}% ({months} bulan pertama), lalu Tier 2 {t2}% — serta bonus onboarding/milestone dari tenant referensi Anda.
+            {t("dashboard.salesCommissions.pageDesc", undefined, { t1, months: String(months), t2 })}
           </p>
         </div>
       </div>
@@ -164,7 +166,7 @@ export default function MyCommissionsPage() {
         <Card className="border-border/40 shadow-sm bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Total Pendapatan
+              {t("dashboard.salesCommissions.cardTotal")}
               <Sparkles className="size-4 text-emerald-500" />
             </CardTitle>
           </CardHeader>
@@ -172,14 +174,14 @@ export default function MyCommissionsPage() {
             <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
               Rp {grandTotalEarned.toLocaleString("id-ID")}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Komisi + Bonus terakumulasi</p>
+            <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.salesCommissions.cardTotalDesc")}</p>
           </CardContent>
         </Card>
 
         <Card className="border-border/40 shadow-sm bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Komisi Recurring
+              {t("dashboard.salesCommissions.cardCommission")}
               <DollarSign className="size-4 text-emerald-500" />
             </CardTitle>
           </CardHeader>
@@ -187,14 +189,14 @@ export default function MyCommissionsPage() {
             <div className="text-2xl font-bold text-foreground">
               Rp {summary.total_earned.toLocaleString("id-ID")}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Komisi per pembayaran: {t1}% (Tier 1) / {t2}% (Tier 2)</p>
+            <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.salesCommissions.cardCommissionDesc", undefined, { t1, t2 })}</p>
           </CardContent>
         </Card>
 
         <Card className="border-border/40 shadow-sm bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Total Bonus
+              {t("dashboard.salesCommissions.cardBonus")}
               <Award className="size-4 text-amber-500" />
             </CardTitle>
           </CardHeader>
@@ -203,7 +205,7 @@ export default function MyCommissionsPage() {
               Rp {bonusSummary.total_earned.toLocaleString("id-ID")}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1">
-              {bonusSummary.onboarding_count} Onboarding, {bonusSummary.milestone_count} Milestone
+              {t("dashboard.salesCommissions.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) })}
             </p>
           </CardContent>
         </Card>
@@ -211,7 +213,7 @@ export default function MyCommissionsPage() {
         <Card className="border-border/40 shadow-sm bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              Pending Payout
+              {t("dashboard.salesCommissions.cardPending")}
               <Clock className="size-4 text-amber-500" />
             </CardTitle>
           </CardHeader>
@@ -219,7 +221,7 @@ export default function MyCommissionsPage() {
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
               Rp {(summary.total_pending + bonusSummary.total_pending).toLocaleString("id-ID")}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Menunggu proses pencairan</p>
+            <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.salesCommissions.cardPendingDesc")}</p>
           </CardContent>
         </Card>
       </div>
@@ -235,7 +237,7 @@ export default function MyCommissionsPage() {
           }`}
         >
           <DollarSign className="size-4" />
-          Komisi Recurring ({total})
+          {t("dashboard.salesCommissions.tabCommissions", undefined, { count: String(total) })}
         </button>
         <button
           onClick={() => setActiveTab("bonuses")}
@@ -246,7 +248,7 @@ export default function MyCommissionsPage() {
           }`}
         >
           <Award className="size-4" />
-          Bonus Onboarding & Milestone ({bonusTotal})
+          {t("dashboard.salesCommissions.tabBonuses", undefined, { count: String(bonusTotal) })}
         </button>
       </div>
 
@@ -257,28 +259,28 @@ export default function MyCommissionsPage() {
             {commissions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-2">
                 <DollarSign className="size-10 opacity-30" />
-                <p className="text-sm">Belum ada komisi tercatat.</p>
-                <p className="text-xs opacity-75">Bagikan kode referral Anda untuk mulai mendapatkan komisi.</p>
+                <p className="text-sm">{t("dashboard.salesCommissions.noCommissionsTitle")}</p>
+                <p className="text-xs opacity-75">{t("dashboard.salesCommissions.noCommissionsDesc")}</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                      <th className="px-6 py-4">Tanggal</th>
-                      <th className="px-6 py-4">Order ID</th>
-                      <th className="px-6 py-4 text-center">Tenant ID</th>
-                      <th className="px-6 py-4 text-right">Gross Amount</th>
-                      <th className="px-6 py-4 text-center">Rate</th>
-                      <th className="px-6 py-4 text-right">Komisi</th>
-                      <th className="px-6 py-4 text-center">Status</th>
+                      <th className="px-6 py-4">{t("dashboard.salesCommissions.thDate")}</th>
+                      <th className="px-6 py-4">{t("dashboard.salesCommissions.thOrderId")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.salesCommissions.thTenantId")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.salesCommissions.thGross")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.salesCommissions.thRate")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.salesCommissions.thCommission")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.salesCommissions.thStatus")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {commissions.map((c) => (
                       <tr key={c.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
                         <td className="px-6 py-4 text-xs font-mono text-muted-foreground">
-                          {new Date(c.created_at).toLocaleDateString("id-ID", {
+                          {new Date(c.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
@@ -295,7 +297,7 @@ export default function MyCommissionsPage() {
                         </td>
                         <td className="px-6 py-4 text-center text-xs">
                           <span className="inline-flex flex-col items-center leading-tight">
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Tier {c.tier}</span>
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">{t("dashboard.salesCommissions.tierLabel", undefined, { tier: String(c.tier) })}</span>
                             <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
                           </span>
                         </td>
@@ -321,7 +323,7 @@ export default function MyCommissionsPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
                 <span className="text-xs text-muted-foreground">
-                  Halaman {page} dari {totalPages}
+                  {t("dashboard.salesCommissions.pageOf", undefined, { page: String(page), total: String(totalPages) })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -332,7 +334,7 @@ export default function MyCommissionsPage() {
                     className="gap-1"
                   >
                     <ChevronLeft className="size-4" />
-                    Sebelumnya
+                    {t("dashboard.salesCommissions.previous")}
                   </Button>
                   <Button
                     size="sm"
@@ -341,7 +343,7 @@ export default function MyCommissionsPage() {
                     onClick={() => setPage((p) => p + 1)}
                     className="gap-1"
                   >
-                    Selanjutnya
+                    {t("dashboard.salesCommissions.next")}
                     <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -358,26 +360,26 @@ export default function MyCommissionsPage() {
             {bonuses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-2">
                 <Award className="size-10 opacity-30" />
-                <p className="text-sm">Belum ada bonus tercatat.</p>
-                <p className="text-xs opacity-75">Bonus onboarding (Rp 50.000) dan bonus milestone bulanan akan tercatat otomatis ketika tenant aktif.</p>
+                <p className="text-sm">{t("dashboard.salesCommissions.noBonusesTitle")}</p>
+                <p className="text-xs opacity-75">{t("dashboard.salesCommissions.noBonusesDesc")}</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                      <th className="px-6 py-4">Tanggal</th>
-                      <th className="px-6 py-4">Jenis Bonus</th>
-                      <th className="px-6 py-4 text-center">Detail / Periode</th>
-                      <th className="px-6 py-4 text-right">Nominal Bonus</th>
-                      <th className="px-6 py-4 text-center">Status</th>
+                      <th className="px-6 py-4">{t("dashboard.salesCommissions.thDate")}</th>
+                      <th className="px-6 py-4">{t("dashboard.salesCommissions.thBonusType")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.salesCommissions.thDetail")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.salesCommissions.thAmount")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.salesCommissions.thStatus")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {bonuses.map((b) => (
                       <tr key={b.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
                         <td className="px-6 py-4 text-xs font-mono text-muted-foreground">
-                          {new Date(b.created_at).toLocaleDateString("id-ID", {
+                          {new Date(b.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
@@ -390,13 +392,13 @@ export default function MyCommissionsPage() {
                             ) : (
                               <Target className="size-4 text-amber-500" />
                             )}
-                            <span className="font-semibold capitalize">{b.type} Bonus</span>
+                            <span className="font-semibold capitalize">{t("dashboard.salesCommissions.bonusTypeLabel", undefined, { type: b.type })}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center text-xs font-mono text-muted-foreground">
                           {b.type === "onboarding"
-                            ? `Tenant #${b.tenant_id}`
-                            : `Periode ${b.period} (Tier ${b.tier})`}
+                            ? t("dashboard.salesCommissions.bonusTenant", undefined, { id: String(b.tenant_id) })
+                            : t("dashboard.salesCommissions.bonusPeriod", undefined, { period: b.period || "", tier: String(b.tier) })}
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-amber-600 dark:text-amber-400">
                           Rp {b.amount.toLocaleString("id-ID")}
@@ -422,7 +424,7 @@ export default function MyCommissionsPage() {
             {totalBonusPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
                 <span className="text-xs text-muted-foreground">
-                  Halaman {bonusPage} dari {totalBonusPages}
+                  {t("dashboard.salesCommissions.pageOf", undefined, { page: String(bonusPage), total: String(totalBonusPages) })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -433,7 +435,7 @@ export default function MyCommissionsPage() {
                     className="gap-1"
                   >
                     <ChevronLeft className="size-4" />
-                    Sebelumnya
+                    {t("dashboard.salesCommissions.previous")}
                   </Button>
                   <Button
                     size="sm"
@@ -442,7 +444,7 @@ export default function MyCommissionsPage() {
                     onClick={() => setBonusPage((p) => p + 1)}
                     className="gap-1"
                   >
-                    Selanjutnya
+                    {t("dashboard.salesCommissions.next")}
                     <ChevronRight className="size-4" />
                   </Button>
                 </div>

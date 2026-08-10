@@ -5,25 +5,26 @@ import { useRouter } from "next/navigation";
 import { Can } from "@/components/can";
 import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { clearAuthSession, useAuthToken } from "@/lib/auth-store";
 import { fetchSessions, logoutAllSessions, revokeOtherSessions, revokeSession, revokeTrustedDevice } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { SectionState } from "@/lib/types";
 import type { Session } from "@/lib/types";
 
-function formatDate(value?: string) {
+function formatDate(value?: string, locale = "id-ID") {
   if (!value) return "-";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleString();
+  return date.toLocaleString(locale);
 }
 
-function deviceLabel(session: Session) {
+function deviceLabel(session: Session, unknownDevice: string) {
   if (session.device_name) return session.device_name;
   const ua = session.user_agent || "";
   const browser = ua.includes("Chrome") ? "Chrome" : ua.includes("Safari") ? "Safari" : ua.includes("Firefox") ? "Firefox" : "Browser";
   const platform = ua.includes("Mac") ? "Mac" : ua.includes("iPhone") ? "iPhone" : ua.includes("Android") ? "Android" : ua.includes("Windows") ? "Windows" : "";
-  return platform ? `${browser} • ${platform}` : session.device_id || "Unknown device";
+  return platform ? `${browser} • ${platform}` : session.device_id || unknownDevice;
 }
 
 function shortID(value?: string) {
@@ -69,6 +70,7 @@ export default function SessionsPage() {
   const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
@@ -87,9 +89,9 @@ export default function SessionsPage() {
       setState(SectionState.SUCCESS);
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.sessions.loadFailed"), "error");
     }
-  }, [pushToast, token]);
+  }, [pushToast, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -105,10 +107,10 @@ export default function SessionsPage() {
     setSessions((current) => current.filter((session) => session.id !== id));
     try {
       await revokeSession(token, id);
-      pushToast("Device signed out.", "success");
+      pushToast(t("dashboard.sessions.signedOut"), "success");
     } catch (error) {
       setSessions(previous);
-      pushToast(error instanceof Error ? error.message : "Failed to sign out device", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.sessions.signOutFailed"), "error");
     }
   }
 
@@ -122,10 +124,10 @@ export default function SessionsPage() {
     )));
     try {
       await revokeTrustedDevice(token, id);
-      pushToast("Trusted device removed.", "success");
+      pushToast(t("dashboard.sessions.trustRemoved"), "success");
     } catch (error) {
       setSessions(previous);
-      pushToast(error instanceof Error ? error.message : "Failed to remove trusted device", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.sessions.trustRemoveFailed"), "error");
     }
   }
 
@@ -135,10 +137,10 @@ export default function SessionsPage() {
     setSessions((current) => current.filter((session) => session.is_current));
     try {
       await revokeOtherSessions(token);
-      pushToast("Other devices signed out.", "success");
+      pushToast(t("dashboard.sessions.othersSignedOut"), "success");
     } catch (error) {
       setSessions(previous);
-      pushToast(error instanceof Error ? error.message : "Failed to sign out other devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.sessions.othersSignOutFailed"), "error");
     }
   }
 
@@ -146,9 +148,9 @@ export default function SessionsPage() {
     if (!token) return;
     try {
       await logoutAllSessions(token);
-      pushToast("All devices signed out.", "success");
+      pushToast(t("dashboard.sessions.allSignedOut"), "success");
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to sign out all devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.sessions.allSignOutFailed"), "error");
       return;
     }
     clearAuthSession();
@@ -161,19 +163,19 @@ export default function SessionsPage() {
         <CardHeader className="border-b border-border/60">
           <SectionTitle
             eyebrow={state}
-            title="Device & Session Management"
+            title={t("dashboard.sessions.title")}
             action={
               <div className="flex flex-wrap gap-2">
-                <Button variant="ghost" size="sm" className="h-9 rounded-full px-4" onClick={() => void loadSessions()} disabled={state === SectionState.LOADING} aria-label="Refresh devices">
+                <Button variant="ghost" size="sm" className="h-9 rounded-full px-4" onClick={() => void loadSessions()} disabled={state === SectionState.LOADING} aria-label={t("dashboard.sessions.refreshLabel")}>
                   <svg className={cn("mr-2 size-3.5", state === SectionState.LOADING && "motion-safe:animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M3 21v-5h5" /></svg>
-                  Refresh
+                  {t("dashboard.sessions.refresh")}
                 </Button>
                 <Can permission="session.delete">
                   <Button variant="secondary" size="sm" className="h-9 rounded-full px-4 font-bold" onClick={() => void handleRevokeOthers()} disabled={sessions.filter((session) => !session.is_current).length === 0}>
-                    Sign out others
+                    {t("dashboard.sessions.signOutOthers")}
                   </Button>
                   <Button variant="destructive" size="sm" className="h-9 rounded-full px-4 font-bold" onClick={() => void handleLogoutAll()} disabled={sessions.length === 0}>
-                    Sign out all
+                    {t("dashboard.sessions.signOutAll")}
                   </Button>
                 </Can>
               </div>
@@ -183,15 +185,15 @@ export default function SessionsPage() {
         <CardContent className="space-y-5 pt-6">
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-border/60 bg-muted/25 p-4">
-              <div className="text-xs font-medium text-muted-foreground">Active sessions</div>
+              <div className="text-xs font-medium text-muted-foreground">{t("dashboard.sessions.metricActive")}</div>
               <div className="mt-1 text-2xl font-bold">{metrics.total}</div>
             </div>
             <div className="rounded-2xl border border-border/60 bg-muted/25 p-4">
-              <div className="text-xs font-medium text-muted-foreground">Trusted devices</div>
+              <div className="text-xs font-medium text-muted-foreground">{t("dashboard.sessions.metricTrusted")}</div>
               <div className="mt-1 text-2xl font-bold">{metrics.trusted}</div>
             </div>
             <div className="rounded-2xl border border-border/60 bg-muted/25 p-4">
-              <div className="text-xs font-medium text-muted-foreground">This session</div>
+              <div className="text-xs font-medium text-muted-foreground">{t("dashboard.sessions.metricCurrent")}</div>
               <div className="mt-1 text-2xl font-bold">{metrics.current}</div>
             </div>
           </div>
@@ -202,12 +204,12 @@ export default function SessionsPage() {
               <SkeletonBlock className="h-24" />
             </div>
           ) : sessions.length === 0 ? (
-            <EmptyState title="No sessions yet" text="No active sessions or trusted devices are currently associated with this account." />
+            <EmptyState title={t("dashboard.sessions.emptyTitle")} text={t("dashboard.sessions.emptyDesc")} />
           ) : (
             <div className="grid gap-3">
               {sessions.map((session) => {
                 const kind = deviceKind(session);
-                const status = session.is_current ? "currently signed in" : session.is_trusted ? "trusted device" : "unknown device";
+                const status = session.is_current ? t("dashboard.sessions.statusCurrent") : session.is_trusted ? t("dashboard.sessions.statusTrusted") : t("dashboard.sessions.statusUnknown");
                 const trustedDeviceID = session.trusted_device_id;
                 return (
                   <div key={session.id} className="rounded-2xl border border-border/70 bg-muted/30 px-5 py-4">
@@ -218,40 +220,40 @@ export default function SessionsPage() {
                         </div>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="truncate text-base font-semibold">{deviceLabel(session)}</div>
+                            <div className="truncate text-base font-semibold">{deviceLabel(session, t("dashboard.sessions.unknownDevice"))}</div>
                             <StatusBadge status={status} />
                           </div>
                           <div className="mt-2 flex flex-wrap gap-2 text-xs">
                             <span className="rounded-full border border-border/70 bg-background/60 px-2.5 py-1 font-medium text-muted-foreground">
-                              Session #{session.id}
+                              {t("dashboard.sessions.sessionChip", undefined, { id: String(session.id) })}
                             </span>
                             <span className="rounded-full border border-border/70 bg-background/60 px-2.5 py-1 font-medium text-muted-foreground">
-                              Device {shortID(session.device_id)}
+                              {t("dashboard.sessions.deviceChip", undefined, { id: shortID(session.device_id) })}
                             </span>
                             {trustedDeviceID ? (
                               <span className="rounded-full border border-border/70 bg-background/60 px-2.5 py-1 font-medium text-muted-foreground">
-                                Trust {shortID(trustedDeviceID)}
+                                {t("dashboard.sessions.trustChip", undefined, { id: shortID(trustedDeviceID) })}
                               </span>
                             ) : null}
                           </div>
-                          <div className="mt-1 line-clamp-2 text-sm text-muted-foreground">{session.user_agent || "Unknown user agent"}</div>
+                          <div className="mt-1 line-clamp-2 text-sm text-muted-foreground">{session.user_agent || t("dashboard.sessions.unknownAgent")}</div>
                           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                            <span>IP: {session.ip_address || "-"}</span>
-                            <span>Last used: {formatDate(session.updated_at)}</span>
-                            {session.last_trusted_at ? <span>Trusted use: {formatDate(session.last_trusted_at)}</span> : null}
-                            <span>Expires: {formatDate(session.expired_at)}</span>
+                            <span>{t("dashboard.sessions.ipLabel", undefined, { ip: session.ip_address || "-" })}</span>
+                            <span>{t("dashboard.sessions.lastUsed", undefined, { date: formatDate(session.updated_at, locale === "id" ? "id-ID" : "en-US") })}</span>
+                            {session.last_trusted_at ? <span>{t("dashboard.sessions.trustedUsed", undefined, { date: formatDate(session.last_trusted_at, locale === "id" ? "id-ID" : "en-US") })}</span> : null}
+                            <span>{t("dashboard.sessions.expires", undefined, { date: formatDate(session.expired_at, locale === "id" ? "id-ID" : "en-US") })}</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         {session.is_trusted && trustedDeviceID ? (
                           <Button variant="outline" size="sm" className="h-8 rounded-lg px-3 text-xs font-semibold" onClick={() => void handleRemoveTrust(trustedDeviceID)}>
-                            Remove trust
+                            {t("dashboard.sessions.removeTrust")}
                           </Button>
                         ) : null}
                         {!session.is_current ? (
                           <Button variant="destructive" size="sm" className="h-8 rounded-lg px-3 text-xs font-semibold" onClick={() => void handleRevoke(session.id)}>
-                            Revoke session
+                            {t("dashboard.sessions.revokeSession")}
                           </Button>
                         ) : null}
                       </div>
