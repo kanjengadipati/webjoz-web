@@ -17,7 +17,7 @@ interface I18nContextValue {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function resolvePath(obj: Translations, path: string): string | undefined {
+function resolvePath(obj: Translations, path: string): any {
   const parts = path.split(".");
   let current: unknown = obj;
   for (const part of parts) {
@@ -27,7 +27,7 @@ function resolvePath(obj: Translations, path: string): string | undefined {
       return undefined;
     }
   }
-  return typeof current === "string" ? current : undefined;
+  return current;
 }
 
 function interpolate(text: string, params?: Record<string, string>): string {
@@ -36,16 +36,50 @@ function interpolate(text: string, params?: Record<string, string>): string {
 }
 
 export function I18nProvider({ children, defaultLocale = "id" }: { children: React.ReactNode; defaultLocale?: Locale }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  // Derive the initial locale from the cookie — the same source the server uses
+  // via `defaultLocale` — so the server-rendered HTML and the first client render
+  // always agree, preventing hydration mismatches.
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof document !== "undefined") {
+      try {
+        const match = document.cookie.match(
+          new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
+        );
+        if (match && (match[1] === "id" || match[1] === "en")) return match[1] as Locale;
+      } catch {
+        /* ignore */
+      }
+    }
+    return defaultLocale;
+  });
 
+  // Migrate a legacy localStorage preference (written before cookies were used)
+  // in after hydration so it does not affect SSR output.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (saved === "id" || saved === "en") {
-      setLocaleState(saved);
-      document.documentElement.lang = saved === "id" ? "id" : "en";
+    try {
+      const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
+      if (saved === "id" || saved === "en") {
+        const match = document.cookie.match(
+          new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
+        );
+        if (!match || match[1] !== saved) {
+          document.cookie =
+            LOCALE_STORAGE_KEY + "=" + saved + "; path=/; max-age=31536000; SameSite=Lax";
+          setLocaleState(saved);
+        }
+      }
+    } catch {
+      /* ignore */
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = locale === "id" ? "id" : "en";
+    }
+  }, [locale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
@@ -57,13 +91,22 @@ export function I18nProvider({ children, defaultLocale = "id" }: { children: Rea
     } catch {
       /* ignore storage errors */
     }
+    try {
+      document.cookie =
+        LOCALE_STORAGE_KEY + "=" + next + "; path=/; max-age=31536000; SameSite=Lax";
+    } catch {
+      /* ignore cookie errors */
+    }
   }, []);
 
   const t = useCallback(
-    (key: string, fallback?: string, params?: Record<string, string>): string => {
+    (key: string, fallback?: any, params?: Record<string, string>): any => {
       const resolved = resolvePath(translations[locale], key);
-      const text = resolved || fallback || key;
-      return interpolate(text, params);
+      const val = resolved !== undefined ? resolved : fallback || key;
+      if (typeof val === "string") {
+        return interpolate(val, params);
+      }
+      return val;
     },
     [locale]
   );

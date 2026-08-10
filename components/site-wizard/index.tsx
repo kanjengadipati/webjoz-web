@@ -32,6 +32,7 @@ import { BusinessDetailsSheet } from "./business-details-sheet";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 import { WizardSuccessToast } from "./success-toast";
+import { useI18n } from "@/lib/i18n/context";
 
 export { type SiteWizardProps };
 
@@ -46,6 +47,7 @@ export function SiteWizard({
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
@@ -165,12 +167,28 @@ export function SiteWizard({
     }
   }, [preview.previewState]);
 
-  // Show success modal only after blur has fully cleared and scroll is done
+  // Show success notification & modal only after blur has fully cleared and scroll is done
   React.useEffect(() => {
     if (preview.resultClear && preview.previewState === "result") {
+      chat.setMessages((prev) => {
+        const hasDoneMsg = prev.some((m) => m.id.startsWith("ai-done-"));
+        if (hasDoneMsg) return prev;
+        return [
+          ...prev,
+          {
+            id: `ai-done-${Date.now()}`,
+            sender: "ai",
+            text: t(
+              "dashboard.wizard.websiteReady",
+              "🎉 Website Anda telah selesai dibuat! Silakan lihat pratinjau website Anda di samping atau klik tombol di bawah untuk lanjut."
+            ),
+          },
+        ];
+      });
+
       // Small extra delay so the user has a moment to see the preview before the modal pops
-      const t = setTimeout(() => setSuccessModalOpen(true), 400);
-      return () => clearTimeout(t);
+      const timeoutId = setTimeout(() => setSuccessModalOpen(true), 400);
+      return () => clearTimeout(timeoutId);
     }
   }, [preview.resultClear, preview.previewState]);
 
@@ -478,10 +496,10 @@ export function SiteWizard({
                       }}
                       className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
                     >
-                      Bukan ini? Pilih jenis bisnis lain
+                      {t("dashboard.wizard.notThisType", "Bukan ini? Pilih jenis bisnis lain")}
                     </button>
                   )}
-                  <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
+                  <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {subTypes.map((st) => {
                       const isSubSelected = chat.businessSubType === st.value;
@@ -528,7 +546,7 @@ export function SiteWizard({
                       );
                     })}
                   </div>
-                  <p className="text-[10px] text-slate-500 px-0.5">Pilih mood yang sesuai dengan brand Anda</p>
+                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih mood yang sesuai dengan brand Anda")}</p>
                 </div>
               );
             }
@@ -539,24 +557,24 @@ export function SiteWizard({
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {BUSINESS_TYPES.map((t) => {
-                      const isSelected = chat.businessType === t.value;
+                    {BUSINESS_TYPES.map((bt) => {
+                      const isSelected = chat.businessType === bt.value;
                       return (
                         <button
-                          key={t.value}
-                          onClick={() => !isLocked && chat.handleSelectType(t.value)}
+                          key={bt.value}
+                          onClick={() => !isLocked && chat.handleSelectType(bt.value)}
                           disabled={isLocked}
                           className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-white/[0.04] border-white/[0.07]"}`}
                         >
-                          <span className="text-lg">{t.emoji}</span>
+                          <span className="text-lg">{bt.emoji}</span>
                           <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{t.label}</span>
-                            {chat.suggestedHint?.type === t.value && (
-                              <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">✨ Disarankan</span>
+                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{bt.label}</span>
+                            {chat.suggestedHint?.type === bt.value && (
+                              <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">{t("dashboard.wizard.suggestedBadge", "✨ Disarankan")}</span>
                             )}
                           </div>
-                          <span className="text-[10px] text-slate-500">{t.desc}</span>
-                          {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">✓ Dipilih — pilih jenis di bawah</span>}
+                          <span className="text-[10px] text-slate-500">{bt.desc}</span>
+                          {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">{t("dashboard.wizard.typeSelectedChooseSub", "✓ Dipilih — pilih jenis di bawah")}</span>}
                           {isSelected && chat.businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {chat.businessSubType}</span>}
                         </button>
                       );
@@ -565,7 +583,7 @@ export function SiteWizard({
 
                   {subTypes && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
-                      <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">Lebih spesifik:</p>
+                      <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {subTypes.map((st) => {
                           const isSubSelected = chat.businessSubType === st.value;
@@ -595,7 +613,7 @@ export function SiteWizard({
             }
 
             const messageText = m.id === "init" && chat.chatStage === "name"
-              ? INITIAL_MESSAGE_WORDS.slice(0, chat.initialWordCount).join(" ")
+              ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
               : m.text;
 
             return (
@@ -631,10 +649,10 @@ export function SiteWizard({
                 value={chat.inputValue}
                 onChange={(e) => chat.setInputValue(e.target.value)}
                 placeholder={
-                  chat.isRecording ? "Mendengarkan..." :
-                  chat.awaitingNameConfirm ? "Ketik 'ya' untuk lanjut, atau nama yang benar..." :
-                    chat.chatStage === "description" ? "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar" :
-                    "Ketik nama bisnis Anda..."
+                  chat.isRecording ? t("dashboard.wizard.sttListening", "Mendengarkan...") :
+                  chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
+                    chat.chatStage === "description" ? t("dashboard.wizard.descPlaceholder", "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar") :
+                    t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                 }
                 autoFocus
                 disabled={chat.isInitialTyping || chat.isAiTyping}
@@ -677,10 +695,10 @@ export function SiteWizard({
               className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"}`}
             />
             <span className="transition-all duration-300">
-              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type" || chat.chatStage === "mood") && "Menunggu input..."}
-              {preview.previewState === "loading" && "AI sedang generate..."}
-              {preview.previewState === "result" && "Preview siap ✓"}
-              {preview.previewState === "wireframe" && chat.chatStage === "done" && "Menyiapkan AI..."}
+              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type" || chat.chatStage === "mood") && t("dashboard.wizard.statusWaitingInput", "Menunggu input...")}
+              {preview.previewState === "loading" && t("dashboard.wizard.statusAiGenerating", "AI sedang generate...")}
+              {preview.previewState === "result" && t("dashboard.wizard.statusPreviewReady", "Preview siap ✓")}
+              {preview.previewState === "wireframe" && chat.chatStage === "done" && t("dashboard.wizard.statusPreparingAi", "Menyiapkan AI...")}
             </span>
           </span>
           <span className="text-[11px] text-slate-500">

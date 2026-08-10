@@ -4,6 +4,7 @@ import React from "react";
 import { Plus, Pencil } from "lucide-react";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
+import { useI18n } from "@/lib/i18n/context";
 
 interface MobileActionBarProps {
   preview: ReturnType<typeof useWizardPreview>;
@@ -18,6 +19,8 @@ export function MobileActionBar({
   onOpenSheet,
   onGoToEditor,
 }: MobileActionBarProps) {
+  const { t } = useI18n();
+
   if (!device.isMobile || device.mobileScreen !== "preview" || preview.previewState !== "result") {
     return null;
   }
@@ -30,7 +33,7 @@ export function MobileActionBar({
         className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
       >
         <Plus className="h-3.5 w-3.5 text-slate-400" />
-        Lengkapi Data
+        {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}
       </button>
       <button
         type="button"
@@ -38,7 +41,7 @@ export function MobileActionBar({
         className="btn-primary flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
       >
         <Pencil className="h-3.5 w-3.5" />
-        Edit & Publikasikan
+        {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
       </button>
     </div>
   );

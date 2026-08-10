@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAccentPreference, useThemePreference, persistAuthSession } from "@/lib/auth-store";
 import { ToastProvider } from "@/components/toast-provider";
+import type { Locale } from "@/lib/i18n/translations";
 import { I18nProvider } from "@/lib/i18n/context";
 import { socialLogin } from "@/lib/api";
 
@@ -51,7 +52,7 @@ function GoogleOAuthHandler() {
   return null;
 }
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children, defaultLocale = "id" }: { children: ReactNode; defaultLocale?: Locale }) {
   const theme = useThemePreference();
   const accent = useAccentPreference();
 
@@ -76,7 +77,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <ToastProvider>
-      <I18nProvider>
+      <I18nProvider defaultLocale={defaultLocale}>
         <GoogleOAuthHandler />
         {children}
       </I18nProvider>

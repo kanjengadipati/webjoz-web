@@ -105,12 +105,12 @@ export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
 
 // Variants for name acknowledgement / confirmation
 export const NAME_ACK_VARIANTS = [
-  "Baik, nama bisnis telah dicatat. Mari lanjut ke tahap berikutnya.",
-  "Nama bisnis berhasil disimpan. Selanjutnya, silakan pilih kategori bisnis Anda.",
-  "Oke, nama sudah tersimpan. Sekarang silakan tentukan jenis bisnisnya ya.",
-  "Siap, nama bisnis tercatat. Langkah berikutnya adalah memilih jenis bidang usaha.",
-  "Nama usaha Anda sudah masuk sistem. Selanjutnya silakan pilih bidang bisnisnya.",
-  "Baik, nama bisnis terdaftar. Mari kita lanjut ke pilihan jenis bisnis."
+  "Baik, nama bisnis telah dicatat.",
+  "Nama bisnis berhasil disimpan.",
+  "Oke, nama sudah tersimpan.",
+  "Siap, nama bisnis tercatat.",
+  "Nama usaha Anda sudah masuk sistem.",
+  "Baik, nama bisnis terdaftar."
 ];
 
 export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Tekan Enter untuk lanjut jika ingin skip.";
