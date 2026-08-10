@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Lead {
   id: number;
@@ -31,6 +32,7 @@ interface Site {
 export default function LeadsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { activeTenantId } = useActiveTenant();
 
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -57,7 +59,7 @@ export default function LeadsPage() {
       }, token);
       setSites(sitesRes.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat inbox leads", "error");
+      pushToast(err.message || t("dashboard.leads.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ export default function LeadsPage() {
   const formatDate = (isoStr: string) => {
     try {
       const d = new Date(isoStr);
-      return d.toLocaleDateString("id-ID", {
+      return d.toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -93,7 +95,7 @@ export default function LeadsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Memuat kotak masuk leads...</p>
+        <p className="text-xs text-muted-foreground">{t("dashboard.leads.loading")}</p>
       </div>
     );
   }
@@ -104,13 +106,13 @@ export default function LeadsPage() {
       {leads.length > 0 && (
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">Filter:</span>
+          <span className="text-xs text-muted-foreground">{t("dashboard.leads.filter")}:</span>
           <select 
             value={selectedSiteId} 
             onChange={(e) => setSelectedSiteId(e.target.value)}
             className="px-3.5 py-1.5 border rounded-xl text-xs outline-none focus:border-primary bg-card"
           >
-            <option value="all">Semua Website</option>
+            <option value="all">{t("dashboard.leads.allWebsites")}</option>
             {sites.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -125,9 +127,9 @@ export default function LeadsPage() {
           <div className="w-16 h-16 bg-primary/5 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
             <Inbox className="w-8 h-8 opacity-75" />
           </div>
-          <h2 className="text-xl font-bold mb-2">Kotak Masuk Kosong</h2>
+          <h2 className="text-xl font-bold mb-2">{t("dashboard.leads.emptyTitle")}</h2>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-            Belum ada leads yang masuk. Pastikan Anda mengaktifkan opsi "Tampilkan Formulir Kontak" pada konfigurasi website Anda.
+            {t("dashboard.leads.emptyDesc")}
           </p>
         </Card>
       ) : (
@@ -138,10 +140,10 @@ export default function LeadsPage() {
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-50 border-b border-border/40 text-slate-500 uppercase font-bold tracking-wider">
-                    <th className="p-4">Pengirim</th>
-                    <th className="p-4">Tanggal Masuk</th>
-                    <th className="p-4">Website Sumber</th>
-                    <th className="p-4 text-right">Aksi</th>
+                    <th className="p-4">{t("dashboard.leads.sender")}</th>
+                    <th className="p-4">{t("dashboard.leads.date")}</th>
+                    <th className="p-4">{t("dashboard.leads.sourceSite")}</th>
+                    <th className="p-4 text-right">{t("dashboard.leads.actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/30">
@@ -163,7 +165,7 @@ export default function LeadsPage() {
                           {formatDate(lead.created_at)}
                         </td>
                         <td className="p-4 font-medium">
-                          {matchedSite?.name || `Situs ID #${lead.site_id}`}
+                          {matchedSite?.name || t("dashboard.leads.siteId", undefined, { id: String(lead.site_id) })}
                         </td>
                         <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                           <Button 
@@ -173,7 +175,7 @@ export default function LeadsPage() {
                             onClick={() => setActiveLead(lead)}
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            Detail
+                            {t("dashboard.leads.detail")}
                           </Button>
                         </td>
                       </tr>
@@ -191,7 +193,7 @@ export default function LeadsPage() {
                 <CardHeader className="bg-slate-50/50 border-b border-border/40 p-6">
                   <CardTitle className="text-base font-bold flex items-center gap-2">
                     <User className="w-4 h-4 text-primary" />
-                    Detail Leads Pelanggan
+                    {t("dashboard.leads.leadDetail")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-5">
@@ -208,7 +210,7 @@ export default function LeadsPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Pesan Inkuiri</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">{t("dashboard.leads.inquiryMessage")}</span>
                     <p className="text-xs text-slate-700 bg-slate-50 border p-4 rounded-xl leading-relaxed whitespace-pre-line text-justify font-medium">
                       {activeLead.message}
                     </p>
@@ -216,12 +218,12 @@ export default function LeadsPage() {
 
                   <div className="space-y-2 border-t pt-4 text-[10px] text-muted-foreground">
                     <div className="flex justify-between">
-                      <span>Diterima pada</span>
+                      <span>{t("dashboard.leads.receivedOn")}</span>
                       <span className="font-semibold text-slate-600">{formatDate(activeLead.created_at)}</span>
                     </div>
                     {activeLead.source_url && (
                       <div className="flex justify-between gap-4">
-                        <span>URL Halaman Sumber</span>
+                        <span>{t("dashboard.leads.sourceUrl")}</span>
                         <a 
                           href={activeLead.source_url} 
                           target="_blank" 
@@ -238,7 +240,7 @@ export default function LeadsPage() {
             ) : (
               <Card className="border-border/40 p-8 text-center text-muted-foreground border-dashed h-64 flex flex-col items-center justify-center">
                 <MessageSquare className="w-8 h-8 text-slate-300 mb-2" />
-                <p className="text-xs">Pilih salah satu lead di tabel untuk melihat isi pesan detail.</p>
+                <p className="text-xs">{t("dashboard.leads.selectPrompt")}</p>
               </Card>
             )}
           </div>

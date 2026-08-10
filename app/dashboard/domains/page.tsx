@@ -13,6 +13,7 @@ import {
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Domain {
   id: number;
@@ -40,6 +41,7 @@ export default function DomainsPage() {
   const token         = useAuthToken();
   const router        = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
@@ -80,7 +82,7 @@ export default function DomainsPage() {
         setSiteId(list[0].id.toString());
       }
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat data domain", "error");
+      pushToast(err.message || t("dashboard.domains.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -99,11 +101,11 @@ export default function DomainsPage() {
         body: JSON.stringify({ site_id: Number(siteId), domain: finalDomain }),
       }, token);
 
-      pushToast("Custom domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.", "success");
+      pushToast(t("dashboard.domains.added"), "success");
       setDomainInput("");
       fetchData();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menambahkan domain", "error");
+      pushToast(err.message || t("dashboard.domains.addFailed"), "error");
     } finally {
       setSubmitting(false);
     }
@@ -114,7 +116,7 @@ export default function DomainsPage() {
     if (!token || !activeTenantId || !domainInput || !siteId) return;
     const trimmed = domainInput.toLowerCase().trim();
     if (!customDomainRegex.test(trimmed)) {
-      pushToast("Format domain tidak valid. Contoh: domainanda.com", "error");
+      pushToast(t("dashboard.domains.invalidFormat"), "error");
       return;
     }
     if (domainLimitReached) {
@@ -135,26 +137,26 @@ export default function DomainsPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() },
         body: JSON.stringify({ domain_id: id }),
       }, token);
-      pushToast("Domain berhasil diverifikasi!", "success");
+      pushToast(t("dashboard.domains.verified"), "success");
       fetchData();
     } catch (err: any) {
-      pushToast(err.message || "Verifikasi DNS gagal. Periksa record CNAME Anda.", "error");
+      pushToast(err.message || t("dashboard.domains.verifyFailed"), "error");
       fetchData();
     } finally { setActionLoading(null); }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Hapus domain ini?") || !token || !activeTenantId) return;
+    if (!confirm(t("dashboard.domains.confirmDelete")) || !token || !activeTenantId) return;
     try {
       setActionLoading(id);
       await request(`/domains/${id}`, {
         method: "DELETE",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
       }, token);
-      pushToast("Domain dihapus.", "success");
+      pushToast(t("dashboard.domains.deleted"), "success");
       fetchData();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menghapus domain", "error");
+      pushToast(err.message || t("dashboard.domains.deleteFailed"), "error");
     } finally { setActionLoading(null); }
   };
 
@@ -184,7 +186,7 @@ export default function DomainsPage() {
         }}
         className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
       >
-        Lanjutkan Hubungkan
+        {t("dashboard.domains.continueConnect")}
       </button>
         <button
           type="button"
@@ -194,7 +196,7 @@ export default function DomainsPage() {
           }}
           className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
         >
-          Upgrade ke Pro
+          {t("dashboard.domains.upgradeToPro")}
         </button>
     </div>
   );
@@ -207,7 +209,7 @@ export default function DomainsPage() {
         onClick={() => setShowLimitModal(false)}
         className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
       >
-        Tutup
+        {t("dashboard.domains.close")}
       </button>
       <button
         type="button"
@@ -217,7 +219,7 @@ export default function DomainsPage() {
         }}
         className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
       >
-        Upgrade Paket
+        {t("dashboard.domains.upgradePlan")}
       </button>
     </div>
   );
@@ -227,8 +229,7 @@ export default function DomainsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-5 h-5 text-[#9a9aa3] animate-spin" />
-        <p className="text-[13px] text-[#6b6b75]">Memuat data domain...</p>
-      </div>
+        <p className="text-[13px] text-[#6b6b75]">{t("dashboard.domains.loading")}</p>      </div>
     );
   }
 
@@ -241,11 +242,11 @@ export default function DomainsPage() {
       {domains.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
-            Custom Domain Terhubung ({domains.length})
+            {t("dashboard.domains.connectedTitle", undefined, { count: String(domains.length) })}
           </h2>
           {isPremium && maxDomains > 0 && (
-            <p className="text-[11px] text-[#6b6b75] m-0 mt-0.5" title={`Paket ${activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro"}: maksimal ${maxDomains} domain per akun, tidak per website`}>
-              Kuota: {domains.length} / {maxDomains} custom domain
+            <p className="text-[11px] text-[#6b6b75] m-0 mt-0.5" title={t("dashboard.domains.quotaTitle", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}>
+              {t("dashboard.domains.quota", undefined, { used: String(domains.length), max: String(maxDomains) })}
             </p>
           )}
           <div className="flex flex-col gap-2">
@@ -262,7 +263,7 @@ export default function DomainsPage() {
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{dom.domain}</p>
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-primary/20 text-primary">
-                        Custom Domain
+                        {t("dashboard.domains.customDomainBadge")}
                       </span>
                     </div>
                     <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5 truncate">
@@ -270,22 +271,22 @@ export default function DomainsPage() {
                         <Link href={`/dashboard/sites/${site.id}`} className="hover:text-primary transition-colors">
                           {site.name}
                         </Link>
-                      ) : `Site #${dom.site_id}`}
-                      {!ok && " · menunggu propagasi DNS"}
+                      ) : t("dashboard.domains.siteId", undefined, { id: String(dom.site_id) })}
+                      {!ok && t("dashboard.domains.waitingPropagation")}
                     </p>
                   </div>
                   <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
-                    {ok ? "Aktif" : "Pending"}
+                    {ok ? t("dashboard.domains.active") : t("dashboard.domains.pending")}
                   </span>
                   <div className="flex items-center gap-1.5">
                     {!ok && (
                       <button onClick={() => handleVerify(dom.id)} disabled={busy}
-                        className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title="Cek DNS">
+                        className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.checkDns")}>
                         {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       </button>
                     )}
                     <button onClick={() => handleDelete(dom.id)} disabled={busy}
-                      className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-red-400 hover:border-red-400/40 transition-colors disabled:opacity-40 cursor-pointer" title="Hapus">
+                      className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-red-400 hover:border-red-400/40 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.delete")}>
                       {busy && ok ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                     </button>
                   </div>
@@ -302,10 +303,10 @@ export default function DomainsPage() {
       <section className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
         <div>
           <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
-            <Link2 className="w-4 h-4 text-primary" /> Hubungkan Custom Domain
+            <Link2 className="w-4 h-4 text-primary" /> {t("dashboard.domains.connectTitle")}
           </h2>
           <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
-            Gunakan domain milik Anda sendiri untuk tampil lebih profesional.
+            {t("dashboard.domains.connectDesc")}
           </p>
         </div>
 
@@ -315,12 +316,12 @@ export default function DomainsPage() {
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <p className="text-[13px] text-amber-300 font-medium m-0">
-                Belum ada website yang dipublikasikan
+                {t("dashboard.domains.noPublished")}
               </p>
               <p className="text-[12px] text-[#9a9aa3] m-0 leading-relaxed">
-                Custom domain hanya bisa dihubungkan ke website yang sudah live. Publikasikan website Anda terlebih dahulu melalui halaman{" "}
+                {t("dashboard.domains.noPublishedDesc")}{" "}
                 <Link href="/dashboard/sites" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
-                  My Websites
+                  {t("dashboard.domains.myWebsites")}
                 </Link>
                 .
               </p>
@@ -331,7 +332,7 @@ export default function DomainsPage() {
             {/* Website Selection */}
             <div>
               <label className="block text-[12px] font-semibold text-primary mb-1.5">
-                Tautkan ke Website
+                {t("dashboard.domains.linkToSite")}
               </label>
               <select
                 value={siteId}
@@ -349,18 +350,18 @@ export default function DomainsPage() {
             {/* Custom Domain Input */}
             <div>
               <label className="block text-[12px] font-semibold text-primary mb-1.5">
-                Alamat Custom Domain
+                {t("dashboard.domains.domainAddress")}
               </label>
               <input
                 type="text"
                 value={domainInput}
                 onChange={e => setDomainInput(e.target.value)}
-                placeholder="cth. tokokamu.com atau toko.domainanda.com"
+                placeholder={t("dashboard.domains.domainPlaceholder")}
                 className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary placeholder:text-[#6b6b75]"
               />
               {domainInput.trim() !== "" && (
                 <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
-                  {inputValid ? "✓ Format domain valid" : "Format tidak valid — masukkan domain tanpa http:// atau www."}
+                  {inputValid ? t("dashboard.domains.validFormat") : t("dashboard.domains.invalidFormatHint")}
                 </p>
               )}
             </div>
@@ -369,21 +370,21 @@ export default function DomainsPage() {
             <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-5 py-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Server className="w-4 h-4 text-primary" />
-                <span className="text-[13px] font-semibold text-[#c8c8d4]">Petunjuk Konfigurasi DNS di Provider Domain</span>
+                <span className="text-[13px] font-semibold text-[#c8c8d4]">{t("dashboard.domains.dnsInstructions")}</span>
               </div>
 
               <div className="space-y-3.5 text-[12px] text-[#9a9aa3] leading-relaxed">
                 <div className="flex items-start gap-2.5">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">1</span>
                   <p className="m-0">
-                    Masuk ke akun <strong>Registrar Domain</strong> tempat Anda membeli domain (seperti Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, dll).
+                    {t("dashboard.domains.step1")}
                   </p>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">2</span>
                   <p className="m-0">
-                    Cari domain yang ingin diatur dan buka halaman <strong>DNS Management</strong>, <strong>DNS Zone Editor</strong>, atau <strong>Manage DNS</strong>.
+                    {t("dashboard.domains.step2")}
                   </p>
                 </div>
 
@@ -391,13 +392,13 @@ export default function DomainsPage() {
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">3</span>
                   <div className="space-y-2 flex-1">
                     <p className="m-0">
-                      Tambahkan <strong>DNS Record baru</strong> dengan tipe <strong>CNAME</strong> dan isi kolom sesuai data di bawah:
+                      {t("dashboard.domains.step3")}
                     </p>
                     <div className="bg-[#0b0b0d] border border-white/5 rounded-xl p-3.5 space-y-2">
                       <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-[#6b6b75] font-semibold pb-1 border-b border-white/[0.04]">
-                        <span>Tipe / Type</span>
-                        <span>Host / Nama</span>
-                        <span>Target / Value</span>
+                        <span>{t("dashboard.domains.dnsType")}</span>
+                        <span>{t("dashboard.domains.dnsHost")}</span>
+                        <span>{t("dashboard.domains.dnsTarget")}</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2 items-center font-mono text-[12px] text-[#c8c8d4]">
                         <span className="text-primary font-semibold">CNAME</span>
@@ -415,15 +416,15 @@ export default function DomainsPage() {
       <Dialog
         open={showLimitModal}
         onOpenChange={setShowLimitModal}
-        title="Batas Custom Domain Tercapai"
+        title={t("dashboard.domains.limitTitle")}
         footer={limitFooter}
       >
         <div className="space-y-4">
           <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
-            Paket {activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro"} Anda hanya mencakup <strong>{maxDomains} custom domain</strong> (berlaku untuk seluruh akun, bukan per website).
+            {t("dashboard.domains.limitDesc", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}
           </p>
           <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
-            Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.
+            {t("dashboard.domains.limitDesc2")}
           </p>
         </div>
       </Dialog>
@@ -431,7 +432,7 @@ export default function DomainsPage() {
                       </div>
                     </div>
                     <p className="text-[11px] text-[#6b6b75] m-0 italic">
-                      Catatan: Jika ingin menggunakan subdomain kustom seperti <code>toko.domainanda.com</code>, ubah kolom <strong>Host / Nama</strong> menjadi <code>toko</code>.
+                      {t("dashboard.domains.note")}
                     </p>
                   </div>
                 </div>
@@ -439,14 +440,14 @@ export default function DomainsPage() {
                 <div className="flex items-start gap-2.5">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">4</span>
                   <p className="m-0">
-                    Simpan perubahan DNS Anda. Proses propagasi dan verifikasi domain biasanya memerlukan waktu mulai dari <strong>5 menit hingga maksimal 24 jam</strong>.
+                    {t("dashboard.domains.step4")}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2 bg-primary/5 border border-primary/20 rounded-xl px-3.5 py-3 text-[11px] text-primary leading-relaxed">
                 <Info className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>Setelah menyimpan konfigurasi DNS di atas, kembali ke dashboard dan klik tombol <strong>"Cek DNS" (ikon Refresh)</strong> pada daftar domain Anda untuk memverifikasi.</span>
+                <span>{t("dashboard.domains.verifyHint")}</span>
               </div>
             </div>
 
@@ -465,7 +466,7 @@ export default function DomainsPage() {
               ) : (
                 <>
                   <Link2 className="w-4 h-4" />
-                  Tautkan Custom Domain
+                  {t("dashboard.domains.connectBtn")}
                 </>
               )}
             </button>
@@ -477,30 +478,30 @@ export default function DomainsPage() {
       <Dialog
         open={showUpsellModal}
         onOpenChange={setShowUpsellModal}
-        title="✨ Tingkatkan Kredibilitas Bisnis Anda"
+        title={t("dashboard.domains.upsellTitle")}
         footer={upsellFooter}
       >
         <div className="space-y-4">
           <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
-            Custom Domain adalah fitur <strong>Pro</strong> yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).
+            {t("dashboard.domains.upsellDesc")}
           </p>
           <div className="bg-[#1b1b21] border border-white/10 rounded-xl p-4 space-y-3">
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
               <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
-                <strong>Branding Profesional:</strong> Gunakan domain milik Anda (cth. <code>tokomu.com</code>) tanpa embel-embel <code>.webjoz.com</code>.
+                <strong>{t("dashboard.domains.upsellBranding")}:</strong> {t("dashboard.domains.upsellBrandingDesc")}
               </p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
               <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
-                <strong>SEO Lebih Baik:</strong> Google memprioritaskan domain utama untuk mendapatkan posisi teratas di hasil pencarian.
+                <strong>{t("dashboard.domains.upsellSeo")}:</strong> {t("dashboard.domains.upsellSeoDesc")}
               </p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
               <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
-                <strong>SSL/HTTPS Otomatis:</strong> Keamanan data terjamin dengan enkripsi SSL gratis yang dipasang langsung ke domain Anda.
+                <strong>{t("dashboard.domains.upsellSsl")}:</strong> {t("dashboard.domains.upsellSslDesc")}
               </p>
             </div>
           </div>

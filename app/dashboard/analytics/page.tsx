@@ -12,6 +12,7 @@ import {
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker } from "@/components/ui";
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PageViewStat {
   date: string;
@@ -53,9 +54,9 @@ interface Site {
 }
 
 const PRESETS = [
-  { label: "7 Hari", days: 7 },
-  { label: "30 Hari", days: 30 },
-  { label: "90 Hari", days: 90 },
+  { labelKey: "dashboard.analytics.preset7", days: 7 },
+  { labelKey: "dashboard.analytics.preset30", days: 30 },
+  { labelKey: "dashboard.analytics.preset90", days: 90 },
 ];
 
 const fmt = (d: Date) => d.toISOString().split("T")[0];
@@ -69,6 +70,7 @@ function periodComparison(current: number, previous: number): { pct: number; up:
 export default function AnalyticsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { activeTenantId } = useActiveTenant();
 
   const [sites, setSites] = useState<Site[]>([]);
@@ -111,7 +113,7 @@ export default function AnalyticsPage() {
       }, token);
       setData(statsRes.data);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat data analitik", "error");
+      pushToast(err.message || t("dashboard.analytics.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -153,7 +155,7 @@ export default function AnalyticsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Memuat data analitik...</p>
+        <p className="text-xs text-muted-foreground">{t("dashboard.analytics.loading")}</p>
       </div>
     );
   }
@@ -162,7 +164,7 @@ export default function AnalyticsPage() {
     if (!chartData || chartData.length === 0) {
       return (
         <div className="h-64 flex items-center justify-center text-xs text-muted-foreground">
-          Belum ada data kunjungan untuk rentang waktu ini.
+          {t("dashboard.analytics.noChartData")}
         </div>
       );
     }
@@ -189,7 +191,7 @@ export default function AnalyticsPage() {
 
     return (
       <div className="relative w-full overflow-hidden">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible" preserveAspectRatio="none" role="img" aria-label="Grafik kunjungan harian">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible" preserveAspectRatio="none" role="img" aria-label={t("dashboard.analytics.chartAria")}>
           <defs>
             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" style={{ stopColor: 'var(--primary)', stopOpacity: 0.22 }} />
@@ -267,7 +269,7 @@ export default function AnalyticsPage() {
 
           {points.filter((_, i) => i % Math.max(Math.round(points.length / 5), 1) === 0 || i === points.length - 1).map((p, idx) => {
             let shortDate = p.label;
-            try { shortDate = new Date(p.label).toLocaleDateString("id-ID", { day: "numeric", month: "short" }); } catch {}
+            try { shortDate = new Date(p.label).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { day: "numeric", month: "short" }); } catch {}
             return (
               <text key={idx} x={p.x} y={paddingTop + graphHeight + 20} textAnchor="middle" className="fill-slate-400 text-[10px] font-mono font-medium">{shortDate}</text>
             );
@@ -282,7 +284,7 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div aria-live="polite" className="sr-only">
-        {activePoint !== null ? `Tanggal ${data?.pageviews_by_date?.[activePoint]?.date || ''}, ${data?.pageviews_by_date?.[activePoint]?.count || 0} pageviews` : ''}
+        {activePoint !== null ? t("dashboard.analytics.srActivePoint", undefined, { date: data?.pageviews_by_date?.[activePoint]?.date || '', count: String(data?.pageviews_by_date?.[activePoint]?.count || 0) }) : ''}
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -292,9 +294,9 @@ export default function AnalyticsPage() {
             value={selectedSiteId}
             onChange={(e) => setSelectedSiteId(e.target.value)}
             className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
-            aria-label="Pilih website"
+            aria-label={t("dashboard.analytics.selectSite")}
           >
-            <option value="all">Semua Website</option>
+            <option value="all">{t("dashboard.leads.allWebsites")}</option>
             {sites.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -316,7 +318,7 @@ export default function AnalyticsPage() {
                     : "bg-card text-muted-foreground border-border hover:border-primary/50"
                 }`}
               >
-                {p.label}
+                {t(p.labelKey)}
               </button>
             );
           })}
@@ -324,7 +326,7 @@ export default function AnalyticsPage() {
 
         <div className="flex items-center gap-2">
           <DatePicker value={fromStr} onChange={(v) => handleManualDate("from", v)} />
-          <span className="text-sm font-semibold text-slate-400">s/d</span>
+          <span className="text-sm font-semibold text-slate-400">{t("dashboard.analytics.to")}</span>
           <DatePicker value={toStr} onChange={(v) => handleManualDate("to", v)} />
         </div>
       </div>
@@ -332,38 +334,38 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
-            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Kunjungan (Pageviews)</CardDescription>
+            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">{t("dashboard.analytics.statPageviews")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-3xl font-black text-foreground">{data?.total_pageviews || 0}</div>
             {comp ? (
               <div className={`text-[10px] font-bold flex items-center gap-1 ${comp.up ? "text-green-600" : "text-red-500"}`}>
                 <TrendingUp className={`w-3.5 h-3.5 ${comp.up ? "" : "rotate-180"}`} />
-                {comp.up ? "Naik" : "Turun"} {comp.pct}% dari periode sebelumnya
+                {comp.up ? t("dashboard.analytics.up") : t("dashboard.analytics.down")} {comp.pct}% {t("dashboard.analytics.fromPrevPeriod")}
               </div>
             ) : (
-              <div className="text-[10px] text-slate-400">Perbandingan periode sebelumnya</div>
+              <div className="text-[10px] text-slate-400">{t("dashboard.analytics.prevPeriodComp")}</div>
             )}
           </CardContent>
         </Card>
 
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
-            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Kunjungan Unik</CardDescription>
+            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">{t("dashboard.analytics.statUniqueVisitors")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-3xl font-black text-foreground">{data?.unique_visitors ?? 0}</div>
-            <div className="text-[10px] text-slate-400">Estimasi berbasis IP + perangkat</div>
+            <div className="text-[10px] text-slate-400">{t("dashboard.analytics.visitorsEstimate")}</div>
           </CardContent>
         </Card>
 
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="pb-2">
-            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">Rata-Rata Durasi</CardDescription>
+            <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">{t("dashboard.analytics.statAvgDuration")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-3xl font-black text-foreground">{formatDuration(data?.avg_session_seconds ?? 0)}</div>
-            <div className="text-[10px] text-slate-400">Termasuk kunjungan 1 halaman (0 detik)</div>
+            <div className="text-[10px] text-slate-400">{t("dashboard.analytics.durationNote")}</div>
           </CardContent>
         </Card>
       </div>
@@ -376,11 +378,11 @@ export default function AnalyticsPage() {
             </div>
           )}
           <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-primary" />
-              Statistik Kunjungan Harian
-            </CardTitle>
-            <CardDescription className="text-xs">Visualisasi pergerakan volume pengunjung harian.</CardDescription>
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-primary" />
+                {t("dashboard.analytics.dailyVisitsTitle")}
+              </CardTitle>
+              <CardDescription className="text-xs">{t("dashboard.analytics.dailyVisitsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="p-6">
             {renderLineChart(data?.pageviews_by_date || [])}
@@ -392,17 +394,17 @@ export default function AnalyticsPage() {
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <MousePointerClick className="w-4 h-4 text-primary" />
-                Leads Masuk
+                {t("dashboard.analytics.leadsIn")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-1">
               <div className="text-3xl font-black text-foreground">{data?.total_leads ?? 0}</div>
               <div className="text-[10px] text-slate-400">
-                Dari form kontak di situs Anda
-                {data?.total_pageviews ? ` · konversi ${((data.total_leads / data.total_pageviews) * 100).toFixed(1)}%` : ""}
+                {t("dashboard.analytics.leadsFromForms")}
+                {data?.total_pageviews ? t("dashboard.analytics.conversion", undefined, { pct: ((data.total_leads / data.total_pageviews) * 100).toFixed(1) }) : ""}
               </div>
               <Link href="/dashboard/leads" className="text-xs text-primary font-semibold hover:underline inline-block mt-2">
-                Lihat semua leads →
+                {t("dashboard.analytics.viewAllLeads")} →
               </Link>
             </CardContent>
           </Card>
@@ -411,7 +413,7 @@ export default function AnalyticsPage() {
             <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <ArrowUpRight className="w-4 h-4 text-primary" />
-                Sumber Pengunjung
+                {t("dashboard.analytics.trafficSources")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
@@ -436,7 +438,7 @@ export default function AnalyticsPage() {
                   })()}
                 </div>
               ) : (
-                <div className="text-xs text-muted-foreground text-center py-6">Belum ada data rujukan.</div>
+                <div className="text-xs text-muted-foreground text-center py-6">{t("dashboard.analytics.noReferrerData")}</div>
               )}
             </CardContent>
           </Card>
@@ -446,18 +448,18 @@ export default function AnalyticsPage() {
       <Dialog
         open={showUpsell}
         onOpenChange={setShowUpsell}
-        title="Buka Akses Analytics Penuh"
+        title={t("dashboard.analytics.upsellTitle")}
         footer={
           <>
             <Button variant="outline" onClick={() => setShowUpsell(false)}>
-              Nanti Saja
+              {t("dashboard.analytics.later")}
             </Button>
             <Button onClick={() => {
               window.open("/dashboard/settings/billing", "_blank");
               setShowUpsell(false);
             }}>
               <Sparkles className="w-4 h-4" />
-              Upgrade ke Pro
+              {t("dashboard.analytics.upgradeToPro")}
             </Button>
           </>
         }
@@ -468,11 +470,11 @@ export default function AnalyticsPage() {
               <X className="w-3 h-3 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-amber-800">Paket Free — Maksimal 7 Hari</p>
+              <p className="font-semibold text-amber-800">{t("dashboard.analytics.free7Days")}</p>
               <p className="text-amber-700 mt-1">
-                Akun Free hanya bisa melihat data analytics maksimal 7 hari ke belakang.
+                {t("dashboard.analytics.free7DaysDesc")}
                 {pendingRange && (
-                  <> Kamu memilih rentang <strong>{pendingRange.from}</strong> s/d <strong>{pendingRange.to}</strong>.</>
+                  <> {t("dashboard.analytics.selectedRange", undefined, { from: pendingRange.from, to: pendingRange.to })}</>
                 )}
               </p>
             </div>
@@ -483,9 +485,9 @@ export default function AnalyticsPage() {
               <Sparkles className="w-3 h-3 text-primary-foreground" />
             </div>
             <div>
-              <p className="font-semibold text-blue-800">Upgrade ke Pro</p>
+              <p className="font-semibold text-blue-800">{t("dashboard.analytics.proUpgrade")}</p>
               <p className="text-blue-700 mt-1">
-                Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.
+                {t("dashboard.analytics.proUpgradeDesc")}
               </p>
             </div>
           </div>
