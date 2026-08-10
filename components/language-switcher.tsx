@@ -1,13 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 
 const OPTIONS = [
-  { code: "id" as const, label: "ID" },
-  { code: "en" as const, label: "EN" },
+  { code: "id" as const, label: "ID", href: "/" },
+  { code: "en" as const, label: "EN", href: "/en" },
 ];
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
+  const router = useRouter();
   const { locale, setLocale } = useI18n();
 
   return (
@@ -18,7 +20,10 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           type="button"
           aria-label={`Switch language to ${opt.label}`}
           aria-pressed={locale === opt.code}
-          onClick={() => setLocale(opt.code)}
+          onClick={() => {
+            setLocale(opt.code);
+            router.push(opt.href);
+          }}
           className={`rounded-full px-2.5 py-1 transition cursor-pointer ${
             locale === opt.code
               ? "bg-primary text-primary-foreground shadow-sm"

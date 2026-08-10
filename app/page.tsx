@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://webjoz.com",
     languages: {
       id: "https://webjoz.com",
-      en: "https://webjoz.com",
+      en: "https://webjoz.com/en",
     },
   },
   openGraph: {
