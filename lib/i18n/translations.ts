@@ -1869,6 +1869,14 @@ export interface Translations {
       chooseMoreAppropriate: string;
       placeholderPhone: string;
       placeholderArea: string;
+      sttStopRecording: string;
+      sttStartRecording: string;
+      backToChat: string;
+      generationFailed: string;
+      generationErrorMessage: string;
+      successToastTitle: string;
+      successToastDesc: string;
+      closeNotification: string;
       btnLater: string;
       btnCompleteData: string;
       btnEditPublish: string;
@@ -3807,6 +3815,14 @@ export const translations: Record<Locale, Translations> = {
         chooseMoreAppropriate: "Baik, silakan pilih yang lebih tepat:",
         placeholderPhone: "cth. 081234567890",
         placeholderArea: "cth. Jogja, Jabodetabek, seluruh Indonesia",
+        sttStopRecording: "Berhenti merekam",
+        sttStartRecording: "Bicara dengan mic",
+        backToChat: "Kembali ke chat",
+        generationFailed: "Generate belum berhasil",
+        generationErrorMessage: "Terjadi kesalahan saat membuat preview.",
+        successToastTitle: "Website Anda Telah Siap!",
+        successToastDesc: "Konten, warna, atau tata letak bisa diubah kapan saja di halaman Editor.",
+        closeNotification: "Tutup notifikasi",
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
@@ -5775,6 +5791,14 @@ export const translations: Record<Locale, Translations> = {
         chooseMoreAppropriate: "Sure, please choose a more appropriate one:",
         placeholderPhone: "e.g. 081234567890",
         placeholderArea: "e.g. Yogyakarta, Jakarta, all of Indonesia",
+        sttStopRecording: "Stop recording",
+        sttStartRecording: "Speak into the microphone",
+        backToChat: "Back to chat",
+        generationFailed: "Generation failed",
+        generationErrorMessage: "An error occurred while generating the preview.",
+        successToastTitle: "Your website is ready!",
+        successToastDesc: "Content, colors, and layout can be changed anytime in the Editor.",
+        closeNotification: "Close notification",
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",

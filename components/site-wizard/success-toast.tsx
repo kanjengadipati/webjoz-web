@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { ArrowRight, Pencil, X } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 // ─── Confetti ──────────────────────────────────────────────────────────────
 
@@ -169,6 +170,7 @@ export function WizardSuccessToast({
   containerRef,
   bottomOffset = 0,
 }: SuccessToastProps) {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(100);
@@ -287,11 +289,10 @@ export function WizardSuccessToast({
 
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white leading-tight">
-                  Website Anda Telah Siap!
+                  {t("dashboard.wizard.successToastTitle", "Website Anda Telah Siap!")}
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
-                  Konten, warna, atau tata letak bisa diubah kapan saja di
-                  halaman Editor.
+                  {t("dashboard.wizard.successToastDesc", "Konten, warna, atau tata letak bisa diubah kapan saja di halaman Editor.")}
                 </p>
               </div>
 
@@ -300,7 +301,7 @@ export function WizardSuccessToast({
                 type="button"
                 onClick={dismiss}
                 className="mt-0.5 shrink-0 rounded-lg p-1 text-slate-500 transition hover:bg-white/[0.07] hover:text-slate-300 active:scale-95"
-                aria-label="Tutup notifikasi"
+                aria-label={t("dashboard.wizard.closeNotification", "Tutup notifikasi")}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -320,7 +321,7 @@ export function WizardSuccessToast({
               }}
             >
               <Pencil className="h-3.5 w-3.5" />
-              Edit &amp; Publikasikan
+              {t("dashboard.wizard.successModalBtnEdit", "Edit & Publikasikan")}
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>

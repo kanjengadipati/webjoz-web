@@ -723,7 +723,7 @@ export function SiteWizard({
                   type="button"
                   onClick={chat.stopRecording}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-red-500/20 border border-red-500/40 text-red-400 transition-all shrink-0 animate-pulse"
-                  title="Berhenti merekam"
+                  title={t("dashboard.wizard.sttStopRecording", "Berhenti merekam")}
                 >
                   <Mic className="w-3.5 h-3.5" />
                 </button>
@@ -733,7 +733,7 @@ export function SiteWizard({
                   onClick={chat.startRecording}
                   disabled={chat.isInitialTyping || chat.isAiTyping}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 text-slate-500 transition-all disabled:opacity-30 hover:text-slate-300 shrink-0 active:scale-95"
-                  title="Bicara dengan mic"
+                  title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                 >
                   <Mic className="w-3.5 h-3.5" />
                 </button>
@@ -779,7 +779,7 @@ export function SiteWizard({
           <button
             type="button"
             onClick={() => device.setMobileScreen("chat")}
-            aria-label="Kembali ke chat"
+            aria-label={t("dashboard.wizard.backToChat", "Kembali ke chat")}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
           >
             <MessageCircle className="h-4 w-4" />
@@ -892,8 +892,8 @@ export function SiteWizard({
 
       <WizardErrorModal
         open={!!generate.generationError}
-        title="Generate belum berhasil"
-        message={generate.generationError || "Terjadi kesalahan saat membuat preview."}
+        title={t("dashboard.wizard.generationFailed", "Generate belum berhasil")}
+        message={generate.generationError || t("dashboard.wizard.generationErrorMessage", "Terjadi kesalahan saat membuat preview.")}
         onCancel={handleCancelGenerationError}
         onRetry={handleRetryGeneration}
       />
