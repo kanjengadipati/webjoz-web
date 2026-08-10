@@ -9,7 +9,7 @@ import type { Message, ChatStage, InferenceResult } from "./types";
 import { useI18n } from "@/lib/i18n/context";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
   const initialMessageWords = useMemo(() => initialMessageText.split(" "), [initialMessageText]);
   const nameAckVariants = (t("dashboard.wizard.nameAckVariants") as unknown as string[]) || NAME_ACK_VARIANTS;
@@ -49,12 +49,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (typeof window === "undefined") return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Browser Anda tidak mendukung fitur Voice/STT.");
+      alert(t("dashboard.wizard.voiceNotAvailable", "Browser Anda tidak mendukung fitur Voice/STT."));
       return;
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = "id-ID";
+    recognition.lang = locale === "id" ? "id-ID" : "en-US";
     recognition.interimResults = true;
     recognition.continuous = false;
 
@@ -265,7 +265,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       const subType = inferenceResult.subType;
       setMessages((prev) => [
         ...prev,
-        { id: `ai-mood-${Date.now()}`, sender: "ai", text: "Pilih suasana (mood) yang cocok untuk website Anda:" },
+        { id: `ai-mood-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:") },
       ]);
       setChatStage("mood");
       setTimeout(() => {
@@ -279,7 +279,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       if (inferredType) setBusinessType(inferredType);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
-        typeMessage("Baik, silakan pilih yang lebih tepat:", () => {
+        typeMessage(t("dashboard.wizard.chooseMoreAppropriate", "Baik, silakan pilih yang lebih tepat:"), () => {
           setMessages((prev) => [
             ...prev,
             { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },

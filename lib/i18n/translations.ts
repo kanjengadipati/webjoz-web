@@ -1832,6 +1832,10 @@ export interface Translations {
       areaEmpty: string;
       waHint: string;
       serviceAreaHint: string;
+      voiceNotAvailable: string;
+      chooseMoreAppropriate: string;
+      placeholderPhone: string;
+      placeholderArea: string;
       btnLater: string;
       btnCompleteData: string;
       btnEditPublish: string;
@@ -1840,6 +1844,9 @@ export interface Translations {
       chooseMoodHint: string;
       suggestedBadge: string;
       typeSelectedChooseSub: string;
+      wireframeAbout: string;
+      wireframeFeatures: string;
+      wireframeContact: string;
       statusWaitingInput: string;
       statusAiGenerating: string;
       statusPreviewReady: string;
@@ -1877,6 +1884,7 @@ export interface Translations {
         minimalistDark: string;
         minimalistDarkDesc: string;
       };
+      subtypes: Record<string, string>;
     };
   };
 }
@@ -3729,6 +3737,10 @@ export const translations: Record<Locale, Translations> = {
         areaEmpty: "Area belum diisi",
         waHint: "Langsung jadi tombol chat di hero & footer",
         serviceAreaHint: "AI pakai ini untuk nulis copy yang lebih relevan",
+        voiceNotAvailable: "Browser Anda tidak mendukung fitur Voice/STT.",
+        chooseMoreAppropriate: "Baik, silakan pilih yang lebih tepat:",
+        placeholderPhone: "cth. 081234567890",
+        placeholderArea: "cth. Jogja, Jabodetabek, seluruh Indonesia",
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
@@ -3737,6 +3749,9 @@ export const translations: Record<Locale, Translations> = {
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
         suggestedBadge: "✨ Disarankan",
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
+        wireframeAbout: "Tentang",
+        wireframeFeatures: "Keunggulan",
+        wireframeContact: "Kontak",
         statusWaitingInput: "Menunggu input...",
         statusAiGenerating: "AI sedang generate...",
         statusPreviewReady: "Preview siap ✓",
@@ -3773,6 +3788,33 @@ export const translations: Record<Locale, Translations> = {
           playfulFunDesc: "Ceria, ramah, berwarna",
           minimalistDark: "Minimalist Dark",
           minimalistDarkDesc: "Gelap, futuristik, modern",
+        },
+        subtypes: {
+          "Restoran": "Restoran",
+          "Kafe": "Kafe",
+          "Bakery & Pastry": "Bakery",
+          "Catering": "Catering",
+          "Warung Makan": "Warung Makan",
+          "Minuman & Bubble Tea": "Minuman",
+          "Fashion & Pakaian": "Fashion",
+          "Elektronik": "Elektronik",
+          "Produk Lokal Handmade": "Handmade",
+          "Toko Online": "Toko Online",
+          "Minimarket": "Minimarket",
+          "Perabot & Furnitur": "Furnitur",
+          "Salon & Kecantikan": "Salon",
+          "Barbershop": "Barbershop",
+          "Laundry": "Laundry",
+          "Otomotif & Bengkel": "Bengkel",
+          "Klinik & Kesehatan": "Klinik",
+          "Konsultan": "Konsultan",
+          "Fotografer": "Fotografer",
+          "Software & SaaS": "Software & SaaS",
+          "Startup & Tech": "Startup & Tech",
+          "Agency & Creative": "Agency",
+          "Logistik & Ekspedisi": "Logistik",
+          "Konstruksi & Properti": "Konstruksi",
+          "Edukasi & Pelatihan": "Edukasi",
         },
       },
     },
@@ -5624,6 +5666,10 @@ export const translations: Record<Locale, Translations> = {
         areaEmpty: "Area not set",
         waHint: "Becomes instant chat button in hero & footer",
         serviceAreaHint: "AI uses this to write more relevant copy",
+        voiceNotAvailable: "Your browser does not support Voice/STT features.",
+        chooseMoreAppropriate: "Sure, please choose a more appropriate one:",
+        placeholderPhone: "e.g. 081234567890",
+        placeholderArea: "e.g. Yogyakarta, Jakarta, all of Indonesia",
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",
@@ -5632,6 +5678,9 @@ export const translations: Record<Locale, Translations> = {
         chooseMoodHint: "Choose a mood that fits your brand",
         suggestedBadge: "✨ Suggested",
         typeSelectedChooseSub: "✓ Selected — choose type below",
+        wireframeAbout: "About",
+        wireframeFeatures: "Features",
+        wireframeContact: "Contact",
         statusWaitingInput: "Waiting for input...",
         statusAiGenerating: "AI generating...",
         statusPreviewReady: "Preview ready ✓",
@@ -5668,6 +5717,33 @@ export const translations: Record<Locale, Translations> = {
           playfulFunDesc: "Cheerful, friendly, colorful",
           minimalistDark: "Minimalist Dark",
           minimalistDarkDesc: "Dark, futuristic, modern",
+        },
+        subtypes: {
+          "Restoran": "Restaurant",
+          "Kafe": "Cafe",
+          "Bakery & Pastry": "Bakery & Pastry",
+          "Catering": "Catering",
+          "Warung Makan": "Food Stall",
+          "Minuman & Bubble Tea": "Drinks & Boba",
+          "Fashion & Pakaian": "Fashion & Apparel",
+          "Elektronik": "Electronics",
+          "Produk Lokal Handmade": "Handmade & Crafts",
+          "Toko Online": "Online Store",
+          "Minimarket": "Convenience Store",
+          "Perabot & Furnitur": "Furniture",
+          "Salon & Kecantikan": "Beauty & Salon",
+          "Barbershop": "Barbershop",
+          "Laundry": "Laundry",
+          "Otomotif & Bengkel": "Auto & Repair",
+          "Klinik & Kesehatan": "Clinic & Healthcare",
+          "Konsultan": "Consulting",
+          "Fotografer": "Photography",
+          "Software & SaaS": "Software & SaaS",
+          "Startup & Tech": "Startup & Tech",
+          "Agency & Creative": "Agency & Creative",
+          "Logistik & Ekspedisi": "Logistics & Freight",
+          "Konstruksi & Properti": "Construction & Real Estate",
+          "Edukasi & Pelatihan": "Education & Training",
         },
       },
     },
