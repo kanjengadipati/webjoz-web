@@ -415,6 +415,87 @@ export interface Translations {
       upgrade: string;
       settings: string;
     };
+    sites: {
+      close: string;
+      cancel: string;
+      deleteTitle: string;
+      deleteBody: string;
+      deleteWarning: string;
+      deleteFreeNotice: string;
+      deleting: string;
+      deleteConfirm: string;
+      renameTitle: string;
+      renameDesc: string;
+      save: string;
+      publishTitle: string;
+      publishOneStep: string;
+      publishReady: string;
+      subdomainLabel: string;
+      subdomainAvailable: string;
+      subdomainInvalidHint: string;
+      subdomainHint: string;
+      connectCustomDomain: string;
+      customDomainDesc: string;
+      customDomainLink: string;
+      launching: string;
+      launchWebsite: string;
+      errorLoadSites: string;
+      connectingWorkspace: string;
+      toastPublished: string;
+      toastPublishFailed: string;
+      toastUnpublished: string;
+      toastUnpublishFailed: string;
+      toastRenamed: string;
+      toastRenameFailed: string;
+      toastDeleted: string;
+      toastDeleteFailed: string;
+      toastDuplicating: string;
+      toastDuplicateFailed: string;
+      toastDuplicated: string;
+      toastDuplicateError: string;
+      publishedPrefix: string;
+      updatedPrefix: string;
+      justNow: string;
+      minutesAgo: string;
+      hoursAgo: string;
+      yesterday: string;
+      daysAgo: string;
+      searchPlaceholder: string;
+      reset: string;
+      filterAll: string;
+      filterDraft: string;
+      filterPublished: string;
+      loadingSites: string;
+      noSitesMatch: string;
+      noSitesMatchDesc: string;
+      clearSearch: string;
+      statusLive: string;
+      statusDraft: string;
+      moreOptions: string;
+      actionDuplicate: string;
+      actionRename: string;
+      actionUnpublish: string;
+      actionDelete: string;
+      domainNotSet: string;
+      copyLink: string;
+      editPreview: string;
+      viewSite: string;
+      publish: string;
+      linkBlog: string;
+      linkCatalog: string;
+      linkMenu: string;
+      linkSeo: string;
+      linkIntegrations: string;
+      linkTestimonials: string;
+      loadMore: string;
+      congratsTitle: string;
+      congratsHeading: string;
+      congratsBody: string;
+      openWebsite: string;
+      copyLinkTitle: string;
+      checkTip: string;
+      done: string;
+    };
   };
 }
 
@@ -834,6 +915,87 @@ export const translations: Record<Locale, Translations> = {
         upgrade: "Upgrade Paket",
         settings: "Pengaturan",
       },
+      sites: {
+        close: "Tutup",
+        cancel: "Batal",
+        deleteTitle: "Hapus Website?",
+        deleteBody: "Anda akan menghapus website \"{name}\" secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        deleteWarning: "Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.",
+        deleteFreeNotice: "Kamu pakai paket Free — kuota 1 website ini tidak akan kembali setelah dihapus. Kamu hanya bisa membuat 1 website gratis seumur hidup.",
+        deleting: "Menghapus...",
+        deleteConfirm: "Ya, Hapus",
+        renameTitle: "Ganti Nama Website",
+        renameDesc: "Masukkan nama baru untuk website Anda.",
+        save: "Simpan",
+        publishTitle: "Publikasikan Website",
+        publishOneStep: "Satu Langkah Lagi! 🚀",
+        publishReady: "Website {name} Anda siap untuk dipublikasikan ke seluruh dunia.",
+        subdomainLabel: "Nama Subdomain",
+        subdomainAvailable: "Tersedia: {url}",
+        subdomainInvalidHint: "Gunakan huruf kecil, angka, atau tanda hubung (-)",
+        subdomainHint: "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
+        connectCustomDomain: "Hubungkan Custom Domain",
+        customDomainDesc: "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di {link} setelah website Anda live.",
+        customDomainLink: "Custom Domain",
+        launching: "Meluncurkan...",
+        launchWebsite: "Luncurkan Website",
+        errorLoadSites: "Gagal memuat situs",
+        connectingWorkspace: "Menghubungkan ke workspace...",
+        toastPublished: "Website berhasil dipublikasikan! 🚀",
+        toastPublishFailed: "Gagal mempublikasikan website",
+        toastUnpublished: "Website berhasil di-draft kembali.",
+        toastUnpublishFailed: "Gagal mengubah status publikasi",
+        toastRenamed: "Nama website berhasil diubah.",
+        toastRenameFailed: "Gagal mengubah nama website",
+        toastDeleted: "Situs berhasil dihapus.",
+        toastDeleteFailed: "Gagal menghapus situs",
+        toastDuplicating: "Menduplikasi website...",
+        toastDuplicateFailed: "Gagal membuat duplikat website",
+        toastDuplicated: "Website berhasil diduplikat!",
+        toastDuplicateError: "Gagal menduplikasi website",
+        publishedPrefix: "Dipublikasikan",
+        updatedPrefix: "Diubah",
+        justNow: "{prefix} baru saja",
+        minutesAgo: "{prefix} {n} menit lalu",
+        hoursAgo: "{prefix} {n} jam lalu",
+        yesterday: "{prefix} kemarin",
+        daysAgo: "{prefix} {n} hari lalu",
+        searchPlaceholder: "Cari website berdasarkan nama...",
+        reset: "Reset",
+        filterAll: "Semua",
+        filterDraft: "Draft",
+        filterPublished: "Dipublikasikan",
+        loadingSites: "Memuat situs Anda...",
+        noSitesMatch: "Tidak ada website yang cocok",
+        noSitesMatchDesc: "Coba kata kunci pencarian lain, filter status yang berbeda, atau buat website baru.",
+        clearSearch: "Bersihkan Pencarian",
+        statusLive: "Live",
+        statusDraft: "Draft",
+        moreOptions: "Opsi lainnya",
+        actionDuplicate: "Duplikat",
+        actionRename: "Ganti nama",
+        actionUnpublish: "Batalkan publikasi",
+        actionDelete: "Hapus",
+        domainNotSet: "Domain belum diatur",
+        copyLink: "Salin tautan",
+        editPreview: "Edit & Preview",
+        viewSite: "Lihat Web",
+        publish: "Publikasikan",
+        linkBlog: "Blog",
+        linkCatalog: "Katalog",
+        linkMenu: "Menu",
+        linkSeo: "SEO",
+        linkIntegrations: "Integrasi",
+        linkTestimonials: "Testimoni",
+        loadMore: "Muat Lebih Banyak",
+        congratsTitle: "🎉 Selamat! Website Anda Telah Live",
+        congratsHeading: "Website Anda Resmi Mengudara!",
+        congratsBody: "Selamat! Halaman web {name} Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.",
+        openWebsite: "Buka Website",
+        copyLinkTitle: "Salin Link",
+        checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
+        done: "Selesai",
+      },
     },
   },
   en: {
@@ -1250,6 +1412,87 @@ export const translations: Record<Locale, Translations> = {
         team: "Team",
         upgrade: "Upgrade Plan",
         settings: "Settings",
+      },
+      sites: {
+        close: "Close",
+        cancel: "Cancel",
+        deleteTitle: "Delete Website?",
+        deleteBody: "You are about to permanently delete website \"{name}\". This action cannot be undone.",
+        deleteWarning: "All content, settings, and data of this website will be deleted and cannot be recovered.",
+        deleteFreeNotice: "You are on the Free plan — this 1 website quota will not be returned after deletion. You can only create 1 free website for life.",
+        deleting: "Deleting...",
+        deleteConfirm: "Yes, Delete",
+        renameTitle: "Rename Website",
+        renameDesc: "Enter a new name for your website.",
+        save: "Save",
+        publishTitle: "Publish Website",
+        publishOneStep: "One Step Left! 🚀",
+        publishReady: "Your website {name} is ready to be published to the world.",
+        subdomainLabel: "Subdomain Name",
+        subdomainAvailable: "Available: {url}",
+        subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
+        subdomainHint: "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
+        connectCustomDomain: "Connect Custom Domain",
+        customDomainDesc: "Want a more professional brand like domainanda.com? You can set it up in {link} after your website is live.",
+        customDomainLink: "Custom Domain",
+        launching: "Launching...",
+        launchWebsite: "Launch Website",
+        errorLoadSites: "Failed to load sites",
+        connectingWorkspace: "Connecting to workspace...",
+        toastPublished: "Website published successfully! 🚀",
+        toastPublishFailed: "Failed to publish website",
+        toastUnpublished: "Website has been set back to draft.",
+        toastUnpublishFailed: "Failed to change publication status",
+        toastRenamed: "Website name updated.",
+        toastRenameFailed: "Failed to rename website",
+        toastDeleted: "Site deleted successfully.",
+        toastDeleteFailed: "Failed to delete site",
+        toastDuplicating: "Duplicating website...",
+        toastDuplicateFailed: "Failed to create website duplicate",
+        toastDuplicated: "Website duplicated successfully!",
+        toastDuplicateError: "Failed to duplicate website",
+        publishedPrefix: "Published",
+        updatedPrefix: "Updated",
+        justNow: "{prefix} just now",
+        minutesAgo: "{prefix} {n} minutes ago",
+        hoursAgo: "{prefix} {n} hours ago",
+        yesterday: "{prefix} yesterday",
+        daysAgo: "{prefix} {n} days ago",
+        searchPlaceholder: "Search websites by name...",
+        reset: "Reset",
+        filterAll: "All",
+        filterDraft: "Draft",
+        filterPublished: "Published",
+        loadingSites: "Loading your sites...",
+        noSitesMatch: "No matching websites",
+        noSitesMatchDesc: "Try a different search keyword, another status filter, or create a new website.",
+        clearSearch: "Clear Search",
+        statusLive: "Live",
+        statusDraft: "Draft",
+        moreOptions: "More options",
+        actionDuplicate: "Duplicate",
+        actionRename: "Rename",
+        actionUnpublish: "Unpublish",
+        actionDelete: "Delete",
+        domainNotSet: "Domain not set",
+        copyLink: "Copy link",
+        editPreview: "Edit & Preview",
+        viewSite: "View Site",
+        publish: "Publish",
+        linkBlog: "Blog",
+        linkCatalog: "Catalog",
+        linkMenu: "Menu",
+        linkSeo: "SEO",
+        linkIntegrations: "Integrations",
+        linkTestimonials: "Testimonials",
+        loadMore: "Load More",
+        congratsTitle: "🎉 Congratulations! Your Website Is Live",
+        congratsHeading: "Your Website Is Officially Live!",
+        congratsBody: "Congratulations! Your web page {name} is now active and accessible from anywhere in the world.",
+        openWebsite: "Open Website",
+        copyLinkTitle: "Copy Link",
+        checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
+        done: "Done",
       },
     },
   },
