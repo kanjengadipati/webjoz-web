@@ -32,6 +32,7 @@ import { BusinessDetailsSheet } from "./business-details-sheet";
 import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 import { WizardSuccessToast } from "./success-toast";
+import { ConfirmCard } from "./confirm-card";
 import { useI18n } from "@/lib/i18n/context";
 
 export { type SiteWizardProps };
@@ -52,6 +53,11 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  const [draftName, setDraftName] = useState("");
+  const [draftWA, setDraftWA] = useState("");
+  const [draftServiceArea, setDraftServiceArea] = useState("");
+  const [editingField, setEditingField] = useState<string | null>(null);
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -267,6 +273,7 @@ export function SiteWizard({
       business_name: bName, business_type: bType, business_sub_type: nextBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined, mood: nextMood || undefined,
+      language: chat.siteLanguage || undefined,
     });
   };
 
@@ -337,6 +344,7 @@ export function SiteWizard({
             name: chat.businessName,
             template_id: preview.previewData?.template_id || selectTemplate(chat.businessSubType || chat.businessType),
             subdomain,
+            language: chat.siteLanguage,
           }),
         },
         token
@@ -660,6 +668,37 @@ export function SiteWizard({
               </div>
             );
           })}
+
+          {chat.chatStage === "done" && (
+            <ConfirmCard
+              businessName={chat.businessName}
+              businessType={chat.businessType}
+              businessSubType={chat.businessSubType}
+              whatsapp={chat.whatsapp}
+              serviceArea={chat.serviceArea}
+              draftName={draftName}
+              draftWA={draftWA}
+              draftServiceArea={draftServiceArea}
+              siteLanguage={chat.siteLanguage}
+              editingField={editingField}
+              previewState={preview.previewState}
+              hasUnsavedEdits={preview.hasUnsavedEdits}
+              isLoading={preview.previewState === "loading"}
+              onSetDraftName={setDraftName}
+              onSetDraftWA={setDraftWA}
+              onSetDraftServiceArea={setDraftServiceArea}
+              onSetSiteLanguage={chat.setSiteLanguage}
+              onSetEditingField={setEditingField}
+              onSetBusinessType={chat.setBusinessType}
+              onSetBusinessSubType={chat.setBusinessSubType}
+              onSetBusinessName={chat.setBusinessName}
+              onSetWhatsapp={chat.setWhatsapp}
+              onSetServiceArea={chat.setServiceArea}
+              onSetHasUnsavedEdits={preview.setHasUnsavedEdits}
+              onSetDescription={chat.setDescription}
+              onGenerate={() => void handleGenerate()}
+            />
+          )}
 
           <div ref={chat.chatEndRef} />
         </div>

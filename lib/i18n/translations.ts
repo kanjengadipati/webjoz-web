@@ -1814,6 +1814,7 @@ export interface Translations {
       confirmCardLabelTypeHeader: string;
       confirmCardLabelWA: string;
       confirmCardLabelArea: string;
+      confirmCardLabelLang: string;
       confirmCardBtnChange: string;
       confirmCardBtnFill: string;
       confirmCardBtnClose: string;
@@ -3750,6 +3751,7 @@ export const translations: Record<Locale, Translations> = {
         confirmCardLabelTypeHeader: "Jenis Bisnis",
         confirmCardLabelWA: "WA",
         confirmCardLabelArea: "Jangkauan",
+        confirmCardLabelLang: "Bahasa Situs",
         confirmCardBtnChange: "Ubah",
         confirmCardBtnFill: "Isi",
         confirmCardBtnClose: "✕ tutup",
@@ -5716,6 +5718,7 @@ export const translations: Record<Locale, Translations> = {
         confirmCardLabelTypeHeader: "Business Type",
         confirmCardLabelWA: "WA",
         confirmCardLabelArea: "Coverage",
+        confirmCardLabelLang: "Site Language",
         confirmCardBtnChange: "Edit",
         confirmCardBtnFill: "Add",
         confirmCardBtnClose: "✕ close",

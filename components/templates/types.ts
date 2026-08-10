@@ -295,4 +295,6 @@ export interface TemplateProps {
    * Dipakai untuk meng-resolve URL /preview/[id]/blog.
    */
   editorSiteId?: number | null;
+  /** Bahasa situs (id | en) untuk static chrome rendering */
+  language?: "id" | "en";
 }
