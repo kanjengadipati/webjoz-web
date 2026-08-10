@@ -983,6 +983,182 @@ export interface Translations {
       view: string;
       delete: string;
     };
+    adminAnnouncements: {
+      noAccess: string;
+      title: string;
+      subtitle: string;
+      new: string;
+      all: string;
+      noItems: string;
+      createFirst: string;
+      active: string;
+      inactive: string;
+      expires: string;
+      loadFailed: string;
+      created: string;
+      createFailed: string;
+      deleteConfirm: string;
+      deleted: string;
+      deleteFailed: string;
+      titleField: string;
+      severity: string;
+      sevInfo: string;
+      sevWarning: string;
+      sevImportant: string;
+      contentField: string;
+      cancel: string;
+      creating: string;
+      create: string;
+    };
+    adminCommissions: {
+      loadFailed: string;
+      tier1RangeError: string;
+      tier2RangeError: string;
+      configUpdated: string;
+      configUpdateFailed: string;
+      amountPositiveError: string;
+      ruleUpdated: string;
+      ruleUpdateFailed: string;
+      loading: string;
+      accessRestricted: string;
+      accessRestrictedDesc: string;
+      title: string;
+      subtitle: string;
+      rateSettings: string;
+      activeScheme: string;
+      tieredScheme: string;
+      tier1FirstMonths: string;
+      tier2After: string;
+      tier1Label: string;
+      tier2Label: string;
+      save: string;
+      superadminOnlyEdit: string;
+      superadmin: string;
+      bonusRulesSettings: string;
+      tier: string;
+      onboardingDesc: string;
+      milestoneDesc: string;
+      bonusAmount: string;
+      recurringCommissions: string;
+      allBonuses: string;
+      allCommissionTxns: string;
+      pendingOnPage: string;
+      noCommissions: string;
+      colDate: string;
+      colSalesUser: string;
+      colTenantId: string;
+      colOrderId: string;
+      colGrossAmount: string;
+      colRate: string;
+      colCommission: string;
+      colStatus: string;
+      pageOf: string;
+      previous: string;
+      next: string;
+      allBonusesTitle: string;
+      noBonuses: string;
+      colBonusType: string;
+      colDetailPeriod: string;
+      colBonusAmount: string;
+      bonus: string;
+      tenant: string;
+      period: string;
+    };
+    adminDesignAssets: {
+      accessDenied: string;
+      accessDeniedDesc: string;
+      superadmin: string;
+      loading: string;
+      title: string;
+      subtitle: string;
+      saving: string;
+      resetAll: string;
+      resetAllConfirm: string;
+      resetAllSuccess: string;
+      resetAllFailed: string;
+      saveLocalOnly: string;
+      tabSections: string;
+      tabTypography: string;
+      tabPalettes: string;
+      tabPresets: string;
+      hidden: string;
+      active: string;
+      optional: string;
+      required: string;
+      show: string;
+      hide: string;
+      require: string;
+      unrequire: string;
+      custom: string;
+      sectionsVisibilityTitle: string;
+      sectionsVisibilityDesc: string;
+      resetDefault: string;
+      variantsActive: string;
+      variantsTitle: string;
+      variantsDesc: string;
+      variantsCount: string;
+      mapTilesTitle: string;
+      mapTilesDesc: string;
+      tileLabelLight: string;
+      tileLabelDark: string;
+      tileLabelSatellite: string;
+      tileDescOsm: string;
+      tileDescCyclosm: string;
+      tileDescLight: string;
+      tileDescDark: string;
+      tileDescEsri: string;
+      tileDescSatellite: string;
+      addPairingTitle: string;
+      addPatternTitle: string;
+      addPresetTitle: string;
+      name: string;
+      description: string;
+      headingFont: string;
+      bodyFont: string;
+      weight: string;
+      heroSize: string;
+      emojiIcon: string;
+      fontPairing: string;
+      colorPalette: string;
+      mode: string;
+      light: string;
+      dark: string;
+      cancel: string;
+      save: string;
+      searchPairings: string;
+      searchPatterns: string;
+      searchPresets: string;
+      add: string;
+      noPairingsMatch: string;
+      noPatternsMatch: string;
+      noPresetsMatch: string;
+      score: string;
+      sectionRequiredError: string;
+      sectionHidden: string;
+      sectionShown: string;
+      sectionRequired: string;
+      sectionOptional: string;
+      variantHidden: string;
+      variantShown: string;
+      sectionsReset: string;
+      tileHidden: string;
+      tileShown: string;
+      pairingHidden: string;
+      pairingShown: string;
+      pairingAdded: string;
+      deletePairingConfirm: string;
+      pairingDeleted: string;
+      patternHidden: string;
+      patternShown: string;
+      patternAdded: string;
+      deletePatternConfirm: string;
+      patternDeleted: string;
+      presetHidden: string;
+      presetShown: string;
+      presetAdded: string;
+      deletePresetConfirm: string;
+      presetDeleted: string;
+    };
   };
 }
 
@@ -1974,6 +2150,182 @@ export const translations: Record<Locale, Translations> = {
         view: "Lihat",
         delete: "Hapus",
       },
+      adminAnnouncements: {
+        noAccess: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Pengumuman",
+        subtitle: "Siarkan pesan ke semua tenant.",
+        new: "Pengumuman Baru",
+        all: "Semua Pengumuman",
+        noItems: "Belum ada pengumuman",
+        createFirst: "Buat pengumuman pertama",
+        active: "Aktif",
+        inactive: "Nonaktif",
+        expires: "Berakhir",
+        loadFailed: "Gagal memuat pengumuman",
+        created: "Pengumuman dibuat",
+        createFailed: "Gagal membuat pengumuman",
+        deleteConfirm: "Hapus pengumuman ini?",
+        deleted: "Pengumuman dihapus",
+        deleteFailed: "Gagal menghapus pengumuman",
+        titleField: "Judul",
+        severity: "Tingkat Kepentingan",
+        sevInfo: "Info",
+        sevWarning: "Peringatan",
+        sevImportant: "Penting",
+        contentField: "Konten",
+        cancel: "Batal",
+        creating: "Membuat...",
+        create: "Buat",
+      },
+      adminCommissions: {
+        loadFailed: "Gagal memuat semua komisi",
+        tier1RangeError: "Persentase Tier 1 harus antara 0 dan 100",
+        tier2RangeError: "Persentase Tier 2 harus antara 0 dan 100",
+        configUpdated: "Komisi berhasil diperbarui: Tier 1 {t1}% · Tier 2 {t2}%",
+        configUpdateFailed: "Gagal memperbarui komisi",
+        amountPositiveError: "Nominal bonus harus berupa angka positif",
+        ruleUpdated: "Aturan bonus berhasil diperbarui",
+        ruleUpdateFailed: "Gagal memperbarui aturan bonus",
+        loading: "Memuat data komisi admin...",
+        accessRestricted: "Akses Dibatasi",
+        accessRestrictedDesc: "Halaman ini khusus untuk Admin yang memiliki akses permission `commission:read_all`.",
+        title: "Manajemen Komisi & Bonus Sales (Admin)",
+        subtitle: "Pengaturan persentase komisi, skema bonus onboarding & milestone, dan seluruh transaksi sales partner.",
+        rateSettings: "Pengaturan Rate Komisi Sales",
+        activeScheme: "Skema Aktif",
+        tieredScheme: "Skema Komisi Bertingkat",
+        tier1FirstMonths: "tier 1 selama {months} bulan pertama",
+        tier2After: "tier 2 setelahnya (berlaku seterusnya)",
+        tier1Label: "Tier 1 — {months} bulan pertama (%)",
+        tier2Label: "Tier 2 — setelahnya (%)",
+        save: "Simpan",
+        superadminOnlyEdit: "Hanya {superadmin} yang dapat mengedit skema komisi.",
+        superadmin: "Superadmin",
+        bonusRulesSettings: "Pengaturan Aturan Bonus (Onboarding & Milestone)",
+        tier: "Tier",
+        onboardingDesc: "Bonus flat per tenant baru pertama kali bayar.",
+        milestoneDesc: "Capai {threshold} tenant baru teraktivasi dalam 1 bulan.",
+        bonusAmount: "Nominal Bonus (Rp)",
+        recurringCommissions: "Komisi Recurring ({count})",
+        allBonuses: "Semua Bonus Sales ({count})",
+        allCommissionTxns: "Semua Transaksi Komisi ({count})",
+        pendingOnPage: "Pending di Halaman Ini: Rp {amount}",
+        noCommissions: "Belum ada komisi tercatat di sistem",
+        colDate: "Tanggal",
+        colSalesUser: "Sales User ID",
+        colTenantId: "Tenant ID",
+        colOrderId: "Order ID",
+        colGrossAmount: "Gross Amount",
+        colRate: "Rate",
+        colCommission: "Komisi",
+        colStatus: "Status",
+        pageOf: "Halaman {page} dari {total}",
+        previous: "Sebelumnya",
+        next: "Selanjutnya",
+        allBonusesTitle: "Semua Bonus Sales ({count})",
+        noBonuses: "Belum ada bonus tercatat di sistem",
+        colBonusType: "Jenis Bonus",
+        colDetailPeriod: "Detail / Periode",
+        colBonusAmount: "Nominal Bonus",
+        bonus: "Bonus",
+        tenant: "Tenant",
+        period: "Periode",
+      },
+      adminDesignAssets: {
+        accessDenied: "Akses Ditolak",
+        accessDeniedDesc: "Halaman ini hanya dapat diakses oleh akun dengan peran {superadmin}.",
+        superadmin: "Superadmin",
+        loading: "Memuat konfigurasi design assets...",
+        title: "Design Assets",
+        subtitle: "Kelola section, tipografi, palet warna, dan paket tampilan yang tersedia di editor website.",
+        saving: "Menyimpan...",
+        resetAll: "Reset Semua",
+        resetAllConfirm: "Reset semua pengaturan Design Assets ke default?",
+        resetAllSuccess: "Semua pengaturan Design Assets direset ke default.",
+        resetAllFailed: "Gagal reset ke server.",
+        saveLocalOnly: "Gagal menyimpan ke server. Perubahan tersimpan lokal.",
+        tabSections: "Sections",
+        tabTypography: "Tipografi",
+        tabPalettes: "Palet Warna",
+        tabPresets: "Paket Tampilan",
+        hidden: "Disembunyikan",
+        active: "Aktif",
+        optional: "Opsional",
+        required: "Wajib",
+        show: "Tampilkan",
+        hide: "Sembunyikan",
+        require: "Wajibkan",
+        unrequire: "Lepas Wajib",
+        custom: "Custom",
+        sectionsVisibilityTitle: "Visibilitas Section",
+        sectionsVisibilityDesc: "Section yang disembunyikan tidak muncul di sidebar editor.",
+        resetDefault: "Reset Default",
+        variantsActive: "{active}/{total} variasi aktif",
+        variantsTitle: "Variasi Tampilan",
+        variantsDesc: "Kelola variasi tampilan per section. Variasi yang disembunyikan tidak muncul di dropdown editor.",
+        variantsCount: "{active}/{total} aktif",
+        mapTilesTitle: "Gaya Peta",
+        mapTilesDesc: "Kelola pilihan gaya peta yang muncul di editor section Kontak.",
+        tileLabelLight: "Terang",
+        tileLabelDark: "Gelap",
+        tileLabelSatellite: "Satelit",
+        tileDescOsm: "OpenStreetMap standar, detail dan gratis.",
+        tileDescCyclosm: "OSM dengan jalur sepeda, warna lebih cerah.",
+        tileDescLight: "Peta minimalis terang dari CartoCDN.",
+        tileDescDark: "Peta gelap elegan dari CartoCDN.",
+        tileDescEsri: "Peta jalan bergaya Esri / ArcGIS.",
+        tileDescSatellite: "Citra satelit dari Esri World Imagery.",
+        addPairingTitle: "Tambah Pasangan Font Baru",
+        addPatternTitle: "Tambah Palet Warna Baru",
+        addPresetTitle: "Tambah Paket Tampilan Baru",
+        name: "Nama",
+        description: "Deskripsi",
+        headingFont: "Font Heading",
+        bodyFont: "Font Body",
+        weight: "Ketebalan",
+        heroSize: "Ukuran Hero",
+        emojiIcon: "Ikon Emoji",
+        fontPairing: "Pasangan Font",
+        colorPalette: "Palet Warna",
+        mode: "Mode",
+        light: "Terang",
+        dark: "Gelap",
+        cancel: "Batal",
+        save: "Simpan",
+        searchPairings: "Cari pasangan font...",
+        searchPatterns: "Cari palet warna...",
+        searchPresets: "Cari paket tampilan...",
+        add: "Tambah",
+        noPairingsMatch: "Tidak ada pasangan font yang cocok.",
+        noPatternsMatch: "Tidak ada palet yang cocok.",
+        noPresetsMatch: "Tidak ada paket yang cocok.",
+        score: "Score: {score}",
+        sectionRequiredError: 'Section "{key}" wajib aktif dan tidak bisa disembunyikan.',
+        sectionHidden: 'Section "{key}" disembunyikan.',
+        sectionShown: 'Section "{key}" ditampilkan.',
+        sectionRequired: 'Section "{key}" dijadikan wajib.',
+        sectionOptional: 'Section "{key}" bisa disembunyikan.',
+        variantHidden: 'Variasi "{variant}" pada "{section}" disembunyikan.',
+        variantShown: 'Variasi "{variant}" pada "{section}" ditampilkan.',
+        sectionsReset: "Pengaturan sections direset.",
+        tileHidden: 'Gaya peta "{tile}" disembunyikan.',
+        tileShown: 'Gaya peta "{tile}" ditampilkan.',
+        pairingHidden: "Pasangan font disembunyikan.",
+        pairingShown: "Pasangan font ditampilkan.",
+        pairingAdded: 'Pasangan font "{name}" ditambahkan.',
+        deletePairingConfirm: "Hapus pasangan font custom ini?",
+        pairingDeleted: "Pasangan font dihapus.",
+        patternHidden: "Palet disembunyikan.",
+        patternShown: "Palet ditampilkan.",
+        patternAdded: 'Palet "{name}" ditambahkan.',
+        deletePatternConfirm: "Hapus palet custom ini?",
+        patternDeleted: "Palet dihapus.",
+        presetHidden: "Paket tampilan disembunyikan.",
+        presetShown: "Paket tampilan ditampilkan.",
+        presetAdded: 'Paket "{name}" ditambahkan.',
+        deletePresetConfirm: "Hapus paket tampilan custom ini?",
+        presetDeleted: "Paket tampilan dihapus.",
+      },
     },
   },
   en: {
@@ -2962,6 +3314,182 @@ export const translations: Record<Locale, Translations> = {
         base: "Base",
         view: "View",
         delete: "Delete",
+      },
+      adminAnnouncements: {
+        noAccess: "You do not have access to this page.",
+        title: "Announcements",
+        subtitle: "Broadcast messages to all tenants.",
+        new: "New Announcement",
+        all: "All Announcements",
+        noItems: "No announcements yet",
+        createFirst: "Create your first announcement",
+        active: "Active",
+        inactive: "Inactive",
+        expires: "Expires",
+        loadFailed: "Failed to load announcements",
+        created: "Announcement created",
+        createFailed: "Failed to create announcement",
+        deleteConfirm: "Delete this announcement?",
+        deleted: "Announcement deleted",
+        deleteFailed: "Failed to delete announcement",
+        titleField: "Title",
+        severity: "Severity",
+        sevInfo: "Info",
+        sevWarning: "Warning",
+        sevImportant: "Important",
+        contentField: "Content",
+        cancel: "Cancel",
+        creating: "Creating...",
+        create: "Create",
+      },
+      adminCommissions: {
+        loadFailed: "Failed to load all commissions",
+        tier1RangeError: "Tier 1 percentage must be between 0 and 100",
+        tier2RangeError: "Tier 2 percentage must be between 0 and 100",
+        configUpdated: "Commission updated: Tier 1 {t1}% · Tier 2 {t2}%",
+        configUpdateFailed: "Failed to update commission",
+        amountPositiveError: "Bonus amount must be a positive number",
+        ruleUpdated: "Bonus rule updated",
+        ruleUpdateFailed: "Failed to update bonus rule",
+        loading: "Loading admin commission data...",
+        accessRestricted: "Access Restricted",
+        accessRestrictedDesc: "This page is for Admins with the `commission:read_all` permission.",
+        title: "Sales Commission & Bonus Management (Admin)",
+        subtitle: "Commission percentages, onboarding & milestone bonus schemes, and all sales partner transactions.",
+        rateSettings: "Sales Commission Rate Settings",
+        activeScheme: "Active Scheme",
+        tieredScheme: "Tiered Commission Scheme",
+        tier1FirstMonths: "tier 1 for the first {months} months",
+        tier2After: "tier 2 afterwards (applies indefinitely)",
+        tier1Label: "Tier 1 — first {months} months (%)",
+        tier2Label: "Tier 2 — afterwards (%)",
+        save: "Save",
+        superadminOnlyEdit: "Only {superadmin} can edit the commission scheme.",
+        superadmin: "Superadmin",
+        bonusRulesSettings: "Bonus Rules Settings (Onboarding & Milestone)",
+        tier: "Tier",
+        onboardingDesc: "Flat bonus per new tenant on their first payment.",
+        milestoneDesc: "Reach {threshold} newly activated tenants within 1 month.",
+        bonusAmount: "Bonus Amount (Rp)",
+        recurringCommissions: "Recurring Commissions ({count})",
+        allBonuses: "All Sales Bonuses ({count})",
+        allCommissionTxns: "All Commission Transactions ({count})",
+        pendingOnPage: "Pending on This Page: Rp {amount}",
+        noCommissions: "No commissions recorded in the system",
+        colDate: "Date",
+        colSalesUser: "Sales User ID",
+        colTenantId: "Tenant ID",
+        colOrderId: "Order ID",
+        colGrossAmount: "Gross Amount",
+        colRate: "Rate",
+        colCommission: "Commission",
+        colStatus: "Status",
+        pageOf: "Page {page} of {total}",
+        previous: "Previous",
+        next: "Next",
+        allBonusesTitle: "All Sales Bonuses ({count})",
+        noBonuses: "No bonuses recorded in the system",
+        colBonusType: "Bonus Type",
+        colDetailPeriod: "Detail / Period",
+        colBonusAmount: "Bonus Amount",
+        bonus: "Bonus",
+        tenant: "Tenant",
+        period: "Period",
+      },
+      adminDesignAssets: {
+        accessDenied: "Access Denied",
+        accessDeniedDesc: "This page can only be accessed by accounts with the {superadmin} role.",
+        superadmin: "Superadmin",
+        loading: "Loading design assets configuration...",
+        title: "Design Assets",
+        subtitle: "Manage the sections, typography, color palettes, and visual presets available in the website editor.",
+        saving: "Saving...",
+        resetAll: "Reset All",
+        resetAllConfirm: "Reset all Design Assets settings to defaults?",
+        resetAllSuccess: "All Design Assets settings have been reset to defaults.",
+        resetAllFailed: "Failed to reset on the server.",
+        saveLocalOnly: "Failed to save to the server. Changes saved locally.",
+        tabSections: "Sections",
+        tabTypography: "Typography",
+        tabPalettes: "Color Palettes",
+        tabPresets: "Visual Presets",
+        hidden: "Hidden",
+        active: "Active",
+        optional: "Optional",
+        required: "Required",
+        show: "Show",
+        hide: "Hide",
+        require: "Make Required",
+        unrequire: "Make Optional",
+        custom: "Custom",
+        sectionsVisibilityTitle: "Section Visibility",
+        sectionsVisibilityDesc: "Hidden sections won't appear in the editor sidebar.",
+        resetDefault: "Reset Default",
+        variantsActive: "{active}/{total} active variants",
+        variantsTitle: "Layout Variants",
+        variantsDesc: "Manage layout variants per section. Hidden variants won't appear in the editor dropdown.",
+        variantsCount: "{active}/{total} active",
+        mapTilesTitle: "Map Styles",
+        mapTilesDesc: "Manage the map style options that appear in the Contact section editor.",
+        tileLabelLight: "Light",
+        tileLabelDark: "Dark",
+        tileLabelSatellite: "Satellite",
+        tileDescOsm: "Standard OpenStreetMap, detailed and free.",
+        tileDescCyclosm: "OSM with cycling routes, brighter colors.",
+        tileDescLight: "Minimal light map from CartoCDN.",
+        tileDescDark: "Elegant dark map from CartoCDN.",
+        tileDescEsri: "Road map styled by Esri / ArcGIS.",
+        tileDescSatellite: "Satellite imagery from Esri World Imagery.",
+        addPairingTitle: "Add New Font Pairing",
+        addPatternTitle: "Add New Color Palette",
+        addPresetTitle: "Add New Visual Preset",
+        name: "Name",
+        description: "Description",
+        headingFont: "Heading Font",
+        bodyFont: "Body Font",
+        weight: "Weight",
+        heroSize: "Hero Size",
+        emojiIcon: "Emoji Icon",
+        fontPairing: "Font Pairing",
+        colorPalette: "Color Palette",
+        mode: "Mode",
+        light: "Light",
+        dark: "Dark",
+        cancel: "Cancel",
+        save: "Save",
+        searchPairings: "Search font pairings...",
+        searchPatterns: "Search color palettes...",
+        searchPresets: "Search visual presets...",
+        add: "Add",
+        noPairingsMatch: "No matching font pairings.",
+        noPatternsMatch: "No matching palettes.",
+        noPresetsMatch: "No matching presets.",
+        score: "Score: {score}",
+        sectionRequiredError: 'Section "{key}" is required and cannot be hidden.',
+        sectionHidden: 'Section "{key}" hidden.',
+        sectionShown: 'Section "{key}" shown.',
+        sectionRequired: 'Section "{key}" marked as required.',
+        sectionOptional: 'Section "{key}" can now be hidden.',
+        variantHidden: 'Variant "{variant}" in "{section}" hidden.',
+        variantShown: 'Variant "{variant}" in "{section}" shown.',
+        sectionsReset: "Section settings reset.",
+        tileHidden: 'Map style "{tile}" hidden.',
+        tileShown: 'Map style "{tile}" shown.',
+        pairingHidden: "Font pairing hidden.",
+        pairingShown: "Font pairing shown.",
+        pairingAdded: 'Font pairing "{name}" added.',
+        deletePairingConfirm: "Delete this custom font pairing?",
+        pairingDeleted: "Font pairing deleted.",
+        patternHidden: "Palette hidden.",
+        patternShown: "Palette shown.",
+        patternAdded: 'Palette "{name}" added.',
+        deletePatternConfirm: "Delete this custom palette?",
+        patternDeleted: "Palette deleted.",
+        presetHidden: "Visual preset hidden.",
+        presetShown: "Visual preset shown.",
+        presetAdded: 'Preset "{name}" added.',
+        deletePresetConfirm: "Delete this custom visual preset?",
+        presetDeleted: "Visual preset deleted.",
       },
     },
   },

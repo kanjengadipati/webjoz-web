@@ -19,6 +19,7 @@ import {
 } from "@/lib/api/bonuses";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import {
   DollarSign,
   Loader2,
@@ -37,6 +38,7 @@ import {
 export default function AdminCommissionsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [activeTab, setActiveTab] = useState<"commissions" | "bonuses">("commissions");
@@ -79,7 +81,7 @@ export default function AdminCommissionsPage() {
       setCommissions(res.data || []);
       setTotal((res.meta?.total as number) || 0);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat semua komisi", "error");
+      pushToast(err.message || t("dashboard.adminCommissions.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -132,11 +134,11 @@ export default function AdminCommissionsPage() {
     const t1 = parseFloat(tier1RateInput);
     const t2 = parseFloat(tier2RateInput);
     if (isNaN(t1) || t1 < 0 || t1 > 100) {
-      pushToast("Persentase Tier 1 harus antara 0 dan 100", "error");
+      pushToast(t("dashboard.adminCommissions.tier1RangeError"), "error");
       return;
     }
     if (isNaN(t2) || t2 < 0 || t2 > 100) {
-      pushToast("Persentase Tier 2 harus antara 0 dan 100", "error");
+      pushToast(t("dashboard.adminCommissions.tier2RangeError"), "error");
       return;
     }
     try {
@@ -146,11 +148,11 @@ export default function AdminCommissionsPage() {
       setTier1RateInput(res.data.tier1_rate_percent.toFixed(0));
       setTier2RateInput(res.data.tier2_rate_percent.toFixed(0));
       pushToast(
-        `Komisi berhasil diperbarui: Tier 1 ${res.data.tier1_rate_percent.toFixed(0)}% · Tier 2 ${res.data.tier2_rate_percent.toFixed(0)}%`,
+        t("dashboard.adminCommissions.configUpdated", undefined, { t1: res.data.tier1_rate_percent.toFixed(0), t2: res.data.tier2_rate_percent.toFixed(0) }),
         "success",
       );
     } catch (err: any) {
-      pushToast(err.message || "Gagal memperbarui komisi", "error");
+      pushToast(err.message || t("dashboard.adminCommissions.configUpdateFailed"), "error");
     } finally {
       setConfigLoading(false);
     }
@@ -160,16 +162,16 @@ export default function AdminCommissionsPage() {
     if (!token) return;
     const val = parseFloat(editedAmounts[ruleId]);
     if (isNaN(val) || val <= 0) {
-      pushToast("Nominal bonus harus berupa angka positif", "error");
+      pushToast(t("dashboard.adminCommissions.amountPositiveError"), "error");
       return;
     }
     try {
       setSavingRuleId(ruleId);
       await updateBonusRule(token, ruleId, { amount: val });
-      pushToast("Aturan bonus berhasil diperbarui", "success");
+      pushToast(t("dashboard.adminCommissions.ruleUpdated"), "success");
       loadRules();
     } catch (err: any) {
-      pushToast(err.message || "Gagal memperbarui aturan bonus", "error");
+      pushToast(err.message || t("dashboard.adminCommissions.ruleUpdateFailed"), "error");
     } finally {
       setSavingRuleId(null);
     }
@@ -188,7 +190,7 @@ export default function AdminCommissionsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
-        <p className="text-sm text-muted-foreground">Memuat data komisi admin...</p>
+        <p className="text-sm text-muted-foreground">{t("dashboard.adminCommissions.loading")}</p>
       </div>
     );
   }
@@ -197,9 +199,9 @@ export default function AdminCommissionsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-4 text-center">
         <ShieldAlert className="size-12 text-destructive/60" />
-        <h2 className="text-xl font-bold">Akses Dibatasi</h2>
+        <h2 className="text-xl font-bold">{t("dashboard.adminCommissions.accessRestricted")}</h2>
         <p className="text-sm text-muted-foreground max-w-md">
-          Halaman ini khusus untuk Admin yang memiliki akses permission `commission:read_all`.
+          {t("dashboard.adminCommissions.accessRestrictedDesc")}
         </p>
       </div>
     );
@@ -215,10 +217,10 @@ export default function AdminCommissionsPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <DollarSign className="size-5 text-emerald-500" />
-            Manajemen Komisi & Bonus Sales (Admin)
+            {t("dashboard.adminCommissions.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Pengaturan persentase komisi, skema bonus onboarding & milestone, dan seluruh transaksi sales partner.
+            {t("dashboard.adminCommissions.subtitle")}
           </p>
         </div>
       </div>
@@ -229,10 +231,10 @@ export default function AdminCommissionsPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <Settings className="size-4 text-emerald-500" />
-              Pengaturan Rate Komisi Sales
+              {t("dashboard.adminCommissions.rateSettings")}
             </CardTitle>
             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
-              <span>Skema Aktif:</span>
+              <span>{t("dashboard.adminCommissions.activeScheme")}:</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400">
                 Tier 1 {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"} · Tier 2{" "}
                 {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
@@ -244,14 +246,14 @@ export default function AdminCommissionsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div className="space-y-1">
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Skema Komisi Bertingkat
+                {t("dashboard.adminCommissions.tieredScheme")}
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
                   {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  tier 1 selama {config?.tier_threshold_months ?? 12} bulan pertama
+                  {t("dashboard.adminCommissions.tier1FirstMonths", undefined, { months: String(config?.tier_threshold_months ?? 12) })}
                 </span>
               </div>
               <div className="flex items-baseline gap-2">
@@ -259,7 +261,7 @@ export default function AdminCommissionsPage() {
                   {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  tier 2 setelahnya (berlaku seterusnya)
+                  {t("dashboard.adminCommissions.tier2After")}
                 </span>
               </div>
             </div>
@@ -269,7 +271,7 @@ export default function AdminCommissionsPage() {
                 <div className="flex flex-col gap-2">
                   <div className="space-y-1">
                     <label htmlFor="commission-tier1-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-                      Tier 1 — {config?.tier_threshold_months ?? 12} bulan pertama (%)
+                      {t("dashboard.adminCommissions.tier1Label", undefined, { months: String(config?.tier_threshold_months ?? 12) })}
                     </label>
                     <div className="flex items-center gap-2 md:justify-end">
                       <div className="relative">
@@ -290,7 +292,7 @@ export default function AdminCommissionsPage() {
                   </div>
                   <div className="space-y-1">
                     <label htmlFor="commission-tier2-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-                      Tier 2 — setelahnya (%)
+                      {t("dashboard.adminCommissions.tier2Label")}
                     </label>
                     <div className="flex items-center gap-2 md:justify-end">
                       <div className="relative">
@@ -316,13 +318,13 @@ export default function AdminCommissionsPage() {
                     size="sm"
                   >
                     {configLoading && <Loader2 className="size-3.5 animate-spin" />}
-                    Simpan
+                    {t("dashboard.adminCommissions.save")}
                   </Button>
                 </div>
               </div>
             ) : (
               <div className="text-xs text-muted-foreground bg-muted/40 rounded-xl p-3 border border-border/30">
-                Hanya <span className="font-semibold text-foreground">Superadmin</span> yang dapat mengedit skema komisi.
+                {t("dashboard.adminCommissions.superadminOnlyEdit", undefined, { superadmin: t("dashboard.adminCommissions.superadmin") })}
               </div>
             )}
           </div>
@@ -334,7 +336,7 @@ export default function AdminCommissionsPage() {
         <CardHeader className="border-b border-border/20 pb-4 bg-muted/20">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Award className="size-4 text-amber-500" />
-            Pengaturan Aturan Bonus (Onboarding & Milestone)
+            {t("dashboard.adminCommissions.bonusRulesSettings")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -353,22 +355,22 @@ export default function AdminCommissionsPage() {
                     </span>
                     {rule.tier && (
                       <span className="text-[11px] font-bold font-mono text-muted-foreground">
-                        Tier {rule.tier}
+                        {t("dashboard.adminCommissions.tier")} {rule.tier}
                       </span>
                     )}
                   </div>
                   <div className="mt-2 text-xs text-muted-foreground">
                     {rule.type === "onboarding" ? (
-                      "Bonus flat per tenant baru pertama kali bayar."
+                      t("dashboard.adminCommissions.onboardingDesc")
                     ) : (
-                      `Capai ${rule.threshold} tenant baru teraktivasi dalam 1 bulan.`
+                      t("dashboard.adminCommissions.milestoneDesc", undefined, { threshold: String(rule.threshold) })
                     )}
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                    Nominal Bonus (Rp)
+                    {t("dashboard.adminCommissions.bonusAmount")}
                   </label>
                   <div className="flex items-center gap-2">
                     <input
@@ -417,7 +419,7 @@ export default function AdminCommissionsPage() {
           }`}
         >
           <DollarSign className="size-4" />
-          Komisi Recurring ({total})
+          {t("dashboard.adminCommissions.recurringCommissions", undefined, { count: String(total) })}
         </button>
         <button
           onClick={() => setActiveTab("bonuses")}
@@ -428,7 +430,7 @@ export default function AdminCommissionsPage() {
           }`}
         >
           <Award className="size-4" />
-          Semua Bonus Sales ({bonusTotal})
+          {t("dashboard.adminCommissions.allBonuses", undefined, { count: String(bonusTotal) })}
         </button>
       </div>
 
@@ -437,31 +439,31 @@ export default function AdminCommissionsPage() {
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="border-b border-border/20 pb-4 flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-bold tracking-tight">
-              Semua Transaksi Komisi ({total})
+              {t("dashboard.adminCommissions.allCommissionTxns", undefined, { count: String(total) })}
             </CardTitle>
             <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">
-              Pending di Halaman Ini: Rp {totalCommissionAmount.toLocaleString("id-ID")}
+              {t("dashboard.adminCommissions.pendingOnPage", undefined, { amount: totalCommissionAmount.toLocaleString("id-ID") })}
             </div>
           </CardHeader>
           <CardContent className="p-0">
             {commissions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                 <DollarSign className="size-10 opacity-30" />
-                <p className="text-sm">Belum ada komisi tercatat di sistem</p>
+                <p className="text-sm">{t("dashboard.adminCommissions.noCommissions")}</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                      <th className="px-6 py-4">Tanggal</th>
-                      <th className="px-6 py-4">Sales User ID</th>
-                      <th className="px-6 py-4">Tenant ID</th>
-                      <th className="px-6 py-4">Order ID</th>
-                      <th className="px-6 py-4 text-right">Gross Amount</th>
-                      <th className="px-6 py-4 text-center">Rate</th>
-                      <th className="px-6 py-4 text-right">Komisi</th>
-                      <th className="px-6 py-4 text-center">Status</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colDate")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colSalesUser")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colTenantId")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colOrderId")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.adminCommissions.colGrossAmount")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.adminCommissions.colRate")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.adminCommissions.colCommission")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.adminCommissions.colStatus")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -492,10 +494,10 @@ export default function AdminCommissionsPage() {
                           Rp {c.gross_amount.toLocaleString("id-ID")}
                         </td>
                         <td className="px-6 py-4 text-center text-xs">
-                          <span className="inline-flex flex-col items-center leading-tight">
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Tier {c.tier}</span>
-                            <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
-                          </span>
+                        <span className="inline-flex flex-col items-center leading-tight">
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">{t("dashboard.adminCommissions.tier")} {c.tier}</span>
+                          <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
+                        </span>
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
                           Rp {c.amount.toLocaleString("id-ID")}
@@ -519,7 +521,7 @@ export default function AdminCommissionsPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
                 <span className="text-xs text-muted-foreground">
-                  Halaman {page} dari {totalPages}
+                  {t("dashboard.adminCommissions.pageOf", undefined, { page: String(page), total: String(totalPages) })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -530,7 +532,7 @@ export default function AdminCommissionsPage() {
                     className="gap-1"
                   >
                     <ChevronLeft className="size-4" />
-                    Sebelumnya
+                    {t("dashboard.adminCommissions.previous")}
                   </Button>
                   <Button
                     size="sm"
@@ -539,7 +541,7 @@ export default function AdminCommissionsPage() {
                     onClick={() => setPage((p) => p + 1)}
                     className="gap-1"
                   >
-                    Selanjutnya
+                    {t("dashboard.adminCommissions.next")}
                     <ChevronRight className="size-4" />
                   </Button>
                 </div>
@@ -554,26 +556,26 @@ export default function AdminCommissionsPage() {
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="border-b border-border/20 pb-4 flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-bold tracking-tight">
-              Semua Bonus Sales ({bonusTotal})
+              {t("dashboard.adminCommissions.allBonusesTitle", undefined, { count: String(bonusTotal) })}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             {bonuses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                 <Award className="size-10 opacity-30" />
-                <p className="text-sm">Belum ada bonus tercatat di sistem</p>
+                <p className="text-sm">{t("dashboard.adminCommissions.noBonuses")}</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                      <th className="px-6 py-4">Tanggal</th>
-                      <th className="px-6 py-4">Sales User ID</th>
-                      <th className="px-6 py-4">Jenis Bonus</th>
-                      <th className="px-6 py-4 text-center">Detail / Periode</th>
-                      <th className="px-6 py-4 text-right">Nominal Bonus</th>
-                      <th className="px-6 py-4 text-center">Status</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colDate")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colSalesUser")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminCommissions.colBonusType")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.adminCommissions.colDetailPeriod")}</th>
+                      <th className="px-6 py-4 text-right">{t("dashboard.adminCommissions.colBonusAmount")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.adminCommissions.colStatus")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -601,13 +603,13 @@ export default function AdminCommissionsPage() {
                             ) : (
                               <Target className="size-4 text-amber-500" />
                             )}
-                            <span className="font-semibold capitalize">{b.type} Bonus</span>
+                            <span className="font-semibold capitalize">{b.type} {t("dashboard.adminCommissions.bonus")}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center text-xs font-mono text-muted-foreground">
                           {b.type === "onboarding"
-                            ? `Tenant #${b.tenant_id}`
-                            : `Periode ${b.period} (Tier ${b.tier})`}
+                            ? `${t("dashboard.adminCommissions.tenant")} #${b.tenant_id}`
+                            : `${t("dashboard.adminCommissions.period")} ${b.period} (${t("dashboard.adminCommissions.tier")} ${b.tier})`}
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-amber-600 dark:text-amber-400">
                           Rp {b.amount.toLocaleString("id-ID")}
@@ -633,7 +635,7 @@ export default function AdminCommissionsPage() {
             {totalBonusPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
                 <span className="text-xs text-muted-foreground">
-                  Halaman {bonusPage} dari {totalBonusPages}
+                  {t("dashboard.adminCommissions.pageOf", undefined, { page: String(bonusPage), total: String(totalBonusPages) })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -644,7 +646,7 @@ export default function AdminCommissionsPage() {
                     className="gap-1"
                   >
                     <ChevronLeft className="size-4" />
-                    Sebelumnya
+                    {t("dashboard.adminCommissions.previous")}
                   </Button>
                   <Button
                     size="sm"
@@ -653,7 +655,7 @@ export default function AdminCommissionsPage() {
                     onClick={() => setBonusPage((p) => p + 1)}
                     className="gap-1"
                   >
-                    Selanjutnya
+                    {t("dashboard.adminCommissions.next")}
                     <ChevronRight className="size-4" />
                   </Button>
                 </div>

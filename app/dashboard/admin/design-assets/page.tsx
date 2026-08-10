@@ -21,6 +21,7 @@ import {
   type DesignAssetsConfig,
 } from "@/lib/design-assets-config";
 import { useAuthToken } from "@/lib/auth-store";
+import { useI18n } from "@/lib/i18n/context";
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 import { SECTION_META, BODY_SECTION_KEYS, OPTIONAL_SECTION_KEYS } from "@/app/dashboard/sites/[id]/editor-utils";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -219,13 +220,14 @@ function PaletteStrip({ palette }: { palette: ColorPattern["palette"] }) {
 
 // ─── Hidden / visible badge ───────────────────────────────────────────────────
 function VisibilityBadge({ hidden }: { hidden: boolean }) {
+  const { t } = useI18n();
   return hidden ? (
     <Badge variant="outline" className="text-[10px] border-destructive/40 text-destructive gap-1 font-semibold">
-      <EyeOff className="size-2.5" /> Disembunyikan
+      <EyeOff className="size-2.5" /> {t("dashboard.adminDesignAssets.hidden")}
     </Badge>
   ) : (
     <Badge variant="outline" className="text-[10px] border-green-500/40 text-green-500 gap-1 font-semibold">
-      <Eye className="size-2.5" /> Aktif
+      <Eye className="size-2.5" /> {t("dashboard.adminDesignAssets.active")}
     </Badge>
   );
 }
@@ -246,6 +248,7 @@ function SectionsTab({
   onReset: () => void;
 }) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const { t } = useI18n();
 
   return (
     <div className="space-y-8">
@@ -253,11 +256,11 @@ function SectionsTab({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-foreground">Visibilitas Section</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Section yang disembunyikan tidak muncul di sidebar editor.</p>
+            <p className="text-sm font-semibold text-foreground">{t("dashboard.adminDesignAssets.sectionsVisibilityTitle")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("dashboard.adminDesignAssets.sectionsVisibilityDesc")}</p>
           </div>
           <Button variant="outline" size="sm" onClick={onReset} className="gap-1.5 shrink-0">
-            <RotateCcw className="size-3.5" /> Reset Default
+            <RotateCcw className="size-3.5" /> {t("dashboard.adminDesignAssets.resetDefault")}
           </Button>
         </div>
 
@@ -288,16 +291,16 @@ function SectionsTab({
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {isOptional && <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">Opsional</Badge>}
+                    {isOptional && <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">{t("dashboard.adminDesignAssets.optional")}</Badge>}
                     {isRequired && (
                       <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/40 text-amber-500 font-semibold gap-0.5">
-                        <Lock className="size-2" /> Wajib
+                        <Lock className="size-2" /> {t("dashboard.adminDesignAssets.required")}
                       </Badge>
                     )}
                     {hasVariants && (
                       <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-semibold gap-0.5 cursor-pointer hover:bg-muted/50"
                         onClick={() => setExpandedSection(isExpanded ? null : key)}>
-                        {variantCount - hiddenVariantCount}/{variantCount} variasi aktif
+                        {t("dashboard.adminDesignAssets.variantsActive", undefined, { active: String(variantCount - hiddenVariantCount), total: String(variantCount) })}
                       </Badge>
                     )}
                   </div>
@@ -309,12 +312,12 @@ function SectionsTab({
                       className="flex-1 h-7 text-[11px] font-semibold gap-1"
                       disabled={isRequired && !isHidden}
                       onClick={() => onToggleHide(key, !isHidden)}>
-                      {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                      {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                     </Button>
                     <Button size="sm" variant={isRequired ? "secondary" : "outline"}
                       className="flex-1 h-7 text-[11px] font-semibold gap-1"
                       onClick={() => onToggleRequired(key, !isRequired)}>
-                      {isRequired ? <><Unlock className="size-3" /> Lepas Wajib</> : <><Lock className="size-3" /> Wajibkan</>}
+                      {isRequired ? <><Unlock className="size-3" /> {t("dashboard.adminDesignAssets.unrequire")}</> : <><Lock className="size-3" /> {t("dashboard.adminDesignAssets.require")}</>}
                     </Button>
                   </div>
                 </CardContent>
@@ -327,9 +330,9 @@ function SectionsTab({
       {/* ── Variasi Tampilan ── */}
       <div className="space-y-4">
         <div>
-          <p className="text-sm font-semibold text-foreground">Variasi Tampilan</p>
+          <p className="text-sm font-semibold text-foreground">{t("dashboard.adminDesignAssets.variantsTitle")}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Kelola variasi tampilan per section. Variasi yang disembunyikan tidak muncul di dropdown editor.
+            {t("dashboard.adminDesignAssets.variantsDesc")}
           </p>
         </div>
 
@@ -347,7 +350,7 @@ function SectionsTab({
                   {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
                   <span className="font-semibold text-sm">{meta?.label ?? sectionKey}</span>
                   <Badge variant="secondary" className="text-[9px] h-4 px-1.5 ml-auto">
-                    {activeCount}/{variants.length} aktif
+                    {t("dashboard.adminDesignAssets.variantsCount", undefined, { active: String(activeCount), total: String(variants.length) })}
                   </Badge>
                 </div>
 
@@ -379,7 +382,7 @@ function SectionsTab({
                             className="w-full h-6 text-[10px] font-semibold gap-1"
                             onClick={() => onToggleVariant(sectionKey, variant.value, !isHidden)}
                           >
-                            {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                            {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                           </Button>
                         </div>
                       </div>
@@ -395,20 +398,20 @@ function SectionsTab({
       {/* ── Gaya Peta (Map Tiles) ── */}
       <div className="space-y-4">
         <div>
-          <p className="text-sm font-semibold text-foreground">Gaya Peta</p>
+          <p className="text-sm font-semibold text-foreground">{t("dashboard.adminDesignAssets.mapTilesTitle")}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Kelola pilihan gaya peta yang muncul di editor section Kontak.
+            {t("dashboard.adminDesignAssets.mapTilesDesc")}
           </p>
         </div>
 
         {(() => {
           const ALL_TILES = [
-            { key: "default",  label: "OSM",      description: "OpenStreetMap standar, detail dan gratis.", bg: "#e8f4f8", accent: "#3b82f6" },
-            { key: "cyclosm",  label: "CyclOSM",  description: "OSM dengan jalur sepeda, warna lebih cerah.", bg: "#f0f9ef", accent: "#22c55e" },
-            { key: "light",    label: "Terang",   description: "Peta minimalis terang dari CartoCDN.", bg: "#fafafa", accent: "#94a3b8" },
-            { key: "dark",     label: "Gelap",    description: "Peta gelap elegan dari CartoCDN.", bg: "#1e293b", accent: "#94a3b8" },
-            { key: "esri",     label: "Esri",     description: "Peta jalan bergaya Esri / ArcGIS.", bg: "#fff8f0", accent: "#f97316" },
-            { key: "satelit",  label: "Satelit",  description: "Citra satelit dari Esri World Imagery.", bg: "#0f172a", accent: "#10b981" },
+            { key: "default",  label: "OSM",      description: t("dashboard.adminDesignAssets.tileDescOsm"), bg: "#e8f4f8", accent: "#3b82f6" },
+            { key: "cyclosm",  label: "CyclOSM",  description: t("dashboard.adminDesignAssets.tileDescCyclosm"), bg: "#f0f9ef", accent: "#22c55e" },
+            { key: "light",    label: t("dashboard.adminDesignAssets.tileLabelLight"),   description: t("dashboard.adminDesignAssets.tileDescLight"), bg: "#fafafa", accent: "#94a3b8" },
+            { key: "dark",     label: t("dashboard.adminDesignAssets.tileLabelDark"),    description: t("dashboard.adminDesignAssets.tileDescDark"), bg: "#1e293b", accent: "#94a3b8" },
+            { key: "esri",     label: "Esri",     description: t("dashboard.adminDesignAssets.tileDescEsri"), bg: "#fff8f0", accent: "#f97316" },
+            { key: "satelit",  label: t("dashboard.adminDesignAssets.tileLabelSatellite"), description: t("dashboard.adminDesignAssets.tileDescSatellite"), bg: "#0f172a", accent: "#10b981" },
           ];
           const hiddenSet = new Set(hiddenMapTiles);
           return (
@@ -450,7 +453,7 @@ function SectionsTab({
                       <Button size="sm" variant={isHidden ? "default" : "outline"}
                         className="w-full h-6 text-[10px] font-semibold gap-1"
                         onClick={() => onToggleMapTile(tile.key, !isHidden)}>
-                        {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                        {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                       </Button>
                     </div>
                   </div>
@@ -472,6 +475,7 @@ const EMPTY_PAIRING: Omit<TypographyPairing, "id"> = {
 };
 
 function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => void; onCancel: () => void }) {
+  const { t } = useI18n();
   const [form, setForm] = useState({ ...EMPTY_PAIRING });
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -483,44 +487,44 @@ function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => 
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="p-4 space-y-3">
-        <p className="text-xs font-bold text-primary uppercase tracking-wider">Tambah Pasangan Font Baru</p>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider">{t("dashboard.adminDesignAssets.addPairingTitle")}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Nama</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
             <Input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="cth. Startup Bold" className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Deskripsi</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
             <Input value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Font Heading</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.headingFont")}</label>
             <select value={form.heading_font} onChange={(e) => set("heading_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Font Body</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.bodyFont")}</label>
             <select value={form.body_font} onChange={(e) => set("body_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Ketebalan</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.weight")}</label>
             <select value={form.heading_weight} onChange={(e) => set("heading_weight", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {["300","400","500","600","700","800","900"].map((w) => <option key={w} value={w}>{w}</option>)}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Ukuran Hero</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.heroSize")}</label>
             <select value={form.heading_size_hero} onChange={(e) => set("heading_size_hero", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {["2rem","2.5rem","3rem","3.5rem","4rem"].map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
         </div>
         <div className="flex gap-2 justify-end">
-          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">Batal</Button>
-          <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> Simpan</Button>
+          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">{t("dashboard.adminDesignAssets.cancel")}</Button>
+          <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> {t("dashboard.adminDesignAssets.save")}</Button>
         </div>
       </CardContent>
     </Card>
@@ -539,6 +543,7 @@ function PairingsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
   const allPairings = [...getBuiltinTypographyPairings(), ...customPairings];
   const filtered = allPairings.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.heading_font.toLowerCase().includes(search.toLowerCase())
@@ -553,10 +558,10 @@ function PairingsTab({
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-          <Input placeholder="Cari pasangan font..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
+          <Input placeholder={t("dashboard.adminDesignAssets.searchPairings")} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
         </div>
         <Button size="sm" onClick={() => setShowAdd(true)} className="gap-1.5 shrink-0 h-9">
-          <Plus className="size-3.5" /> Tambah
+          <Plus className="size-3.5" /> {t("dashboard.adminDesignAssets.add")}
         </Button>
       </div>
 
@@ -587,7 +592,7 @@ function PairingsTab({
                   </div>
                   <div className="flex flex-col gap-1 items-end shrink-0">
                     <VisibilityBadge hidden={isHidden} />
-                    {pairing.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Custom</Badge>}
+                    {pairing.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">{t("dashboard.adminDesignAssets.custom")}</Badge>}
                   </div>
                 </div>
 
@@ -601,7 +606,7 @@ function PairingsTab({
 
                 <div className="flex gap-1.5">
                   <Button size="sm" variant={isHidden ? "default" : "outline"} className="flex-1 h-7 text-[11px] gap-1" onClick={() => onToggleHide(pairing.id, !isHidden)}>
-                    {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                    {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                   </Button>
                   {pairing.is_custom && (
                     <Button size="sm" variant="ghost" className="h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete(pairing.id)}>
@@ -615,7 +620,7 @@ function PairingsTab({
         })}
       </div>
       {filtered.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground text-sm">Tidak ada pasangan font yang cocok.</div>
+        <div className="text-center py-16 text-muted-foreground text-sm">{t("dashboard.adminDesignAssets.noPairingsMatch")}</div>
       )}
     </div>
   );
@@ -625,6 +630,7 @@ function PairingsTab({
 const EMPTY_PATTERN_PALETTE = { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" };
 
 function AddPatternForm({ onAdd, onCancel }: { onAdd: (p: ColorPattern) => void; onCancel: () => void }) {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
@@ -639,14 +645,14 @@ function AddPatternForm({ onAdd, onCancel }: { onAdd: (p: ColorPattern) => void;
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="p-4 space-y-3">
-        <p className="text-xs font-bold text-primary uppercase tracking-wider">Tambah Palet Warna Baru</p>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider">{t("dashboard.adminDesignAssets.addPatternTitle")}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Nama</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="cth. Laut Biru" className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Deskripsi</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
             <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
           </div>
         </div>
@@ -665,14 +671,14 @@ function AddPatternForm({ onAdd, onCancel }: { onAdd: (p: ColorPattern) => void;
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-[10px] font-semibold uppercase text-muted-foreground">Mode</label>
+          <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.mode")}</label>
           <button type="button" onClick={() => setThemeMode(themeMode === "light" ? "dark" : "light")} className="flex items-center gap-1.5 px-2 py-1 rounded border border-border/50 text-xs font-medium">
-            {themeMode === "light" ? <><Sun className="size-3" /> Terang</> : <><Moon className="size-3" /> Gelap</>}
+            {themeMode === "light" ? <><Sun className="size-3" /> {t("dashboard.adminDesignAssets.light")}</> : <><Moon className="size-3" /> {t("dashboard.adminDesignAssets.dark")}</>}
           </button>
         </div>
         <div className="flex gap-2 justify-end">
-          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">Batal</Button>
-          <Button size="sm" onClick={handleSubmit} disabled={!name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> Simpan</Button>
+          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">{t("dashboard.adminDesignAssets.cancel")}</Button>
+          <Button size="sm" onClick={handleSubmit} disabled={!name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> {t("dashboard.adminDesignAssets.save")}</Button>
         </div>
       </CardContent>
     </Card>
@@ -691,6 +697,7 @@ function PatternsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
   const allPatterns = [...getBuiltinColorPatterns(), ...customPatterns];
   const filtered = allPatterns.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
@@ -701,10 +708,10 @@ function PatternsTab({
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-          <Input placeholder="Cari palet warna..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
+          <Input placeholder={t("dashboard.adminDesignAssets.searchPatterns")} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
         </div>
         <Button size="sm" onClick={() => setShowAdd(true)} className="gap-1.5 shrink-0 h-9">
-          <Plus className="size-3.5" /> Tambah
+          <Plus className="size-3.5" /> {t("dashboard.adminDesignAssets.add")}
         </Button>
       </div>
 
@@ -736,19 +743,19 @@ function PatternsTab({
                   </div>
                   <div className="flex flex-col gap-1 items-end shrink-0">
                     <VisibilityBadge hidden={isHidden} />
-                    {pattern.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Custom</Badge>}
+                    {pattern.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">{t("dashboard.adminDesignAssets.custom")}</Badge>}
                   </div>
                 </div>
 
                 <Badge variant="outline" className={`self-start text-[10px] font-mono font-bold border ${scoreBadgeClass(score)}`}>
-                  Score: {score}
+                  {t("dashboard.adminDesignAssets.score", undefined, { score: String(score) })}
                 </Badge>
 
                 <Separator className="bg-border/30" />
 
                 <div className="flex gap-1.5">
                   <Button size="sm" variant={isHidden ? "default" : "outline"} className="flex-1 h-7 text-[11px] gap-1" onClick={() => onToggleHide(pattern.id, !isHidden)}>
-                    {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                    {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                   </Button>
                   {pattern.is_custom && (
                     <Button size="sm" variant="ghost" className="h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete(pattern.id)}>
@@ -762,7 +769,7 @@ function PatternsTab({
         })}
       </div>
       {filtered.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground text-sm">Tidak ada palet yang cocok.</div>
+        <div className="text-center py-16 text-muted-foreground text-sm">{t("dashboard.adminDesignAssets.noPatternsMatch")}</div>
       )}
     </div>
   );
@@ -778,6 +785,7 @@ function AddPresetForm({
   enabledPairingIds: string[];
   enabledPatternIds: string[];
 }) {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("💼");
@@ -792,22 +800,22 @@ function AddPresetForm({
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="p-4 space-y-3">
-        <p className="text-xs font-bold text-primary uppercase tracking-wider">Tambah Paket Tampilan Baru</p>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider">{t("dashboard.adminDesignAssets.addPresetTitle")}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Nama</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="cth. Apotek Modern" className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Deskripsi</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
             <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Ikon Emoji</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.emojiIcon")}</label>
             <Input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="🏥" className="h-8 text-xs" maxLength={4} />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Pasangan Font</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.fontPairing")}</label>
             <select value={pairingId} onChange={(e) => setPairingId(e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {enabledPairingIds.map((id) => {
                 const p = getBuiltinTypographyPairings().find((t) => t.id === id);
@@ -816,7 +824,7 @@ function AddPresetForm({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">Palet Warna</label>
+            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.colorPalette")}</label>
             <select value={patternId} onChange={(e) => setPatternId(e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
               {enabledPatternIds.map((id) => {
                 const p = getBuiltinColorPatterns().find((c) => c.id === id);
@@ -826,8 +834,8 @@ function AddPresetForm({
           </div>
         </div>
         <div className="flex gap-2 justify-end">
-          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">Batal</Button>
-          <Button size="sm" onClick={handleSubmit} disabled={!name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> Simpan</Button>
+          <Button size="sm" variant="outline" onClick={onCancel} className="h-7 text-xs">{t("dashboard.adminDesignAssets.cancel")}</Button>
+          <Button size="sm" onClick={handleSubmit} disabled={!name.trim()} className="h-7 text-xs gap-1"><Check className="size-3" /> {t("dashboard.adminDesignAssets.save")}</Button>
         </div>
       </CardContent>
     </Card>
@@ -851,6 +859,7 @@ function PresetsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
   const allPresets = [...INDUSTRY_PRESETS, ...customPresets];
   const allPairings = [...getBuiltinTypographyPairings(), ...customPairings];
   const allPatterns = [...getBuiltinColorPatterns(), ...customPatterns];
@@ -866,10 +875,10 @@ function PresetsTab({
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-          <Input placeholder="Cari paket tampilan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
+          <Input placeholder={t("dashboard.adminDesignAssets.searchPresets")} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-sm" />
         </div>
         <Button size="sm" onClick={() => setShowAdd(true)} className="gap-1.5 shrink-0 h-9">
-          <Plus className="size-3.5" /> Tambah
+          <Plus className="size-3.5" /> {t("dashboard.adminDesignAssets.add")}
         </Button>
       </div>
 
@@ -909,7 +918,7 @@ function PresetsTab({
                   </div>
                   <div className="flex flex-col gap-1 items-end shrink-0">
                     <VisibilityBadge hidden={isHidden} />
-                    {preset.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Custom</Badge>}
+                    {preset.is_custom && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">{t("dashboard.adminDesignAssets.custom")}</Badge>}
                   </div>
                 </div>
 
@@ -926,7 +935,7 @@ function PresetsTab({
 
                 <div className="flex gap-1.5">
                   <Button size="sm" variant={isHidden ? "default" : "outline"} className="flex-1 h-7 text-[11px] gap-1" onClick={() => onToggleHide(preset.id, !isHidden)}>
-                    {isHidden ? <><Eye className="size-3" /> Tampilkan</> : <><EyeOff className="size-3" /> Sembunyikan</>}
+                    {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
                   </Button>
                   {preset.is_custom && (
                     <Button size="sm" variant="ghost" className="h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete(preset.id)}>
@@ -940,7 +949,7 @@ function PresetsTab({
         })}
       </div>
       {filtered.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground text-sm">Tidak ada paket yang cocok.</div>
+        <div className="text-center py-16 text-muted-foreground text-sm">{t("dashboard.adminDesignAssets.noPresetsMatch")}</div>
       )}
     </div>
   );
@@ -950,6 +959,7 @@ function PresetsTab({
 export default function DesignAssetsPage() {
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const authToken = useAuthToken();
   const isSuperAdmin = userRole === "superadmin";
   const [saving, setSaving] = useState(false);
@@ -1006,7 +1016,7 @@ export default function DesignAssetsPage() {
       try {
         await saveDesignAssetsConfig(next, authToken);
       } catch {
-        pushToast("Gagal menyimpan ke server. Perubahan tersimpan lokal.", "error");
+        pushToast(t("dashboard.adminDesignAssets.saveLocalOnly"), "error");
       } finally {
         setSaving(false);
       }
@@ -1017,8 +1027,10 @@ export default function DesignAssetsPage() {
       <div className="flex flex-col items-center justify-center h-96 text-muted-foreground gap-4 animate-in fade-in duration-300">
         <ShieldAlert className="size-16 text-destructive opacity-80" />
         <div className="text-center space-y-1">
-          <h2 className="text-lg font-bold text-foreground">Akses Ditolak</h2>
-          <p className="text-sm max-w-sm">Halaman ini hanya dapat diakses oleh akun dengan peran <span className="font-semibold text-primary">Superadmin</span>.</p>
+          <h2 className="text-lg font-bold text-foreground">{t("dashboard.adminDesignAssets.accessDenied")}</h2>
+          <p className="text-sm max-w-sm">
+            {t("dashboard.adminDesignAssets.accessDeniedDesc", undefined, { superadmin: t("dashboard.adminDesignAssets.superadmin") })}
+          </p>
         </div>
       </div>
     );
@@ -1028,16 +1040,16 @@ export default function DesignAssetsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-3 text-muted-foreground animate-in fade-in duration-300">
         <SlidersHorizontal className="size-8 animate-pulse text-primary" />
-        <p className="text-sm font-medium">Memuat konfigurasi design assets...</p>
+        <p className="text-sm font-medium">{t("dashboard.adminDesignAssets.loading")}</p>
       </div>
     );
   }
 
   const TABS: { id: Tab; label: string; icon: React.ElementType; count: number }[] = [
-    { id: "sections", label: "Sections", icon: LayoutGrid, count: MANAGEABLE_SECTIONS.length - hiddenSections.size },
-    { id: "pairings", label: "Tipografi", icon: Type, count: getBuiltinTypographyPairings().length + customPairings.length - hiddenPairings.size },
-    { id: "patterns", label: "Palet Warna", icon: Palette, count: getBuiltinColorPatterns().length + customPatterns.length - hiddenPatterns.size },
-    { id: "presets", label: "Paket Tampilan", icon: Layers, count: INDUSTRY_PRESETS.length + customPresets.length - hiddenPresets.size },
+    { id: "sections", label: t("dashboard.adminDesignAssets.tabSections"), icon: LayoutGrid, count: MANAGEABLE_SECTIONS.length - hiddenSections.size },
+    { id: "pairings", label: t("dashboard.adminDesignAssets.tabTypography"), icon: Type, count: getBuiltinTypographyPairings().length + customPairings.length - hiddenPairings.size },
+    { id: "patterns", label: t("dashboard.adminDesignAssets.tabPalettes"), icon: Palette, count: getBuiltinColorPatterns().length + customPatterns.length - hiddenPatterns.size },
+    { id: "presets", label: t("dashboard.adminDesignAssets.tabPresets"), icon: Layers, count: INDUSTRY_PRESETS.length + customPresets.length - hiddenPresets.size },
   ];
 
   return (
@@ -1047,11 +1059,11 @@ export default function DesignAssetsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2.5 text-foreground">
             <SlidersHorizontal className="size-6 text-primary" />
-            Design Assets
+            {t("dashboard.adminDesignAssets.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Kelola section, tipografi, palet warna, dan paket tampilan yang tersedia di editor website.
-          {saving && <span className="text-[10px] text-muted-foreground animate-pulse font-medium">Menyimpan...</span>}
+            {t("dashboard.adminDesignAssets.subtitle")}
+            {saving && <span className="text-[10px] text-muted-foreground animate-pulse font-medium"> {t("dashboard.adminDesignAssets.saving")}</span>}
           </p>
         </div>
         <Button
@@ -1059,7 +1071,7 @@ export default function DesignAssetsPage() {
           size="sm"
           className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10 shrink-0"
           onClick={async () => {
-            if (!window.confirm("Reset semua pengaturan Design Assets ke default?")) return;
+            if (!window.confirm(t("dashboard.adminDesignAssets.resetAllConfirm"))) return;
             setSaving(true);
             try {
               const cfg = authToken
@@ -1075,16 +1087,16 @@ export default function DesignAssetsPage() {
               setCustomPairings(cfg.custom_pairings ?? []);
               setCustomPatterns(cfg.custom_patterns ?? []);
               setCustomPresets(cfg.custom_presets ?? []);
-              pushToast("Semua pengaturan Design Assets direset ke default.", "success");
+              pushToast(t("dashboard.adminDesignAssets.resetAllSuccess"), "success");
             } catch {
-              pushToast("Gagal reset ke server.", "error");
+              pushToast(t("dashboard.adminDesignAssets.resetAllFailed"), "error");
             } finally {
               setSaving(false);
             }
           }}
           disabled={saving}
         >
-          <RotateCcw className={`size-3.5 ${saving ? "animate-spin" : ""}`} /> Reset Semua
+          <RotateCcw className={`size-3.5 ${saving ? "animate-spin" : ""}`} /> {t("dashboard.adminDesignAssets.resetAll")}
         </Button>
       </div>
 
@@ -1116,7 +1128,7 @@ export default function DesignAssetsPage() {
           requiredSections={requiredSections}
           hiddenVariants={hiddenVariants}
           onToggleHide={(key, hide) => {            if (hide && requiredSections.has(key)) {
-              pushToast(`Section "${key}" wajib aktif dan tidak bisa disembunyikan.`, "error");
+              pushToast(t("dashboard.adminDesignAssets.sectionRequiredError", undefined, { key }), "error");
               return;
             }
             syncAndPersist((cfg) => {
@@ -1124,7 +1136,7 @@ export default function DesignAssetsPage() {
               hide ? s.add(key) : s.delete(key);
               return { ...cfg, hidden_sections: Array.from(s) };
             });
-            pushToast(hide ? `Section "${key}" disembunyikan.` : `Section "${key}" ditampilkan.`, "success");
+            pushToast(hide ? t("dashboard.adminDesignAssets.sectionHidden", undefined, { key }) : t("dashboard.adminDesignAssets.sectionShown", undefined, { key }), "success");
           }}
           onToggleRequired={(key, required) => {
             syncAndPersist((cfg) => {
@@ -1135,7 +1147,7 @@ export default function DesignAssetsPage() {
               if (required) h.delete(key);
               return { ...cfg, required_sections: Array.from(s), hidden_sections: Array.from(h) };
             });
-            pushToast(required ? `Section "${key}" dijadikan wajib.` : `Section "${key}" bisa disembunyikan.`, "success");
+            pushToast(required ? t("dashboard.adminDesignAssets.sectionRequired", undefined, { key }) : t("dashboard.adminDesignAssets.sectionOptional", undefined, { key }), "success");
           }}
           onToggleVariant={(section, variant, hide) => {
             syncAndPersist((cfg) => {
@@ -1147,13 +1159,13 @@ export default function DesignAssetsPage() {
               };
             });
             pushToast(
-              hide ? `Variasi "${variant}" pada "${section}" disembunyikan.` : `Variasi "${variant}" pada "${section}" ditampilkan.`,
+              hide ? t("dashboard.adminDesignAssets.variantHidden", undefined, { variant, section }) : t("dashboard.adminDesignAssets.variantShown", undefined, { variant, section }),
               "success"
             );
           }}
           onReset={() => {
             syncAndPersist((cfg) => ({ ...cfg, hidden_sections: [], required_sections: REQUIRED_SECTIONS_DEFAULT, hidden_variants: {}, hidden_map_tiles: [] }));
-            pushToast("Pengaturan sections direset.", "success");
+            pushToast(t("dashboard.adminDesignAssets.sectionsReset"), "success");
           }}
           hiddenMapTiles={hiddenMapTiles}
           onToggleMapTile={(tile, hide) => {
@@ -1162,7 +1174,7 @@ export default function DesignAssetsPage() {
               hide ? s.add(tile) : s.delete(tile);
               return { ...cfg, hidden_map_tiles: Array.from(s) };
             });
-            pushToast(hide ? `Gaya peta "${tile}" disembunyikan.` : `Gaya peta "${tile}" ditampilkan.`, "success");
+            pushToast(hide ? t("dashboard.adminDesignAssets.tileHidden", undefined, { tile }) : t("dashboard.adminDesignAssets.tileShown", undefined, { tile }), "success");
           }}
         />
       )}
@@ -1177,16 +1189,16 @@ export default function DesignAssetsPage() {
               hide ? s.add(id) : s.delete(id);
               return { ...cfg, hidden_pairings: Array.from(s) };
             });
-            pushToast(hide ? "Pasangan font disembunyikan." : "Pasangan font ditampilkan.", "success");
+            pushToast(hide ? t("dashboard.adminDesignAssets.pairingHidden") : t("dashboard.adminDesignAssets.pairingShown"), "success");
           }}
           onAdd={(p) => {
             syncAndPersist((cfg) => ({ ...cfg, custom_pairings: [...(cfg.custom_pairings ?? []), p] }));
-            pushToast(`Pasangan font "${p.name}" ditambahkan.`, "success");
+            pushToast(t("dashboard.adminDesignAssets.pairingAdded", undefined, { name: p.name }), "success");
           }}
           onDelete={(id) => {
-            if (!window.confirm("Hapus pasangan font custom ini?")) return;
+            if (!window.confirm(t("dashboard.adminDesignAssets.deletePairingConfirm"))) return;
             syncAndPersist((cfg) => ({ ...cfg, custom_pairings: (cfg.custom_pairings ?? []).filter((p) => p.id !== id) }));
-            pushToast("Pasangan font dihapus.", "success");
+            pushToast(t("dashboard.adminDesignAssets.pairingDeleted"), "success");
           }}
         />
       )}
@@ -1201,16 +1213,16 @@ export default function DesignAssetsPage() {
               hide ? s.add(id) : s.delete(id);
               return { ...cfg, hidden_patterns: Array.from(s) };
             });
-            pushToast(hide ? "Palet disembunyikan." : "Palet ditampilkan.", "success");
+            pushToast(hide ? t("dashboard.adminDesignAssets.patternHidden") : t("dashboard.adminDesignAssets.patternShown"), "success");
           }}
           onAdd={(p) => {
             syncAndPersist((cfg) => ({ ...cfg, custom_patterns: [...(cfg.custom_patterns ?? []), p] }));
-            pushToast(`Palet "${p.name}" ditambahkan.`, "success");
+            pushToast(t("dashboard.adminDesignAssets.patternAdded", undefined, { name: p.name }), "success");
           }}
           onDelete={(id) => {
-            if (!window.confirm("Hapus palet custom ini?")) return;
+            if (!window.confirm(t("dashboard.adminDesignAssets.deletePatternConfirm"))) return;
             syncAndPersist((cfg) => ({ ...cfg, custom_patterns: (cfg.custom_patterns ?? []).filter((p) => p.id !== id) }));
-            pushToast("Palet dihapus.", "success");
+            pushToast(t("dashboard.adminDesignAssets.patternDeleted"), "success");
           }}
         />
       )}
@@ -1229,16 +1241,16 @@ export default function DesignAssetsPage() {
               hide ? s.add(id) : s.delete(id);
               return { ...cfg, hidden_presets: Array.from(s) };
             });
-            pushToast(hide ? "Paket tampilan disembunyikan." : "Paket tampilan ditampilkan.", "success");
+            pushToast(hide ? t("dashboard.adminDesignAssets.presetHidden") : t("dashboard.adminDesignAssets.presetShown"), "success");
           }}
           onAdd={(p) => {
             syncAndPersist((cfg) => ({ ...cfg, custom_presets: [...(cfg.custom_presets ?? []), p] }));
-            pushToast(`Paket "${p.name}" ditambahkan.`, "success");
+            pushToast(t("dashboard.adminDesignAssets.presetAdded", undefined, { name: p.name }), "success");
           }}
           onDelete={(id) => {
-            if (!window.confirm("Hapus paket tampilan custom ini?")) return;
+            if (!window.confirm(t("dashboard.adminDesignAssets.deletePresetConfirm"))) return;
             syncAndPersist((cfg) => ({ ...cfg, custom_presets: (cfg.custom_presets ?? []).filter((p) => p.id !== id) }));
-            pushToast("Paket tampilan dihapus.", "success");
+            pushToast(t("dashboard.adminDesignAssets.presetDeleted"), "success");
           }}
         />
       )}

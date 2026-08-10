@@ -7,6 +7,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Trash2, Megaphone, Info, AlertTriangle, AlertCircle } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Select } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 interface AnnouncementItem {
   id: number;
@@ -22,6 +23,7 @@ interface AnnouncementItem {
 export default function AdminAnnouncementsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { role } = usePermissions();
   const [items, setItems] = useState<AnnouncementItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +46,7 @@ export default function AdminAnnouncementsPage() {
       const res = await request<AnnouncementItem[]>("/admin/announcements", {}, token);
       setItems(res.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Failed to load announcements", "error");
+      pushToast(err.message || t("dashboard.adminAnnouncements.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -65,24 +67,24 @@ export default function AdminAnnouncementsPage() {
         method: "POST",
         body: JSON.stringify({ title, content, severity }),
       }, token);
-      pushToast("Announcement created", "success");
+      pushToast(t("dashboard.adminAnnouncements.created"), "success");
       setDialogOpen(false);
       fetchItems();
     } catch (err: any) {
-      pushToast(err.message || "Failed to create announcement", "error");
+      pushToast(err.message || t("dashboard.adminAnnouncements.createFailed"), "error");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: number) {
-    if (!token || !confirm("Delete this announcement?")) return;
+    if (!token || !confirm(t("dashboard.adminAnnouncements.deleteConfirm"))) return;
     try {
       await request(`/admin/announcements/${id}`, { method: "DELETE" }, token);
-      pushToast("Announcement deleted", "success");
+      pushToast(t("dashboard.adminAnnouncements.deleted"), "success");
       fetchItems();
     } catch (err: any) {
-      pushToast(err.message || "Failed to delete announcement", "error");
+      pushToast(err.message || t("dashboard.adminAnnouncements.deleteFailed"), "error");
     }
   }
 
@@ -106,7 +108,7 @@ export default function AdminAnnouncementsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Megaphone className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini.</p>
+        <p className="text-sm">{t("dashboard.adminAnnouncements.noAccess")}</p>
       </div>
     );
   }
@@ -117,15 +119,15 @@ export default function AdminAnnouncementsPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <Megaphone className="size-5 text-primary" />
-            Announcements
+            {t("dashboard.adminAnnouncements.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Broadcast messages to all tenants.
+            {t("dashboard.adminAnnouncements.subtitle")}
           </p>
         </div>
         <Button onClick={openCreate} className="gap-2">
           <Plus className="size-4" />
-          New Announcement
+          {t("dashboard.adminAnnouncements.new")}
         </Button>
       </div>
 
@@ -133,7 +135,7 @@ export default function AdminAnnouncementsPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-lg font-bold tracking-tight flex items-center gap-3">
             <Megaphone className="size-5 text-primary" />
-            All Announcements
+            {t("dashboard.adminAnnouncements.all")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -144,8 +146,8 @@ export default function AdminAnnouncementsPage() {
           ) : items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
               <Megaphone className="size-10 opacity-30" />
-              <p className="text-sm">No announcements yet</p>
-              <Button variant="outline" size="sm" onClick={openCreate}>Create your first announcement</Button>
+              <p className="text-sm">{t("dashboard.adminAnnouncements.noItems")}</p>
+              <Button variant="outline" size="sm" onClick={openCreate}>{t("dashboard.adminAnnouncements.createFirst")}</Button>
             </div>
           ) : (
             <div className="divide-y divide-border/10">
@@ -162,7 +164,7 @@ export default function AdminAnnouncementsPage() {
                         <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize ${
                           a.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
                         }`}>
-                          {a.active ? "Active" : "Inactive"}
+                          {a.active ? t("dashboard.adminAnnouncements.active") : t("dashboard.adminAnnouncements.inactive")}
                         </span>
                         <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{a.severity}</span>
                       </div>
@@ -171,7 +173,7 @@ export default function AdminAnnouncementsPage() {
                         {new Date(a.created_at).toLocaleDateString("id-ID", {
                           year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
                         })}
-                        {a.expires_at && ` · Expires: ${new Date(a.expires_at).toLocaleDateString("id-ID")}`}
+                        {a.expires_at && ` · ${t("dashboard.adminAnnouncements.expires")}: ${new Date(a.expires_at).toLocaleDateString("id-ID")}`}
                       </p>
                     </div>
                     <Button variant="ghost" size="icon" className="size-8 shrink-0 text-destructive" onClick={() => handleDelete(a.id)}>
@@ -185,25 +187,25 @@ export default function AdminAnnouncementsPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} title="New Announcement">
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} title={t("dashboard.adminAnnouncements.new")}>
         <div className="space-y-4">
-          <FormField label="Title" required>
+          <FormField label={t("dashboard.adminAnnouncements.titleField")} required>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Maintenance scheduled" />
           </FormField>
-          <FormField label="Severity">
+          <FormField label={t("dashboard.adminAnnouncements.severity")}>
             <Select value={severity} onChange={(e) => setSeverity(e.target.value)}>
-              <option value="info">Info</option>
-              <option value="warning">Warning</option>
-              <option value="important">Important</option>
+              <option value="info">{t("dashboard.adminAnnouncements.sevInfo")}</option>
+              <option value="warning">{t("dashboard.adminAnnouncements.sevWarning")}</option>
+              <option value="important">{t("dashboard.adminAnnouncements.sevImportant")}</option>
             </Select>
           </FormField>
-          <FormField label="Content" required>
+          <FormField label={t("dashboard.adminAnnouncements.contentField")} required>
             <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="We will be performing maintenance..." rows={4} />
           </FormField>
           <div className="flex justify-end gap-3 pt-4 border-t border-border/20">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>{t("dashboard.adminAnnouncements.cancel")}</Button>
             <Button onClick={handleCreate} disabled={saving || !title || !content}>
-              {saving ? "Creating..." : "Create"}
+              {saving ? t("dashboard.adminAnnouncements.creating") : t("dashboard.adminAnnouncements.create")}
             </Button>
           </div>
         </div>
