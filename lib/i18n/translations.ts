@@ -1159,6 +1159,282 @@ export interface Translations {
       deletePresetConfirm: string;
       presetDeleted: string;
     };
+    notifications: {
+      title: string;
+      loading: string;
+      loadFailed: string;
+      markReadFailed: string;
+      allRead: string;
+      markAllFailed: string;
+      markAllRead: string;
+      markReadTooltip: string;
+      viewTooltip: string;
+      unreadCount: string;
+      noNew: string;
+      emptyTitle: string;
+      emptyDesc: string;
+      justNow: string;
+      minutesAgo: string;
+      hoursAgo: string;
+      daysAgo: string;
+      typeAnnouncement: string;
+      typeLead: string;
+      typeSystem: string;
+    };
+    investigate: {
+      loadingClustering: string;
+      loadingTimeline: string;
+      loadingSignals: string;
+      loadingRecommendations: string;
+      loadHistoryFailed: string;
+      completed: string;
+      runFailed: string;
+      loadDetailFailed: string;
+      noResultNote: string;
+      noteHigh: string;
+      noteMedium: string;
+      noteLow: string;
+      eyebrowAi: string;
+      title: string;
+      analyzing: string;
+      runInvestigation: string;
+      fieldResource: string;
+      fieldStatus: string;
+      fieldAction: string;
+      fieldSearch: string;
+      fieldDateFrom: string;
+      fieldDateTo: string;
+      streamingAnalysis: string;
+      latestResult: string;
+      outputTitle: string;
+      aiProcessing: string;
+      riskLevel: string;
+      riskWeightedDesc: string;
+      score: string;
+      listTimeline: string;
+      listSignals: string;
+      listRecommendations: string;
+      emptyTitle: string;
+      emptyDesc: string;
+      savedCount: string;
+      savedTitle: string;
+      refresh: string;
+      noSavedTitle: string;
+      noSavedDesc: string;
+      investigationChip: string;
+      previous: string;
+      pageOf: string;
+      next: string;
+      detailsEyebrow: string;
+      closeLabel: string;
+      statusLabel: string;
+      noItems: string;
+    };
+    sales: {
+      loadFailed: string;
+      codeCopied: string;
+      linkCopied: string;
+      regenerated: string;
+      regenerateFailed: string;
+      loading: string;
+      accessDeniedTitle: string;
+      accessDeniedDesc: string;
+      pageTitle: string;
+      pageDesc: string;
+      viewCommissions: string;
+      codeCardTitle: string;
+      codeCardDesc: string;
+      copied: string;
+      copyCode: string;
+      updatePrompt: string;
+      regenerateCode: string;
+      linkCardTitle: string;
+      linkCardDesc: string;
+      copyLink: string;
+      tipsLabel: string;
+      tipsText: string;
+      programTitle: string;
+      commRatePrefix: string;
+      commRateSuffix: string;
+      commRecurringPrefix: string;
+      commRecurringSuffix: string;
+      commEditorPrefix: string;
+      commEditorSuffix: string;
+      dialogTitle: string;
+      confirmPrefix: string;
+      confirmSuffix: string;
+      cancel: string;
+      processing: string;
+      confirmRegenerate: string;
+    };
+    salesCommissions: {
+      loadFailed: string;
+      loading: string;
+      accessDeniedTitle: string;
+      accessDeniedDesc: string;
+      pageTitle: string;
+      pageDesc: string;
+      cardTotal: string;
+      cardTotalDesc: string;
+      cardCommission: string;
+      cardCommissionDesc: string;
+      cardBonus: string;
+      cardBonusDesc: string;
+      cardPending: string;
+      cardPendingDesc: string;
+      tabCommissions: string;
+      tabBonuses: string;
+      noCommissionsTitle: string;
+      noCommissionsDesc: string;
+      thDate: string;
+      thOrderId: string;
+      thTenantId: string;
+      thGross: string;
+      thRate: string;
+      thCommission: string;
+      thStatus: string;
+      tierLabel: string;
+      pageOf: string;
+      previous: string;
+      next: string;
+      noBonusesTitle: string;
+      noBonusesDesc: string;
+      thBonusType: string;
+      thDetail: string;
+      thAmount: string;
+      bonusTypeLabel: string;
+      bonusTenant: string;
+      bonusPeriod: string;
+    };
+    tenants: {
+      loadFailed: string;
+      accessDenied: string;
+      title: string;
+      emptyTitle: string;
+      thTenant: string;
+      thPlan: string;
+      thMembers: string;
+      thSites: string;
+      thCreated: string;
+      manage: string;
+    };
+    tenantDetail: {
+      loadFailed: string;
+      planUpdated: string;
+      assignFailed: string;
+      accessDenied: string;
+      notFoundTitle: string;
+      backToTenants: string;
+      tenantInfoTitle: string;
+      slugLabel: string;
+      ownerIdLabel: string;
+      planAssignmentTitle: string;
+      currentPlanLabel: string;
+      changePlanLabel: string;
+      selectPlan: string;
+      assign: string;
+      usageTitle: string;
+      usageGenerates: string;
+      usageSectionRegens: string;
+      usageDesignRegens: string;
+      usageTokenInput: string;
+      usageTokenOutput: string;
+      usageEmpty: string;
+      membersTitle: string;
+      noMembers: string;
+      thName: string;
+      thEmail: string;
+      thRole: string;
+      thJoined: string;
+      viewSites: string;
+      viewDomains: string;
+      viewLeads: string;
+    };
+    logs: {
+      refreshed: string;
+      loadFailed: string;
+      title: string;
+      autoRefreshOn: string;
+      autoRefreshOff: string;
+      refreshNow: string;
+      filterAction: string;
+      filterResource: string;
+      filterStatus: string;
+      filterIpSearch: string;
+      filterDateFrom: string;
+      filterDateTo: string;
+      eventTable: string;
+      emptyDesc: string;
+      actionOn: string;
+      noDescription: string;
+      detailIp: string;
+      detailActor: string;
+      detailAgent: string;
+    };
+    permissions: {
+      loadInitialFailed: string;
+      loadRoleFailed: string;
+      saveSuccess: string;
+      saveFailed: string;
+      eyebrow: string;
+      title: string;
+      saving: string;
+      save: string;
+      totalCount: string;
+      availablePermissions: string;
+      activeCount: string;
+      resourceLabel: string;
+    };
+    sessions: {
+      title: string;
+      refresh: string;
+      refreshLabel: string;
+      loadFailed: string;
+      signedOut: string;
+      signOutFailed: string;
+      trustRemoved: string;
+      trustRemoveFailed: string;
+      othersSignedOut: string;
+      othersSignOutFailed: string;
+      allSignedOut: string;
+      allSignOutFailed: string;
+      signOutOthers: string;
+      signOutAll: string;
+      metricActive: string;
+      metricTrusted: string;
+      metricCurrent: string;
+      emptyTitle: string;
+      emptyDesc: string;
+      statusCurrent: string;
+      statusTrusted: string;
+      statusUnknown: string;
+      sessionChip: string;
+      deviceChip: string;
+      trustChip: string;
+      unknownDevice: string;
+      unknownAgent: string;
+      ipLabel: string;
+      lastUsed: string;
+      trustedUsed: string;
+      expires: string;
+      removeTrust: string;
+      revokeSession: string;
+    };
+    users: {
+      title: string;
+      refresh: string;
+      searchPlaceholder: string;
+      rolePlaceholder: string;
+      loadFailed: string;
+      roleUpdated: string;
+      roleUpdateFailed: string;
+      deleteConfirm: string;
+      deleted: string;
+      deleteFailed: string;
+      adminVisibleTitle: string;
+      emptyDesc: string;
+      delete: string;
+    };
   };
 }
 
@@ -2326,6 +2602,282 @@ export const translations: Record<Locale, Translations> = {
         deletePresetConfirm: "Hapus paket tampilan custom ini?",
         presetDeleted: "Paket tampilan dihapus.",
       },
+      notifications: {
+        title: "Notifikasi",
+        loading: "Memuat notifikasi...",
+        loadFailed: "Gagal memuat notifikasi",
+        markReadFailed: "Gagal menandai notifikasi",
+        allRead: "Semua notifikasi telah dibaca",
+        markAllFailed: "Gagal menandai semua notifikasi",
+        markAllRead: "Tandai Semua Dibaca",
+        markReadTooltip: "Tandai dibaca",
+        viewTooltip: "Lihat detail",
+        unreadCount: "{count} notifikasi belum dibaca",
+        noNew: "Tidak ada notifikasi baru",
+        emptyTitle: "Tidak Ada Notifikasi",
+        emptyDesc: "Belum ada notifikasi. Anda akan mendapat pemberitahuan saat ada pengumuman baru atau lead masuk ke website Anda.",
+        justNow: "Baru saja",
+        minutesAgo: "{n}m yang lalu",
+        hoursAgo: "{n}j yang lalu",
+        daysAgo: "{n}h yang lalu",
+        typeAnnouncement: "Pengumuman",
+        typeLead: "Lead",
+        typeSystem: "Sistem",
+      },
+      investigate: {
+        loadingClustering: "Mengelompokkan event audit yang cocok...",
+        loadingTimeline: "Membangun linimasa insiden...",
+        loadingSignals: "Memeriksa silang sinyal mencurigakan...",
+        loadingRecommendations: "Menyusun rekomendasi untuk operator...",
+        loadHistoryFailed: "Gagal memuat riwayat investigasi",
+        completed: "Investigasi AI selesai.",
+        runFailed: "Gagal menginvestigasi log",
+        loadDetailFailed: "Gagal memuat detail investigasi",
+        noResultNote: "Belum ada hasil investigasi.",
+        noteHigh: "Segera eskalasi. Banyak sinyal kuat menunjuk ke risiko akun atau akses yang meningkat.",
+        noteMedium: "Perlu ditinjau. Terdapat cukup pola mencurigakan yang perlu tindak lanjut operator.",
+        noteLow: "Pantau saja. Bukti yang ada menunjukkan insiden dengan tingkat keyakinan rendah.",
+        eyebrowAi: "Didukung AI",
+        title: "Investigasi dengan AI",
+        analyzing: "Menganalisis...",
+        runInvestigation: "Jalankan Investigasi",
+        fieldResource: "Resource",
+        fieldStatus: "Status",
+        fieldAction: "Aksi",
+        fieldSearch: "Cari",
+        fieldDateFrom: "Tanggal Dari",
+        fieldDateTo: "Tanggal Sampai",
+        streamingAnalysis: "Analisis streaming",
+        latestResult: "Hasil terbaru",
+        outputTitle: "Hasil Investigasi AI",
+        aiProcessing: "Pemrosesan AI",
+        riskLevel: "Tingkat Risiko",
+        riskWeightedDesc: "Dibobot berdasarkan sinyal, urgensi, volume log, dan status insiden",
+        score: "Skor {score}",
+        listTimeline: "Linimasa",
+        listSignals: "Sinyal Mencurigakan",
+        listRecommendations: "Rekomendasi",
+        emptyTitle: "Siap untuk dianalisis",
+        emptyDesc: "Jalankan investigasi untuk membuat ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
+        savedCount: "{count} tersimpan",
+        savedTitle: "Investigasi Tersimpan",
+        refresh: "Muat Ulang",
+        noSavedTitle: "Tidak Ada Investigasi Tersimpan",
+        noSavedDesc: "Investigasi yang selesai akan muncul di sini untuk peninjauan cepat.",
+        investigationChip: "Investigasi #{id}",
+        previous: "Sebelumnya",
+        pageOf: "Halaman {page} dari {total}",
+        next: "Berikutnya",
+        detailsEyebrow: "Detail Investigasi",
+        closeLabel: "Tutup detail investigasi",
+        statusLabel: "Status",
+        noItems: "Tidak ada item yang ditampilkan.",
+      },
+      sales: {
+        loadFailed: "Gagal memuat kode referral",
+        codeCopied: "Kode referral berhasil disalin",
+        linkCopied: "Link referral berhasil disalin",
+        regenerated: "Kode referral baru berhasil dibuat!",
+        regenerateFailed: "Gagal membuat ulang kode referral",
+        loading: "Memuat data referral...",
+        accessDeniedTitle: "Akses Dibatasi",
+        accessDeniedDesc: "Halaman ini khusus untuk Sales Partner & Admin Webjoz. Silakan hubungi admin jika Anda tim sales.",
+        pageTitle: "Kode Referral Partner",
+        pageDesc: "Bagikan kode atau link referral Anda kepada klien untuk mendapatkan komisi dari setiap transaksi berbayar.",
+        viewCommissions: "Lihat Komisi Saya",
+        codeCardTitle: "Kode Referral Anda",
+        codeCardDesc: "Gunakan kode ini saat pendaftaran website/tenant baru.",
+        copied: "Tersalin",
+        copyCode: "Salin Kode",
+        updatePrompt: "Ingin memperbarui kode?",
+        regenerateCode: "Buat Ulang Kode",
+        linkCardTitle: "Link Referral Pendaftaran",
+        linkCardDesc: "Klien yang mendaftar melalui link ini akan otomatis terhubung ke akun Anda.",
+        copyLink: "Salin Link",
+        tipsLabel: "Tips:",
+        tipsText: "Cantumkan link ini di proposal, pesan WhatsApp, atau bio media sosial Anda.",
+        programTitle: "Ketentuan Komisi Sales Partner",
+        commRatePrefix: "Komisi sebesar",
+        commRateSuffix: "dari nilai transaksi berbayar yang diselesaikan oleh tenant referensi Anda.",
+        commRecurringPrefix: "Komisi berlaku",
+        commRecurringSuffix: "untuk setiap perpanjangan langganan bulanan maupun tahunan.",
+        commEditorPrefix: "Setiap tenant yang mendaftar dengan kode Anda otomatis menambahkan Anda sebagai anggota role",
+        commEditorSuffix: "di workspace tenant tersebut.",
+        dialogTitle: "Buat Ulang Kode Referral",
+        confirmPrefix: "Apakah Anda yakin ingin membuat kode referral baru? Kode lama",
+        confirmSuffix: "tidak akan berlaku lagi untuk pendaftaran baru.",
+        cancel: "Batal",
+        processing: "Memproses...",
+        confirmRegenerate: "Ya, Buat Kode Baru",
+      },
+      salesCommissions: {
+        loadFailed: "Gagal memuat data komisi",
+        loading: "Memuat data pendapatan...",
+        accessDeniedTitle: "Akses Dibatasi",
+        accessDeniedDesc: "Anda belum memiliki akses ke halaman komisi & bonus. Hubungi admin untuk mengaktifkan akses sales.",
+        pageTitle: "Pendapatan Saya (Komisi & Bonus)",
+        pageDesc: "Ringkasan komisi bertingkat — Tier 1 {t1}% ({months} bulan pertama), lalu Tier 2 {t2}% — serta bonus onboarding/milestone dari tenant referensi Anda.",
+        cardTotal: "Total Pendapatan",
+        cardTotalDesc: "Komisi + Bonus terakumulasi",
+        cardCommission: "Komisi Recurring",
+        cardCommissionDesc: "Komisi per pembayaran: {t1}% (Tier 1) / {t2}% (Tier 2)",
+        cardBonus: "Total Bonus",
+        cardBonusDesc: "{onboarding} Onboarding, {milestone} Milestone",
+        cardPending: "Pending Payout",
+        cardPendingDesc: "Menunggu proses pencairan",
+        tabCommissions: "Komisi Recurring ({count})",
+        tabBonuses: "Bonus Onboarding & Milestone ({count})",
+        noCommissionsTitle: "Belum ada komisi tercatat.",
+        noCommissionsDesc: "Bagikan kode referral Anda untuk mulai mendapatkan komisi.",
+        thDate: "Tanggal",
+        thOrderId: "Order ID",
+        thTenantId: "Tenant ID",
+        thGross: "Gross Amount",
+        thRate: "Rate",
+        thCommission: "Komisi",
+        thStatus: "Status",
+        tierLabel: "Tier {tier}",
+        pageOf: "Halaman {page} dari {total}",
+        previous: "Sebelumnya",
+        next: "Selanjutnya",
+        noBonusesTitle: "Belum ada bonus tercatat.",
+        noBonusesDesc: "Bonus onboarding (Rp 50.000) dan bonus milestone bulanan akan tercatat otomatis ketika tenant aktif.",
+        thBonusType: "Jenis Bonus",
+        thDetail: "Detail / Periode",
+        thAmount: "Nominal Bonus",
+        bonusTypeLabel: "Bonus {type}",
+        bonusTenant: "Tenant #{id}",
+        bonusPeriod: "Periode {period} (Tier {tier})",
+      },
+      tenants: {
+        loadFailed: "Gagal memuat data tenant",
+        accessDenied: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Semua Tenant",
+        emptyTitle: "Tidak ada tenant",
+        thTenant: "Tenant",
+        thPlan: "Paket",
+        thMembers: "Anggota",
+        thSites: "Situs",
+        thCreated: "Dibuat",
+        manage: "Kelola",
+      },
+      tenantDetail: {
+        loadFailed: "Gagal memuat detail tenant",
+        planUpdated: "Paket diperbarui",
+        assignFailed: "Gagal menetapkan paket",
+        accessDenied: "Anda tidak memiliki akses ke halaman ini.",
+        notFoundTitle: "Tenant tidak ditemukan",
+        backToTenants: "Kembali ke Tenant",
+        tenantInfoTitle: "Info Tenant",
+        slugLabel: "Slug",
+        ownerIdLabel: "ID Pemilik",
+        planAssignmentTitle: "Penetapan Paket",
+        currentPlanLabel: "Paket Saat Ini",
+        changePlanLabel: "Ganti Paket",
+        selectPlan: "Pilih paket...",
+        assign: "Tetapkan",
+        usageTitle: "Penggunaan AI (bulan ini)",
+        usageGenerates: "Generasi",
+        usageSectionRegens: "Regen Bagian",
+        usageDesignRegens: "Regen Desain",
+        usageTokenInput: "Token Masuk",
+        usageTokenOutput: "Token Keluar",
+        usageEmpty: "Tidak ada data penggunaan bulan ini",
+        membersTitle: "Anggota ({count})",
+        noMembers: "Tidak ada anggota",
+        thName: "Nama",
+        thEmail: "Email",
+        thRole: "Peran",
+        thJoined: "Bergabung",
+        viewSites: "Lihat Situs",
+        viewDomains: "Lihat Domain",
+        viewLeads: "Lihat Lead",
+      },
+      logs: {
+        refreshed: "Feed audit diperbarui.",
+        loadFailed: "Gagal memuat log",
+        title: "Feed Log Audit Real-time",
+        autoRefreshOn: "Auto-refresh Aktif",
+        autoRefreshOff: "Auto-refresh Nonaktif",
+        refreshNow: "Muat Ulang Sekarang",
+        filterAction: "Aksi",
+        filterResource: "Resource",
+        filterStatus: "Status",
+        filterIpSearch: "IP / Cari",
+        filterDateFrom: "Tanggal Dari",
+        filterDateTo: "Tanggal Sampai",
+        eventTable: "Tabel Event",
+        emptyDesc: "Tidak ada log audit yang cocok dengan filter saat ini.",
+        actionOn: "{action} pada {resource}",
+        noDescription: "Tidak ada deskripsi",
+        detailIp: "Alamat IP",
+        detailActor: "ID User Pelaku",
+        detailAgent: "User Agent",
+      },
+      permissions: {
+        loadInitialFailed: "Gagal memuat data awal",
+        loadRoleFailed: "Gagal memuat permission role",
+        saveSuccess: "Permission berhasil diperbarui",
+        saveFailed: "Gagal memperbarui permission",
+        eyebrow: "Manajemen RBAC",
+        title: "Kelola Permission Role",
+        saving: "Menyimpan...",
+        save: "Simpan Perubahan",
+        totalCount: "{count} Total",
+        availablePermissions: "Permission Tersedia",
+        activeCount: "{count} Aktif",
+        resourceLabel: "Resource {resource}",
+      },
+      sessions: {
+        title: "Manajemen Perangkat & Sesi",
+        refresh: "Muat Ulang",
+        refreshLabel: "Muat ulang perangkat",
+        loadFailed: "Gagal memuat perangkat",
+        signedOut: "Perangkat berhasil keluar.",
+        signOutFailed: "Gagal membuat perangkat keluar",
+        trustRemoved: "Perangkat tepercaya dihapus.",
+        trustRemoveFailed: "Gagal menghapus perangkat tepercaya",
+        othersSignedOut: "Perangkat lain berhasil keluar.",
+        othersSignOutFailed: "Gagal membuat perangkat lain keluar",
+        allSignedOut: "Semua perangkat berhasil keluar.",
+        allSignOutFailed: "Gagal membuat semua perangkat keluar",
+        signOutOthers: "Keluar dari yang lain",
+        signOutAll: "Keluar dari semua",
+        metricActive: "Sesi aktif",
+        metricTrusted: "Perangkat tepercaya",
+        metricCurrent: "Sesi ini",
+        emptyTitle: "Belum ada sesi",
+        emptyDesc: "Belum ada sesi aktif atau perangkat tepercaya yang terhubung ke akun ini.",
+        statusCurrent: "sedang masuk",
+        statusTrusted: "perangkat tepercaya",
+        statusUnknown: "perangkat tidak dikenal",
+        sessionChip: "Sesi #{id}",
+        deviceChip: "Perangkat {id}",
+        trustChip: "Tepercaya {id}",
+        unknownDevice: "Perangkat tidak dikenal",
+        unknownAgent: "User agent tidak dikenal",
+        ipLabel: "IP: {ip}",
+        lastUsed: "Terakhir dipakai: {date}",
+        trustedUsed: "Pemakaian tepercaya: {date}",
+        expires: "Kedaluwarsa: {date}",
+        removeTrust: "Hapus kepercayaan",
+        revokeSession: "Cabut sesi",
+      },
+      users: {
+        title: "Manajemen User",
+        refresh: "Muat Ulang",
+        searchPlaceholder: "Cari berdasarkan nama atau email",
+        rolePlaceholder: "Filter role (user/sales/admin)",
+        loadFailed: "Gagal memuat user",
+        roleUpdated: "Role {name} diperbarui menjadi {role}",
+        roleUpdateFailed: "Gagal memperbarui role user",
+        deleteConfirm: "Yakin ingin menghapus {name}?",
+        deleted: "User {name} berhasil dihapus",
+        deleteFailed: "Gagal menghapus user",
+        adminVisibleTitle: "User yang terlihat admin",
+        emptyDesc: "Tidak ada user yang cocok dengan pencarian.",
+        delete: "Hapus",
+      },
     },
   },
   en: {
@@ -3490,6 +4042,282 @@ export const translations: Record<Locale, Translations> = {
         presetAdded: 'Preset "{name}" added.',
         deletePresetConfirm: "Delete this custom visual preset?",
         presetDeleted: "Visual preset deleted.",
+      },
+      notifications: {
+        title: "Notifications",
+        loading: "Loading notifications...",
+        loadFailed: "Failed to load notifications",
+        markReadFailed: "Failed to mark notification as read",
+        allRead: "All notifications marked as read",
+        markAllFailed: "Failed to mark all notifications as read",
+        markAllRead: "Mark All as Read",
+        markReadTooltip: "Mark as read",
+        viewTooltip: "View details",
+        unreadCount: "{count} unread notifications",
+        noNew: "No new notifications",
+        emptyTitle: "No Notifications",
+        emptyDesc: "No notifications yet. You'll be notified when there's a new announcement or when a lead comes into your website.",
+        justNow: "Just now",
+        minutesAgo: "{n}m ago",
+        hoursAgo: "{n}h ago",
+        daysAgo: "{n}d ago",
+        typeAnnouncement: "Announcement",
+        typeLead: "Lead",
+        typeSystem: "System",
+      },
+      investigate: {
+        loadingClustering: "Clustering matching audit events...",
+        loadingTimeline: "Building incident timeline...",
+        loadingSignals: "Cross-checking suspicious signals...",
+        loadingRecommendations: "Drafting recommendations for the operator...",
+        loadHistoryFailed: "Failed to load investigation history",
+        completed: "AI investigation completed.",
+        runFailed: "Failed to investigate logs",
+        loadDetailFailed: "Failed to load investigation detail",
+        noResultNote: "No investigation result loaded yet.",
+        noteHigh: "Escalate quickly. Multiple strong signals point to elevated account or access risk.",
+        noteMedium: "Needs review. There are enough suspicious patterns to warrant operator follow-up.",
+        noteLow: "Monitor only. The current evidence suggests a lower-confidence incident.",
+        eyebrowAi: "AI Powered",
+        title: "Investigate with AI",
+        analyzing: "Analyzing...",
+        runInvestigation: "Run Investigation",
+        fieldResource: "Resource",
+        fieldStatus: "Status",
+        fieldAction: "Action",
+        fieldSearch: "Search",
+        fieldDateFrom: "Date From",
+        fieldDateTo: "Date To",
+        streamingAnalysis: "Streaming analysis",
+        latestResult: "Latest result",
+        outputTitle: "AI Investigation Output",
+        aiProcessing: "AI Processing",
+        riskLevel: "Risk Level",
+        riskWeightedDesc: "Weighted by signals, urgency, log volume, and incident status",
+        score: "Score {score}",
+        listTimeline: "Timeline",
+        listSignals: "Suspicious Signals",
+        listRecommendations: "Recommendations",
+        emptyTitle: "Ready for analysis",
+        emptyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
+        savedCount: "{count} saved",
+        savedTitle: "Saved Investigations",
+        refresh: "Refresh",
+        noSavedTitle: "No saved investigations",
+        noSavedDesc: "Completed investigations will appear here for quick review.",
+        investigationChip: "Investigation #{id}",
+        previous: "Previous",
+        pageOf: "Page {page} of {total}",
+        next: "Next",
+        detailsEyebrow: "Investigation Details",
+        closeLabel: "Close investigation details",
+        statusLabel: "Status",
+        noItems: "No items returned.",
+      },
+      sales: {
+        loadFailed: "Failed to load referral code",
+        codeCopied: "Referral code copied",
+        linkCopied: "Referral link copied",
+        regenerated: "New referral code created successfully!",
+        regenerateFailed: "Failed to regenerate referral code",
+        loading: "Loading referral data...",
+        accessDeniedTitle: "Access Restricted",
+        accessDeniedDesc: "This page is for Webjoz Sales Partners & Admins only. Please contact an admin if you are part of the sales team.",
+        pageTitle: "Partner Referral Code",
+        pageDesc: "Share your referral code or link with clients to earn commission on every paid transaction.",
+        viewCommissions: "View My Commissions",
+        codeCardTitle: "Your Referral Code",
+        codeCardDesc: "Use this code when a new website/tenant signs up.",
+        copied: "Copied",
+        copyCode: "Copy Code",
+        updatePrompt: "Want to update your code?",
+        regenerateCode: "Regenerate Code",
+        linkCardTitle: "Signup Referral Link",
+        linkCardDesc: "Clients who sign up through this link are automatically connected to your account.",
+        copyLink: "Copy Link",
+        tipsLabel: "Tip:",
+        tipsText: "Include this link in your proposal, WhatsApp message, or social media bio.",
+        programTitle: "Sales Partner Commission Terms",
+        commRatePrefix: "Commission of",
+        commRateSuffix: "from every paid transaction completed by your referred tenant.",
+        commRecurringPrefix: "Commission is",
+        commRecurringSuffix: "for every monthly or yearly subscription renewal.",
+        commEditorPrefix: "Every tenant who signs up with your code automatically adds you as an",
+        commEditorSuffix: "member in that tenant's workspace.",
+        dialogTitle: "Regenerate Referral Code",
+        confirmPrefix: "Are you sure you want to create a new referral code? Your old code",
+        confirmSuffix: "will no longer work for new signups.",
+        cancel: "Cancel",
+        processing: "Processing...",
+        confirmRegenerate: "Yes, Create New Code",
+      },
+      salesCommissions: {
+        loadFailed: "Failed to load commission data",
+        loading: "Loading earnings data...",
+        accessDeniedTitle: "Access Restricted",
+        accessDeniedDesc: "You don't have access to the commissions & bonuses page yet. Contact an admin to enable sales access.",
+        pageTitle: "My Earnings (Commissions & Bonuses)",
+        pageDesc: "Summary of tiered commission — Tier 1 {t1}% (first {months} months), then Tier 2 {t2}% — plus onboarding/milestone bonuses from your referred tenants.",
+        cardTotal: "Total Earnings",
+        cardTotalDesc: "Accumulated Commission + Bonuses",
+        cardCommission: "Recurring Commission",
+        cardCommissionDesc: "Commission per payment: {t1}% (Tier 1) / {t2}% (Tier 2)",
+        cardBonus: "Total Bonuses",
+        cardBonusDesc: "{onboarding} Onboarding, {milestone} Milestone",
+        cardPending: "Pending Payout",
+        cardPendingDesc: "Awaiting payout processing",
+        tabCommissions: "Recurring Commission ({count})",
+        tabBonuses: "Onboarding & Milestone Bonuses ({count})",
+        noCommissionsTitle: "No commissions recorded yet.",
+        noCommissionsDesc: "Share your referral code to start earning commissions.",
+        thDate: "Date",
+        thOrderId: "Order ID",
+        thTenantId: "Tenant ID",
+        thGross: "Gross Amount",
+        thRate: "Rate",
+        thCommission: "Commission",
+        thStatus: "Status",
+        tierLabel: "Tier {tier}",
+        pageOf: "Page {page} of {total}",
+        previous: "Previous",
+        next: "Next",
+        noBonusesTitle: "No bonuses recorded yet.",
+        noBonusesDesc: "Onboarding bonus (Rp 50.000) and monthly milestone bonuses are recorded automatically once the tenant is active.",
+        thBonusType: "Bonus Type",
+        thDetail: "Detail / Period",
+        thAmount: "Bonus Amount",
+        bonusTypeLabel: "{type} Bonus",
+        bonusTenant: "Tenant #{id}",
+        bonusPeriod: "Period {period} (Tier {tier})",
+      },
+      tenants: {
+        loadFailed: "Failed to load tenants",
+        accessDenied: "You don't have access to this page.",
+        title: "All Tenants",
+        emptyTitle: "No tenants found",
+        thTenant: "Tenant",
+        thPlan: "Plan",
+        thMembers: "Members",
+        thSites: "Sites",
+        thCreated: "Created",
+        manage: "Manage",
+      },
+      tenantDetail: {
+        loadFailed: "Failed to load tenant details",
+        planUpdated: "Plan updated",
+        assignFailed: "Failed to assign plan",
+        accessDenied: "You don't have access to this page.",
+        notFoundTitle: "Tenant not found",
+        backToTenants: "Back to Tenants",
+        tenantInfoTitle: "Tenant Info",
+        slugLabel: "Slug",
+        ownerIdLabel: "Owner ID",
+        planAssignmentTitle: "Plan Assignment",
+        currentPlanLabel: "Current Plan",
+        changePlanLabel: "Change Plan",
+        selectPlan: "Select plan...",
+        assign: "Assign",
+        usageTitle: "AI Usage (this month)",
+        usageGenerates: "Generates",
+        usageSectionRegens: "Section Regens",
+        usageDesignRegens: "Design Regens",
+        usageTokenInput: "Token Input",
+        usageTokenOutput: "Token Output",
+        usageEmpty: "No usage data for this month",
+        membersTitle: "Members ({count})",
+        noMembers: "No members",
+        thName: "Name",
+        thEmail: "Email",
+        thRole: "Role",
+        thJoined: "Joined",
+        viewSites: "View Sites",
+        viewDomains: "View Domains",
+        viewLeads: "View Leads",
+      },
+      logs: {
+        refreshed: "Audit feed refreshed.",
+        loadFailed: "Failed to load logs",
+        title: "Real-time Audit Log Feed",
+        autoRefreshOn: "Auto-refresh On",
+        autoRefreshOff: "Auto-refresh Off",
+        refreshNow: "Refresh Now",
+        filterAction: "Action",
+        filterResource: "Resource",
+        filterStatus: "Status",
+        filterIpSearch: "IP / Search",
+        filterDateFrom: "Date From",
+        filterDateTo: "Date To",
+        eventTable: "Event Table",
+        emptyDesc: "No audit logs matched the current filters.",
+        actionOn: "{action} on {resource}",
+        noDescription: "No description",
+        detailIp: "IP Address",
+        detailActor: "Actor User ID",
+        detailAgent: "User Agent",
+      },
+      permissions: {
+        loadInitialFailed: "Failed to load initial data",
+        loadRoleFailed: "Failed to load role permissions",
+        saveSuccess: "Permissions updated successfully",
+        saveFailed: "Failed to update permissions",
+        eyebrow: "RBAC Management",
+        title: "Manage Role Permissions",
+        saving: "Saving...",
+        save: "Save Changes",
+        totalCount: "{count} Total",
+        availablePermissions: "Available Permissions",
+        activeCount: "{count} Active",
+        resourceLabel: "{resource} Resource",
+      },
+      sessions: {
+        title: "Device & Session Management",
+        refresh: "Refresh",
+        refreshLabel: "Refresh devices",
+        loadFailed: "Failed to load devices",
+        signedOut: "Device signed out.",
+        signOutFailed: "Failed to sign out device",
+        trustRemoved: "Trusted device removed.",
+        trustRemoveFailed: "Failed to remove trusted device",
+        othersSignedOut: "Other devices signed out.",
+        othersSignOutFailed: "Failed to sign out other devices",
+        allSignedOut: "All devices signed out.",
+        allSignOutFailed: "Failed to sign out all devices",
+        signOutOthers: "Sign out others",
+        signOutAll: "Sign out all",
+        metricActive: "Active sessions",
+        metricTrusted: "Trusted devices",
+        metricCurrent: "This session",
+        emptyTitle: "No sessions yet",
+        emptyDesc: "No active sessions or trusted devices are currently associated with this account.",
+        statusCurrent: "currently signed in",
+        statusTrusted: "trusted device",
+        statusUnknown: "unknown device",
+        sessionChip: "Session #{id}",
+        deviceChip: "Device {id}",
+        trustChip: "Trust {id}",
+        unknownDevice: "Unknown device",
+        unknownAgent: "Unknown user agent",
+        ipLabel: "IP: {ip}",
+        lastUsed: "Last used: {date}",
+        trustedUsed: "Trusted use: {date}",
+        expires: "Expires: {date}",
+        removeTrust: "Remove trust",
+        revokeSession: "Revoke session",
+      },
+      users: {
+        title: "User Management",
+        refresh: "Refresh",
+        searchPlaceholder: "Search by name or email",
+        rolePlaceholder: "Role filter (user/sales/admin)",
+        loadFailed: "Failed to load users",
+        roleUpdated: "Role of {name} updated to {role}",
+        roleUpdateFailed: "Failed to update user role",
+        deleteConfirm: "Are you sure you want to delete {name}?",
+        deleted: "User {name} deleted successfully",
+        deleteFailed: "Failed to delete user",
+        adminVisibleTitle: "Admin-visible users",
+        emptyDesc: "No users matched the current query.",
+        delete: "Delete",
       },
     },
   },

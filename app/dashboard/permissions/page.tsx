@@ -5,6 +5,7 @@ import { Button, Card, CardContent, CardHeader, SectionTitle, SkeletonBlock, Bad
 import { useToast } from "@/components/toast-provider";
 import { fetchRoles, fetchAllPermissions, fetchRolePermissions, updateRolePermissions } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
+import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 type NamedItem = {
@@ -29,6 +30,7 @@ function normalizeNamedItem(item: NamedItem): RoleOption | null {
 export default function PermissionsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   
   const [roles, setRoles] = useState<RoleOption[]>([]);
   const [allPermissions, setAllPermissions] = useState<RoleOption[]>([]);
@@ -59,11 +61,11 @@ export default function PermissionsPage() {
         setSelectedRole(firstRole.id);
       }
     } catch {
-      pushToast("Failed to load initial data", "error");
+      pushToast(t("dashboard.permissions.loadInitialFailed"), "error");
     } finally {
       setLoading(false);
     }
-  }, [token, pushToast]);
+  }, [token, pushToast, t]);
 
   const loadRolePermissions = useCallback(async (roleID: number) => {
     if (!token) return;
@@ -71,9 +73,9 @@ export default function PermissionsPage() {
       const res = await fetchRolePermissions(token, roleID);
       setRolePermissions(res.data.permissions);
     } catch {
-      pushToast("Failed to load role permissions", "error");
+      pushToast(t("dashboard.permissions.loadRoleFailed"), "error");
     }
-  }, [token, pushToast]);
+  }, [token, pushToast, t]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -104,9 +106,9 @@ export default function PermissionsPage() {
     setSaving(true);
     try {
       await updateRolePermissions(token, selectedRole, rolePermissions);
-      pushToast("Permissions updated successfully", "success");
+      pushToast(t("dashboard.permissions.saveSuccess"), "success");
     } catch {
-      pushToast("Failed to update permissions", "error");
+      pushToast(t("dashboard.permissions.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -126,11 +128,11 @@ export default function PermissionsPage() {
       <Card>
         <CardHeader className="border-b border-border/60">
           <SectionTitle 
-            eyebrow="RBAC Management" 
-            title="Manage Role Permissions" 
+            eyebrow={t("dashboard.permissions.eyebrow")} 
+            title={t("dashboard.permissions.title")} 
             action={
               <Button onClick={handleSave} disabled={saving} className="shadow-lg shadow-primary/20">
-                {saving ? "Saving..." : "Save Changes"}
+                {saving ? t("dashboard.permissions.saving") : t("dashboard.permissions.save")}
               </Button>
             } 
           />
@@ -157,11 +159,11 @@ export default function PermissionsPage() {
         <CardHeader className="border-b border-border/60 bg-muted/20">
           <div className="flex items-center justify-between">
             <SectionTitle 
-              eyebrow={String(allPermissions.length) + " Total"} 
-              title="Available Permissions" 
+              eyebrow={t("dashboard.permissions.totalCount", undefined, { count: String(allPermissions.length) })}
+              title={t("dashboard.permissions.availablePermissions")} 
             />
             <Badge variant="outline" className="bg-background">
-              {rolePermissions.length} Active
+              {t("dashboard.permissions.activeCount", undefined, { count: String(rolePermissions.length) })}
             </Badge>
           </div>
         </CardHeader>
@@ -186,7 +188,7 @@ export default function PermissionsPage() {
                       {perm.name}
                     </div>
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                      {perm.name.split(".")[0]} Resource
+                      {t("dashboard.permissions.resourceLabel", undefined, { resource: perm.name.split(".")[0] })}
                     </div>
                   </div>
                   <div className={cn(

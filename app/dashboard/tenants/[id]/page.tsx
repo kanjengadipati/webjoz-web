@@ -7,6 +7,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Building2, Loader2, Users, Globe, ArrowLeft, Mail, Calendar, Zap, CreditCard } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Select } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
@@ -48,6 +49,7 @@ export default function AdminTenantDetailPage() {
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const { role } = usePermissions();
   const [tenant, setTenant] = useState<TenantDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ export default function AdminTenantDetailPage() {
         setPlans(plansRes.data || []);
         setUsage(usageRes.data);
       } catch (err: any) {
-        pushToast(err.message || "Gagal memuat detail tenant", "error");
+        pushToast(err.message || t("dashboard.tenantDetail.loadFailed"), "error");
       } finally {
         setLoading(false);
       }
@@ -87,11 +89,11 @@ export default function AdminTenantDetailPage() {
         method: "POST",
         body: JSON.stringify({ plan_id: parseInt(selectedPlanId) }),
       }, token);
-      pushToast("Plan updated", "success");
+      pushToast(t("dashboard.tenantDetail.planUpdated"), "success");
       const tenantRes = await request<TenantDetail>(`/tenants/${id}`, {}, token);
       setTenant(tenantRes.data || null);
     } catch (err: any) {
-      pushToast(err.message || "Failed to assign plan", "error");
+      pushToast(err.message || t("dashboard.tenantDetail.assignFailed"), "error");
     } finally {
       setAssigning(false);
     }
@@ -101,7 +103,7 @@ export default function AdminTenantDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Building2 className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini.</p>
+        <p className="text-sm">{t("dashboard.tenantDetail.accessDenied")}</p>
       </div>
     );
   }
@@ -118,9 +120,9 @@ export default function AdminTenantDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Building2 className="size-12 opacity-40" />
-        <p className="text-sm">Tenant not found</p>
+        <p className="text-sm">{t("dashboard.tenantDetail.notFoundTitle")}</p>
         <Link href="/dashboard/tenants">
-          <Button variant="outline" size="sm">Back to Tenants</Button>
+          <Button variant="outline" size="sm">{t("dashboard.tenantDetail.backToTenants")}</Button>
         </Link>
       </div>
     );
@@ -145,17 +147,17 @@ export default function AdminTenantDetailPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-base font-bold flex items-center gap-2">
             <Building2 className="size-4 text-primary" />
-            Tenant Info
+            {t("dashboard.tenantDetail.tenantInfoTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-3 text-sm">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="text-xs font-medium text-muted-foreground">Slug</span>
+              <span className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.slugLabel")}</span>
               <p className="font-mono text-sm">{tenant.slug}</p>
             </div>
             <div>
-              <span className="text-xs font-medium text-muted-foreground">Owner ID</span>
+              <span className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.ownerIdLabel")}</span>
               <p>{tenant.owner_id}</p>
             </div>
           </div>
@@ -166,30 +168,30 @@ export default function AdminTenantDetailPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-base font-bold flex items-center gap-2">
             <CreditCard className="size-4 text-primary" />
-            Plan Assignment
+            {t("dashboard.tenantDetail.planAssignmentTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-3">
           <div className="flex items-center gap-4">
             <div className="flex-1">
-              <label className="mb-2 block text-xs font-medium text-muted-foreground">Current Plan</label>
+              <label className="mb-2 block text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.currentPlanLabel")}</label>
               <p className="text-lg font-bold capitalize">{tenant.plan}</p>
             </div>
             <div className="flex-1">
-              <label className="mb-2 block text-xs font-medium text-muted-foreground">Change Plan</label>
+              <label className="mb-2 block text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.changePlanLabel")}</label>
               <div className="flex gap-2">
                 <select
                   value={selectedPlanId}
                   onChange={(e) => setSelectedPlanId(e.target.value)}
                   className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm"
                 >
-                  <option value="">Select plan...</option>
+                  <option value="">{t("dashboard.tenantDetail.selectPlan")}</option>
                   {plans.map((p) => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
                 <Button size="sm" onClick={handleAssignPlan} disabled={!selectedPlanId || assigning}>
-                  {assigning ? "..." : "Assign"}
+                  {assigning ? "..." : t("dashboard.tenantDetail.assign")}
                 </Button>
               </div>
             </div>
@@ -201,35 +203,35 @@ export default function AdminTenantDetailPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-base font-bold flex items-center gap-2">
             <Zap className="size-4 text-primary" />
-            AI Usage (this month)
+            {t("dashboard.tenantDetail.usageTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           {usage ? (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Generates</p>
+                <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageGenerates")}</p>
                 <p className="text-2xl font-bold">{usage.generate_count}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Section Regens</p>
+                <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageSectionRegens")}</p>
                 <p className="text-2xl font-bold">{usage.section_regen_count}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Design Regens</p>
+                <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageDesignRegens")}</p>
                 <p className="text-2xl font-bold">{usage.design_regen_count}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Token Input</p>
+                <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageTokenInput")}</p>
                 <p className="text-2xl font-bold">{usage.token_input.toLocaleString()}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Token Output</p>
+                <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageTokenOutput")}</p>
                 <p className="text-2xl font-bold">{usage.token_output.toLocaleString()}</p>
               </div>
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No usage data for this month</p>
+            <p className="text-sm text-muted-foreground">{t("dashboard.tenantDetail.usageEmpty")}</p>
           )}
         </CardContent>
       </Card>
@@ -238,24 +240,24 @@ export default function AdminTenantDetailPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-base font-bold flex items-center gap-2">
             <Users className="size-4 text-primary" />
-            Members ({tenant.members?.length || 0})
+            {t("dashboard.tenantDetail.membersTitle", undefined, { count: String(tenant.members?.length || 0) })}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {!tenant.members || tenant.members.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-2">
               <Users className="size-8 opacity-30" />
-              <p className="text-sm">No members</p>
+              <p className="text-sm">{t("dashboard.tenantDetail.noMembers")}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                    <th className="px-6 py-4">Name</th>
-                    <th className="px-6 py-4">Email</th>
-                    <th className="px-6 py-4">Role</th>
-                    <th className="px-6 py-4">Joined</th>
+                    <th className="px-6 py-4">{t("dashboard.tenantDetail.thName")}</th>
+                    <th className="px-6 py-4">{t("dashboard.tenantDetail.thEmail")}</th>
+                    <th className="px-6 py-4">{t("dashboard.tenantDetail.thRole")}</th>
+                    <th className="px-6 py-4">{t("dashboard.tenantDetail.thJoined")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -276,7 +278,7 @@ export default function AdminTenantDetailPage() {
                       <td className="px-6 py-4 text-xs text-muted-foreground">
                         <span className="inline-flex items-center gap-1.5">
                           <Calendar className="size-3" />
-                          {new Date(m.created_at).toLocaleDateString("id-ID", {
+                          {new Date(m.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                             year: "numeric", month: "short", day: "numeric"
                           })}
                         </span>
@@ -294,19 +296,19 @@ export default function AdminTenantDetailPage() {
         <Link href={`/dashboard/sites?tenant_id=${tenant.id}`}>
           <Button variant="outline" size="sm" className="gap-2">
             <Globe className="size-4" />
-            View Sites
+            {t("dashboard.tenantDetail.viewSites")}
           </Button>
         </Link>
         <Link href={`/dashboard/domains?tenant_id=${tenant.id}`}>
           <Button variant="outline" size="sm" className="gap-2">
             <Globe className="size-4" />
-            View Domains
+            {t("dashboard.tenantDetail.viewDomains")}
           </Button>
         </Link>
         <Link href={`/dashboard/leads?tenant_id=${tenant.id}`}>
           <Button variant="outline" size="sm" className="gap-2">
             <Mail className="size-4" />
-            View Leads
+            {t("dashboard.tenantDetail.viewLeads")}
           </Button>
         </Link>
       </div>

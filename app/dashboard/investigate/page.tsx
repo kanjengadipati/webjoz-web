@@ -4,21 +4,23 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { fetchInvestigationDetail, fetchInvestigationHistory, investigateLogs } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 import type { InvestigationHistory, InvestigationResult } from "@/lib/types";
 
 const loadingMessages = [
-  "Clustering matching audit events...",
-  "Building incident timeline...",
-  "Cross-checking suspicious signals...",
-  "Drafting recommendations for the operator...",
+  "dashboard.investigate.loadingClustering",
+  "dashboard.investigate.loadingTimeline",
+  "dashboard.investigate.loadingSignals",
+  "dashboard.investigate.loadingRecommendations",
 ];
 
 export default function InvestigatePage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [payload, setPayload] = useState({ resource: "auth", status: "failed", action: "", search: "", limit: 25, dateFrom: "", dateTo: "" });
   const [result, setResult] = useState<InvestigationResult | null>(null);
   const [meta, setMeta] = useState<Record<string, unknown> | null>(null);
@@ -54,7 +56,7 @@ export default function InvestigatePage() {
         setTotalPages(Math.ceil((response.meta.total as number) / 10));
       }
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to load history", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.investigate.loadHistoryFailed"), "error");
     }
   }
 
@@ -76,10 +78,10 @@ export default function InvestigatePage() {
       const response = await investigateLogs(token, body);
       setResult(response.data || null);
       setMeta(response.meta || null);
-      pushToast("AI investigation completed.", "success");
+      pushToast(t("dashboard.investigate.completed"), "success");
       await loadHistory();
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to investigate logs", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.investigate.runFailed"), "error");
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +93,7 @@ export default function InvestigatePage() {
       const response = await fetchInvestigationDetail(token, id);
       setSelected(response.data || null);
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to load investigation detail", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.investigate.loadDetailFailed"), "error");
     }
   }
 
@@ -100,7 +102,7 @@ export default function InvestigatePage() {
       return {
         level: "low",
         score: 0,
-        note: "No investigation result loaded yet.",
+        note: t("dashboard.investigate.noResultNote"),
       };
     }
 
@@ -129,37 +131,37 @@ export default function InvestigatePage() {
     const level = score >= 60 ? "high" : score >= 28 ? "medium" : "low";
     const note =
       level === "high"
-        ? "Escalate quickly. Multiple strong signals point to elevated account or access risk."
+        ? t("dashboard.investigate.noteHigh")
         : level === "medium"
-          ? "Needs review. There are enough suspicious patterns to warrant operator follow-up."
-          : "Monitor only. The current evidence suggests a lower-confidence incident.";
+          ? t("dashboard.investigate.noteMedium")
+          : t("dashboard.investigate.noteLow");
 
     return { level, score, note };
-  }, [meta, result]);
+  }, [meta, result, t]);
 
   return (
     <div className="space-y-8">
       <Card>
         <CardHeader className="border-b border-border/60">
           <SectionTitle
-            eyebrow="AI Powered"
-            title="Investigate with AI"
+            eyebrow={t("dashboard.investigate.eyebrowAi")}
+            title={t("dashboard.investigate.title")}
             action={
               <Button variant="secondary" onClick={() => void handleInvestigate()} disabled={isLoading} className="rounded-full px-6 font-bold">
                 <svg className={cn("mr-2 size-3.5", isLoading && "motion-safe:animate-spin")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" /></svg>
-                {isLoading ? "Analyzing..." : "Run Investigation"}
+                {isLoading ? t("dashboard.investigate.analyzing") : t("dashboard.investigate.runInvestigation")}
               </Button>
             }
           />
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <Field label="Resource" value={payload.resource} onChange={(value) => setPayload((current) => ({ ...current, resource: value }))} />
-            <Field label="Status" value={payload.status} onChange={(value) => setPayload((current) => ({ ...current, status: value }))} />
-            <Field label="Action" value={payload.action} onChange={(value) => setPayload((current) => ({ ...current, action: value }))} placeholder="login" />
-            <Field label="Search" value={payload.search} onChange={(value) => setPayload((current) => ({ ...current, search: value }))} placeholder="invalid credentials" />
-            <Field label="Date From" type="datetime-local" value={payload.dateFrom} onChange={(value) => setPayload((current) => ({ ...current, dateFrom: value }))} />
-            <Field label="Date To" type="datetime-local" value={payload.dateTo} onChange={(value) => setPayload((current) => ({ ...current, dateTo: value }))} />
+            <Field label={t("dashboard.investigate.fieldResource")} value={payload.resource} onChange={(value) => setPayload((current) => ({ ...current, resource: value }))} />
+            <Field label={t("dashboard.investigate.fieldStatus")} value={payload.status} onChange={(value) => setPayload((current) => ({ ...current, status: value }))} />
+            <Field label={t("dashboard.investigate.fieldAction")} value={payload.action} onChange={(value) => setPayload((current) => ({ ...current, action: value }))} placeholder="login" />
+            <Field label={t("dashboard.investigate.fieldSearch")} value={payload.search} onChange={(value) => setPayload((current) => ({ ...current, search: value }))} placeholder="invalid credentials" />
+            <Field label={t("dashboard.investigate.fieldDateFrom")} type="datetime-local" value={payload.dateFrom} onChange={(value) => setPayload((current) => ({ ...current, dateFrom: value }))} />
+            <Field label={t("dashboard.investigate.fieldDateTo")} type="datetime-local" value={payload.dateTo} onChange={(value) => setPayload((current) => ({ ...current, dateTo: value }))} />
           </div>
         </CardContent>
       </Card>
@@ -167,7 +169,7 @@ export default function InvestigatePage() {
       <section className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)]">
         <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60 px-6 py-5">
-            <CompactPanelHeader eyebrow={isLoading ? "Streaming analysis" : "Latest result"} title="AI Investigation Output" />
+            <CompactPanelHeader eyebrow={isLoading ? t("dashboard.investigate.streamingAnalysis") : t("dashboard.investigate.latestResult")} title={t("dashboard.investigate.outputTitle")} />
           </CardHeader>
           <CardContent className="p-6">
             {isLoading ? (
@@ -175,9 +177,9 @@ export default function InvestigatePage() {
                 <div className="rounded-3xl bg-slate-950 px-6 py-8 text-white dark:bg-slate-900 shadow-2xl shadow-primary/10">
                   <div className="flex items-center gap-2">
                     <div className="size-2 rounded-full bg-muted-foreground animate-ping" />
-                    <div className="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">AI Processing</div>
+                    <div className="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">{t("dashboard.investigate.aiProcessing")}</div>
                   </div>
-                  <div className="mt-4 text-2xl font-semibold tracking-tight leading-tight">{loadingMessages[loadingIndex]}</div>
+                  <div className="mt-4 text-2xl font-semibold tracking-tight leading-tight">{t(loadingMessages[loadingIndex])}</div>
                   <div className="mt-6 h-1.5 overflow-hidden rounded-full bg-white/5">
                     <div className="h-full w-full bg-gradient-to-r from-muted via-primary to-muted bg-[length:200%_100%] animate-shimmer rounded-full" />
                   </div>
@@ -192,30 +194,30 @@ export default function InvestigatePage() {
               <div className="space-y-5">
                 <div className="rounded-3xl border border-border/70 bg-muted/35 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Risk Level</div>
+                    <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{t("dashboard.investigate.riskLevel")}</div>
                     <div className="flex flex-col items-end">
                       <StatusBadge status={riskAssessment.level} />
-                      <span className="mt-1 text-[10px] text-muted-foreground/60">Weighted by signals, urgency, log volume, and incident status</span>
+                      <span className="mt-1 text-[10px] text-muted-foreground/60">{t("dashboard.investigate.riskWeightedDesc")}</span>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-3 text-sm">
                     <span className="text-muted-foreground">{riskAssessment.note}</span>
                     <span className="rounded-full border border-border/60 px-2.5 py-1 font-medium text-foreground/80">
-                      Score {riskAssessment.score}
+                      {t("dashboard.investigate.score", undefined, { score: String(riskAssessment.score) })}
                     </span>
                   </div>
                   <p className="mt-4 text-base leading-8 text-foreground">{result.summary}</p>
                 </div>
-                <ResultList title="Timeline" items={result.timeline} />
-                <ResultList title="Suspicious Signals" items={result.suspicious_signals} />
-                <ResultList title="Recommendations" items={result.recommendations} />
+                <ResultList title={t("dashboard.investigate.listTimeline")} items={result.timeline} />
+                <ResultList title={t("dashboard.investigate.listSignals")} items={result.suspicious_signals} />
+                <ResultList title={t("dashboard.investigate.listRecommendations")} items={result.recommendations} />
                 {meta ? <pre className="overflow-auto rounded-2xl border border-border/70 bg-muted/35 p-4 text-xs text-muted-foreground">{JSON.stringify(meta, null, 2)}</pre> : null}
               </div>
             ) : (
               <EmptyState
                 className="min-h-64 border-none bg-muted/20"
-                title="Ready for analysis"
-                text="Run an investigation to generate a summary, timeline, suspicious signals, and recommendations."
+                title={t("dashboard.investigate.emptyTitle")}
+                text={t("dashboard.investigate.emptyDesc")}
                 action={(
                   <Button
                     variant="secondary"
@@ -224,7 +226,7 @@ export default function InvestigatePage() {
                     onClick={() => void handleInvestigate()}
                     disabled={isLoading || !token}
                   >
-                    Run Investigation
+                    {t("dashboard.investigate.runInvestigation")}
                   </Button>
                 )}
               />
@@ -235,11 +237,11 @@ export default function InvestigatePage() {
         <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60 px-6 py-5">
             <CompactPanelHeader
-              eyebrow={`${history.length} saved`}
-              title="Saved Investigations"
+              eyebrow={t("dashboard.investigate.savedCount", undefined, { count: String(history.length) })}
+              title={t("dashboard.investigate.savedTitle")}
               action={(
                 <Button variant="outline" size="sm" className="h-9 rounded-full px-5 font-bold" onClick={() => void loadHistory()}>
-                  Refresh
+                  {t("dashboard.investigate.refresh")}
                 </Button>
               )}
             />
@@ -248,15 +250,15 @@ export default function InvestigatePage() {
             {history.length === 0 ? (
               <EmptyState
                 className="min-h-64 border-none bg-muted/20"
-                title="No saved investigations"
-                text="Completed investigations will appear here for quick review."
+                title={t("dashboard.investigate.noSavedTitle")}
+                text={t("dashboard.investigate.noSavedDesc")}
               />
             ) : (
               history.map((item) => (
                 <button key={item.id} type="button" onClick={() => void openHistory(item.id)} className="w-full rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-left transition hover:border-primary/40 hover:bg-primary/5">
                   <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium">Investigation #{item.id}</div>
+                      <div className="font-medium">{t("dashboard.investigate.investigationChip", undefined, { id: String(item.id) })}</div>
                       <div className="mt-1 text-sm text-muted-foreground line-clamp-2">{item.summary}</div>
                     </div>
                     <StatusBadge status={item.status} />
@@ -267,9 +269,9 @@ export default function InvestigatePage() {
           </CardContent>
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-6 pb-6">
-              <Button variant="outline" disabled={page === 1} onClick={() => { setPage(p => p - 1); void loadHistory(page - 1); }}>Previous</Button>
-              <div className="text-sm font-medium text-muted-foreground">Page {page} of {totalPages}</div>
-              <Button variant="outline" disabled={page === totalPages} onClick={() => { setPage(p => p + 1); void loadHistory(page + 1); }}>Next</Button>
+              <Button variant="outline" disabled={page === 1} onClick={() => { setPage(p => p - 1); void loadHistory(page - 1); }}>{t("dashboard.investigate.previous")}</Button>
+              <div className="text-sm font-medium text-muted-foreground">{t("dashboard.investigate.pageOf", undefined, { page: String(page), total: String(totalPages) })}</div>
+              <Button variant="outline" disabled={page === totalPages} onClick={() => { setPage(p => p + 1); void loadHistory(page + 1); }}>{t("dashboard.investigate.next")}</Button>
             </div>
           )}
         </Card>
@@ -280,14 +282,14 @@ export default function InvestigatePage() {
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setSelected(null)} />
           <Card className="relative z-50 w-full max-w-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <CardHeader className="border-b border-border/60 flex flex-row items-center justify-between">
-              <CompactPanelHeader eyebrow="Investigation Details" title={`#${selected.id}`} />
-              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Close investigation details">
+              <CompactPanelHeader eyebrow={t("dashboard.investigate.detailsEyebrow")} title={`#${selected.id}`} />
+              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors" aria-label={t("dashboard.investigate.closeLabel")}>
                 <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </CardHeader>
             <CardContent className="p-6 max-h-[70vh] overflow-y-auto">
               <div className="mb-6 flex items-center justify-between">
-                 <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">Status</div>
+                 <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">{t("dashboard.investigate.statusLabel")}</div>
                  <StatusBadge status={selected.status} />
               </div>
               <div className="text-sm leading-8 text-foreground whitespace-pre-wrap">
@@ -323,12 +325,13 @@ function Field({ label, value, onChange, type = "text", placeholder }: { label: 
 }
 
 function ResultList({ title, items }: { title: string; items: string[] }) {
+  const { t } = useI18n();
   return (
     <div>
       <div className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">{title}</div>
       <div className="mt-3 grid gap-3">
         {items.length === 0 ? (
-          <EmptyState text="No items returned." />
+          <EmptyState text={t("dashboard.investigate.noItems")} />
         ) : (
           items.map((item, index) => (
             <div key={`${title}-${index}`} className="rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-sm leading-7 text-foreground">

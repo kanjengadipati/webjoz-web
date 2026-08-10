@@ -8,10 +8,12 @@ import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dial
 import { useToast } from "@/components/toast-provider";
 import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function SalesReferralPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [referralCode, setReferralCode] = useState<string>("");
@@ -30,7 +32,7 @@ export default function SalesReferralPage() {
       const res = await fetchMyReferralCode(token);
       setReferralCode(res.data?.referral_code || "");
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat kode referral", "error");
+      pushToast(err.message || t("dashboard.sales.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -46,7 +48,7 @@ export default function SalesReferralPage() {
     if (!referralCode) return;
     navigator.clipboard.writeText(referralCode);
     setCopiedCode(true);
-    pushToast("Kode referral berhasil disalin", "success");
+    pushToast(t("dashboard.sales.codeCopied"), "success");
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
@@ -58,7 +60,7 @@ export default function SalesReferralPage() {
     if (!shareableUrl) return;
     navigator.clipboard.writeText(shareableUrl);
     setCopiedLink(true);
-    pushToast("Link referral berhasil disalin", "success");
+    pushToast(t("dashboard.sales.linkCopied"), "success");
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
@@ -68,10 +70,10 @@ export default function SalesReferralPage() {
       setRegenerating(true);
       const res = await regenerateMyReferralCode(token);
       setReferralCode(res.data?.referral_code || "");
-      pushToast("Kode referral baru berhasil dibuat!", "success");
+      pushToast(t("dashboard.sales.regenerated"), "success");
       setConfirmOpen(false);
     } catch (err: any) {
-      pushToast(err.message || "Gagal membuat ulang kode referral", "error");
+      pushToast(err.message || t("dashboard.sales.regenerateFailed"), "error");
     } finally {
       setRegenerating(false);
     }
@@ -81,7 +83,7 @@ export default function SalesReferralPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
-        <p className="text-sm text-muted-foreground">Memuat data referral...</p>
+        <p className="text-sm text-muted-foreground">{t("dashboard.sales.loading")}</p>
       </div>
     );
   }
@@ -90,9 +92,9 @@ export default function SalesReferralPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-4 text-center">
         <ShieldAlert className="size-12 text-destructive/60" />
-        <h2 className="text-xl font-bold">Akses Dibatasi</h2>
+        <h2 className="text-xl font-bold">{t("dashboard.sales.accessDeniedTitle")}</h2>
         <p className="text-sm text-muted-foreground max-w-md">
-          Halaman ini khusus untuk Sales Partner & Admin Webjoz. Silakan hubungi admin jika Anda tim sales.
+          {t("dashboard.sales.accessDeniedDesc")}
         </p>
       </div>
     );
@@ -104,16 +106,16 @@ export default function SalesReferralPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <Share2 className="size-6 text-primary" />
-            Kode Referral Partner
+            {t("dashboard.sales.pageTitle")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Bagikan kode atau link referral Anda kepada klien untuk mendapatkan komisi dari setiap transaksi berbayar.
+            {t("dashboard.sales.pageDesc")}
           </p>
         </div>
         <Link href="/dashboard/sales/commissions">
           <Button variant="outline" className="gap-2">
             <DollarSign className="size-4 text-emerald-500" />
-            Lihat Komisi Saya
+            {t("dashboard.sales.viewCommissions")}
           </Button>
         </Link>
       </div>
@@ -124,10 +126,10 @@ export default function SalesReferralPage() {
           <CardHeader>
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <Award className="size-5 text-primary" />
-              Kode Referral Anda
+              {t("dashboard.sales.codeCardTitle")}
             </CardTitle>
             <CardDescription>
-              Gunakan kode ini saat pendaftaran website/tenant baru.
+              {t("dashboard.sales.codeCardDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -137,12 +139,12 @@ export default function SalesReferralPage() {
               </span>
               <Button size="sm" variant="outline" onClick={handleCopyCode} className="gap-1.5 cursor-pointer">
                 {copiedCode ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
-                {copiedCode ? "Tersalin" : "Salin Kode"}
+                {copiedCode ? t("dashboard.sales.copied") : t("dashboard.sales.copyCode")}
               </Button>
             </div>
 
             <div className="pt-2 border-t border-border/20 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Ingin memperbarui kode?</span>
+              <span>{t("dashboard.sales.updatePrompt")}</span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -150,7 +152,7 @@ export default function SalesReferralPage() {
                 className="text-xs text-muted-foreground hover:text-foreground gap-1"
               >
                 <RefreshCw className="size-3" />
-                Buat Ulang Kode
+                {t("dashboard.sales.regenerateCode")}
               </Button>
             </div>
           </CardContent>
@@ -161,10 +163,10 @@ export default function SalesReferralPage() {
           <CardHeader>
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <Share2 className="size-5 text-primary" />
-              Link Referral Pendaftaran
+              {t("dashboard.sales.linkCardTitle")}
             </CardTitle>
             <CardDescription>
-              Klien yang mendaftar melalui link ini akan otomatis terhubung ke akun Anda.
+              {t("dashboard.sales.linkCardDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -172,11 +174,11 @@ export default function SalesReferralPage() {
               <span className="truncate">{shareableUrl}</span>
               <Button size="sm" variant="secondary" onClick={handleCopyLink} className="shrink-0 gap-1.5 cursor-pointer">
                 {copiedLink ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
-                {copiedLink ? "Tersalin" : "Salin Link"}
+                {copiedLink ? t("dashboard.sales.copied") : t("dashboard.sales.copyLink")}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground/80 leading-relaxed">
-              💡 <strong>Tips:</strong> Cantumkan link ini di proposal, WhatsApp message, atau bio media sosial Anda.
+              💡 <strong>{t("dashboard.sales.tipsLabel")}</strong> {t("dashboard.sales.tipsText")}
             </p>
           </CardContent>
         </Card>
@@ -186,26 +188,26 @@ export default function SalesReferralPage() {
       <Card className="border-emerald-500/20 bg-emerald-500/5 p-6 space-y-3">
         <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm uppercase tracking-wider">
           <DollarSign className="size-4" />
-          Ketentuan Komisi Sales Partner
+          {t("dashboard.sales.programTitle")}
         </div>
         <ul className="text-xs text-muted-foreground space-y-1.5 list-disc list-inside leading-relaxed">
-          <li>Komisi sebesar <strong>20%</strong> dari nilai transaksi berbayar yang diselesaikan oleh tenant referensi Anda.</li>
-          <li>Komisi berlaku <strong>recurring</strong> untuk setiap perpanjangan langganan bulanan maupun tahunan.</li>
-          <li>Setiap tenant yang mendaftar dengan kode Anda otomatis menambahkan Anda sebagai anggota role <em>Editor</em> di workspace tenant tersebut.</li>
+          <li>{t("dashboard.sales.commRatePrefix")} <strong>20%</strong> {t("dashboard.sales.commRateSuffix")}</li>
+          <li>{t("dashboard.sales.commRecurringPrefix")} <strong>recurring</strong> {t("dashboard.sales.commRecurringSuffix")}</li>
+          <li>{t("dashboard.sales.commEditorPrefix")} <em>Editor</em> {t("dashboard.sales.commEditorSuffix")}</li>
         </ul>
       </Card>
 
       {/* Confirm Dialog for Regenerate */}
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen} title="Buat Ulang Kode Referral">
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen} title={t("dashboard.sales.dialogTitle")}>
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Apakah Anda yakin ingin membuat kode referral baru? Kode lama (<strong className="font-mono">{referralCode}</strong>) tidak akan berlaku lagi untuk pendaftaran baru.
+            {t("dashboard.sales.confirmPrefix")} (<strong className="font-mono">{referralCode}</strong>) {t("dashboard.sales.confirmSuffix")}
           </p>
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Batal</Button>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>{t("dashboard.sales.cancel")}</Button>
             <Button variant="destructive" onClick={handleRegenerate} disabled={regenerating} className="gap-2">
               {regenerating && <Loader2 className="size-4 animate-spin" />}
-              {regenerating ? "Memproses..." : "Ya, Buat Kode Baru"}
+              {regenerating ? t("dashboard.sales.processing") : t("dashboard.sales.confirmRegenerate")}
             </Button>
           </div>
         </div>

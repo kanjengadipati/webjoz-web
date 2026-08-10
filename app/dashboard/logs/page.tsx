@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { fetchAuditLogs } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { SectionState } from "@/lib/types";
@@ -11,6 +12,7 @@ import type { AuditLog } from "@/lib/types";
 export default function LogsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -35,12 +37,12 @@ export default function LogsPage() {
       const response = await fetchAuditLogs(token, query);
       setLogs(response.data);
       setState(SectionState.SUCCESS);
-      if (showToast) pushToast("Audit feed refreshed.", "success");
+      if (showToast) pushToast(t("dashboard.logs.refreshed"), "success");
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load logs", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.logs.loadFailed"), "error");
     }
-  }, [pushToast, query, token]);
+  }, [pushToast, query, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -64,14 +66,14 @@ export default function LogsPage() {
         <CardHeader className="border-b border-border/60">
           <SectionTitle
             eyebrow={state}
-            title="Real-time Audit Log Feed"
+            title={t("dashboard.logs.title")}
             action={
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setAutoRefresh((value) => !value)}>
-                  {autoRefresh ? "Auto-refresh On" : "Auto-refresh Off"}
+                  {autoRefresh ? t("dashboard.logs.autoRefreshOn") : t("dashboard.logs.autoRefreshOff")}
                 </Button>
                 <Button onClick={() => void loadLogs(true)}>
-                  Refresh Now
+                  {t("dashboard.logs.refreshNow")}
                 </Button>
               </div>
             }
@@ -79,19 +81,19 @@ export default function LogsPage() {
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-          <FilterInput label="Action" value={filters.action} onChange={(value) => setFilters((current) => ({ ...current, action: value }))} placeholder="login" />
-          <FilterInput label="Resource" value={filters.resource} onChange={(value) => setFilters((current) => ({ ...current, resource: value }))} placeholder="auth" />
-          <FilterInput label="Status" value={filters.status} onChange={(value) => setFilters((current) => ({ ...current, status: value }))} placeholder="failed" />
-          <FilterInput label="IP / Search" value={filters.search} onChange={(value) => setFilters((current) => ({ ...current, search: value }))} placeholder="203.0.113.10" />
-          <FilterInput label="Date From" type="datetime-local" value={filters.dateFrom} onChange={(value) => setFilters((current) => ({ ...current, dateFrom: value }))} />
-          <FilterInput label="Date To" type="datetime-local" value={filters.dateTo} onChange={(value) => setFilters((current) => ({ ...current, dateTo: value }))} />
+          <FilterInput label={t("dashboard.logs.filterAction")} value={filters.action} onChange={(value) => setFilters((current) => ({ ...current, action: value }))} placeholder="login" />
+          <FilterInput label={t("dashboard.logs.filterResource")} value={filters.resource} onChange={(value) => setFilters((current) => ({ ...current, resource: value }))} placeholder="auth" />
+          <FilterInput label={t("dashboard.logs.filterStatus")} value={filters.status} onChange={(value) => setFilters((current) => ({ ...current, status: value }))} placeholder="failed" />
+          <FilterInput label={t("dashboard.logs.filterIpSearch")} value={filters.search} onChange={(value) => setFilters((current) => ({ ...current, search: value }))} placeholder="203.0.113.10" />
+          <FilterInput label={t("dashboard.logs.filterDateFrom")} type="datetime-local" value={filters.dateFrom} onChange={(value) => setFilters((current) => ({ ...current, dateFrom: value }))} />
+          <FilterInput label={t("dashboard.logs.filterDateTo")} type="datetime-local" value={filters.dateTo} onChange={(value) => setFilters((current) => ({ ...current, dateTo: value }))} />
         </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={String(logs.length)} title="Event Table" />
+          <SectionTitle eyebrow={String(logs.length)} title={t("dashboard.logs.eventTable")} />
         </CardHeader>
         <CardContent className="pt-6">
         {state === SectionState.LOADING ? (
@@ -101,7 +103,7 @@ export default function LogsPage() {
             <SkeletonBlock className="h-20" />
           </div>
         ) : logs.length === 0 ? (
-          <EmptyState text="No audit logs matched the current filters." />
+          <EmptyState text={t("dashboard.logs.emptyDesc")} />
         ) : (
           <div className="grid gap-3">
             {logs.map((log, index) => {
@@ -115,19 +117,19 @@ export default function LogsPage() {
                     className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                   >
                     <div>
-                      <div className="font-medium">{log.action} on {log.resource}</div>
-                      <div className="mt-1 text-sm text-muted-foreground">{log.description || "No description"}</div>
+                      <div className="font-medium">{t("dashboard.logs.actionOn", undefined, { action: log.action, resource: log.resource })}</div>
+                      <div className="mt-1 text-sm text-muted-foreground">{log.description || t("dashboard.logs.noDescription")}</div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="text-xs text-muted-foreground">{log.created_at ? new Date(log.created_at).toLocaleString() : "-"}</div>
+                      <div className="text-xs text-muted-foreground">{log.created_at ? new Date(log.created_at).toLocaleString(locale === "id" ? "id-ID" : "en-US") : "-"}</div>
                       <StatusBadge status={log.status} />
                     </div>
                   </button>
                   {isOpen ? (
                     <div className="grid gap-3 border-t border-border/70 px-5 py-4 text-sm text-muted-foreground md:grid-cols-3">
-                      <DetailItem label="IP Address" value={log.ip_address || "-"} />
-                      <DetailItem label="Actor User ID" value={String(log.actor_user_id ?? "-")} />
-                      <DetailItem label="User Agent" value={log.user_agent || "-"} />
+                      <DetailItem label={t("dashboard.logs.detailIp")} value={log.ip_address || "-"} />
+                      <DetailItem label={t("dashboard.logs.detailActor")} value={String(log.actor_user_id ?? "-")} />
+                      <DetailItem label={t("dashboard.logs.detailAgent")} value={log.user_agent || "-"} />
                     </div>
                   ) : null}
                 </div>
