@@ -16,6 +16,7 @@ import { clearAuthSession, useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import type { AuditLog, InvestigationHistory, InvestigationResult, Profile, Session, User } from "@/lib/types";
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
@@ -24,19 +25,19 @@ type TabId = "profile" | "security" | "devices" | "users" | "permissions" | "log
 
 interface TabDef {
   id: TabId;
-  label: string;
+  labelKey: string;
   permission?: string;
   group: "personal" | "admin";
 }
 
 const TABS: TabDef[] = [
-  { id: "profile", label: "Profil", group: "personal" },
-  { id: "security", label: "Keamanan", group: "personal" },
-  { id: "devices", label: "Perangkat Aktif", group: "admin", permission: "dashboard.view" },
-  { id: "users", label: "Pengguna", group: "admin", permission: "permission.read" },
-  { id: "permissions", label: "Izin Role", group: "admin", permission: "role.update_permissions" },
-  { id: "logs", label: "Audit Logs", group: "admin", permission: "role.read" },
-  { id: "investigate", label: "AI Investigator", group: "admin", permission: "role.read" },
+  { id: "profile", labelKey: "dashboard.settings.tabProfile", group: "personal" },
+  { id: "security", labelKey: "dashboard.settings.tabSecurity", group: "personal" },
+  { id: "devices", labelKey: "dashboard.settings.tabDevices", group: "admin", permission: "dashboard.view" },
+  { id: "users", labelKey: "dashboard.settings.tabUsers", group: "admin", permission: "permission.read" },
+  { id: "permissions", labelKey: "dashboard.settings.tabPermissions", group: "admin", permission: "role.update_permissions" },
+  { id: "logs", labelKey: "dashboard.settings.tabLogs", group: "admin", permission: "role.read" },
+  { id: "investigate", labelKey: "dashboard.settings.tabInvestigate", group: "admin", permission: "role.read" },
 ];
 
 // ─── Settings Page Shell ─────────────────────────────────────────────────────
@@ -44,6 +45,7 @@ const TABS: TabDef[] = [
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabId>("profile");
   const { hasPermission } = usePermissions();
+  const { t } = useI18n();
 
   const visibleTabs = TABS.filter((tab) =>
     !tab.permission || hasPermission(tab.permission)
@@ -69,28 +71,28 @@ export default function SettingsPage() {
                   : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
               )}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           ))}
         </div>
       </div>
 
       {/* Desktop: Sidebar Tab Navigation */}
-      <nav className="hidden lg:block sticky top-24 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 space-y-4 shadow-sm" aria-label="Settings navigation">
+      <nav className="hidden lg:block sticky top-24 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 space-y-4 shadow-sm" aria-label={t("dashboard.settings.tabProfile")}>
         {/* Personal */}
         <div className="space-y-1">
-          <div className="px-3 pb-1 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/50">Akun</div>
+          <div className="px-3 pb-1 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/50">{t("dashboard.settings.groupAccount")}</div>
           {personalTabs.map((tab) => (
-            <TabButton key={tab.id} tab={tab} active={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} />
+            <TabButton key={tab.id} tab={tab} active={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} label={t(tab.labelKey)} />
           ))}
         </div>
 
         {/* Admin */}
         {adminTabs.length > 0 && (
           <div className="space-y-1 border-t border-border/40 pt-3">
-            <div className="px-3 pb-1 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/50">Admin Sistem</div>
+            <div className="px-3 pb-1 text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/50">{t("dashboard.settings.groupAdmin")}</div>
             {adminTabs.map((tab) => (
-              <TabButton key={tab.id} tab={tab} active={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} />
+              <TabButton key={tab.id} tab={tab} active={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} label={t(tab.labelKey)} />
             ))}
           </div>
         )}
@@ -110,7 +112,7 @@ export default function SettingsPage() {
   );
 }
 
-function TabButton({ tab, active, onClick }: { tab: TabDef; active: boolean; onClick: () => void }) {
+function TabButton({ tab, active, onClick, label }: { tab: TabDef; active: boolean; onClick: () => void; label: string }) {
   return (
     <button
       type="button"
@@ -123,7 +125,7 @@ function TabButton({ tab, active, onClick }: { tab: TabDef; active: boolean; onC
       )}
       aria-current={active ? "page" : undefined}
     >
-      {tab.label}
+      {label}
     </button>
   );
 }
@@ -133,6 +135,7 @@ function TabButton({ tab, active, onClick }: { tab: TabDef; active: boolean; onC
 function ProfileTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -146,9 +149,9 @@ function ProfileTab() {
       setName(response.data.name);
       setPhoneNumber(response.data.phone_number || "");
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to load profile", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.profileFailedLoad"), "error");
     }
-  }, [pushToast, token]);
+  }, [pushToast, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -160,33 +163,33 @@ function ProfileTab() {
     event.preventDefault();
     if (!token) return;
     if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
-      setPhoneError("Use international format, like +628123456789.");
+      setPhoneError(t("dashboard.settings.profilePhoneError"));
       return;
     }
     setPhoneError("");
     try {
       await updateProfile(token, name, phoneNumber);
-      pushToast("Profile updated.", "success");
+      pushToast(t("dashboard.settings.profileUpdated"), "success");
       await loadProfile();
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to update profile", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.profileFailedUpdate"), "error");
     }
   }
 
   return (
     <Card>
       <CardHeader className="border-b border-border/60">
-        <SectionTitle eyebrow="Profile" title="Profile Settings" />
+        <SectionTitle eyebrow={t("dashboard.settings.profileEyebrow")} title={t("dashboard.settings.profileTitle")} />
       </CardHeader>
       <CardContent className="pt-6">
         {profile ? (
           <form className="space-y-4" onSubmit={handleProfileUpdate}>
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label>{t("dashboard.settings.email")}</Label>
               <Input value={profile.email} readOnly className="bg-muted/60 text-muted-foreground" />
             </div>
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label>{t("dashboard.settings.name")}</Label>
               <Input value={name} onChange={(event) => setName(event.target.value)} />
             </div>
             <PhoneNumberInput
@@ -196,10 +199,10 @@ function ProfileTab() {
               onChange={(value) => { setPhoneNumber(value); setPhoneError(""); }}
               error={phoneError}
             />
-            <Button type="submit">Save Profile</Button>
+            <Button type="submit">{t("dashboard.settings.saveProfile")}</Button>
           </form>
         ) : (
-          <EmptyState text="Profile data will appear here after authentication." />
+          <EmptyState text={t("dashboard.settings.profileEmpty")} />
         )}
       </CardContent>
     </Card>
@@ -212,6 +215,7 @@ function SecurityTab() {
   const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
@@ -223,29 +227,29 @@ function SecurityTab() {
       clearAuthSession();
       setCurrentPassword("");
       setNewPassword("");
-      pushToast("Password changed. Please sign in again.", "success");
+      pushToast(t("dashboard.settings.pwChanged"), "success");
       router.push("/login?passwordChanged=true");
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to change password", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.pwFailed"), "error");
     }
   }
 
   return (
     <Card>
       <CardHeader className="border-b border-border/60">
-        <SectionTitle eyebrow="Security" title="Change Password" />
+        <SectionTitle eyebrow={t("dashboard.settings.securityEyebrow")} title={t("dashboard.settings.changePassword")} />
       </CardHeader>
       <CardContent className="pt-6">
         <form className="space-y-4" onSubmit={handlePasswordChange}>
           <div className="space-y-2">
-            <Label>Current Password</Label>
+            <Label>{t("dashboard.settings.currentPassword")}</Label>
             <Input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>New Password</Label>
+            <Label>{t("dashboard.settings.newPassword")}</Label>
             <Input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
           </div>
-          <Button type="submit" variant="secondary">Update Password</Button>
+          <Button type="submit" variant="secondary">{t("dashboard.settings.updatePassword")}</Button>
         </form>
       </CardContent>
     </Card>
@@ -258,6 +262,7 @@ function DevicesTab() {
   const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
@@ -276,9 +281,9 @@ function DevicesTab() {
       setState(SectionState.SUCCESS);
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.devicesFailedLoad"), "error");
     }
-  }, [pushToast, token]);
+  }, [pushToast, token, t]);
 
   useEffect(() => {
     if (!token || state !== SectionState.IDLE) return;
@@ -292,10 +297,10 @@ function DevicesTab() {
     setSessions((c) => c.filter((s) => s.id !== id));
     try {
       await revokeSession(token, id);
-      pushToast("Device signed out.", "success");
+      pushToast(t("dashboard.settings.deviceSignedOut"), "success");
     } catch (error) {
       setSessions(prev);
-      pushToast(error instanceof Error ? error.message : "Failed to sign out device", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.deviceSignOutFailed"), "error");
     }
   }
 
@@ -305,10 +310,10 @@ function DevicesTab() {
     setSessions((c) => c.map((s) => s.trusted_device_id === id ? { ...s, is_trusted: false, trusted_device_id: undefined, trusted_at: undefined, last_trusted_at: undefined } : s));
     try {
       await revokeTrustedDevice(token, id);
-      pushToast("Trusted device removed.", "success");
+      pushToast(t("dashboard.settings.trustRemoved"), "success");
     } catch (error) {
       setSessions(prev);
-      pushToast(error instanceof Error ? error.message : "Failed to remove trusted device", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.trustRemovalFailed"), "error");
     }
   }
 
@@ -318,10 +323,10 @@ function DevicesTab() {
     setSessions((c) => c.filter((s) => s.is_current));
     try {
       await revokeOtherSessions(token);
-      pushToast("Other devices signed out.", "success");
+      pushToast(t("dashboard.settings.othersSignedOut"), "success");
     } catch (error) {
       setSessions(prev);
-      pushToast(error instanceof Error ? error.message : "Failed to sign out other devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.othersSignOutFailed"), "error");
     }
   }
 
@@ -329,9 +334,9 @@ function DevicesTab() {
     if (!token) return;
     try {
       await logoutAllSessions(token);
-      pushToast("All devices signed out.", "success");
+      pushToast(t("dashboard.settings.allSignedOut"), "success");
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to sign out all devices", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.allSignOutFailed"), "error");
       return;
     }
     clearAuthSession();
@@ -341,9 +346,9 @@ function DevicesTab() {
   const deviceLabel = (s: Session) => {
     if (s.device_name) return s.device_name;
     const ua = s.user_agent || "";
-    const browser = ua.includes("Chrome") ? "Chrome" : ua.includes("Safari") ? "Safari" : ua.includes("Firefox") ? "Firefox" : "Browser";
+    const browser = ua.includes("Chrome") ? "Chrome" : ua.includes("Safari") ? "Safari" : ua.includes("Firefox") ? "Firefox" : t("dashboard.settings.browser");
     const platform = ua.includes("Mac") ? "Mac" : ua.includes("iPhone") ? "iPhone" : ua.includes("Android") ? "Android" : ua.includes("Windows") ? "Windows" : "";
-    return platform ? `${browser} • ${platform}` : s.device_id || "Unknown device";
+    return platform ? `${browser} • ${platform}` : s.device_id || t("dashboard.settings.unknownDevice");
   };
 
   const shortID = (v?: string) => {
@@ -363,18 +368,18 @@ function DevicesTab() {
         <CardHeader className="border-b border-border/60">
           <SectionTitle
             eyebrow={state}
-            title="Device & Session Management"
+            title={t("dashboard.settings.devicesTitle")}
             action={
               <div className="flex flex-wrap gap-2">
                 <Button variant="ghost" size="sm" className="h-9 rounded-full px-4" onClick={() => void loadSessions()} disabled={state === SectionState.LOADING}>
-                  Refresh
+                  {t("dashboard.settings.refresh")}
                 </Button>
                 <Can permission="session.delete">
                   <Button variant="secondary" size="sm" className="h-9 rounded-full px-4 font-bold" onClick={() => void handleRevokeOthers()} disabled={sessions.filter((s) => !s.is_current).length === 0}>
-                    Sign out others
+                    {t("dashboard.settings.signOutOthers")}
                   </Button>
                   <Button variant="destructive" size="sm" className="h-9 rounded-full px-4 font-bold" onClick={() => void handleLogoutAll()} disabled={sessions.length === 0}>
-                    Sign out all
+                    {t("dashboard.settings.signOutAll")}
                   </Button>
                 </Can>
               </div>
@@ -384,9 +389,9 @@ function DevicesTab() {
         <CardContent className="space-y-5 pt-6">
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { label: "Active sessions", value: metrics.total },
-              { label: "Trusted devices", value: metrics.trusted },
-              { label: "This session", value: metrics.current },
+              { label: t("dashboard.settings.metricActiveSessions"), value: metrics.total },
+              { label: t("dashboard.settings.metricTrustedDevices"), value: metrics.trusted },
+              { label: t("dashboard.settings.metricThisSession"), value: metrics.current },
             ].map((m) => (
               <div key={m.label} className="rounded-2xl border border-border/60 bg-muted/25 p-4">
                 <div className="text-xs font-medium text-muted-foreground">{m.label}</div>
@@ -401,11 +406,11 @@ function DevicesTab() {
               <SkeletonBlock className="h-24" />
             </div>
           ) : sessions.length === 0 ? (
-            <EmptyState title="No sessions yet" text="No active sessions or trusted devices associated with this account." />
+            <EmptyState title={t("dashboard.settings.noSessionsTitle")} text={t("dashboard.settings.noSessionsText")} />
           ) : (
             <div className="grid gap-3">
               {sessions.map((session) => {
-                const status = session.is_current ? "currently signed in" : session.is_trusted ? "trusted device" : "unknown device";
+                const status = session.is_current ? t("dashboard.settings.statusCurrent") : session.is_trusted ? t("dashboard.settings.statusTrusted") : t("dashboard.settings.statusUnknown");
                 return (
                   <div key={session.id} className="rounded-2xl border border-border/70 bg-muted/30 px-5 py-4">
                     <div className="flex flex-wrap items-start justify-between gap-4">
@@ -414,24 +419,24 @@ function DevicesTab() {
                           <div className="font-semibold text-base">{deviceLabel(session)}</div>
                           <StatusBadge status={status} />
                         </div>
-                        <div className="text-sm text-muted-foreground line-clamp-1">{session.user_agent || "Unknown user agent"}</div>
+                        <div className="text-sm text-muted-foreground line-clamp-1">{session.user_agent || t("dashboard.settings.unknownUserAgent")}</div>
                         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                          <span>Session #{session.id}</span>
-                          <span>Device {shortID(session.device_id)}</span>
-                          <span>IP: {session.ip_address || "-"}</span>
-                          <span>Last used: {formatDate(session.updated_at)}</span>
-                          <span>Expires: {formatDate(session.expired_at)}</span>
+                          <span>{t("dashboard.settings.sessionId", undefined, { id: String(session.id) })}</span>
+                          <span>{t("dashboard.settings.deviceId", undefined, { id: shortID(session.device_id) })}</span>
+                          <span>{t("dashboard.settings.ip", undefined, { ip: session.ip_address || "-" })}</span>
+                          <span>{t("dashboard.settings.lastUsed", undefined, { date: formatDate(session.updated_at) })}</span>
+                          <span>{t("dashboard.settings.expires", undefined, { date: formatDate(session.expired_at) })}</span>
                         </div>
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         {session.is_trusted && session.trusted_device_id ? (
                           <Button variant="outline" size="sm" className="h-8 rounded-lg px-3 text-xs font-semibold" onClick={() => void handleRemoveTrust(session.trusted_device_id!)}>
-                            Remove trust
+                            {t("dashboard.settings.removeTrust")}
                           </Button>
                         ) : null}
                         {!session.is_current ? (
                           <Button variant="destructive" size="sm" className="h-8 rounded-lg px-3 text-xs font-semibold" onClick={() => void handleRevoke(session.id)}>
-                            Revoke
+                            {t("dashboard.settings.revoke")}
                           </Button>
                         ) : null}
                       </div>
@@ -452,6 +457,7 @@ function DevicesTab() {
 function UsersTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
@@ -474,9 +480,9 @@ function UsersTab() {
       setState(SectionState.SUCCESS);
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load users", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.usersFailedLoad"), "error");
     }
-  }, [pushToast, query, token]);
+  }, [pushToast, query, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -488,22 +494,22 @@ function UsersTab() {
     if (!token || newRole === user.role) return;
     try {
       await updateUser(token, user.id, { name: user.name, email: user.email, role: newRole, is_verified: user.is_verified });
-      pushToast(`User updated to ${newRole}`, "success");
+      pushToast(t("dashboard.settings.userUpdated", undefined, { role: newRole }), "success");
       void loadUsers();
     } catch {
-      pushToast("Failed to update user role", "error");
+      pushToast(t("dashboard.settings.userUpdateFailed"), "error");
     }
   }
 
   async function handleDeleteUser(user: User) {
     if (!token) return;
-    if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+    if (!confirm(t("dashboard.settings.userDeleteConfirm", undefined, { name: user.name }))) return;
     try {
       await deleteUser(token, user.id);
-      pushToast(`User ${user.name} deleted successfully`, "success");
+      pushToast(t("dashboard.settings.userDeleted", undefined, { name: user.name }), "success");
       void loadUsers();
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to delete user", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.userDeleteFailed"), "error");
     }
   }
 
@@ -520,17 +526,17 @@ function UsersTab() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={state} title="User Management" action={<Button onClick={() => void loadUsers()}>Refresh</Button>} />
+          <SectionTitle eyebrow={state} title={t("dashboard.settings.usersTitle")} action={<Button onClick={() => void loadUsers()}>{t("dashboard.settings.refresh")}</Button>} />
         </CardHeader>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-          <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" />
-          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder="Role filter (user/sales/admin)" />
+          <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("dashboard.settings.searchByNameEmail")} />
+          <Input value={role} onChange={(event) => setRole(event.target.value)} placeholder={t("dashboard.settings.roleFilter")} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={String(filteredUsers.length)} title="Admin-visible users" />
+          <SectionTitle eyebrow={String(filteredUsers.length)} title={t("dashboard.settings.usersVisibleTitle")} />
         </CardHeader>
         <CardContent className="pt-6">
           {state === SectionState.LOADING ? (
@@ -539,7 +545,7 @@ function UsersTab() {
               <SkeletonBlock className="h-20" />
             </div>
           ) : filteredUsers.length === 0 ? (
-            <EmptyState text="No users matched the current query." />
+            <EmptyState text={t("dashboard.settings.noUsersMatch")} />
           ) : (
             <div className="grid gap-3">
               {filteredUsers.map((user) => (
@@ -559,14 +565,14 @@ function UsersTab() {
                         onChange={(e) => void handleChangeRole(user, e.target.value)}
                         className="h-9 px-3 rounded-xl border border-input bg-background text-xs font-medium cursor-pointer hover:border-primary/50 transition-colors"
                       >
-                        <option value="user">User</option>
-                        <option value="sales">Sales</option>
-                        <option value="admin">Admin</option>
-                        {currentRole === "superadmin" && <option value="superadmin">Superadmin</option>}
+                        <option value="user">{t("dashboard.settings.roleUser")}</option>
+                        <option value="sales">{t("dashboard.settings.roleSales")}</option>
+                        <option value="admin">{t("dashboard.settings.roleAdmin")}</option>
+                        {currentRole === "superadmin" && <option value="superadmin">{t("dashboard.settings.roleSuperadmin")}</option>}
                       </select>
                       {canDelete(user) && (
                         <Button variant="destructive" size="sm" className="rounded-xl h-9" onClick={() => void handleDeleteUser(user)}>
-                          Delete
+                          {t("dashboard.settings.delete")}
                         </Button>
                       )}
                     </div>
@@ -596,6 +602,7 @@ function normalizeNamedItem(item: NamedItem): RoleOption | null {
 function PermissionsTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [roles, setRoles] = useState<RoleOption[]>([]);
   const [allPermissions, setAllPermissions] = useState<RoleOption[]>([]);
   const [selectedRole, setSelectedRole] = useState<number | null>(null);
@@ -613,11 +620,11 @@ function PermissionsTab() {
       setAllPermissions(permissions);
       if (filteredRoles.length) setSelectedRole(filteredRoles[0].id);
     } catch {
-      pushToast("Failed to load initial data", "error");
+      pushToast(t("dashboard.settings.permsFailedLoad"), "error");
     } finally {
       setLoading(false);
     }
-  }, [token, pushToast]);
+  }, [token, pushToast, t]);
 
   const loadRolePermissions = useCallback(async (roleID: number) => {
     if (!token) return;
@@ -625,9 +632,9 @@ function PermissionsTab() {
       const res = await fetchRolePermissions(token, roleID);
       setRolePermissions(res.data.permissions);
     } catch {
-      pushToast("Failed to load role permissions", "error");
+      pushToast(t("dashboard.settings.permsRoleFailedLoad"), "error");
     }
-  }, [token, pushToast]);
+  }, [token, pushToast, t]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => { void loadInitialData(); }, 0);
@@ -650,9 +657,9 @@ function PermissionsTab() {
     setSaving(true);
     try {
       await updateRolePermissions(token, selectedRole, rolePermissions);
-      pushToast("Permissions updated successfully", "success");
+      pushToast(t("dashboard.settings.permsSaved"), "success");
     } catch {
-      pushToast("Failed to update permissions", "error");
+      pushToast(t("dashboard.settings.permsSaveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -669,7 +676,7 @@ function PermissionsTab() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow="RBAC Management" title="Manage Role Permissions" action={<Button onClick={handleSave} disabled={saving} className="shadow-lg shadow-primary/20">{saving ? "Saving..." : "Save Changes"}</Button>} />
+          <SectionTitle eyebrow={t("dashboard.settings.rbacEyebrow")} title={t("dashboard.settings.manageRolePermissions")} action={<Button onClick={handleSave} disabled={saving} className="shadow-lg shadow-primary/20">{saving ? t("dashboard.settings.saving") : t("dashboard.settings.saveChanges")}</Button>} />
         </CardHeader>
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-2">
@@ -685,8 +692,8 @@ function PermissionsTab() {
       <Card>
         <CardHeader className="border-b border-border/60 bg-muted/20">
           <div className="flex items-center justify-between">
-            <SectionTitle eyebrow={`${allPermissions.length} Total`} title="Available Permissions" />
-            <Badge variant="outline" className="bg-background">{rolePermissions.length} Active</Badge>
+            <SectionTitle eyebrow={t("dashboard.settings.totalPermissions", undefined, { count: String(allPermissions.length) })} title={t("dashboard.settings.availablePermissions")} />
+            <Badge variant="outline" className="bg-background">{t("dashboard.settings.activePermissions", undefined, { count: String(rolePermissions.length) })}</Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-6">
@@ -697,7 +704,7 @@ function PermissionsTab() {
                 <button type="button" key={perm.id} onClick={() => togglePermission(perm.name)} className={cn("flex items-center justify-between p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer select-none group", isActive ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:border-primary/40 hover:bg-muted/50")}>
                   <div className="space-y-0.5">
                     <div className={cn("text-sm font-bold tracking-tight", isActive ? "text-primary" : "text-foreground")}>{perm.name}</div>
-                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{perm.name.split(".")[0]} Resource</div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{t("dashboard.settings.resourceSuffix", undefined, { resource: perm.name.split(".")[0] })}</div>
                   </div>
                   <div className={cn("size-5 rounded-full border-2 flex items-center justify-center transition-all duration-300", isActive ? "bg-primary border-primary" : "border-border/80 group-hover:border-primary/40")}>
                     {isActive && <svg className="size-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
@@ -717,6 +724,7 @@ function PermissionsTab() {
 function AuditLogsTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -741,12 +749,12 @@ function AuditLogsTab() {
       const response = await fetchAuditLogs(token, query);
       setLogs(response.data);
       setState(SectionState.SUCCESS);
-      if (showToast) pushToast("Audit feed refreshed.", "success");
+      if (showToast) pushToast(t("dashboard.settings.logsRefreshed"), "success");
     } catch (error) {
       setState(SectionState.ERROR);
-      pushToast(error instanceof Error ? error.message : "Failed to load logs", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.logsFailedLoad"), "error");
     }
-  }, [pushToast, query, token]);
+  }, [pushToast, query, token, t]);
 
   useEffect(() => {
     if (!token) return;
@@ -771,11 +779,11 @@ function AuditLogsTab() {
         <CardHeader className="border-b border-border/60">
           <SectionTitle
             eyebrow={state}
-            title="Real-time Audit Log Feed"
+            title={t("dashboard.settings.logsTitle")}
             action={
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setAutoRefresh((v) => !v)}>{autoRefresh ? "Auto-refresh On" : "Auto-refresh Off"}</Button>
-                <Button onClick={() => void loadLogs(true)}>Refresh Now</Button>
+                <Button variant="outline" onClick={() => setAutoRefresh((v) => !v)}>{autoRefresh ? t("dashboard.settings.autoRefreshOn") : t("dashboard.settings.autoRefreshOff")}</Button>
+                <Button onClick={() => void loadLogs(true)}>{t("dashboard.settings.refreshNow")}</Button>
               </div>
             }
           />
@@ -784,13 +792,13 @@ function AuditLogsTab() {
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
             {(["action", "resource", "status", "search"] as const).map((key) => (
               <div key={key} className="space-y-2">
-                <Label className="capitalize">{key === "search" ? "IP / Search" : key}</Label>
+                <Label className="capitalize">{key === "search" ? t("dashboard.settings.logFilterLabel") : key}</Label>
                 <Input value={filters[key]} onChange={(e) => setFilters((c) => ({ ...c, [key]: e.target.value }))} placeholder={key === "resource" ? "auth" : key === "action" ? "login" : key === "status" ? "failed" : "203.0.113.10"} />
               </div>
             ))}
             {(["dateFrom", "dateTo"] as const).map((key) => (
               <div key={key} className="space-y-2">
-                <Label>{key === "dateFrom" ? "Date From" : "Date To"}</Label>
+                <Label>{key === "dateFrom" ? t("dashboard.settings.dateFrom") : t("dashboard.settings.dateTo")}</Label>
                 <Input type="datetime-local" value={filters[key]} onChange={(e) => setFilters((c) => ({ ...c, [key]: e.target.value }))} />
               </div>
             ))}
@@ -800,7 +808,7 @@ function AuditLogsTab() {
 
       <Card>
         <CardHeader className="border-b border-border/60">
-          <SectionTitle eyebrow={String(logs.length)} title="Event Table" />
+          <SectionTitle eyebrow={String(logs.length)} title={t("dashboard.settings.eventTable")} />
         </CardHeader>
         <CardContent className="pt-6">
           {state === SectionState.LOADING ? (
@@ -810,7 +818,7 @@ function AuditLogsTab() {
               <SkeletonBlock className="h-20" />
             </div>
           ) : logs.length === 0 ? (
-            <EmptyState text="No audit logs matched the current filters." />
+            <EmptyState text={t("dashboard.settings.noLogsMatch")} />
           ) : (
             <div className="grid gap-3">
               {logs.map((log, index) => {
@@ -820,8 +828,8 @@ function AuditLogsTab() {
                   <div key={rowKey} className="rounded-3xl border border-border/70 bg-muted/35">
                     <button type="button" onClick={() => setExpandedKey(isOpen ? null : rowKey)} className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left">
                       <div>
-                        <div className="font-medium">{log.action} on {log.resource}</div>
-                        <div className="mt-1 text-sm text-muted-foreground">{log.description || "No description"}</div>
+                        <div className="font-medium">{t("dashboard.settings.logActionOn", undefined, { action: log.action, resource: log.resource })}</div>
+                        <div className="mt-1 text-sm text-muted-foreground">{log.description || t("dashboard.settings.noDescription")}</div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="text-xs text-muted-foreground">{log.created_at ? new Date(log.created_at).toLocaleString() : "-"}</div>
@@ -830,7 +838,7 @@ function AuditLogsTab() {
                     </button>
                     {isOpen && (
                       <div className="grid gap-3 border-t border-border/70 px-5 py-4 text-sm text-muted-foreground md:grid-cols-3">
-                        {[["IP Address", log.ip_address || "-"], ["Actor User ID", String(log.actor_user_id ?? "-")], ["User Agent", log.user_agent || "-"]].map(([label, value]) => (
+                        {[[t("dashboard.settings.ipAddress"), log.ip_address || "-"], [t("dashboard.settings.actorUserId"), String(log.actor_user_id ?? "-")], [t("dashboard.settings.userAgent"), log.user_agent || "-"]].map(([label, value]) => (
                           <div key={label} className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
                             <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
                             <div className="mt-2 break-words text-sm text-foreground">{value}</div>
@@ -851,16 +859,10 @@ function AuditLogsTab() {
 
 // ─── Tab: AI Investigator ────────────────────────────────────────────────────
 
-const loadingMessages = [
-  "Clustering matching audit events...",
-  "Building incident timeline...",
-  "Cross-checking suspicious signals...",
-  "Drafting recommendations for the operator...",
-];
-
 function InvestigateTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, translations } = useI18n();
   const [payload, setPayload] = useState({ resource: "auth", status: "failed", action: "", search: "", limit: 25, dateFrom: "", dateTo: "" });
   const [result, setResult] = useState<InvestigationResult | null>(null);
   const [meta, setMeta] = useState<Record<string, unknown> | null>(null);
@@ -870,6 +872,7 @@ function InvestigateTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const loadingMessages = translations.dashboard.settings.investLoading;
 
   useEffect(() => {
     if (token) void loadHistory(1);
@@ -889,7 +892,7 @@ function InvestigateTab() {
       setHistory(response.data || []);
       if (response.meta?.total) setTotalPages(Math.ceil((response.meta.total as number) / 10));
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to load history", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.investLoadHistoryFailed"), "error");
     }
   }
 
@@ -906,10 +909,10 @@ function InvestigateTab() {
       const response = await investigateLogs(token, body);
       setResult(response.data || null);
       setMeta(response.meta || null);
-      pushToast("AI investigation completed.", "success");
+      pushToast(t("dashboard.settings.investCompleted"), "success");
       await loadHistory();
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to investigate logs", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.investFailed"), "error");
     } finally {
       setIsLoading(false);
     }
@@ -921,12 +924,12 @@ function InvestigateTab() {
       const response = await fetchInvestigationDetail(token, id);
       setSelected(response.data || null);
     } catch (error) {
-      pushToast(error instanceof Error ? error.message : "Failed to load detail", "error");
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.investDetailFailed"), "error");
     }
   }
 
   const riskAssessment = useMemo(() => {
-    if (!result) return { level: "low", score: 0, note: "No investigation result loaded yet." };
+    if (!result) return { level: "low", score: 0, note: t("dashboard.settings.noResultYet") };
     const signals = result.suspicious_signals.length;
     const recs = result.recommendations.length;
     const summary = result.summary.toLowerCase();
@@ -937,20 +940,20 @@ function InvestigateTab() {
     if (metaStatus === "failed" || metaStatus === "denied") score += 12;
     if (["critical", "immediate", "urgent", "breach", "compromise", "blocked", "escalate"].some((kw) => summary.includes(kw))) score += 16;
     const level = score >= 60 ? "high" : score >= 28 ? "medium" : "low";
-    const note = level === "high" ? "Escalate quickly. Multiple strong signals point to elevated risk." : level === "medium" ? "Needs review. Suspicious patterns warrant operator follow-up." : "Monitor only. Lower-confidence incident.";
+    const note = level === "high" ? t("dashboard.settings.riskNoteHigh") : level === "medium" ? t("dashboard.settings.riskNoteMedium") : t("dashboard.settings.riskNoteLow");
     return { level, score, note };
-  }, [meta, result]);
+  }, [meta, result, t]);
 
   return (
     <div className="space-y-8">
       <Card>
         <CardHeader className="border-b border-border/60">
           <SectionTitle
-            eyebrow="AI Powered"
-            title="Investigate with AI"
+            eyebrow={t("dashboard.settings.investEyebrow")}
+            title={t("dashboard.settings.investTitle")}
             action={
               <Button variant="secondary" onClick={() => void handleInvestigate()} disabled={isLoading} className="rounded-full px-6 font-bold">
-                {isLoading ? "Analyzing..." : "Run Investigation"}
+                {isLoading ? t("dashboard.settings.analyzing") : t("dashboard.settings.runInvestigation")}
               </Button>
             }
           />
@@ -965,7 +968,7 @@ function InvestigateTab() {
             ))}
             {(["dateFrom", "dateTo"] as const).map((key) => (
               <div key={key} className="space-y-2">
-                <Label>{key === "dateFrom" ? "Date From" : "Date To"}</Label>
+                <Label>{key === "dateFrom" ? t("dashboard.settings.dateFrom") : t("dashboard.settings.dateTo")}</Label>
                 <Input type="datetime-local" value={payload[key]} onChange={(e) => setPayload((c) => ({ ...c, [key]: e.target.value }))} />
               </div>
             ))}
@@ -976,7 +979,7 @@ function InvestigateTab() {
       <section className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)]">
         <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60 px-6 py-5">
-            <SectionTitle eyebrow={isLoading ? "Streaming analysis" : "Latest result"} title="AI Investigation Output" />
+            <SectionTitle eyebrow={isLoading ? t("dashboard.settings.streamingAnalysis") : t("dashboard.settings.latestResult")} title={t("dashboard.settings.investOutputTitle")} />
           </CardHeader>
           <CardContent className="p-6">
             {isLoading ? (
@@ -984,7 +987,7 @@ function InvestigateTab() {
                 <div className="rounded-3xl bg-slate-950 px-6 py-8 text-white dark:bg-slate-900 shadow-2xl shadow-primary/10">
                   <div className="flex items-center gap-2">
                     <div className="size-2 rounded-full bg-muted-foreground animate-ping" />
-                    <div className="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">AI Processing</div>
+                    <div className="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">{t("dashboard.settings.aiProcessing")}</div>
                   </div>
                   <div className="mt-4 text-2xl font-semibold tracking-tight leading-tight">{loadingMessages[loadingIndex]}</div>
                   <div className="mt-6 h-1.5 overflow-hidden rounded-full bg-white/5">
@@ -1000,23 +1003,23 @@ function InvestigateTab() {
               <div className="space-y-5">
                 <div className="rounded-3xl border border-border/70 bg-muted/35 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Risk Level</div>
+                    <div className="text-sm uppercase tracking-[0.2em] text-muted-foreground">{t("dashboard.settings.riskLevel")}</div>
                     <div className="flex flex-col items-end">
                       <StatusBadge status={riskAssessment.level} />
-                      <span className="mt-1 text-[10px] text-muted-foreground/60">Weighted by signals, urgency, log volume, and incident status</span>
+                      <span className="mt-1 text-[10px] text-muted-foreground/60">{t("dashboard.settings.riskWeightNote")}</span>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-3 text-sm">
                     <span className="text-muted-foreground">{riskAssessment.note}</span>
-                    <span className="rounded-full border border-border/60 px-2.5 py-1 font-medium text-foreground/80">Score {riskAssessment.score}</span>
+                    <span className="rounded-full border border-border/60 px-2.5 py-1 font-medium text-foreground/80">{t("dashboard.settings.score", undefined, { score: String(riskAssessment.score) })}</span>
                   </div>
                   <p className="mt-4 text-base leading-8 text-foreground">{result.summary}</p>
                 </div>
-                {[["Timeline", result.timeline], ["Suspicious Signals", result.suspicious_signals], ["Recommendations", result.recommendations]].map(([title, items]) => (
+                {[[t("dashboard.settings.timeline"), result.timeline], [t("dashboard.settings.suspiciousSignals"), result.suspicious_signals], [t("dashboard.settings.recommendations"), result.recommendations]].map(([title, items]) => (
                   <div key={String(title)}>
                     <div className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">{String(title)}</div>
                     <div className="mt-3 grid gap-3">
-                      {(items as string[]).length === 0 ? <EmptyState text="No items returned." /> : (items as string[]).map((item, idx) => (
+                      {(items as string[]).length === 0 ? <EmptyState text={t("dashboard.settings.noItems")} /> : (items as string[]).map((item, idx) => (
                         <div key={`${title}-${idx}`} className="rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-sm leading-7 text-foreground">{item}</div>
                       ))}
                     </div>
@@ -1024,24 +1027,24 @@ function InvestigateTab() {
                 ))}
               </div>
             ) : (
-              <EmptyState className="min-h-64 border-none bg-muted/20" title="Ready for analysis" text="Run an investigation to generate a summary, timeline, suspicious signals, and recommendations." action={<Button variant="secondary" size="sm" className="h-9 rounded-full px-5 font-bold" onClick={() => void handleInvestigate()} disabled={isLoading || !token}>Run Investigation</Button>} />
+              <EmptyState className="min-h-64 border-none bg-muted/20" title={t("dashboard.settings.readyTitle")} text={t("dashboard.settings.readyDesc")} action={<Button variant="secondary" size="sm" className="h-9 rounded-full px-5 font-bold" onClick={() => void handleInvestigate()} disabled={isLoading || !token}>{t("dashboard.settings.runInvestigation")}</Button>} />
             )}
           </CardContent>
         </Card>
 
         <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60 px-6 py-5">
-            <SectionTitle eyebrow={`${history.length} saved`} title="Saved Investigations" action={<Button variant="outline" size="sm" className="h-9 rounded-full px-5 font-bold" onClick={() => void loadHistory()}>Refresh</Button>} />
+            <SectionTitle eyebrow={t("dashboard.settings.savedCount", undefined, { count: String(history.length) })} title={t("dashboard.settings.savedTitle")} action={<Button variant="outline" size="sm" className="h-9 rounded-full px-5 font-bold" onClick={() => void loadHistory()}>{t("dashboard.settings.refresh")}</Button>} />
           </CardHeader>
           <CardContent className="space-y-3 p-6">
             {history.length === 0 ? (
-              <EmptyState className="min-h-64 border-none bg-muted/20" title="No saved investigations" text="Completed investigations will appear here for quick review." />
+              <EmptyState className="min-h-64 border-none bg-muted/20" title={t("dashboard.settings.noSavedTitle")} text={t("dashboard.settings.noSavedDesc")} />
             ) : (
               history.map((item) => (
                 <button key={item.id} type="button" onClick={() => void openHistory(item.id)} className="w-full rounded-2xl border border-border/70 bg-muted/35 px-4 py-4 text-left transition hover:border-primary/40 hover:bg-primary/5">
                   <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium">Investigation #{item.id}</div>
+                      <div className="font-medium">{t("dashboard.settings.investigationId", undefined, { id: String(item.id) })}</div>
                       <div className="mt-1 text-sm text-muted-foreground line-clamp-2">{item.summary}</div>
                     </div>
                     <StatusBadge status={item.status} />
@@ -1052,9 +1055,9 @@ function InvestigateTab() {
           </CardContent>
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-6 pb-6">
-              <Button variant="outline" disabled={page === 1} onClick={() => { setPage((p) => p - 1); void loadHistory(page - 1); }}>Previous</Button>
-              <div className="text-sm font-medium text-muted-foreground">Page {page} of {totalPages}</div>
-              <Button variant="outline" disabled={page === totalPages} onClick={() => { setPage((p) => p + 1); void loadHistory(page + 1); }}>Next</Button>
+              <Button variant="outline" disabled={page === 1} onClick={() => { setPage((p) => p - 1); void loadHistory(page - 1); }}>{t("dashboard.settings.previous")}</Button>
+              <div className="text-sm font-medium text-muted-foreground">{t("dashboard.settings.pageOf", undefined, { page: String(page), total: String(totalPages) })}</div>
+              <Button variant="outline" disabled={page === totalPages} onClick={() => { setPage((p) => p + 1); void loadHistory(page + 1); }}>{t("dashboard.settings.next")}</Button>
             </div>
           )}
         </Card>
@@ -1065,14 +1068,14 @@ function InvestigateTab() {
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setSelected(null)} />
           <Card className="relative z-50 w-full max-w-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <CardHeader className="border-b border-border/60 flex flex-row items-center justify-between">
-              <SectionTitle eyebrow="Investigation Details" title={`#${selected.id}`} />
-              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Close investigation details">
+              <SectionTitle eyebrow={t("dashboard.settings.investigationDetails")} title={`#${selected.id}`} />
+              <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-muted transition-colors" aria-label={t("dashboard.settings.closeDetails")}>
                 <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </CardHeader>
             <CardContent className="p-6 max-h-[70vh] overflow-y-auto">
               <div className="mb-6 flex items-center justify-between">
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">Status</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">{t("dashboard.settings.status")}</div>
                 <StatusBadge status={selected.status} />
               </div>
               <div className="text-sm leading-8 text-foreground whitespace-pre-wrap">{selected.summary}</div>
