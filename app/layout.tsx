@@ -57,10 +57,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const cookieLocale = (await cookies()).get(LOCALE_STORAGE_KEY)?.value;
   const defaultLocale: Locale = cookieLocale === "en" ? "en" : "id";
   return (
-    <html lang="id" suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
-      <head>
-        <meta name="robots" content="index, follow" />
-      </head>
+    <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
+      <head />
       <body className="min-h-full font-sans">
         <Providers defaultLocale={defaultLocale}>
           <div className="flex min-h-screen flex-col">

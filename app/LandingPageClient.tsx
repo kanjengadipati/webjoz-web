@@ -173,12 +173,7 @@ export default function LandingPageClient() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Webjoz",
-            "url": "https://webjoz.com",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://webjoz.com/create?q={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
+            "url": "https://webjoz.com"
           }),
         }}
       />
