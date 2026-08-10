@@ -6,6 +6,7 @@ import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Activity, Loader2, Clock, RefreshCw, BarChart3, TrendingUp, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, Button } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 interface TrendBucket {
   bucket: string;
@@ -50,6 +51,7 @@ interface LogsResponse {
 export default function AdminMetricsPage() {
   const token = useAuthToken();
   const { role } = usePermissions();
+  const { t } = useI18n();
   const [summary, setSummary] = useState<SummaryMetrics | null>(null);
   const [trendBuckets, setTrendBuckets] = useState<TrendBucket[]>([]);
   const [recentLogs, setRecentLogs] = useState<GenerationLog[]>([]);
@@ -79,12 +81,12 @@ export default function AdminMetricsPage() {
       setTrendBuckets(trendRes.data.buckets ?? []);
       setRecentLogs(logsRes.data.logs ?? []);
     } catch (err: any) {
-      setError(err.message || "Failed to load metrics");
+      setError(err.message || t("dashboard.adminMetrics.loadFailed"));
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [token, isSuperAdmin]);
+  }, [token, isSuperAdmin, t]);
 
   useEffect(() => {
     fetchAll();
@@ -101,7 +103,7 @@ export default function AdminMetricsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Activity className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini.</p>
+        <p className="text-sm">{t("dashboard.adminMetrics.noAccess")}</p>
       </div>
     );
   }
@@ -112,10 +114,10 @@ export default function AdminMetricsPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <BarChart3 className="size-5 text-primary" />
-            AI Generation Metrics
+            {t("dashboard.adminMetrics.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Latency, concurrency, and quality metrics for AI content generation.
+            {t("dashboard.adminMetrics.subtitle")}
           </p>
         </div>
         <Button
@@ -126,7 +128,7 @@ export default function AdminMetricsPage() {
           className="gap-2 shrink-0"
         >
           <RefreshCw className={`size-3.5 ${refreshing ? "animate-spin" : ""}`} />
-          Refresh
+          {t("dashboard.adminMetrics.refresh")}
         </Button>
       </div>
 
@@ -151,11 +153,11 @@ export default function AdminMetricsPage() {
               <Loader2 className="size-4 text-red-500" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-destructive">Failed to load data</p>
+              <p className="text-sm font-semibold text-destructive">{t("dashboard.adminMetrics.loadFailedTitle")}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{error}</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => fetchAll()}>
-              Retry
+              {t("dashboard.adminMetrics.retry")}
             </Button>
           </CardContent>
         </Card>
@@ -166,9 +168,9 @@ export default function AdminMetricsPage() {
               <CardContent className="p-5 pt-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Duration</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminMetrics.avgDuration")}</p>
                     <p className="text-2xl font-bold tracking-tight">{Math.round(summary.avg_duration_ms)}ms</p>
-                    <p className="text-[11px] text-muted-foreground">Average generation time</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.avgDurationDesc")}</p>
                   </div>
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Clock className="size-4.5" />
@@ -181,9 +183,9 @@ export default function AdminMetricsPage() {
               <CardContent className="p-5 pt-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">P95 (last bucket)</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminMetrics.p95")}</p>
                     <p className="text-2xl font-bold tracking-tight">{latestTrend ? Math.round(latestTrend.p95_ms) : 0}ms</p>
-                    <p className="text-[11px] text-muted-foreground">95th percentile latency</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.p95Desc")}</p>
                   </div>
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-orange-500">
                     <TrendingUp className="size-4.5" />
@@ -196,11 +198,11 @@ export default function AdminMetricsPage() {
               <CardContent className="p-5 pt-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Error Rate</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminMetrics.errorRate")}</p>
                     <p className={`text-2xl font-bold tracking-tight ${errorRate > 10 ? "text-red-500" : errorRate > 5 ? "text-yellow-500" : ""}`}>
                       {errorRate.toFixed(1)}%
                     </p>
-                    <p className="text-[11px] text-muted-foreground">{totalErrors} errors / {totalRequests} requests</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.errorsOfRequests", undefined, { errors: String(totalErrors), requests: String(totalRequests) })}</p>
                   </div>
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
                     <AlertCircle className="size-4.5" />
@@ -213,9 +215,9 @@ export default function AdminMetricsPage() {
               <CardContent className="p-5 pt-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Requests</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminMetrics.activeRequests")}</p>
                     <p className="text-2xl font-bold tracking-tight">{activeRequests}</p>
-                    <p className="text-[11px] text-muted-foreground">Concurrent AI generations</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.activeRequestsDesc")}</p>
                   </div>
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                     <BarChart3 className="size-4.5" />
@@ -228,12 +230,12 @@ export default function AdminMetricsPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <Card className="border-border/40 shadow-sm">
               <CardHeader className="p-5 pb-0">
-                <h3 className="text-sm font-semibold">Trend (24h)</h3>
-                <p className="text-[11px] text-muted-foreground">Hourly average duration and error rate</p>
+                <h3 className="text-sm font-semibold">{t("dashboard.adminMetrics.trendTitle")}</h3>
+                <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.trendDesc")}</p>
               </CardHeader>
               <CardContent className="p-5 pt-4">
                 {trendBuckets.length === 0 ? (
-                  <p className="text-xs text-muted-foreground py-2">No trend data available yet.</p>
+                  <p className="text-xs text-muted-foreground py-2">{t("dashboard.adminMetrics.noTrendData")}</p>
                 ) : (
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {trendBuckets.map((b, idx) => {
@@ -261,12 +263,12 @@ export default function AdminMetricsPage() {
 
             <Card className="border-border/40 shadow-sm">
               <CardHeader className="p-5 pb-0">
-                <h3 className="text-sm font-semibold">Recent Requests (last 10)</h3>
-                <p className="text-[11px] text-muted-foreground">Latest generation attempts</p>
+                <h3 className="text-sm font-semibold">{t("dashboard.adminMetrics.recentRequests")}</h3>
+                <p className="text-[11px] text-muted-foreground">{t("dashboard.adminMetrics.recentRequestsDesc")}</p>
               </CardHeader>
               <CardContent className="p-5 pt-4">
                 {recentLogs.length === 0 ? (
-                  <p className="text-xs text-muted-foreground py-2">No requests logged yet.</p>
+                  <p className="text-xs text-muted-foreground py-2">{t("dashboard.adminMetrics.noRequestsLogged")}</p>
                 ) : (
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {recentLogs.map((log, idx) => (
