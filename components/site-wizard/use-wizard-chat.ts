@@ -222,7 +222,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: "user", text: subType },
+      { id: Date.now().toString(), sender: "user", text: t(`dashboard.wizard.subtypes.${subType}`, subType) },
     ]);
 
     setChatStage("language");
@@ -268,7 +268,18 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setInputValue("");
 
     const moodItem = MOOD_OPTIONS.find((m) => m.value === selectedMood);
-    const displayText = moodItem ? `${moodItem.emoji} ${moodItem.label}` : selectedMood;
+    const moodKeyMap: Record<string, string> = {
+      "clean-modern": "modernClean",
+      "warm-earthy": "warmVintage",
+      "bold-vibrant": "playfulFun",
+      "dark-premium": "elegantLuxury",
+      "bold-dark": "boldEnergetic",
+      "retro": "warmVintage",
+      "futuristic": "minimalistDark",
+    };
+    const moodKey = moodItem ? moodKeyMap[moodItem.value] : undefined;
+    const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, moodItem?.label ?? selectedMood) : (moodItem?.label ?? selectedMood);
+    const displayText = moodItem ? `${moodItem.emoji} ${translatedMoodLabel}` : selectedMood;
 
     setMessages((prev) => [
       ...prev,
