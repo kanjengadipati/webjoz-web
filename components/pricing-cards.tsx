@@ -33,16 +33,42 @@ interface PricingCardsProps {
   currentPlanSlug?: string;
   payingPlanId?: number | null;
   onSelectPlan: (plan: PlanItem) => void;
-  // Labels override (optional for i18n)
+  // ── Billing toggle labels ──────────────────────────────────────────────────
   monthlyLabel?: string;
   yearlyLabel?: string;
   saveBadgeLabel?: string;
   saveText?: string;
+  // ── Card badge labels ──────────────────────────────────────────────────────
   popularBadgeLabel?: string;
+  activeBadgeLabel?: string;
+  // ── Free plan display ──────────────────────────────────────────────────────
   priceFreeLabel?: string;
   priceFreePeriodLabel?: string;
-  currentPlanLabel?: string;
   freePlanButtonLabel?: string;
+  // ── Paid plan price labels ─────────────────────────────────────────────────
+  promoLabel?: string;               // fallback when promo_label is empty
+  perYearLabel?: string;             // e.g. "/ tahun" or "/ year"
+  monthlyEqLabel?: string;           // e.g. "Setara Rp {value}/bln" — use {value} placeholder
+  yearlySavingsLabel?: string;       // e.g. "🎉 Hemat Rp {value}/tahun" — use {value} placeholder
+  perMonthLabel?: string;            // e.g. "/ bulan" or "/ month"
+  perYearShortLabel?: string;        // appended after yearly price on monthly view, e.g. "/tahun"
+  // ── Feature list labels ────────────────────────────────────────────────────
+  websiteCountLabel?: string;        // e.g. "{n} Website" — use {n} placeholder
+  aiGenerateLabel?: string;          // e.g. "AI Generate {n}x/bulan"
+  aiRegenLabel?: string;             // e.g. "AI Regenerasi {n}x/bulan"
+  aiDesignLabel?: string;            // e.g. "AI Design {n}x/bulan"
+  noCustomDomainLabel?: string;      // e.g. "Tidak ada custom domain"
+  seoLabel?: string;                 // e.g. "SEO Booster"
+  subdomainLabel?: string;           // e.g. "Subdomain .webjoz.app"
+  hostingLabel?: string;             // e.g. "Hosting & SSL gratis"
+  // ── CTA label ─────────────────────────────────────────────────────────────
+  currentPlanLabel?: string;
+  choosePlanLabel?: string;
+}
+
+/** Replace {n} or {value} placeholder in a label string. */
+function fill(template: string, value: string | number): string {
+  return template.replace(/\{n\}|\{value\}/g, String(value));
 }
 
 export function PricingCards({
@@ -58,10 +84,26 @@ export function PricingCards({
   saveBadgeLabel = "Hemat ~16%",
   saveText,
   popularBadgeLabel = "Terpopuler",
+  activeBadgeLabel = "Aktif",
   priceFreeLabel = "Gratis",
   priceFreePeriodLabel = "Selamanya",
-  currentPlanLabel = "Paket Saat Ini",
   freePlanButtonLabel = priceFreeLabel,
+  promoLabel = "Promo",
+  perYearLabel = "/ tahun",
+  monthlyEqLabel = "Setara Rp {value}/bln",
+  yearlySavingsLabel = "🎉 Hemat Rp {value}/tahun",
+  perMonthLabel = "/ bulan",
+  perYearShortLabel = "/tahun",
+  websiteCountLabel = "{n} Website",
+  aiGenerateLabel = "AI Generate {n}x/bulan",
+  aiRegenLabel = "AI Regenerasi {n}x/bulan",
+  aiDesignLabel = "AI Design {n}x/bulan",
+  noCustomDomainLabel = "Tidak ada custom domain",
+  seoLabel = "SEO Booster",
+  subdomainLabel = "Subdomain .webjoz.app",
+  hostingLabel = "Hosting & SSL gratis",
+  currentPlanLabel = "Paket Saat Ini",
+  choosePlanLabel = "Pilih {plan} ({cycle})",
 }: PricingCardsProps) {
   if (loading) {
     return (
@@ -92,7 +134,7 @@ export function PricingCards({
           const isCurrent = currentPlanSlug === plan.slug;
           const isYearly = billingCycle === "yearly";
 
-          // --- Price calculation ---
+          // ── Price calculation ──────────────────────────────────────────────
           const normalYearly = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
           const effectiveYearly = plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearly;
           const effectiveMonthly =
@@ -102,18 +144,18 @@ export function PricingCards({
           const monthlyEquivalent = Math.round(effectiveYearly / 12);
           const yearlySavings = plan.price_monthly * 12 - effectiveYearly;
 
-          // --- Feature list from API fields ---
+          // ── Feature list (localised via props) ────────────────────────────
           const featureList = [
-            plan.max_sites > 0 && `${plan.max_sites} Website`,
-            plan.max_ai_generates > 0 && `AI Generate ${plan.max_ai_generates}x/bulan`,
-            plan.max_section_regens > 0 && `AI Regenerasi ${plan.max_section_regens}x/bulan`,
-            plan.max_design_regens > 0 && `AI Design ${plan.max_design_regens}x/bulan`,
+            plan.max_sites > 0 && fill(websiteCountLabel, plan.max_sites),
+            plan.max_ai_generates > 0 && fill(aiGenerateLabel, plan.max_ai_generates),
+            plan.max_section_regens > 0 && fill(aiRegenLabel, plan.max_section_regens),
+            plan.max_design_regens > 0 && fill(aiDesignLabel, plan.max_design_regens),
             plan.max_custom_domain > 0
               ? `${plan.max_custom_domain} Custom Domain`
-              : "Tidak ada custom domain",
-            "SEO Booster",
-            !isFree && "Subdomain .webjoz.app",
-            isFree && "Hosting & SSL gratis",
+              : noCustomDomainLabel,
+            seoLabel,
+            !isFree && subdomainLabel,
+            isFree && hostingLabel,
           ].filter(Boolean) as string[];
 
           return (
@@ -127,6 +169,7 @@ export function PricingCards({
                   : "border-border/60 bg-card/60 shadow-primary/5"
               }`}
             >
+              {/* Popular / Active badge */}
               {isPro && !isCurrent && (
                 <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
                   {popularBadgeLabel}
@@ -134,7 +177,7 @@ export function PricingCards({
               )}
               {isCurrent && (
                 <div className="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
-                  Aktif
+                  {activeBadgeLabel}
                 </div>
               )}
 
@@ -147,7 +190,7 @@ export function PricingCards({
                   {plan.name}
                 </div>
 
-                {/* Price display */}
+                {/* ── Price display ──────────────────────────────────────── */}
                 {isFree ? (
                   <>
                     <div className="text-4xl font-bold text-foreground mb-1">{priceFreeLabel}</div>
@@ -165,19 +208,19 @@ export function PricingCards({
                           Rp {normalYearly.toLocaleString("id-ID")}
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                          {plan.promo_label || "Promo"}
+                          {plan.promo_label || promoLabel}
                         </span>
                       </div>
                     )}
                     <p className="text-sm text-muted-foreground">
-                      / tahun ·{" "}
+                      {perYearLabel} ·{" "}
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        Setara Rp {monthlyEquivalent.toLocaleString("id-ID")}/bln
+                        {fill(monthlyEqLabel, monthlyEquivalent.toLocaleString("id-ID"))}
                       </span>
                     </p>
                     {yearlySavings > 0 && (
                       <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-                        🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")}/tahun
+                        {fill(yearlySavingsLabel, yearlySavings.toLocaleString("id-ID"))}
                       </p>
                     )}
                   </div>
@@ -193,19 +236,20 @@ export function PricingCards({
                           Rp {plan.price_monthly.toLocaleString("id-ID")}
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                          {plan.promo_label || `Promo ${plan.promo_duration_months} bln`}
+                          {plan.promo_label || `${promoLabel} ${plan.promo_duration_months} bln`}
                         </span>
                       </div>
                     )}
                     <p className="text-sm text-muted-foreground">
-                      / bulan · Rp {normalYearly.toLocaleString("id-ID")}/tahun
+                      {perMonthLabel} · Rp {normalYearly.toLocaleString("id-ID")}{perYearShortLabel}
                     </p>
                   </div>
                 )}
 
+                {/* ── Feature list ───────────────────────────────────────── */}
                 <ul className="space-y-2.5 text-sm text-left mb-8">
                   {featureList.map((item) => {
-                    const isNegative = item.startsWith("Tidak ada");
+                    const isNegative = item === noCustomDomainLabel && plan.max_custom_domain === 0;
                     return (
                       <li key={item} className="flex items-start gap-2">
                         {isNegative ? (
@@ -220,6 +264,7 @@ export function PricingCards({
                 </ul>
               </div>
 
+              {/* ── CTA button ─────────────────────────────────────────────── */}
               {isCurrent ? (
                 <span className="block w-full py-2.5 rounded-full text-sm font-semibold text-center bg-primary/10 text-primary border border-primary/20">
                   {currentPlanLabel}
@@ -235,7 +280,9 @@ export function PricingCards({
                   ) : isFree ? (
                     freePlanButtonLabel
                   ) : (
-                    `Pilih ${plan.name} (${isYearly ? yearlyLabel : monthlyLabel})`
+                    choosePlanLabel
+                      .replace("{plan}", plan.name)
+                      .replace("{cycle}", isYearly ? yearlyLabel : monthlyLabel)
                   )}
                 </Button>
               )}

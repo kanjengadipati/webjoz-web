@@ -506,9 +506,25 @@ export default function LandingPageClient() {
               saveBadgeLabel={t("landing.saveBadge")}
               saveText={t("landing.saveText")}
               popularBadgeLabel={t("landing.popularBadge")}
+              activeBadgeLabel={t("landing.activeBadge")}
               priceFreeLabel={t("landing.priceFree")}
               priceFreePeriodLabel={t("landing.priceFreePeriod")}
               freePlanButtonLabel={t("landing.startFree")}
+              choosePlanLabel={t("landing.choosePlan")}
+              promoLabel={t("landing.promo")}
+              perYearLabel={t("landing.perYear")}
+              monthlyEqLabel={t("landing.monthlyEq")}
+              yearlySavingsLabel={t("landing.yearlySavings")}
+              perMonthLabel={t("landing.perMonth")}
+              perYearShortLabel={t("landing.perYear2")}
+              websiteCountLabel={t("landing.websiteCount")}
+              aiGenerateLabel={t("landing.aiGenerate")}
+              aiRegenLabel={t("landing.aiRegen")}
+              aiDesignLabel={t("landing.aiDesign")}
+              noCustomDomainLabel={t("landing.noCustomDomain")}
+              seoLabel={t("landing.seoBooster")}
+              subdomainLabel={t("landing.subdomainFeature")}
+              hostingLabel={t("landing.hostingFeature")}
             />
           </div>
         </div>
