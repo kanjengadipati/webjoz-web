@@ -322,6 +322,12 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
     ? `https://${siteInfo.subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`
     : null;
 
+  useEffect(() => {
+    if (siteData?.site?.language && typeof document !== "undefined") {
+      document.documentElement.lang = siteData.site.language === "en" ? "en" : "id";
+    }
+  }, [siteData]);
+
   return (
     <>
       {showDomainBanner && domainUrl && (
@@ -345,6 +351,7 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
         leadSuccess={leadSuccess}
         leadError={leadError}
         isPremium={is_premium === true}
+        language={siteInfo?.language === "en" ? "en" : "id"}
       />
     </>
   );

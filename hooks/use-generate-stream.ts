@@ -48,6 +48,7 @@ export interface GenerateStreamRequest {
   whatsapp?: string;
   service_area?: string;
   mood?: string;
+  language?: string;
   selling_points?: string[];
   story?: string;
   tagline?: string;

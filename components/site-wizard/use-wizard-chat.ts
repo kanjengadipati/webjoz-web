@@ -33,6 +33,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [mood, setMood] = useState("");
+  const [siteLanguage, setSiteLanguage] = useState<"id" | "en">(locale === "en" ? "en" : "id");
 
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
@@ -97,6 +98,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
   const moodRef = useRef(mood);
+  const siteLanguageRef = useRef(siteLanguage);
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => { businessNameRef.current = businessName; }, [businessName]);
@@ -118,6 +120,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   useEffect(() => { descriptionRef.current = description; }, [description]);
   useEffect(() => { whatsappRef.current = whatsapp; }, [whatsapp]);
   useEffect(() => { serviceAreaRef.current = serviceArea; }, [serviceArea]);
+  useEffect(() => { siteLanguageRef.current = siteLanguage; }, [siteLanguage]);
 
   // Chat auto-scroll
   useEffect(() => {
@@ -472,6 +475,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setServiceArea,
     mood,
     setMood,
+    siteLanguage,
+    setSiteLanguage,
     isAiTyping,
     isInitialTyping,
     awaitingNameConfirm,
@@ -495,6 +500,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     whatsappRef,
     serviceAreaRef,
     moodRef,
+    siteLanguageRef,
     // Handlers
     handleSendText,
     handleSelectType,

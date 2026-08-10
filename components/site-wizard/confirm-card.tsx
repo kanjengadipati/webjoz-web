@@ -16,6 +16,7 @@ interface ConfirmCardProps {
   draftName: string;
   draftWA: string;
   draftServiceArea: string;
+  siteLanguage?: "id" | "en";
   editingField: string | null;
   previewState: PreviewState;
   hasUnsavedEdits: boolean;
@@ -23,6 +24,7 @@ interface ConfirmCardProps {
   onSetDraftName: (v: string) => void;
   onSetDraftWA: (v: string) => void;
   onSetDraftServiceArea: (v: string) => void;
+  onSetSiteLanguage?: (lang: "id" | "en") => void;
   onSetEditingField: (v: string | null) => void;
   onSetBusinessType: (v: string) => void;
   onSetBusinessSubType: (v: string) => void;
@@ -218,6 +220,29 @@ export function ConfirmCard(props: ConfirmCardProps) {
             </>
           )}
         </div>
+
+        {/* BAHASA SITUS */}
+        {props.onSetSiteLanguage && (
+          <div className="flex items-center justify-between gap-2 px-3 py-1.5 border-t" style={rowBorder}>
+            <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-20">{t("dashboard.wizard.confirmCardLabelLang", "Bahasa Situs")}</span>
+            <div className="flex items-center gap-1 bg-[#1e293b]/60 p-0.5 rounded-lg border border-slate-700/40">
+              <button
+                type="button"
+                onClick={() => { props.onSetSiteLanguage?.("id"); props.onSetHasUnsavedEdits(true); }}
+                className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold transition-all ${props.siteLanguage === "id" || !props.siteLanguage ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"}`}
+              >
+                🇮🇩 Indonesia
+              </button>
+              <button
+                type="button"
+                onClick={() => { props.onSetSiteLanguage?.("en"); props.onSetHasUnsavedEdits(true); }}
+                className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold transition-all ${props.siteLanguage === "en" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"}`}
+              >
+                🇬🇧 English
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Generate button */}
         {showGenerate && (
