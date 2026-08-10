@@ -1808,6 +1808,37 @@ export interface Translations {
       selectMoodPrompt: string;
       preparingWebsite: string;
       websiteReady: string;
+      confirmCardTitle: string;
+      confirmCardLabelName: string;
+      confirmCardLabelType: string;
+      confirmCardLabelTypeHeader: string;
+      confirmCardLabelWA: string;
+      confirmCardLabelArea: string;
+      confirmCardBtnChange: string;
+      confirmCardBtnFill: string;
+      confirmCardBtnClose: string;
+      confirmCardBtnGenerate: string;
+      confirmCardBtnGenerateRedo: string;
+      confirmCardBtnGenerating: string;
+      confirmCardBtnFinishEdit: string;
+      successModalTitle: string;
+      successModalDesc: string;
+      successModalBtnPreview: string;
+      successModalBtnEdit: string;
+      errorModalRetry: string;
+      errorModalCancel: string;
+      loadingBuildingTitle: string;
+      loadingBuildingTitleWithName: string;
+      loadingBuildingTitleGeneral: string;
+      loadingPleaseWait: string;
+      loadingCharsWritten: string;
+      loadingAiInsight: string;
+      loadingChecklist0: string;
+      loadingChecklist1: string;
+      loadingChecklist2: string;
+      loadingChecklist3: string;
+      loadingChecklist4: string;
+      loadingChecklist5: string;
       inputPlaceholderName: string;
       inputPlaceholderDesc: string;
       inputPlaceholderGeneral: string;
@@ -3713,6 +3744,37 @@ export const translations: Record<Locale, Translations> = {
         selectMoodPrompt: "Pilih suasana (mood) yang cocok untuk website Anda:",
         preparingWebsite: "Baik, AI sedang menyiapkan website Anda...",
         websiteReady: "🎉 Website Anda telah selesai dibuat! Silakan lihat pratinjau website Anda di samping atau klik tombol di bawah untuk lanjut.",
+        confirmCardTitle: "Hampir jadi — cek dan lengkapi",
+        confirmCardLabelName: "Nama",
+        confirmCardLabelType: "Jenis",
+        confirmCardLabelTypeHeader: "Jenis Bisnis",
+        confirmCardLabelWA: "WA",
+        confirmCardLabelArea: "Jangkauan",
+        confirmCardBtnChange: "Ubah",
+        confirmCardBtnFill: "Isi",
+        confirmCardBtnClose: "✕ tutup",
+        confirmCardBtnGenerate: "Generate Website →",
+        confirmCardBtnGenerateRedo: "Terapkan & Generate Ulang →",
+        confirmCardBtnGenerating: "Sedang dibuat...",
+        confirmCardBtnFinishEdit: "Selesai edit dulu ↑",
+        successModalTitle: "Selamat! Website Anda Telah Siap 🎉",
+        successModalDesc: "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor.",
+        successModalBtnPreview: "Lihat Preview",
+        successModalBtnEdit: "Edit & Publikasikan",
+        errorModalRetry: "Coba lagi",
+        errorModalCancel: "Batal",
+        loadingBuildingTitle: "Membangun website...",
+        loadingBuildingTitleWithName: "Membangun website {name} ✨",
+        loadingBuildingTitleGeneral: "AI sedang membangun website Anda ✨",
+        loadingPleaseWait: "Mohon tunggu sebentar...",
+        loadingCharsWritten: "✍️ {count} karakter ditulis",
+        loadingAiInsight: "AI Insight",
+        loadingChecklist0: "Menulis headline & hero",
+        loadingChecklist1: "Menyusun cerita bisnis",
+        loadingChecklist2: "Menulis keunggulan & layanan",
+        loadingChecklist3: "Menyiapkan testimoni & FAQ",
+        loadingChecklist4: "Menyusun katalog & galeri",
+        loadingChecklist5: "Optimasi SEO & finalisasi",
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
         inputPlaceholderGeneral: "Ketik nama bisnis atau jawaban...",
@@ -3815,6 +3877,12 @@ export const translations: Record<Locale, Translations> = {
           "Logistik & Ekspedisi": "Logistik",
           "Konstruksi & Properti": "Konstruksi",
           "Edukasi & Pelatihan": "Edukasi",
+          "Properti & Real Estate": "Properti",
+          "Konstruksi": "Konstruksi",
+          "Pendidikan & Kursus": "Pendidikan",
+          "Travel & Wisata": "Travel",
+          "Hotel & Penginapan": "Hotel",
+          "Manufaktur": "Manufaktur",
         },
       },
     },
@@ -5642,6 +5710,37 @@ export const translations: Record<Locale, Translations> = {
         selectMoodPrompt: "Choose a mood/vibe that fits your website:",
         preparingWebsite: "Great! AI is preparing your website...",
         websiteReady: "🎉 Your website is ready! Check out the preview or click below to edit and publish.",
+        confirmCardTitle: "Almost done — review and complete",
+        confirmCardLabelName: "Name",
+        confirmCardLabelType: "Type",
+        confirmCardLabelTypeHeader: "Business Type",
+        confirmCardLabelWA: "WA",
+        confirmCardLabelArea: "Coverage",
+        confirmCardBtnChange: "Edit",
+        confirmCardBtnFill: "Add",
+        confirmCardBtnClose: "✕ close",
+        confirmCardBtnGenerate: "Generate Website →",
+        confirmCardBtnGenerateRedo: "Apply & Regenerate →",
+        confirmCardBtnGenerating: "Generating...",
+        confirmCardBtnFinishEdit: "Finish editing first ↑",
+        successModalTitle: "Congratulations! Your Website is Ready 🎉",
+        successModalDesc: "Your website has been successfully generated by AI. Feel free to review the layout and content. If you'd like to adjust any text, images, colors, or sections, you can easily customize everything in the Editor.",
+        successModalBtnPreview: "View Preview",
+        successModalBtnEdit: "Edit & Publish",
+        errorModalRetry: "Try again",
+        errorModalCancel: "Cancel",
+        loadingBuildingTitle: "Building website...",
+        loadingBuildingTitleWithName: "Building website for {name} ✨",
+        loadingBuildingTitleGeneral: "AI is building your website ✨",
+        loadingPleaseWait: "Please wait a moment...",
+        loadingCharsWritten: "✍️ {count} characters written",
+        loadingAiInsight: "AI Insight",
+        loadingChecklist0: "Writing headline & hero",
+        loadingChecklist1: "Structuring business story",
+        loadingChecklist2: "Crafting benefits & services",
+        loadingChecklist3: "Preparing testimonials & FAQ",
+        loadingChecklist4: "Setting up catalog & gallery",
+        loadingChecklist5: "SEO optimization & finalization",
         inputPlaceholderName: "Enter your business name...",
         inputPlaceholderDesc: "Briefly describe your business...",
         inputPlaceholderGeneral: "Type business name or answer...",
@@ -5744,6 +5843,12 @@ export const translations: Record<Locale, Translations> = {
           "Logistik & Ekspedisi": "Logistics & Freight",
           "Konstruksi & Properti": "Construction & Real Estate",
           "Edukasi & Pelatihan": "Education & Training",
+          "Properti & Real Estate": "Property & Real Estate",
+          "Konstruksi": "Construction",
+          "Pendidikan & Kursus": "Education & Courses",
+          "Travel & Wisata": "Travel & Tourism",
+          "Hotel & Penginapan": "Hotel & Lodging",
+          "Manufaktur": "Manufacturing",
         },
       },
     },

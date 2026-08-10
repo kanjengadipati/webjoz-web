@@ -5,6 +5,7 @@ import { Wand2, Loader2 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { BUSINESS_TYPES, SUB_TYPES } from "./constants";
 import type { ChatStage, PreviewState } from "./types";
+import { useI18n } from "@/lib/i18n/context";
 
 interface ConfirmCardProps {
   businessName: string;
@@ -48,7 +49,8 @@ function saveField(
   }
   if (field === "wa") {
     const digits = props.draftWA.replace(/\D/g, "");
-    props.onSetWhatsapp(digits ? (digits.startsWith("0") ? "62" + digits.slice(1) : digits) : "");
+    const normalized = digits ? (digits.startsWith("62") ? "+" + digits : digits.startsWith("0") ? "+62" + digits.slice(1) : "+62" + digits) : "";
+    props.onSetWhatsapp(normalized);
     props.onSetHasUnsavedEdits(true);
   }
   if (field === "service_area") {
@@ -58,35 +60,24 @@ function saveField(
   props.onSetEditingField(null);
 }
 
-function InlineEditInput({
-  value,
-  onChange,
-  onSave,
-  onCancel,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  onSave: () => void;
-  onCancel: () => void;
-}) {
+function InlineEditInput({ value, onChange, onSave, onCancel }: { value: string; onChange: (v: string) => void; onSave: () => void; onCancel: () => void }) {
   return (
-    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+    <div className="flex items-center gap-1 flex-1">
       <input
         autoFocus
-        type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Enter") onSave(); if (e.key === "Escape") onCancel(); }}
-        className="flex-1 min-w-0 bg-transparent border-b text-[12px] text-slate-200 outline-none py-0.5"
-        style={{ borderColor: "var(--primary)" }}
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter") onSave(); if (e.key === "Escape") onCancel(); }}
+        className="flex-1 bg-transparent text-[12px] text-white outline-none border-b border-primary/50 py-0.5"
       />
-      <button onClick={onSave} className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0" style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}>✓</button>
-      <button onClick={onCancel} className="text-[10px] text-slate-500 shrink-0">✕</button>
+      <button type="button" onClick={onSave} className="text-[10px] font-bold text-primary px-1.5 py-0.5 rounded bg-primary/10">✓</button>
+      <button type="button" onClick={onCancel} className="text-[10px] text-slate-500 px-1">✕</button>
     </div>
   );
 }
 
 export function ConfirmCard(props: ConfirmCardProps) {
+  const { t } = useI18n();
   const { editingField, businessType, businessSubType } = props;
   const showGenerate = props.previewState !== "result" || props.hasUnsavedEdits;
 
@@ -97,12 +88,12 @@ export function ConfirmCard(props: ConfirmCardProps) {
       </div>
       <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="px-3 pt-2.5 pb-1.5 flex items-center justify-between">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Hampir jadi — cek dan lengkapi</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">{t("dashboard.wizard.confirmCardTitle", "Hampir jadi — cek dan lengkapi")}</p>
         </div>
 
         {/* NAMA */}
         <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
-          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Nama</span>
+          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">{t("dashboard.wizard.confirmCardLabelName", "Nama")}</span>
           {editingField === "name" ? (
             <InlineEditInput
               value={props.draftName}
@@ -113,7 +104,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
           ) : (
             <>
               <span className="text-[12px] font-semibold text-white flex-1 truncate">{props.draftName || props.businessName}</span>
-              <button type="button" onClick={() => { props.onSetDraftName(props.businessName); props.onSetEditingField("name"); }} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
+              <button type="button" onClick={() => { props.onSetDraftName(props.businessName); props.onSetEditingField("name"); }} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>{t("dashboard.wizard.confirmCardBtnChange", "Ubah")}</button>
             </>
           )}
         </div>
@@ -123,17 +114,27 @@ export function ConfirmCard(props: ConfirmCardProps) {
           {editingField === "type" ? (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-500">Jenis Bisnis</span>
-                <button onClick={() => props.onSetEditingField(null)} className="text-[10px] text-slate-500">✕ tutup</button>
+                <span className="text-[10px] font-semibold text-slate-500">{t("dashboard.wizard.confirmCardLabelTypeHeader", "Jenis Bisnis")}</span>
+                <button onClick={() => props.onSetEditingField(null)} className="text-[10px] text-slate-500">{t("dashboard.wizard.confirmCardBtnClose", "✕ tutup")}</button>
               </div>
               <div className="flex flex-wrap gap-1">
-                {BUSINESS_TYPES.map(t => (
-                  <button key={t.value} type="button" onClick={() => { props.onSetBusinessType(t.value); props.onSetBusinessSubType(""); props.onSetDescription(""); props.onSetHasUnsavedEdits(true); }}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
-                    style={businessType === t.value ? chipActive : chipDefault}>
-                    {t.emoji} {t.label}
-                  </button>
-                ))}
+                {BUSINESS_TYPES.map(bt => {
+                  const categoryKeyMap: Record<string, { label: string; desc: string }> = {
+                    "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
+                    "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
+                    "Jasa": { label: "jasa", desc: "jasaDesc" },
+                    "Company": { label: "company", desc: "companyDesc" },
+                  };
+                  const keys = categoryKeyMap[bt.value];
+                  const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
+                  return (
+                    <button key={bt.value} type="button" onClick={() => { props.onSetBusinessType(bt.value); props.onSetBusinessSubType(""); props.onSetDescription(""); props.onSetHasUnsavedEdits(true); }}
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
+                      style={businessType === bt.value ? chipActive : chipDefault}>
+                      {bt.emoji} {translatedLabel}
+                    </button>
+                  );
+                })}
               </div>
               {businessType && SUB_TYPES[businessType] && (
                 <div className="flex flex-wrap gap-1">
@@ -146,7 +147,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     }}
                       className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
                       style={businessSubType === st.value ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
-                      {st.emoji} {st.label}
+                      {st.emoji} {t(`dashboard.wizard.subtypes.${st.value}`, st.label)}
                     </button>
                   ))}
                 </div>
@@ -154,23 +155,29 @@ export function ConfirmCard(props: ConfirmCardProps) {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Jenis</span>
+              <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">{t("dashboard.wizard.confirmCardLabelType", "Jenis")}</span>
               <span className="text-[12px] text-white flex-1 truncate">
                 {(() => {
-                  const typeEmoji = BUSINESS_TYPES.find(t => t.value === businessType)?.emoji ?? "";
+                  const typeEmoji = BUSINESS_TYPES.find(bt => bt.value === businessType)?.emoji ?? "";
                   const subEmoji = businessSubType ? (SUB_TYPES[businessType]?.find(s => s.value === businessSubType)?.emoji ?? "") : "";
-                  const label = [businessType, businessSubType].filter(Boolean).join(" › ");
+                  const categoryKeyMap: Record<string, string> = {
+                    "Kuliner": "kuliner", "Toko & UMKM": "tokoUmkm", "Jasa": "jasa", "Company": "company",
+                  };
+                  const typeKey = categoryKeyMap[businessType];
+                  const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;
+                  const translatedSubType = businessSubType ? t(`dashboard.wizard.subtypes.${businessSubType}`, businessSubType) : "";
+                  const label = [translatedType, translatedSubType].filter(Boolean).join(" › ");
                   return <>{typeEmoji && <span className="mr-1">{subEmoji || typeEmoji}</span>}{label}</>;
                 })()}
               </span>
-              <button type="button" onClick={() => props.onSetEditingField("type")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>Ubah</button>
+              <button type="button" onClick={() => props.onSetEditingField("type")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>{t("dashboard.wizard.confirmCardBtnChange", "Ubah")}</button>
             </div>
           )}
         </div>
 
         {/* WA */}
         <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
-          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">WA</span>
+          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">{t("dashboard.wizard.confirmCardLabelWA", "WA")}</span>
           {editingField === "wa" ? (
             <InlineEditInput
               value={props.draftWA}
@@ -184,7 +191,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
               <button type="button" onClick={() => { props.onSetDraftWA(props.whatsapp); props.onSetEditingField("wa"); }}
                 className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
                 style={props.draftWA ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
-                {props.draftWA ? "Ubah" : "Isi"}
+                {props.draftWA ? t("dashboard.wizard.confirmCardBtnChange", "Ubah") : t("dashboard.wizard.confirmCardBtnFill", "Isi")}
               </button>
             </>
           )}
@@ -192,7 +199,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
 
         {/* JANGKAUAN */}
         <div className="flex items-center gap-2 px-3 py-1.5 border-t" style={rowBorder}>
-          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">Jangkauan</span>
+          <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">{t("dashboard.wizard.confirmCardLabelArea", "Jangkauan")}</span>
           {editingField === "service_area" ? (
             <InlineEditInput
               value={props.draftServiceArea}
@@ -206,7 +213,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
               <button type="button" onClick={() => { props.onSetDraftServiceArea(props.serviceArea); props.onSetEditingField("service_area"); }}
                 className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
                 style={props.draftServiceArea ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
-                {props.draftServiceArea ? "Ubah" : "Isi"}
+                {props.draftServiceArea ? t("dashboard.wizard.confirmCardBtnChange", "Ubah") : t("dashboard.wizard.confirmCardBtnFill", "Isi")}
               </button>
             </>
           )}
@@ -222,10 +229,10 @@ export function ConfirmCard(props: ConfirmCardProps) {
               style={{ background: props.hasUnsavedEdits ? "linear-gradient(135deg, #059669, #047857)" : "var(--primary)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(5,150,105,0.3)" : "none", color: props.hasUnsavedEdits ? "#fff" : "var(--primary-foreground)" }}
             >
               <Wand2 className="w-4 h-4" />
-              {editingField ? "Selesai edit dulu ↑"
-                : props.isLoading ? "Sedang dibuat..."
-                : props.hasUnsavedEdits ? "Terapkan & Generate Ulang →"
-                : "Generate Website →"}
+              {editingField ? t("dashboard.wizard.confirmCardBtnFinishEdit", "Selesai edit dulu ↑")
+                : props.isLoading ? t("dashboard.wizard.confirmCardBtnGenerating", "Sedang dibuat...")
+                : props.hasUnsavedEdits ? t("dashboard.wizard.confirmCardBtnGenerateRedo", "Terapkan & Generate Ulang →")
+                : t("dashboard.wizard.confirmCardBtnGenerate", "Generate Website →")}
             </button>
           </div>
         )}

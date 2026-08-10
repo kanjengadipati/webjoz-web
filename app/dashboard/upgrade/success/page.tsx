@@ -8,6 +8,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { Loader2, Check, X, ArrowLeft, Zap } from "lucide-react";
 import { Button } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Transaction {
   id: number;
@@ -26,6 +27,7 @@ export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
   const token = useAuthToken();
   const { activeTenant, refresh: refreshTenant } = useActiveTenant();
+  const { t, locale } = useI18n();
 
   const orderId = searchParams.get("order_id");
 
@@ -60,12 +62,12 @@ export default function PaymentSuccessPage() {
         }
         await new Promise((r) => setTimeout(r, 1500));
       }
-      if (!cancelled) setError("Konfirmasi memakan waktu lama. Silakan refresh.");
+      if (!cancelled) setError(t("dashboard.upgradeSuccess.confirmTimeout"));
     };
 
     poll();
     return () => { cancelled = true; };
-  }, [token, orderId]);
+  }, [token, orderId, t]);
 
   // Once settled, poll tenant until plan changes
   useEffect(() => {
@@ -101,7 +103,7 @@ export default function PaymentSuccessPage() {
         href="/dashboard"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
       >
-        <ArrowLeft className="size-4" /> Kembali ke Dashboard
+        <ArrowLeft className="size-4" /> {t("dashboard.upgradeSuccess.backToDashboard")}
       </Link>
 
       <div className="bg-card border border-border/60 rounded-3xl p-8 text-center space-y-6 shadow-sm">
@@ -123,42 +125,42 @@ export default function PaymentSuccessPage() {
 
         <div className="space-y-1">
           <h1 className={`text-2xl font-bold tracking-tight ${isPending ? "text-amber-400" : error ? "text-red-400" : "text-emerald-400"}`}>
-            {isPending ? "Memproses Pembayaran..." : error ? "Perlu Tindakan" : "Pembayaran Berhasil!"}
+            {isPending ? t("dashboard.upgradeSuccess.pendingTitle") : error ? t("dashboard.upgradeSuccess.errorTitle") : t("dashboard.upgradeSuccess.successTitle")}
           </h1>
           <p className="text-sm text-muted-foreground">
             {isPending
-              ? "Menunggu konfirmasi pembayaran dari Midtrans..."
+              ? t("dashboard.upgradeSuccess.pendingDesc")
               : error
                 ? error
-                : "Paket Anda telah di-upgrade. Nikmati semua fitur Pro sekarang!"}
+                : t("dashboard.upgradeSuccess.successDesc")}
           </p>
         </div>
 
         {tx && settled && (
           <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 space-y-3 text-left">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              Detail Transaksi
+              {t("dashboard.upgradeSuccess.txDetails")}
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Order ID</span>
+                <span className="text-muted-foreground">{t("dashboard.upgradeSuccess.orderIdLabel")}</span>
                 <span className="font-mono text-xs text-foreground">{tx.order_id}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Total</span>
+                <span className="text-muted-foreground">{t("dashboard.upgradeSuccess.totalLabel")}</span>
                 <span className="font-bold text-foreground">Rp {tx.gross_amount.toLocaleString("id-ID")}</span>
               </div>
               {tx.payment_method && (
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Metode</span>
+                  <span className="text-muted-foreground">{t("dashboard.upgradeSuccess.methodLabel")}</span>
                   <span className="text-foreground capitalize">{tx.payment_method.replace(/_/g, " ")}</span>
                 </div>
               )}
               {tx.transaction_time && (
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Waktu</span>
+                  <span className="text-muted-foreground">{t("dashboard.upgradeSuccess.timeLabel")}</span>
                   <span className="text-foreground">
-                    {new Date(tx.transaction_time).toLocaleDateString("id-ID", {
+                    {new Date(tx.transaction_time).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                       day: "numeric", month: "long", year: "numeric",
                       hour: "2-digit", minute: "2-digit",
                     })}
@@ -180,12 +182,12 @@ export default function PaymentSuccessPage() {
               }}
             >
               <Button className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
-                <Zap className="size-4 mr-2" /> Ke Dashboard
+                <Zap className="size-4 mr-2" /> {t("dashboard.upgradeSuccess.goToDashboard")}
               </Button>
             </Link>
             <Link href="/dashboard/upgrade">
               <Button variant="secondary" className="w-full h-12 rounded-xl font-bold bg-background text-foreground hover:bg-background/80 border border-border/60">
-                Lihat Paket Lain
+                {t("dashboard.upgradeSuccess.viewOtherPlans")}
               </Button>
             </Link>
           </div>

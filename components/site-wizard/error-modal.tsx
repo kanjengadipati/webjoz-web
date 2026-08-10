@@ -2,6 +2,7 @@
 
 import React from "react";
 import { AlertTriangle, RotateCcw, X } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 type WizardErrorModalVariant = "warning" | "error";
 
@@ -20,13 +21,18 @@ export function WizardErrorModal({
   open,
   title,
   message,
-  retryLabel = "Coba lagi",
-  cancelLabel = "Batal",
+  retryLabel,
+  cancelLabel,
   variant = "error",
   onRetry,
   onCancel,
 }: WizardErrorModalProps) {
+  const { t } = useI18n();
+
   if (!open) return null;
+
+  const finalRetry = retryLabel || t("dashboard.wizard.errorModalRetry", "Coba lagi");
+  const finalCancel = cancelLabel || t("dashboard.wizard.errorModalCancel", "Batal");
 
   const isWarning = variant === "warning";
   const accentClass = isWarning ? "bg-amber-500/20 text-amber-400" : "bg-rose-500/20 text-rose-400";
@@ -51,7 +57,7 @@ export function WizardErrorModal({
               className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 transition-all active:scale-95"
             >
               <X className="h-3.5 w-3.5" />
-              {cancelLabel}
+              {finalCancel}
             </button>
             <button
               type="button"
@@ -59,7 +65,7 @@ export function WizardErrorModal({
               className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all active:scale-95"
             >
               <RotateCcw className="h-3.5 w-3.5" />
-              {retryLabel}
+              {finalRetry}
             </button>
           </div>
         </div>

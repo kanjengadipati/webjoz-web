@@ -10,6 +10,7 @@ import { Button, Input } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import FileUpload from "@/components/file-upload";
+import { useI18n } from "@/lib/i18n/context";
 import { marked } from "marked";
 import {
   Loader2, Bold, Italic, Heading2, Heading3,
@@ -60,6 +61,7 @@ function insertAtCursor(textarea: HTMLTextAreaElement, content: string, text: st
 export default function EditBlogPostPage() {
   const { id, postId } = useParams();
   const router = useRouter();
+  const { t, locale } = useI18n();
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
@@ -106,7 +108,7 @@ export default function EditBlogPostPage() {
           setNoindex(p.noindex || false);
         }
       } catch (err: any) {
-        pushToast(err.message || "Gagal memuat postingan", "error");
+        pushToast(err.message || t("dashboard.sitesBlogPost.loadFailed"), "error");
       } finally {
         setLoading(false);
       }
@@ -140,7 +142,7 @@ export default function EditBlogPostPage() {
       setLastSaved(new Date());
       setDirty(false);
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan", "error");
+      pushToast(err.message || t("dashboard.sitesBlogPost.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -235,18 +237,18 @@ export default function EditBlogPostPage() {
 
     return (
       <div className="flex items-center gap-0.5">
-        <ToolbarButton icon={Bold} label="Bold" onClick={() => fmt("**", "**")} />
-        <ToolbarButton icon={Italic} label="Italic" onClick={() => fmt("*", "*")} />
+        <ToolbarButton icon={Bold} label={t("dashboard.sitesBlogPost.bold")} onClick={() => fmt("**", "**")} />
+        <ToolbarButton icon={Italic} label={t("dashboard.sitesBlogPost.italic")} onClick={() => fmt("*", "*")} />
         <span className="w-px h-5 bg-border mx-1" />
-        <ToolbarButton icon={Heading2} label="Heading 2" onClick={() => ins("## ")} />
-        <ToolbarButton icon={Heading3} label="Heading 3" onClick={() => ins("### ")} />
+        <ToolbarButton icon={Heading2} label={t("dashboard.sitesBlogPost.heading2")} onClick={() => ins("## ")} />
+        <ToolbarButton icon={Heading3} label={t("dashboard.sitesBlogPost.heading3")} onClick={() => ins("### ")} />
         <span className="w-px h-5 bg-border mx-1" />
-        <ToolbarButton icon={List} label="Bullet List" onClick={() => ins("- ")} />
-        <ToolbarButton icon={ListOrdered} label="Ordered List" onClick={() => ins("1. ")} />
-        <ToolbarButton icon={Quote} label="Blockquote" onClick={() => ins("> ")} />
+        <ToolbarButton icon={List} label={t("dashboard.sitesBlogPost.bulletList")} onClick={() => ins("- ")} />
+        <ToolbarButton icon={ListOrdered} label={t("dashboard.sitesBlogPost.orderedList")} onClick={() => ins("1. ")} />
+        <ToolbarButton icon={Quote} label={t("dashboard.sitesBlogPost.blockquote")} onClick={() => ins("> ")} />
         <span className="w-px h-5 bg-border mx-1" />
-        <ToolbarButton icon={LinkIcon} label="Link" onClick={() => fmt("[", "](url)")} />
-        <ToolbarButton icon={Image} label="Upload Image" onClick={() => fileInputRef.current?.click()} />
+        <ToolbarButton icon={LinkIcon} label={t("dashboard.sitesBlogPost.link")} onClick={() => fmt("[", "](url)")} />
+        <ToolbarButton icon={Image} label={t("dashboard.sitesBlogPost.uploadImage")} onClick={() => fileInputRef.current?.click()} />
         {uploading && <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground ml-1" />}
       </div>
     );
@@ -263,9 +265,9 @@ export default function EditBlogPostPage() {
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-4">
-        <p className="text-muted-foreground">Postingan tidak ditemukan</p>
+        <p className="text-muted-foreground">{t("dashboard.sitesBlogPost.notFound")}</p>
         <Link href={`/dashboard/sites/${siteId}/blog`} className="text-sm text-primary hover:underline">
-          Kembali
+          {t("dashboard.sitesBlogPost.back")}
         </Link>
       </div>
     );
@@ -301,12 +303,12 @@ export default function EditBlogPostPage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
               </span>
-              <span className="text-emerald-400 font-medium">Terbit</span>
+              <span className="text-emerald-400 font-medium">{t("dashboard.sitesBlogPost.published")}</span>
             </span>
           ) : (
             <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
               <Lock className="w-3 h-3" />
-              Draft
+              {t("dashboard.sitesBlogPost.draft")}
             </span>
           )}
 
@@ -314,19 +316,19 @@ export default function EditBlogPostPage() {
             {saving ? (
               <Loader2 className="w-3 h-3 animate-spin" />
             ) : dirty ? (
-              <span className="text-amber-400">Belum tersimpan</span>
+              <span className="text-amber-400">{t("dashboard.sitesBlogPost.unsaved")}</span>
             ) : lastSaved ? (
-              <span className="text-emerald-400">Tersimpan {lastSaved.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</span>
+              <span className="text-emerald-400">{t("dashboard.sitesBlogPost.savedAt", undefined, { time: lastSaved.toLocaleTimeString(locale === "id" ? "id-ID" : "en-US", { hour: "2-digit", minute: "2-digit" }) })}</span>
             ) : null}
           </div>
 
           <div className="flex gap-1">
             <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/sites/${siteId}/blog`)}>
-              Kembali
+              {t("dashboard.sitesBlogPost.back")}
             </Button>
             <Button size="sm" onClick={handleSave} disabled={saving || !title.trim()}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Simpan
+              {t("dashboard.sitesBlogPost.save")}
             </Button>
           </div>
         </div>
@@ -339,7 +341,7 @@ export default function EditBlogPostPage() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Edit3 className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Editor</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesBlogPost.editor")}</span>
             </div>
           </div>
           <div className="flex items-center gap-0.5 border rounded-xl px-2 py-1.5 bg-muted/30 mb-2">
@@ -359,7 +361,7 @@ export default function EditBlogPostPage() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <Eye className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Preview</span>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesBlogPost.preview")}</span>
           </div>
           <div
             className="flex-1 border rounded-xl px-6 py-5 overflow-y-auto bg-card prose prose-sm prose-headings:font-bold prose-a:text-primary prose-img:rounded-xl prose-img:max-h-80 prose-img:object-cover max-w-none"
@@ -373,7 +375,7 @@ export default function EditBlogPostPage() {
         {/* Excerpt */}
         <div>
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-            Excerpt <span className="text-[10px] text-muted-foreground/60">({excerpt.length}/500)</span>
+            {t("dashboard.sitesBlogPost.excerpt")} <span className="text-[10px] text-muted-foreground/60">({excerpt.length}/500)</span>
           </label>
           <textarea
             value={excerpt}
@@ -387,7 +389,7 @@ export default function EditBlogPostPage() {
         {/* Cover Image */}
         <div>
           <FileUpload
-            label="Cover Image"
+            label={t("dashboard.sitesBlogPost.cover")}
             value={coverImageUrl}
             onChange={(val) => { setCoverImageUrl(val); markDirty(); }}
             placeholder="https://..."
@@ -399,7 +401,7 @@ export default function EditBlogPostPage() {
         <div className="space-y-2">
           <div>
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-              SEO Title <span className="text-[10px] text-muted-foreground/60">({seoTitle.length}/255)</span>
+              {t("dashboard.sitesBlogPost.seoTitle")} <span className="text-[10px] text-muted-foreground/60">({seoTitle.length}/255)</span>
             </label>
             <Input
               value={seoTitle}
@@ -410,7 +412,7 @@ export default function EditBlogPostPage() {
           </div>
           <div>
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-              SEO Description <span className="text-[10px] text-muted-foreground/60">({seoDescription.length}/500)</span>
+              {t("dashboard.sitesBlogPost.seoDescription")} <span className="text-[10px] text-muted-foreground/60">({seoDescription.length}/500)</span>
             </label>
             <textarea
               value={seoDescription}
@@ -424,10 +426,10 @@ export default function EditBlogPostPage() {
           <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5">
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-medium text-muted-foreground">Noindex (Sembunyi dari Google)</span>
+                <span className="text-xs font-medium text-muted-foreground">{t("dashboard.sitesBlogPost.noindex")}</span>
                 {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
               </div>
-              <p className="text-[10px] text-muted-foreground/60">Halaman ini tidak akan muncul di hasil pencarian Google.</p>
+              <p className="text-[10px] text-muted-foreground/60">{t("dashboard.sitesBlogPost.noindexDesc")}</p>
             </div>
             {isPremium ? (
               <button

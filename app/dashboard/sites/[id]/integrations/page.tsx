@@ -9,12 +9,14 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { useToast } from "@/components/toast-provider";
 import { Loader2, Save, Code } from "lucide-react";
 import { SiteSubNav } from "@/components/site-sub-nav";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function IntegrationsPage() {
   const { id } = useParams();
   const token = useAuthToken();
   const { activeTenantId } = useActiveTenant();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const siteId = Number(id);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
@@ -32,7 +34,7 @@ export default function IntegrationsPage() {
         setGa4Id((codes as any).ga4_id || "");
         setMetaPixelId((codes as any).meta_pixel_id || "");
       } catch (err: any) {
-        pushToast(err.message || "Gagal memuat integrasi", "error");
+        pushToast(err.message || t("dashboard.sitesIntegrations.loadFailed"), "error");
       } finally {
         setLoading(false);
       }
@@ -52,9 +54,9 @@ export default function IntegrationsPage() {
           },
         }),
       }, token);
-      pushToast("Pengaturan integrasi disimpan", "success");
+      pushToast(t("dashboard.sitesIntegrations.saved"), "success");
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan", "error");
+      pushToast(err.message || t("dashboard.sitesIntegrations.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -85,7 +87,7 @@ export default function IntegrationsPage() {
             onChange={e => setGa4Id(e.target.value)}
           />
           <p className="text-xs text-muted-foreground mt-1">
-            Measurement ID dari akun GA4 Anda. Digunakan untuk tracking pengunjung dan konversi iklan.
+            {t("dashboard.sitesIntegrations.ga4Desc")}
           </p>
         </CardContent>
       </Card>
@@ -104,14 +106,14 @@ export default function IntegrationsPage() {
             onChange={e => setMetaPixelId(e.target.value)}
           />
           <p className="text-xs text-muted-foreground mt-1">
-            Pixel ID dari Meta Business Suite untuk tracking konversi Facebook/Instagram Ads.
+            {t("dashboard.sitesIntegrations.metaPixelDesc")}
           </p>
         </CardContent>
       </Card>
 
       <Button onClick={handleSave} disabled={saving}>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-        Simpan
+        {t("dashboard.sitesIntegrations.save")}
       </Button>
     </div>
   );

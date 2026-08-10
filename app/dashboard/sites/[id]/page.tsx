@@ -40,16 +40,17 @@ import FontPicker from "./components/FontPicker";
 import PublishModal from "./modals/PublishModal";
 import CongratsModal from "./modals/CongratsModal";
 import { SiteSubNav } from "@/components/site-sub-nav";
+import { useI18n } from "@/lib/i18n/context";
 
 import {
- type TypographyPairing,
- type ColorPattern,
- type IndustryPreset,
- getEnabledTypographyPairings,
- getEnabledColorPatterns,
- getEnabledIndustryPresets,
- getHiddenSections,
- getEnabledVariants,
+  type TypographyPairing,
+  type ColorPattern,
+  type IndustryPreset,
+  getEnabledTypographyPairings,
+  getEnabledColorPatterns,
+  getEnabledIndustryPresets,
+  getHiddenSections,
+  getEnabledVariants,
 } from "@/lib/design-assets-config";
 import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 
@@ -60,6 +61,7 @@ import IndustryPresetPicker from "./components/IndustryPresetPicker";
 export default function SiteEditorPage() {
   const params = useParams();
   const router = useRouter();
+  const { t, locale } = useI18n();
   const token = useAuthToken();
   const { pushToast } = useToast();
   const { activeTenantId, activeTenant } = useActiveTenant();
@@ -174,18 +176,18 @@ export default function SiteEditorPage() {
     max_sites: number;
   } | null>(null);
 
-  const UPGRADE_COPY: Record<string, { title: string; body: string }> = {
+  const UPGRADE_COPY: Record<string, { titleKey: string; bodyKey: string }> = {
     ai_regenerate: {
-      title: "Regenerasi AI — fitur Pro",
-      body: "Regenerasi ulang konten section dengan AI tersedia tanpa batas di paket Pro.",
+      titleKey: "dashboard.sitesEditor.upgradeRegenTitle",
+      bodyKey: "dashboard.sitesEditor.upgradeRegenBody",
     },
     ai_design: {
-      title: "Desain ulang dengan AI — fitur Pro",
-      body: "Minta AI mengubah gaya, warna, dan layout website Anda secara instan di paket Pro.",
+      titleKey: "dashboard.sitesEditor.upgradeDesignTitle",
+      bodyKey: "dashboard.sitesEditor.upgradeDesignBody",
     },
     ai_suggestion: {
-      title: "Saran instruksi AI — fitur Pro",
-      body: "Gunakan saran instruksi siap pakai untuk mempercepat proses AI di paket Pro.",
+      titleKey: "dashboard.sitesEditor.upgradeSuggestionTitle",
+      bodyKey: "dashboard.sitesEditor.upgradeSuggestionBody",
     },
   };
 
@@ -282,10 +284,10 @@ export default function SiteEditorPage() {
           items: (data.benefits?.items && data.benefits.items.length > 0)
             ? data.benefits.items
             : [
-                { title: "Layanan Terpercaya", description: `${siteName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
-                { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
-                { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
-              ],
+              { title: "Layanan Terpercaya", description: `${siteName} mengutamakan kepuasan pelanggan dalam setiap langkah pelayanan.`, icon: "shield" },
+              { title: "Pengalaman Teruji", description: "Sudah melayani banyak pelanggan dengan hasil yang konsisten dan memuaskan.", icon: "star" },
+              { title: "Mudah Dihubungi", description: "Tim kami siap membantu Anda kapan saja melalui berbagai saluran komunikasi.", icon: "message-circle" },
+            ],
         },
         // Preserve optional sections as-is (only include when present in fetched data)
         ...(data.faq ? { faq: { title: "", items: [], ...data.faq } } : {}),
@@ -353,7 +355,7 @@ export default function SiteEditorPage() {
       }
 
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat situs", "error");
+      pushToast(err.message || t("dashboard.sitesEditor.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -380,14 +382,14 @@ export default function SiteEditorPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
 
-      pushToast("Website berhasil dipublikasikan! 🚀", "success");
+      pushToast(t("dashboard.sitesEditor.publishSuccess"), "success");
       setPublishModalOpen(false);
       if (publishRes.data) {
         setSiteDetails(publishRes.data);
       }
       setShowCongrats(true);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memublikasikan website", "error");
+      pushToast(err.message || t("dashboard.sitesEditor.publishFailed"), "error");
     } finally {
       setPublishing(false);
     }
@@ -676,10 +678,10 @@ export default function SiteEditorPage() {
 
       lastSavedRef.current = { content, designToken, siteDetails: updatedSiteDetails };
       setAutosaveStatus("saved");
-      pushToast("Perubahan berhasil disimpan!", "success");
+      pushToast(t("dashboard.sitesEditor.saveSuccess"), "success");
     } catch (err: any) {
       setAutosaveStatus("error");
-      pushToast(err.message || "Gagal menyimpan perubahan", "error");
+      pushToast(err.message || t("dashboard.sitesEditor.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -739,7 +741,7 @@ export default function SiteEditorPage() {
       setLatestAiDesignToken(pendingDiff.nextDesignToken);
     }
     setPendingDiff(null);
-    pushToast(`Hasil AI untuk ${pendingDiff.section === "design" ? "gaya situs" : pendingDiff.section} dipakai.`, "success");
+    pushToast(t("dashboard.sitesEditor.aiApplied", undefined, { label: pendingDiff.section === "design" ? t("dashboard.sitesEditor.siteStyle") : pendingDiff.section }), "success");
   };
 
   const restorePendingDiff = () => {
@@ -748,7 +750,7 @@ export default function SiteEditorPage() {
       setDesignToken(pendingDiff.previousDesignToken);
     }
     setPendingDiff(null);
-    pushToast("Hasil AI dibatalkan.", "info");
+    pushToast(t("dashboard.sitesEditor.aiCancelled"), "info");
   };
 
   const undoLastRegen = () => {
@@ -758,7 +760,7 @@ export default function SiteEditorPage() {
     setDesignToken(latest.previousDesignToken);
     setUndoStack((current) => current.slice(1));
     selectSection(latest.section, true);
-    pushToast(`Perubahan AI pada ${latest.section} dikembalikan.`, "success");
+    pushToast(t("dashboard.sitesEditor.aiReverted", undefined, { label: latest.section }), "success");
   };
 
   const handleReorderSection = (source: string, target: string) => {
@@ -843,8 +845,8 @@ export default function SiteEditorPage() {
         const newDesignToken = res.data.design_token;
         const diffRows = summarizeDiff(currentContent[section], sectionData);
         if (diffRows.length === 0) {
-          pushToast("AI belum menghasilkan perubahan nyata.", "info", {
-            message: "Coba instruksi yang lebih spesifik, misalnya: ubah jadi headline emosional, maksimal 8 kata, dan hilangkan teks input mentah.",
+          pushToast(t("dashboard.sitesEditor.aiNoChange"), "info", {
+            message: t("dashboard.sitesEditor.aiNoChangeHint"),
           });
           return;
         }
@@ -857,14 +859,14 @@ export default function SiteEditorPage() {
           nextDesignToken: newDesignToken || null,
           rows: diffRows,
         });
-        pushToast(`AI selesai menulis ${section}. Cek diff sebelum dipakai.`, "success");
+        pushToast(t("dashboard.sitesEditor.aiSectionDone", undefined, { label: section }), "success");
         setAiInstructions("");
         void refreshTenantUsage();
       } else {
-        throw new Error(res.message || "AI gagal memproses.");
+        throw new Error(res.message || t("dashboard.sitesEditor.aiProcessFailed"));
       }
     } catch (err: any) {
-      pushToast(err.message || "AI gagal meregenerasi bagian ini.", "error");
+      pushToast(err.message || t("dashboard.sitesEditor.aiSectionFailed"), "error");
     } finally {
       setAiLoading(false);
     }
@@ -901,7 +903,7 @@ export default function SiteEditorPage() {
         const newDesignToken = res.data.design_token;
         const diffRows = summarizeDiff(designTokenRef.current || {}, newDesignToken);
         if (diffRows.length === 0) {
-          pushToast("AI belum menghasilkan perubahan gaya yang nyata.", "info");
+          pushToast(t("dashboard.sitesEditor.aiStyleNoChange"), "info");
           return;
         }
 
@@ -925,15 +927,15 @@ export default function SiteEditorPage() {
           setDesignTokenScore(res.data.design_token_score);
         }
 
-        pushToast("AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.", "success");
+        pushToast(t("dashboard.sitesEditor.aiStyleDone"), "success");
         setAiDesignInstructions("");
         setAiDesignPromptOpen(false);
         void refreshTenantUsage();
       } else {
-        throw new Error(res.message || "AI gagal memproses desain.");
+        throw new Error(res.message || t("dashboard.sitesEditor.aiDesignFailed"));
       }
     } catch (err: any) {
-      pushToast(err.message || "AI gagal meregenerasi gaya website.", "error");
+      pushToast(err.message || t("dashboard.sitesEditor.aiStyleFailed"), "error");
     } finally {
       setAiLoading(false);
     }
@@ -1150,7 +1152,7 @@ export default function SiteEditorPage() {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-3">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Memuat editor...</p>
+        <p className="text-xs text-muted-foreground">{t("dashboard.sitesEditor.loading")}</p>
       </div>
     );
   }
@@ -1159,12 +1161,12 @@ export default function SiteEditorPage() {
     return (
       <Card className="max-w-md mx-auto p-6 text-center border-dashed">
         <HelpCircle className="w-12 h-12 text-primary mx-auto mb-4 opacity-70" />
-        <h2 className="text-lg font-bold mb-2">Situs Tidak Ditemukan</h2>
+        <h2 className="text-lg font-bold mb-2">{t("dashboard.sitesEditor.notFoundTitle")}</h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Kami tidak dapat menemukan situs yang Anda cari pada workspace saat ini.
+          {t("dashboard.sitesEditor.notFoundDesc")}
         </p>
         <Button onClick={() => router.push("/dashboard/sites")} className="rounded-xl">
-          Kembali
+          {t("dashboard.sitesEditor.back")}
         </Button>
       </Card>
     );
@@ -1211,13 +1213,13 @@ export default function SiteEditorPage() {
   let activeTemplatePreviewType = currentTemplate.previewType;
 
   if (activeCustomTemplate) {
-    activeTemplateName = `AI: ${activeCustomTemplate.business_type}`;
-    activeTemplateCategory = `Hasil AI (${activeCustomTemplate.mood})`;
+    activeTemplateName = t("dashboard.sitesEditor.aiTemplateName", undefined, { businessType: activeCustomTemplate.business_type });
+    activeTemplateCategory = t("dashboard.sitesEditor.aiTemplateCategory", undefined, { mood: activeCustomTemplate.mood });
     activeTemplateAccent = activeCustomTemplate.design_token?.palette?.primary || "#7C3AED";
     activeTemplatePreviewType = "dynamic";
   } else if (siteDetails.template_id === "TEMPLATE_DYNAMIC") {
-    activeTemplateName = "AI Design Engine";
-    activeTemplateCategory = "Latest AI Generated";
+    activeTemplateName = t("dashboard.sitesEditor.aiDesignEngine");
+    activeTemplateCategory = t("dashboard.sitesEditor.latestAiGenerated");
     activeTemplateAccent = designToken?.palette?.primary || "#7C3AED";
     activeTemplatePreviewType = "dynamic";
   }
@@ -1238,7 +1240,7 @@ export default function SiteEditorPage() {
             <button
               onClick={() => router.push("/dashboard/sites")}
               className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
-              aria-label="Kembali ke daftar situs"
+              aria-label={t("dashboard.sitesEditor.backToSites")}
             >
               <ChevronLeft className="h-5 w-5 flex-shrink-0" />
             </button>
@@ -1257,7 +1259,7 @@ export default function SiteEditorPage() {
                 : "text-slate-400 hover:text-slate-200"
                 }`}
             >
-              Konten
+              {t("dashboard.sitesEditor.contentTab")}
             </button>
             <button
               onClick={() => setEditorTab("design")}
@@ -1266,7 +1268,7 @@ export default function SiteEditorPage() {
                 : "text-slate-400 hover:text-slate-200"
                 }`}
             >
-              Desain
+              {t("dashboard.sitesEditor.designTab")}
             </button>
           </div>
 
@@ -1274,14 +1276,14 @@ export default function SiteEditorPage() {
           {editorTab === "design" && (
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{t("dashboard.sitesEditor.styleLabel")}</p>
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={handleDesignUndo}
                     disabled={designOnlyUndo.length === 0}
-                    aria-label="Undo Desain"
-                    title={designOnlyUndo.length > 0 ? "Urungkan perubahan desain terakhir" : "Belum ada perubahan desain"}
+                    aria-label={t("dashboard.sitesEditor.undoDesign")}
+                    title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
                     className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
                   >
                     <RotateCcw className="h-2.5 w-2.5" />
@@ -1308,7 +1310,7 @@ export default function SiteEditorPage() {
               </button>
 
               {templatePickerOpen && (
-                <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label="Pilihan gaya website">
+                <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label={t("dashboard.sitesEditor.styleChoiceAria")}>
                   {/* 1. LATEST AI GENERATED (TEMPLATE_DYNAMIC) AT THE VERY TOP */}
                   {dynamicTemplate && (() => {
                     const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
@@ -1335,10 +1337,10 @@ export default function SiteEditorPage() {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
                               <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
-                              <span className="bg-primary/25 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Terbaru</span>
+                              <span className="bg-primary/25 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.latest")}</span>
                             </div>
                             <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
-                              Gaya visual unik buatan AI terbaru untuk website Anda.
+                              {t("dashboard.sitesEditor.latestAiDesc")}
                             </p>
                           </div>
                           {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
@@ -1385,7 +1387,7 @@ export default function SiteEditorPage() {
                     <>
                       <div className="border-t border-white/10 my-2.5 pt-2" />
                       <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                        Riwayat Desain AI
+                        {t("dashboard.sitesEditor.aiHistory")}
                       </p>
                       {(() => {
                         let hasMatchedActive = false;
@@ -1423,10 +1425,10 @@ export default function SiteEditorPage() {
                                     <p className="truncate text-[12px] font-bold text-slate-100">
                                       AI: {template.business_type}
                                     </p>
-                                    <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">Hasil AI</span>
+                                    <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.aiResult")}</span>
                                   </div>
                                   <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
-                                    Nuansa {template.mood || "custom"}. Dibuat pada {new Date(template.created_at).toLocaleDateString("id-ID")}.
+                                    {t("dashboard.sitesEditor.aiMoodCreated", undefined, { mood: template.mood || "custom", date: new Date(template.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US") })}
                                   </p>
                                 </div>
                                 {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
@@ -1450,11 +1452,11 @@ export default function SiteEditorPage() {
                             {loadingTemplates ? (
                               <>
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                Memuat...
+                                {t("dashboard.sitesEditor.loading")}
                               </>
                             ) : (
                               <>
-                                Muat Lebih Banyak ({customTemplatesTotal - customTemplates.length} tersisa)
+                                {t("dashboard.sitesEditor.loadMore", undefined, { count: String(customTemplatesTotal - customTemplates.length) })}
                               </>
                             )}
                           </button>
@@ -1477,18 +1479,18 @@ export default function SiteEditorPage() {
                       className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
                     >
                       <SparkleGenAI className="h-[18px] w-[18px]" />
-                      Regenerate dengan AI
+                      {t("dashboard.sitesEditor.regenerateWithAi")}
                     </button>
                   ) : (
                     <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary">AI Design Prompt</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary">{t("dashboard.sitesEditor.aiDesignPrompt")}</span>
                         <button
                           type="button"
                           onClick={() => setAiDesignPromptOpen(false)}
                           className="text-[9px] text-slate-400 hover:text-slate-200"
                         >
-                          Batal
+                          {t("dashboard.sitesEditor.cancel")}
                         </button>
                       </div>
                       <input
@@ -1513,11 +1515,11 @@ export default function SiteEditorPage() {
                         ) : (
                           <SparkleGenAI className="w-[18px] h-[18px]" />
                         )}
-                        {aiLoading ? "Memproses..." : "Terapkan Gaya"}
+                        {aiLoading ? t("dashboard.sitesEditor.processing") : t("dashboard.sitesEditor.applyStyle")}
                       </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
               )}
             </div>
           )}
@@ -1526,7 +1528,7 @@ export default function SiteEditorPage() {
           {editorTab === "content" && (
             <div className="flex-shrink-0 border-b border-white/10 hidden md:block">
               <div className="px-3 py-1.5">
-                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">Bagian halaman</p>
+                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("dashboard.sitesEditor.pageSections")}</p>
               </div>
               <div
                 className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
@@ -1556,10 +1558,10 @@ export default function SiteEditorPage() {
                     onDragEnd={() => setDraggingSection(null)}
                     onClick={() => { if (!pendingDiff) selectSection(key, true); }}
                     className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${activeTab === key
-                        ? "bg-primary/15"
-                        : hiddenSections.includes(key)
-                          ? "opacity-40 hover:opacity-60"
-                          : "hover:bg-white/[0.03]"
+                      ? "bg-primary/15"
+                      : hiddenSections.includes(key)
+                        ? "opacity-40 hover:opacity-60"
+                        : "hover:bg-white/[0.03]"
                       }`}
                   >
                     <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
@@ -1577,7 +1579,7 @@ export default function SiteEditorPage() {
                         role="button" tabIndex={0}
                         onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
-                        title={hiddenSections.includes(key) ? "Tampilkan" : "Sembunyikan"}
+                        title={hiddenSections.includes(key) ? t("dashboard.sitesEditor.show") : t("dashboard.sitesEditor.hide")}
                         className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
                       >
                         {hiddenSections.includes(key)
@@ -1591,7 +1593,7 @@ export default function SiteEditorPage() {
                         const score = getSectionScore(content, key);
                         if (score >= 100) return null;
                         const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
-                        return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={`Kualitas: ${score}%`} />;
+                        return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={t("dashboard.sitesEditor.qualityScore", undefined, { score: String(score) })} />;
                       })()}
                       <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
                         }`}>{num}</span>
@@ -1611,13 +1613,13 @@ export default function SiteEditorPage() {
               <>
                 <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
-                    Kustomisasi Visual
+                    {t("dashboard.sitesEditor.visualCustomization")}
                   </p>
                 </div>
                 <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-[#111318] text-slate-100">
                   {/* Palet Warna */}
                   <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Palet Warna</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.colorPalette")}</p>
 
                     <ColorPatternPicker
                       designToken={designToken}
@@ -1643,7 +1645,7 @@ export default function SiteEditorPage() {
 
                     {/* Primary Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Utama (Primary)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.primaryColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
                           <input
@@ -1668,7 +1670,7 @@ export default function SiteEditorPage() {
 
                     {/* Accent Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Aksen (Accent)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.accentColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
                           <input
@@ -1693,7 +1695,7 @@ export default function SiteEditorPage() {
 
                     {/* Background Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Latar (Background)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.backgroundColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
                           <input
@@ -1718,7 +1720,7 @@ export default function SiteEditorPage() {
 
                     {/* Surface Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Permukaan (Surface)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.surfaceColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
                           <input
@@ -1743,7 +1745,7 @@ export default function SiteEditorPage() {
 
                     {/* Text Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Warna Teks (Text)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.textColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
                           <input
@@ -1826,45 +1828,45 @@ export default function SiteEditorPage() {
 
                   {/* Tata Letak & Gaya */}
                   <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tata Letak & Gaya</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.layoutStyle")}</p>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Sudut Border (Radius)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.cornerRadius")}</label>
                       <select
                         value={designToken?.layout?.corner_radius || "soft"}
                         onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
-                        <option value="sharp" className="bg-[#111318]">Tajam (0px)</option>
-                        <option value="soft" className="bg-[#111318]">Lembut (8px)</option>
-                        <option value="rounded" className="bg-[#111318]">Bulat (20px)</option>
+                        <option value="sharp" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSharp")}</option>
+                        <option value="soft" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSoft")}</option>
+                        <option value="rounded" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerRounded")}</option>
                       </select>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Jarak Seksi (Spacing)</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.sectionSpacing")}</label>
                       <select
                         value={designToken?.layout?.section_spacing || "normal"}
                         onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
-                        <option value="compact" className="bg-[#111318]">Rapat (Compact)</option>
-                        <option value="normal" className="bg-[#111318]">Normal</option>
-                        <option value="relaxed" className="bg-[#111318]">Longgar (Relaxed)</option>
+                        <option value="compact" className="bg-[#111318]">{t("dashboard.sitesEditor.spacingCompact")}</option>
+                        <option value="normal" className="bg-[#111318]">{t("dashboard.sitesEditor.normal")}</option>
+                        <option value="relaxed" className="bg-[#111318]">{t("dashboard.sitesEditor.spacingRelaxed")}</option>
                       </select>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Gaya Hero</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.heroStyle")}</label>
                       <select
                         value={designToken?.layout?.hero_style || "centered"}
                         onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
                         className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
-                        <option value="centered" className="bg-[#111318]">Centered</option>
-                        <option value="split" className="bg-[#111318]">Split Screen</option>
-                        <option value="full-bleed" className="bg-[#111318]">Full Bleed</option>
-                        <option value="minimal" className="bg-[#111318]">Minimalist</option>
+                        <option value="centered" className="bg-[#111318]">{t("dashboard.sitesEditor.heroCentered")}</option>
+                        <option value="split" className="bg-[#111318]">{t("dashboard.sitesEditor.heroSplit")}</option>
+                        <option value="full-bleed" className="bg-[#111318]">{t("dashboard.sitesEditor.heroFullBleed")}</option>
+                        <option value="minimal" className="bg-[#111318]">{t("dashboard.sitesEditor.heroMinimalist")}</option>
                       </select>
                     </div>
 
@@ -1876,27 +1878,27 @@ export default function SiteEditorPage() {
               <>
                 <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0 flex items-center justify-between gap-2">
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
-                    Edit — {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                    {t("dashboard.sitesEditor.editLabel", undefined, { label: SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab })}
                   </p>
                   <div className="flex items-center gap-1">
                     {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
                       <button
                         type="button"
                         onClick={() => toggleSectionVisibility(activeTab)}
-                        title={hiddenSections.includes(activeTab) ? "Tampilkan section" : "Sembunyikan section"}
+                        title={hiddenSections.includes(activeTab) ? t("dashboard.sitesEditor.showSection") : t("dashboard.sitesEditor.hideSection")}
                         className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
                         style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
                       >
                         {hiddenSections.includes(activeTab)
-                          ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
-                          : <><Eye className="w-3 h-3" /> Sembunyikan</>
+                          ? <><EyeOff className="w-3 h-3" /> {t("dashboard.sitesEditor.hidden")}</>
+                          : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
                         }
                       </button>
                     )}
                     <button
                       type="button"
                       onClick={() => setSectionNavCollapsed(v => !v)}
-                      title={sectionNavCollapsed ? "Tampilkan Bagian Halaman" : "Perluas area edit"}
+                      title={sectionNavCollapsed ? t("dashboard.sitesEditor.showPageSections") : t("dashboard.sitesEditor.expandEditArea")}
                       className="flex items-center justify-center w-6 h-6 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300"
                     >
                       {sectionNavCollapsed
@@ -1912,13 +1914,13 @@ export default function SiteEditorPage() {
                       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <SparkleGenAI className="h-9 w-9 animate-pulse" />
                       </div>
-                      <h4 className="text-[14px] font-bold text-slate-100">Review AI Sedang Aktif</h4>
+                      <h4 className="text-[14px] font-bold text-slate-100">{t("dashboard.sitesEditor.aiReviewActive")}</h4>
                       <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
-                        Silakan gunakan atau kembalikan perubahan AI pada seksi{" "}
+                        {t("dashboard.sitesEditor.aiReviewDesc1")}{" "}
                         <span className="font-bold text-primary">
                           {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
                         </span>{" "}
-                        di bagian atas halaman preview terlebih dahulu.
+                        {t("dashboard.sitesEditor.aiReviewDesc2")}
                       </p>
                       <div className="mt-4 flex gap-2 w-full max-w-[200px]">
                         <button
@@ -1926,14 +1928,14 @@ export default function SiteEditorPage() {
                           onClick={applyRegeneratedSection}
                           className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
                         >
-                          Gunakan
+                          {t("dashboard.sitesEditor.use")}
                         </button>
                         <button
                           type="button"
                           onClick={restorePendingDiff}
                           className="flex-1 rounded-md border border-white/15 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
                         >
-                          Kembalikan
+                          {t("dashboard.sitesEditor.revert")}
                         </button>
                       </div>
                     </div>
@@ -1941,7 +1943,7 @@ export default function SiteEditorPage() {
                   {quality.issues.length > 0 && (
                     <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-100 space-y-2">
                       <div className="flex items-center justify-between gap-2 border-b border-amber-400/10 pb-1.5">
-                        <span className="font-bold">⚠️ {quality.issues.length} field perlu dicek</span>
+                        <span className="font-bold">⚠️ {t("dashboard.sitesEditor.qualityWarning", undefined, { count: String(quality.issues.length) })}</span>
                         <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
                       </div>
                       <div className="flex flex-wrap gap-1.5 pt-1">
@@ -1996,7 +1998,7 @@ export default function SiteEditorPage() {
                     if (enabledOpts.length <= 1) return null;
                     return (
                       <div className="pt-3 border-t border-white/10 space-y-1.5">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.variantOptions")}</p>
                         <select
                           value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
                           onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
@@ -2034,13 +2036,13 @@ export default function SiteEditorPage() {
                     <div className="flex items-center gap-1.5">
                       <SparkleGenAI className="h-3 w-3 text-primary" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                        AI Usage
+                        {t("dashboard.sitesEditor.aiUsage")}
                       </span>
                     </div>
                     <div className="space-y-2">
                       <div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Generate</span>
+                          <span className="text-slate-400">{t("dashboard.sitesEditor.generate")}</span>
                           <span className="font-semibold text-slate-200">
                             {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                           </span>
@@ -2058,7 +2060,7 @@ export default function SiteEditorPage() {
                       </div>
                       <div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Section Regen</span>
+                          <span className="text-slate-400">{t("dashboard.sitesEditor.sectionRegen")}</span>
                           <span className="font-semibold text-slate-200">
                             {(tenantUsage.usage.section_regen_count ?? 0)} / {(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}
                           </span>
@@ -2076,7 +2078,7 @@ export default function SiteEditorPage() {
                       </div>
                       <div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Design Regen</span>
+                          <span className="text-slate-400">{t("dashboard.sitesEditor.designRegen")}</span>
                           <span className="font-semibold text-slate-200">
                             {(tenantUsage.usage.design_regen_count ?? 0)} / {(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}
                           </span>
@@ -2117,7 +2119,7 @@ export default function SiteEditorPage() {
               type="button"
               onClick={() => router.push("/dashboard/sites")}
               className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95"
-              aria-label="Kembali"
+              aria-label={t("dashboard.sitesEditor.back")}
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -2128,15 +2130,14 @@ export default function SiteEditorPage() {
             <div className="flex items-center gap-1.5">
               {autosaveStatus !== "idle" && (
                 <span
-                  title={autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal menyimpan"}
-                  aria-label={autosaveStatus === "saving" ? "Menyimpan..." : autosaveStatus === "saved" ? "Tersimpan" : "Gagal menyimpan"}
-                  className={`flex h-6 w-6 items-center justify-center rounded-full border ${
-                    autosaveStatus === "saving"
+                  title={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
+                  aria-label={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
+                  className={`flex h-6 w-6 items-center justify-center rounded-full border ${autosaveStatus === "saving"
                       ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
                       : autosaveStatus === "saved"
-                      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                      : "border-red-500/30 bg-red-500/10 text-red-300"
-                  }`}
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                        : "border-red-500/30 bg-red-500/10 text-red-300"
+                    }`}
                 >
                   {autosaveStatus === "saving" && <Loader2 className="h-3 w-3 animate-spin" />}
                   {autosaveStatus === "saved" && <Check className="h-3 w-3" />}
@@ -2160,7 +2161,7 @@ export default function SiteEditorPage() {
                     style={{ background: "var(--primary)" }}
                   >
                     <Rocket className="w-3 h-3" />
-                    Terapkan
+                    {t("dashboard.sitesEditor.apply")}
                   </button>
                 </span>
               ) : (
@@ -2171,7 +2172,7 @@ export default function SiteEditorPage() {
                   style={{ background: "var(--primary)" }}
                 >
                   <Rocket className="w-3 h-3" />
-                  Publish
+                  {t("dashboard.sitesEditor.publishShort")}
                 </button>
               )}
             </div>
@@ -2186,7 +2187,7 @@ export default function SiteEditorPage() {
                   onClick={() => setDevice("desktop")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
                     }`}
-                  aria-label="Preview desktop"
+                  aria-label={t("dashboard.sitesEditor.previewDesktop")}
                 >
                   <Monitor className="w-3.5 h-3.5" />
                 </button>
@@ -2199,7 +2200,7 @@ export default function SiteEditorPage() {
                   onClick={() => setDevice("tablet")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
                     }`}
-                  aria-label="Preview tablet"
+                  aria-label={t("dashboard.sitesEditor.previewTablet")}
                 >
                   <Tablet className="w-4 h-4" />
                 </button>
@@ -2212,7 +2213,7 @@ export default function SiteEditorPage() {
                   onClick={() => setDevice("mobile")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
                     }`}
-                  aria-label="Preview mobile"
+                  aria-label={t("dashboard.sitesEditor.previewMobile")}
                 >
                   <Smartphone className="w-3.5 h-3.5" />
                 </button>
@@ -2240,13 +2241,13 @@ export default function SiteEditorPage() {
                   ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
                   : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
-                aria-label="Toggle dark mode"
+                aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
               >
                 {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                {designToken?.theme_mode === 'dark' ? 'Light' : 'Dark'}
+                {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
               </button>
               <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                {designToken?.theme_mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
               </span>
             </div>
 
@@ -2265,12 +2266,12 @@ export default function SiteEditorPage() {
               <button
                 type="button"
                 onClick={handleGlobalUndo}
-                aria-label="Undo"
-                title="Urungkan perubahan terakhir (teks, desain, atau urutan section)"
+                aria-label={t("dashboard.sitesEditor.undo")}
+                title={t("dashboard.sitesEditor.undoAllTitle")}
                 className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <RotateCcw className="h-3 w-3" />
-                Undo
+                {t("dashboard.sitesEditor.undo")}
               </button>
             )}
 
@@ -2286,9 +2287,9 @@ export default function SiteEditorPage() {
                 {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                 {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
                 {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
-                {autosaveStatus === "saving" ? "Menyimpan..." :
-                  autosaveStatus === "saved" ? "Tersimpan" :
-                    "Gagal simpan"}
+                {autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") :
+                  autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") :
+                    t("dashboard.sitesEditor.autosaveFailed")}
               </span>
             )}
 
@@ -2300,7 +2301,7 @@ export default function SiteEditorPage() {
               className="flex h-7 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
             >
               <Globe className="h-3.5 w-3.5" />
-              Preview
+              {t("dashboard.sitesEditor.preview")}
             </a>
 
             {/* Save button */}
@@ -2311,7 +2312,7 @@ export default function SiteEditorPage() {
               style={{ background: "var(--primary)" }}
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              Simpan
+              {t("dashboard.sitesEditor.save")}
             </button>
             {/* Publish button / Live badge — right side */}
             {siteDetails?.status === "published" ? (
@@ -2342,7 +2343,7 @@ export default function SiteEditorPage() {
                   style={{ background: "var(--primary)" }}
                 >
                   <Rocket className="w-3.5 h-3.5" />
-                  Publikasikan
+                  {t("dashboard.sitesEditor.publish")}
                 </button>
               </div>
             ) : (
@@ -2353,7 +2354,7 @@ export default function SiteEditorPage() {
                 style={{ background: "var(--primary)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />
-                Publikasikan
+                {t("dashboard.sitesEditor.publish")}
               </button>
             )}
           </div>
@@ -2365,22 +2366,22 @@ export default function SiteEditorPage() {
                   <div className="flex items-center gap-2">
                     <SparkleGenAI className="h-5 w-5 text-primary" />
                     <p className="text-[12px] font-bold text-slate-100">
-                      Diff AI: {SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section}
+                      {t("dashboard.sitesEditor.diffAi", undefined, { label: SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section })}
                     </p>
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                      {pendingDiff.rows.length || 0} perubahan
+                      {t("dashboard.sitesEditor.diffChanges", undefined, { count: String(pendingDiff.rows.length || 0) })}
                     </span>
                   </div>
                   <div className="mt-2 grid max-h-40 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
-                    {(pendingDiff.rows.length ? pendingDiff.rows : [{ label: "Konten", before: JSON.stringify(pendingDiff.before), after: JSON.stringify(pendingDiff.after) }]).map((row, idx) => (
+                    {(pendingDiff.rows.length ? pendingDiff.rows : [{ label: t("dashboard.sitesEditor.content"), before: JSON.stringify(pendingDiff.before), after: JSON.stringify(pendingDiff.after) }]).map((row, idx) => (
                       <div key={`${row.label}-${idx}`} className="rounded-md border border-white/10 bg-white/[0.03] p-2 text-[11px]">
                         <p className="mb-1 font-semibold text-slate-300">{row.label}</p>
                         <div className="grid gap-1">
                           <p className="line-clamp-2 rounded bg-red-400/10 px-2 py-1 text-red-100">
-                            <span className="font-bold">Lama:</span> {row.before || "-"}
+                            <span className="font-bold">{t("dashboard.sitesEditor.old")}</span> {row.before || "-"}
                           </p>
                           <p className="line-clamp-2 rounded bg-emerald-400/10 px-2 py-1 text-emerald-100">
-                            <span className="font-bold">Baru:</span> {row.after || "-"}
+                            <span className="font-bold">{t("dashboard.sitesEditor.new")}</span> {row.after || "-"}
                           </p>
                         </div>
                       </div>
@@ -2393,14 +2394,14 @@ export default function SiteEditorPage() {
                     onClick={applyRegeneratedSection}
                     className="rounded-md bg-emerald-500 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-400"
                   >
-                    Gunakan ini
+                    {t("dashboard.sitesEditor.useThis")}
                   </button>
                   <button
                     type="button"
                     onClick={restorePendingDiff}
                     className="rounded-md border border-white/10 px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5"
                   >
-                    Kembalikan
+                    {t("dashboard.sitesEditor.revert")}
                   </button>
                 </div>
               </div>
@@ -2412,7 +2413,7 @@ export default function SiteEditorPage() {
             <div className="flex-shrink-0 border-b border-primary/20 bg-[#0b0f1a] px-4 py-2.5 flex items-center gap-3">
               <Loader2 className="w-4 h-4 text-primary animate-spin flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-slate-200">AI sedang memproses...</p>
+                <p className="text-[12px] font-semibold text-slate-200">{t("dashboard.sitesEditor.aiProcessing")}</p>
                 <div className="h-1 rounded-full bg-white/10 mt-1.5 overflow-hidden max-w-xs">
                   <div className="h-full rounded-full bg-primary animate-pulse" style={{ width: "40%" }} />
                 </div>
@@ -2588,7 +2589,7 @@ export default function SiteEditorPage() {
                     setQualityModalOpen(true);
                   }}
                   className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95"
-                  title="Lihat kelengkapan konten"
+                  title={t("dashboard.sitesEditor.viewCompleteness")}
                 >
                   <AlertCircle className="w-3 h-3 flex-shrink-0" />
                   <span>{quality.score}%</span>
@@ -2626,7 +2627,7 @@ export default function SiteEditorPage() {
                   }
                 }}
                 className="flex h-6 w-6 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors flex-shrink-0"
-                aria-label={sheetCollapsed ? "Buka sheet" : "Tutup sheet"}
+                aria-label={sheetCollapsed ? t("dashboard.sitesEditor.openSheet") : t("dashboard.sitesEditor.closeSheet")}
               >
                 <ChevronUp className={`h-3.5 w-3.5 transition-transform ${sheetCollapsed ? "" : "rotate-180"}`} />
               </button>
@@ -2655,7 +2656,7 @@ export default function SiteEditorPage() {
                   value={activeTab}
                   onChange={(e) => selectSection(e.target.value)}
                   className="absolute inset-0 opacity-0 w-full h-full cursor-pointer text-xs"
-                  aria-label="Pilih Section"
+                  aria-label={t("dashboard.sitesEditor.selectSectionAria")}
                 >
                   {pageOrderSections.map((sec) => (
                     <option key={sec.key} value={sec.key} className="bg-[#111318] text-slate-100">
@@ -2670,27 +2671,25 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setEditorTab("content")}
-                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${
-                    editorTab === "content" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
-                  }`}
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "content" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                    }`}
                 >
-                  Konten
+                  {t("dashboard.sitesEditor.contentTab")}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditorTab("design")}
-                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${
-                    editorTab === "design" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
-                  }`}
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "design" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                    }`}
                 >
-                  Desain
+                  {t("dashboard.sitesEditor.designTab")}
                 </button>
                 {editorTab === "design" && designOnlyUndo.length > 0 && (
                   <button
                     type="button"
                     onClick={handleDesignUndo}
-                    aria-label="Undo Desain"
-                    title="Urungkan perubahan desain terakhir"
+                    aria-label={t("dashboard.sitesEditor.undoDesign")}
+                    title={t("dashboard.sitesEditor.undoDesignTitle")}
                     className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:text-white transition-colors"
                   >
                     <RotateCcw className="h-3 w-3" />
@@ -2703,140 +2702,140 @@ export default function SiteEditorPage() {
             <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-2.5 scrollbar-none">
               {editorTab === "content" ? (
                 <>
-                {/* Show/Hide section toggle */}
-                {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
-                  <div className="flex items-center justify-between py-1 border-b border-white/10">
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                      {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSectionVisibility(activeTab)}
-                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
-                      style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
-                    >
-                      {hiddenSections.includes(activeTab)
-                        ? <><EyeOff className="w-3 h-3" /> Tersembunyi</>
-                        : <><Eye className="w-3 h-3" /> Sembunyikan</>
-                      }
-                    </button>
-                  </div>
-                )}
-
-                {/* Quality issues detail */}
-                {quality.issues.length > 0 && (
-                  <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] space-y-1.5">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-bold text-amber-300">⚠️ {quality.issues.length} field perlu dicek</span>
-                      <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold text-amber-200">{quality.score}%</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {quality.issues.map((issue) => (
-                        <button
-                          key={issue.path}
-                          type="button"
-                          onClick={() => {
-                            const section = issue.path.split(".")[0];
-                            selectSection(section);
-                            setTimeout(() => {
-                              const el = document.getElementById(`field-${issue.path}`);
-                              if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
-                            }, 100);
-                          }}
-                          className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition"
-                        >
-                          {issue.label} <span className="text-[9px] opacity-60">→</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Section reorder — up/down arrows */}
-                {BODY_SECTION_KEYS.includes(activeTab) && (
-                  <div className="flex items-center gap-2 py-1 border-b border-white/10">
-                    <span className="text-[10px] text-slate-500 flex-1">Urutan section</span>
-                    {(() => {
-                      const order = getOrderedSections(designToken, content, getHiddenSections()).filter(k => BODY_SECTION_KEYS.includes(k));
-                      const idx = order.indexOf(activeTab);
-                      return (
-                        <div className="flex gap-1">
-                          <button
-                            type="button"
-                            disabled={idx <= 0 || !!pendingDiff}
-                            onClick={() => handleReorderSection(activeTab, order[idx - 1])}
-                            className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
-                          >
-                            <ChevronUp className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            disabled={idx >= order.length - 1 || !!pendingDiff}
-                            onClick={() => handleReorderSection(activeTab, order[idx + 1])}
-                            className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
-                          >
-                            <ChevronDown className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
-
-                <SectionForms
-                  activeTab={activeTab}
-                  content={content}
-                  updateField={updateField}
-                  needsAttention={needsAttention}
-                  fieldClass={fieldClass}
-                  token={token}
-                  activeTenantId={activeTenantId}
-                  siteId={siteId}
-                  isPremium={isPremium}
-                  onUpgradeRequired={() => setUpgradePromptOpen(true)}
-                  designToken={designToken}
-                  updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
-                  onAiSuccess={refreshTenantUsage}
-                  subdomain={siteDetails?.subdomain}
-                  fieldUndoStacks={fieldUndoStacks}
-                  undoField={undoField}
-                />
-                {/* Variasi tampilan per section */}
-                {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
-                  const allVars = SECTION_VARIANT_OPTIONS[activeTab];
-                  const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
-                  if (enabledOpts.length <= 1) return null;
-                  return (
-                    <div className="pt-3 border-t border-white/10 space-y-1.5">
-                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Variasi Tampilan</p>
-                      <select
-                        value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
-                        onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
-                        className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                  {/* Show/Hide section toggle */}
+                  {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
+                    <div className="flex items-center justify-between py-1 border-b border-white/10">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                        {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleSectionVisibility(activeTab)}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                        style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
                       >
-                        {(() => {
-                          const groups: { label?: string; options: typeof enabledOpts }[] = [];
-                          let cur: { label?: string; options: typeof enabledOpts } | null = null;
-                          for (const opt of enabledOpts) {
-                            if (opt.group) {
-                              if (!cur || cur.label !== opt.group) { cur = { label: opt.group, options: [] }; groups.push(cur); }
-                              cur.options.push(opt);
-                            } else { cur = null; groups.push({ options: [opt] }); }
-                          }
-                          return groups.map((g) =>
-                            g.label ? (
-                              <optgroup key={g.label} label={g.label}>
-                                {g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)}
-                              </optgroup>
-                            ) : (
-                              g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)
-                            )
-                          );
-                        })()}
-                      </select>
+                        {hiddenSections.includes(activeTab)
+                          ? <><EyeOff className="w-3 h-3" /> {t("dashboard.sitesEditor.hidden")}</>
+                          : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
+                        }
+                      </button>
                     </div>
-                  );
-                })()}
+                  )}
+
+                  {/* Quality issues detail */}
+                  {quality.issues.length > 0 && (
+                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold text-amber-300">⚠️ {t("dashboard.sitesEditor.qualityWarning", undefined, { count: String(quality.issues.length) })}</span>
+                        <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold text-amber-200">{quality.score}%</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {quality.issues.map((issue) => (
+                          <button
+                            key={issue.path}
+                            type="button"
+                            onClick={() => {
+                              const section = issue.path.split(".")[0];
+                              selectSection(section);
+                              setTimeout(() => {
+                                const el = document.getElementById(`field-${issue.path}`);
+                                if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+                              }, 100);
+                            }}
+                            className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition"
+                          >
+                            {issue.label} <span className="text-[9px] opacity-60">→</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section reorder — up/down arrows */}
+                  {BODY_SECTION_KEYS.includes(activeTab) && (
+                    <div className="flex items-center gap-2 py-1 border-b border-white/10">
+                      <span className="text-[10px] text-slate-500 flex-1">{t("dashboard.sitesEditor.sectionOrder")}</span>
+                      {(() => {
+                        const order = getOrderedSections(designToken, content, getHiddenSections()).filter(k => BODY_SECTION_KEYS.includes(k));
+                        const idx = order.indexOf(activeTab);
+                        return (
+                          <div className="flex gap-1">
+                            <button
+                              type="button"
+                              disabled={idx <= 0 || !!pendingDiff}
+                              onClick={() => handleReorderSection(activeTab, order[idx - 1])}
+                              className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                            >
+                              <ChevronUp className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx >= order.length - 1 || !!pendingDiff}
+                              onClick={() => handleReorderSection(activeTab, order[idx + 1])}
+                              className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                            >
+                              <ChevronDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+
+                  <SectionForms
+                    activeTab={activeTab}
+                    content={content}
+                    updateField={updateField}
+                    needsAttention={needsAttention}
+                    fieldClass={fieldClass}
+                    token={token}
+                    activeTenantId={activeTenantId}
+                    siteId={siteId}
+                    isPremium={isPremium}
+                    onUpgradeRequired={() => setUpgradePromptOpen(true)}
+                    designToken={designToken}
+                    updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
+                    onAiSuccess={refreshTenantUsage}
+                    subdomain={siteDetails?.subdomain}
+                    fieldUndoStacks={fieldUndoStacks}
+                    undoField={undoField}
+                  />
+                  {/* Variasi tampilan per section */}
+                  {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
+                    const allVars = SECTION_VARIANT_OPTIONS[activeTab];
+                    const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
+                    if (enabledOpts.length <= 1) return null;
+                    return (
+                      <div className="pt-3 border-t border-white/10 space-y-1.5">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.variantOptions")}</p>
+                        <select
+                          value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
+                          onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
+                          className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                        >
+                          {(() => {
+                            const groups: { label?: string; options: typeof enabledOpts }[] = [];
+                            let cur: { label?: string; options: typeof enabledOpts } | null = null;
+                            for (const opt of enabledOpts) {
+                              if (opt.group) {
+                                if (!cur || cur.label !== opt.group) { cur = { label: opt.group, options: [] }; groups.push(cur); }
+                                cur.options.push(opt);
+                              } else { cur = null; groups.push({ options: [opt] }); }
+                            }
+                            return groups.map((g) =>
+                              g.label ? (
+                                <optgroup key={g.label} label={g.label}>
+                                  {g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)}
+                                </optgroup>
+                              ) : (
+                                g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)
+                              )
+                            );
+                          })()}
+                        </select>
+                      </div>
+                    );
+                  })()}
                 </>
               ) : (
                 <div className="space-y-3 pb-2">
@@ -2855,16 +2854,16 @@ export default function SiteEditorPage() {
                       : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
                   >
                     {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                    {designToken?.theme_mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                    {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
                   </button>
 
                   {/* Gaya Situs */}
                   <div>
                     <div className="mb-1.5 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Gaya Situs</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{t("dashboard.sitesEditor.styleLabel")}</p>
                       <div className="flex items-center gap-1.5">
                         {designOnlyUndo.length > 0 && (
-                          <button type="button" onClick={handleDesignUndo} aria-label="Undo Desain"
+                          <button type="button" onClick={handleDesignUndo} aria-label={t("dashboard.sitesEditor.undoDesign")}
                             className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white">
                             <RotateCcw className="h-2.5 w-2.5" />
                           </button>
@@ -2898,8 +2897,8 @@ export default function SiteEditorPage() {
                               <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[11px] font-bold text-slate-100">AI Design Engine</p>
-                                  <p className="truncate text-[10px] text-slate-500">Latest AI Generated</p>
+                                  <p className="truncate text-[11px] font-bold text-slate-100">{t("dashboard.sitesEditor.aiDesignEngine")}</p>
+                                  <p className="truncate text-[10px] text-slate-500">{t("dashboard.sitesEditor.latestAiGenerated")}</p>
                                 </div>
                                 {isTopActive && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
                               </div>
@@ -2934,13 +2933,13 @@ export default function SiteEditorPage() {
                             disabled={aiLoading || !!pendingDiff}
                             className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50">
                             <SparkleGenAI className="h-[16px] w-[16px]" />
-                            Regenerate dengan AI
+                            {t("dashboard.sitesEditor.regenerateWithAi")}
                           </button>
                         ) : (
                           <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-primary">AI Design Prompt</span>
-                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-slate-400 hover:text-slate-200">Batal</button>
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-primary">{t("dashboard.sitesEditor.aiDesignPrompt")}</span>
+                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-slate-400 hover:text-slate-200">{t("dashboard.sitesEditor.cancel")}</button>
                             </div>
                             <input type="text" value={aiDesignInstructions}
                               onChange={(e) => setAiDesignInstructions(e.target.value)}
@@ -2952,7 +2951,7 @@ export default function SiteEditorPage() {
                               disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
                               className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground text-[11px] font-semibold disabled:opacity-50">
                               {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <SparkleGenAI className="w-[16px] h-[16px]" />}
-                              {aiLoading ? "Memproses..." : "Terapkan Gaya"}
+                              {aiLoading ? t("dashboard.sitesEditor.processing") : t("dashboard.sitesEditor.applyStyle")}
                             </button>
                           </div>
                         )}
@@ -2986,7 +2985,7 @@ export default function SiteEditorPage() {
                     {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
                       <div key={colorKey} className="flex items-center gap-2">
                         <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-16 shrink-0">
-                          {colorKey === "primary" ? "Primary" : colorKey === "accent" ? "Accent" : colorKey === "background" ? "Latar" : colorKey === "surface" ? "Surface" : "Teks"}
+                          {colorKey === "primary" ? t("dashboard.sitesEditor.primaryShort") : colorKey === "accent" ? t("dashboard.sitesEditor.accentShort") : colorKey === "background" ? t("dashboard.sitesEditor.backgroundShort") : colorKey === "surface" ? t("dashboard.sitesEditor.surfaceShort") : t("dashboard.sitesEditor.textShort")}
                         </label>
                         <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
                           <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
@@ -3058,24 +3057,24 @@ export default function SiteEditorPage() {
 
                   {/* Tata Letak */}
                   <div className="space-y-2">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Tata Letak</p>
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.layoutLabel")}</p>
                     <select value={designToken?.layout?.corner_radius || "soft"}
                       onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="sharp">Tajam (0px)</option><option value="soft">Lembut (8px)</option><option value="rounded">Bulat (20px)</option>
+                      <option value="sharp">{t("dashboard.sitesEditor.cornerSharp")}</option><option value="soft">{t("dashboard.sitesEditor.cornerSoft")}</option><option value="rounded">{t("dashboard.sitesEditor.cornerRounded")}</option>
                     </select>
                     <select value={designToken?.layout?.section_spacing || "normal"}
                       onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="compact">Rapat</option><option value="normal">Normal</option><option value="relaxed">Longgar</option>
+                      <option value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option value="normal">{t("dashboard.sitesEditor.normal")}</option><option value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
                     </select>
                     <select value={designToken?.layout?.hero_style || "centered"}
                       onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="centered" className="bg-[#111318]">Hero: Centered</option>
-                      <option value="split" className="bg-[#111318]">Hero: Split Screen</option>
-                      <option value="full-bleed" className="bg-[#111318]">Hero: Full Bleed</option>
-                      <option value="minimal" className="bg-[#111318]">Hero: Minimalist</option>
+                      <option value="centered" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroCentered")}</option>
+                      <option value="split" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroSplit")}</option>
+                      <option value="full-bleed" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroFullBleed")}</option>
+                      <option value="minimal" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroMinimalist")}</option>
                     </select>
                   </div>
                 </div>
@@ -3087,7 +3086,7 @@ export default function SiteEditorPage() {
               <div className="flex-shrink-0 border-t border-white/10 px-3.5 py-2 bg-[#111318]">
                 <div className="flex items-center gap-2.5">
                   <SparkleGenAI className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary shrink-0">AI Usage</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
                   <div className="flex flex-1 items-center gap-3">
                     {[
                       { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-amber-500" },
@@ -3110,277 +3109,276 @@ export default function SiteEditorPage() {
 
           </div>
 
-        {/* Desktop sticky publish footer — inside canvas */}
-        <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
-          <SiteSubNav siteId={siteId!} compact />
-          <div className="flex items-center gap-3 flex-shrink-0">
-            {siteDetails?.status === "published" ? (
-              <span className="flex items-center gap-1.5 text-[11px]">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                <span className="text-emerald-400 font-medium">Live</span>
-              </span>
-            ) : (
-              <span className="text-[11px] text-slate-500">Draft</span>
-            )}
-            {siteDetails?.status === "published" ? (
-              <button
-                type="button"
-                onClick={() => setConfirmPublishOpen(true)}
-                disabled={publishing}
-                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
-                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-              >
-                {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+          {/* Desktop sticky publish footer — inside canvas */}
+          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
+            <SiteSubNav siteId={siteId!} compact />
+            <div className="flex items-center gap-3 flex-shrink-0">
+              {siteDetails?.status === "published" ? (
+                <span className="flex items-center gap-1.5 text-[11px]">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   </span>
-                )}
-                {publishing ? "Menerapkan..." : "Terapkan ke Live"}
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setPublishModalOpen(true)}
-                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
-                style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
-              >
-                <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
-                Publikasikan
-              </button>
-            )}
+                  <span className="text-emerald-400 font-medium">{t("dashboard.sitesEditor.live")}</span>
+                </span>
+              ) : (
+                <span className="text-[11px] text-slate-500">{t("dashboard.sitesEditor.draft")}</span>
+              )}
+              {siteDetails?.status === "published" ? (
+                <button
+                  type="button"
+                  onClick={() => setConfirmPublishOpen(true)}
+                  disabled={publishing}
+                  className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
+                  style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+                >
+                  {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                    </span>
+                  )}
+                  {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.applyLive")}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPublishModalOpen(true)}
+                  className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
+                  style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+                >
+                  <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+                  {t("dashboard.sitesEditor.publish")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-        </div>
-      {publishModalOpen && siteDetails && (
-        <PublishModal
-          site={siteDetails}
-          onConfirm={handlePublishWithSubdomain}
-          onCancel={() => setPublishModalOpen(false)}
-          loading={publishing}
-        />
-      )}
+        {publishModalOpen && siteDetails && (
+          <PublishModal
+            site={siteDetails}
+            onConfirm={handlePublishWithSubdomain}
+            onCancel={() => setPublishModalOpen(false)}
+            loading={publishing}
+          />
+        )}
 
-      {confirmPublishOpen && siteDetails && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
-                <Rocket className="h-5 w-5 text-emerald-400" />
+        {confirmPublishOpen && siteDetails && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+            <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
+                  <Rocket className="h-5 w-5 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-[14px] font-bold text-slate-100">{t("dashboard.sitesEditor.confirmPublishTitle")}</h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">{t("dashboard.sitesEditor.confirmPublishDesc")}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-[14px] font-bold text-slate-100">Terapkan Perubahan ke Live?</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Pengunjung situs akan segera melihat versi terbaru.</p>
+              <p className="text-[12px] text-slate-300 leading-relaxed">
+                {t("dashboard.sitesEditor.confirmPublishBody", undefined, { subdomain: siteDetails.subdomain })}.
+              </p>
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setConfirmPublishOpen(false)}
+                  className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+                >
+                  {t("dashboard.sitesEditor.cancel")}
+                </button>
+                <button
+                  type="button"
+                  disabled={publishing}
+                  onClick={async () => {
+                    setConfirmPublishOpen(false);
+                    await handlePublishWithSubdomain(siteDetails.subdomain);
+                  }}
+                  className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
+                >
+                  {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.confirmApply")}
+                </button>
               </div>
             </div>
-            <p className="text-[12px] text-slate-300 leading-relaxed">
-              Semua perubahan draf yang sudah disimpan akan diterapkan ke website live{" "}
-              <span className="font-semibold text-emerald-400">{siteDetails.subdomain}.webjoz.com</span>.
-            </p>
-            <div className="flex gap-2 pt-1">
-              <button
+          </div>
+        )}
+
+        {showCongrats && siteDetails && (
+          <CongratsModal
+            site={siteDetails}
+            onContinueEditing={() => setShowCongrats(false)}
+            onClose={() => {
+              setShowCongrats(false);
+              router.push("/dashboard/sites");
+            }}
+          />
+        )}
+
+        {/* ── Upgrade Prompt Modal ── */}
+        <Dialog
+          open={upgradePromptOpen}
+          onOpenChange={setUpgradePromptOpen}
+          title={UPGRADE_COPY[upgradeContext] ? t(UPGRADE_COPY[upgradeContext].titleKey) : t("dashboard.sitesEditor.upgradeDefaultTitle")}
+          footer={
+            <>
+              <Button
                 type="button"
-                onClick={() => setConfirmPublishOpen(false)}
-                className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+                variant="outline"
+                className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+                onClick={() => setUpgradePromptOpen(false)}
               >
-                Batal
-              </button>
-              <button
+                {t("dashboard.sitesEditor.later")}
+              </Button>
+              <Button
                 type="button"
-                disabled={publishing}
-                onClick={async () => {
-                  setConfirmPublishOpen(false);
-                  await handlePublishWithSubdomain(siteDetails.subdomain);
-                }}
-                className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
+                className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary text-primary-foreground hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)] flex items-center justify-center gap-2"
+                onClick={() => { setUpgradePromptOpen(false); router.push("/dashboard/upgrade"); }}
               >
-                {publishing ? "Menerapkan..." : "Ya, Terapkan"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showCongrats && siteDetails && (
-        <CongratsModal
-          site={siteDetails}
-          onContinueEditing={() => setShowCongrats(false)}
-          onClose={() => {
-            setShowCongrats(false);
-            router.push("/dashboard/sites");
-          }}
-        />
-      )}
-
-      {/* ── Upgrade Prompt Modal ── */}
-      <Dialog
-        open={upgradePromptOpen}
-        onOpenChange={setUpgradePromptOpen}
-        title={UPGRADE_COPY[upgradeContext]?.title || "Fitur AI Only untuk Pro"}
-        footer={
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
-              onClick={() => setUpgradePromptOpen(false)}
-            >
-              Nanti
-            </Button>
-            <Button
-              type="button"
-              className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary text-primary-foreground hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)] flex items-center justify-center gap-2"
-              onClick={() => { setUpgradePromptOpen(false); router.push("/dashboard/upgrade"); }}
-            >
-              <Zap className="w-4 h-4" /> Upgrade ke Pro
-            </Button>
-          </>
-        }
-      >
-        <div className="text-center space-y-4 py-2">
-          <div className="flex justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center">
-              <Zap className="w-8 h-8 text-primary" />
-            </div>
-          </div>
-          <div>
-            <p className="text-[14px] font-semibold text-slate-100">{UPGRADE_COPY[upgradeContext]?.body || "Fitur AI hanya tersedia untuk pengguna Pro."}</p>
-            <p className="text-[12px] text-slate-400 mt-1">Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.</p>
-          </div>
-        </div>
-      </Dialog>
-
-      {/* ── AI Prompt Modal (replaces window.prompt) ── */}
-      {aiPromptModal && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-150"
-          onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+                <Zap className="w-4 h-4" /> {t("dashboard.sitesEditor.upgradeToPro")}
+              </Button>
+            </>
+          }
         >
-          <div
-            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
-                <SparkleGenAI className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
-                  Instruksi AI
-                </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Apa yang ingin kamu ubah di bagian <span className="font-semibold text-primary capitalize">{SECTION_META[aiPromptModal.section]?.label ?? aiPromptModal.section}</span>?
-                </p>
+          <div className="text-center space-y-4 py-2">
+            <div className="flex justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/15 flex items-center justify-center">
+                <Zap className="w-8 h-8 text-primary" />
               </div>
             </div>
+            <div>
+              <p className="text-[14px] font-semibold text-slate-100">{UPGRADE_COPY[upgradeContext] ? t(UPGRADE_COPY[upgradeContext].bodyKey) : t("dashboard.sitesEditor.upgradeDefaultBody")}</p>
+              <p className="text-[12px] text-slate-400 mt-1">{t("dashboard.sitesEditor.upgradeProDesc")}</p>
+            </div>
+          </div>
+        </Dialog>
 
-            {/* Input */}
-            <div className="space-y-2">
-              <input
-                autoFocus
-                type="text"
-                value={aiPromptInput}
-                onChange={(e) => setAiPromptInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && aiPromptInput.trim()) {
+        {/* ── AI Prompt Modal (replaces window.prompt) ── */}
+        {aiPromptModal && (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-150"
+            onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+          >
+            <div
+              className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+                  <SparkleGenAI className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                    {t("dashboard.sitesEditor.aiInstructionsTitle")}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    {t("dashboard.sitesEditor.aiPromptDesc", undefined, { label: SECTION_META[aiPromptModal.section]?.label ?? aiPromptModal.section })}
+                  </p>
+                </div>
+              </div>
+
+              {/* Input */}
+              <div className="space-y-2">
+                <input
+                  autoFocus
+                  type="text"
+                  value={aiPromptInput}
+                  onChange={(e) => setAiPromptInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && aiPromptInput.trim()) {
+                      aiPromptModal.resolve(aiPromptInput.trim());
+                      setAiPromptModal(null);
+                    }
+                    if (e.key === "Escape") {
+                      aiPromptModal.resolve(null);
+                      setAiPromptModal(null);
+                    }
+                  }}
+                  placeholder={`cth. "buat lebih persuasif dan emosional"`}
+                  className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+                />
+                {/* Quick suggestion chips */}
+                <div className="flex flex-wrap gap-1.5">
+                  {(AI_SUGGESTIONS[aiPromptModal.section] ?? []).slice(0, 3).map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setAiPromptInput(chip)}
+                      className="px-2.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+                  className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+                >
+                  {t("dashboard.sitesEditor.cancel")}
+                </button>
+                <button
+                  type="button"
+                  disabled={!aiPromptInput.trim()}
+                  onClick={() => {
+                    if (!aiPromptInput.trim()) return;
                     aiPromptModal.resolve(aiPromptInput.trim());
                     setAiPromptModal(null);
-                  }
-                  if (e.key === "Escape") {
-                    aiPromptModal.resolve(null);
-                    setAiPromptModal(null);
-                  }
-                }}
-                placeholder={`cth. "buat lebih persuasif dan emosional"`}
-                className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
-              />
-              {/* Quick suggestion chips */}
-              <div className="flex flex-wrap gap-1.5">
-                {(AI_SUGGESTIONS[aiPromptModal.section] ?? []).slice(0, 3).map((chip) => (
-                  <button
-                    key={chip}
-                    type="button"
-                    onClick={() => setAiPromptInput(chip)}
-                    className="px-2.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer"
-                  >
-                    {chip}
-                  </button>
-                ))}
+                  }}
+                  className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)]"
+                >
+                  <SparkleGenAI className="h-5 w-5" />
+                  {t("dashboard.sitesEditor.generateAi")}
+                </button>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Actions */}
-            <div className="flex gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
-              >
-                Batal
-              </button>
-              <button
-                type="button"
-                disabled={!aiPromptInput.trim()}
-                onClick={() => {
-                  if (!aiPromptInput.trim()) return;
-                  aiPromptModal.resolve(aiPromptInput.trim());
-                  setAiPromptModal(null);
-                }}
-                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)]"
-              >
-                <SparkleGenAI className="h-5 w-5" />
-                Generate AI
-              </button>
+        {/* ── Quality Issues Modal ── */}
+        <Dialog
+          open={qualityModalOpen}
+          onOpenChange={setQualityModalOpen}
+          title={t("dashboard.sitesEditor.qualityTitle", undefined, { score: String(quality.score) })}
+        >
+          <div className="space-y-3 py-1">
+            <p className="text-xs text-slate-400">
+              {t("dashboard.sitesEditor.qualityDesc", undefined, { count: String(quality.issues.length) })}
+            </p>
+            <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+              {quality.issues.map((issue, idx) => {
+                const secKey = issue.path.split(".")[0];
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-200"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-amber-300">{issue.label}</p>
+                      <p className="text-[10px] text-amber-200/70 truncate">{t("dashboard.sitesEditor.qualityFieldHint")}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (secKey) {
+                          selectSection(secKey);
+                          setSheetCollapsed(false);
+                        }
+                        setQualityModalOpen(false);
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-bold transition-all hover:bg-amber-300"
+                    >
+                      {t("dashboard.sitesEditor.fill")}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
-      )}
-
-      {/* ── Quality Issues Modal ── */}
-      <Dialog
-        open={qualityModalOpen}
-        onOpenChange={setQualityModalOpen}
-        title={`Kelengkapan Konten (${quality.score}%)`}
-      >
-        <div className="space-y-3 py-1">
-          <p className="text-xs text-slate-400">
-            {quality.issues.length} field perlu diisi agar tampilan website kamu maksimal:
-          </p>
-          <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
-            {quality.issues.map((issue, idx) => {
-              const secKey = issue.path.split(".")[0];
-              return (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-200"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-amber-300">{issue.label}</p>
-                    <p className="text-[10px] text-amber-200/70 truncate">Field belum diisi atau berisi teks contoh</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (secKey) {
-                        selectSection(secKey);
-                        setSheetCollapsed(false);
-                      }
-                      setQualityModalOpen(false);
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-bold transition-all hover:bg-amber-300"
-                  >
-                    Isi
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </Dialog>
+        </Dialog>
 
       </div>
     </div>

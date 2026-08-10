@@ -17,13 +17,14 @@ import {
   Utensils,
 } from "lucide-react";
 import { AI_SUGGESTIONS } from "../editor-utils";
+import { useI18n } from "@/lib/i18n/context";
 
 // ─── Emoji groups for description toolbar ────────────────────────────────────
 const EMOJI_GROUPS = [
-  { name: "Populer & Bisnis", emojis: ["✨", "🔥", "✅", "⭐", "📍", "📦", "💬", "📞", "⏰", "🚀", "💯", "💡", "📢"] },
-  { name: "Makanan & Minuman", emojis: ["🍕", "🍔", "🍟", "🌭", "🍳", "🍜", "🍣", "🍱", "🧁", "🎂", "🍎", "☕", "🥤", "🍺"] },
-  { name: "Jasa, Belanja & Produk", emojis: ["🛠️", "🧹", "💈", "💇", "💅", "🧼", "🔑", "🚗", "🏠", "🏢", "🏷️", "🎁", "🛍️", "👕", "👟", "👜", "⌚", "💻", "📱"] },
-  { name: "Simbol & Panah", emojis: ["✔️", "❌", "➕", "➖", "➜", "➔", "⚡", "✦", "❖", "💚", "❤️", "💙", "👍"] },
+  { name: "dashboard.sitesKatalog.emojiPopular", emojis: ["✨", "🔥", "✅", "⭐", "📍", "📦", "💬", "📞", "⏰", "🚀", "💯", "💡", "📢"] },
+  { name: "dashboard.sitesKatalog.emojiFood", emojis: ["🍕", "🍔", "🍟", "🌭", "🍳", "🍜", "🍣", "🍱", "🧁", "🎂", "🍎", "☕", "🥤", "🍺"] },
+  { name: "dashboard.sitesKatalog.emojiServices", emojis: ["🛠️", "🧹", "💈", "💇", "💅", "🧼", "🔑", "🚗", "🏠", "🏢", "🏷️", "🎁", "🛍️", "👕", "👟", "👜", "⌚", "💻", "📱"] },
+  { name: "dashboard.sitesKatalog.emojiSymbols", emojis: ["✔️", "❌", "➕", "➖", "➜", "➔", "⚡", "✦", "❖", "💚", "❤️", "💙", "👍"] },
 ];
 
 // ─── Shared input styles ──────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ const normStr = (v: any): string => {
 
 // ─── AI description button ────────────────────────────────────────────────────
 function AiFieldButton({
-  onGenerate, loading, title = "Generate dengan AI", isPremium, onUpgradeRequired,
+  onGenerate, loading, title, isPremium, onUpgradeRequired,
 }: {
   onGenerate: () => Promise<void>;
   loading: boolean;
@@ -47,6 +48,8 @@ function AiFieldButton({
   isPremium?: boolean;
   onUpgradeRequired?: () => void;
 }) {
+  const { t } = useI18n();
+  const label = title ?? t("dashboard.sitesKatalog.aiGenerateTitle");
   const handleClick = async () => {
     try { await onGenerate(); }
     catch (err: any) {
@@ -55,7 +58,7 @@ function AiFieldButton({
   };
   return (
     <button
-      type="button" onClick={handleClick} disabled={loading} title={title}
+      type="button" onClick={handleClick} disabled={loading} title={label}
       className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
     >
       {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <SparkleGenAI className="w-[18px] h-[18px]" />}
@@ -82,6 +85,7 @@ function MenuCatalogForm({
   sectionKey, sectionTitle, itemLabel, hasPrice, hasBadge,
   data, updateField, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
 }: MenuCatalogFormProps) {
+  const { t } = useI18n();
   const [expandedCat, setExpandedCat] = useState<number | null>(0);
   const [activeEmojiPicker, setActiveEmojiPicker] = useState<{ catIdx: number; itemIdx: number } | null>(null);
 
@@ -89,7 +93,7 @@ function MenuCatalogForm({
   const updateCategories = (next: any[]) => updateField(sectionKey, "categories", next);
 
   const addCategory = () => {
-    const next = [...categories, { name: `Kategori ${categories.length + 1}`, items: [] }];
+    const next = [...categories, { name: t("dashboard.sitesKatalog.defaultCategory", undefined, { number: String(categories.length + 1) }), items: [] }];
     updateCategories(next);
     setExpandedCat(next.length - 1);
   };
@@ -133,19 +137,19 @@ function MenuCatalogForm({
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-white/[0.02] p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1 space-y-2">
-            <label className={inputLabel}>Judul Section</label>
+            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSectionTitle")}</label>
             <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. ${sectionTitle}`} className={`${inputBase} bg-white/[0.04]`} />
           </div>
           <div className="space-y-2">
-            <label className={inputLabel}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelEyebrow")} <span className="text-slate-500 font-normal normal-case">({t("dashboard.sitesKatalog.optional")})</span></label>
             <input type="text" value={data?.eyebrow ?? ""} onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)} placeholder={`cth. Pilihan ${sectionTitle}`} className={inputBase} />
           </div>
           <div className="space-y-2">
-            <label className={inputLabel}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
+            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSubtitle")} <span className="text-slate-500 font-normal normal-case">({t("dashboard.sitesKatalog.optional")})</span></label>
             <input type="text" value={data?.subtitle ?? ""} onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)} placeholder="cth. Lihat produk pilihan kami" className={inputBase} />
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">
-            {sectionKey === "menu" ? "Kuliner" : "Produk"} · {categories.length} kategori
+            {sectionKey === "menu" ? t("dashboard.sitesKatalog.chipMenu") : t("dashboard.sitesKatalog.chipCatalog")} · {t("dashboard.sitesKatalog.chipCategoryCount", undefined, { count: String(categories.length) })}
           </div>
         </div>
       </div>
@@ -153,8 +157,8 @@ function MenuCatalogForm({
       {/* Empty state */}
       {categories.length === 0 && (
         <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-8 text-center">
-          <p className="text-sm font-semibold text-slate-200">Belum ada kategori</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">Tambahkan kategori agar {itemLabel} bisa ditampilkan lebih rapi di website.</p>
+          <p className="text-sm font-semibold text-slate-200">{t("dashboard.sitesKatalog.noCategoriesTitle")}</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">{t("dashboard.sitesKatalog.noCategoriesDesc", undefined, { itemLabel })}</p>
         </div>
       )}
 
@@ -170,7 +174,7 @@ function MenuCatalogForm({
                 placeholder="Nama kategori"
                 className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
               />
-              <span className="text-[10px] text-slate-500 flex-shrink-0">{itemCount} item</span>
+              <span className="text-[10px] text-slate-500 flex-shrink-0">{t("dashboard.sitesKatalog.itemCountLabel", undefined, { count: String(itemCount) })}</span>
               <button type="button" onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)} className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer">
                 {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
@@ -183,14 +187,14 @@ function MenuCatalogForm({
               <div className="p-3 space-y-3">
                 {(cat.items ?? []).length === 0 && (
                   <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center text-xs text-slate-500">
-                    Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
+                    {t("dashboard.sitesKatalog.noItemsDesc", undefined, { itemLabel })}
                   </div>
                 )}
 
                 {(cat.items ?? []).map((item: any, itemIdx: number) => (
                   <div key={itemIdx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
+                      <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{t("dashboard.sitesKatalog.itemNumberLabel", undefined, { label: itemLabel, number: String(itemIdx + 1) })}</span>
                       <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -198,7 +202,7 @@ function MenuCatalogForm({
 
                     <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
                       <FileUpload
-                        label="Foto" value={item.image_url ?? ""}
+                        label={t("dashboard.sitesKatalog.labelPhoto")} value={item.image_url ?? ""}
                         onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
                         placeholder="https://..."
                         maxWidth={800} maxHeight={600} quality={0.8} previewSize="sm"
@@ -206,19 +210,19 @@ function MenuCatalogForm({
                       <div className="space-y-3">
                         <div className="grid gap-3 sm:grid-cols-2">
                           <div>
-                            <label className={inputLabel}>Nama</label>
+                            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelName")}</label>
                             <input type="text" value={item.name ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)} placeholder={`Nama ${itemLabel}`} className={inputBase} />
                           </div>
                           {hasPrice && (
                             <div>
-                              <label className={inputLabel}>Harga</label>
+                              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelPrice")}</label>
                               <input type="text" value={item.price ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)} placeholder="cth. Rp 25.000" className={inputBase} />
                             </div>
                           )}
                         </div>
                         {hasBadge && (
                           <div>
-                            <label className={inputLabel}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di showcase)</span></label>
+                            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.badgeHint")}</span></label>
                             <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo, Populer" className={inputBase} />
                           </div>
                         )}
@@ -227,12 +231,12 @@ function MenuCatalogForm({
                       {/* Description — full width */}
                       <div className="col-span-full space-y-1.5 mt-1">
                         <div className="flex items-center justify-between">
-                          <label className="text-[10px] uppercase tracking-wide font-bold text-slate-500">Deskripsi</label>
+                          <label className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{t("dashboard.sitesKatalog.labelDescription")}</label>
                           {onAiDescription && (
                             <AiFieldButton
                               loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
                               onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
-                              title="AI: generate deskripsi" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
+                              title={t("dashboard.sitesKatalog.aiGenerateDesc")} isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
                             />
                           )}
                         </div>
@@ -240,10 +244,10 @@ function MenuCatalogForm({
                         {/* Toolbar */}
                         <div className="flex items-center gap-1.5 bg-white/[0.02] border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
                           <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] flex items-center gap-1 border border-white/5">
-                            <span>•</span> List
+                            <span>•</span> {t("dashboard.sitesKatalog.bulletList")}
                           </button>
                           <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] border border-white/5">
-                            1. List
+                            1. {t("dashboard.sitesKatalog.numberedList")}
                           </button>
                           <div className="w-px h-3.5 bg-white/10 mx-0.5" />
                           <div className="relative">
@@ -251,18 +255,18 @@ function MenuCatalogForm({
                               onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
                               className={`px-2 py-1 rounded font-semibold cursor-pointer text-[9px] flex items-center gap-1 border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"}`}
                             >
-                              😀 Emoji & Simbol
+                              😀 {t("dashboard.sitesKatalog.emojiSymbol")}
                             </button>
                             {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
                               <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
                                 <div className="flex items-center justify-between border-b border-white/5 pb-1">
-                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                                  <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">Tutup</button>
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t("dashboard.sitesKatalog.pickEmojiTitle")}</span>
+                                  <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">{t("dashboard.sitesKatalog.close")}</button>
                                 </div>
                                 <div className="max-h-48 overflow-y-auto space-y-3 pr-1">
                                   {EMOJI_GROUPS.map((group) => (
                                     <div key={group.name} className="space-y-1">
-                                      <div className="text-[9px] font-semibold text-slate-500">{group.name}</div>
+                                      <div className="text-[9px] font-semibold text-slate-500">{t(group.name)}</div>
                                       <div className="grid grid-cols-7 gap-1">
                                         {group.emojis.map((emoji) => (
                                           <button key={emoji} type="button"
@@ -292,7 +296,7 @@ function MenuCatalogForm({
                 <button type="button" onClick={() => addItem(catIdx)}
                   className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-primary/30 text-[12px] font-semibold text-primary hover:bg-primary/10 transition-colors cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
+                  <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addItemLabel", undefined, { label: itemLabel })}
                 </button>
               </div>
             )}
@@ -304,7 +308,7 @@ function MenuCatalogForm({
       <button type="button" onClick={addCategory}
         className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed border-primary/25 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors cursor-pointer"
       >
-        <Plus className="w-4 h-4" /> Tambah Kategori
+        <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory")}
       </button>
     </div>
   );
@@ -316,6 +320,7 @@ export default function KatalogManagerPage() {
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const siteId = Number(id);
@@ -362,7 +367,7 @@ export default function KatalogManagerPage() {
         sectionDataRef.current = content.catalog ?? {};
       }
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat katalog", "error");
+      pushToast(err.message || t("dashboard.sitesKatalog.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -386,7 +391,7 @@ export default function KatalogManagerPage() {
       fullContentRef.current = updated;
       setSavedAt(new Date());
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan katalog", "error");
+      pushToast(err.message || t("dashboard.sitesKatalog.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -414,7 +419,7 @@ export default function KatalogManagerPage() {
     if (!token || !activeTenantId) return;
     const customPrompt = await new Promise<string | null>((resolve) => {
       setAiPromptInput("");
-      setAiPromptModal({ label: `Deskripsi: ${itemName || `Item #${itemIdx + 1}`}`, resolve });
+      setAiPromptModal({ label: `${t("dashboard.sitesKatalog.aiPromptLabelPrefix")}: ${itemName || `${t("dashboard.sitesKatalog.itemFallback", undefined, { number: String(itemIdx + 1) })}`}`, resolve });
     });
     if (customPrompt === null) return;
 
@@ -440,7 +445,7 @@ export default function KatalogManagerPage() {
       if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
         setUpgradePromptOpen(true);
       } else {
-        pushToast(err.message || "AI gagal membuat deskripsi", "error");
+        pushToast(err.message || t("dashboard.sitesKatalog.aiFailed"), "error");
       }
       throw err;
     } finally {
@@ -457,8 +462,8 @@ export default function KatalogManagerPage() {
   }
 
   const isMenu = sectionKey === "menu";
-  const sectionTitle = isMenu ? "Menu" : "Katalog Produk";
-  const itemLabel = isMenu ? "menu" : "produk";
+  const sectionTitle = isMenu ? t("dashboard.sitesKatalog.sectionTitleMenu") : t("dashboard.sitesKatalog.sectionTitleCatalog");
+  const itemLabel = isMenu ? t("dashboard.sitesKatalog.itemLabelMenu") : t("dashboard.sitesKatalog.itemLabelCatalog");
   const SectionIcon = isMenu ? Utensils : ShoppingBag;
 
   return (
@@ -469,7 +474,7 @@ export default function KatalogManagerPage() {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Web
+            <ChevronLeft className="w-4 h-4" /> {t("dashboard.sitesKatalog.webLink")}
           </Link>
           <SectionIcon className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-bold">{sectionTitle}</h2>
@@ -479,11 +484,11 @@ export default function KatalogManagerPage() {
         <div className="flex items-center gap-2">
           {saving ? (
             <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesKatalog.saving")}
             </span>
           ) : savedAt ? (
             <span className="flex items-center gap-1.5 text-xs text-emerald-500">
-              <Check className="w-3.5 h-3.5" /> Tersimpan
+              <Check className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.saved")}
             </span>
           ) : null}
           <button
@@ -492,7 +497,7 @@ export default function KatalogManagerPage() {
             disabled={saving}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors"
           >
-            <Save className="w-3.5 h-3.5" /> Simpan
+            <Save className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.save")}
           </button>
         </div>
       </div>
@@ -501,11 +506,12 @@ export default function KatalogManagerPage() {
       <Card>
         <CardContent className="py-3">
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-            <p className="font-semibold">{isMenu ? "🍽️" : "🛍️"} Section {sectionTitle}</p>
+            <p className="font-semibold">{isMenu ? "🍽️" : "🛍️"} {t("dashboard.sitesKatalog.bannerTitle", undefined, { title: sectionTitle })}</p>
             <p className="mt-1 text-primary/80">
-              Tambah kategori dan {itemLabel} di sini. Setiap {itemLabel} bisa dilengkapi foto, nama, deskripsi{isMenu ? "" : ", harga"}, dan badge.
-              Item dengan badge otomatis dijadikan unggulan di tampilan showcase.
-              Pengunjung website bisa klik <strong>+ Tambah</strong> untuk pesan via WhatsApp.
+              {t("dashboard.sitesKatalog.bannerDesc1", undefined, { itemLabel, pricePart: isMenu ? "" : t("dashboard.sitesKatalog.bannerPricePart") })}
+              {t("dashboard.sitesKatalog.bannerDesc2")}
+              <strong>+ {t("dashboard.sitesKatalog.addWord")}</strong>
+              {t("dashboard.sitesKatalog.bannerDesc3")}
             </p>
           </div>
         </CardContent>
@@ -541,9 +547,9 @@ export default function KatalogManagerPage() {
                 <SparkleGenAI className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">Instruksi AI</h3>
+                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">{t("dashboard.sitesKatalog.aiModalTitle")}</h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Buat deskripsi untuk <span className="font-semibold text-primary">{aiPromptModal.label}</span>
+                  {t("dashboard.sitesKatalog.aiModalDesc")} <span className="font-semibold text-primary">{aiPromptModal.label}</span>
                 </p>
               </div>
             </div>
@@ -560,10 +566,10 @@ export default function KatalogManagerPage() {
             <div className="flex gap-2">
               <button type="button" onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
                 className="flex-1 h-10 rounded-xl border border-white/10 text-slate-400 text-[13px] font-medium hover:bg-white/[0.04] transition-colors"
-              >Batal</button>
+              >{t("dashboard.sitesKatalog.cancel")}</button>
               <button type="button" onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:bg-primary/90 transition-colors"
-              >Generate</button>
+              >{t("dashboard.sitesKatalog.generate")}</button>
             </div>
           </div>
         </div>
@@ -579,15 +585,15 @@ export default function KatalogManagerPage() {
             className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[14px] font-semibold text-slate-100">Fitur AI — Plan Pro</p>
-            <p className="text-[12px] text-slate-400">Generate deskripsi dengan AI tersedia tanpa batas di paket Pro.</p>
+            <p className="text-[14px] font-semibold text-slate-100">{t("dashboard.sitesKatalog.upgradeTitle")}</p>
+            <p className="text-[12px] text-slate-400">{t("dashboard.sitesKatalog.upgradeDesc")}</p>
             <div className="flex gap-2">
               <button type="button" onClick={() => setUpgradePromptOpen(false)}
                 className="flex-1 h-10 rounded-xl border border-white/10 text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
-              >Nanti</button>
+              >{t("dashboard.sitesKatalog.later")}</button>
               <Link href="/dashboard/upgrade"
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center hover:bg-primary/90 transition-colors"
-              >Upgrade ke Pro</Link>
+              >{t("dashboard.sitesKatalog.upgradeNow")}</Link>
             </div>
           </div>
         </div>

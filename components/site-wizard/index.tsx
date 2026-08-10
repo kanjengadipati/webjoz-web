@@ -513,7 +513,7 @@ export function SiteWizard({
                           style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
                         >
                           <span>{st.emoji}</span>
-                          <span>{st.label}</span>
+                          <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                           {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
                         </button>
                       );
@@ -530,6 +530,17 @@ export function SiteWizard({
                   <div className="flex flex-wrap gap-1.5">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
+                      const moodKeyMap: Record<string, string> = {
+                        "clean-modern": "modernClean",
+                        "warm-earthy": "warmVintage",
+                        "bold-vibrant": "playfulFun",
+                        "dark-premium": "elegantLuxury",
+                        "bold-dark": "boldEnergetic",
+                        "retro": "warmVintage",
+                        "futuristic": "minimalistDark",
+                      };
+                      const moodKey = moodKeyMap[mo.value];
+                      const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
                       return (
                         <button
                           key={mo.value}
@@ -540,7 +551,7 @@ export function SiteWizard({
                           style={{ background: isSelected ? "rgba(99,102,241,0.2)" : isLocked ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)" }}
                         >
                           <span>{mo.emoji}</span>
-                          <span>{mo.label}</span>
+                          <span>{translatedMoodLabel}</span>
                           {isSelected && <span className="text-primary text-[10px]">✓</span>}
                         </button>
                       );
@@ -559,6 +570,16 @@ export function SiteWizard({
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     {BUSINESS_TYPES.map((bt) => {
                       const isSelected = chat.businessType === bt.value;
+                      const categoryKeyMap: Record<string, { label: string; desc: string }> = {
+                        "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
+                        "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
+                        "Jasa": { label: "jasa", desc: "jasaDesc" },
+                        "Company": { label: "company", desc: "companyDesc" },
+                      };
+                      const keys = categoryKeyMap[bt.value];
+                      const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
+                      const translatedDesc = keys ? t(`dashboard.wizard.categories.${keys.desc}`, bt.desc) : bt.desc;
+
                       return (
                         <button
                           key={bt.value}
@@ -568,14 +589,18 @@ export function SiteWizard({
                         >
                           <span className="text-lg">{bt.emoji}</span>
                           <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{bt.label}</span>
+                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{translatedLabel}</span>
                             {chat.suggestedHint?.type === bt.value && (
                               <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">{t("dashboard.wizard.suggestedBadge", "✨ Disarankan")}</span>
                             )}
                           </div>
-                          <span className="text-[10px] text-slate-500">{bt.desc}</span>
+                          <span className="text-[10px] text-slate-500">{translatedDesc}</span>
                           {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">{t("dashboard.wizard.typeSelectedChooseSub", "✓ Dipilih — pilih jenis di bawah")}</span>}
-                          {isSelected && chat.businessSubType && <span className="text-[9px] font-bold text-emerald-400 mt-0.5">✓ {chat.businessSubType}</span>}
+                          {isSelected && chat.businessSubType && (
+                            <span className="text-[9px] font-bold text-emerald-400 mt-0.5">
+                              ✓ {t(`dashboard.wizard.subtypes.${chat.businessSubType}`, chat.businessSubType)}
+                            </span>
+                          )}
                         </button>
                       );
                     })}
@@ -597,7 +622,7 @@ export function SiteWizard({
                               style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
                             >
                               <span>{st.emoji}</span>
-                              <span>{st.label}</span>
+                              <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                               {chat.suggestedHint?.subType === st.value && (
                                 <span className="text-[10px] text-amber-300">✨</span>
                               )}
