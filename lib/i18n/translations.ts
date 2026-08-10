@@ -112,6 +112,17 @@ export interface Translations {
     categoryKuliner: string;
     categoryJasa: string;
     categoryProduk: string;
+    // pricing card feature labels
+    activeBadge: string;
+    yearlySavings: string;
+    websiteCount: string;
+    aiGenerate: string;
+    aiRegen: string;
+    aiDesign: string;
+    noCustomDomain: string;
+    seoBooster: string;
+    subdomainFeature: string;
+    hostingFeature: string;
   };
   auth: {
     loginTitle: string;
@@ -497,6 +508,287 @@ export interface Translations {
       checkTip: string;
       done: string;
     };
+    leads: {
+      loadFailed: string;
+      loading: string;
+      filter: string;
+      allWebsites: string;
+      emptyTitle: string;
+      emptyDesc: string;
+      sender: string;
+      date: string;
+      sourceSite: string;
+      actions: string;
+      siteId: string;
+      detail: string;
+      leadDetail: string;
+      inquiryMessage: string;
+      receivedOn: string;
+      sourceUrl: string;
+      selectPrompt: string;
+    };
+    team: {
+      loadFailed: string;
+      inviteSent: string;
+      inviteFailed: string;
+      inviteRevoked: string;
+      revokeFailed: string;
+      memberRemoved: string;
+      removeFailed: string;
+      membersTitle: string;
+      invitePending: string;
+      pending: string;
+      inviteLinkCopied: string;
+      noMembers: string;
+      inviteTitle: string;
+      emailPlaceholder: string;
+      sendInvite: string;
+      inviteHint: string;
+      limitTitle: string;
+      later: string;
+      upgradeToPro: string;
+      limitDesc: string;
+      role: {
+        owner: string;
+        editor: string;
+        viewer: string;
+      };
+    };
+    analytics: {
+      loadFailed: string;
+      loading: string;
+      noChartData: string;
+      chartAria: string;
+      srActivePoint: string;
+      selectSite: string;
+      preset7: string;
+      preset30: string;
+      preset90: string;
+      to: string;
+      statPageviews: string;
+      up: string;
+      down: string;
+      fromPrevPeriod: string;
+      prevPeriodComp: string;
+      statUniqueVisitors: string;
+      visitorsEstimate: string;
+      statAvgDuration: string;
+      durationNote: string;
+      dailyVisitsTitle: string;
+      dailyVisitsDesc: string;
+      leadsIn: string;
+      leadsFromForms: string;
+      conversion: string;
+      viewAllLeads: string;
+      trafficSources: string;
+      noReferrerData: string;
+      upsellTitle: string;
+      later: string;
+      upgradeToPro: string;
+      free7Days: string;
+      free7DaysDesc: string;
+      selectedRange: string;
+      proUpgrade: string;
+      proUpgradeDesc: string;
+    };
+    domains: {
+      loadFailed: string;
+      loading: string;
+      added: string;
+      addFailed: string;
+      invalidFormat: string;
+      verified: string;
+      verifyFailed: string;
+      confirmDelete: string;
+      deleted: string;
+      deleteFailed: string;
+      continueConnect: string;
+      upgradeToPro: string;
+      close: string;
+      upgradePlan: string;
+      connectedTitle: string;
+      quotaTitle: string;
+      quota: string;
+      customDomainBadge: string;
+      siteId: string;
+      waitingPropagation: string;
+      active: string;
+      pending: string;
+      checkDns: string;
+      delete: string;
+      connectTitle: string;
+      connectDesc: string;
+      noPublished: string;
+      noPublishedDesc: string;
+      myWebsites: string;
+      linkToSite: string;
+      domainAddress: string;
+      domainPlaceholder: string;
+      validFormat: string;
+      invalidFormatHint: string;
+      dnsInstructions: string;
+      step1: string;
+      step2: string;
+      step3: string;
+      step4: string;
+      dnsType: string;
+      dnsHost: string;
+      dnsTarget: string;
+      note: string;
+      verifyHint: string;
+      connectBtn: string;
+      upsellTitle: string;
+      upsellDesc: string;
+      upsellBranding: string;
+      upsellBrandingDesc: string;
+      upsellSeo: string;
+      upsellSeoDesc: string;
+      upsellSsl: string;
+      upsellSslDesc: string;
+      limitTitle: string;
+      limitDesc: string;
+      limitDesc2: string;
+    };
+    settings: {
+      tabProfile: string;
+      tabSecurity: string;
+      tabDevices: string;
+      tabUsers: string;
+      tabPermissions: string;
+      tabLogs: string;
+      tabInvestigate: string;
+      groupAccount: string;
+      groupAdmin: string;
+      profileFailedLoad: string;
+      profilePhoneError: string;
+      profileUpdated: string;
+      profileFailedUpdate: string;
+      profileEyebrow: string;
+      profileTitle: string;
+      email: string;
+      name: string;
+      saveProfile: string;
+      profileEmpty: string;
+      pwChanged: string;
+      pwFailed: string;
+      securityEyebrow: string;
+      changePassword: string;
+      currentPassword: string;
+      newPassword: string;
+      updatePassword: string;
+      devicesFailedLoad: string;
+      deviceSignedOut: string;
+      deviceSignOutFailed: string;
+      trustRemoved: string;
+      trustRemovalFailed: string;
+      othersSignedOut: string;
+      othersSignOutFailed: string;
+      allSignedOut: string;
+      allSignOutFailed: string;
+      browser: string;
+      unknownDevice: string;
+      unknownUserAgent: string;
+      devicesTitle: string;
+      refresh: string;
+      signOutOthers: string;
+      signOutAll: string;
+      metricActiveSessions: string;
+      metricTrustedDevices: string;
+      metricThisSession: string;
+      noSessionsTitle: string;
+      noSessionsText: string;
+      statusCurrent: string;
+      statusTrusted: string;
+      statusUnknown: string;
+      sessionId: string;
+      deviceId: string;
+      ip: string;
+      lastUsed: string;
+      expires: string;
+      removeTrust: string;
+      revoke: string;
+      usersFailedLoad: string;
+      userUpdated: string;
+      userUpdateFailed: string;
+      userDeleteConfirm: string;
+      userDeleted: string;
+      userDeleteFailed: string;
+      usersTitle: string;
+      searchByNameEmail: string;
+      roleFilter: string;
+      usersVisibleTitle: string;
+      noUsersMatch: string;
+      roleUser: string;
+      roleSales: string;
+      roleAdmin: string;
+      roleSuperadmin: string;
+      delete: string;
+      permsFailedLoad: string;
+      permsRoleFailedLoad: string;
+      permsSaved: string;
+      permsSaveFailed: string;
+      rbacEyebrow: string;
+      manageRolePermissions: string;
+      saving: string;
+      saveChanges: string;
+      totalPermissions: string;
+      availablePermissions: string;
+      activePermissions: string;
+      resourceSuffix: string;
+      logsRefreshed: string;
+      logsFailedLoad: string;
+      logsTitle: string;
+      autoRefreshOn: string;
+      autoRefreshOff: string;
+      refreshNow: string;
+      logFilterLabel: string;
+      dateFrom: string;
+      dateTo: string;
+      eventTable: string;
+      noLogsMatch: string;
+      logActionOn: string;
+      noDescription: string;
+      ipAddress: string;
+      actorUserId: string;
+      userAgent: string;
+      investLoadHistoryFailed: string;
+      investCompleted: string;
+      investFailed: string;
+      investDetailFailed: string;
+      investLoading: string[];
+      investEyebrow: string;
+      investTitle: string;
+      analyzing: string;
+      runInvestigation: string;
+      streamingAnalysis: string;
+      latestResult: string;
+      investOutputTitle: string;
+      aiProcessing: string;
+      riskLevel: string;
+      riskWeightNote: string;
+      score: string;
+      timeline: string;
+      suspiciousSignals: string;
+      recommendations: string;
+      noItems: string;
+      readyTitle: string;
+      readyDesc: string;
+      savedCount: string;
+      savedTitle: string;
+      noSavedTitle: string;
+      noSavedDesc: string;
+      investigationId: string;
+      previous: string;
+      pageOf: string;
+      next: string;
+      investigationDetails: string;
+      closeDetails: string;
+      status: string;
+      riskNoteHigh: string;
+      riskNoteMedium: string;
+      riskNoteLow: string;
+      noResultYet: string;
+    };
     upgrade: {
       snapLoadError: string;
       loadPlansFailed: string;
@@ -652,6 +944,16 @@ export const translations: Record<Locale, Translations> = {
       categoryKuliner: "Kuliner",
       categoryJasa: "Jasa",
       categoryProduk: "Produk",
+      activeBadge: "Aktif",
+      yearlySavings: "🎉 Hemat Rp {value}/tahun",
+      websiteCount: "{n} Website",
+      aiGenerate: "AI Generate {n}x/bulan",
+      aiRegen: "AI Regenerasi {n}x/bulan",
+      aiDesign: "AI Design {n}x/bulan",
+      noCustomDomain: "Tidak ada custom domain",
+      seoBooster: "SEO Booster",
+      subdomainFeature: "Subdomain .webjoz.app",
+      hostingFeature: "Hosting & SSL gratis",
     },
     auth: {
       loginTitle: "Lanjutkan kelola website bisnis Anda.",
@@ -1037,6 +1339,292 @@ export const translations: Record<Locale, Translations> = {
         checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
       },
+      leads: {
+        loadFailed: "Gagal memuat inbox leads",
+        loading: "Memuat kotak masuk leads...",
+        filter: "Filter",
+        allWebsites: "Semua Website",
+        emptyTitle: "Kotak Masuk Kosong",
+        emptyDesc: "Belum ada leads yang masuk. Pastikan Anda mengaktifkan opsi \"Tampilkan Formulir Kontak\" pada konfigurasi website Anda.",
+        sender: "Pengirim",
+        date: "Tanggal Masuk",
+        sourceSite: "Website Sumber",
+        actions: "Aksi",
+        siteId: "Situs ID #{id}",
+        detail: "Detail",
+        leadDetail: "Detail Leads Pelanggan",
+        inquiryMessage: "Pesan Inkuiri",
+        receivedOn: "Diterima pada",
+        sourceUrl: "URL Halaman Sumber",
+        selectPrompt: "Pilih salah satu lead di tabel untuk melihat isi pesan detail.",
+      },
+      team: {
+        loadFailed: "Gagal memuat data tim",
+        inviteSent: "Undangan terkirim",
+        inviteFailed: "Gagal mengirim undangan",
+        inviteRevoked: "Undangan dibatalkan",
+        revokeFailed: "Gagal membatalkan undangan",
+        memberRemoved: "Anggota dihapus",
+        removeFailed: "Gagal menghapus anggota",
+        membersTitle: "Anggota Tim ({count})",
+        invitePending: "Undangan menunggu · role: {role}",
+        pending: "Menunggu",
+        inviteLinkCopied: "Link undangan disalin",
+        noMembers: "Belum ada anggota tim.",
+        inviteTitle: "Undang Anggota Baru",
+        emailPlaceholder: "email@contoh.com",
+        sendInvite: "Kirim Undangan",
+        inviteHint: "Anggota dengan role <strong>editor</strong> bisa mengedit konten situs. <strong>Viewer</strong> hanya bisa melihat.",
+        limitTitle: "Batas Anggota Tim Tercapai",
+        later: "Nanti Saja",
+        upgradeToPro: "Upgrade ke Pro",
+        limitDesc: "Paket Anda saat ini memiliki batas jumlah anggota tim. Upgrade untuk menambah lebih banyak kolaborator.",
+        role: {
+          owner: "Pemilik",
+          editor: "Editor",
+          viewer: "Viewer",
+        },
+      },
+      analytics: {
+        loadFailed: "Gagal memuat data analitik",
+        loading: "Memuat data analitik...",
+        noChartData: "Belum ada data kunjungan untuk rentang waktu ini.",
+        chartAria: "Grafik kunjungan harian",
+        srActivePoint: "Tanggal {date}, {count} pageviews",
+        selectSite: "Pilih website",
+        preset7: "7 Hari",
+        preset30: "30 Hari",
+        preset90: "90 Hari",
+        to: "s/d",
+        statPageviews: "Total Kunjungan (Pageviews)",
+        up: "Naik",
+        down: "Turun",
+        fromPrevPeriod: "% dari periode sebelumnya",
+        prevPeriodComp: "Perbandingan periode sebelumnya",
+        statUniqueVisitors: "Kunjungan Unik",
+        visitorsEstimate: "Estimasi berbasis IP + perangkat",
+        statAvgDuration: "Rata-Rata Durasi",
+        durationNote: "Termasuk kunjungan 1 halaman (0 detik)",
+        dailyVisitsTitle: "Statistik Kunjungan Harian",
+        dailyVisitsDesc: "Visualisasi pergerakan volume pengunjung harian.",
+        leadsIn: "Leads Masuk",
+        leadsFromForms: "Dari form kontak di situs Anda",
+        conversion: " · konversi {pct}%",
+        viewAllLeads: "Lihat semua leads",
+        trafficSources: "Sumber Pengunjung",
+        noReferrerData: "Belum ada data rujukan.",
+        upsellTitle: "Buka Akses Analytics Penuh",
+        later: "Nanti Saja",
+        upgradeToPro: "Upgrade ke Pro",
+        free7Days: "Paket Free — Maksimal 7 Hari",
+        free7DaysDesc: "Akun Free hanya bisa melihat data analytics maksimal 7 hari ke belakang.",
+        selectedRange: "Kamu memilih rentang {from} s/d {to}.",
+        proUpgrade: "Upgrade ke Pro",
+        proUpgradeDesc: "Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.",
+      },
+      domains: {
+        loadFailed: "Gagal memuat data domain",
+        loading: "Memuat data domain...",
+        added: "Custom domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.",
+        addFailed: "Gagal menambahkan domain",
+        invalidFormat: "Format domain tidak valid. Contoh: domainanda.com",
+        verified: "Domain berhasil diverifikasi!",
+        verifyFailed: "Verifikasi DNS gagal. Periksa record CNAME Anda.",
+        confirmDelete: "Hapus domain ini?",
+        deleted: "Domain dihapus.",
+        deleteFailed: "Gagal menghapus domain",
+        continueConnect: "Lanjutkan Hubungkan",
+        upgradeToPro: "Upgrade ke Pro",
+        close: "Tutup",
+        upgradePlan: "Upgrade Paket",
+        connectedTitle: "Custom Domain Terhubung ({count})",
+        quotaTitle: "Paket {plan}: maksimal {max} domain per akun, tidak per website",
+        quota: "Kuota: {used} / {max} custom domain",
+        customDomainBadge: "Custom Domain",
+        siteId: "Site #{id}",
+        waitingPropagation: " · menunggu propagasi DNS",
+        active: "Aktif",
+        pending: "Pending",
+        checkDns: "Cek DNS",
+        delete: "Hapus",
+        connectTitle: "Hubungkan Custom Domain",
+        connectDesc: "Gunakan domain milik Anda sendiri untuk tampil lebih profesional.",
+        noPublished: "Belum ada website yang dipublikasikan",
+        noPublishedDesc: "Custom domain hanya bisa dihubungkan ke website yang sudah live. Publikasikan website Anda terlebih dahulu melalui halaman",
+        myWebsites: "My Websites",
+        linkToSite: "Tautkan ke Website",
+        domainAddress: "Alamat Custom Domain",
+        domainPlaceholder: "cth. tokokamu.com atau toko.domainanda.com",
+        validFormat: "✓ Format domain valid",
+        invalidFormatHint: "Format tidak valid — masukkan domain tanpa http:// atau www.",
+        dnsInstructions: "Petunjuk Konfigurasi DNS di Provider Domain",
+        step1: "Masuk ke akun <strong>Registrar Domain</strong> tempat Anda membeli domain (seperti Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, dll).",
+        step2: "Cari domain yang ingin diatur dan buka halaman <strong>DNS Management</strong>, <strong>DNS Zone Editor</strong>, atau <strong>Manage DNS</strong>.",
+        step3: "Tambahkan <strong>DNS Record baru</strong> dengan tipe <strong>CNAME</strong> dan isi kolom sesuai data di bawah:",
+        step4: "Simpan perubahan DNS Anda. Proses propagasi dan verifikasi domain biasanya memerlukan waktu mulai dari <strong>5 menit hingga maksimal 24 jam</strong>.",
+        dnsType: "Tipe / Type",
+        dnsHost: "Host / Nama",
+        dnsTarget: "Target / Value",
+        note: "Catatan: Jika ingin menggunakan subdomain kustom seperti <code>toko.domainanda.com</code>, ubah kolom <strong>Host / Nama</strong> menjadi <code>toko</code>.",
+        verifyHint: "Setelah menyimpan konfigurasi DNS di atas, kembali ke dashboard dan klik tombol <strong>\"Cek DNS\" (ikon Refresh)</strong> pada daftar domain Anda untuk memverifikasi.",
+        connectBtn: "Tautkan Custom Domain",
+        upsellTitle: "✨ Tingkatkan Kredibilitas Bisnis Anda",
+        upsellDesc: "Custom Domain adalah fitur <strong>Pro</strong> yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).",
+        upsellBranding: "Branding Profesional",
+        upsellBrandingDesc: "Gunakan domain milik Anda (cth. <code>tokomu.com</code>) tanpa embel-embel <code>.webjoz.com</code>.",
+        upsellSeo: "SEO Lebih Baik",
+        upsellSeoDesc: "Google memprioritaskan domain utama untuk mendapatkan posisi teratas di hasil pencarian.",
+        upsellSsl: "SSL/HTTPS Otomatis",
+        upsellSslDesc: "Keamanan data terjamin dengan enkripsi SSL gratis yang dipasang langsung ke domain Anda.",
+        limitTitle: "Batas Custom Domain Tercapai",
+        limitDesc: "Paket {plan} Anda hanya mencakup <strong>{max} custom domain</strong> (berlaku untuk seluruh akun, bukan per website).",
+        limitDesc2: "Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.",
+      },
+      settings: {
+        tabProfile: "Profil",
+        tabSecurity: "Keamanan",
+        tabDevices: "Perangkat Aktif",
+        tabUsers: "Pengguna",
+        tabPermissions: "Izin Role",
+        tabLogs: "Audit Logs",
+        tabInvestigate: "AI Investigator",
+        groupAccount: "Akun",
+        groupAdmin: "Admin Sistem",
+        profileFailedLoad: "Gagal memuat profil",
+        profilePhoneError: "Gunakan format internasional, seperti +628123456789.",
+        profileUpdated: "Profil diperbarui.",
+        profileFailedUpdate: "Gagal memperbarui profil",
+        profileEyebrow: "Profile",
+        profileTitle: "Profile Settings",
+        email: "Email",
+        name: "Name",
+        saveProfile: "Save Profile",
+        profileEmpty: "Profile data will appear here after authentication.",
+        pwChanged: "Kata sandi berhasil diubah. Silakan masuk kembali.",
+        pwFailed: "Gagal mengubah kata sandi",
+        securityEyebrow: "Security",
+        changePassword: "Change Password",
+        currentPassword: "Current Password",
+        newPassword: "New Password",
+        updatePassword: "Update Password",
+        devicesFailedLoad: "Gagal memuat perangkat",
+        deviceSignedOut: "Perangkat berhasil keluar.",
+        deviceSignOutFailed: "Gagal mengeluarkan perangkat",
+        trustRemoved: "Perangkat tepercaya dihapus.",
+        trustRemovalFailed: "Gagal menghapus perangkat tepercaya",
+        othersSignedOut: "Perangkat lain berhasil keluar.",
+        othersSignOutFailed: "Gagal mengeluarkan perangkat lain",
+        allSignedOut: "Semua perangkat berhasil keluar.",
+        allSignOutFailed: "Gagal mengeluarkan semua perangkat",
+        browser: "Browser",
+        unknownDevice: "Perangkat tidak dikenal",
+        unknownUserAgent: "User agent tidak dikenal",
+        devicesTitle: "Device & Session Management",
+        refresh: "Refresh",
+        signOutOthers: "Sign out others",
+        signOutAll: "Sign out all",
+        metricActiveSessions: "Active sessions",
+        metricTrustedDevices: "Trusted devices",
+        metricThisSession: "This session",
+        noSessionsTitle: "No sessions yet",
+        noSessionsText: "No active sessions or trusted devices associated with this account.",
+        statusCurrent: "currently signed in",
+        statusTrusted: "trusted device",
+        statusUnknown: "unknown device",
+        sessionId: "Session #{id}",
+        deviceId: "Device {id}",
+        ip: "IP: {ip}",
+        lastUsed: "Last used: {date}",
+        expires: "Expires: {date}",
+        removeTrust: "Remove trust",
+        revoke: "Revoke",
+        usersFailedLoad: "Gagal memuat pengguna",
+        userUpdated: "Pengguna diperbarui menjadi {role}",
+        userUpdateFailed: "Gagal memperbarui peran pengguna",
+        userDeleteConfirm: "Yakin ingin menghapus {name}?",
+        userDeleted: "Pengguna {name} berhasil dihapus",
+        userDeleteFailed: "Gagal menghapus pengguna",
+        usersTitle: "User Management",
+        searchByNameEmail: "Search by name or email",
+        roleFilter: "Role filter (user/sales/admin)",
+        usersVisibleTitle: "Admin-visible users",
+        noUsersMatch: "No users matched the current query.",
+        roleUser: "User",
+        roleSales: "Sales",
+        roleAdmin: "Admin",
+        roleSuperadmin: "Superadmin",
+        delete: "Delete",
+        permsFailedLoad: "Failed to load initial data",
+        permsRoleFailedLoad: "Failed to load role permissions",
+        permsSaved: "Permissions updated successfully",
+        permsSaveFailed: "Failed to update permissions",
+        rbacEyebrow: "RBAC Management",
+        manageRolePermissions: "Manage Role Permissions",
+        saving: "Saving...",
+        saveChanges: "Save Changes",
+        totalPermissions: "{count} Total",
+        availablePermissions: "Available Permissions",
+        activePermissions: "{count} Active",
+        resourceSuffix: "{resource} Resource",
+        logsRefreshed: "Audit feed refreshed.",
+        logsFailedLoad: "Failed to load logs",
+        logsTitle: "Real-time Audit Log Feed",
+        autoRefreshOn: "Auto-refresh On",
+        autoRefreshOff: "Auto-refresh Off",
+        refreshNow: "Refresh Now",
+        logFilterLabel: "IP / Search",
+        dateFrom: "Date From",
+        dateTo: "Date To",
+        eventTable: "Event Table",
+        noLogsMatch: "No audit logs matched the current filters.",
+        logActionOn: "{action} on {resource}",
+        noDescription: "No description",
+        ipAddress: "IP Address",
+        actorUserId: "Actor User ID",
+        userAgent: "User Agent",
+        investLoadHistoryFailed: "Failed to load history",
+        investCompleted: "AI investigation completed.",
+        investFailed: "Failed to investigate logs",
+        investDetailFailed: "Failed to load detail",
+        investLoading: [
+          "Clustering matching audit events...",
+          "Building incident timeline...",
+          "Cross-checking suspicious signals...",
+          "Drafting recommendations for the operator...",
+        ],
+        investEyebrow: "AI Powered",
+        investTitle: "Investigate with AI",
+        analyzing: "Analyzing...",
+        runInvestigation: "Run Investigation",
+        streamingAnalysis: "Streaming analysis",
+        latestResult: "Latest result",
+        investOutputTitle: "AI Investigation Output",
+        aiProcessing: "AI Processing",
+        riskLevel: "Risk Level",
+        riskWeightNote: "Weighted by signals, urgency, log volume, and incident status",
+        score: "Score {score}",
+        timeline: "Timeline",
+        suspiciousSignals: "Suspicious Signals",
+        recommendations: "Recommendations",
+        noItems: "No items returned.",
+        readyTitle: "Ready for analysis",
+        readyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
+        savedCount: "{count} saved",
+        savedTitle: "Saved Investigations",
+        noSavedTitle: "No saved investigations",
+        noSavedDesc: "Completed investigations will appear here for quick review.",
+        investigationId: "Investigation #{id}",
+        previous: "Previous",
+        pageOf: "Page {page} of {total}",
+        next: "Next",
+        investigationDetails: "Investigation Details",
+        closeDetails: "Close investigation details",
+        status: "Status",
+        riskNoteHigh: "Escalate quickly. Multiple strong signals point to elevated risk.",
+        riskNoteMedium: "Needs review. Suspicious patterns warrant operator follow-up.",
+        riskNoteLow: "Monitor only. Lower-confidence incident.",
+        noResultYet: "No investigation result loaded yet.",
+      },
       upgrade: {
         snapLoadError: "Gagal memuat Midtrans Snap",
         loadPlansFailed: "Gagal memuat paket",
@@ -1190,6 +1778,16 @@ export const translations: Record<Locale, Translations> = {
       categoryKuliner: "Food & Beverage",
       categoryJasa: "Services",
       categoryProduk: "Products",
+      activeBadge: "Active",
+      yearlySavings: "🎉 Save Rp {value}/year",
+      websiteCount: "{n} Website",
+      aiGenerate: "AI Generate {n}x/month",
+      aiRegen: "AI Regen {n}x/month",
+      aiDesign: "AI Design {n}x/month",
+      noCustomDomain: "No custom domain",
+      seoBooster: "SEO Booster",
+      subdomainFeature: "Subdomain .webjoz.app",
+      hostingFeature: "Free Hosting & SSL",
     },
     auth: {
       loginTitle: "Continue managing your business website.",
@@ -1574,6 +2172,292 @@ export const translations: Record<Locale, Translations> = {
         copyLinkTitle: "Copy Link",
         checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
+      },
+      leads: {
+        loadFailed: "Failed to load leads inbox",
+        loading: "Loading leads inbox...",
+        filter: "Filter",
+        allWebsites: "All Websites",
+        emptyTitle: "Inbox Empty",
+        emptyDesc: "No leads yet. Make sure the \"Show Contact Form\" option is enabled in your website configuration.",
+        sender: "Sender",
+        date: "Received At",
+        sourceSite: "Source Website",
+        actions: "Actions",
+        siteId: "Site ID #{id}",
+        detail: "Detail",
+        leadDetail: "Customer Lead Detail",
+        inquiryMessage: "Inquiry Message",
+        receivedOn: "Received on",
+        sourceUrl: "Source Page URL",
+        selectPrompt: "Select a lead in the table to view the full message.",
+      },
+      team: {
+        loadFailed: "Failed to load team data",
+        inviteSent: "Invitation sent",
+        inviteFailed: "Failed to send invitation",
+        inviteRevoked: "Invitation revoked",
+        revokeFailed: "Failed to revoke invitation",
+        memberRemoved: "Member removed",
+        removeFailed: "Failed to remove member",
+        membersTitle: "Team Members ({count})",
+        invitePending: "Invitation pending · role: {role}",
+        pending: "Pending",
+        inviteLinkCopied: "Invitation link copied",
+        noMembers: "No team members yet.",
+        inviteTitle: "Invite New Member",
+        emailPlaceholder: "email@example.com",
+        sendInvite: "Send Invitation",
+        inviteHint: "Members with the <strong>editor</strong> role can edit site content. <strong>Viewers</strong> can only view.",
+        limitTitle: "Team Member Limit Reached",
+        later: "Later",
+        upgradeToPro: "Upgrade to Pro",
+        limitDesc: "Your current plan has a limit on the number of team members. Upgrade to add more collaborators.",
+        role: {
+          owner: "Owner",
+          editor: "Editor",
+          viewer: "Viewer",
+        },
+      },
+      analytics: {
+        loadFailed: "Failed to load analytics data",
+        loading: "Loading analytics data...",
+        noChartData: "No visit data for this time range yet.",
+        chartAria: "Daily visits chart",
+        srActivePoint: "Date {date}, {count} pageviews",
+        selectSite: "Select website",
+        preset7: "7 Days",
+        preset30: "30 Days",
+        preset90: "90 Days",
+        to: "to",
+        statPageviews: "Total Pageviews",
+        up: "Up",
+        down: "Down",
+        fromPrevPeriod: "% vs previous period",
+        prevPeriodComp: "Comparison with previous period",
+        statUniqueVisitors: "Unique Visitors",
+        visitorsEstimate: "Estimated based on IP + device",
+        statAvgDuration: "Average Duration",
+        durationNote: "Includes single-page visits (0 seconds)",
+        dailyVisitsTitle: "Daily Visit Statistics",
+        dailyVisitsDesc: "Visualization of daily visitor volume movement.",
+        leadsIn: "Incoming Leads",
+        leadsFromForms: "From contact forms on your sites",
+        conversion: " · conversion {pct}%",
+        viewAllLeads: "View all leads",
+        trafficSources: "Traffic Sources",
+        noReferrerData: "No referral data yet.",
+        upsellTitle: "Unlock Full Analytics",
+        later: "Later",
+        upgradeToPro: "Upgrade to Pro",
+        free7Days: "Free Plan — Max 7 Days",
+        free7DaysDesc: "Free accounts can only view analytics up to 7 days back.",
+        selectedRange: "You selected the range {from} to {to}.",
+        proUpgrade: "Upgrade to Pro",
+        proUpgradeDesc: "With the Pro plan, you can access up to 90 days of analytics, plus exclusive features like custom domains and unlimited AI content writer.",
+      },
+      domains: {
+        loadFailed: "Failed to load domain data",
+        loading: "Loading domain data...",
+        added: "Custom domain connected! Set up the CNAME record at your DNS registrar.",
+        addFailed: "Failed to add domain",
+        invalidFormat: "Invalid domain format. Example: domainanda.com",
+        verified: "Domain verified successfully!",
+        verifyFailed: "DNS verification failed. Check your CNAME record.",
+        confirmDelete: "Delete this domain?",
+        deleted: "Domain deleted.",
+        deleteFailed: "Failed to delete domain",
+        continueConnect: "Continue Connecting",
+        upgradeToPro: "Upgrade to Pro",
+        close: "Close",
+        upgradePlan: "Upgrade Plan",
+        connectedTitle: "Connected Custom Domains ({count})",
+        quotaTitle: "{plan} plan: max {max} domains per account, not per website",
+        quota: "Quota: {used} / {max} custom domains",
+        customDomainBadge: "Custom Domain",
+        siteId: "Site #{id}",
+        waitingPropagation: " · waiting for DNS propagation",
+        active: "Active",
+        pending: "Pending",
+        checkDns: "Check DNS",
+        delete: "Delete",
+        connectTitle: "Connect Custom Domain",
+        connectDesc: "Use your own domain to look more professional.",
+        noPublished: "No published websites yet",
+        noPublishedDesc: "Custom domains can only be connected to live websites. Publish your website first via the",
+        myWebsites: "My Websites",
+        linkToSite: "Link to Website",
+        domainAddress: "Custom Domain Address",
+        domainPlaceholder: "e.g. tokokamu.com or toko.domainanda.com",
+        validFormat: "✓ Valid domain format",
+        invalidFormatHint: "Invalid format — enter a domain without http:// or www.",
+        dnsInstructions: "DNS Configuration Guide at Your Domain Provider",
+        step1: "Log in to your <strong>Domain Registrar</strong> account where you bought the domain (such as Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, etc.).",
+        step2: "Find the domain you want to manage and open the <strong>DNS Management</strong>, <strong>DNS Zone Editor</strong>, or <strong>Manage DNS</strong> page.",
+        step3: "Add a new <strong>DNS Record</strong> with type <strong>CNAME</strong> and fill in the columns according to the data below:",
+        step4: "Save your DNS changes. Propagation and domain verification usually take from <strong>5 minutes up to 24 hours</strong>.",
+        dnsType: "Type",
+        dnsHost: "Host / Name",
+        dnsTarget: "Target / Value",
+        note: "Note: If you want to use a custom subdomain like <code>toko.domainanda.com</code>, change the <strong>Host / Name</strong> column to <code>toko</code>.",
+        verifyHint: "After saving the DNS configuration above, return to the dashboard and click the <strong>\"Check DNS\" (Refresh icon)</strong> button on your domain list to verify.",
+        connectBtn: "Connect Custom Domain",
+        upsellTitle: "✨ Boost Your Business Credibility",
+        upsellDesc: "Custom Domain is a <strong>Pro</strong> feature that makes your brand look more professional, trustworthy to customers, and easier to find on Google (SEO).",
+        upsellBranding: "Professional Branding",
+        upsellBrandingDesc: "Use your own domain (e.g. <code>tokomu.com</code>) without the <code>.webjoz.com</code> suffix.",
+        upsellSeo: "Better SEO",
+        upsellSeoDesc: "Google prioritizes primary domains to rank at the top of search results.",
+        upsellSsl: "Automatic SSL/HTTPS",
+        upsellSslDesc: "Data security is guaranteed with free SSL encryption installed directly on your domain.",
+        limitTitle: "Custom Domain Limit Reached",
+        limitDesc: "Your {plan} plan only includes <strong>{max} custom domains</strong> (applies to the whole account, not per website).",
+        limitDesc2: "To add more custom domains, please upgrade to a higher plan.",
+      },
+      settings: {
+        tabProfile: "Profile",
+        tabSecurity: "Security",
+        tabDevices: "Active Devices",
+        tabUsers: "Users",
+        tabPermissions: "Role Permissions",
+        tabLogs: "Audit Logs",
+        tabInvestigate: "AI Investigator",
+        groupAccount: "Account",
+        groupAdmin: "System Admin",
+        profileFailedLoad: "Failed to load profile",
+        profilePhoneError: "Use international format, like +628123456789.",
+        profileUpdated: "Profile updated.",
+        profileFailedUpdate: "Failed to update profile",
+        profileEyebrow: "Profile",
+        profileTitle: "Profile Settings",
+        email: "Email",
+        name: "Name",
+        saveProfile: "Save Profile",
+        profileEmpty: "Profile data will appear here after authentication.",
+        pwChanged: "Password changed. Please sign in again.",
+        pwFailed: "Failed to change password",
+        securityEyebrow: "Security",
+        changePassword: "Change Password",
+        currentPassword: "Current Password",
+        newPassword: "New Password",
+        updatePassword: "Update Password",
+        devicesFailedLoad: "Failed to load devices",
+        deviceSignedOut: "Device signed out.",
+        deviceSignOutFailed: "Failed to sign out device",
+        trustRemoved: "Trusted device removed.",
+        trustRemovalFailed: "Failed to remove trusted device",
+        othersSignedOut: "Other devices signed out.",
+        othersSignOutFailed: "Failed to sign out other devices",
+        allSignedOut: "All devices signed out.",
+        allSignOutFailed: "Failed to sign out all devices",
+        browser: "Browser",
+        unknownDevice: "Unknown device",
+        unknownUserAgent: "Unknown user agent",
+        devicesTitle: "Device & Session Management",
+        refresh: "Refresh",
+        signOutOthers: "Sign out others",
+        signOutAll: "Sign out all",
+        metricActiveSessions: "Active sessions",
+        metricTrustedDevices: "Trusted devices",
+        metricThisSession: "This session",
+        noSessionsTitle: "No sessions yet",
+        noSessionsText: "No active sessions or trusted devices associated with this account.",
+        statusCurrent: "currently signed in",
+        statusTrusted: "trusted device",
+        statusUnknown: "unknown device",
+        sessionId: "Session #{id}",
+        deviceId: "Device {id}",
+        ip: "IP: {ip}",
+        lastUsed: "Last used: {date}",
+        expires: "Expires: {date}",
+        removeTrust: "Remove trust",
+        revoke: "Revoke",
+        usersFailedLoad: "Failed to load users",
+        userUpdated: "User updated to {role}",
+        userUpdateFailed: "Failed to update user role",
+        userDeleteConfirm: "Are you sure you want to delete {name}?",
+        userDeleted: "User {name} deleted successfully",
+        userDeleteFailed: "Failed to delete user",
+        usersTitle: "User Management",
+        searchByNameEmail: "Search by name or email",
+        roleFilter: "Role filter (user/sales/admin)",
+        usersVisibleTitle: "Admin-visible users",
+        noUsersMatch: "No users matched the current query.",
+        roleUser: "User",
+        roleSales: "Sales",
+        roleAdmin: "Admin",
+        roleSuperadmin: "Superadmin",
+        delete: "Delete",
+        permsFailedLoad: "Failed to load initial data",
+        permsRoleFailedLoad: "Failed to load role permissions",
+        permsSaved: "Permissions updated successfully",
+        permsSaveFailed: "Failed to update permissions",
+        rbacEyebrow: "RBAC Management",
+        manageRolePermissions: "Manage Role Permissions",
+        saving: "Saving...",
+        saveChanges: "Save Changes",
+        totalPermissions: "{count} Total",
+        availablePermissions: "Available Permissions",
+        activePermissions: "{count} Active",
+        resourceSuffix: "{resource} Resource",
+        logsRefreshed: "Audit feed refreshed.",
+        logsFailedLoad: "Failed to load logs",
+        logsTitle: "Real-time Audit Log Feed",
+        autoRefreshOn: "Auto-refresh On",
+        autoRefreshOff: "Auto-refresh Off",
+        refreshNow: "Refresh Now",
+        logFilterLabel: "IP / Search",
+        dateFrom: "Date From",
+        dateTo: "Date To",
+        eventTable: "Event Table",
+        noLogsMatch: "No audit logs matched the current filters.",
+        logActionOn: "{action} on {resource}",
+        noDescription: "No description",
+        ipAddress: "IP Address",
+        actorUserId: "Actor User ID",
+        userAgent: "User Agent",
+        investLoadHistoryFailed: "Failed to load history",
+        investCompleted: "AI investigation completed.",
+        investFailed: "Failed to investigate logs",
+        investDetailFailed: "Failed to load detail",
+        investLoading: [
+          "Clustering matching audit events...",
+          "Building incident timeline...",
+          "Cross-checking suspicious signals...",
+          "Drafting recommendations for the operator...",
+        ],
+        investEyebrow: "AI Powered",
+        investTitle: "Investigate with AI",
+        analyzing: "Analyzing...",
+        runInvestigation: "Run Investigation",
+        streamingAnalysis: "Streaming analysis",
+        latestResult: "Latest result",
+        investOutputTitle: "AI Investigation Output",
+        aiProcessing: "AI Processing",
+        riskLevel: "Risk Level",
+        riskWeightNote: "Weighted by signals, urgency, log volume, and incident status",
+        score: "Score {score}",
+        timeline: "Timeline",
+        suspiciousSignals: "Suspicious Signals",
+        recommendations: "Recommendations",
+        noItems: "No items returned.",
+        readyTitle: "Ready for analysis",
+        readyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
+        savedCount: "{count} saved",
+        savedTitle: "Saved Investigations",
+        noSavedTitle: "No saved investigations",
+        noSavedDesc: "Completed investigations will appear here for quick review.",
+        investigationId: "Investigation #{id}",
+        previous: "Previous",
+        pageOf: "Page {page} of {total}",
+        next: "Next",
+        investigationDetails: "Investigation Details",
+        closeDetails: "Close investigation details",
+        status: "Status",
+        riskNoteHigh: "Escalate quickly. Multiple strong signals point to elevated risk.",
+        riskNoteMedium: "Needs review. Suspicious patterns warrant operator follow-up.",
+        riskNoteLow: "Monitor only. Lower-confidence incident.",
+        noResultYet: "No investigation result loaded yet.",
       },
       upgrade: {
         snapLoadError: "Failed to load Midtrans Snap",
