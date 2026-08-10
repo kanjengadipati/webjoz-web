@@ -21,7 +21,7 @@ import {
   Loader2
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { 
+import {
   Card, 
   CardContent, 
   CardHeader, 
@@ -32,6 +32,7 @@ import {
   Input,
   Separator
 } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SeedEntry {
   id: number;
@@ -61,6 +62,7 @@ export default function TemplateGalleryPage() {
   const authToken = useAuthToken();
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const isSuperAdmin = userRole === "superadmin";
 
@@ -75,7 +77,7 @@ export default function TemplateGalleryPage() {
         setForbidden(true);
       }
       setSeeds([]);
-      pushToast("Gagal mengambil data design token seeds", "error");
+      pushToast(t("dashboard.adminTemplates.seedLoadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -88,28 +90,28 @@ export default function TemplateGalleryPage() {
   }, [tab, isSuperAdmin, authToken]);
 
   const handleBackfill = async () => {
-    if (!window.confirm("Backfill scores untuk semua template_library rows yang score=0?")) {
+    if (!window.confirm(t("dashboard.adminTemplates.backfillConfirm"))) {
       return;
     }
     try {
       await request("/ai/templates/backfill-scores", { method: "POST" }, authToken);
-      pushToast("Backfill selesai — scores sudah diperbarui", "success");
+      pushToast(t("dashboard.adminTemplates.backfillDone"), "success");
       fetchSeeds();
     } catch (e) {
-      pushToast("Gagal backfill: " + (e as any).message, "error");
+      pushToast(t("dashboard.adminTemplates.backfillFailed") + ": " + (e as any).message, "error");
     }
   };
 
   const handleDeleteSeed = async (id: number) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus design token seed ini secara permanen?")) {
+    if (!window.confirm(t("dashboard.adminTemplates.seedDeleteConfirm"))) {
       return;
     }
     try {
       await request(`/ai/templates/${id}`, { method: "DELETE" }, authToken);
       setSeeds((prev) => prev.filter((s) => s.id !== id));
-      pushToast("Design token seed berhasil dihapus", "success");
+      pushToast(t("dashboard.adminTemplates.seedDeleted"), "success");
     } catch (e) {
-      pushToast("Gagal menghapus seed: " + (e as any).message, "error");
+      pushToast(t("dashboard.adminTemplates.seedDeleteFailed") + ": " + (e as any).message, "error");
     }
   };
 
@@ -118,9 +120,9 @@ export default function TemplateGalleryPage() {
       <div className="flex flex-col items-center justify-center h-96 text-muted-foreground gap-4 animate-in fade-in duration-300">
         <ShieldAlert className="size-16 text-destructive opacity-80" />
         <div className="text-center space-y-1">
-          <h2 className="text-lg font-bold text-foreground">Akses Ditolak</h2>
+          <h2 className="text-lg font-bold text-foreground">{t("dashboard.adminTemplates.accessDenied")}</h2>
           <p className="text-sm max-w-sm">
-            Halaman ini hanya dapat diakses oleh akun dengan peran <span className="font-semibold text-primary">Superadmin</span>.
+            {t("dashboard.adminTemplates.superadminOnly")} <span className="font-semibold text-primary">{t("dashboard.adminTemplates.superadmin")}</span>.
           </p>
         </div>
       </div>
@@ -164,21 +166,21 @@ export default function TemplateGalleryPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2.5 text-foreground">
             <Palette className="size-6 text-primary" />
-            Template Gallery
+            {t("dashboard.adminTemplates.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.
+            {t("dashboard.adminTemplates.subtitle")}
           </p>
         </div>
         {tab === "seeds" && (
           <div className="flex items-center gap-2">
             <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 hover:bg-amber-500/10">
               <Loader2 className="size-3.5" />
-              Backfill Scores
+              {t("dashboard.adminTemplates.backfillScores")}
             </Button>
             <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2">
               <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
-              Refresh Seeds
+              {t("dashboard.adminTemplates.refreshSeeds")}
             </Button>
           </div>
         )}
@@ -196,7 +198,7 @@ export default function TemplateGalleryPage() {
             }`}
           >
             <Layers className="size-4" />
-            Komponen Template ({TEMPLATE_REGISTRY.length})
+            {t("dashboard.adminTemplates.tabComponents")} ({TEMPLATE_REGISTRY.length})
           </button>
           <button 
             onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }} 
@@ -207,7 +209,7 @@ export default function TemplateGalleryPage() {
             }`}
           >
             <SparkleIcon className="size-6" />
-            Design Token Seeds ({loading ? "..." : seeds.length})
+            {t("dashboard.adminTemplates.tabSeeds")} ({loading ? "..." : seeds.length})
           </button>
         </div>
       </div>
@@ -217,7 +219,7 @@ export default function TemplateGalleryPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input 
-            placeholder={tab === "components" ? "Cari nama, ID, atau deskripsi template..." : "Cari tipe bisnis, mood, atau ID seed..."}
+            placeholder={tab === "components" ? t("dashboard.adminTemplates.searchComponentsPlaceholder") : t("dashboard.adminTemplates.searchSeedsPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-10 w-full bg-background border-border/40"
@@ -233,7 +235,7 @@ export default function TemplateGalleryPage() {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
             >
-              <option value="all">Semua Kategori</option>
+              <option value="all">{t("dashboard.adminTemplates.allCategories")}</option>
               {categories.filter(c => c !== "all").map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -246,7 +248,7 @@ export default function TemplateGalleryPage() {
               onChange={(e) => setSelectedBusinessType(e.target.value)}
               className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
             >
-              <option value="all">Semua Tipe Bisnis</option>
+              <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")}</option>
               {businessTypes.filter(b => b !== "all").map((bt) => (
                 <option key={bt} value={bt} className="capitalize">{bt}</option>
               ))}
@@ -259,7 +261,7 @@ export default function TemplateGalleryPage() {
               onChange={(e) => setSelectedMood(e.target.value)}
               className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
             >
-              <option value="all">Semua Mood</option>
+              <option value="all">{t("dashboard.adminTemplates.allMoods")}</option>
               {moods.filter(m => m !== "all").map((m) => (
                 <option key={m} value={m} className="capitalize">{m}</option>
               ))}
@@ -273,8 +275,8 @@ export default function TemplateGalleryPage() {
         filteredTemplates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 bg-muted/10 border border-border/30 rounded-2xl">
             <Layers className="size-10 opacity-30 animate-pulse" />
-            <p className="text-sm font-medium">Tidak ada template yang cocok dengan pencarian Anda.</p>
-            <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }}>Reset Filter</Button>
+            <p className="text-sm font-medium">{t("dashboard.adminTemplates.noTemplateMatch")}</p>
+            <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }}>{t("dashboard.adminTemplates.resetFilter")}</Button>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -320,9 +322,9 @@ export default function TemplateGalleryPage() {
                         </div>
                         <div className="flex flex-col items-end gap-1 shrink-0">
                           <Badge variant="outline" className={`font-mono font-bold border ${scoreColorClass}`}>
-                            Score: {score}
+                            {t("dashboard.adminTemplates.score")}: {score}
                           </Badge>
-                          <span className="text-[9px] text-muted-foreground uppercase font-semibold tracking-wider">Default Seed</span>
+                          <span className="text-[9px] text-muted-foreground uppercase font-semibold tracking-wider">{t("dashboard.adminTemplates.defaultSeed")}</span>
                         </div>
                       </div>
                       
@@ -359,13 +361,13 @@ export default function TemplateGalleryPage() {
                     {typo && (
                       <div className="text-[11px] text-muted-foreground bg-muted/20 p-2 rounded-lg border border-border/20 space-y-0.5 font-sans">
                         <p className="flex justify-between">
-                          <span>Heading:</span>
+                          <span>{t("dashboard.adminTemplates.heading")}:</span>
                           <span className="text-foreground font-medium truncate max-w-40" style={{ fontFamily: typo.heading_font }}>
-                            {typo.heading_font} ({typo.heading_weight || "Normal"})
+                            {typo.heading_font} ({typo.heading_weight || t("dashboard.adminTemplates.normal")})
                           </span>
                         </p>
                         <p className="flex justify-between">
-                          <span>Body Font:</span>
+                          <span>{t("dashboard.adminTemplates.bodyFont")}:</span>
                           <span className="text-foreground font-medium truncate max-w-40" style={{ fontFamily: typo.body_font }}>
                             {typo.body_font}
                           </span>
@@ -377,7 +379,7 @@ export default function TemplateGalleryPage() {
                     {scoreParts.length > 0 && (
                       <div className="space-y-1">
                         <div className="flex justify-between text-[9px] text-muted-foreground uppercase font-bold tracking-wider">
-                          <span>Kualitas Desain</span>
+                          <span>{t("dashboard.adminTemplates.designQuality")}</span>
                           <span>{scoreParts.map(p => `${p.label.slice(0, 2)} ${p.score}/${p.max}`).join(" | ")}</span>
                         </div>
                       </div>
@@ -392,7 +394,7 @@ export default function TemplateGalleryPage() {
                     >
                       <Button variant="outline" size="sm" className="w-full text-xs font-semibold gap-1.5 bg-background hover:bg-muted/40">
                         <Eye className="size-3.5" />
-                        Pratinjau Fullscreen
+                        {t("dashboard.adminTemplates.previewFullscreen")}
                       </Button>
                     </a>
                   </CardContent>
@@ -407,32 +409,32 @@ export default function TemplateGalleryPage() {
         !authToken ? (
           <div className="text-center py-20 text-muted-foreground bg-muted/10 border border-border/30 rounded-2xl space-y-3">
             <ShieldAlert className="size-10 mx-auto text-amber-500 opacity-80" />
-            <p className="text-sm font-medium">Sesi login diperlukan untuk melihat design token seeds.</p>
-            <Button size="sm" onClick={() => window.location.replace("/login")}>Login Sesi</Button>
+            <p className="text-sm font-medium">{t("dashboard.adminTemplates.loginRequired")}</p>
+            <Button size="sm" onClick={() => window.location.replace("/login")}>{t("dashboard.adminTemplates.loginSession")}</Button>
           </div>
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-3">
             <Loader2 className="size-8 text-primary animate-spin" />
-            <p className="text-sm text-muted-foreground font-medium">Memuat design token seeds dari API...</p>
+            <p className="text-sm text-muted-foreground font-medium">{t("dashboard.adminTemplates.loadingSeeds")}</p>
           </div>
         ) : forbidden ? (
           <div className="text-center py-20 text-muted-foreground bg-muted/10 border border-border/30 rounded-2xl space-y-3">
             <ShieldAlert className="size-10 mx-auto text-destructive opacity-80" />
-            <p className="text-sm font-semibold text-foreground">Hanya Superadmin yang Bisa Mengelola Design Token Seeds.</p>
-            <p className="text-xs max-w-xs mx-auto">Peran akun Anda saat ini tidak memiliki hak akses administratif yang cukup.</p>
+            <p className="text-sm font-semibold text-foreground">{t("dashboard.adminTemplates.superadminOnlyManage")}</p>
+            <p className="text-xs max-w-xs mx-auto">{t("dashboard.adminTemplates.insufficientAccess")}</p>
           </div>
         ) : filteredSeeds.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 bg-muted/10 border border-border/30 rounded-2xl">
             <SparkleIcon className="size-10 opacity-30 animate-pulse" />
-            <p className="text-sm font-medium">{seeds.length === 0 ? "Tidak ada design token seeds di database." : "Tidak ada seeds yang cocok dengan kata kunci."}</p>
+            <p className="text-sm font-medium">{seeds.length === 0 ? t("dashboard.adminTemplates.noSeedsInDb") : t("dashboard.adminTemplates.noSeedsMatch")}</p>
             {seeds.length > 0 && (
-              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }}>Reset Pencarian</Button>
+              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>
             )}
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{filteredSeeds.length} dari {seeds.length} entries di template_library</span>
+              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{t("dashboard.adminTemplates.entriesCount", undefined, { shown: String(filteredSeeds.length), total: String(seeds.length) })}</span>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -470,7 +472,7 @@ export default function TemplateGalleryPage() {
                       {!pal && (
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-sm border border-white/5">
                           <Palette className="size-4 text-white/60" />
-                          <span className="text-[10px] text-white/50 font-semibold">No Palette</span>
+                          <span className="text-[10px] text-white/50 font-semibold">{t("dashboard.adminTemplates.noPalette")}</span>
                         </div>
                       )}
                     </div>
@@ -486,10 +488,10 @@ export default function TemplateGalleryPage() {
                                 {seed.mood}
                               </Badge>
                             </div>
-                            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">#{seed.id} · {seed.business_type} {seed.source_template_id && <span>· Base: <span className="font-bold">{seed.source_template_id}</span></span>}</p>
+                            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">#{seed.id} · {seed.business_type} {seed.source_template_id && <span>· {t("dashboard.adminTemplates.base")}: <span className="font-bold">{seed.source_template_id}</span></span>}</p>
                           </div>
                           <Badge variant="outline" className={`font-mono font-bold text-[10px] border shrink-0 ${scoreColorClass}`}>
-                            Score: {score}
+                            {t("dashboard.adminTemplates.score")}: {score}
                           </Badge>
                         </div>
                       </div>
@@ -512,14 +514,14 @@ export default function TemplateGalleryPage() {
                       {/* Typography Details */}
                       {typo && (
                         <div className="text-[11px] text-muted-foreground bg-muted/20 p-2 rounded-lg border border-border/20 space-y-0.5 font-sans">
-                          <p className="flex justify-between">
-                            <span>Heading:</span>
-                            <span className="text-foreground font-medium truncate max-w-40" style={{ fontFamily: typo.heading_font }}>
-                              {typo.heading_font} ({typo.heading_weight || "Normal"})
-                            </span>
-                          </p>
-                          <p className="flex justify-between">
-                            <span>Body:</span>
+                        <p className="flex justify-between">
+                          <span>{t("dashboard.adminTemplates.heading")}:</span>
+                          <span className="text-foreground font-medium truncate max-w-40" style={{ fontFamily: typo.heading_font }}>
+                            {typo.heading_font} ({typo.heading_weight || t("dashboard.adminTemplates.normal")})
+                          </span>
+                        </p>
+                        <p className="flex justify-between">
+                          <span>{t("dashboard.adminTemplates.body")}:</span>
                             <span className="text-foreground font-medium truncate max-w-40" style={{ fontFamily: typo.body_font }}>
                               {typo.body_font}
                             </span>
@@ -570,7 +572,7 @@ export default function TemplateGalleryPage() {
                             className="h-7 px-2.5 text-[10px] bg-background hover:bg-muted/40 font-semibold gap-1"
                           >
                             <Eye className="size-3" />
-                            Lihat
+                            {t("dashboard.adminTemplates.view")}
                           </Button>
                           <Button 
                             onClick={() => handleDeleteSeed(seed.id)} 
@@ -579,7 +581,7 @@ export default function TemplateGalleryPage() {
                             className="h-7 px-2.5 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10 font-semibold gap-1"
                           >
                             <Trash2 className="size-3" />
-                            Hapus
+                            {t("dashboard.adminTemplates.delete")}
                           </Button>
                         </div>
                       </div>

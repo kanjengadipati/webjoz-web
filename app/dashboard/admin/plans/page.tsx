@@ -7,6 +7,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Pencil, Trash2, CreditCard, Zap, Users, Globe, HardDrive, DollarSign } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PlanItem {
   id: number;
@@ -60,6 +61,7 @@ const emptyForm: PlanForm = {
 export default function AdminPlansPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { role } = usePermissions();
   const [plans, setPlans] = useState<PlanItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ export default function AdminPlansPage() {
       const res = await request<PlanItem[]>("/admin/plans", {}, token);
       setPlans(res.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Failed to load plans", "error");
+      pushToast(err.message || t("dashboard.adminPlans.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -126,31 +128,31 @@ export default function AdminPlansPage() {
           method: "PUT",
           body: JSON.stringify(form),
         }, token);
-        pushToast("Plan updated", "success");
+        pushToast(t("dashboard.adminPlans.planUpdated"), "success");
       } else {
         await request("/admin/plans", {
           method: "POST",
           body: JSON.stringify(form),
         }, token);
-        pushToast("Plan created", "success");
+        pushToast(t("dashboard.adminPlans.planCreated"), "success");
       }
       setDialogOpen(false);
       fetchPlans();
     } catch (err: any) {
-      pushToast(err.message || "Failed to save plan", "error");
+      pushToast(err.message || t("dashboard.adminPlans.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: number) {
-    if (!token || !confirm("Are you sure you want to delete this plan?")) return;
+    if (!token || !confirm(t("dashboard.adminPlans.deleteConfirm"))) return;
     try {
       await request(`/admin/plans/${id}`, { method: "DELETE" }, token);
-      pushToast("Plan deleted", "success");
+      pushToast(t("dashboard.adminPlans.planDeleted"), "success");
       fetchPlans();
     } catch (err: any) {
-      pushToast(err.message || "Failed to delete plan", "error");
+      pushToast(err.message || t("dashboard.adminPlans.deleteFailed"), "error");
     }
   }
 
@@ -164,7 +166,7 @@ export default function AdminPlansPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <CreditCard className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini.</p>
+        <p className="text-sm">{t("dashboard.adminPlans.noAccess")}</p>
       </div>
     );
   }
@@ -175,15 +177,15 @@ export default function AdminPlansPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <CreditCard className="size-5 text-primary" />
-            Plan Management
+            {t("dashboard.adminPlans.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Define and manage subscription plans for tenants.
+            {t("dashboard.adminPlans.subtitle")}
           </p>
         </div>
         <Button onClick={openCreate} className="gap-2 self-start sm:self-auto">
           <Plus className="size-4" />
-          New Plan
+          {t("dashboard.adminPlans.newPlan")}
         </Button>
       </div>
 
@@ -191,7 +193,7 @@ export default function AdminPlansPage() {
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-lg font-bold tracking-tight flex items-center gap-3">
             <CreditCard className="size-5 text-primary" />
-            All Plans
+            {t("dashboard.adminPlans.allPlans")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -202,8 +204,8 @@ export default function AdminPlansPage() {
           ) : plans.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
               <CreditCard className="size-10 opacity-30" />
-              <p className="text-sm">No plans defined yet</p>
-              <Button variant="outline" size="sm" onClick={openCreate}>Create your first plan</Button>
+              <p className="text-sm">{t("dashboard.adminPlans.noPlansYet")}</p>
+              <Button variant="outline" size="sm" onClick={openCreate}>{t("dashboard.adminPlans.createFirstPlan")}</Button>
             </div>
           ) : (
             <>
@@ -226,17 +228,17 @@ export default function AdminPlansPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
-                      <span className="font-semibold">Rp {p.price_monthly.toLocaleString("id-ID")}/mo</span>
+                      <span className="font-semibold">Rp {p.price_monthly.toLocaleString("id-ID")}{t("dashboard.adminPlans.perMonth")}</span>
                       <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize ${
                         p.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
                       }`}>
-                        {p.active ? "Active" : "Inactive"}
+                        {p.active ? t("dashboard.adminPlans.active") : t("dashboard.adminPlans.inactive")}
                       </span>
                     </div>
                     <div className="flex items-center gap-4 mt-2.5 text-[10px] text-muted-foreground">
-                      <span>🌐 {p.max_sites} sites</span>
-                      <span>⚡ {p.max_ai_generates} AI</span>
-                      <span>👥 {p.max_members} members</span>
+                      <span>🌐 {t("dashboard.adminPlans.sitesCount", undefined, { count: String(p.max_sites) })}</span>
+                      <span>⚡ {t("dashboard.adminPlans.aiCount", undefined, { count: String(p.max_ai_generates) })}</span>
+                      <span>👥 {t("dashboard.adminPlans.membersCount", undefined, { count: String(p.max_members) })}</span>
                     </div>
                   </div>
                 ))}
@@ -247,13 +249,13 @@ export default function AdminPlansPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                      <th className="px-6 py-4">Plan</th>
-                      <th className="px-6 py-4">Price</th>
-                      <th className="px-6 py-4 text-center">Sites</th>
-                      <th className="px-6 py-4 text-center hidden lg:table-cell">AI Gen</th>
-                      <th className="px-6 py-4 text-center hidden md:table-cell">Members</th>
-                      <th className="px-6 py-4 text-center hidden lg:table-cell">Domains</th>
-                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4">{t("dashboard.adminPlans.tablePlan")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminPlans.tablePrice")}</th>
+                      <th className="px-6 py-4 text-center">{t("dashboard.adminPlans.tableSites")}</th>
+                      <th className="px-6 py-4 text-center hidden lg:table-cell">{t("dashboard.adminPlans.tableAiGen")}</th>
+                      <th className="px-6 py-4 text-center hidden md:table-cell">{t("dashboard.adminPlans.tableMembers")}</th>
+                      <th className="px-6 py-4 text-center hidden lg:table-cell">{t("dashboard.adminPlans.tableDomains")}</th>
+                      <th className="px-6 py-4">{t("dashboard.adminPlans.tableStatus")}</th>
                       <th className="px-6 py-4"></th>
                     </tr>
                   </thead>
@@ -267,22 +269,22 @@ export default function AdminPlansPage() {
                         <td className="px-6 py-4">
                           <span className="inline-flex items-center gap-1 font-medium">
                             <DollarSign className="size-3 text-muted-foreground" />
-                            {p.price_monthly.toLocaleString("id-ID")}/mo
+                            {p.price_monthly.toLocaleString("id-ID")}{t("dashboard.adminPlans.perMonth")}
                           </span>
                           {p.price_yearly > 0 && (
                             <div className="text-xs text-muted-foreground">
-                              {p.price_yearly.toLocaleString("id-ID")}/yr
+                              {p.price_yearly.toLocaleString("id-ID")}{t("dashboard.adminPlans.perYear")}
                             </div>
                           )}
                           {p.promo_price_monthly > 0 && p.promo_duration_months > 0 && (
                             <div className="text-xs text-emerald-600 font-medium">
-                              Promo: {p.promo_price_monthly.toLocaleString("id-ID")}/mo ({p.promo_duration_months} bln)
-                              {p.promo_label && <span className="text-muted-foreground ml-1">— {p.promo_label}</span>}
+                              {t("dashboard.adminPlans.promoMonthly", undefined, { price: p.promo_price_monthly.toLocaleString("id-ID"), months: String(p.promo_duration_months) })}
+                              {p.promo_label && <span className="text-muted-foreground ml-1">{t("dashboard.adminPlans.promoTag", undefined, { label: p.promo_label })}</span>}
                             </div>
                           )}
                           {p.promo_price_yearly > 0 && (
                             <div className="text-xs text-emerald-600 font-medium">
-                              Promo Tahunan: {p.promo_price_yearly.toLocaleString("id-ID")}/yr
+                              {t("dashboard.adminPlans.promoYearly", undefined, { price: p.promo_price_yearly.toLocaleString("id-ID") })}
                             </div>
                           )}
                         </td>
@@ -311,7 +313,7 @@ export default function AdminPlansPage() {
                           <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${
                             p.active ? "border-green-500/30 text-green-600" : "border-red-500/30 text-red-500"
                           }`}>
-                            {p.active ? "Active" : "Inactive"}
+                            {p.active ? t("dashboard.adminPlans.active") : t("dashboard.adminPlans.inactive")}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
@@ -334,67 +336,67 @@ export default function AdminPlansPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingId ? "Edit Plan" : "Create Plan"}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingId ? t("dashboard.adminPlans.editPlan") : t("dashboard.adminPlans.createPlan")}>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <FormField label="Name" required>
+            <FormField label={t("dashboard.adminPlans.name")} required>
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Pro" />
             </FormField>
-            <FormField label="Slug" required>
+            <FormField label={t("dashboard.adminPlans.slug")} required>
               <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="pro" />
             </FormField>
           </div>
-          <FormField label="Description">
+          <FormField label={t("dashboard.adminPlans.description")}>
             <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="For professionals" />
           </FormField>
-          <FormField label="Features (JSON or text list)">
-            <Textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="5 websites, 100 AI generates/month" />
+          <FormField label={t("dashboard.adminPlans.featuresLabel")}>
+            <Textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder={t("dashboard.adminPlans.featuresPlaceholder")} />
           </FormField>
 
           <div className="grid grid-cols-2 gap-4">
-            <FormField label="Price (Monthly)">
+            <FormField label={t("dashboard.adminPlans.priceMonthly")}>
               <Input type="number" value={form.price_monthly || ""} onChange={(e) => setNum("price_monthly", e.target.value)} placeholder="0" />
             </FormField>
-            <FormField label="Price (Yearly)">
+            <FormField label={t("dashboard.adminPlans.priceYearly")}>
               <Input type="number" value={form.price_yearly || ""} onChange={(e) => setNum("price_yearly", e.target.value)} placeholder="0" />
             </FormField>
           </div>
 
           <div className="rounded-lg border border-dashed border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
-            <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">Promo Pricing</div>
+            <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">{t("dashboard.adminPlans.promoPricing")}</div>
             <div className="grid grid-cols-2 gap-4">
-              <FormField label="Promo Price (Monthly)">
-                <Input type="number" value={form.promo_price_monthly || ""} onChange={(e) => setNum("promo_price_monthly", e.target.value)} placeholder="0 = no promo" />
+              <FormField label={t("dashboard.adminPlans.promoPriceMonthly")}>
+                <Input type="number" value={form.promo_price_monthly || ""} onChange={(e) => setNum("promo_price_monthly", e.target.value)} placeholder={t("dashboard.adminPlans.noPromo")} />
               </FormField>
-              <FormField label="Promo Price (Yearly)">
-                <Input type="number" value={form.promo_price_yearly || ""} onChange={(e) => setNum("promo_price_yearly", e.target.value)} placeholder="0 = no promo" />
+              <FormField label={t("dashboard.adminPlans.promoPriceYearly")}>
+                <Input type="number" value={form.promo_price_yearly || ""} onChange={(e) => setNum("promo_price_yearly", e.target.value)} placeholder={t("dashboard.adminPlans.noPromo")} />
               </FormField>
             </div>
-            <FormField label="Duration (months, for monthly promo)">
-              <Input type="number" value={form.promo_duration_months || ""} onChange={(e) => setNum("promo_duration_months", e.target.value)} placeholder="0 = no promo" />
+            <FormField label={t("dashboard.adminPlans.durationMonths")}>
+              <Input type="number" value={form.promo_duration_months || ""} onChange={(e) => setNum("promo_duration_months", e.target.value)} placeholder={t("dashboard.adminPlans.noPromo")} />
             </FormField>
-            <FormField label="Promo Label">
-              <Input value={form.promo_label} onChange={(e) => setForm({ ...form, promo_label: e.target.value })} placeholder="e.g. Harga Perkenalan, Diskon Launching" />
+            <FormField label={t("dashboard.adminPlans.promoLabel")}>
+              <Input value={form.promo_label} onChange={(e) => setForm({ ...form, promo_label: e.target.value })} placeholder={t("dashboard.adminPlans.promoLabelPlaceholder")} />
             </FormField>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <FormField label="Max Sites">
+            <FormField label={t("dashboard.adminPlans.maxSites")}>
               <Input type="number" value={form.max_sites || ""} onChange={(e) => setNum("max_sites", e.target.value)} placeholder="1" />
             </FormField>
-            <FormField label="AI Generates">
+            <FormField label={t("dashboard.adminPlans.aiGenerates")}>
               <Input type="number" value={form.max_ai_generates || ""} onChange={(e) => setNum("max_ai_generates", e.target.value)} placeholder="0" />
             </FormField>
-            <FormField label="Section Regens">
+            <FormField label={t("dashboard.adminPlans.sectionRegens")}>
               <Input type="number" value={form.max_section_regens || ""} onChange={(e) => setNum("max_section_regens", e.target.value)} placeholder="0" />
             </FormField>
-            <FormField label="Design Regens">
+            <FormField label={t("dashboard.adminPlans.designRegens")}>
               <Input type="number" value={form.max_design_regens || ""} onChange={(e) => setNum("max_design_regens", e.target.value)} placeholder="0" />
             </FormField>
-            <FormField label="Max Members">
+            <FormField label={t("dashboard.adminPlans.maxMembers")}>
               <Input type="number" value={form.max_members || ""} onChange={(e) => setNum("max_members", e.target.value)} placeholder="1" />
             </FormField>
-            <FormField label="Custom Domains">
+            <FormField label={t("dashboard.adminPlans.customDomains")}>
               <Input type="number" value={form.max_custom_domain || ""} onChange={(e) => setNum("max_custom_domain", e.target.value)} placeholder="0" />
             </FormField>
           </div>
@@ -404,13 +406,13 @@ export default function AdminPlansPage() {
               checked={form.active}
               onChange={(e) => setForm({ ...form, active: e.target.checked })}
             />
-            <Label htmlFor="plan-active">Plan is active and available</Label>
+            <Label htmlFor="plan-active">{t("dashboard.adminPlans.planActive")}</Label>
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-border/20">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>{t("dashboard.adminPlans.cancel")}</Button>
             <Button onClick={handleSave} disabled={saving || !form.name || !form.slug}>
-              {saving ? "Saving..." : editingId ? "Update Plan" : "Create Plan"}
+              {saving ? t("dashboard.adminPlans.saving") : editingId ? t("dashboard.adminPlans.updatePlan") : t("dashboard.adminPlans.createPlanBtn")}
             </Button>
           </div>
         </div>

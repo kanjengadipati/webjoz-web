@@ -828,6 +828,161 @@ export interface Translations {
       customDomainCount: string;
       seoOptimized: string;
     };
+    adminPlans: {
+      noAccess: string;
+      title: string;
+      subtitle: string;
+      newPlan: string;
+      allPlans: string;
+      noPlansYet: string;
+      createFirstPlan: string;
+      perMonth: string;
+      perYear: string;
+      active: string;
+      inactive: string;
+      sitesCount: string;
+      aiCount: string;
+      membersCount: string;
+      tablePlan: string;
+      tablePrice: string;
+      tableSites: string;
+      tableAiGen: string;
+      tableMembers: string;
+      tableDomains: string;
+      tableStatus: string;
+      promoMonthly: string;
+      promoMonthsShort: string;
+      promoYearly: string;
+      promoTag: string;
+      editPlan: string;
+      createPlan: string;
+      name: string;
+      slug: string;
+      description: string;
+      featuresLabel: string;
+      featuresPlaceholder: string;
+      priceMonthly: string;
+      priceYearly: string;
+      promoPricing: string;
+      promoPriceMonthly: string;
+      promoPriceYearly: string;
+      noPromo: string;
+      durationMonths: string;
+      promoLabel: string;
+      promoLabelPlaceholder: string;
+      maxSites: string;
+      aiGenerates: string;
+      sectionRegens: string;
+      designRegens: string;
+      maxMembers: string;
+      customDomains: string;
+      planActive: string;
+      cancel: string;
+      saving: string;
+      updatePlan: string;
+      createPlanBtn: string;
+      deleteConfirm: string;
+      planDeleted: string;
+      planUpdated: string;
+      planCreated: string;
+      loadFailed: string;
+      saveFailed: string;
+      deleteFailed: string;
+      required: string;
+    };
+    adminHealth: {
+      noAccess: string;
+      title: string;
+      subtitle: string;
+      refresh: string;
+      loadFailed: string;
+      loadFailedTitle: string;
+      retry: string;
+      serviceDatabase: string;
+      dbPostgres: string;
+      serviceCache: string;
+      redisConnection: string;
+      serviceAi: string;
+      geminiStatus: string;
+      serviceVersion: string;
+      apiVersionDesc: string;
+      statusHealthy: string;
+      statusUnhealthy: string;
+      statusUnknown: string;
+      lastCheckedAt: string;
+      neverChecked: string;
+      allSystemsUp: string;
+      someIssues: string;
+    };
+    adminMetrics: {
+      noAccess: string;
+      title: string;
+      subtitle: string;
+      refresh: string;
+      loadFailed: string;
+      loadFailedTitle: string;
+      retry: string;
+      avgDuration: string;
+      avgDurationDesc: string;
+      p95: string;
+      p95Desc: string;
+      errorRate: string;
+      errorsOfRequests: string;
+      activeRequests: string;
+      activeRequestsDesc: string;
+      trendTitle: string;
+      trendDesc: string;
+      noTrendData: string;
+      recentRequests: string;
+      recentRequestsDesc: string;
+      noRequestsLogged: string;
+    };
+    adminTemplates: {
+      seedLoadFailed: string;
+      backfillConfirm: string;
+      backfillDone: string;
+      backfillFailed: string;
+      seedDeleteConfirm: string;
+      seedDeleted: string;
+      seedDeleteFailed: string;
+      accessDenied: string;
+      superadminOnly: string;
+      superadmin: string;
+      title: string;
+      subtitle: string;
+      backfillScores: string;
+      refreshSeeds: string;
+      tabComponents: string;
+      tabSeeds: string;
+      searchComponentsPlaceholder: string;
+      searchSeedsPlaceholder: string;
+      allCategories: string;
+      allBusinessTypes: string;
+      allMoods: string;
+      noTemplateMatch: string;
+      resetFilter: string;
+      score: string;
+      defaultSeed: string;
+      heading: string;
+      normal: string;
+      bodyFont: string;
+      body: string;
+      designQuality: string;
+      previewFullscreen: string;
+      loginRequired: string;
+      loginSession: string;
+      loadingSeeds: string;
+      superadminOnlyManage: string;
+      insufficientAccess: string;
+      noSeedsInDb: string;
+      noSeedsMatch: string;
+      resetSearch: string;
+      entriesCount: string;
+      noPalette: string;
+      base: string;
+      view: string;
+      delete: string;
+    };
   };
 }
 
@@ -1494,19 +1649,19 @@ export const translations: Record<Locale, Translations> = {
         profilePhoneError: "Gunakan format internasional, seperti +628123456789.",
         profileUpdated: "Profil diperbarui.",
         profileFailedUpdate: "Gagal memperbarui profil",
-        profileEyebrow: "Profile",
-        profileTitle: "Profile Settings",
+        profileEyebrow: "Profil",
+        profileTitle: "Pengaturan Profil",
         email: "Email",
-        name: "Name",
-        saveProfile: "Save Profile",
-        profileEmpty: "Profile data will appear here after authentication.",
+        name: "Nama",
+        saveProfile: "Simpan Profil",
+        profileEmpty: "Data profil akan muncul di sini setelah autentikasi.",
         pwChanged: "Kata sandi berhasil diubah. Silakan masuk kembali.",
         pwFailed: "Gagal mengubah kata sandi",
-        securityEyebrow: "Security",
-        changePassword: "Change Password",
-        currentPassword: "Current Password",
-        newPassword: "New Password",
-        updatePassword: "Update Password",
+        securityEyebrow: "Keamanan",
+        changePassword: "Ubah Kata Sandi",
+        currentPassword: "Kata Sandi Saat Ini",
+        newPassword: "Kata Sandi Baru",
+        updatePassword: "Perbarui Kata Sandi",
         devicesFailedLoad: "Gagal memuat perangkat",
         deviceSignedOut: "Perangkat berhasil keluar.",
         deviceSignOutFailed: "Gagal mengeluarkan perangkat",
@@ -1519,111 +1674,111 @@ export const translations: Record<Locale, Translations> = {
         browser: "Browser",
         unknownDevice: "Perangkat tidak dikenal",
         unknownUserAgent: "User agent tidak dikenal",
-        devicesTitle: "Device & Session Management",
-        refresh: "Refresh",
-        signOutOthers: "Sign out others",
-        signOutAll: "Sign out all",
-        metricActiveSessions: "Active sessions",
-        metricTrustedDevices: "Trusted devices",
-        metricThisSession: "This session",
-        noSessionsTitle: "No sessions yet",
-        noSessionsText: "No active sessions or trusted devices associated with this account.",
-        statusCurrent: "currently signed in",
-        statusTrusted: "trusted device",
-        statusUnknown: "unknown device",
-        sessionId: "Session #{id}",
-        deviceId: "Device {id}",
+        devicesTitle: "Manajemen Perangkat & Sesi",
+        refresh: "Muat Ulang",
+        signOutOthers: "Keluar dari perangkat lain",
+        signOutAll: "Keluar dari semua perangkat",
+        metricActiveSessions: "Sesi aktif",
+        metricTrustedDevices: "Perangkat tepercaya",
+        metricThisSession: "Sesi ini",
+        noSessionsTitle: "Belum ada sesi",
+        noSessionsText: "Tidak ada sesi aktif atau perangkat tepercaya yang terkait dengan akun ini.",
+        statusCurrent: "sedang masuk",
+        statusTrusted: "perangkat tepercaya",
+        statusUnknown: "perangkat tidak dikenal",
+        sessionId: "Sesi #{id}",
+        deviceId: "Perangkat {id}",
         ip: "IP: {ip}",
-        lastUsed: "Last used: {date}",
-        expires: "Expires: {date}",
-        removeTrust: "Remove trust",
-        revoke: "Revoke",
+        lastUsed: "Terakhir digunakan: {date}",
+        expires: "Kedaluwarsa: {date}",
+        removeTrust: "Hapus kepercayaan",
+        revoke: "Cabut",
         usersFailedLoad: "Gagal memuat pengguna",
         userUpdated: "Pengguna diperbarui menjadi {role}",
         userUpdateFailed: "Gagal memperbarui peran pengguna",
         userDeleteConfirm: "Yakin ingin menghapus {name}?",
         userDeleted: "Pengguna {name} berhasil dihapus",
         userDeleteFailed: "Gagal menghapus pengguna",
-        usersTitle: "User Management",
-        searchByNameEmail: "Search by name or email",
-        roleFilter: "Role filter (user/sales/admin)",
-        usersVisibleTitle: "Admin-visible users",
-        noUsersMatch: "No users matched the current query.",
-        roleUser: "User",
+        usersTitle: "Manajemen Pengguna",
+        searchByNameEmail: "Cari berdasarkan nama atau email",
+        roleFilter: "Filter peran (user/sales/admin)",
+        usersVisibleTitle: "Pengguna yang terlihat admin",
+        noUsersMatch: "Tidak ada pengguna yang cocok dengan pencarian.",
+        roleUser: "Pengguna",
         roleSales: "Sales",
         roleAdmin: "Admin",
         roleSuperadmin: "Superadmin",
-        delete: "Delete",
-        permsFailedLoad: "Failed to load initial data",
-        permsRoleFailedLoad: "Failed to load role permissions",
-        permsSaved: "Permissions updated successfully",
-        permsSaveFailed: "Failed to update permissions",
-        rbacEyebrow: "RBAC Management",
-        manageRolePermissions: "Manage Role Permissions",
-        saving: "Saving...",
-        saveChanges: "Save Changes",
-        totalPermissions: "{count} Total",
-        availablePermissions: "Available Permissions",
-        activePermissions: "{count} Active",
-        resourceSuffix: "{resource} Resource",
-        logsRefreshed: "Audit feed refreshed.",
-        logsFailedLoad: "Failed to load logs",
-        logsTitle: "Real-time Audit Log Feed",
-        autoRefreshOn: "Auto-refresh On",
-        autoRefreshOff: "Auto-refresh Off",
-        refreshNow: "Refresh Now",
-        logFilterLabel: "IP / Search",
-        dateFrom: "Date From",
-        dateTo: "Date To",
-        eventTable: "Event Table",
-        noLogsMatch: "No audit logs matched the current filters.",
-        logActionOn: "{action} on {resource}",
-        noDescription: "No description",
-        ipAddress: "IP Address",
-        actorUserId: "Actor User ID",
+        delete: "Hapus",
+        permsFailedLoad: "Gagal memuat data awal",
+        permsRoleFailedLoad: "Gagal memuat izin peran",
+        permsSaved: "Izin berhasil diperbarui",
+        permsSaveFailed: "Gagal memperbarui izin",
+        rbacEyebrow: "Manajemen RBAC",
+        manageRolePermissions: "Kelola Izin Peran",
+        saving: "Menyimpan...",
+        saveChanges: "Simpan Perubahan",
+        totalPermissions: "Total {count}",
+        availablePermissions: "Izin Tersedia",
+        activePermissions: "Aktif {count}",
+        resourceSuffix: "Sumber Daya {resource}",
+        logsRefreshed: "Umpan audit dimuat ulang.",
+        logsFailedLoad: "Gagal memuat log",
+        logsTitle: "Umpan Log Audit Real-time",
+        autoRefreshOn: "Muat Ulang Otomatis Aktif",
+        autoRefreshOff: "Muat Ulang Otomatis Nonaktif",
+        refreshNow: "Muat Ulang Sekarang",
+        logFilterLabel: "IP / Cari",
+        dateFrom: "Dari Tanggal",
+        dateTo: "Sampai Tanggal",
+        eventTable: "Tabel Peristiwa",
+        noLogsMatch: "Tidak ada log audit yang cocok dengan filter saat ini.",
+        logActionOn: "{action} pada {resource}",
+        noDescription: "Tidak ada deskripsi",
+        ipAddress: "Alamat IP",
+        actorUserId: "ID Pengguna Aktor",
         userAgent: "User Agent",
-        investLoadHistoryFailed: "Failed to load history",
-        investCompleted: "AI investigation completed.",
-        investFailed: "Failed to investigate logs",
-        investDetailFailed: "Failed to load detail",
+        investLoadHistoryFailed: "Gagal memuat riwayat",
+        investCompleted: "Investigasi AI selesai.",
+        investFailed: "Gagal menginvestigasi log",
+        investDetailFailed: "Gagal memuat detail",
         investLoading: [
-          "Clustering matching audit events...",
-          "Building incident timeline...",
-          "Cross-checking suspicious signals...",
-          "Drafting recommendations for the operator...",
+          "Mengelompokkan peristiwa audit yang cocok...",
+          "Menyusun linimasa insiden...",
+          "Memeriksa silang sinyal mencurigakan...",
+          "Menyusun rekomendasi untuk operator...",
         ],
-        investEyebrow: "AI Powered",
-        investTitle: "Investigate with AI",
-        analyzing: "Analyzing...",
-        runInvestigation: "Run Investigation",
-        streamingAnalysis: "Streaming analysis",
-        latestResult: "Latest result",
-        investOutputTitle: "AI Investigation Output",
-        aiProcessing: "AI Processing",
-        riskLevel: "Risk Level",
-        riskWeightNote: "Weighted by signals, urgency, log volume, and incident status",
-        score: "Score {score}",
-        timeline: "Timeline",
-        suspiciousSignals: "Suspicious Signals",
-        recommendations: "Recommendations",
-        noItems: "No items returned.",
-        readyTitle: "Ready for analysis",
-        readyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
-        savedCount: "{count} saved",
-        savedTitle: "Saved Investigations",
-        noSavedTitle: "No saved investigations",
-        noSavedDesc: "Completed investigations will appear here for quick review.",
-        investigationId: "Investigation #{id}",
-        previous: "Previous",
-        pageOf: "Page {page} of {total}",
-        next: "Next",
-        investigationDetails: "Investigation Details",
-        closeDetails: "Close investigation details",
+        investEyebrow: "Didukung AI",
+        investTitle: "Investigasi dengan AI",
+        analyzing: "Menganalisis...",
+        runInvestigation: "Jalankan Investigasi",
+        streamingAnalysis: "Analisis streaming",
+        latestResult: "Hasil terbaru",
+        investOutputTitle: "Output Investigasi AI",
+        aiProcessing: "Pemrosesan AI",
+        riskLevel: "Tingkat Risiko",
+        riskWeightNote: "Ditimbang berdasarkan sinyal, urgensi, volume log, dan status insiden",
+        score: "Skor {score}",
+        timeline: "Linimasa",
+        suspiciousSignals: "Sinyal Mencurigakan",
+        recommendations: "Rekomendasi",
+        noItems: "Tidak ada item yang dikembalikan.",
+        readyTitle: "Siap dianalisis",
+        readyDesc: "Jalankan investigasi untuk menghasilkan ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
+        savedCount: "{count} tersimpan",
+        savedTitle: "Investigasi Tersimpan",
+        noSavedTitle: "Tidak ada investigasi tersimpan",
+        noSavedDesc: "Investigasi yang selesai akan muncul di sini untuk ditinjau ulang.",
+        investigationId: "Investigasi #{id}",
+        previous: "Sebelumnya",
+        pageOf: "Halaman {page} dari {total}",
+        next: "Berikutnya",
+        investigationDetails: "Detail Investigasi",
+        closeDetails: "Tutup detail investigasi",
         status: "Status",
-        riskNoteHigh: "Escalate quickly. Multiple strong signals point to elevated risk.",
-        riskNoteMedium: "Needs review. Suspicious patterns warrant operator follow-up.",
-        riskNoteLow: "Monitor only. Lower-confidence incident.",
-        noResultYet: "No investigation result loaded yet.",
+        riskNoteHigh: "Segera eskalasi. Banyak sinyal kuat mengarah ke risiko tinggi.",
+        riskNoteMedium: "Perlu ditinjau. Pola mencurigakan perlu ditindaklanjuti operator.",
+        riskNoteLow: "Pantau saja. Insiden dengan keyakinan rendah.",
+        noResultYet: "Belum ada hasil investigasi yang dimuat.",
       },
       upgrade: {
         snapLoadError: "Gagal memuat Midtrans Snap",
@@ -1663,6 +1818,161 @@ export const translations: Record<Locale, Translations> = {
         monthly: "Bulanan",
         customDomainCount: "{n} Custom Domain",
         seoOptimized: "SEO optimasi",
+      },
+      adminPlans: {
+        noAccess: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Manajemen Paket",
+        subtitle: "Tentukan dan kelola paket langganan untuk tenant.",
+        newPlan: "Paket Baru",
+        allPlans: "Semua Paket",
+        noPlansYet: "Belum ada paket yang ditentukan",
+        createFirstPlan: "Buat paket pertama",
+        perMonth: "/bln",
+        perYear: "/thn",
+        active: "Aktif",
+        inactive: "Nonaktif",
+        sitesCount: "{count} situs",
+        aiCount: "{count} AI",
+        membersCount: "{count} anggota",
+        tablePlan: "Paket",
+        tablePrice: "Harga",
+        tableSites: "Situs",
+        tableAiGen: "AI Gen",
+        tableMembers: "Anggota",
+        tableDomains: "Domain",
+        tableStatus: "Status",
+        promoMonthly: "Promo: {price}/bln ({months} bulan)",
+        promoMonthsShort: "bln",
+        promoYearly: "Promo Tahunan: {price}/thn",
+        promoTag: "— {label}",
+        editPlan: "Edit Paket",
+        createPlan: "Buat Paket",
+        name: "Nama",
+        slug: "Slug",
+        description: "Deskripsi",
+        featuresLabel: "Fitur (JSON atau daftar teks)",
+        featuresPlaceholder: "5 website, 100 AI generate/bulan",
+        priceMonthly: "Harga (Bulanan)",
+        priceYearly: "Harga (Tahunan)",
+        promoPricing: "Harga Promo",
+        promoPriceMonthly: "Harga Promo (Bulanan)",
+        promoPriceYearly: "Harga Promo (Tahunan)",
+        noPromo: "0 = tanpa promo",
+        durationMonths: "Durasi (bulan, untuk promo bulanan)",
+        promoLabel: "Label Promo",
+        promoLabelPlaceholder: "mis. Harga Perkenalan, Diskon Launching",
+        maxSites: "Maks. Situs",
+        aiGenerates: "AI Generate",
+        sectionRegens: "Section Regen",
+        designRegens: "Design Regen",
+        maxMembers: "Maks. Anggota",
+        customDomains: "Custom Domain",
+        planActive: "Paket aktif dan tersedia",
+        cancel: "Batal",
+        saving: "Menyimpan...",
+        updatePlan: "Perbarui Paket",
+        createPlanBtn: "Buat Paket",
+        deleteConfirm: "Yakin ingin menghapus paket ini?",
+        planDeleted: "Paket dihapus",
+        planUpdated: "Paket diperbarui",
+        planCreated: "Paket dibuat",
+        loadFailed: "Gagal memuat paket",
+        saveFailed: "Gagal menyimpan paket",
+        deleteFailed: "Gagal menghapus paket",
+        required: "wajib diisi",
+      },
+      adminHealth: {
+        noAccess: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Kesehatan Sistem",
+        subtitle: "Pantau status layanan dan kesehatan platform.",
+        refresh: "Muat Ulang",
+        loadFailed: "Gagal mengambil data health",
+        loadFailedTitle: "Gagal memuat data",
+        retry: "Coba Lagi",
+        serviceDatabase: "Database",
+        dbPostgres: "Koneksi PostgreSQL",
+        serviceCache: "Cache",
+        redisConnection: "Koneksi Redis",
+        serviceAi: "AI Provider",
+        geminiStatus: "Status API Gemini",
+        serviceVersion: "Versi API",
+        apiVersionDesc: "Versi aplikasi",
+        statusHealthy: "Sehat",
+        statusUnhealthy: "Tidak Sehat",
+        statusUnknown: "Tidak Diketahui",
+        lastCheckedAt: "Terakhir diperiksa pukul",
+        neverChecked: "Belum pernah diperiksa",
+        allSystemsUp: "Semua sistem aktif",
+        someIssues: "Beberapa sistem bermasalah",
+      },
+      adminMetrics: {
+        noAccess: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Metrik AI Generation",
+        subtitle: "Latensi, konkurensi, dan metrik kualitas untuk pembuatan konten AI.",
+        refresh: "Muat Ulang",
+        loadFailed: "Gagal memuat metrik",
+        loadFailedTitle: "Gagal memuat data",
+        retry: "Coba Lagi",
+        avgDuration: "Durasi Rata-Rata",
+        avgDurationDesc: "Rata-rata waktu pembuatan",
+        p95: "P95 (bucket terakhir)",
+        p95Desc: "Persentil latensi ke-95",
+        errorRate: "Tingkat Error",
+        errorsOfRequests: "{errors} error / {requests} request",
+        activeRequests: "Request Aktif",
+        activeRequestsDesc: "Generasi AI bersamaan",
+        trendTitle: "Tren (24 jam)",
+        trendDesc: "Durasi rata-rata dan tingkat error per jam",
+        noTrendData: "Belum ada data tren.",
+        recentRequests: "Request Terbaru (10 terakhir)",
+        recentRequestsDesc: "Percobaan pembuatan terbaru",
+        noRequestsLogged: "Belum ada request yang tercatat.",
+      },
+      adminTemplates: {
+        seedLoadFailed: "Gagal mengambil data design token seeds",
+        backfillConfirm: "Backfill scores untuk semua template_library rows yang score=0?",
+        backfillDone: "Backfill selesai — scores sudah diperbarui",
+        backfillFailed: "Gagal backfill",
+        seedDeleteConfirm: "Apakah Anda yakin ingin menghapus design token seed ini secara permanen?",
+        seedDeleted: "Design token seed berhasil dihapus",
+        seedDeleteFailed: "Gagal menghapus seed",
+        accessDenied: "Akses Ditolak",
+        superadminOnly: "Halaman ini hanya dapat diakses oleh akun dengan peran",
+        superadmin: "Superadmin",
+        title: "Template Gallery",
+        subtitle: "Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.",
+        backfillScores: "Backfill Scores",
+        refreshSeeds: "Refresh Seeds",
+        tabComponents: "Komponen Template",
+        tabSeeds: "Design Token Seeds",
+        searchComponentsPlaceholder: "Cari nama, ID, atau deskripsi template...",
+        searchSeedsPlaceholder: "Cari tipe bisnis, mood, atau ID seed...",
+        allCategories: "Semua Kategori",
+        allBusinessTypes: "Semua Tipe Bisnis",
+        allMoods: "Semua Mood",
+        noTemplateMatch: "Tidak ada template yang cocok dengan pencarian Anda.",
+        resetFilter: "Reset Filter",
+        score: "Score",
+        defaultSeed: "Default Seed",
+        heading: "Heading",
+        normal: "Normal",
+        bodyFont: "Body Font",
+        body: "Body",
+        designQuality: "Kualitas Desain",
+        previewFullscreen: "Pratinjau Fullscreen",
+        loginRequired: "Sesi login diperlukan untuk melihat design token seeds.",
+        loginSession: "Login Sesi",
+        loadingSeeds: "Memuat design token seeds dari API...",
+        superadminOnlyManage: "Hanya Superadmin yang Bisa Mengelola Design Token Seeds.",
+        insufficientAccess: "Peran akun Anda saat ini tidak memiliki hak akses administratif yang cukup.",
+        noSeedsInDb: "Tidak ada design token seeds di database.",
+        noSeedsMatch: "Tidak ada seeds yang cocok dengan kata kunci.",
+        resetSearch: "Reset Pencarian",
+        entriesCount: "{shown} dari {total} entries di template_library",
+        noPalette: "No Palette",
+        base: "Base",
+        view: "Lihat",
+        delete: "Hapus",
       },
     },
   },
@@ -2497,6 +2807,161 @@ export const translations: Record<Locale, Translations> = {
         monthly: "Monthly",
         customDomainCount: "{n} Custom Domains",
         seoOptimized: "SEO optimized",
+      },
+      adminPlans: {
+        noAccess: "You do not have access to this page.",
+        title: "Plan Management",
+        subtitle: "Define and manage subscription plans for tenants.",
+        newPlan: "New Plan",
+        allPlans: "All Plans",
+        noPlansYet: "No plans defined yet",
+        createFirstPlan: "Create your first plan",
+        perMonth: "/mo",
+        perYear: "/yr",
+        active: "Active",
+        inactive: "Inactive",
+        sitesCount: "{count} sites",
+        aiCount: "{count} AI",
+        membersCount: "{count} members",
+        tablePlan: "Plan",
+        tablePrice: "Price",
+        tableSites: "Sites",
+        tableAiGen: "AI Gen",
+        tableMembers: "Members",
+        tableDomains: "Domains",
+        tableStatus: "Status",
+        promoMonthly: "Promo: {price}/mo ({months} months)",
+        promoMonthsShort: "mo",
+        promoYearly: "Yearly Promo: {price}/yr",
+        promoTag: "— {label}",
+        editPlan: "Edit Plan",
+        createPlan: "Create Plan",
+        name: "Name",
+        slug: "Slug",
+        description: "Description",
+        featuresLabel: "Features (JSON or text list)",
+        featuresPlaceholder: "5 websites, 100 AI generates/month",
+        priceMonthly: "Price (Monthly)",
+        priceYearly: "Price (Yearly)",
+        promoPricing: "Promo Pricing",
+        promoPriceMonthly: "Promo Price (Monthly)",
+        promoPriceYearly: "Promo Price (Yearly)",
+        noPromo: "0 = no promo",
+        durationMonths: "Duration (months, for monthly promo)",
+        promoLabel: "Promo Label",
+        promoLabelPlaceholder: "e.g. Intro Price, Launch Discount",
+        maxSites: "Max Sites",
+        aiGenerates: "AI Generates",
+        sectionRegens: "Section Regens",
+        designRegens: "Design Regens",
+        maxMembers: "Max Members",
+        customDomains: "Custom Domains",
+        planActive: "Plan is active and available",
+        cancel: "Cancel",
+        saving: "Saving...",
+        updatePlan: "Update Plan",
+        createPlanBtn: "Create Plan",
+        deleteConfirm: "Are you sure you want to delete this plan?",
+        planDeleted: "Plan deleted",
+        planUpdated: "Plan updated",
+        planCreated: "Plan created",
+        loadFailed: "Failed to load plans",
+        saveFailed: "Failed to save plan",
+        deleteFailed: "Failed to delete plan",
+        required: "required",
+      },
+      adminHealth: {
+        noAccess: "You do not have access to this page.",
+        title: "System Health",
+        subtitle: "Monitor platform service status and health.",
+        refresh: "Refresh",
+        loadFailed: "Failed to fetch health data",
+        loadFailedTitle: "Failed to load data",
+        retry: "Try Again",
+        serviceDatabase: "Database",
+        dbPostgres: "PostgreSQL connection",
+        serviceCache: "Cache",
+        redisConnection: "Redis connection",
+        serviceAi: "AI Provider",
+        geminiStatus: "Gemini API status",
+        serviceVersion: "API Version",
+        apiVersionDesc: "App version",
+        statusHealthy: "Healthy",
+        statusUnhealthy: "Unhealthy",
+        statusUnknown: "Unknown",
+        lastCheckedAt: "Last checked at",
+        neverChecked: "Never checked",
+        allSystemsUp: "All systems operational",
+        someIssues: "Some systems have issues",
+      },
+      adminMetrics: {
+        noAccess: "You do not have access to this page.",
+        title: "AI Generation Metrics",
+        subtitle: "Latency, concurrency, and quality metrics for AI content generation.",
+        refresh: "Refresh",
+        loadFailed: "Failed to load metrics",
+        loadFailedTitle: "Failed to load data",
+        retry: "Retry",
+        avgDuration: "Avg Duration",
+        avgDurationDesc: "Average generation time",
+        p95: "P95 (last bucket)",
+        p95Desc: "95th percentile latency",
+        errorRate: "Error Rate",
+        errorsOfRequests: "{errors} errors / {requests} requests",
+        activeRequests: "Active Requests",
+        activeRequestsDesc: "Concurrent AI generations",
+        trendTitle: "Trend (24h)",
+        trendDesc: "Hourly average duration and error rate",
+        noTrendData: "No trend data available yet.",
+        recentRequests: "Recent Requests (last 10)",
+        recentRequestsDesc: "Latest generation attempts",
+        noRequestsLogged: "No requests logged yet.",
+      },
+      adminTemplates: {
+        seedLoadFailed: "Failed to fetch design token seeds",
+        backfillConfirm: "Backfill scores for all template_library rows with score=0?",
+        backfillDone: "Backfill complete — scores updated",
+        backfillFailed: "Backfill failed",
+        seedDeleteConfirm: "Are you sure you want to permanently delete this design token seed?",
+        seedDeleted: "Design token seed deleted",
+        seedDeleteFailed: "Failed to delete seed",
+        accessDenied: "Access Denied",
+        superadminOnly: "This page can only be accessed by accounts with the",
+        superadmin: "Superadmin",
+        title: "Template Gallery",
+        subtitle: "Review system built-in templates and design token seeds from AI generator incubation.",
+        backfillScores: "Backfill Scores",
+        refreshSeeds: "Refresh Seeds",
+        tabComponents: "Template Components",
+        tabSeeds: "Design Token Seeds",
+        searchComponentsPlaceholder: "Search template name, ID, or description...",
+        searchSeedsPlaceholder: "Search business type, mood, or seed ID...",
+        allCategories: "All Categories",
+        allBusinessTypes: "All Business Types",
+        allMoods: "All Moods",
+        noTemplateMatch: "No templates matched your search.",
+        resetFilter: "Reset Filter",
+        score: "Score",
+        defaultSeed: "Default Seed",
+        heading: "Heading",
+        normal: "Normal",
+        bodyFont: "Body Font",
+        body: "Body",
+        designQuality: "Design Quality",
+        previewFullscreen: "Fullscreen Preview",
+        loginRequired: "A login session is required to view design token seeds.",
+        loginSession: "Login Session",
+        loadingSeeds: "Loading design token seeds from API...",
+        superadminOnlyManage: "Only Superadmins Can Manage Design Token Seeds.",
+        insufficientAccess: "Your current account role does not have sufficient administrative access.",
+        noSeedsInDb: "No design token seeds in the database.",
+        noSeedsMatch: "No seeds matched the search keywords.",
+        resetSearch: "Reset Search",
+        entriesCount: "{shown} of {total} entries in template_library",
+        noPalette: "No Palette",
+        base: "Base",
+        view: "View",
+        delete: "Delete",
       },
     },
   },

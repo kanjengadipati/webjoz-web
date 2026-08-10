@@ -6,6 +6,7 @@ import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Activity, Loader2, Database, Server, Cpu, Wifi, RefreshCw, Clock } from "lucide-react";
 import { Card, CardContent, Button } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SystemHealth {
   database: string;
@@ -18,11 +19,11 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
 
-const serviceMeta: Record<string, { icon: typeof Database; label: string; desc: string }> = {
-  database: { icon: Database, label: "Database", desc: "Koneksi PostgreSQL" },
-  cache: { icon: Server, label: "Cache", desc: "Redis connection" },
-  ai: { icon: Cpu, label: "AI Provider", desc: "Gemini API status" },
-  version: { icon: Wifi, label: "API Version", desc: "Versi aplikasi" },
+const serviceMeta: Record<string, { icon: typeof Database; labelKey: string; descKey: string }> = {
+  database: { icon: Database, labelKey: "dashboard.adminHealth.serviceDatabase", descKey: "dashboard.adminHealth.dbPostgres" },
+  cache: { icon: Server, labelKey: "dashboard.adminHealth.serviceCache", descKey: "dashboard.adminHealth.redisConnection" },
+  ai: { icon: Cpu, labelKey: "dashboard.adminHealth.serviceAi", descKey: "dashboard.adminHealth.geminiStatus" },
+  version: { icon: Wifi, labelKey: "dashboard.adminHealth.serviceVersion", descKey: "dashboard.adminHealth.apiVersionDesc" },
 };
 
 function statusColor(status: string, isVersion: boolean) {
@@ -47,10 +48,10 @@ function statusBorder(status: string, isVersion: boolean) {
 }
 
 function statusLabel(status: string, isVersion: boolean) {
-  if (isVersion) return status;
-  if (status === "ok") return "Healthy";
-  if (status === "error") return "Unhealthy";
-  return "Unknown";
+  if (isVersion) return null;
+  if (status === "ok") return "dashboard.adminHealth.statusHealthy";
+  if (status === "error") return "dashboard.adminHealth.statusUnhealthy";
+  return "dashboard.adminHealth.statusUnknown";
 }
 
 function StatusDot({ status, isVersion }: { status: string; isVersion: boolean }) {
@@ -70,6 +71,7 @@ function StatusDot({ status, isVersion }: { status: string; isVersion: boolean }
 export default function AdminHealthPage() {
   const token = useAuthToken();
   const { role } = usePermissions();
+  const { t } = useI18n();
   const [health, setHealth] = useState<SystemHealth | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -88,12 +90,12 @@ export default function AdminHealthPage() {
       setHealth(res.data);
       setLastChecked(new Date());
     } catch (err: any) {
-      setError(err.message || "Gagal mengambil data health");
+      setError(err.message || t("dashboard.adminHealth.loadFailed"));
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [token, isAdmin]);
+  }, [token, isAdmin, t]);
 
   useEffect(() => {
     fetchHealth();
@@ -103,7 +105,7 @@ export default function AdminHealthPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Activity className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini.</p>
+        <p className="text-sm">{t("dashboard.adminHealth.noAccess")}</p>
       </div>
     );
   }
@@ -121,10 +123,10 @@ export default function AdminHealthPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <Activity className="size-5 text-primary" />
-            System Health
+            {t("dashboard.adminHealth.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Monitor platform service status and health.
+            {t("dashboard.adminHealth.subtitle")}
           </p>
         </div>
         <Button
@@ -135,7 +137,7 @@ export default function AdminHealthPage() {
           className="gap-2 shrink-0"
         >
           <RefreshCw className={`size-3.5 ${refreshing ? "animate-spin" : ""}`} />
-          Refresh
+          {t("dashboard.adminHealth.refresh")}
         </Button>
       </div>
 
@@ -165,11 +167,11 @@ export default function AdminHealthPage() {
               <Loader2 className="size-4 text-red-500" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-destructive">Gagal memuat data</p>
+              <p className="text-sm font-semibold text-destructive">{t("dashboard.adminHealth.loadFailedTitle")}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{error}</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => fetchHealth()}>
-              Coba Lagi
+              {t("dashboard.adminHealth.retry")}
             </Button>
           </CardContent>
         </Card>
@@ -186,13 +188,13 @@ export default function AdminHealthPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{svc.label}</p>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t(svc.labelKey)}</p>
                         <StatusDot status={svc.status} isVersion={svc.isVersion} />
                       </div>
                       <p className={`text-lg font-bold tracking-tight ${statusColor(svc.status, svc.isVersion)}`}>
-                        {statusLabel(svc.status, svc.isVersion)}
+                        {svc.isVersion ? svc.status : t(statusLabel(svc.status, svc.isVersion) as string)}
                       </p>
-                      <p className="text-[11px] text-muted-foreground">{svc.desc}</p>
+                      <p className="text-[11px] text-muted-foreground">{t(svc.descKey)}</p>
                     </div>
                     <div className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${statusBg(svc.status, svc.isVersion)} ${statusColor(svc.status, svc.isVersion)}`}>
                       <svc.icon className="size-4.5" />
@@ -208,15 +210,15 @@ export default function AdminHealthPage() {
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <Clock className="size-3" />
               {lastChecked ? (
-                <>Terakhir diperiksa pukul <span className="font-semibold text-foreground/70">{formatTime(lastChecked)}</span></>
+                <>{t("dashboard.adminHealth.lastCheckedAt")} <span className="font-semibold text-foreground/70">{formatTime(lastChecked)}</span></>
               ) : (
-                "Belum pernah diperiksa"
+                t("dashboard.adminHealth.neverChecked")
               )}
             </div>
             {!error && health && (
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                 <span className={`inline-block size-1.5 rounded-full ${health.database === "ok" && health.cache === "ok" ? "bg-green-500" : "bg-yellow-500"}`} />
-                {health.database === "ok" && health.cache === "ok" ? "Semua sistem aktif" : "Beberapa sistem bermasalah"}
+                {health.database === "ok" && health.cache === "ok" ? t("dashboard.adminHealth.allSystemsUp") : t("dashboard.adminHealth.someIssues")}
               </div>
             )}
           </div>
