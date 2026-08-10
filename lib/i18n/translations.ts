@@ -309,7 +309,7 @@ export interface Translations {
     consoleTitle: string;
     adminWorkspace: string;
     mode: string;
-    upgrade: string;
+    upgradeLabel: string;
     authenticated: string;
     locked: string;
     appearance: string;
@@ -496,6 +496,45 @@ export interface Translations {
       copyLinkTitle: string;
       checkTip: string;
       done: string;
+    };
+    upgrade: {
+      snapLoadError: string;
+      loadPlansFailed: string;
+      pleaseLogin: string;
+      freeActive: string;
+      tokenFailed: string;
+      waitingPayment: string;
+      paymentFailed: string;
+      paymentCancelled: string;
+      redirecting: string;
+      processFailed: string;
+      loadingPlans: string;
+      backToDashboard: string;
+      title: string;
+      subtitle: string;
+      paymentSuccess: string;
+      upgradingDesc: string;
+      freePrice: string;
+      currentPlan: string;
+      unavailable: string;
+      websitesCount: string;
+      aiGeneratePerMonth: string;
+      sectionRegenPerMonth: string;
+      designRegenPerMonth: string;
+      noCustomDomain: string;
+      basicSeo: string;
+      popular: string;
+      perYear: string;
+      promoYearly: string;
+      equivalentPerMonth: string;
+      savingsPerYear: string;
+      perMonth: string;
+      promoMonths: string;
+      choosePlan: string;
+      yearly: string;
+      monthly: string;
+      customDomainCount: string;
+      seoOptimized: string;
     };
   };
 }
@@ -810,7 +849,7 @@ export const translations: Record<Locale, Translations> = {
       consoleTitle: "Webjoz Console",
       adminWorkspace: "Workspace Admin {env}",
       mode: "Mode",
-      upgrade: "Upgrade",
+      upgradeLabel: "Upgrade",
       authenticated: "Terautentikasi",
       locked: "Terkunci",
       appearance: "Tampilan",
@@ -997,6 +1036,45 @@ export const translations: Record<Locale, Translations> = {
         copyLinkTitle: "Salin Link",
         checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
+      },
+      upgrade: {
+        snapLoadError: "Gagal memuat Midtrans Snap",
+        loadPlansFailed: "Gagal memuat paket",
+        pleaseLogin: "Silakan login terlebih dahulu",
+        freeActive: "Paket Free sudah aktif",
+        tokenFailed: "Gagal mendapatkan token pembayaran",
+        waitingPayment: "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
+        paymentFailed: "Pembayaran gagal, silakan coba lagi",
+        paymentCancelled: "Pembayaran dibatalkan",
+        redirecting: "Mengarahkan ke halaman pembayaran...",
+        processFailed: "Gagal memproses pembayaran",
+        loadingPlans: "Memuat paket...",
+        backToDashboard: "Kembali ke dashboard",
+        title: "Upgrade Paket",
+        subtitle: "Pilih paket langganan yang sesuai dengan skala bisnis Anda.",
+        paymentSuccess: "Pembayaran Berhasil!",
+        upgradingDesc: "Paket Anda sedang di-upgrade. Mengalihkan ke dashboard...",
+        freePrice: "Gratis",
+        currentPlan: "Paket Saat Ini",
+        unavailable: "Tidak Tersedia",
+        websitesCount: "{n} Website",
+        aiGeneratePerMonth: "{n} AI Generate / bln",
+        sectionRegenPerMonth: "{n} Section Regen / bln",
+        designRegenPerMonth: "{n} Design Regen / bln",
+        noCustomDomain: "Tidak ada custom domain",
+        basicSeo: "SEO dasar",
+        popular: "Terpopuler",
+        perYear: "/thn",
+        promoYearly: "Promo Tahunan",
+        equivalentPerMonth: "Setara Rp {value} /bln",
+        savingsPerYear: "🎉 Hemat Rp {value} / tahun",
+        perMonth: "/bln",
+        promoMonths: "Diskon {n} bulan",
+        choosePlan: "Pilih {name} ({cycle})",
+        yearly: "Tahunan",
+        monthly: "Bulanan",
+        customDomainCount: "{n} Custom Domain",
+        seoOptimized: "SEO optimasi",
       },
     },
   },
@@ -1309,7 +1387,7 @@ export const translations: Record<Locale, Translations> = {
       consoleTitle: "Webjoz Console",
       adminWorkspace: "{env} Admin Workspace",
       mode: "Mode",
-      upgrade: "Upgrade",
+      upgradeLabel: "Upgrade",
       authenticated: "Authenticated",
       locked: "Locked",
       appearance: "Appearance",
@@ -1496,6 +1574,45 @@ export const translations: Record<Locale, Translations> = {
         copyLinkTitle: "Copy Link",
         checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
+      },
+      upgrade: {
+        snapLoadError: "Failed to load Midtrans Snap",
+        loadPlansFailed: "Failed to load plans",
+        pleaseLogin: "Please log in first",
+        freeActive: "Free plan is already active",
+        tokenFailed: "Failed to get payment token",
+        waitingPayment: "Waiting for payment... Please complete it on the Midtrans page.",
+        paymentFailed: "Payment failed, please try again",
+        paymentCancelled: "Payment cancelled",
+        redirecting: "Redirecting to payment page...",
+        processFailed: "Failed to process payment",
+        loadingPlans: "Loading plans...",
+        backToDashboard: "Back to dashboard",
+        title: "Upgrade Plan",
+        subtitle: "Choose a subscription plan that fits your business scale.",
+        paymentSuccess: "Payment Successful!",
+        upgradingDesc: "Your plan is being upgraded. Redirecting to dashboard...",
+        freePrice: "Free",
+        currentPlan: "Current Plan",
+        unavailable: "Not Available",
+        websitesCount: "{n} Websites",
+        aiGeneratePerMonth: "{n} AI Generate / mo",
+        sectionRegenPerMonth: "{n} Section Regen / mo",
+        designRegenPerMonth: "{n} Design Regen / mo",
+        noCustomDomain: "No custom domain",
+        basicSeo: "Basic SEO",
+        popular: "Most Popular",
+        perYear: "/yr",
+        promoYearly: "Yearly Promo",
+        equivalentPerMonth: "Equal to Rp {value} /mo",
+        savingsPerYear: "🎉 Save Rp {value} / year",
+        perMonth: "/mo",
+        promoMonths: "Discount {n} months",
+        choosePlan: "Choose {name} ({cycle})",
+        yearly: "Yearly",
+        monthly: "Monthly",
+        customDomainCount: "{n} Custom Domains",
+        seoOptimized: "SEO optimized",
       },
     },
   },

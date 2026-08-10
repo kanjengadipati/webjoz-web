@@ -300,7 +300,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
                       {activeTenant?.tenant.plan === "free" && (
                         <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
-                          {t("dashboard.upgrade")}
+                          {t("dashboard.upgradeLabel")}
                         </Link>
                       )}
                       <div className={cn(
