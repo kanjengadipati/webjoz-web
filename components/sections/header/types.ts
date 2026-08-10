@@ -17,4 +17,5 @@ export interface HeaderVariantProps {
   navLinkClass?: string;
   drawerStyle?: React.CSSProperties;
   extraLinks?: { label: string; href: string }[];
+  language?: "id" | "en";
 }

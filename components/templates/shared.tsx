@@ -153,7 +153,7 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 
 const NAV_SKIP = new Set(["header", "hero", "footer", "seo"]);
 
-const NAV_LABELS: Record<string, string> = {
+const NAV_LABELS_ID: Record<string, string> = {
   about: "Tentang",
   benefits: "Keunggulan",
   menu: "Menu",
@@ -166,6 +166,19 @@ const NAV_LABELS: Record<string, string> = {
   contact: "Kontak",
 };
 
+const NAV_LABELS_EN: Record<string, string> = {
+  about: "About",
+  benefits: "Why Us",
+  menu: "Menu",
+  catalog: "Catalog",
+  gallery: "Gallery",
+  testimonials: "Testimonials",
+  blog: "Blog",
+  faq: "FAQ",
+  cta: "Promo",
+  contact: "Contact",
+};
+
 interface NavMenuProps {
   sectionOrder: string[];
   hiddenSections?: string[];
@@ -173,6 +186,7 @@ interface NavMenuProps {
   activeColor?: string;
   drawerStyle?: React.CSSProperties;
   extraLinks?: { label: string; href: string }[];
+  language?: "id" | "en";
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -181,15 +195,18 @@ const NavMenu: React.FC<NavMenuProps> = ({
   linkClass = "text-slate-700",
   drawerStyle,
   extraLinks = [],
+  language = "id",
 }) => {
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
 
+  const navLabels = language === "en" ? NAV_LABELS_EN : NAV_LABELS_ID;
+
   const navItems = [
     ...sectionOrder
-      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && NAV_LABELS[k])
-      .map(k => ({ key: k, label: NAV_LABELS[k], href: k === "blog" ? "__blog__" : "" })),
+      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && navLabels[k])
+      .map(k => ({ key: k, label: navLabels[k], href: k === "blog" ? "__blog__" : "" })),
     ...extraLinks.map(l => ({ key: l.href, label: l.label, href: l.href }))
   ];
 
@@ -1296,9 +1313,11 @@ interface LeadFormProps {
   inputClass: string;
   buttonStyle?: React.CSSProperties;
   inputStyle?: React.CSSProperties;
+  language?: "id" | "en";
 }
 
-const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, error, buttonClass, inputClass, buttonStyle, inputStyle }) => {
+const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, error, buttonClass, inputClass, buttonStyle, inputStyle, language = "id" }) => {
+  const isEN = language === "en";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -1315,9 +1334,9 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
           <Check className="w-6 h-6 animate-bounce" />
         </div>
-        <h3 className="text-xl font-bold text-green-900 mb-2">Pesan Terkirim!</h3>
+        <h3 className="text-xl font-bold text-green-900 mb-2">{isEN ? "Message Sent!" : "Pesan Terkirim!"}</h3>
         <p className="text-green-700 text-sm max-w-sm">
-          Terima kasih telah menghubungi kami. Tim kami akan segera merespons pesan Anda.
+          {isEN ? "Thank you for reaching out. Our team will respond shortly." : "Terima kasih telah menghubungi kami. Tim kami akan segera merespons pesan Anda."}
         </p>
       </div>
     );
@@ -1331,33 +1350,33 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         </div>
       )}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nama Lengkap</label>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{isEN ? "Full Name" : "Nama Lengkap"}</label>
         <input
           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-          placeholder="cth. Budi Santoso" className={inputClass} style={inputStyle}
+          placeholder={isEN ? "e.g. John Smith" : "cth. Budi Santoso"} className={inputClass} style={inputStyle}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{isEN ? "Email Address" : "Email"}</label>
           <input
             type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-            placeholder="cth. budi@email.com" className={inputClass} style={inputStyle}
+            placeholder={isEN ? "e.g. john@email.com" : "cth. budi@email.com"} className={inputClass} style={inputStyle}
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nomor WA</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{isEN ? "WhatsApp Number" : "Nomor WA"}</label>
           <input
             type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)}
-            placeholder="cth. 08123456789" className={inputClass} style={inputStyle}
+            placeholder={isEN ? "+1 234..." : "cth. 08123456789"} className={inputClass} style={inputStyle}
           />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pesan Anda</label>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{isEN ? "Message" : "Pesan Anda"}</label>
         <textarea
           required rows={4} value={message} onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tulis pesan atau pertanyaan Anda di sini..." className={inputClass} style={inputStyle}
+          placeholder={isEN ? "Write your message or inquiry here..." : "Tulis pesan atau pertanyaan Anda di sini..."} className={inputClass} style={inputStyle}
         ></textarea>
       </div>
       <button
@@ -1365,9 +1384,9 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         className={`${buttonClass} w-full min-h-11 py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2`}
         style={buttonStyle}
       >
-        {submitting ? "Mengirim..." : (
+        {submitting ? (isEN ? "Sending..." : "Mengirim...") : (
           <>
-            Kirim Pesan
+            {isEN ? "Send Message" : "Kirim Pesan"}
             <Send className="w-4 h-4" />
           </>
         )}
@@ -1582,6 +1601,7 @@ interface ContactSectionProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -1593,11 +1613,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   accentColor = "currentColor",
   textClass = "text-sm", textStyle,
   leadCardClass, leadCardStyle,
-  leadTitleClass, leadTitleStyle, leadTitleText = "Hubungi Kami",
+  leadTitleClass, leadTitleStyle, leadTitleText,
   leadFormBtnClass, leadFormBtnStyle,
   leadFormInputClass, leadFormInputStyle,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  language = "id",
 }) => {
+  const isEN = language === "en";
+  const effectiveLeadTitleText = leadTitleText ?? (isEN ? "Contact Us" : "Hubungi Kami");
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
   const textAlignClass = effectiveAlign === "left" ? "text-left" : effectiveAlign === "right" ? "text-right" : "text-center";
@@ -1708,7 +1731,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
         {/* Lead form */}
         {hasLeadForm && (
           <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
-            <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{leadTitleText}</h3>
+            <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
             <LeadForm
               onSubmit={onSubmitLead!}
               submitting={leadSubmitting ?? false}
@@ -1718,6 +1741,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
               buttonStyle={leadFormBtnStyle}
               inputClass={leadFormInputClass || ""}
               inputStyle={leadFormInputStyle}
+              language={language}
             />
           </div>
         )}

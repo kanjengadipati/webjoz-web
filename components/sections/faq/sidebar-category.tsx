@@ -6,6 +6,7 @@ import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types"
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
   design_token?: DesignToken | null;
+  language?: "id" | "en";
 }
 
 function DynamicFaqItem({ item }: { item: FaqItem }) {
@@ -28,17 +29,18 @@ function DynamicFaqItem({ item }: { item: FaqItem }) {
   );
 }
 
-export default function FaqSidebarCategory({ faq }: FaqVariantProps) {
+export default function FaqSidebarCategory({ faq, language = "id" }: FaqVariantProps) {
   const items = faq.items || [];
   const categories = [...new Set(items.map(i => i.category).filter(Boolean))] as string[];
   const [activeCat, setActiveCat] = useState(categories[0] || "");
 
   const filtered = activeCat ? items.filter(i => i.category === activeCat) : items;
 
+  const isEN = language === "en";
   return (
     <section id="faq" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Pertanyaan Umum</span>
+        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "FAQ" : "Pertanyaan Umum"}</span>
         <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{faq.title}</h2>
       </div>
       {categories.length > 0 && (

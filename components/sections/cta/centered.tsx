@@ -5,9 +5,11 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
 interface CtaVariantProps {
   cta: TemplateProps["content"]["cta"];
   design_token?: DesignToken | null;
+  language?: "id" | "en";
 }
 
-export default function CtaCentered({ cta: c }: CtaVariantProps) {
+export default function CtaCentered({ cta: c, language = "id" }: CtaVariantProps) {
+  const isEN = language === "en";
   return (
     <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "48rem", margin: "0 auto", textAlign: "center" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", alignItems: "center" }}>
@@ -16,7 +18,7 @@ export default function CtaCentered({ cta: c }: CtaVariantProps) {
           onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateY(-1px)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
         >
-          {c.button_text || "Hubungi Kami"}
+          {c.button_text || (isEN ? "Contact Us" : "Hubungi Kami")}
         </a>
       </div>
     </section>

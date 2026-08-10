@@ -6,9 +6,11 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
 interface CtaVariantProps {
   cta: TemplateProps["content"]["cta"];
   design_token?: DesignToken | null;
+  language?: "id" | "en";
 }
 
-export default function CtaCard({ cta: c }: CtaVariantProps) {
+export default function CtaCard({ cta: c, language = "id" }: CtaVariantProps) {
+  const isEN = language === "en";
   return (
     <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div className="px-6 py-10 md:px-10 md:py-16" style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", boxShadow: "0 8px 32px color-mix(in srgb, var(--dt-primary) 20%, transparent)", textAlign: "center", position: "relative", overflow: "hidden" }}>
@@ -20,7 +22,7 @@ export default function CtaCard({ cta: c }: CtaVariantProps) {
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.92"; e.currentTarget.style.transform = "translateY(-1px)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
           >
-            {c.button_text || "Hubungi Kami"} <ArrowRight style={{ width: 16, height: 16, flexShrink: 0 }} />
+            {c.button_text || (isEN ? "Contact Us" : "Hubungi Kami")} <ArrowRight style={{ width: 16, height: 16, flexShrink: 0 }} />
           </a>
           {c.trust_signal && <p style={{ fontSize: "0.75rem", color: "color-mix(in srgb, var(--dt-cta-text) 60%, transparent)", margin: 0 }}>{c.trust_signal}</p>}
         </div>

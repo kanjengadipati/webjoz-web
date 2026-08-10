@@ -18,7 +18,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateElegant: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -345,10 +345,11 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             leadCardStyle={{ background: darkCard, border: `1px solid ${gold}20` }}
             leadTitleClass="text-sm font-bold   text-center uppercase tracking-widest"
             leadTitleStyle={{ color: gold }}
-            leadTitleText="Kirim Pesan"
+            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             leadFormBtnClass="w-full font-bold text-[11px] uppercase tracking-widest hover:brightness-110 transition-all"
             leadFormBtnStyle={{ background: gold }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm   outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/20 text-amber-100 placeholder-neutral-600"
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -371,7 +372,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       </div>
 
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

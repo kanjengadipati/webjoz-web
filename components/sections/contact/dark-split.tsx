@@ -5,7 +5,8 @@ import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
 
-export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
+export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id" }: ContactVariantProps) {
+  const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
@@ -23,14 +24,14 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               </span>
               <span style={{ display: "flex", alignItems: "center", gap: "0.25rem", color: "#10b981", fontSize: "0.6rem", fontWeight: 700 }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
-                Sistem Aktif
+                {isEN ? "System Active" : "Sistem Aktif"}
               </span>
             </div>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.75rem" } as any}>
               {c.title}
             </h2>
             <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-              Gunakan portal ini untuk mengirimkan pertanyaan, laporan, atau diskusi kerjasama.
+              {isEN ? "Use this portal to send inquiries, reports, or collaboration discussions." : "Gunakan portal ini untuk mengirimkan pertanyaan, laporan, atau diskusi kerjasama."}
             </p>
           </div>
 
@@ -50,7 +51,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
                 <MapPin style={{ width: 16, height: 16 }} />
               </div>
               <div>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>Markas Fisik</p>
+                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Physical HQ" : "Markas Fisik"}</p>
                 <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>{displayAddress}</p>
               </div>
             </div>
@@ -69,7 +70,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
         <div className="lg:col-span-7">
           {hasLeadForm && (
             <div style={{ background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-surface))", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)" }}>
-              <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} />
+              <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
             </div>
           )}
         </div>

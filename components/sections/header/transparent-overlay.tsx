@@ -6,9 +6,10 @@ import type { HeaderVariantProps } from "./types";
 
 export default function TransparentOverlay({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle,
+  navLinkClass = "", drawerStyle, language,
 }: HeaderVariantProps) {
   const [scrolled, setScrolled] = useState(false);
+  const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -52,6 +53,7 @@ export default function TransparentOverlay({
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
+        language={language}
         linkClass={navLinkClass || "text-[var(--dt-text)]"}
         drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
       />
@@ -65,7 +67,7 @@ export default function TransparentOverlay({
             color: "var(--dt-primary-foreground)",
           }}
         >
-          {header?.nav_cta_text || "Hubungi Kami"}
+          {header?.nav_cta_text || defaultCta}
         </a>
       )}
     </header>

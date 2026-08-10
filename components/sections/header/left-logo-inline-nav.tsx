@@ -6,8 +6,9 @@ import type { HeaderVariantProps } from "./types";
 
 export default function LeftLogoInlineNav({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle, extraLinks,
+  navLinkClass = "", drawerStyle, extraLinks, language,
 }: HeaderVariantProps) {
+  const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
     <header
       className="sticky top-0 z-50 backdrop-blur-md px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative"
@@ -37,6 +38,7 @@ export default function LeftLogoInlineNav({
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
         extraLinks={extraLinks}
+        language={language}
         linkClass={navLinkClass || "text-[var(--dt-text)]"}
         drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
       />
@@ -47,7 +49,7 @@ export default function LeftLogoInlineNav({
           className="min-h-11 shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
           style={{ color: "var(--dt-primary-foreground)" }}
         >
-          {header?.nav_cta_text || "Hubungi Kami"}
+          {header?.nav_cta_text || defaultCta}
         </a>
       )}
     </header>

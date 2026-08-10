@@ -65,6 +65,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       content={buildFullContent(displayData, chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp) as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       design_token={liveToken as any}
+      language={(chat.siteLanguage || "id") as any}
       isEditorMode={false}
       arrivedSections={isStreamingLive ? arrivedSections : undefined}
       onSubmitLead={async () => { }}

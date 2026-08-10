@@ -14,4 +14,5 @@ export interface ContactVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 }
