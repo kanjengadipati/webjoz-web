@@ -4,6 +4,7 @@ import React from "react";
 import { WIREFRAME_STEPS } from "./constants";
 import type { ChatStage } from "./types";
 import { buildCssVars, loadGoogleFont } from "../templates/helpers";
+import { useI18n } from "@/lib/i18n/context";
 
 interface WireframeProps {
   businessName: string;
@@ -19,7 +20,13 @@ function isHighlighted(stage: ChatStage): boolean {
 }
 
 export function Wireframe({ businessName, businessType, businessSubType, description, chatStage, designToken }: WireframeProps) {
+  const { t } = useI18n();
   const highlight = isHighlighted(chatStage);
+  const wireframeStepLabels = [
+    t("dashboard.wizard.wireframeAbout", "Tentang"),
+    t("dashboard.wizard.wireframeFeatures", "Keunggulan"),
+    t("dashboard.wizard.wireframeContact", "Kontak"),
+  ];
 
   const cssVars = React.useMemo(() => buildCssVars(designToken), [designToken]);
 
@@ -102,7 +109,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           <div className="flex gap-4 items-center">
             {businessType ? (
               <div className="flex gap-2 items-center animate-in fade-in duration-400">
-                {WIREFRAME_STEPS.map(l => (
+                {wireframeStepLabels.map(l => (
                   <span
                     key={l}
                     className="text-[11px]"
@@ -146,7 +153,15 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                   border: designToken ? "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)" : "1px solid color-mix(in srgb, var(--primary) 30%, transparent)"
                 }}
               >
-                {businessSubType || businessType}
+                {(() => {
+                  const categoryKeyMap: Record<string, string> = {
+                    "Kuliner": "kuliner", "Toko & UMKM": "tokoUmkm", "Jasa": "jasa", "Company": "company",
+                  };
+                  const typeKey = categoryKeyMap[businessType];
+                  const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;
+                  const translatedSubType = businessSubType ? t(`dashboard.wizard.subtypes.${businessSubType}`, businessSubType) : "";
+                  return translatedSubType || translatedType;
+                })()}
               </div>
             ) : (
               <div className="h-5 w-20 rounded-full animate-pulse" style={skeletonStrong} />

@@ -3,6 +3,7 @@
 import React from "react";
 import { CheckCircle2, Eye, ArrowRight } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { useI18n } from "@/lib/i18n/context";
 
 interface WizardSuccessModalProps {
   open: boolean;
@@ -15,6 +16,8 @@ export function WizardSuccessModal({
   onClose,
   onGoToEditor,
 }: WizardSuccessModalProps) {
+  const { t } = useI18n();
+
   if (!open) return null;
 
   return (
@@ -36,11 +39,13 @@ export function WizardSuccessModal({
 
           {/* Title & Description */}
           <h3 className="mb-3 text-lg font-extrabold text-white tracking-tight">
-            Selamat! Website Anda Telah Siap 🎉
+            {t("dashboard.wizard.successModalTitle", "Selamat! Website Anda Telah Siap 🎉")}
           </h3>
           <p className="mb-6 text-xs leading-relaxed text-slate-300">
-            Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. 
-            Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor.
+            {t(
+              "dashboard.wizard.successModalDesc",
+              "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor."
+            )}
           </p>
 
           {/* Action Buttons */}
@@ -51,14 +56,14 @@ export function WizardSuccessModal({
               className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white/[0.06] text-xs font-semibold text-slate-200 border border-white/10 transition-all hover:bg-white/10 active:scale-98"
             >
               <Eye className="h-4 w-4" />
-              Lihat Preview
+              {t("dashboard.wizard.successModalBtnPreview", "Lihat Preview")}
             </button>
             <button
               type="button"
               onClick={onGoToEditor}
               className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-98 shadow-lg shadow-primary/25"
             >
-              Edit &amp; Publikasikan
+              {t("dashboard.wizard.successModalBtnEdit", "Edit & Publikasikan")}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>

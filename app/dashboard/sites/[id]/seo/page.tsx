@@ -13,12 +13,14 @@ import Link from "next/link";
 import { Loader2, ChevronLeft, Save, Check, SearchIcon, Zap } from "lucide-react";
 import { AI_SUGGESTIONS } from "../editor-utils";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function SeoManagerPage() {
   const { id } = useParams();
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const router = useRouter();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
@@ -66,7 +68,7 @@ export default function SeoManagerPage() {
         if (sd && !sd.startsWith("draft-")) setSubdomain(`${sd}.webjoz.com`);
       } catch { /* non-critical */ }
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat data SEO", "error");
+      pushToast(err.message || t("dashboard.sitesSeo.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -89,7 +91,7 @@ export default function SeoManagerPage() {
       fullContentRef.current = updated;
       setSavedAt(new Date());
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan SEO", "error");
+      pushToast(err.message || t("dashboard.sitesSeo.saveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -165,7 +167,7 @@ export default function SeoManagerPage() {
       body: JSON.stringify({ tracking_codes: { ...existingCodes, gsc_verification: code } }),
     }, token);
     setGscVerification(code);
-    pushToast("Kode GSC berhasil disimpan", "success");
+    pushToast(t("dashboard.sitesSeo.gscSaved"), "success");
   }, [token, activeTenantId, siteId, pushToast]);
 
   // ── AI text handler (mirrors editor handleAiText) ──────────────────────────
@@ -194,7 +196,7 @@ export default function SeoManagerPage() {
       if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
         setUpgradeOpen(true);
       } else {
-        pushToast(err.message || "AI gagal menghasilkan teks", "error");
+        pushToast(err.message || t("dashboard.sitesSeo.aiFailed"), "error");
       }
     } finally {
       setAiLoadingField(null);
@@ -218,21 +220,21 @@ export default function SeoManagerPage() {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Web
+            <ChevronLeft className="w-4 h-4" /> {t("dashboard.sitesSeo.webLink")}
           </Link>
           <SearchIcon className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-bold">SEO</h2>
+          <h2 className="text-lg font-bold">{t("dashboard.sitesSeo.title")}</h2>
         </div>
 
         {/* Save status + button */}
         <div className="flex items-center gap-2">
           {saving ? (
             <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesSeo.saving")}
             </span>
           ) : savedAt ? (
             <span className="flex items-center gap-1.5 text-xs text-emerald-500">
-              <Check className="w-3.5 h-3.5" /> Tersimpan
+              <Check className="w-3.5 h-3.5" /> {t("dashboard.sitesSeo.saved")}
             </span>
           ) : null}
           <button
@@ -241,7 +243,7 @@ export default function SeoManagerPage() {
             disabled={saving}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors"
           >
-            <Save className="w-3.5 h-3.5" /> Simpan
+            <Save className="w-3.5 h-3.5" /> {t("dashboard.sitesSeo.save")}
           </button>
         </div>
       </div>
@@ -286,15 +288,15 @@ export default function SeoManagerPage() {
                 <Zap className="w-7 h-7 text-primary" />
               </div>
             </div>
-            <p className="text-[14px] font-semibold text-slate-100">Fitur AI — Plan Pro</p>
-            <p className="text-[12px] text-slate-400">Generate konten SEO dengan AI tersedia tanpa batas di paket Pro.</p>
+            <p className="text-[14px] font-semibold text-slate-100">{t("dashboard.sitesSeo.upgradeTitle")}</p>
+            <p className="text-[12px] text-slate-400">{t("dashboard.sitesSeo.upgradeDesc")}</p>
             <div className="flex gap-2 pt-1">
               <button type="button" onClick={() => setUpgradeOpen(false)}
                 className="flex-1 h-10 rounded-xl border border-white/10 text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
-              >Nanti</button>
+              >{t("dashboard.sitesSeo.later")}</button>
               <Link href="/dashboard/upgrade"
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-1.5 hover:bg-primary/90 transition-colors"
-              ><Zap className="w-4 h-4" /> Upgrade ke Pro</Link>
+              ><Zap className="w-4 h-4" /> {t("dashboard.sitesSeo.upgradeNow")}</Link>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
 import { getInsight } from "./helpers";
+import { useI18n } from "@/lib/i18n/context";
 
 interface LoadingModalProps {
   loadingStep: number;
@@ -17,8 +18,9 @@ interface LoadingModalProps {
   stepElapsed?: number[];
 }
 
-
 export function LoadingModal({ loadingStep, progressPercent, businessType, businessName, charCount, sectionSnippet, center, stepElapsed }: LoadingModalProps) {
+  const { t, locale } = useI18n();
+
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
@@ -38,9 +40,13 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
             </div>
             <div className="min-w-0">
               <h3 className={`font-extrabold text-white m-0 leading-tight ${center ? "text-[12px]" : "text-sm"}`}>
-                {center ? "Membangun website..." : businessName ? `Membangun website ${businessName} ✨` : "AI sedang membangun website Anda ✨"}
+                {center
+                  ? t("dashboard.wizard.loadingBuildingTitle", "Membangun website...")
+                  : businessName
+                  ? t("dashboard.wizard.loadingBuildingTitleWithName", "Membangun website {name} ✨", { name: businessName })
+                  : t("dashboard.wizard.loadingBuildingTitleGeneral", "AI sedang membangun website Anda ✨")}
               </h3>
-              {!center && <p className="text-[11px] text-slate-400 mt-0.5">Mohon tunggu sebentar...</p>}
+              {!center && <p className="text-[11px] text-slate-400 mt-0.5">{t("dashboard.wizard.loadingPleaseWait", "Mohon tunggu sebentar...")}</p>}
             </div>
           </div>
           {!center && <span className="text-xs font-bold text-primary shrink-0">{displayPercent}%</span>}
@@ -59,7 +65,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
           </div>
           {!center && charCount !== undefined && (
             <p className="text-[10px] text-slate-500 text-right">
-              ✍️ {charCount.toLocaleString("id-ID")} karakter ditulis
+              {t("dashboard.wizard.loadingCharsWritten", "✍️ {count} karakter ditulis", { count: charCount.toLocaleString(locale === "id" ? "id-ID" : "en-US") })}
             </p>
           )}
         </div>
@@ -69,6 +75,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
           {LOADING_CHECKLIST.map(({ label }, idx) => {
             const done = loadingStep > idx;
             const active = loadingStep === idx;
+            const translatedLabel = t(`dashboard.wizard.loadingChecklist${idx}`, label);
             // On mobile, hide completed older than current+1 and pending beyond next 2
             if (center && !active && !done && idx > loadingStep + 1) return null;
             if (center && done && idx < loadingStep - 2) return null;
@@ -80,7 +87,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
                   : null}
                 </div>
                 <span className={`font-semibold leading-tight truncate ${done ? "text-slate-300" : active ? "text-primary" : "text-slate-500"} ${center ? "text-[10px]" : "text-xs"}`}>
-                  {label}
+                  {translatedLabel}
                 </span>
                 {!center && (
                   <span className={`font-mono shrink-0 ml-auto ${active ? "text-primary" : "text-slate-300"} text-[10px]`}>
@@ -106,7 +113,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
           <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
             <div className="flex items-center gap-1.5 mb-1.5 text-primary">
               <SparkleIcon className="w-[18px] h-[18px]" />
-              <span className="text-[11px] font-bold text-primary">AI Insight</span>
+              <span className="text-[11px] font-bold text-primary">{t("dashboard.wizard.loadingAiInsight", "AI Insight")}</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType)}</p>
           </div>

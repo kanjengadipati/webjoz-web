@@ -36,50 +36,28 @@ function interpolate(text: string, params?: Record<string, string>): string {
 }
 
 export function I18nProvider({ children, defaultLocale = "id" }: { children: React.ReactNode; defaultLocale?: Locale }) {
-  // Derive the initial locale from the cookie — the same source the server uses
-  // via `defaultLocale` — so the server-rendered HTML and the first client render
-  // always agree, preventing hydration mismatches.
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof document !== "undefined") {
-      try {
-        const match = document.cookie.match(
-          new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
-        );
-        if (match && (match[1] === "id" || match[1] === "en")) return match[1] as Locale;
-      } catch {
-        /* ignore */
-      }
-    }
-    return defaultLocale;
-  });
+  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
 
-  // Migrate a legacy localStorage preference (written before cookies were used)
-  // in after hydration so it does not affect SSR output.
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
       if (saved === "id" || saved === "en") {
+        setLocaleState(saved);
+        document.documentElement.lang = saved === "id" ? "id" : "en";
+      } else {
         const match = document.cookie.match(
           new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
         );
-        if (!match || match[1] !== saved) {
-          document.cookie =
-            LOCALE_STORAGE_KEY + "=" + saved + "; path=/; max-age=31536000; SameSite=Lax";
-          setLocaleState(saved);
+        if (match && (match[1] === "id" || match[1] === "en")) {
+          setLocaleState(match[1] as Locale);
+          document.documentElement.lang = match[1] === "id" ? "id" : "en";
         }
       }
     } catch {
       /* ignore */
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.lang = locale === "id" ? "id" : "en";
-    }
-  }, [locale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

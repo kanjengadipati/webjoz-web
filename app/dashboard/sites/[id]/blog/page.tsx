@@ -13,6 +13,7 @@ import { SparkleGenAI } from "@/components/sparkle-icon";
 import Link from "next/link";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import type { BlogLayout } from "@/components/templates/types";
+import { useI18n } from "@/lib/i18n/context";
 
 interface BlogPost {
   id: number;
@@ -25,10 +26,10 @@ interface BlogPost {
 }
 
 const LAYOUT_OPTIONS: { value: BlogLayout; label: string; icon: any; desc: string }[] = [
-  { value: "grid", label: "Grid", icon: LayoutGrid, desc: "Kartu dalam 3 kolom" },
-  { value: "list", label: "List", icon: List, desc: "Horizontal dengan gambar" },
-  { value: "featured", label: "Unggulan", icon: Star, desc: "Hero + grid di bawah" },
-  { value: "minimal", label: "Minimal", icon: AlignLeft, desc: "Daftar judul & tanggal" },
+  { value: "grid", label: "dashboard.sitesBlog.layoutGrid", icon: LayoutGrid, desc: "dashboard.sitesBlog.layoutGridDesc" },
+  { value: "list", label: "dashboard.sitesBlog.layoutList", icon: List, desc: "dashboard.sitesBlog.layoutListDesc" },
+  { value: "featured", label: "dashboard.sitesBlog.layoutFeatured", icon: Star, desc: "dashboard.sitesBlog.layoutFeaturedDesc" },
+  { value: "minimal", label: "dashboard.sitesBlog.layoutMinimal", icon: AlignLeft, desc: "dashboard.sitesBlog.layoutMinimalDesc" },
 ];
 
 interface BlogPost {
@@ -43,6 +44,7 @@ interface BlogPost {
 
 export default function BlogManagerPage() {
   const { id } = useParams();
+  const { t, locale } = useI18n();
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
@@ -87,7 +89,7 @@ export default function BlogManagerPage() {
       const res = await request<BlogPost[]>(`/sites/${siteId}/blog-posts`, { headers: tenantHeaders }, token);
       setPosts(res.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat blog", "error");
+      pushToast(err.message || t("dashboard.sitesBlog.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -106,9 +108,9 @@ export default function BlogManagerPage() {
       }, token);
       setPosts(p => [res.data, ...p]);
       setTopic("");
-      pushToast("Draft blog berhasil dibuat", "success");
+      pushToast(t("dashboard.sitesBlog.draftCreated"), "success");
     } catch (err: any) {
-      pushToast(err.message || "Gagal generate blog", "error");
+      pushToast(err.message || t("dashboard.sitesBlog.generateFailed"), "error");
     } finally {
       setGenerating(false);
     }
@@ -127,9 +129,9 @@ export default function BlogManagerPage() {
       setTitle("");
       setContent("");
       setManualOpen(false);
-      pushToast("Postingan berhasil dibuat", "success");
+      pushToast(t("dashboard.sitesBlog.postCreated"), "success");
     } catch (err: any) {
-      pushToast(err.message || "Gagal membuat postingan", "error");
+      pushToast(err.message || t("dashboard.sitesBlog.createFailed"), "error");
     } finally {
       setCreating(false);
     }
@@ -138,10 +140,10 @@ export default function BlogManagerPage() {
   const handlePublish = async (postId: number) => {
     try {
       await request(`/sites/${siteId}/blog-posts/${postId}/publish`, { method: "POST", headers: tenantHeaders }, token);
-      pushToast("Postingan diterbitkan", "success");
+      pushToast(t("dashboard.sitesBlog.published"), "success");
       fetchPosts();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menerbitkan", "error");
+      pushToast(err.message || t("dashboard.sitesBlog.publishFailed"), "error");
     }
   };
 
@@ -156,11 +158,11 @@ export default function BlogManagerPage() {
         headers: tenantHeaders,
         body: JSON.stringify({ variant: layout }),
       }, token);
-      pushToast("Tampilan blog diperbarui", "success");
+      pushToast(t("dashboard.sitesBlog.layoutSaved"), "success");
     } catch (err: any) {
       setBlogLayout(prev);
       setLayoutIsAiPick(prev === blogLayout ? layoutIsAiPick : false);
-      pushToast(err.message || "Gagal menyimpan tampilan", "error");
+      pushToast(err.message || t("dashboard.sitesBlog.layoutFailed"), "error");
     } finally {
       setLayoutSaving(false);
     }
@@ -180,12 +182,12 @@ export default function BlogManagerPage() {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Web
+            <ChevronLeft className="w-4 h-4" /> {t("dashboard.sitesBlog.webLink")}
           </Link>
-          <h2 className="text-lg font-bold">Blog Postingan</h2>
+          <h2 className="text-lg font-bold">{t("dashboard.sitesBlog.title")}</h2>
         </div>
         <Button onClick={() => setManualOpen(true)}>
-          <Plus className="w-4 h-4" /> Tambah Baru
+          <Plus className="w-4 h-4" /> {t("dashboard.sitesBlog.addNew")}
         </Button>
       </div>
 
@@ -193,7 +195,7 @@ export default function BlogManagerPage() {
       <Card>
         <CardContent className="py-3">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">Tampilan Blog</span>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">{t("dashboard.sitesBlog.layoutLabel")}</span>
             <div className="flex gap-1">
               {LAYOUT_OPTIONS.map(opt => {
                 const active = blogLayout === opt.value;
@@ -207,7 +209,7 @@ export default function BlogManagerPage() {
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
-                    title={opt.desc}
+                    title={t(opt.desc)}
                   >
                     {active && layoutSaving ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -216,7 +218,7 @@ export default function BlogManagerPage() {
                     ) : (
                       <Icon className="w-3.5 h-3.5" />
                     )}
-                    {opt.label}
+                    {t(opt.label)}
                   </button>
                 );
               })}
@@ -224,7 +226,7 @@ export default function BlogManagerPage() {
           </div>
           {layoutIsAiPick && (
             <p className="text-[11px] text-muted-foreground mt-2 text-right">
-              ✨ Direkomendasikan AI untuk gaya situs Anda
+              ✨ {t("dashboard.sitesBlog.aiPick")}
             </p>
           )}
         </CardContent>
@@ -233,7 +235,7 @@ export default function BlogManagerPage() {
       {manualOpen && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-bold">Tulis Postingan Baru</CardTitle>
+            <CardTitle className="text-sm font-bold">{t("dashboard.sitesBlog.writePostTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Input
@@ -251,9 +253,9 @@ export default function BlogManagerPage() {
             <div className="flex gap-2">
               <Button onClick={handleCreateManual} disabled={creating || !title.trim()}>
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                Simpan Postingan
+                {t("dashboard.sitesBlog.savePost")}
               </Button>
-              <Button variant="outline" onClick={() => setManualOpen(false)}>Batal</Button>
+              <Button variant="outline" onClick={() => setManualOpen(false)}>{t("dashboard.sitesBlog.cancel")}</Button>
             </div>
           </CardContent>
         </Card>
@@ -264,7 +266,7 @@ export default function BlogManagerPage() {
           <CardHeader>
             <CardTitle className="text-sm font-bold flex items-center gap-2">
               <SparkleGenAI className="w-4 h-4 text-primary" />
-              Buat Konten Blog dengan AI
+              {t("dashboard.sitesBlog.aiCardTitle")}
               <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">Pro</span>
             </CardTitle>
           </CardHeader>
@@ -278,7 +280,7 @@ export default function BlogManagerPage() {
               />
               <Button onClick={handleGenerate} disabled={generating || !topic.trim()}>
                 {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
-                Generate
+                {t("dashboard.sitesBlog.generate")}
               </Button>
             </div>
           </CardContent>
@@ -290,9 +292,9 @@ export default function BlogManagerPage() {
           <CardContent className="py-4">
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <SparkleGenAI className="w-5 h-5 text-primary shrink-0" />
-              <span>Generate konten dengan AI tersedia di paket <strong>Pro</strong>.</span>
+              <span>{t("dashboard.sitesBlog.nonPremiumText")} <strong>Pro</strong>.</span>
               <Link href="/dashboard/upgrade" className="ml-auto text-primary font-semibold hover:underline whitespace-nowrap">
-                Upgrade →
+                {t("dashboard.sitesBlog.upgrade")}
               </Link>
             </div>
           </CardContent>
@@ -309,20 +311,20 @@ export default function BlogManagerPage() {
                   <div className="font-semibold text-sm">{post.title}</div>
                   <div className="text-xs text-muted-foreground">
                     {post.status === "published"
-                      ? `Terbit ${post.published_at ? new Date(post.published_at).toLocaleDateString("id-ID") : ""}`
-                      : "Draft · " + new Date(post.created_at).toLocaleDateString("id-ID")}
+                      ? t("dashboard.sitesBlog.publishedDate", undefined, { date: post.published_at ? new Date(post.published_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US") : "" })
+                      : t("dashboard.sitesBlog.draftDate", undefined, { date: new Date(post.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US") })}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant={post.status === "published" ? "default" : "secondary"}>
-                  {post.status === "published" ? "Terbit" : "Draft"}
+                  {post.status === "published" ? t("dashboard.sitesBlog.publishedBadge") : t("dashboard.sitesBlog.draftBadge")}
                 </Badge>
                 <Link href={`/dashboard/sites/${siteId}/blog/${post.id}`} className="inline-flex items-center justify-center text-sm font-medium rounded-xl px-3 py-1.5 border hover:bg-accent transition-colors">
-                  Edit
+                  {t("dashboard.sitesBlog.edit")}
                 </Link>
                 {post.status === "draft" && (
-                  <Button size="sm" onClick={() => handlePublish(post.id)}>Terbitkan</Button>
+                  <Button size="sm" onClick={() => handlePublish(post.id)}>{t("dashboard.sitesBlog.publish")}</Button>
                 )}
               </div>
             </CardContent>
@@ -330,7 +332,7 @@ export default function BlogManagerPage() {
         ))}
         {posts.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-12">
-            Belum ada konten blog. Klik <strong>Tambah Baru</strong> untuk membuat postingan pertama.
+            {t("dashboard.sitesBlog.emptyDesc1")} <strong>{t("dashboard.sitesBlog.addNew")}</strong> {t("dashboard.sitesBlog.emptyDesc2")}
           </div>
         )}
       </div>
