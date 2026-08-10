@@ -127,6 +127,7 @@ interface RenameModalProps {
 }
 
 function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalProps) {
+  const { t } = useI18n();
   const [name, setName] = useState(currentName);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -154,15 +155,15 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
           <button
             onClick={onCancel}
             className="absolute top-4 right-4 text-[#65656f] hover:text-white transition-colors cursor-pointer"
-            aria-label="Tutup"
+            aria-label={t("dashboard.sites.close")}
           >
             <X className="w-4 h-4" />
           </button>
         )}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <h2 className="text-lg font-bold text-foreground">Ganti Nama Website</h2>
-            <p className="text-xs text-[#9b9ba5]">Masukkan nama baru untuk website Anda.</p>
+            <h2 className="text-lg font-bold text-foreground">{t("dashboard.sites.renameTitle")}</h2>
+            <p className="text-xs text-[#9b9ba5]">{t("dashboard.sites.renameDesc")}</p>
           </div>
           <input
             type="text"
@@ -181,14 +182,14 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
               onClick={onCancel}
               disabled={loading}
             >
-              Batal
+              {t("dashboard.sites.cancel")}
             </Button>
             <Button
               type="submit"
               className="flex-1 rounded-xl h-10 text-sm bg-primary text-primary-foreground border-0 cursor-pointer"
               disabled={loading || !name.trim() || name.trim() === currentName}
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : t("dashboard.sites.save")}
             </Button>
           </div>
         </form>
@@ -206,6 +207,7 @@ interface PublishModalProps {
 }
 
 function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+  const { t } = useI18n();
   const [subdomain, setSubdomain] = useState(() => {
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
@@ -234,7 +236,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
       onOpenChange={(open) => {
         if (!open && !loading) onCancel();
       }}
-      title="Publikasikan Website"
+      title={t("dashboard.sites.publishTitle")}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Celebration Header Banner */}
@@ -245,10 +247,10 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </div>
           <div>
             <h4 className="text-[13.5px] font-bold text-foreground leading-snug">
-              Satu Langkah Lagi! 🚀
+              {t("dashboard.sites.publishOneStep")}
             </h4>
             <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
-              Website <span className="text-primary font-semibold">{site.name}</span> Anda siap untuk dipublikasikan ke seluruh dunia.
+              {t("dashboard.sites.publishReady", undefined, { name: site.name })}
             </p>
           </div>
         </div>
@@ -256,7 +258,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
         {/* Subdomain Input Field */}
         <div className="space-y-2">
           <label className="text-[12px] font-bold text-[#c8c8d4] tracking-wide block">
-            Nama Subdomain
+            {t("dashboard.sites.subdomainLabel")}
           </label>
           <div
             className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${subdomain && !isInputValid
@@ -291,14 +293,14 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               <span className="shrink-0 text-[14px]">{isInputValid ? "✓" : "⚠"}</span>
               <span className="truncate leading-none">
                 {isInputValid
-                  ? `Tersedia: https://${previewDomain}`
-                  : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+                  ? t("dashboard.sites.subdomainAvailable", undefined, { url: `https://${previewDomain}` })
+                  : t("dashboard.sites.subdomainInvalidHint")}
               </span>
             </div>
           )}
 
           <p className="text-[11px] text-[#6b6b75] leading-relaxed mx-0.5">
-            Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.
+            {t("dashboard.sites.subdomainHint")}
           </p>
         </div>
 
@@ -310,18 +312,18 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">Pro</span>
+              {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
-              Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda dapat mengaturnya di{" "}
+              {t("dashboard.sites.customDomainDescPre")}{" "}
               <Link
                 href="/dashboard/domains"
                 className="text-primary font-semibold hover:text-foreground underline underline-offset-2 transition-colors"
                 onClick={onCancel}
               >
-                Custom Domain
+                {t("dashboard.sites.customDomainLink")}
               </Link>{" "}
-              setelah website Anda live.
+              {t("dashboard.sites.customDomainDescPost")}
             </p>
           </div>
         </div>
@@ -335,7 +337,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             onClick={onCancel}
             disabled={loading}
           >
-            Batal
+            {t("dashboard.sites.cancel")}
           </Button>
           <Button
             type="submit"
@@ -348,12 +350,12 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Meluncurkan...
+                {t("dashboard.sites.launching")}
               </>
             ) : (
               <>
                 <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.5s" }} />
-                Luncurkan Website
+                {t("dashboard.sites.launchWebsite")}
               </>
             )}
           </Button>
@@ -430,6 +432,7 @@ interface Domain {
 export default function SitesPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t, locale } = useI18n();
   const {
     activeTenantId, activeTenant, loading: tenantLoading
   } = useActiveTenant();
@@ -471,7 +474,7 @@ export default function SitesPage() {
       setSites(sitesRes.data || []);
       setDomains(domainsRes.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Failed to load sites", "error");
+      pushToast(err.message || t("dashboard.sites.errorLoadSites"), "error");
     } finally {
       setLoading(false);
     }
@@ -531,13 +534,13 @@ export default function SitesPage() {
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
 
-      pushToast("Website berhasil dipublikasikan! 🚀", "success");
+      pushToast(t("dashboard.sites.toastPublished"), "success");
       const tempSite = { ...publishTarget, subdomain, status: "published" as const };
       setPublishTarget(null);
       setPublishedSiteTarget(tempSite);
       fetchSites();
     } catch (err: any) {
-      pushToast(err.message || "Gagal mempublikasikan website", "error");
+      pushToast(err.message || t("dashboard.sites.toastPublishFailed"), "error");
     } finally {
       setActionLoading(null);
     }
@@ -551,10 +554,10 @@ export default function SitesPage() {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
-      pushToast("Website berhasil di-draft kembali.", "success");
+      pushToast(t("dashboard.sites.toastUnpublished"), "success");
       fetchSites();
     } catch (err: any) {
-      pushToast(err.message || "Gagal mengubah status publikasi", "error");
+      pushToast(err.message || t("dashboard.sites.toastUnpublishFailed"), "error");
     } finally {
       setActionLoading(null);
     }
@@ -573,11 +576,11 @@ export default function SitesPage() {
           subdomain: renameTarget.subdomain
         })
       }, token);
-      pushToast("Nama website berhasil diubah.", "success");
+      pushToast(t("dashboard.sites.toastRenamed"), "success");
       setRenameTarget(null);
       fetchSites();
     } catch (err: any) {
-      pushToast(err.message || "Gagal mengubah nama website", "error");
+      pushToast(err.message || t("dashboard.sites.toastRenameFailed"), "error");
     } finally {
       setActionLoading(null);
     }
@@ -591,11 +594,11 @@ export default function SitesPage() {
         method: "DELETE",
         headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
-      pushToast("Situs berhasil dihapus.", "success");
+      pushToast(t("dashboard.sites.toastDeleted"), "success");
       setDeleteTarget(null);
       fetchSites();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menghapus situs", "error");
+      pushToast(err.message || t("dashboard.sites.toastDeleteFailed"), "error");
     } finally {
       setActionLoading(null);
     }
@@ -605,7 +608,7 @@ export default function SitesPage() {
     if (!token || !activeTenantId) return;
     try {
       setActionLoading(site.id);
-      pushToast("Menduplikasi website...", "info");
+      pushToast(t("dashboard.sites.toastDuplicating"), "info");
 
       // 1. Get original content & design token
       const contentRes = await request<any>(`/sites/${site.id}/content`, {
@@ -625,7 +628,7 @@ export default function SitesPage() {
       }, token);
 
       if (createRes.status !== "success" || !createRes.data) {
-        throw new Error(createRes.message || "Gagal membuat duplikat website");
+        throw new Error(createRes.message || t("dashboard.sites.toastDuplicateFailed"));
       }
 
       const newSite = createRes.data;
@@ -640,10 +643,10 @@ export default function SitesPage() {
         })
       }, token);
 
-      pushToast("Website berhasil diduplikat!", "success");
+      pushToast(t("dashboard.sites.toastDuplicated"), "success");
       fetchSites();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menduplikasi website", "error");
+      pushToast(err.message || t("dashboard.sites.toastDuplicateError"), "error");
     } finally {
       setActionLoading(null);
     }
@@ -689,7 +692,7 @@ export default function SitesPage() {
     return `https://${subdomain}.${domainPart}`;
   };
 
-  const getFriendlyDate = (site: Site) => {
+  const getFriendlyDate = (site: Site, tr = t, dateLocale = "id-ID") => {
     const isLive = site.status === "published";
     const dateStr = isLive ? (site.published_at || site.updated_at || site.created_at) : (site.updated_at || site.created_at);
     if (!dateStr) return "";
@@ -700,25 +703,27 @@ export default function SitesPage() {
     const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
     const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
 
-    const prefix = isLive ? "Dipublikasikan" : "Diubah";
+    const prefix = isLive ? tr("dashboard.sites.publishedPrefix") : tr("dashboard.sites.updatedPrefix");
 
-    if (diffMins < 1) return `${prefix} baru saja`;
-    if (diffMins < 60) return `${prefix} ${diffMins} menit lalu`;
-    if (diffHours < 24) return `${prefix} ${diffHours} jam lalu`;
-    if (diffDays === 1) return `${prefix} kemarin`;
-    if (diffDays < 7) return `${prefix} ${diffDays} hari lalu`;
+    if (diffMins < 1) return tr("dashboard.sites.justNow", undefined, { prefix });
+    if (diffMins < 60) return tr("dashboard.sites.minutesAgo", undefined, { prefix, n: String(diffMins) });
+    if (diffHours < 24) return tr("dashboard.sites.hoursAgo", undefined, { prefix, n: String(diffHours) });
+    if (diffDays === 1) return tr("dashboard.sites.yesterday", undefined, { prefix });
+    if (diffDays < 7) return tr("dashboard.sites.daysAgo", undefined, { prefix, n: String(diffDays) });
 
-    return `${prefix} ${date.toLocaleDateString("id-ID", {
+    return `${prefix} ${date.toLocaleDateString(dateLocale, {
       day: "numeric",
       month: "short",
     })}`;
   };
 
+  const dateLocale = locale === "id" ? "id-ID" : "en-US";
+
   if (tenantLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground">Menghubungkan ke workspace...</p>
+        <p className="text-xs text-muted-foreground">{t("dashboard.sites.connectingWorkspace")}</p>
       </div>
     );
   }
@@ -784,7 +789,7 @@ export default function SitesPage() {
         <Search className="absolute left-[18px] top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#65656f] pointer-events-none" />
         <input
           type="text"
-          placeholder="Cari website berdasarkan nama..."
+          placeholder={t("dashboard.sites.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-[#1a1a23] border border-white/[0.08] hover:border-white/15 focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
@@ -794,7 +799,7 @@ export default function SitesPage() {
             onClick={() => setSearchQuery("")}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#9b9ba5] hover:text-white cursor-pointer"
           >
-            Reset
+            {t("dashboard.sites.reset")}
           </button>
         )}
       </div>
@@ -808,7 +813,7 @@ export default function SitesPage() {
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
             }`}
         >
-          Semua <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
+          {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("draft")}
@@ -817,7 +822,7 @@ export default function SitesPage() {
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
             }`}
         >
-          Draft <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
+          {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("published")}
@@ -826,7 +831,7 @@ export default function SitesPage() {
               : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
             }`}
         >
-          Dipublikasikan <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
+          {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
         </button>
       </div>
 
@@ -834,20 +839,20 @@ export default function SitesPage() {
       {loading && sites.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
-          <p className="text-xs text-muted-foreground">Memuat situs Anda...</p>
+          <p className="text-xs text-muted-foreground">{t("dashboard.sites.loadingSites")}</p>
         </div>
       ) : filteredSites.length === 0 ? (
         <div className="bg-[#13131a] border border-white/[0.08] rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
           <div className="w-12 h-12 bg-white/[0.03] border border-white/[0.08] rounded-full flex items-center justify-center text-[#65656f]">
             <Search className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-lg text-foreground m-0">Tidak ada website yang cocok</h3>
+          <h3 className="font-bold text-lg text-foreground m-0">{t("dashboard.sites.noSitesMatch")}</h3>
           <p className="text-sm text-[#9b9ba5] m-0 max-w-sm leading-relaxed">
-            Coba kata kunci pencarian lain, filter status yang berbeda, atau buat website baru.
+            {t("dashboard.sites.noSitesMatchDesc")}
           </p>
           {searchQuery && (
             <Button variant="outline" className="rounded-xl text-xs h-8 border-white/10 hover:bg-white/[0.04] mt-2" onClick={() => setSearchQuery("")}>
-              Bersihkan Pencarian
+              {t("dashboard.sites.clearSearch")}
             </Button>
           )}
         </div>
@@ -878,7 +883,7 @@ export default function SitesPage() {
                           : "bg-[#1a1a23] text-[#9b9ba5]"
                         }`}>
                         {isLive && <span className="w-1.5 h-1.5 rounded-full bg-[#34c77b]" />}
-                        {isLive ? "Live" : "Draft"}
+                        {isLive ? t("dashboard.sites.statusLive") : t("dashboard.sites.statusDraft")}
                       </span>
 
                       {/* 3-dots Dropdown Trigger */}
@@ -889,7 +894,7 @@ export default function SitesPage() {
                             setActiveDropdown(activeDropdown === site.id ? null : site.id);
                           }}
                           className="p-1 rounded-lg text-[#9b9ba5] hover:text-white hover:bg-[#1a1a23] transition-colors cursor-pointer"
-                          aria-label="Opsi lainnya"
+                          aria-label={t("dashboard.sites.moreOptions")}
                         >
                           <MoreVertical className="w-4.5 h-4.5" />
                         </button>
@@ -907,7 +912,7 @@ export default function SitesPage() {
                               disabled={actionLoading === site.id}
                               className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
-                              <Copy className="w-3.5 h-3.5 text-[#9b9ba5]" /> Duplikat
+                              <Copy className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionDuplicate")}
                             </button>
                             <button
                               onClick={() => {
@@ -916,7 +921,7 @@ export default function SitesPage() {
                               }}
                               className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors"
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-[#9b9ba5]" /> Ganti nama
+                              <Edit3 className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionRename")}
                             </button>
                             {isLive && (
                               <button
@@ -927,7 +932,7 @@ export default function SitesPage() {
                                 disabled={actionLoading === site.id}
                                 className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                               >
-                                <EyeOff className="w-3.5 h-3.5 text-[#9b9ba5]" /> Batalkan publikasi
+                                <EyeOff className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionUnpublish")}
                               </button>
                             )}
                             <button
@@ -938,7 +943,7 @@ export default function SitesPage() {
                               disabled={actionLoading === site.id}
                               className="w-full text-left bg-transparent border-none text-[#f0556b] hover:bg-[#f0556b]/10 text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50 font-medium"
                             >
-                              <Trash2 className="w-3.5 h-3.5" /> Hapus
+                              <Trash2 className="w-3.5 h-3.5" /> {t("dashboard.sites.actionDelete")}
                             </button>
                           </div>
                         )}
@@ -952,7 +957,7 @@ export default function SitesPage() {
                       <Globe className="w-3.5 h-3.5 text-[#65656f] shrink-0" />
                       {(!isLive || isDraftSubdomain) ? (
                         <span className="text-[12px] text-[#65656f] italic truncate">
-                          Domain belum diatur
+                          {t("dashboard.sites.domainNotSet")}
                         </span>
                       ) : (
                         <span className="text-[12.5px] text-[#f5f5f7] font-mono truncate select-all">
@@ -964,7 +969,7 @@ export default function SitesPage() {
                       <button
                         onClick={() => handleCopyLink(site)}
                         className={`p-1 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
-                        aria-label="Salin tautan"
+                        aria-label={t("dashboard.sites.copyLink")}
                       >
                         {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
@@ -974,7 +979,7 @@ export default function SitesPage() {
                   {/* Modification Time Row */}
                   <div className="flex items-center gap-1 text-[11.5px] text-[#65656f] font-medium">
                     <Info className="w-3.5 h-3.5" />
-                    <span>{getFriendlyDate(site)}</span>
+                    <span>{getFriendlyDate(site, t, dateLocale)}</span>
                   </div>
 
                   {/* Primary card actions */}
@@ -983,7 +988,7 @@ export default function SitesPage() {
                       href={`/dashboard/sites/${site.id}`}
                       className="flex-1 py-2 px-1 rounded-xl border border-white/10 text-foreground hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
-                      <Edit3 className="w-3.5 h-3.5" /> Edit & Preview
+                      <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
                     </Link>
 
                     {isLive ? (
@@ -991,7 +996,7 @@ export default function SitesPage() {
                         onClick={() => window.open(getSiteUrl(site), "_blank")}
                         className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-foreground hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
-                        <Globe className="w-3.5 h-3.5" /> Lihat Web
+                        <Globe className="w-3.5 h-3.5" /> {t("dashboard.sites.viewSite")}
                       </button>
                     ) : (
                       <button
@@ -1004,7 +1009,7 @@ export default function SitesPage() {
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : (
                           <>
-                            <Rocket className="w-3.5 h-3.5" /> Publikasikan
+                            <Rocket className="w-3.5 h-3.5" /> {t("dashboard.sites.publish")}
                           </>
                         )}
                       </button>
@@ -1014,27 +1019,27 @@ export default function SitesPage() {
                   {/* Secondary action links */}
                   <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-none">
                     <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                      Blog
+                      {t("dashboard.sites.linkBlog")}
                     </Link>
                     {site.has_catalog && (
                       <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                        Katalog
+                        {t("dashboard.sites.linkCatalog")}
                       </Link>
                     )}
                     {site.has_menu && (
                       <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                        Menu
+                        {t("dashboard.sites.linkMenu")}
                       </Link>
                     )}
                     <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                      SEO
+                      {t("dashboard.sites.linkSeo")}
                     </Link>
                     <div className="shrink-0 w-px bg-white/[0.06] self-stretch mx-0.5" />
                     <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                      Integrasi
+                      {t("dashboard.sites.linkIntegrations")}
                     </Link>
                     <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
-                      Testimoni
+                      {t("dashboard.sites.linkTestimonials")}
                     </Link>
                   </div>
                 </div>
@@ -1049,7 +1054,7 @@ export default function SitesPage() {
                 onClick={() => setLimit(prev => prev + 10)}
                 className="bg-transparent border border-white/[0.14] hover:bg-white/[0.04] text-foreground font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
               >
-                <RefreshCw className="w-3.5 h-3.5" /> Muat Lebih Banyak
+                <RefreshCw className="w-3.5 h-3.5" /> {t("dashboard.sites.loadMore")}
               </button>
             </div>
           )}
@@ -1070,6 +1075,7 @@ interface CongratsModalProps {
 }
 
 function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalProps) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -1084,7 +1090,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
-      title="🎉 Selamat! Website Anda Telah Live"
+      title={t("dashboard.sites.congratsTitle")}
     >
       <div className="space-y-6 text-center py-4">
         {/* Celebration Anim/Icon */}
@@ -1096,9 +1102,9 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
         </div>
 
         <div className="space-y-2 max-w-sm mx-auto">
-          <h3 className="text-xl font-bold text-foreground tracking-tight">Website Anda Resmi Mengudara!</h3>
+          <h3 className="text-xl font-bold text-foreground tracking-tight">{t("dashboard.sites.congratsHeading")}</h3>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
-            Selamat! Halaman web <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.
+            {t("dashboard.sites.congratsBody", undefined, { name: site.name })}
           </p>
         </div>
 
@@ -1114,7 +1120,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[14px] text-foreground font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
-                title="Buka Website"
+                title={t("dashboard.sites.openWebsite")}
               >
                 {displayDomain}
               </a>
@@ -1124,14 +1130,14 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
               type="button"
               onClick={handleCopy}
               className="p-2 bg-white/[0.04] border border-white/10 text-[#9b9ba5] hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
-              title="Salin Link"
+              title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? <Check className="w-4 h-4 text-[#3ddc84]" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 
           <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed m-0 text-left">
-            💡 <strong>Ingin mengecek?</strong> Klik link di atas untuk membuka website live Anda di tab baru.
+            {t("dashboard.sites.checkTip")}
           </p>
         </div>
 
@@ -1143,14 +1149,14 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
             className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
             onClick={onClose}
           >
-            Selesai
+            {t("dashboard.sites.done")}
           </Button>
           <button
             type="button"
             className="btn-primary flex-1 rounded-xl h-11 text-[13.5px] font-bold flex items-center justify-center gap-2"
             onClick={() => window.open(siteUrl, "_blank")}
           >
-            <Globe className="w-4 h-4" /> Buka Website
+            <Globe className="w-4 h-4" /> {t("dashboard.sites.openWebsite")}
           </button>
         </div>
       </div>

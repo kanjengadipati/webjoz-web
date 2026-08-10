@@ -8,6 +8,7 @@ import { Badge, Button, Card } from "@/components/ui";
 import { Check, Loader2 } from "lucide-react";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { BillingCycleSwitcher } from "@/components/billing-cycle-switcher";
 import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { InteractiveMockup } from "@/components/interactive-mockup";
 import { useI18n } from "@/lib/i18n/context";
@@ -488,40 +489,15 @@ export default function LandingPageClient() {
             </p>
 
             {/* Billing Cycle Switcher */}
-            <div className="pt-2 flex flex-col items-center justify-center gap-2">
-              <div className="inline-flex items-center p-1 bg-muted/80 dark:bg-muted/40 border border-border/50 rounded-2xl">
-                <button
-                  type="button"
-                  onClick={() => setBillingCycle("monthly")}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                    billingCycle === "monthly"
-                      ? "bg-white text-slate-900 shadow-sm font-bold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t("landing.monthly")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBillingCycle("yearly")}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
-                    billingCycle === "yearly"
-                      ? "bg-white text-slate-900 shadow-sm font-bold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <span>{t("landing.yearly")}</span>
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
-                    {t("landing.saveBadge")}
-                  </span>
-                </button>
-              </div>
-              {billingCycle === "yearly" && (
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                  {t("landing.saveText")}
-                </p>
-              )}
-            </div>
+            <BillingCycleSwitcher
+              billingCycle={billingCycle}
+              onCycleChange={setBillingCycle}
+              monthlyLabel={t("landing.monthly")}
+              yearlyLabel={t("landing.yearly")}
+              saveBadgeLabel={t("landing.saveBadge")}
+              showSaveText={true}
+              saveText={t("landing.saveText")}
+            />
           </div>
 
           {plansLoading ? (
