@@ -33,7 +33,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [mood, setMood] = useState("");
-  const [siteLanguage, setSiteLanguage] = useState<"id" | "en">(locale === "en" ? "en" : "id");
+  const [siteLanguage, setSiteLanguage] = useState<"id" | "en" | null>(null);
 
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
@@ -98,7 +98,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
   const moodRef = useRef(mood);
-  const siteLanguageRef = useRef(siteLanguage);
+  const siteLanguageRef = useRef<"id" | "en" | null>(null);
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => { businessNameRef.current = businessName; }, [businessName]);
@@ -215,7 +215,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
   const handleSelectSubType = (
     subType: string,
-    onGenerate: (name: string, type: string, overrides: any) => void
+    _onGenerate: (name: string, type: string, overrides: any) => void
   ) => {
     setBusinessSubType(subType);
     setInputValue("");
@@ -223,6 +223,30 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: subType },
+    ]);
+
+    setChatStage("language");
+    setTimeout(() => {
+      typeMessage(t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?"), () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
+        ]);
+      });
+    }, 500);
+  };
+
+  const handleSelectLanguage = (
+    lang: "id" | "en"
+  ) => {
+    setSiteLanguage(lang);
+    setInputValue("");
+    siteLanguageRef.current = lang;
+
+    const displayText = lang === "en" ? "🇬🇧 English" : "🇮🇩 Indonesia";
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString(), sender: "user", text: displayText },
     ]);
 
     setChatStage("mood");
@@ -254,7 +278,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setChatStage("done");
 
-    onGenerate(businessName, businessType, { businessSubType, mood: selectedMood });
+    onGenerate(businessName, businessType, { businessSubType, mood: selectedMood, language: siteLanguageRef.current || siteLanguage || "id" });
   };
 
   const handleConfirmInference = (
@@ -265,16 +289,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (confirmed && inferenceResult?.type && inferenceResult?.subType) {
       setBusinessType(inferenceResult.type);
       setBusinessSubType(inferenceResult.subType);
-      const subType = inferenceResult.subType;
       setMessages((prev) => [
         ...prev,
-        { id: `ai-mood-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:") },
+        { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
       ]);
-      setChatStage("mood");
+      setChatStage("language");
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
-          { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
+          { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
         ]);
       }, 500);
     } else {
@@ -331,7 +354,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         hasAskedNameConfirmRef.current = true;
         setAwaitingNameConfirm(true);
         setTimeout(() => {
-          typeMessage(pickVariant(nameConfirmVariants), () => {});
+          typeMessage(pickVariant(nameConfirmVariants), () => { });
         }, 500);
         return;
       }
@@ -339,15 +362,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setTimeout(() => {
         if (prefill?.businessType && prefill?.businessSubType) {
           typeMessage(pickVariant(nameAckVariants), () => {
-            setChatStage("mood");
+            setChatStage("language");
             setMessages((prev) => [
               ...prev,
-              { id: `ai-mood-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:") },
+              { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
             ]);
             setTimeout(() => {
               setMessages((prev) => [
                 ...prev,
-                { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
+                { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
               ]);
             }, 500);
           });
@@ -505,6 +528,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     handleSendText,
     handleSelectType,
     handleSelectSubType,
+    handleSelectLanguage,
     handleSelectMood,
     handleConfirmInference,
     typeMessage,

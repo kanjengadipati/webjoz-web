@@ -1806,6 +1806,7 @@ export interface Translations {
       descriptionInferenceMedium: string;
       descriptionInferenceNone: string;
       selectMoodPrompt: string;
+      selectLanguagePrompt: string;
       preparingWebsite: string;
       websiteReady: string;
       confirmCardTitle: string;
@@ -3743,6 +3744,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceMedium: "Saya lihat bidang usaha Anda adalah {type}. Bisa pilih yang lebih spesifik?",
         descriptionInferenceNone: "Baik, silakan pilih jenis bisnis Anda:",
         selectMoodPrompt: "Pilih suasana (mood) yang cocok untuk website Anda:",
+        selectLanguagePrompt: "Dalam bahasa apa website ini akan dibuat?",
         preparingWebsite: "Baik, AI sedang menyiapkan website Anda...",
         websiteReady: "🎉 Website Anda telah selesai dibuat! Silakan lihat pratinjau website Anda di samping atau klik tombol di bawah untuk lanjut.",
         confirmCardTitle: "Hampir jadi — cek dan lengkapi",
@@ -5710,6 +5712,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceMedium: "I see your business field is {type}. Could you pick a more specific category?",
         descriptionInferenceNone: "Alright, please select your business type:",
         selectMoodPrompt: "Choose a mood/vibe that fits your website:",
+        selectLanguagePrompt: "What language should this website be in?",
         preparingWebsite: "Great! AI is preparing your website...",
         websiteReady: "🎉 Your website is ready! Check out the preview or click below to edit and publish.",
         confirmCardTitle: "Almost done — review and complete",
