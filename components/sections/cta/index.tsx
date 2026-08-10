@@ -7,15 +7,15 @@ import CtaCard from "./card";
 import CtaCentered from "./centered";
 import CtaSplitImage from "./split-image";
 
-const variants: Record<string, ComponentType<{ cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null }>> = {
+const variants: Record<string, ComponentType<{ cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null; language?: "id" | "en" }>> = {
   banner: CtaClassic,
   card: CtaCard,
   centered: CtaCentered,
   "split-image": CtaSplitImage,
 };
 
-export default function CtaSection({ cta, design_token }: { cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null }) {
+export default function CtaSection({ cta, design_token, language }: { cta: TemplateProps["content"]["cta"]; design_token?: DesignToken | null; language?: "id" | "en" }) {
   const variant = design_token?.layout?.section_variants?.cta ?? "banner";
   const Renderer = variants[variant] ?? CtaClassic;
-  return <Renderer cta={cta} design_token={design_token} />;
+  return <Renderer cta={cta} design_token={design_token} language={language} />;
 }

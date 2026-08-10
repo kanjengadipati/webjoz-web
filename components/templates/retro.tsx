@@ -18,7 +18,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateRetro: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -331,11 +331,12 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
             leadCardClass="p-6 rounded-[var(--dt-radius)]"
             leadCardStyle={{ background: card, border: `1px solid ${border}` }}
             leadTitleClass="text-sm font-black uppercase tracking-widest text-white"
-            leadTitleText="Kirim Pesan"
+            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             leadFormBtnClass="w-full font-bold text-xs uppercase tracking-widest text-white rounded-[var(--dt-radius)] transition-all hover:brightness-110"
             leadFormBtnStyle={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm outline-none focus:ring-1 text-white placeholder-neutral-500 rounded-[var(--dt-radius)]"
             leadFormInputStyle={{ background: "#1a0d2e", border: `1px solid ${border}` }}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -354,7 +355,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: bg, color: "#e0d6ff", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

@@ -19,7 +19,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateMinimalist: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -331,6 +331,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
             leadTitleText=""
             leadFormBtnClass="bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest"
             leadFormInputClass="w-full border border-zinc-200 p-3 text-sm font-light focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white"
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -350,7 +351,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: bg, color: zinc900, fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

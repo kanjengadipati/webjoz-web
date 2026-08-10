@@ -6,9 +6,11 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
 interface CtaVariantProps {
   cta: TemplateProps["content"]["cta"];
   design_token?: DesignToken | null;
+  language?: "id" | "en";
 }
 
-export default function CtaClassic({ cta: c }: CtaVariantProps) {
+export default function CtaClassic({ cta: c, language = "id" }: CtaVariantProps) {
+  const isEN = language === "en";
   return (
     <section style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div className="px-4 py-8 md:px-8 md:py-16" style={{ background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 80%, var(--dt-primary)))`, borderRadius: "var(--dt-radius-lg)", textAlign: "center", position: "relative", overflow: "hidden" }}>
@@ -19,7 +21,7 @@ export default function CtaClassic({ cta: c }: CtaVariantProps) {
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.92"; e.currentTarget.style.transform = "translateY(-1px)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
           >
-            {c.button_text || "Hubungi Kami"} <ArrowRight style={{ width: 16, height: 16, flexShrink: 0 }} />
+            {c.button_text || (isEN ? "Contact Us" : "Hubungi Kami")} <ArrowRight style={{ width: 16, height: 16, flexShrink: 0 }} />
           </a>
         </div>
       </div>

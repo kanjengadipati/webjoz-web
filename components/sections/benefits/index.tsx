@@ -15,6 +15,7 @@ type BenefitVariantProps = {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 };
 
 const variants: Record<string, ComponentType<BenefitVariantProps>> = {
@@ -32,6 +33,7 @@ export default function BenefitsSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  language = "id",
 }: {
   benefits: TemplateProps["content"]["benefits"];
   design_token?: DesignToken | null;
@@ -40,6 +42,7 @@ export default function BenefitsSection({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.benefits ?? "grid";
   const Renderer = variants[variant] ?? BenefitsClassic;
@@ -52,6 +55,7 @@ export default function BenefitsSection({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      language={language}
     />
   );
 }

@@ -17,5 +17,5 @@ export default function HeaderSection(props: HeaderVariantProps) {
   const Renderer = variants[variant] ?? LeftLogoInlineNav;
   const navHidden = props.design_token?.layout?.nav_hidden_sections ?? [];
   const mergedHiddenSections = [...new Set([...(props.hiddenSections ?? []), ...navHidden])];
-  return <Renderer {...props} hiddenSections={mergedHiddenSections} />;
+  return <Renderer {...props} hiddenSections={mergedHiddenSections} language={props.language} />;
 }

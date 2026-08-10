@@ -18,7 +18,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateFuturistic: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -322,11 +322,12 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
             leadCardClass="p-6"
             leadCardStyle={{ background: card, border: `1px solid ${border}`, borderRadius: "var(--dt-radius)", backdropFilter: "blur(8px)" }}
             leadTitleClass="text-sm font-semibold tracking-wider text-white"
-            leadTitleText="Kirim Pesan"
+            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             leadFormBtnClass="w-full font-semibold text-xs uppercase tracking-widest text-white transition-all hover:brightness-110"
             leadFormBtnStyle={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, borderRadius: "var(--dt-radius)" }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-500"
             leadFormInputStyle={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${border}`, borderRadius: "var(--dt-radius)" }}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -345,7 +346,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: bg, color: "#e0f0ff", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

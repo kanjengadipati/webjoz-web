@@ -19,7 +19,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateBold: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -339,11 +339,12 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             leadCardClass="p-6"
             leadCardStyle={{ background: card, border: `2px solid ${border}` }}
             leadTitleClass="text-sm font-black uppercase tracking-widest text-white"
-            leadTitleText="Kirim Pesan"
+            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             leadFormBtnClass="w-full font-black text-xs uppercase tracking-widest text-white hover:brightness-110 transition-all"
             leadFormBtnStyle={{ background: red }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-600"
             leadFormInputStyle={{ background: "#1a110e", border: `1px solid ${border}`, borderRadius: 0 }}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -363,7 +364,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     <div style={{ ...cssVars, background: bg, color: "#f5f5f5", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       {/* Header */}
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {/* Sections */}

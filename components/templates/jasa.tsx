@@ -21,7 +21,7 @@ import type { TemplateProps } from "./types";
 export const TemplateJasa: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
-  isEditorMode = false, arrivedSections, isPremium = false
+  isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, catalog, gallery, blog, blog_layout } = content;
   const dt = design_token ?? null;
@@ -398,7 +398,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             textClass="text-[var(--dt-text-muted)]"
             leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
             leadTitleClass="text-lg font-bold text-[var(--dt-text)]"
-            leadTitleText="Kirim Pertanyaan Anda"
+            leadTitleText={language === 'en' ? 'Send Your Inquiry' : 'Kirim Pertanyaan Anda'}
             leadFormBtnClass="bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] shadow-sm"
             leadFormInputClass="w-full px-4 py-2.5 bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm transition-all"
             onUpdateField={onUpdateField}
@@ -406,6 +406,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             isSelected={activeSection === "contact"}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -449,7 +450,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       style={{ ...cssVars, background: "var(--dt-bg)", color: "var(--dt-text)", fontFamily: "var(--dt-body-font)" }}
     >
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

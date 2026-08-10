@@ -19,7 +19,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateColorful: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -370,6 +370,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             leadFormBtnClass="border-2 border-black font-black uppercase text-sm"
             leadFormBtnStyle={{ background: yellow, color: ctaText }}
             leadFormInputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] bg-white"
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -388,7 +389,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: bg, color: "var(--dt-text)", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

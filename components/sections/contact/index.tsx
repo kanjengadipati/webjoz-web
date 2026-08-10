@@ -19,5 +19,5 @@ const variants: Record<string, ComponentType<ContactVariantProps>> = {
 export default function ContactSection(props: ContactVariantProps) {
   const variant = props.design_token?.layout?.section_variants?.contact ?? "classic-split";
   const Renderer = variants[variant] ?? ClassicSplit;
-  return <Renderer {...props} />;
+  return <Renderer {...props} language={props.language} />;
 }

@@ -20,7 +20,7 @@ import type { TemplateProps } from "./types";
 export const TemplateProduk: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
-  isEditorMode = false, arrivedSections, isPremium = false
+  isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials, gallery, blog, blog_layout } = content;
   const dt = design_token ?? null;
@@ -313,7 +313,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             textClass="text-slate-300"
             leadCardClass="bg-slate-900 p-8 rounded-[var(--dt-radius-lg)] border border-slate-800 shadow-xl backdrop-blur-sm"
             leadTitleClass="text-lg font-bold text-white"
-            leadTitleText="Hubungi Kami Langsung"
+            leadTitleText={language === 'en' ? 'Contact Us Directly' : 'Hubungi Kami Langsung'}
             leadFormBtnClass="bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)]"
             leadFormInputClass="w-full px-4 py-2.5 bg-slate-950/50 border border-slate-800 focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm text-slate-100 transition-all"
             onUpdateField={onUpdateField}
@@ -321,6 +321,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             isSelected={activeSection === "contact"}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -430,7 +431,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
     <div className="bg-slate-950 text-slate-100 overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)

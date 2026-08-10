@@ -10,7 +10,8 @@ function mapsDirUrl(c: ContactVariantProps["contact"]): string {
   return `https://maps.google.com/?q=${encodeURIComponent(addr)}`;
 }
 
-export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError }: ContactVariantProps) {
+export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id" }: ContactVariantProps) {
+  const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
@@ -29,7 +30,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
         <div className="flex items-center gap-2" style={{ background: "var(--dt-surface)", padding: "0.5rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" }}>
           <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)" }} />
           <div>
-            <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>Lokasi</p>
+            <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{isEN ? "Location" : "Lokasi"}</p>
             <p style={{ fontSize: "0.7rem", color: "var(--dt-text-muted)", margin: 0 }}>{displayAddress}</p>
           </div>
         </div>
@@ -39,18 +40,18 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
         {hasLeadForm && (
           <div style={{ width: "100%", maxWidth: "420px", background: "color-mix(in srgb, var(--dt-surface) 92%, transparent)", backdropFilter: "blur(12px)", padding: "1.5rem 2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
             <span style={{ display: "inline-block", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "0.75rem" }}>
-              Peta Overlay
+              {isEN ? "Overlay Map" : "Peta Overlay"}
             </span>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "1.25rem", color: "var(--dt-text)", margin: "0 0 0.25rem" } as any}>
-              Hubungi Kami
+              {isEN ? "Contact Us" : "Hubungi Kami"}
             </h2>
             <p style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 }}>
-              Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami.
+              {isEN ? "Need a quote or partnership info? Fill in the form, the map shows our office location." : "Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami."}
             </p>
-            <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} />
+            <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
             <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", fontSize: "0.7rem", color: "var(--dt-text-muted)" }}>
               <div>
-                <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>Telepon</p>
+                <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>{isEN ? "Phone" : "Telepon"}</p>
                 <p style={{ margin: 0 }}>{displayPhone}</p>
               </div>
               <div>
@@ -59,7 +60,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
               </div>
             </div>
             <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontSize: "0.7rem", fontWeight: 600, marginTop: "0.75rem" }}>
-              <Navigation style={{ width: 12, height: 12 }} /> Buka Navigasi <ExternalLink style={{ width: 10, height: 10 }} />
+              <Navigation style={{ width: 12, height: 12 }} /> {isEN ? "Open Navigation" : "Buka Navigasi"} <ExternalLink style={{ width: 10, height: 10 }} />
             </a>
           </div>
         )}

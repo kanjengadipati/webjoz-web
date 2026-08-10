@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { Check, Send } from "lucide-react";
 
-export default function DynamicLeadForm({ onSubmit, submitting, success, error }: { onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>; submitting?: boolean; success?: boolean; error?: string | null; }) {
+export default function DynamicLeadForm({ onSubmit, submitting, success, error, language = "id" }: { onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>; submitting?: boolean; success?: boolean; error?: string | null; language?: "id" | "en"; }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+
+  const isEN = language === "en";
 
   const inputStyle: React.CSSProperties = {
     width: "100%", padding: "0.625rem 1rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, #e2e8f0)",
@@ -21,8 +23,8 @@ export default function DynamicLeadForm({ onSubmit, submitting, success, error }
         <div style={{ width: 48, height: 48, background: "color-mix(in srgb, var(--dt-primary) 15%, transparent)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
           <Check style={{ width: 24, height: 24, color: "var(--dt-primary)" }} />
         </div>
-        <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, color: "var(--dt-text)", marginBottom: "0.5rem" }}>Pesan Terkirim!</h3>
-        <p style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)" }}>Terima kasih. Tim kami akan segera merespons.</p>
+        <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, color: "var(--dt-text)", marginBottom: "0.5rem" }}>{isEN ? "Message Sent!" : "Pesan Terkirim!"}</h3>
+        <p style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)" }}>{isEN ? "Thank you. Our team will respond shortly." : "Terima kasih. Tim kami akan segera merespons."}</p>
       </div>
     );
   }
@@ -31,29 +33,29 @@ export default function DynamicLeadForm({ onSubmit, submitting, success, error }
     <form onSubmit={(e) => { e.preventDefault(); onSubmit && onSubmit({ name, email, phone, message }); }} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {error && <div style={{ padding: "0.75rem 1rem", background: "#fee2e2", borderRadius: "var(--dt-radius)", color: "#991b1b", fontSize: "0.875rem" }}>{error}</div>}
       <div>
-        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Nama Lengkap</label>
-        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} placeholder="cth. Budi Santoso" />
+        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>{isEN ? "Full Name" : "Nama Lengkap"}</label>
+        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} placeholder={isEN ? "e.g. John Smith" : "cth. Budi Santoso"} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
         <div>
-          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Email</label>
+          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>{isEN ? "Email Address" : "Email"}</label>
           <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="email@domain.com" />
         </div>
         <div>
-          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Nomor WA</label>
-          <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} placeholder="08xx" />
+          <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>{isEN ? "WhatsApp Number" : "Nomor WA"}</label>
+          <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} placeholder={isEN ? "+1 234..." : "08xx"} />
         </div>
       </div>
       <div>
-        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>Pesan</label>
-        <textarea required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} style={{ ...inputStyle, resize: "none" }} placeholder="Tulis pesan atau pertanyaan Anda..." />
+        <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>{isEN ? "Message" : "Pesan"}</label>
+        <textarea required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} style={{ ...inputStyle, resize: "none" }} placeholder={isEN ? "Write your message or inquiry..." : "Tulis pesan atau pertanyaan Anda..."} />
       </div>
       <button
         type="submit"
         disabled={submitting}
         style={{ padding: "0.75rem 1.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", fontWeight: 700, fontFamily: "var(--dt-body-font)", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "opacity 0.2s", border: "none" }}
       >
-        {submitting ? "Mengirim..." : <><Send style={{ width: 16, height: 16 }} /> Kirim Pesan</>}
+        {submitting ? (isEN ? "Sending..." : "Mengirim...") : <><Send style={{ width: 16, height: 16 }} /> {isEN ? "Send Message" : "Kirim Pesan"}</>}
       </button>
     </form>
   );

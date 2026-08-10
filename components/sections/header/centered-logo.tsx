@@ -6,8 +6,9 @@ import type { HeaderVariantProps } from "./types";
 
 export default function CenteredLogo({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle, extraLinks,
+  navLinkClass = "", drawerStyle, extraLinks, language,
 }: HeaderVariantProps) {
+  const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
     <header
       className="sticky top-0 z-50 backdrop-blur-md px-4 sm:px-6 py-3 flex flex-col items-center gap-2 relative"
@@ -34,7 +35,7 @@ export default function CenteredLogo({
             className="shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center sm:hidden"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || "Hubungi"}
+            {header?.nav_cta_text || defaultCta}
           </a>
         )}
       </div>
@@ -43,6 +44,7 @@ export default function CenteredLogo({
           sectionOrder={sectionOrder}
           hiddenSections={hiddenSections}
           extraLinks={extraLinks}
+          language={language}
           linkClass={navLinkClass || "text-[var(--dt-text-muted)] text-sm"}
           drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
         />
@@ -53,7 +55,7 @@ export default function CenteredLogo({
             className="hidden sm:inline-flex shrink-0 px-5 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm items-center"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || "Hubungi Kami"}
+            {header?.nav_cta_text || defaultCta}
           </a>
         )}
       </div>

@@ -18,7 +18,7 @@ import type { TemplateProps } from "./types";
 
 export const TemplateNatural: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -337,11 +337,12 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             leadCardStyle={{ background: surface, borderColor: border }}
             leadTitleClass="text-sm font-bold  "
             leadTitleStyle={{ color: sageDark }}
-            leadTitleText="Kirim Pesan"
+            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
             leadFormBtnClass="rounded-[var(--dt-radius)] font-bold text-xs uppercase tracking-wider"
             leadFormBtnStyle={{ background: sage, color: ctaText }}
             leadFormInputClass="w-full px-3 py-2.5 rounded-[var(--dt-radius)] text-sm   border outline-none focus:ring-1"
             leadFormInputStyle={{ borderColor: border }}
+            language={language}
           />
         )} />
       </MemoPreviewSectionWrapper>
@@ -360,7 +361,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
     <div style={{ ...cssVars, background: cream, color: brown, fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} />
+        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
 
       {filterEmptySections(sectionOrder, content, isEditorMode)
