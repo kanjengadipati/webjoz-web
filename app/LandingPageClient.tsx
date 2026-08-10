@@ -489,7 +489,6 @@ export default function LandingPageClient() {
               {t("landing.pricingSubtitle")}
             </p>
 
-            {/* Pricing Cards */}
             <PricingCards
               plans={plans}
               loading={plansLoading}
@@ -509,6 +508,7 @@ export default function LandingPageClient() {
               popularBadgeLabel={t("landing.popularBadge")}
               priceFreeLabel={t("landing.priceFree")}
               priceFreePeriodLabel={t("landing.priceFreePeriod")}
+              freePlanButtonLabel={t("landing.startFree")}
             />
           </div>
         </div>

@@ -42,6 +42,7 @@ interface PricingCardsProps {
   priceFreeLabel?: string;
   priceFreePeriodLabel?: string;
   currentPlanLabel?: string;
+  freePlanButtonLabel?: string;
 }
 
 export function PricingCards({
@@ -60,6 +61,7 @@ export function PricingCards({
   priceFreeLabel = "Gratis",
   priceFreePeriodLabel = "Selamanya",
   currentPlanLabel = "Paket Saat Ini",
+  freePlanButtonLabel = priceFreeLabel,
 }: PricingCardsProps) {
   if (loading) {
     return (
@@ -225,13 +227,13 @@ export function PricingCards({
               ) : (
                 <Button
                   onClick={() => onSelectPlan(plan)}
-                  disabled={payingPlanId !== null || isFree}
+                  disabled={payingPlanId !== null}
                   className="w-full rounded-full font-bold shadow-md cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {payingPlanId === plan.id ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : isFree ? (
-                    priceFreeLabel
+                    freePlanButtonLabel
                   ) : (
                     `Pilih ${plan.name} (${isYearly ? yearlyLabel : monthlyLabel})`
                   )}
