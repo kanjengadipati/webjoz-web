@@ -390,12 +390,12 @@ const DESC_HINTS: DescHintEntry[] = [
   { type: "Company", subType: "Manufaktur", keywords: ["manufaktur", "pabrik", "produksi", "industri", "fabrikasi", "perakitan", "pengolahan"], weight: 2 },
 ];
 
-// Broader type-only keywords (lower weight)
+// Broader type-only keywords (weight 2 for clear category match)
 const DESC_TYPE_HINTS: { type: string; keywords: string[]; weight: number }[] = [
-  { type: "Kuliner", keywords: ["makan", "minum", "jual makanan", "bisnis kuliner", "usaha makanan", "makanan ringan"], weight: 1 },
-  { type: "Jasa", keywords: ["jasa", "layanan", "service", "bantuan", "profesional", "bidang jasa"], weight: 1 },
-  { type: "Toko & UMKM", keywords: ["jual", "dagang", "toko", "ritel", "eceran", "usaha kecil", "bisnis rumahan"], weight: 1 },
-  { type: "Company", keywords: ["perusahaan", "corporation", "pt", "cv", "bisnis besar", "korporasi"], weight: 1 },
+  { type: "Kuliner", keywords: ["kuliner", "makanan", "minuman", "makan", "minum", "jual makanan", "bisnis kuliner", "usaha makanan", "makanan ringan", "kulineran", "f&b", "food"], weight: 2 },
+  { type: "Jasa", keywords: ["jasa", "layanan", "service", "bantuan", "profesional", "bidang jasa", "penyedia jasa"], weight: 2 },
+  { type: "Toko & UMKM", keywords: ["toko", "umkm", "jual", "dagang", "ritel", "eceran", "usaha kecil", "bisnis rumahan", "toko online", "olshop", "jualan"], weight: 2 },
+  { type: "Company", keywords: ["company", "korporasi", "perusahaan", "corporation", "pt", "cv", "bisnis besar", "perusahaan jasa", "perusahaan industri"], weight: 2 },
 ];
 
 export function inferTypeFromDescription(desc: string): InferenceResult {

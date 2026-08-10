@@ -1,23 +1,30 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE } from "./constants";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, MOOD_OPTIONS } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
+import { useI18n } from "@/lib/i18n/context";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
+  const { t } = useI18n();
+  const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
+  const initialMessageWords = useMemo(() => initialMessageText.split(" "), [initialMessageText]);
+  const nameAckVariants = (t("dashboard.wizard.nameAckVariants") as unknown as string[]) || NAME_ACK_VARIANTS;
+  const nameConfirmVariants = (t("dashboard.wizard.nameConfirmVariants") as unknown as string[]) || NAME_CONFIRM_VARIANTS;
+
   const [chatStage, setChatStage] = useState<ChatStage>("name");
   const [messages, setMessages] = useState<Message[]>([
-    { id: "init", sender: "ai", text: INITIAL_MESSAGE },
+    { id: "init", sender: "ai", text: initialMessageText },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [initialWordCount, setInitialWordCount] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const subTypeRef = useRef<HTMLDivElement>(null);
-  const isInitialTyping = chatStage === "name" && initialWordCount < INITIAL_MESSAGE_WORDS.length;
+  const isInitialTyping = chatStage === "name" && initialWordCount < initialMessageWords.length;
 
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState(prefill?.businessType ?? "");
@@ -39,8 +46,13 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const recognitionRef = useRef<any>(null);
 
   const startRecording = () => {
+    if (typeof window === "undefined") return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
+    if (!SpeechRecognition) {
+      alert("Browser Anda tidak mendukung fitur Voice/STT.");
+      return;
+    }
+
     const recognition = new SpeechRecognition();
     recognition.lang = "id-ID";
     recognition.interimResults = true;
@@ -114,11 +126,19 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }, 100);
   }, [messages, chatStage]);
 
+  // Sync init message if locale changes
+  useEffect(() => {
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === "init" ? { ...msg, text: initialMessageText } : msg))
+    );
+    setInitialWordCount(0);
+  }, [initialMessageText]);
+
   // Initial typing animation
   useEffect(() => {
     const interval = setInterval(() => {
       setInitialWordCount((count) => {
-        if (count >= INITIAL_MESSAGE_WORDS.length) {
+        if (count >= initialMessageWords.length) {
           clearInterval(interval);
           return count;
         }
@@ -126,7 +146,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       });
     }, 130);
     return () => clearInterval(interval);
-  }, []);
+  }, [initialMessageWords.length]);
 
   // Auto-focus input
   useEffect(() => {
@@ -204,7 +224,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setChatStage("mood");
     setTimeout(() => {
-      typeMessage("Pilih suasana (mood) yang cocok untuk website Anda:", () => {
+      typeMessage(t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:"), () => {
         setMessages((prev) => [
           ...prev,
           { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
@@ -220,10 +240,13 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMood(selectedMood);
     setInputValue("");
 
+    const moodItem = MOOD_OPTIONS.find((m) => m.value === selectedMood);
+    const displayText = moodItem ? `${moodItem.emoji} ${moodItem.label}` : selectedMood;
+
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: "user", text: selectedMood },
-      { id: `ai-${Date.now()}`, sender: "ai", text: "Baik, AI sedang menyiapkan website Anda..." },
+      { id: Date.now().toString(), sender: "user", text: displayText },
+      { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda...") },
     ]);
 
     setChatStage("done");
@@ -287,11 +310,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
         setAwaitingNameConfirm(false);
         setTimeout(() => {
-          typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `ai-desc-${Date.now()}`, sender: "ai", text: DESCRIPTION_PROMPT },
-            ]);
+          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
             setChatStage("description");
           });
         }, 500);
@@ -309,18 +328,18 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         hasAskedNameConfirmRef.current = true;
         setAwaitingNameConfirm(true);
         setTimeout(() => {
-          typeMessage(pickVariant(NAME_CONFIRM_VARIANTS), () => {});
+          typeMessage(pickVariant(nameConfirmVariants), () => {});
         }, 500);
         return;
       }
 
       setTimeout(() => {
-        typeMessage(pickVariant(NAME_ACK_VARIANTS), () => {
-          if (prefill?.businessType && prefill?.businessSubType) {
+        if (prefill?.businessType && prefill?.businessSubType) {
+          typeMessage(pickVariant(nameAckVariants), () => {
             setChatStage("mood");
             setMessages((prev) => [
               ...prev,
-              { id: `ai-mood-${Date.now()}`, sender: "ai", text: "Pilih suasana (mood) yang cocok untuk website Anda:" },
+              { id: `ai-mood-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:") },
             ]);
             setTimeout(() => {
               setMessages((prev) => [
@@ -328,24 +347,22 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
                 { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
               ]);
             }, 500);
-          } else {
-            setMessages((prev) => [
-              ...prev,
-              { id: `ai-desc-${Date.now()}`, sender: "ai", text: DESCRIPTION_PROMPT },
-            ]);
+          });
+        } else {
+          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
             setChatStage("description");
-          }
-        });
+          });
+        }
       }, 500);
     }
 
     if (chatStage === "description") {
-      const isSkip = !val.trim() || val.toLowerCase().trim() === DESCRIPTION_SKIP_KEYWORD;
+      const isSkip = !val.trim() || val.toLowerCase().trim() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase().trim() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
       if (isSkip) {
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: "Lanjut" }]);
+        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
         setInferenceResult({ confidence: "low" } as InferenceResult);
         setTimeout(() => {
-          typeMessage(DESCRIPTION_INFERENCE_NONE, () => {
+          typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
             setMessages((prev) => [
               ...prev,
               { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
@@ -371,7 +388,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
       if (result.confidence === "high" && result.type && result.subType) {
         setAwaitingInferenceConfirm(true);
-        const confirmMsg = DESCRIPTION_INFERENCE_HIGH.replace("%s", result.type!).replace("%s", result.subType!);
+        const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { type: result.type ?? "", subType: result.subType ?? "" });
         setTimeout(() => {
           typeMessage(confirmMsg, () => {
             setMessages((prev) => [
@@ -387,7 +404,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         setBusinessType(result.type);
         setTypeWasInferred(true);
         setTimeout(() => {
-          const medMsg = DESCRIPTION_INFERENCE_MEDIUM.replace("%s", result.type!);
+          const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: result.type ?? "" });
           typeMessage(medMsg, () => {
             setMessages((prev) => [
               ...prev,
@@ -401,7 +418,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
-        typeMessage(DESCRIPTION_INFERENCE_NONE, () => {
+        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
           setMessages((prev) => [
             ...prev,
             { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
@@ -439,6 +456,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     inputValue,
     setInputValue,
     initialWordCount,
+    initialMessageText,
+    initialMessageWords,
     businessName,
     setBusinessName,
     businessType,

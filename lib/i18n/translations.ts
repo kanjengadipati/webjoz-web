@@ -1435,6 +1435,449 @@ export interface Translations {
       emptyDesc: string;
       delete: string;
     };
+    upgradeSuccess: {
+      confirmTimeout: string;
+      backToDashboard: string;
+      pendingTitle: string;
+      pendingDesc: string;
+      successTitle: string;
+      successDesc: string;
+      errorTitle: string;
+      errorDesc: string;
+      txDetails: string;
+      orderIdLabel: string;
+      totalLabel: string;
+      methodLabel: string;
+      timeLabel: string;
+      goToDashboard: string;
+      viewOtherPlans: string;
+    };
+    sitesNew: {
+      connecting: string;
+      noWorkspaceTitle: string;
+      noWorkspaceDesc: string;
+      backToDashboard: string;
+    };
+    sitesSeo: {
+      title: string;
+      webLink: string;
+      saving: string;
+      saved: string;
+      save: string;
+      loadFailed: string;
+      saveFailed: string;
+      gscSaved: string;
+      aiFailed: string;
+      upgradeTitle: string;
+      upgradeDesc: string;
+      upgradeNow: string;
+      later: string;
+    };
+    sitesIntegrations: {
+      title: string;
+      webLink: string;
+      loadFailed: string;
+      saved: string;
+      saveFailed: string;
+      save: string;
+      saving: string;
+      ga4Desc: string;
+      metaPixelDesc: string;
+    };
+    sitesTestimonials: {
+      loadFailed: string;
+      shareTitle: string;
+      copy: string;
+      linkCopied: string;
+      pendingTitle: string;
+      approved: string;
+      approvedDesc: string;
+      approve: string;
+      approveFailed: string;
+      rejected: string;
+      rejectedDesc: string;
+      reject: string;
+      rejectFailed: string;
+      validationRequired: string;
+      added: string;
+      addFailed: string;
+      add: string;
+      manualTitle: string;
+      manualDesc: string;
+      labelName: string;
+      labelRole: string;
+      labelQuote: string;
+      labelRating: string;
+      saving: string;
+      saveToSite: string;
+      cancel: string;
+      emptyDesc: string;
+    };
+    sitesKatalog: {
+      loadFailed: string;
+      saveFailed: string;
+      saving: string;
+      saved: string;
+      save: string;
+      webLink: string;
+      emojiPopular: string;
+      emojiFood: string;
+      emojiServices: string;
+      emojiSymbols: string;
+      emojiSymbol: string;
+      pickEmojiTitle: string;
+      close: string;
+      sectionTitleMenu: string;
+      sectionTitleCatalog: string;
+      itemLabelMenu: string;
+      itemLabelCatalog: string;
+      itemCountLabel: string;
+      noCategoriesTitle: string;
+      noCategoriesDesc: string;
+      itemNumberLabel: string;
+      noItemsDesc: string;
+      labelSectionTitle: string;
+      labelEyebrow: string;
+      labelSubtitle: string;
+      labelPhoto: string;
+      labelName: string;
+      labelPrice: string;
+      labelBadge: string;
+      badgeHint: string;
+      labelDescription: string;
+      bulletList: string;
+      numberedList: string;
+      addItemLabel: string;
+      addCategory: string;
+      defaultCategory: string;
+      bannerTitle: string;
+      bannerDesc1: string;
+      bannerDesc2: string;
+      bannerDesc3: string;
+      bannerPricePart: string;
+      addWord: string;
+      aiPromptLabelPrefix: string;
+      itemFallback: string;
+      aiModalTitle: string;
+      aiModalDesc: string;
+      aiFailed: string;
+      generate: string;
+      processing: string;
+      cancel: string;
+      aiGenerateTitle: string;
+      aiGenerateDesc: string;
+      optional: string;
+      upgradeTitle: string;
+      upgradeDesc: string;
+      upgradeNow: string;
+      later: string;
+    };
+    sitesBlog: {
+      title: string;
+      webLink: string;
+      addNew: string;
+      layoutLabel: string;
+      aiPick: string;
+      nonPremiumText: string;
+      upgrade: string;
+      writePostTitle: string;
+      savePost: string;
+      cancel: string;
+      aiCardTitle: string;
+      generate: string;
+      generateLabel: string;
+      layoutGrid: string;
+      layoutGridDesc: string;
+      layoutList: string;
+      layoutListDesc: string;
+      layoutFeatured: string;
+      layoutFeaturedDesc: string;
+      layoutMinimal: string;
+      layoutMinimalDesc: string;
+      loadFailed: string;
+      draftCreated: string;
+      generateFailed: string;
+      postCreated: string;
+      createFailed: string;
+      publishFailed: string;
+      published: string;
+      layoutSaved: string;
+      layoutFailed: string;
+      publishedDate: string;
+      draftDate: string;
+      publishedBadge: string;
+      draftBadge: string;
+      edit: string;
+      publish: string;
+      emptyDesc1: string;
+      emptyDesc2: string;
+    };
+    sitesBlogPost: {
+      loadFailed: string;
+      saveFailed: string;
+      bold: string;
+      italic: string;
+      heading2: string;
+      heading3: string;
+      bulletList: string;
+      orderedList: string;
+      blockquote: string;
+      link: string;
+      uploadImage: string;
+      notFound: string;
+      back: string;
+      editor: string;
+      preview: string;
+      published: string;
+      draft: string;
+      unsaved: string;
+      savedAt: string;
+      save: string;
+      excerpt: string;
+      seoTitle: string;
+      seoDescription: string;
+      noindex: string;
+      noindexDesc: string;
+      cover: string;
+      aiFailed: string;
+      generating: string;
+      generate: string;
+      aiCardTitle: string;
+      aiPromptLabelPrefix: string;
+    };
+    sitesEditor: {
+      authenticating: string;
+      loading: string;
+      loadFailed: string;
+      loadMore: string;
+      backToSites: string;
+      back: string;
+      contentTab: string;
+      designTab: string;
+      styleLabel: string;
+      layoutLabel: string;
+      sectionOrder: string;
+      sectionSpacing: string;
+      cornerRadius: string;
+      cornerSharp: string;
+      cornerSoft: string;
+      cornerRounded: string;
+      heroStyle: string;
+      heroCentered: string;
+      heroSplit: string;
+      heroFullBleed: string;
+      heroMinimalist: string;
+      spacingCompact: string;
+      spacingRelaxed: string;
+      spacingCompactShort: string;
+      spacingRelaxedShort: string;
+      normal: string;
+      colorPalette: string;
+      primaryColor: string;
+      accentColor: string;
+      backgroundColor: string;
+      surfaceColor: string;
+      textColor: string;
+      primaryShort: string;
+      accentShort: string;
+      backgroundShort: string;
+      surfaceShort: string;
+      textShort: string;
+      visualCustomization: string;
+      layoutStyle: string;
+      aiDesignPrompt: string;
+      aiInstructionsTitle: string;
+      aiPromptDesc: string;
+      generateAi: string;
+      regenerateWithAi: string;
+      processing: string;
+      applyStyle: string;
+      cancel: string;
+      later: string;
+      upgradeToPro: string;
+      upgradeDefaultTitle: string;
+      upgradeDefaultBody: string;
+      upgradeRegenTitle: string;
+      upgradeRegenBody: string;
+      upgradeDesignTitle: string;
+      upgradeDesignBody: string;
+      upgradeSuggestionTitle: string;
+      upgradeSuggestionBody: string;
+      upgradeProDesc: string;
+      save: string;
+      saving: string;
+      saved: string;
+      saveSuccess: string;
+      saveFailed: string;
+      autosaveFailed: string;
+      notFoundTitle: string;
+      notFoundDesc: string;
+      preview: string;
+      previewDesktop: string;
+      previewTablet: string;
+      previewMobile: string;
+      toggleDarkAria: string;
+      light: string;
+      dark: string;
+      switchLight: string;
+      switchDark: string;
+      aiUsage: string;
+      generate: string;
+      sectionRegen: string;
+      designRegen: string;
+      qualityScore: string;
+      qualityTitle: string;
+      qualityDesc: string;
+      qualityWarning: string;
+      qualityFieldHint: string;
+      fill: string;
+      viewCompleteness: string;
+      undo: string;
+      undoAllTitle: string;
+      undoDesign: string;
+      undoDesignTitle: string;
+      noDesignChanges: string;
+      show: string;
+      hide: string;
+      showSection: string;
+      hideSection: string;
+      hidden: string;
+      showPageSections: string;
+      expandEditArea: string;
+      variantOptions: string;
+      selectSectionAria: string;
+      openSheet: string;
+      closeSheet: string;
+      publish: string;
+      publishShort: string;
+      publishSuccess: string;
+      publishFailed: string;
+      applying: string;
+      applyLive: string;
+      apply: string;
+      live: string;
+      draft: string;
+      aiProcessing: string;
+      aiReviewActive: string;
+      aiReviewDesc1: string;
+      aiReviewDesc2: string;
+      diffAi: string;
+      diffChanges: string;
+      content: string;
+      old: string;
+      new: string;
+      use: string;
+      useThis: string;
+      revert: string;
+      aiApplied: string;
+      aiCancelled: string;
+      aiReverted: string;
+      aiNoChange: string;
+      aiNoChangeHint: string;
+      aiSectionDone: string;
+      aiSectionFailed: string;
+      aiStyleDone: string;
+      aiStyleFailed: string;
+      aiStyleNoChange: string;
+      aiProcessFailed: string;
+      siteStyle: string;
+      aiDesignEngine: string;
+      latestAiGenerated: string;
+      latest: string;
+      latestAiDesc: string;
+      aiResult: string;
+      aiMoodCreated: string;
+      editLabel: string;
+      confirmPublishTitle: string;
+      confirmPublishDesc: string;
+      confirmPublishBody: string;
+      confirmApply: string;
+      upgradeLabel: string;
+      aiInstructionsPlaceholder: string;
+      aiDesignInstructionsPlaceholder: string;
+    };
+    wizard: {
+      initialMessage: string;
+      nameAckVariants: string[];
+      nameConfirmVariants: string[];
+      descriptionPrompt: string;
+      descriptionSkipKeyword: string;
+      descriptionInferenceHigh: string;
+      descriptionInferenceMedium: string;
+      descriptionInferenceNone: string;
+      selectMoodPrompt: string;
+      preparingWebsite: string;
+      websiteReady: string;
+      inputPlaceholderName: string;
+      inputPlaceholderDesc: string;
+      inputPlaceholderGeneral: string;
+      sttListening: string;
+      sttUseVoice: string;
+      btnNext: string;
+      btnSkip: string;
+      btnChangeName: string;
+      btnYesContinue: string;
+      btnSeeOtherOptions: string;
+      btnSave: string;
+      btnCancel: string;
+      btnFinish: string;
+      btnSaveAndApply: string;
+      previewWebsiteTitle: string;
+      openForm: string;
+      closeForm: string;
+      businessDetailsTitle: string;
+      businessDetailsSubtitle: string;
+      waSaved: string;
+      waEmpty: string;
+      areaEmpty: string;
+      waHint: string;
+      serviceAreaHint: string;
+      btnLater: string;
+      btnCompleteData: string;
+      btnEditPublish: string;
+      notThisType: string;
+      moreSpecific: string;
+      chooseMoodHint: string;
+      suggestedBadge: string;
+      typeSelectedChooseSub: string;
+      statusWaitingInput: string;
+      statusAiGenerating: string;
+      statusPreviewReady: string;
+      statusPreparingAi: string;
+      nameConfirmPlaceholder: string;
+      descPlaceholder: string;
+      labelBusinessName: string;
+      labelBusinessType: string;
+      labelBusinessSubType: string;
+      labelDescription: string;
+      labelWhatsapp: string;
+      labelServiceArea: string;
+      labelMood: string;
+      categories: {
+        kuliner: string;
+        kulinerDesc: string;
+        tokoUmkm: string;
+        tokoUmkmDesc: string;
+        jasa: string;
+        jasaDesc: string;
+        company: string;
+        companyDesc: string;
+      };
+      moods: {
+        modernClean: string;
+        modernCleanDesc: string;
+        warmVintage: string;
+        warmVintageDesc: string;
+        boldEnergetic: string;
+        boldEnergeticDesc: string;
+        elegantLuxury: string;
+        elegantLuxuryDesc: string;
+        playfulFun: string;
+        playfulFunDesc: string;
+        minimalistDark: string;
+        minimalistDarkDesc: string;
+      };
+    };
   };
 }
 
@@ -2878,6 +3321,460 @@ export const translations: Record<Locale, Translations> = {
         emptyDesc: "Tidak ada user yang cocok dengan pencarian.",
         delete: "Hapus",
       },
+      upgradeSuccess: {
+        confirmTimeout: "Konfirmasi pembayaran sedang diproses...",
+        backToDashboard: "Kembali ke Dashboard",
+        pendingTitle: "Pembayaran Sedang Diproses",
+        pendingDesc: "Kami sedang memverifikasi pembayaran Anda. Halaman ini akan refresh otomatis saat pembayaran dikonfirmasi.",
+        successTitle: "Paket Berhasil Diupgrade!",
+        successDesc: "Selamat! Akun Anda kini menggunakan paket Pro. Nikmati AI generate tanpa batas, custom domain, dan SEO otomatis.",
+        errorTitle: "Pembayaran Gagal",
+        errorDesc: "Pembayaran Anda tidak dapat diproses. Silakan coba lagi atau periksa metode pembayaran Anda.",
+        txDetails: "Detail Transaksi",
+        orderIdLabel: "Order ID",
+        totalLabel: "Total",
+        methodLabel: "Metode",
+        timeLabel: "Waktu",
+        goToDashboard: "Ke Dashboard",
+        viewOtherPlans: "Lihat Paket Lain",
+      },
+      sitesNew: {
+        connecting: "Menghubungkan...",
+        noWorkspaceTitle: "Tidak Ada Workspace Aktif",
+        noWorkspaceDesc: "Anda perlu bergabung dengan sebuah workspace terlebih dahulu untuk membuat website baru.",
+        backToDashboard: "Kembali ke Dashboard",
+      },
+      sitesSeo: {
+        title: "SEO & Performance",
+        webLink: "Web",
+        saving: "Menyimpan...",
+        saved: "Tersimpan",
+        save: "Simpan",
+        loadFailed: "Gagal memuat pengaturan SEO",
+        saveFailed: "Gagal menyimpan SEO",
+        gscSaved: "Tersimpan ke Google Search Console",
+        aiFailed: "AI gagal mengoptimasi SEO",
+        upgradeTitle: "Optimasi AI — Plan Pro",
+        upgradeDesc: "AI SEO optimization tersedia tanpa batas di paket Pro.",
+        upgradeNow: "Upgrade Sekarang",
+        later: "Nanti",
+      },
+      sitesIntegrations: {
+        title: "Integrasi",
+        webLink: "Web",
+        loadFailed: "Gagal memuat integrasi",
+        saved: "Tersimpan",
+        saveFailed: "Gagal menyimpan integrasi",
+        save: "Simpan",
+        saving: "Menyimpan...",
+        ga4Desc: "Hubungkan Google Analytics 4 untuk melacak pengunjung, perilaku, dan konversi di website Anda.",
+        metaPixelDesc: "Tambahkan Meta Pixel untuk melacak konversi iklan dan membuat audiens ulangan di Instagram & Facebook.",
+      },
+      sitesTestimonials: {
+        loadFailed: "Gagal memuat testimoni",
+        shareTitle: "Bagikan Testimoni",
+        copy: "Salin",
+        linkCopied: "Link testimoni disalin.",
+        pendingTitle: "{count} Testimoni Menunggu Persetujuan",
+        approved: "Disetujui",
+        approvedDesc: "Testimoni ini sudah disetujui dan tampil di website.",
+        approve: "Setujui",
+        approveFailed: "Gagal menyetujui testimoni",
+        rejected: "Ditolak",
+        rejectedDesc: "Testimoni ini tidak disetujui.",
+        reject: "Tolak",
+        rejectFailed: "Gagal menolak testimoni",
+        validationRequired: "Validasi diperlukan",
+        added: "Testimoni berhasil ditambahkan.",
+        addFailed: "Gagal menambahkan testimoni",
+        add: "Tambah Manual",
+        manualTitle: "Tambah Testimoni Manual",
+        manualDesc: "Masukkan data testimoni secara langsung.",
+        labelName: "Nama",
+        labelRole: "Peran",
+        labelQuote: "Testimoni",
+        labelRating: "Rating",
+        saving: "Menyimpan...",
+        saveToSite: "Simpan ke Situs",
+        cancel: "Batal",
+        emptyDesc: "Belum ada testimoni. Klik Tambah Manual untuk menambahkan testimonial pertama.",
+      },
+      sitesKatalog: {
+        loadFailed: "Gagal memuat katalog",
+        saveFailed: "Gagal menyimpan katalog",
+        saving: "Menyimpan...",
+        saved: "Tersimpan",
+        save: "Simpan",
+        webLink: "Web",
+        emojiPopular: "Populer",
+        emojiFood: "Makanan",
+        emojiServices: "Jasa",
+        emojiSymbols: "Simbol",
+        emojiSymbol: "Simbol Lainnya",
+        pickEmojiTitle: "Pilih Emoji",
+        close: "Tutup",
+        sectionTitleMenu: "Menu",
+        sectionTitleCatalog: "Katalog Produk",
+        itemLabelMenu: "menu",
+        itemLabelCatalog: "produk",
+        itemCountLabel: "{count} item",
+        noCategoriesTitle: "Belum ada kategori",
+        noCategoriesDesc: "Klik + Tambah Kategori untuk memulai, atau tambahkan {itemLabel} langsung.",
+        itemNumberLabel: "Item {number}",
+        noItemsDesc: "Belum ada {itemLabel} di kategori ini.",
+        labelSectionTitle: "Judul Bagian",
+        labelEyebrow: "Eyebrow",
+        labelSubtitle: "Subjudul",
+        labelPhoto: "Foto",
+        labelName: "Nama",
+        labelPrice: "Harga",
+        labelBadge: "Badge",
+        badgeHint: "Badge menandai item sebagai unggulan dan menampilkan badge di showcase.",
+        labelDescription: "Deskripsi",
+        bulletList: "Bullet List",
+        numberedList: "Numbered List",
+        addItemLabel: "+ Tambah {label} ke {category}",
+        addCategory: "+ Tambah Kategori",
+        defaultCategory: "Kategori {number}",
+        bannerTitle: "Kelola {itemLabel} situs Anda",
+        bannerDesc1: "Tambah kategori dan {itemLabel} di sini. Anda bisa melengkapi foto, nama, deskripsi{itemPricePart}, dan badge.",
+        bannerDesc2: "Item dengan badge otomatis ditandai sebagai unggulan di tampilan showcase.",
+        bannerDesc3: "Pengunjung website dapat menambah {itemLabel} yang Anda mintinkan.",
+        bannerPricePart: ", harga",
+        addWord: "Tambah",
+        aiPromptLabelPrefix: "Buat deskripsi untuk",
+        itemFallback: "Item {number}",
+        aiModalTitle: "Instruksi AI",
+        aiModalDesc: "Apa deskripsi yang ingin Anda buat?",
+        aiFailed: "AI gagal membuat deskripsi",
+        generate: "Generate",
+        processing: "Memproses...",
+        cancel: "Batal",
+        aiGenerateTitle: "Generate dengan AI",
+        aiGenerateDesc: "Gunakan AI untuk menghasilkan deskripsi item secara otomatis.",
+        optional: "Opsional",
+        upgradeTitle: "Fitur AI — Plan Pro",
+        upgradeDesc: "Generate deskripsi dengan AI tersedia tanpa batas di paket Pro.",
+        upgradeNow: "Upgrade Sekarang",
+        later: "Nanti",
+      },
+      sitesBlog: {
+        title: "Blog Postingan",
+        webLink: "Web",
+        addNew: "Tambah Baru",
+        layoutLabel: "Tampilan Blog",
+        aiPick: "Direkomendasikan AI untuk gaya situs Anda",
+        nonPremiumText: "AI content generation tersedia di paket",
+        upgrade: "Upgrade →",
+        writePostTitle: "Tulis Postingan Baru",
+        savePost: "Simpan Postingan",
+        cancel: "Batal",
+        aiCardTitle: "Buat Konten Blog dengan AI",
+        generate: "Generate",
+        generateLabel: "Generate",
+        layoutGrid: "Grid",
+        layoutGridDesc: "Kartu dalam 3 kolom",
+        layoutList: "List",
+        layoutListDesc: "Horizontal dengan gambar",
+        layoutFeatured: "Unggulan",
+        layoutFeaturedDesc: "Hero + grid di bawah",
+        layoutMinimal: "Minimal",
+        layoutMinimalDesc: "Daftar judul & tanggal",
+        loadFailed: "Gagal memuat blog",
+        draftCreated: "Draft blog berhasil dibuat",
+        generateFailed: "Gagal generate blog",
+        postCreated: "Postingan berhasil dibuat",
+        createFailed: "Gagal membuat postingan",
+        publishFailed: "Gagal menerbitkan",
+        published: "Terbit",
+        layoutSaved: "Tampilan blog diperbarui",
+        layoutFailed: "Gagal menyimpan tampilan",
+        publishedDate: "Terbit {date}",
+        draftDate: "Draft · {date}",
+        publishedBadge: "Terbit",
+        draftBadge: "Draft",
+        edit: "Edit",
+        publish: "Terbitkan",
+        emptyDesc1: "Belum ada konten blog. Klik",
+        emptyDesc2: "untuk membuat postingan pertama.",
+      },
+      sitesBlogPost: {
+        loadFailed: "Gagal memuat postingan",
+        saveFailed: "Gagal menyimpan",
+        bold: "Bold",
+        italic: "Italic",
+        heading2: "Heading 2",
+        heading3: "Heading 3",
+        bulletList: "Bullet List",
+        orderedList: "Ordered List",
+        blockquote: "Blockquote",
+        link: "Link",
+        uploadImage: "Upload Image",
+        notFound: "Postingan tidak ditemukan",
+        back: "Kembali",
+        editor: "Editor",
+        preview: "Preview",
+        published: "Terbit",
+        draft: "Draft",
+        unsaved: "Belum tersimpan",
+        savedAt: "Tersimpan {time}",
+        save: "Simpan",
+        excerpt: "Excerpt",
+        seoTitle: "SEO Title",
+        seoDescription: "SEO Description",
+        noindex: "Noindex (Sembunyi dari Google)",
+        noindexDesc: "Halaman ini tidak akan muncul di hasil pencarian Google.",
+        cover: "Cover Image",
+        aiFailed: "AI gagal",
+        generating: "Generate...",
+        generate: "Generate",
+        aiCardTitle: "Buat Konten Blog dengan AI",
+        aiPromptLabelPrefix: "Buat deskripsi untuk",
+      },
+      sitesEditor: {
+        authenticating: "Mengautentikasi...",
+        loading: "Memuat editor...",
+        loadFailed: "Gagal memuat situs",
+        loadMore: "Muat Lebih Banyak ({count} tersisa)",
+        backToSites: "Kembali ke daftar situs",
+        back: "Kembali",
+        contentTab: "Konten",
+        designTab: "Desain",
+        styleLabel: "Gaya Situs",
+        layoutLabel: "Tata Letak",
+        sectionOrder: "Urutan section",
+        sectionSpacing: "Jarak Seksi (Spacing)",
+        cornerRadius: "Sudut Border (Radius)",
+        cornerSharp: "Tajam (0px)",
+        cornerSoft: "Lembut (8px)",
+        cornerRounded: "Bulat (20px)",
+        heroStyle: "Gaya Hero",
+        heroCentered: "Hero: Centered",
+        heroSplit: "Hero: Split Screen",
+        heroFullBleed: "Hero: Full Bleed",
+        heroMinimalist: "Hero: Minimalist",
+        spacingCompact: "Rapat (Compact)",
+        spacingRelaxed: "Longgar (Relaxed)",
+        spacingCompactShort: "Rapat",
+        spacingRelaxedShort: "Longgar",
+        normal: "Normal",
+        colorPalette: "Palet Warna",
+        primaryColor: "Warna Utama (Primary)",
+        accentColor: "Warna Aksen (Accent)",
+        backgroundColor: "Warna Latar (Background)",
+        surfaceColor: "Warna Permukaan (Surface)",
+        textColor: "Warna Teks (Text)",
+        primaryShort: "Primary",
+        accentShort: "Accent",
+        backgroundShort: "Latar",
+        surfaceShort: "Surface",
+        textShort: "Teks",
+        visualCustomization: "Kustomisasi Visual",
+        layoutStyle: "Tata Letak & Gaya",
+        aiDesignPrompt: "AI Design Prompt",
+        aiInstructionsTitle: "Instruksi AI",
+        aiPromptDesc: "Apa yang ingin kamu ubah di bagian {label}?",
+        generateAi: "Generate AI",
+        regenerateWithAi: "Regenerate dengan AI",
+        processing: "Memproses...",
+        applyStyle: "Terapkan Gaya",
+        cancel: "Batal",
+        later: "Nanti",
+        upgradeToPro: "Upgrade ke Pro",
+        upgradeDefaultTitle: "Fitur AI Only untuk Pro",
+        upgradeDefaultBody: "Fitur AI hanya tersedia untuk pengguna Pro.",
+        upgradeProDesc: "Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.",
+        upgradeRegenTitle: "Regenerasi AI — fitur Pro",
+        upgradeRegenBody: "Regenerasi ulang konten section dengan AI tersedia tanpa batas di paket Pro.",
+        upgradeDesignTitle: "Desain ulang dengan AI — fitur Pro",
+        upgradeDesignBody: "Minta AI mengubah gaya, warna, dan layout website Anda secara instan di paket Pro.",
+        upgradeSuggestionTitle: "Saran instruksi AI — fitur Pro",
+        upgradeSuggestionBody: "Gunakan saran instruksi siap pakai untuk mempercepat proses AI di paket Pro.",
+        save: "Simpan",
+        saving: "Menyimpan...",
+        saved: "Tersimpan",
+        saveSuccess: "Perubahan berhasil disimpan!",
+        saveFailed: "Gagal menyimpan perubahan",
+        autosaveFailed: "Gagal menyimpan",
+        notFoundTitle: "Situs Tidak Ditemukan",
+        notFoundDesc: "Kami tidak dapat menemukan situs yang Anda cari pada workspace saat ini.",
+        preview: "Preview",
+        previewDesktop: "Preview desktop",
+        previewTablet: "Preview tablet",
+        previewMobile: "Preview mobile",
+        toggleDarkAria: "Toggle dark mode",
+        light: "Light",
+        dark: "Dark",
+        switchLight: "Ganti ke mode terang",
+        switchDark: "Ganti ke mode gelap",
+        aiUsage: "AI Usage",
+        generate: "Generate",
+        sectionRegen: "Section Regen",
+        designRegen: "Design Regen",
+        qualityScore: "Kualitas: {score}%",
+        qualityTitle: "Kelengkapan Konten ({score}%)",
+        qualityDesc: "{count} field perlu diisi agar tampilan website kamu maksimal:",
+        qualityWarning: "⚠️ {count} field perlu dicek",
+        qualityFieldHint: "Field belum diisi atau berisi teks contoh",
+        fill: "Isi",
+        viewCompleteness: "Lihat kelengkapan konten",
+        undo: "Undo",
+        undoAllTitle: "Urungkan perubahan terakhir (teks, desain, atau urutan section)",
+        undoDesign: "Undo Desain",
+        undoDesignTitle: "Urungkan perubahan desain terakhir",
+        noDesignChanges: "Belum ada perubahan desain",
+        show: "Tampilkan",
+        hide: "Sembunyikan",
+        showSection: "Tampilkan section",
+        hideSection: "Sembunyikan section",
+        hidden: "Tersembunyi",
+        showPageSections: "Tampilkan Bagian Halaman",
+        expandEditArea: "Perluas area edit",
+        variantOptions: "Variasi Tampilan",
+        selectSectionAria: "Pilih Section",
+        openSheet: "Buka sheet",
+        closeSheet: "Tutup sheet",
+        publish: "Publikasikan",
+        publishShort: "Publish",
+        publishSuccess: "Website berhasil dipublikasikan! 🚀",
+        publishFailed: "Gagal memublikasikan website",
+        applying: "Menerapkan...",
+        applyLive: "Terapkan ke Live",
+        apply: "Terapkan",
+        live: "Live",
+        draft: "Draft",
+        aiProcessing: "AI sedang memproses...",
+        aiReviewActive: "Review AI Sedang Aktif",
+        aiReviewDesc1: "Silakan gunakan atau kembalikan perubahan AI pada seksi",
+        aiReviewDesc2: "di bagian atas halaman preview terlebih dahulu.",
+        diffAi: "Diff AI: {label}",
+        diffChanges: "{count} perubahan",
+        content: "Konten",
+        old: "Lama:",
+        new: "Baru:",
+        use: "Gunakan",
+        useThis: "Gunakan ini",
+        revert: "Kembalikan",
+        aiApplied: "Hasil AI untuk {label} dipakai.",
+        aiCancelled: "Hasil AI dibatalkan.",
+        aiReverted: "Perubahan AI pada {label} dikembalikan.",
+        aiNoChange: "AI belum menghasilkan perubahan nyata.",
+        aiNoChangeHint: "Coba instruksi yang lebih spesifik, misalnya: ubah jadi headline emosional, maksimal 8 kata, dan hilangkan teks input mentah.",
+        aiSectionDone: "AI selesai menulis {label}. Cek diff sebelum dipakai.",
+        aiSectionFailed: "AI gagal meregenerasi bagian ini.",
+        aiStyleDone: "AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.",
+        aiStyleFailed: "AI gagal meregenerasi gaya website.",
+        aiStyleNoChange: "AI belum menghasilkan perubahan gaya yang nyata.",
+        aiProcessFailed: "AI gagal memproses.",
+        siteStyle: "gaya situs",
+        aiDesignEngine: "AI Design Engine",
+        latestAiGenerated: "Latest AI Generated",
+        latest: "Terbaru",
+        latestAiDesc: "Gaya visual unik buatan AI terbaru untuk website Anda.",
+        aiResult: "Hasil AI",
+        aiMoodCreated: "Nuansa {mood}. Dibuat pada {date}.",
+        editLabel: "Edit — {label}",
+        confirmPublishTitle: "Terapkan Perubahan ke Live?",
+        confirmPublishDesc: "Pengunjung situs akan segera melihat versi terbaru.",
+        confirmPublishBody: "Semua perubahan draf yang sudah disimpan akan diterapkan ke website live {subdomain}.webjoz.com.",
+        confirmApply: "Ya, Terapkan",
+        upgradeLabel: "Upgrade ke Pro",
+        aiInstructionsPlaceholder: "cth. \"buat lebih persuasif dan emosional\"",
+        aiDesignInstructionsPlaceholder: "cth: tema kopi vintage hangat...",
+      },
+      wizard: {
+        initialMessage: "Halo! Saya AI assistant Anda. Mari buat website bisnis Anda dalam 1 menit! Siapa nama bisnis atau usaha Anda?",
+        nameAckVariants: [
+          "Baik, nama bisnis telah dicatat.",
+          "Nama bisnis berhasil disimpan.",
+          "Oke, nama sudah tersimpan.",
+          "Siap, nama bisnis tercatat.",
+          "Nama usaha Anda sudah masuk sistem.",
+          "Baik, nama bisnis terdaftar."
+        ],
+        nameConfirmVariants: [
+          "Itu nama bisnis aslinya, atau masih nama sementara? Kalau sudah pas, ketik lagi untuk lanjut, atau ganti nama yang Anda mau pakai 😊",
+          "Apakah itu nama sebenarnya? Ketik 'ya' untuk lanjut, atau masukkan nama lain jika ingin diganti.",
+          "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Ketik 'ya' untuk lanjut, atau masukkan nama baru."
+        ],
+        descriptionPrompt: "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Tekan Enter untuk lanjut jika ingin skip.",
+        descriptionSkipKeyword: "lewat",
+        descriptionInferenceHigh: "Saya lihat Anda bergerak di bidang {type} — {subType}. Langsung buat website-nya?",
+        descriptionInferenceMedium: "Saya lihat bidang usaha Anda adalah {type}. Bisa pilih yang lebih spesifik?",
+        descriptionInferenceNone: "Baik, silakan pilih jenis bisnis Anda:",
+        selectMoodPrompt: "Pilih suasana (mood) yang cocok untuk website Anda:",
+        preparingWebsite: "Baik, AI sedang menyiapkan website Anda...",
+        websiteReady: "🎉 Website Anda telah selesai dibuat! Silakan lihat pratinjau website Anda di samping atau klik tombol di bawah untuk lanjut.",
+        inputPlaceholderName: "Masukkan nama bisnis Anda...",
+        inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
+        inputPlaceholderGeneral: "Ketik nama bisnis atau jawaban...",
+        sttListening: "Mendengarkan...",
+        sttUseVoice: "Gunakan Suara (STT)",
+        btnNext: "Lanjut",
+        btnSkip: "Lewati",
+        btnChangeName: "Ganti Nama",
+        btnYesContinue: "Ya, Lanjut",
+        btnSeeOtherOptions: "Lihat Pilihan Lain",
+        btnSave: "Simpan",
+        btnCancel: "Batal",
+        btnFinish: "Selesai",
+        btnSaveAndApply: "Simpan & Terapkan",
+        previewWebsiteTitle: "Pratinjau Website",
+        openForm: "Buka Form",
+        closeForm: "Tutup Form",
+        businessDetailsTitle: "Detail Bisnis",
+        businessDetailsSubtitle: "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.",
+        waSaved: "WA tersimpan",
+        waEmpty: "WA belum diisi",
+        areaEmpty: "Area belum diisi",
+        waHint: "Langsung jadi tombol chat di hero & footer",
+        serviceAreaHint: "AI pakai ini untuk nulis copy yang lebih relevan",
+        btnLater: "Nanti saja",
+        btnCompleteData: "Lengkapi Data",
+        btnEditPublish: "Edit & Publikasikan",
+        notThisType: "Bukan ini? Pilih jenis bisnis lain",
+        moreSpecific: "Lebih spesifik:",
+        chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
+        suggestedBadge: "✨ Disarankan",
+        typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
+        statusWaitingInput: "Menunggu input...",
+        statusAiGenerating: "AI sedang generate...",
+        statusPreviewReady: "Preview siap ✓",
+        statusPreparingAi: "Menyiapkan AI...",
+        nameConfirmPlaceholder: "Ketik 'ya' untuk lanjut, atau nama yang benar...",
+        descPlaceholder: "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar",
+        labelBusinessName: "Nama Bisnis",
+        labelBusinessType: "Jenis Bisnis",
+        labelBusinessSubType: "Sub Jenis Bisnis",
+        labelDescription: "Deskripsi",
+        labelWhatsapp: "Nomor WhatsApp",
+        labelServiceArea: "Wilayah Layanan",
+        labelMood: "Gaya & Suasana Website (Mood)",
+        categories: {
+          kuliner: "Kuliner",
+          kulinerDesc: "Restoran & Cafe",
+          tokoUmkm: "Toko & UMKM",
+          tokoUmkmDesc: "Toko & UMKM",
+          jasa: "Jasa",
+          jasaDesc: "Agency",
+          company: "Company",
+          companyDesc: "Corporate",
+        },
+        moods: {
+          modernClean: "Modern & Clean",
+          modernCleanDesc: "Bersih, rapi, profesional",
+          warmVintage: "Warm & Vintage",
+          warmVintageDesc: "Hangat, klasik, berkarakter",
+          boldEnergetic: "Bold & Energetic",
+          boldEnergeticDesc: "Kontras tinggi, penuh energi",
+          elegantLuxury: "Elegant & Luxury",
+          elegantLuxuryDesc: "Mewah, eksklusif, anggun",
+          playfulFun: "Playful & Fun",
+          playfulFunDesc: "Ceria, ramah, berwarna",
+          minimalistDark: "Minimalist Dark",
+          minimalistDarkDesc: "Gelap, futuristik, modern",
+        },
+      },
     },
   },
   en: {
@@ -4318,6 +5215,460 @@ export const translations: Record<Locale, Translations> = {
         adminVisibleTitle: "Admin-visible users",
         emptyDesc: "No users matched the current query.",
         delete: "Delete",
+      },
+      upgradeSuccess: {
+        confirmTimeout: "Confirming your payment...",
+        backToDashboard: "Back to Dashboard",
+        pendingTitle: "Payment Processing",
+        pendingDesc: "We're verifying your payment. This page will refresh automatically once payment is confirmed.",
+        successTitle: "Plan Upgraded Successfully!",
+        successDesc: "Congrats! Your account is now on the Pro plan. Enjoy unlimited AI generates, custom domains, and automatic SEO.",
+        errorTitle: "Payment Failed",
+        errorDesc: "Your payment could not be processed. Please try again or check your payment method.",
+        txDetails: "Transaction Details",
+        orderIdLabel: "Order ID",
+        totalLabel: "Total",
+        methodLabel: "Method",
+        timeLabel: "Time",
+        goToDashboard: "Go to Dashboard",
+        viewOtherPlans: "View Other Plans",
+      },
+      sitesNew: {
+        connecting: "Connecting...",
+        noWorkspaceTitle: "No Active Workspace",
+        noWorkspaceDesc: "You need to join a workspace first to create a new website.",
+        backToDashboard: "Back to Dashboard",
+      },
+      sitesSeo: {
+        title: "SEO & Performance",
+        webLink: "Web",
+        saving: "Saving...",
+        saved: "Saved",
+        save: "Save",
+        loadFailed: "Failed to load SEO settings",
+        saveFailed: "Failed to save SEO",
+        gscSaved: "Saved to Google Search Console",
+        aiFailed: "AI failed to optimize SEO",
+        upgradeTitle: "AI SEO — Pro Plan",
+        upgradeDesc: "AI SEO optimization is available without limits on the Pro plan.",
+        upgradeNow: "Upgrade Now",
+        later: "Later",
+      },
+      sitesIntegrations: {
+        title: "Integrations",
+        webLink: "Web",
+        loadFailed: "Failed to load integrations",
+        saved: "Saved",
+        saveFailed: "Failed to save integrations",
+        save: "Save",
+        saving: "Saving...",
+        ga4Desc: "Connect Google Analytics 4 to track visitors, behavior, and conversions on your site.",
+        metaPixelDesc: "Add the Meta Pixel to track ad conversions and build retargeting audiences on Instagram & Facebook.",
+      },
+      sitesTestimonials: {
+        loadFailed: "Failed to load testimonials",
+        shareTitle: "Share Testimonial",
+        copy: "Copy",
+        linkCopied: "Testimonial link copied.",
+        pendingTitle: "{count} Testimonials Pending Approval",
+        approved: "Approved",
+        approvedDesc: "This testimonial has been approved and is now live on your site.",
+        approve: "Approve",
+        approveFailed: "Failed to approve testimonial",
+        rejected: "Rejected",
+        rejectedDesc: "This testimonial was not approved.",
+        reject: "Reject",
+        rejectFailed: "Failed to reject testimonial",
+        validationRequired: "Validation required",
+        added: "Testimonial added successfully.",
+        addFailed: "Failed to add testimonial",
+        add: "Add Manually",
+        manualTitle: "Add Testimonial Manually",
+        manualDesc: "Enter testimonial data directly.",
+        labelName: "Name",
+        labelRole: "Role",
+        labelQuote: "Testimonial",
+        labelRating: "Rating",
+        saving: "Saving...",
+        saveToSite: "Save to Site",
+        cancel: "Cancel",
+        emptyDesc: "No testimonials yet. Click Add Manually to add your first.",
+      },
+      sitesKatalog: {
+        loadFailed: "Failed to load catalog",
+        saveFailed: "Failed to save catalog",
+        saving: "Saving...",
+        saved: "Saved",
+        save: "Save",
+        webLink: "Web",
+        emojiPopular: "Popular",
+        emojiFood: "Food",
+        emojiServices: "Services",
+        emojiSymbols: "Symbols",
+        emojiSymbol: "More symbols",
+        pickEmojiTitle: "Pick an emoji",
+        close: "Close",
+        sectionTitleMenu: "Menu",
+        sectionTitleCatalog: "Product Catalog",
+        itemLabelMenu: "menu item",
+        itemLabelCatalog: "product",
+        itemCountLabel: "{count} item",
+        noCategoriesTitle: "No categories yet",
+        noCategoriesDesc: "Click + Add Category to start, or add {itemLabel} directly.",
+        itemNumberLabel: "Item {number}",
+        noItemsDesc: "No {itemLabel} in this category yet.",
+        labelSectionTitle: "Section Title",
+        labelEyebrow: "Eyebrow",
+        labelSubtitle: "Subtitle",
+        labelPhoto: "Photo",
+        labelName: "Name",
+        labelPrice: "Price",
+        labelBadge: "Badge",
+        badgeHint: "A badge marks items as featured and shows them in the showcase view.",
+        labelDescription: "Description",
+        bulletList: "Bullet List",
+        numberedList: "Numbered List",
+        addItemLabel: "+ Add {label} to {category}",
+        addCategory: "+ Add Category",
+        defaultCategory: "Category {number}",
+        bannerTitle: "Manage your {itemLabel}",
+        bannerDesc1: "Add categories and {itemLabel} here. Fill in a photo, name, description{itemPricePart}, and badge for each.",
+        bannerDesc2: "Badged items are automatically featured in the showcase view.",
+        bannerDesc3: "Visitors can add {itemLabel} that you request.",
+        bannerPricePart: ", price",
+        addWord: "Add",
+        aiPromptLabelPrefix: "Make description for",
+        itemFallback: "Item {number}",
+        aiModalTitle: "AI Instructions",
+        aiModalDesc: "What description would you like to create?",
+        aiFailed: "AI failed to generate a description",
+        generate: "Generate",
+        processing: "Processing...",
+        cancel: "Cancel",
+        aiGenerateTitle: "Generate with AI",
+        aiGenerateDesc: "Use AI to automatically generate an item description.",
+        optional: "Optional",
+        upgradeTitle: "AI Feature - Pro Plan",
+        upgradeDesc: "AI-generated descriptions are available without limits on the Pro plan.",
+        upgradeNow: "Upgrade Now",
+        later: "Later",
+      },
+      sitesBlog: {
+        title: "Blog Posts",
+        webLink: "Web",
+        addNew: "New Post",
+        layoutLabel: "Blog Layout",
+        aiPick: "AI-recommended for your site style",
+        nonPremiumText: "AI content generation is only available on",
+        upgrade: "Upgrade →",
+        writePostTitle: "Write New Post",
+        savePost: "Save Post",
+        cancel: "Cancel",
+        aiCardTitle: "Generate Blog Content with AI",
+        generate: "Generate",
+        generateLabel: "Generate",
+        layoutGrid: "Grid",
+        layoutGridDesc: "Cards in 3 columns",
+        layoutList: "List",
+        layoutListDesc: "Horizontal with image",
+        layoutFeatured: "Featured",
+        layoutFeaturedDesc: "Hero + grid below",
+        layoutMinimal: "Minimal",
+        layoutMinimalDesc: "Title & date list",
+        loadFailed: "Failed to load blog",
+        draftCreated: "Blog draft created",
+        generateFailed: "Failed to generate blog",
+        postCreated: "Post created",
+        createFailed: "Failed to create post",
+        publishFailed: "Failed to publish",
+        published: "Published",
+        layoutSaved: "Blog layout updated",
+        layoutFailed: "Failed to save layout",
+        publishedDate: "Published {date}",
+        draftDate: "Draft · {date}",
+        publishedBadge: "Published",
+        draftBadge: "Draft",
+        edit: "Edit",
+        publish: "Publish",
+        emptyDesc1: "No blog content yet. Click",
+        emptyDesc2: "to create your first post.",
+      },
+      sitesBlogPost: {
+        loadFailed: "Failed to load post",
+        saveFailed: "Failed to save",
+        bold: "Bold",
+        italic: "Italic",
+        heading2: "Heading 2",
+        heading3: "Heading 3",
+        bulletList: "Bullet List",
+        orderedList: "Ordered List",
+        blockquote: "Blockquote",
+        link: "Link",
+        uploadImage: "Upload Image",
+        notFound: "Post not found",
+        back: "Back",
+        editor: "Editor",
+        preview: "Preview",
+        published: "Published",
+        draft: "Draft",
+        unsaved: "Unsaved changes",
+        savedAt: "Saved {time}",
+        save: "Save",
+        excerpt: "Excerpt",
+        seoTitle: "SEO Title",
+        seoDescription: "SEO Description",
+        noindex: "Noindex (Hide from Google)",
+        noindexDesc: "This page will not appear in Google search results.",
+        cover: "Cover Image",
+        aiFailed: "AI failed",
+        generating: "Generating...",
+        generate: "Generate",
+        aiCardTitle: "Generate Blog Content with AI",
+        aiPromptLabelPrefix: "Make description for",
+      },
+      sitesEditor: {
+        authenticating: "Authenticating...",
+        loading: "Loading editor...",
+        loadFailed: "Failed to load site",
+        loadMore: "Load more ({count} remaining)",
+        backToSites: "Back to websites list",
+        back: "Back",
+        contentTab: "Content",
+        designTab: "Design",
+        styleLabel: "Site Style",
+        layoutLabel: "Layout",
+        sectionOrder: "Section order",
+        sectionSpacing: "Section Spacing",
+        cornerRadius: "Corner Radius",
+        cornerSharp: "Sharp (0px)",
+        cornerSoft: "Soft (8px)",
+        cornerRounded: "Rounded (20px)",
+        heroStyle: "Hero Style",
+        heroCentered: "Hero: Centered",
+        heroSplit: "Hero: Split Screen",
+        heroFullBleed: "Hero: Full Bleed",
+        heroMinimalist: "Hero: Minimalist",
+        spacingCompact: "Compact",
+        spacingRelaxed: "Relaxed",
+        spacingCompactShort: "Compact",
+        spacingRelaxedShort: "Relaxed",
+        normal: "Normal",
+        colorPalette: "Color Palette",
+        primaryColor: "Primary Color",
+        accentColor: "Accent Color",
+        backgroundColor: "Background Color",
+        surfaceColor: "Surface Color",
+        textColor: "Text Color",
+        primaryShort: "Primary",
+        accentShort: "Accent",
+        backgroundShort: "Background",
+        surfaceShort: "Surface",
+        textShort: "Text",
+        visualCustomization: "Visual Customization",
+        layoutStyle: "Layout & Style",
+        aiDesignPrompt: "AI Design Prompt",
+        aiInstructionsTitle: "AI Instructions",
+        aiPromptDesc: "What would you like to change in the {label} section?",
+        generateAi: "Generate AI",
+        regenerateWithAi: "Regenerate with AI",
+        processing: "Processing...",
+        applyStyle: "Apply Style",
+        cancel: "Cancel",
+        later: "Later",
+        upgradeToPro: "Upgrade to Pro",
+        upgradeDefaultTitle: "AI Features — Pro Only",
+        upgradeDefaultBody: "AI features are only available for Pro users.",
+        upgradeProDesc: "With Pro, you can use AI Generate for content, images, SEO, and website design.",
+        upgradeRegenTitle: "Regenerate with AI — Pro feature",
+        upgradeRegenBody: "Regenerate section content with AI without limits on the Pro plan.",
+        upgradeDesignTitle: "Redesign with AI — Pro feature",
+        upgradeDesignBody: "Let AI change your site style, colors, and layout instantly on the Pro plan.",
+        upgradeSuggestionTitle: "AI prompt suggestions — Pro feature",
+        upgradeSuggestionBody: "Use ready-made AI prompts to speed up your workflow on the Pro plan.",
+        save: "Save",
+        saving: "Saving...",
+        saved: "Saved",
+        saveSuccess: "Changes saved successfully!",
+        saveFailed: "Failed to save changes",
+        autosaveFailed: "Failed to save",
+        notFoundTitle: "Site Not Found",
+        notFoundDesc: "We couldn't find the site you're looking for in this workspace.",
+        preview: "Preview",
+        previewDesktop: "Preview desktop",
+        previewTablet: "Preview tablet",
+        previewMobile: "Preview mobile",
+        toggleDarkAria: "Toggle dark mode",
+        light: "Light",
+        dark: "Dark",
+        switchLight: "Switch to light mode",
+        switchDark: "Switch to dark mode",
+        aiUsage: "AI Usage",
+        generate: "Generate",
+        sectionRegen: "Section Regen",
+        designRegen: "Design Regen",
+        qualityScore: "Quality: {score}%",
+        qualityTitle: "Content Completeness ({score}%)",
+        qualityDesc: "{count} fields need filling so your site looks its best:",
+        qualityWarning: "⚠️ {count} fields need attention",
+        qualityFieldHint: "Field is empty or contains sample text",
+        fill: "Fill",
+        viewCompleteness: "View content completeness",
+        undo: "Undo",
+        undoAllTitle: "Undo last change (text, design, or section order)",
+        undoDesign: "Undo Design",
+        undoDesignTitle: "Undo last design change",
+        noDesignChanges: "No design changes yet",
+        show: "Show",
+        hide: "Hide",
+        showSection: "Show section",
+        hideSection: "Hide section",
+        hidden: "Hidden",
+        showPageSections: "Show page sections",
+        expandEditArea: "Expand edit area",
+        variantOptions: "Layout Variants",
+        selectSectionAria: "Select Section",
+        openSheet: "Open sheet",
+        closeSheet: "Close sheet",
+        publish: "Publish",
+        publishShort: "Publish",
+        publishSuccess: "Website published successfully! 🚀",
+        publishFailed: "Failed to publish website",
+        applying: "Applying...",
+        applyLive: "Apply to Live",
+        apply: "Apply",
+        live: "Live",
+        draft: "Draft",
+        aiProcessing: "AI is processing...",
+        aiReviewActive: "AI Review Active",
+        aiReviewDesc1: "Please apply or revert the AI changes to the",
+        aiReviewDesc2: "section in the preview above first.",
+        diffAi: "AI Diff: {label}",
+        diffChanges: "{count} changes",
+        content: "Content",
+        old: "Old:",
+        new: "New:",
+        use: "Use",
+        useThis: "Use this",
+        revert: "Revert",
+        aiApplied: "AI results for {label} applied.",
+        aiCancelled: "AI results cancelled.",
+        aiReverted: "AI changes to {label} reverted.",
+        aiNoChange: "AI produced no meaningful changes.",
+        aiNoChangeHint: "Try a more specific instruction, e.g. make it an emotional headline, max 8 words, and remove raw input text.",
+        aiSectionDone: "AI finished writing {label}. Review the diff before applying.",
+        aiSectionFailed: "AI failed to regenerate this section.",
+        aiStyleDone: "AI finished redesigning the site style. Review the visual results before saving.",
+        aiStyleFailed: "AI failed to regenerate the site style.",
+        aiStyleNoChange: "AI produced no meaningful style changes.",
+        aiProcessFailed: "AI failed to process.",
+        siteStyle: "site style",
+        aiDesignEngine: "AI Design Engine",
+        latestAiGenerated: "Latest AI Generated",
+        latest: "Latest",
+        latestAiDesc: "Latest AI-generated unique visual style for your site.",
+        aiResult: "AI Result",
+        aiMoodCreated: "{mood} mood. Created on {date}.",
+        editLabel: "Edit — {label}",
+        confirmPublishTitle: "Apply changes to Live?",
+        confirmPublishDesc: "Visitors will see the latest version shortly.",
+        confirmPublishBody: "All saved draft changes will be applied to your live site at {subdomain}.webjoz.com.",
+        confirmApply: "Yes, Apply",
+        upgradeLabel: "Upgrade to Pro",
+        aiInstructionsPlaceholder: "e.g. \"make it more persuasive and emotional\"",
+        aiDesignInstructionsPlaceholder: "e.g. warm vintage coffee theme...",
+      },
+      wizard: {
+        initialMessage: "Hello! I'm your AI assistant. Let's create your business website in 1 minute! What is the name of your business?",
+        nameAckVariants: [
+          "Got it, business name recorded.",
+          "Business name saved successfully.",
+          "Okay, the name is saved.",
+          "Understood, business name noted.",
+          "Your business name is registered.",
+          "Great, business name saved."
+        ],
+        nameConfirmVariants: [
+          "Is that your actual business name, or a temporary one? If it's ready, type it again to continue, or enter the name you want to use 😊",
+          "Is that the real name? Type 'yes' to continue, or enter another name to change it.",
+          "That name looks like a test — make sure it's what you want. Type 'yes' to continue, or enter a new name."
+        ],
+        descriptionPrompt: "Tell us briefly about your business — 1-2 sentences is enough. Press Enter or click Next to skip.",
+        descriptionSkipKeyword: "skip",
+        descriptionInferenceHigh: "I see you operate in {type} — {subType}. Shall we create the website directly?",
+        descriptionInferenceMedium: "I see your business field is {type}. Could you pick a more specific category?",
+        descriptionInferenceNone: "Alright, please select your business type:",
+        selectMoodPrompt: "Choose a mood/vibe that fits your website:",
+        preparingWebsite: "Great! AI is preparing your website...",
+        websiteReady: "🎉 Your website is ready! Check out the preview or click below to edit and publish.",
+        inputPlaceholderName: "Enter your business name...",
+        inputPlaceholderDesc: "Briefly describe your business...",
+        inputPlaceholderGeneral: "Type business name or answer...",
+        sttListening: "Listening...",
+        sttUseVoice: "Use Voice (STT)",
+        btnNext: "Next",
+        btnSkip: "Skip",
+        btnChangeName: "Change Name",
+        btnYesContinue: "Yes, Continue",
+        btnSeeOtherOptions: "See Other Options",
+        btnSave: "Save",
+        btnCancel: "Cancel",
+        btnFinish: "Finish",
+        btnSaveAndApply: "Save & Apply",
+        previewWebsiteTitle: "Website Preview",
+        openForm: "Open Form",
+        closeForm: "Close Form",
+        businessDetailsTitle: "Business Details",
+        businessDetailsSubtitle: "These two pieces of info are used by AI for contact buttons and generating relevant copy.",
+        waSaved: "WA saved",
+        waEmpty: "WA not set",
+        areaEmpty: "Area not set",
+        waHint: "Becomes instant chat button in hero & footer",
+        serviceAreaHint: "AI uses this to write more relevant copy",
+        btnLater: "Later",
+        btnCompleteData: "Complete Info",
+        btnEditPublish: "Edit & Publish",
+        notThisType: "Not this? Choose another business type",
+        moreSpecific: "More specific:",
+        chooseMoodHint: "Choose a mood that fits your brand",
+        suggestedBadge: "✨ Suggested",
+        typeSelectedChooseSub: "✓ Selected — choose type below",
+        statusWaitingInput: "Waiting for input...",
+        statusAiGenerating: "AI generating...",
+        statusPreviewReady: "Preview ready ✓",
+        statusPreparingAi: "Preparing AI...",
+        nameConfirmPlaceholder: "Type 'yes' to continue, or enter correct name...",
+        descPlaceholder: "Example: Selling specialty coffee in Jogja, serving bulk orders",
+        labelBusinessName: "Business Name",
+        labelBusinessType: "Business Type",
+        labelBusinessSubType: "Sub Business Type",
+        labelDescription: "Description",
+        labelWhatsapp: "WhatsApp Number",
+        labelServiceArea: "Service Area",
+        labelMood: "Website Style & Vibe (Mood)",
+        categories: {
+          kuliner: "Culinary",
+          kulinerDesc: "Restaurant & Cafe",
+          tokoUmkm: "Store & MSME",
+          tokoUmkmDesc: "Store & MSME",
+          jasa: "Services",
+          jasaDesc: "Agency",
+          company: "Company",
+          companyDesc: "Corporate",
+        },
+        moods: {
+          modernClean: "Modern & Clean",
+          modernCleanDesc: "Clean, tidy, professional",
+          warmVintage: "Warm & Vintage",
+          warmVintageDesc: "Warm, classic, characterful",
+          boldEnergetic: "Bold & Energetic",
+          boldEnergeticDesc: "High contrast, energetic",
+          elegantLuxury: "Elegant & Luxury",
+          elegantLuxuryDesc: "Luxurious, exclusive, graceful",
+          playfulFun: "Playful & Fun",
+          playfulFunDesc: "Cheerful, friendly, colorful",
+          minimalistDark: "Minimalist Dark",
+          minimalistDarkDesc: "Dark, futuristic, modern",
+        },
       },
     },
   },

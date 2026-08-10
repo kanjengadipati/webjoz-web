@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
+import type { Locale } from "@/lib/i18n/translations";
+import { LOCALE_STORAGE_KEY } from "@/lib/i18n/context";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -50,14 +53,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const cookieLocale = (await cookies()).get(LOCALE_STORAGE_KEY)?.value;
+  const defaultLocale: Locale = cookieLocale === "en" ? "en" : "id";
   return (
     <html lang="id" suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
       <head>
         <meta name="robots" content="index, follow" />
       </head>
       <body className="min-h-full font-sans">
-        <Providers>
+        <Providers defaultLocale={defaultLocale}>
           <div className="flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>
           </div>
