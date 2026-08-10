@@ -7,29 +7,12 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL } from "@/lib/config";
 import { useToast } from "@/components/toast-provider";
-import { Loader2, Check, X, ArrowLeft, Zap, Globe, RefreshCw } from "lucide-react";
+import { Loader2, Check, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { BillingCycleSwitcher } from "@/components/billing-cycle-switcher";
+import { PricingCards, PlanItem } from "@/components/pricing-cards";
+import { useI18n } from "@/lib/i18n/context";
 
-interface PlanItem {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  price_monthly: number;
-  price_yearly: number;
-  promo_price_monthly: number;
-  promo_price_yearly: number;
-  promo_duration_months: number;
-  promo_label: string;
-  max_sites: number;
-  max_ai_generates: number;
-  max_section_regens: number;
-  max_design_regens: number;
-  max_members: number;
-  max_custom_domain: number;
-  features: string;
-}
+
 
 interface PaymentResponse {
   id: number;
@@ -59,6 +42,7 @@ export default function UpgradePage() {
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { activeTenant } = useActiveTenant();
 
   const [plans, setPlans] = useState<PlanItem[]>([]);
@@ -75,7 +59,7 @@ export default function UpgradePage() {
         const res = await request<PlanItem[]>("/plans/active", {}, token);
         setPlans(res.data || []);
       } catch (err: any) {
-        pushToast(err.message || "Gagal memuat paket", "error");
+        pushToast(err.message || t("dashboard.upgrade.loadPlansFailed"), "error");
       } finally {
         setLoading(false);
       }
@@ -95,11 +79,11 @@ export default function UpgradePage() {
   const handleSelectPlan = async (plan: PlanItem) => {
     if (plan.slug === currentPlan) return;
     if (!token || !activeTenant) {
-      pushToast("Silakan login terlebih dahulu", "error");
+      pushToast(t("dashboard.upgrade.pleaseLogin"), "error");
       return;
     }
     if (plan.price_monthly <= 0) {
-      pushToast("Paket Free sudah aktif", "info");
+      pushToast(t("dashboard.upgrade.freeActive"), "info");
       return;
     }
     // Try to pre-load Snap JS; if it fails we'll fall back to redirect
@@ -142,7 +126,7 @@ export default function UpgradePage() {
 
       const payment = res.data;
       if (!payment?.snap_token && !payment?.snap_redirect_url) {
-        pushToast("Gagal mendapatkan token pembayaran", "error");
+        pushToast(t("dashboard.upgrade.tokenFailed"), "error");
         setPaying(null);
         return;
       }
@@ -155,30 +139,30 @@ export default function UpgradePage() {
             router.push(`/dashboard/upgrade/success?order_id=${payment.order_id}`);
           },
           onPending: () => {
-            pushToast("Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.", "info");
+            pushToast(t("dashboard.upgrade.waitingPayment"), "info");
             setPaying(null);
           },
           onError: () => {
-            pushToast("Pembayaran gagal, silakan coba lagi", "error");
+            pushToast(t("dashboard.upgrade.paymentFailed"), "error");
             setPaying(null);
           },
           onClose: () => {
             if (!paymentDone) {
-              pushToast("Pembayaran dibatalkan", "info");
+              pushToast(t("dashboard.upgrade.paymentCancelled"), "info");
               setPaying(null);
             }
           },
         });
       } else if (payment.snap_redirect_url) {
         // Fallback: redirect to Midtrans hosted payment page
-        pushToast("Mengarahkan ke halaman pembayaran...", "info");
+        pushToast(t("dashboard.upgrade.redirecting"), "info");
         window.location.href = payment.snap_redirect_url;
       } else {
-        pushToast("Gagal memproses pembayaran", "error");
+        pushToast(t("dashboard.upgrade.processFailed"), "error");
         setPaying(null);
       }
     } catch (err: any) {
-      pushToast(err.message || "Gagal memproses pembayaran", "error");
+      pushToast(err.message || t("dashboard.upgrade.processFailed"), "error");
       setPaying(null);
     }
   };
@@ -187,38 +171,27 @@ export default function UpgradePage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
         <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
-        <p className="text-sm text-muted-foreground">Memuat paket...</p>
+        <p className="text-sm text-muted-foreground">{t("dashboard.upgrade.loadingPlans")}</p>
       </div>
     );
   }
 
-  const paidPlans = plans.filter((p) => p.slug !== "free");
-  const freePlan = plans.find((p) => p.slug === "free");
-
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
-            aria-label="Back to dashboard"
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Upgrade Paket</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Pilih paket langganan yang sesuai dengan skala bisnis Anda.
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition text-muted-foreground hover:text-primary"
+          aria-label={t("dashboard.upgrade.backToDashboard")}
+        >
+          <ArrowLeft className="size-5" />
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">{t("dashboard.upgrade.title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {t("dashboard.upgrade.subtitle")}
+          </p>
         </div>
-
-        {/* Billing Cycle Switcher */}
-        <BillingCycleSwitcher
-          billingCycle={billingCycle}
-          onCycleChange={setBillingCycle}
-        />
       </div>
 
       {paymentDone && (
@@ -226,184 +199,23 @@ export default function UpgradePage() {
           <div className="size-12 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto">
             <Check className="size-6 text-emerald-400" />
           </div>
-          <p className="text-lg font-bold">Pembayaran Berhasil!</p>
-          <p className="text-sm text-muted-foreground">Paket Anda sedang di-upgrade. Mengalihkan ke dashboard...</p>
+          <p className="text-lg font-bold">{t("dashboard.upgrade.paymentSuccess")}</p>
+          <p className="text-sm text-muted-foreground">{t("dashboard.upgrade.upgradingDesc")}</p>
         </div>
       )}
 
-      <div className="grid md:grid-cols-3 gap-5">
-        {freePlan && (
-          <div className={`rounded-2xl border p-6 space-y-5 ${currentPlan === "free" ? "border-primary/40 bg-primary/5" : "border-border/40 bg-card"}`}>
-            <div className="space-y-2">
-              <h3 className="text-lg font-bold capitalize">{freePlan.name}</h3>
-              <p className="text-sm text-muted-foreground">{freePlan.description}</p>
-            </div>
-            <div>
-              <span className="text-3xl font-bold">Gratis</span>
-            </div>
-            {currentPlan === "free" ? (
-              <span className="block w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-primary/10 text-primary border border-primary/20">
-                Paket Saat Ini
-              </span>
-            ) : (
-              <span className="block w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-muted text-muted-foreground">
-                Tidak Tersedia
-              </span>
-            )}
-            <ul className="space-y-2.5 text-sm">
-              <li className="flex items-center gap-2">
-                <Check className="size-4 text-emerald-400 shrink-0" />
-                <span>{freePlan.max_sites} Website</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="size-4 text-emerald-400 shrink-0" />
-                <span>{freePlan.max_ai_generates} AI Generate / bln</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="size-4 text-emerald-400 shrink-0" />
-                <span>{freePlan.max_section_regens} Section Regen / bln</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="size-4 text-emerald-400 shrink-0" />
-                <span>{freePlan.max_design_regens} Design Regen / bln</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <X className="size-4 text-muted-foreground/40 shrink-0" />
-                <span className="text-muted-foreground/60">Tidak ada custom domain</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <X className="size-4 text-muted-foreground/40 shrink-0" />
-                <span className="text-muted-foreground/60">SEO dasar</span>
-              </li>
-            </ul>
-          </div>
-        )}
-
-        {paidPlans.map((plan) => {
-          const isCurrent = currentPlan === plan.slug;
-          const isBest = plan.slug === "pro";
-          const isYearly = billingCycle === "yearly";
-          const normalYearlyPrice = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
-          const effectiveYearlyPrice = plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearlyPrice;
-          const monthlyEquivalent = Math.round(effectiveYearlyPrice / 12);
-          const yearlySavings = (plan.price_monthly * 12) - effectiveYearlyPrice;
-
-          return (
-            <div
-              key={plan.id}
-              className={`relative rounded-2xl border p-6 space-y-5 transition-all ${
-                isCurrent
-                  ? "border-primary/40 bg-primary/5"
-                  : paying === plan.id
-                    ? "border-primary/60 bg-primary/10"
-                    : "border-border/40 bg-card hover:border-primary/30 hover:shadow-lg"
-              }`}
-            >
-              {isBest && !isCurrent && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] px-3 py-1 bg-primary text-primary-foreground rounded-full font-extrabold uppercase tracking-wider">
-                  Terpopuler
-                </span>
-              )}
-              <div className="space-y-2">
-                <h3 className="text-lg font-bold capitalize">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground">{plan.description}</p>
-              </div>
-              <div>
-                {isYearly ? (
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-bold">Rp {effectiveYearlyPrice.toLocaleString("id-ID")}</span>
-                      <span className="text-sm text-muted-foreground"> /thn</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground flex flex-col gap-1">
-                      {plan.promo_price_yearly > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="line-through text-muted-foreground/60">Rp {normalYearlyPrice.toLocaleString("id-ID")}</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                            {plan.promo_label || "Promo Tahunan"}
-                          </span>
-                        </div>
-                      )}
-                      <span>Setara <strong>Rp {monthlyEquivalent.toLocaleString("id-ID")}</strong> /bln</span>
-                      {yearlySavings > 0 && (
-                        <span className="text-[10px] inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
-                          🎉 Hemat Rp {yearlySavings.toLocaleString("id-ID")} / tahun
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ) : plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold">Rp {plan.promo_price_monthly.toLocaleString("id-ID")}</span>
-                      <span className="text-sm text-muted-foreground"> /bln</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground line-through">Rp {plan.price_monthly.toLocaleString("id-ID")}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                        {plan.promo_label || `Diskon ${plan.promo_duration_months} bulan`}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <span className="text-3xl font-bold">Rp {plan.price_monthly.toLocaleString("id-ID")}</span>
-                    <span className="text-sm text-muted-foreground"> /bln</span>
-                  </div>
-                )}
-              </div>
-              {isCurrent ? (
-                <span className="block w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-primary/10 text-primary border border-primary/20">
-                  Paket Saat Ini
-                </span>
-              ) : (
-                <button
-                  onClick={() => handleSelectPlan(plan)}
-                  disabled={paying !== null}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_16px_color-mix(in_srgb,var(--primary)_40%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
-                >
-                  {paying === plan.id ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    `Pilih ${plan.name} (${isYearly ? "Tahunan" : "Bulanan"})`
-                  )}
-                </button>
-              )}
-              <ul className="space-y-2.5 text-sm">
-                <li className="flex items-center gap-2">
-                  <Globe className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_sites} Website</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Zap className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_ai_generates} AI Generate / bln</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <RefreshCw className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_section_regens} Section Regen / bln</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <RefreshCw className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_design_regens} Design Regen / bln</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Globe className="size-4 text-primary shrink-0" />
-                  <span>{plan.max_custom_domain > 0 ? `${plan.max_custom_domain} Custom Domain` : "Tidak ada custom domain"}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="size-4 text-emerald-400 shrink-0" />
-                  <span>SEO optimasi</span>
-                </li>
-              </ul>
-              {plan.features && (
-                <p className="text-xs text-muted-foreground/60 leading-relaxed border-t border-border/40 pt-4">
-                  {plan.features}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      <PricingCards
+        plans={plans}
+        billingCycle={billingCycle}
+        onCycleChange={setBillingCycle}
+        currentPlanSlug={currentPlan}
+        payingPlanId={paying}
+        onSelectPlan={handleSelectPlan}
+        monthlyLabel={t("dashboard.upgrade.monthly")}
+        yearlyLabel={t("dashboard.upgrade.yearly")}
+        currentPlanLabel={t("dashboard.upgrade.currentPlan")}
+      />
     </div>
   );
 }
+
