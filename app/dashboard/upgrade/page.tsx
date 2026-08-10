@@ -65,7 +65,7 @@ export default function UpgradePage() {
   const [paying, setPaying] = useState<number | null>(null);
   const [snapReady, setSnapReady] = useState(false);
   const [paymentDone, setPaymentDone] = useState(false);
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
   useEffect(() => {
     if (!token) return;

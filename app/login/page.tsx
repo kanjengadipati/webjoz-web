@@ -12,6 +12,7 @@ import { login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api"
 import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 import { AuthShell } from "@/components/auth-shell";
+import { useI18n } from "@/lib/i18n/context";
 
 const PASSWORDLESS_FIELDS = ["email", "phone", "otp"] as const;
 type PasswordlessField = (typeof PASSWORDLESS_FIELDS)[number];
@@ -52,6 +53,7 @@ function LoginLoadingIndicator({ label = "Signing in" }: { label?: string }) {
 export default function LoginPage() {
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const storedEmail = useStoredEmail();
   const authReady = useAuthReady();
   const token = useAuthToken();
@@ -114,8 +116,8 @@ export default function LoginPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get("reset") === "success") pushToast("Password updated. You can sign in now.", "success");
-    if (params.get("passwordChanged") === "true") pushToast("Password changed. Please sign in again.", "success");
+    if (params.get("reset") === "success") pushToast(t("auth.loginResetSuccess"), "success");
+    if (params.get("passwordChanged") === "true") pushToast(t("auth.loginPasswordChanged"), "success");
     const magicToken = params.get("magic_token");
     if (magicToken) {
       verifyMagicLink({
@@ -125,11 +127,11 @@ export default function LoginPage() {
       })
         .then((response) => {
           finishLogin("", response.data.access_token);
-          pushToast("Berhasil masuk. Selamat datang kembali.", "success");
+          pushToast(t("auth.loginSuccess"), "success");
         })
         .catch((error: unknown) => {
           setState("error");
-          const message = getFormErrorMessage(error, "Link masuk tidak valid atau kedaluwarsa", {});
+          const message = getFormErrorMessage(error, t("auth.errorMagicLinkInvalid"), {});
           setErrorMessage(message);
 
           const apiError = error as import("@/lib/api").ApiError;
@@ -144,9 +146,9 @@ export default function LoginPage() {
     }
     if (params.get("expired") === "true" && !handledExpiredToastRef.current) {
       handledExpiredToastRef.current = true;
-      pushToast("Sesi Kedaluwarsa", "error", {
-        message: "Sesi Anda telah kedaluwarsa. Silakan masuk kembali untuk melanjutkan.",
-        actionLabel: "Dismiss",
+      pushToast(t("auth.toastSessionExpired"), "error", {
+        message: t("auth.toastSessionExpiredDesc"),
+        actionLabel: t("auth.toastDismiss"),
         autoClose: false,
         position: "top-center",
       });
@@ -154,7 +156,7 @@ export default function LoginPage() {
       const nextSearch = params.toString();
       window.history.replaceState(null, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}`);
     }
-  }, [pushToast, router]);
+  }, [pushToast, router, t]);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -173,19 +175,19 @@ export default function LoginPage() {
   function validatePasswordlessTarget() {
     const target = passwordlessTarget;
     if (otpChannel === "email" && (!target || !EMAIL_PATTERN.test(target))) {
-      const nextErrors = { email: "Masukkan alamat email yang valid." };
+      const nextErrors = { email: t("auth.errorEmailValid") };
       setPasswordlessStep("delivery");
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Perbaiki field yang ditandai.");
+      setErrorMessage(t("auth.errorFixFields"));
       return "";
     }
     if (otpChannel === "whatsapp" && !isValidPhoneNumber(target)) {
-      const nextErrors = { phone: "Masukkan nomor WhatsApp yang valid." };
+      const nextErrors = { phone: t("auth.errorPhoneValid") };
       setPasswordlessStep("delivery");
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Perbaiki field yang ditandai.");
+      setErrorMessage(t("auth.errorFixFields"));
       return "";
     }
     return target;
@@ -236,19 +238,19 @@ export default function LoginPage() {
         }
         setPasswordlessStep(nextStep === "magic_link" ? "link" : "code");
         setResendCooldown(30);
-        pushToast("Kode terkirim. Silakan cek pesan Anda.", "success");
+        pushToast(t("auth.toastCodeSent"), "success");
       })
-      .catch((error: unknown) => handlePasswordlessError(error, "Gagal mengirim kode. Coba lagi."))
+      .catch((error: unknown) => handlePasswordlessError(error, t("auth.errorSendCode")))
       .finally(() => setState((current) => (current === "loading" ? "idle" : current)));
   }
 
   function handleOTPVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!/^\d{6}$/.test(otp)) {
-      const nextErrors = { otp: "Masukkan kode OTP 6 digit." };
+      const nextErrors = { otp: t("auth.errorOtpInvalid") };
       setState("error");
       setPasswordlessFieldErrors(nextErrors);
-      setErrorMessage("Perbaiki field yang ditandai.");
+      setErrorMessage(t("auth.errorFixFields"));
       return;
     }
 
@@ -265,9 +267,9 @@ export default function LoginPage() {
     })
       .then((response) => {
         finishLogin(otpChannel === "email" ? target : "", response.data.access_token);
-        pushToast("Kode OTP terverifikasi. Selamat datang kembali.", "success");
+        pushToast(t("auth.toastOtpVerified"), "success");
       })
-      .catch((error: unknown) => handlePasswordlessError(error, "Kode OTP tidak valid atau kedaluwarsa"));
+      .catch((error: unknown) => handlePasswordlessError(error, t("auth.errorOtpInvalidExpired")));
   }
 
   function handlePasswordLogin(event: FormEvent<HTMLFormElement>) {
@@ -275,7 +277,7 @@ export default function LoginPage() {
     const email = passwordEmail.trim().toLowerCase();
     if (!EMAIL_PATTERN.test(email) || password.length < 1) {
       setState("error");
-      setErrorMessage("Masukkan email dan password yang valid.");
+      setErrorMessage(t("auth.errorCredentialsInvalid"));
       return;
     }
 
@@ -284,11 +286,11 @@ export default function LoginPage() {
     login(email, password)
       .then((response) => {
         finishLogin(email, response.data.access_token);
-        pushToast("Berhasil masuk. Selamat datang kembali.", "success");
+        pushToast(t("auth.loginSuccess"), "success");
       })
       .catch((error: unknown) => {
         setState("error");
-        const message = getFormErrorMessage(error, "Email atau password salah.", {});
+        const message = getFormErrorMessage(error, t("auth.errorWrongCredentials"), {});
         setErrorMessage(message);
         pushToast(message, "error");
       })
@@ -326,7 +328,7 @@ export default function LoginPage() {
 
                 <div className="flex items-start gap-2.5 text-xs text-muted-foreground/80 leading-relaxed px-0.5">
                   <InfoIcon className="size-4 shrink-0 mt-0.5 text-muted-foreground/60" />
-                  <span>Link atau kode OTP dikirim via WhatsApp. Nomor baru? Akun otomatis dibuat.</span>
+                  <span>{t("auth.loginWhatsappHint")}</span>
                 </div>
 
                 <button
@@ -336,16 +338,16 @@ export default function LoginPage() {
                 >
                   <WhatsAppIcon size="md" className="fill-current text-white" />
                   {state === "loading" ? (
-                    <LoginLoadingIndicator label="Mengirim kode..." />
+                    <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
-                    <>Kirim Kode OTP via WhatsApp</>
+                    <>{t("auth.loginSendCodeWhatsapp")}</>
                   )}
                 </button>
               </form>
 
               <div className="relative flex items-center my-5">
                 <div className="flex-grow border-t border-border/80"></div>
-                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau lanjutkan dengan</span>
+                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">{t("auth.loginOrContinueWith")}</span>
                 <div className="flex-grow border-t border-border/80"></div>
               </div>
 
@@ -379,13 +381,13 @@ export default function LoginPage() {
 
               <div className="relative flex items-center my-5">
                 <div className="flex-grow border-t border-border/80"></div>
-                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">atau masuk dengan email</span>
+                <span className="flex-shrink mx-4 text-xs text-muted-foreground/70 font-medium">{t("auth.loginOrEmail")}</span>
                 <div className="flex-grow border-t border-border/80"></div>
               </div>
 
               <form className="space-y-4" onSubmit={handlePasswordlessCheck}>
                 <div className="space-y-2">
-                  <Label htmlFor="passwordless-email" className="sr-only">Alamat email</Label>
+                  <Label htmlFor="passwordless-email" className="sr-only">{t("auth.loginEmailLabel")}</Label>
                   <Input
                     id="passwordless-email"
                     type="email"
@@ -396,7 +398,7 @@ export default function LoginPage() {
                       setOtp("");
                       setErrorMessage("");
                     }}
-                    placeholder="Alamat email kamu"
+                    placeholder={t("auth.loginEmailPlaceholder")}
                     className="h-11 text-base placeholder:text-muted-foreground/60 bg-background"
                     error={passwordlessFieldErrors.email}
                   />
@@ -404,7 +406,7 @@ export default function LoginPage() {
 
                 <div className="flex items-start gap-2.5 text-xs text-muted-foreground/80 leading-relaxed px-0.5">
                   <InfoIcon className="size-4 shrink-0 mt-0.5 text-muted-foreground/60" />
-                  <span>Link atau kode OTP dikirim via email. Email baru? Akun otomatis dibuat.</span>
+                  <span>{t("auth.loginEmailHint")}</span>
                 </div>
 
                 <button
@@ -413,9 +415,9 @@ export default function LoginPage() {
                   className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
                 >
                   {state === "loading" ? (
-                    <LoginLoadingIndicator label="Mengirim kode..." />
+                    <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
-                    <>Kirim Kode OTP</>
+                    <>{t("auth.loginSendCode")}</>
                   )}
                 </button>
               </form>
@@ -428,15 +430,15 @@ export default function LoginPage() {
                     <LockIcon className="size-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-foreground">Login dengan password</p>
-                    <p className="text-xs text-muted-foreground">Gunakan email dan password akun kamu.</p>
+                    <p className="text-sm font-bold text-foreground">{t("auth.loginPasswordTitle")}</p>
+                    <p className="text-xs text-muted-foreground">{t("auth.loginPasswordDesc")}</p>
                   </div>
                 </div>
               </div>
 
               <form className="space-y-4" onSubmit={handlePasswordLogin}>
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email">{t("auth.loginEmailField")}</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -451,9 +453,9 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-3">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password">{t("auth.loginPasswordLabel")}</Label>
                     <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:opacity-80">
-                      Lupa password?
+                      {t("auth.loginForgotPassword")}
                     </Link>
                   </div>
                   <div className="relative">
@@ -465,14 +467,14 @@ export default function LoginPage() {
                         setPassword(event.target.value);
                         setErrorMessage("");
                       }}
-                      placeholder="Password akun"
+                      placeholder={t("auth.loginPasswordPlaceholder")}
                       className="h-11 text-base bg-background pr-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
                       className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground transition"
-                      aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                      aria-label={showPassword ? t("auth.loginHidePassword") : t("auth.loginShowPassword")}
                     >
                       {showPassword ? (
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -483,7 +485,7 @@ export default function LoginPage() {
                   </div>
                 </div>
                 <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg">
-                  {state === "loading" ? <LoginLoadingIndicator label="Login" /> : "Login dengan password"}
+                  {state === "loading" ? <LoginLoadingIndicator label={t("auth.loginLoginLoading")} /> : t("auth.loginSubmitPassword")}
                 </Button>
               </form>
             </>
@@ -494,14 +496,13 @@ export default function LoginPage() {
       {passwordlessStep === "code" ? (
         <form className="space-y-4" onSubmit={handleOTPVerify}>
           <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
-            Kode dikirim via {otpChannel === "whatsapp" ? "WhatsApp" : "email"} ke{" "}
-            <span className="break-all font-semibold">
-              {otpChannel === "whatsapp" ? passwordlessPhone : passwordlessEmail}
-            </span>
-            . Berlaku 5 menit.
+            {t("auth.loginCodeSentTo", undefined, {
+              channel: otpChannel === "whatsapp" ? "WhatsApp" : "email",
+              target: otpChannel === "whatsapp" ? passwordlessPhone : passwordlessEmail,
+            })}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="otp-code">Kode OTP</Label>
+            <Label htmlFor="otp-code">{t("auth.loginCodeLabel")}</Label>
             <Input
               id="otp-code"
               inputMode="numeric"
@@ -519,7 +520,7 @@ export default function LoginPage() {
           </div>
           <label className="flex items-center gap-3 text-sm text-muted-foreground select-none cursor-pointer">
             <Checkbox checked={trustedDevice} onChange={(event) => setTrustedDevice(event.target.checked)} />
-            Percayai perangkat ini
+            {t("auth.loginTrustDevice")}
           </label>
           <div className="grid gap-3 grid-cols-2">
             <Button
@@ -532,10 +533,10 @@ export default function LoginPage() {
                 setState("idle");
               }}
             >
-              Kembali
+              {t("auth.loginBack")}
             </Button>
             <Button type="submit" disabled={state === "loading"} className="w-full">
-              {state === "loading" ? <LoginLoadingIndicator label="Memverifikasi" /> : "Verifikasi OTP"}
+              {state === "loading" ? <LoginLoadingIndicator label={t("auth.loginVerifying")} /> : t("auth.loginVerifyOtp")}
             </Button>
           </div>
           <button
@@ -548,8 +549,8 @@ export default function LoginPage() {
             }}
           >
             {resendCooldown > 0
-              ? `Kirim ulang (${resendCooldown}s)`
-              : "Tidak menerima kode? Kirim ulang"}
+              ? t("auth.loginResendCountdown", undefined, { sec: String(resendCooldown) })
+              : t("auth.loginResend")}
           </button>
         </form>
       ) : null}
@@ -557,7 +558,7 @@ export default function LoginPage() {
       {passwordlessStep === "link" ? (
         <div className="space-y-4">
           <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground leading-relaxed">
-            Link masuk telah dikirim. Buka link tersebut di perangkat ini untuk melanjutkan.
+            {t("auth.loginLinkSent")}
           </div>
           <Button
             type="button"
@@ -569,7 +570,7 @@ export default function LoginPage() {
               setState("idle");
             }}
           >
-            Kembali
+            {t("auth.loginBack")}
           </Button>
         </div>
       ) : null}
@@ -582,12 +583,12 @@ export default function LoginPage() {
 
       {passwordlessStep === "delivery" && (
         <div className="mt-5 space-y-2.5 border-t border-border/50 pt-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60">Opsi lain</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60">{t("auth.loginOtherOptions")}</p>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { method: "whatsapp" as const, icon: <WhatsAppIcon size="sm" className="text-[#25D366]" />, label: "WhatsApp" },
-              { method: "email" as const, icon: <MailIcon size="sm" />, label: "Email OTP" },
-              { method: "password" as const, icon: <LockIcon size="sm" />, label: "Password" },
+              { method: "whatsapp" as const, icon: <WhatsAppIcon size="sm" className="text-[#25D366]" />, label: t("auth.loginOptionWhatsapp") },
+              { method: "email" as const, icon: <MailIcon size="sm" />, label: t("auth.loginOptionEmail") },
+              { method: "password" as const, icon: <LockIcon size="sm" />, label: t("auth.loginOptionPassword") },
             ]
               .filter(({ method }) => method !== authMethod)
               .map(({ method, icon, label }) => (
@@ -609,21 +610,21 @@ export default function LoginPage() {
 
   return (
     <AuthShell
-      badge="Webjoz Console"
-      title="Lanjutkan kelola website bisnis Anda."
-      description="Login untuk mengelola website, edit konten, lihat analytics, dan pantau performa — semua dari satu dashboard."
+      badge={t("auth.loginBadge")}
+      title={t("auth.loginTitle")}
+      description={t("auth.loginDesc")}
       stats={[
-        { label: "AI Builder", value: "Chat-Based", helper: "Cukup chat dengan AI, website langsung jadi." },
-        { label: "Mobile-First", value: "Optimized", helper: "Semua template dioptimalkan untuk tampilan mobile dan siap iklan." },
+        { label: t("auth.loginStats1Label"), value: t("auth.loginStats1Value"), helper: t("auth.loginStats1Helper") },
+        { label: t("auth.loginStats2Label"), value: t("auth.loginStats2Value"), helper: t("auth.loginStats2Helper") },
       ]}
-      cardEyebrow="Login untuk melanjutkan"
-      cardTitle="Login"
-      cardDescription="Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard."
+      cardEyebrow={t("auth.loginCardEyebrow")}
+      cardTitle={t("auth.loginCardTitle")}
+      cardDescription={t("auth.loginCardDesc")}
       footer={
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Link href="/" className="font-medium text-primary hover:opacity-80">Beranda</Link>
-          <Link href="/register" className="font-medium text-primary hover:opacity-80">Buat akun</Link>
-          <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">Lupa password</Link>
+          <Link href="/" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterHome")}</Link>
+          <Link href="/register" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterRegister")}</Link>
+          <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterForgot")}</Link>
         </div>
       }
     >

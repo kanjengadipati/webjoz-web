@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
 import { Check, Loader2 } from "lucide-react";
 import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { InteractiveMockup } from "@/components/interactive-mockup";
+import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
 
@@ -17,23 +19,23 @@ import { API_BASE_URL } from "@/lib/config";
 const STEPS = [
   {
     num: "01",
-    title: "Kenalkan Bisnis Anda",
-    desc: "Chat dengan AI dan beri tahu nama serta apa bisnis yang Anda jalankan. Semuanya lewat percakapan santai.",
+    titleKey: "step1Title",
+    descKey: "step1Desc",
   },
   {
     num: "02",
-    title: "Berikan Detail Singkat",
-    desc: "Ceritakan sedikit tentang layanan, area jangkauan, atau apa yang membuat bisnis Anda spesial.",
+    titleKey: "step2Title",
+    descKey: "step2Desc",
   },
   {
     num: "03",
-    title: "Pilih Kategori & Mood",
-    desc: "Pilih jenis industri dan suasana (mood) desain yang cocok agar AI bisa menyesuaikan tampilan website Anda.",
+    titleKey: "step3Title",
+    descKey: "step3Desc",
   },
   {
     num: "04",
-    title: "Generate & Publikasikan",
-    desc: "Website selesai dibuat dalam hitungan detik. Langsung review, edit bagian mana pun, dan publikasikan segera.",
+    titleKey: "step4Title",
+    descKey: "step4Desc",
   },
 ];
 
@@ -42,53 +44,53 @@ const STEPS = [
 const FEATURES = [
   {
     icon: "🤖",
-    title: "Chat AI, Bukan Form",
-    desc: "Tidak perlu isi form panjang. Cukup chat dengan AI, semua konten dan desain dibuat otomatis.",
+    titleKey: "featureChatTitle",
+    descKey: "featureChatDesc",
   },
   {
     icon: "🔗",
-    title: "Custom Domain",
-    desc: "Hubungkan domain sendiri dengan panduan CNAME. Cocok untuk branding profesional perusahaan Anda.",
+    titleKey: "featureDomainTitle",
+    descKey: "featureDomainDesc",
   },
   {
     icon: "📊",
-    title: "Analytics & Leads",
-    desc: "Pantau pengunjung website dan kumpulkan leads langsung dari form kontak — semuanya di satu dashboard.",
+    titleKey: "featureAnalyticsTitle",
+    descKey: "featureAnalyticsDesc",
   },
   {
     icon: "✏️",
-    title: "Edit Per Section",
-    desc: "Tidak puas dengan bagian tertentu? Regenerate per section dengan AI, atau edit manual di editor.",
+    titleKey: "featureEditTitle",
+    descKey: "featureEditDesc",
   },
   {
     icon: "📄",
-    title: "Kustomisasi Penuh",
-    desc: "Hero, profil, layanan, testimoni, menu, FAQ, footer, hingga SEO — semua konten bisa diedit dan disesuaikan sendiri kapan saja.",
+    titleKey: "featureCustomTitle",
+    descKey: "featureCustomDesc",
   },
   {
     icon: "💬",
-    title: "WhatsApp Terintegrasi",
-    desc: "Tombol WhatsApp otomatis terpasang di setiap website. Pelanggan bisa langsung chat dalam satu klik.",
+    titleKey: "featureWaTitle",
+    descKey: "featureWaDesc",
   },
   {
     icon: "🔍",
-    title: "SEO Siap Pakai",
-    desc: "Title, description, OG tags, JSON-LD structured data, dan sitemap — semua sudah diurus oleh AI.",
+    titleKey: "featureSeoTitle",
+    descKey: "featureSeoDesc",
   },
   {
     icon: "🚀",
-    title: "Subdomain Instan",
-    desc: "Setiap website langsung aktif di subdomain Webjoz. Tidak perlu setup server atau DNS manual.",
+    titleKey: "featureSubTitle",
+    descKey: "featureSubDesc",
   },
   {
     icon: "📦",
-    title: "Katalog Produk",
-    desc: "Tampilkan koleksi produk atau layanan Anda dengan katalog yang rapi, profesional, dan menarik.",
+    titleKey: "featureCatalogTitle",
+    descKey: "featureCatalogDesc",
   },
   {
     icon: "🍽️",
-    title: "Menu Jualan",
-    desc: "Mudahkan pelanggan memesan dengan fitur menu interaktif yang siap digunakan untuk bertransaksi.",
+    titleKey: "featureMenuTitle",
+    descKey: "featureMenuDesc",
   },
 ];
 
@@ -120,6 +122,7 @@ export default function LandingPageClient() {
   const router = useRouter();
   const token = useAuthToken();
   const authReady = useAuthReady();
+  const { t, translations } = useI18n();
   const isLoggedIn = authReady && !!token;
   const [showFloatingCta, setShowFloatingCta] = useState(false);
 
@@ -218,25 +221,26 @@ export default function LandingPageClient() {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSwitcher className="hidden sm:inline-flex" />
             {authReady && (
               isLoggedIn ? (
                 <Link
                   href="/dashboard"
                   className="hidden sm:block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
                 >
-                  Dashboard
+                  {t("landing.navDashboard")}
                 </Link>
               ) : (
                 <Link
                   href="/login"
                   className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
                 >
-                  Login
+                  {t("landing.navLogin")}
                 </Link>
               )
             )}
             <Button onClick={() => startWizard()} className="rounded-full px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm shadow-lg shadow-primary/20">
-              {isLoggedIn ? "Buat Website Baru" : "Mulai Gratis"}
+              {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
             </Button>
           </div>
         </div>
@@ -253,16 +257,16 @@ export default function LandingPageClient() {
               className="border-primary/20 bg-primary/5 text-primary shadow-lg shadow-primary/5 px-4 py-2 animate-pulse w-fit"
             >
               <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
-              AI Website Builder untuk Bisnis Indonesia
+              {t("landing.badge")}
             </Badge>
 
           <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl w-full">
-            Website Bisnis<br />Siap dalam 5 Menit
+            <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
           </h1>
 
           <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
-            Chat singkat dengan AI, pilih gaya visual, dan website bisnis Anda siap dipublish.{" "}
-            <strong className="text-foreground font-semibold">Tanpa coding, tanpa form panjang.</strong>
+            {t("landing.heroSubtitle")}{" "}
+            <strong className="text-foreground font-semibold">{t("landing.heroSubtitleBold")}</strong>
           </p>
 
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 w-full">
@@ -271,21 +275,21 @@ export default function LandingPageClient() {
               size="lg"
               className="w-full sm:w-auto rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20"
             >
-              Buat Website Sekarang
+              {t("landing.ctaPrimary")}
             </Button>
           </div>
 
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground w-full">
             <span className="flex items-center gap-1.5">
-              <span className="shrink-0">✅</span> Gratis dicoba
+              <span className="shrink-0">✅</span> {t("landing.tryFree")}
             </span>
             <span className="text-muted-foreground/30 hidden sm:inline">·</span>
             <span className="flex items-center gap-1.5">
-              <span className="shrink-0">💬</span> Chat AI, bukan form
+              <span className="shrink-0">💬</span> {t("landing.chatNotForm")}
             </span>
             <span className="text-muted-foreground/30 hidden sm:inline">·</span>
             <span className="flex items-center gap-1.5">
-              <span className="shrink-0">🚀</span> Aktif dalam menit
+              <span className="shrink-0">🚀</span> {t("landing.activeInMinutes")}
             </span>
           </div>
           </div>
@@ -301,12 +305,12 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              CARA KERJANYA
+              {t("landing.howItWorksSubtitle")}
             </p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Dari chat ke website dalam{" "}
-              <span className="text-primary">4 langkah mudah</span>
-            </h2>
+            <h2
+              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              dangerouslySetInnerHTML={{ __html: t("landing.howItWorksTitle") }}
+            />
           </div>
 
           <div className="grid gap-6 md:grid-cols-4">
@@ -318,8 +322,8 @@ export default function LandingPageClient() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary">
                   {step.num}
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-foreground">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
+                <h3 className="mb-2 text-lg font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{t(`landing.${step.descKey}`)}</p>
               </div>
             ))}
           </div>
@@ -330,7 +334,7 @@ export default function LandingPageClient() {
               size="lg"
               className="rounded-full px-8 shadow-lg shadow-primary/20"
             >
-              Coba Sekarang &mdash; Gratis
+              {t("landing.howItWorksCta")}
             </Button>
           </div>
         </div>
@@ -341,12 +345,12 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              FITUR UNGGULAN
+              {t("landing.featuresEyebrow")}
             </p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Lebih dari sekadar{" "}
-              <span className="text-primary">website biasa</span>
-            </h2>
+            <h2
+              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              dangerouslySetInnerHTML={{ __html: t("landing.featuresTitle") }}
+            />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -354,18 +358,18 @@ export default function LandingPageClient() {
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
                   <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
-                    Dashboard
+                    {t("landing.dashboardBadge")}
                   </Badge>
                   <div className="space-y-3">
                     <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
-                      Pantau & kembangkan bisnis Anda
+                      {t("landing.dashboardTitle")}
                     </h3>
                     <p className="text-base leading-7 text-muted-foreground">
-                      Dashboard lengkap dengan analytics pengunjung, manajemen leads, dan daftar website dalam satu tempat.
+                      {t("landing.dashboardDesc")}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    {["Analytics real-time", "Manajemen leads", "Daftar website"].map((tag) => (
+                    {translations.landing.dashboardTags.map((tag) => (
                       <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
                         {tag}
                       </span>
@@ -379,18 +383,18 @@ export default function LandingPageClient() {
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
                   <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
-                    Domain & SEO
+                    {t("landing.domainBadge")}
                   </Badge>
                   <div className="space-y-3">
                     <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
-                      Domain sendiri & SEO otomatis
+                      {t("landing.domainTitle")}
                     </h3>
                     <p className="text-base leading-7 text-muted-foreground">
-                      Hubungkan domain custom Anda, SEO title/description, OG tags, JSON-LD, sitemap &mdash; semuanya diurus oleh AI.
+                      {t("landing.domainDesc")}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    {["Custom domain", "SEO otomatis", "Structured data", "Sitemap"].map((tag) => (
+                    {translations.landing.domainTags.map((tag) => (
                       <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
                         {tag}
                       </span>
@@ -408,14 +412,14 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              CONTOH HASIL AI
+              {t("landing.templatesEyebrow")}
             </p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Website yang dihasilkan{" "}
-              <span className="text-primary">untuk berbagai bisnis</span>
-            </h2>
+            <h2
+              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              dangerouslySetInnerHTML={{ __html: t("landing.templatesTitle") }}
+            />
             <p className="mx-auto max-w-2xl text-base text-muted-foreground">
-              AI memilih template dan menulis konten secara otomatis. Ini contoh hasil untuk beberapa jenis bisnis.
+              {t("landing.templatesDesc")}
             </p>
           </div>
 
@@ -428,12 +432,12 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              KENAPA WEBJOZ
+              {t("landing.whyEyebrow")}
             </p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Semua yang Anda butuhkan,{" "}
-              <span className="text-primary">sudah tersedia</span>
-            </h2>
+            <h2
+              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              dangerouslySetInnerHTML={{ __html: t("landing.whyTitle") }}
+            />
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -445,8 +449,8 @@ export default function LandingPageClient() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
                   {f.icon}
                 </div>
-                <h3 className="mb-2 font-bold text-foreground">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                <h3 className="mb-2 font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{t(`landing.${f.descKey}`)}</p>
               </div>
             ))}
           </div>
@@ -459,10 +463,10 @@ export default function LandingPageClient() {
           <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { value: "< 5 menit", label: "Waktu generate" },
-                { value: "100%", label: "Online otomatis" },
-                { value: "8 fitur", label: "Satu dashboard" },
-                { value: "AI", label: "Powered" },
+                { value: t("landing.statsValue1"), label: t("landing.statsLabel1") },
+                { value: t("landing.statsValue2"), label: t("landing.statsLabel2") },
+                { value: t("landing.statsValue3"), label: t("landing.statsLabel3") },
+                { value: t("landing.statsValue4"), label: t("landing.statsLabel4") },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl">{stat.value}</div>
@@ -478,9 +482,9 @@ export default function LandingPageClient() {
       <section className="px-4 py-16 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-5xl">
           <div className="text-center space-y-3 mb-8">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Harga Sederhana</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("landing.pricingTitle")}</h2>
             <p className="text-muted-foreground text-base max-w-lg mx-auto">
-              Mulai gratis, kembangkan kapan pun Anda siap.
+              {t("landing.pricingSubtitle")}
             </p>
 
             {/* Billing Cycle Switcher */}
@@ -495,7 +499,7 @@ export default function LandingPageClient() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Bulanan
+                  {t("landing.monthly")}
                 </button>
                 <button
                   type="button"
@@ -506,15 +510,15 @@ export default function LandingPageClient() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <span>Tahunan</span>
+                  <span>{t("landing.yearly")}</span>
                   <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
-                    Hemat ~16%
+                    {t("landing.saveBadge")}
                   </span>
                 </button>
               </div>
               {billingCycle === "yearly" && (
                 <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                  🎉 Hemat hingga 2 bulan dengan langganan paket per tahun
+                  {t("landing.saveText")}
                 </p>
               )}
             </div>
@@ -556,13 +560,13 @@ export default function LandingPageClient() {
                     key={plan.id}
                     className={`px-6 py-8 text-center shadow-lg relative flex flex-col justify-between ${
                       isPro
-                        ? "border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 shadow-primary/10 overflow-hidden"
+                        ? "border-primary ring-1 ring-primary/30 bg-gradient-to-br from-primary/10 via-card to-primary/5 shadow-primary/20 overflow-hidden md:scale-[1.03] md:z-10"
                         : "border-border/60 bg-card/60 shadow-primary/5"
                     }`}
                   >
                     {isPro && (
-                      <div className="absolute top-3 right-3 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-primary/20">
-                        Terpopuler
+                      <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
+                        {t("landing.popularBadge")}
                       </div>
                     )}
                     <div>
@@ -573,8 +577,8 @@ export default function LandingPageClient() {
                       {/* Price display */}
                       {isFree ? (
                         <>
-                          <div className="text-4xl font-bold text-foreground mb-1">Rp 0</div>
-                          <p className="text-sm text-muted-foreground mb-6">/bulan · selamanya</p>
+                          <div className="text-4xl font-bold text-foreground mb-1">{t("landing.priceFree")}</div>
+                          <p className="text-sm text-muted-foreground mb-6">{t("landing.priceFreePeriod")}</p>
                         </>
                       ) : isYearly ? (
                         <div className="mb-6">
@@ -588,14 +592,14 @@ export default function LandingPageClient() {
                                 Rp {normalYearly.toLocaleString("id-ID")}
                               </span>
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                                {plan.promo_label || "Promo"}
+                                {plan.promo_label || t("landing.promo")}
                               </span>
                             </div>
                           )}
                           <p className="text-sm text-muted-foreground">
-                            /tahun{" "}
+                            {t("landing.perYear")}{" "}
                             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                              (Setara Rp {monthlyEquivalent.toLocaleString("id-ID")}/bln)
+                              {t("landing.monthlyEq", undefined, { value: monthlyEquivalent.toLocaleString("id-ID") })}
                             </span>
                           </p>
                           {yearlySavings > 0 && (
@@ -621,7 +625,7 @@ export default function LandingPageClient() {
                             </div>
                           )}
                           <p className="text-sm text-muted-foreground">
-                            /bulan · Rp {normalYearly.toLocaleString("id-ID")}/tahun
+                            {t("landing.perMonth")} · Rp {normalYearly.toLocaleString("id-ID")}{t("landing.perYear2")}
                           </p>
                         </div>
                       )}
@@ -638,11 +642,14 @@ export default function LandingPageClient() {
 
                     {isFree ? (
                       <Button onClick={() => startWizard()} className="w-full rounded-full font-bold">
-                        Mulai Gratis
+                        {t("landing.startFree")}
                       </Button>
                     ) : (
                       <Button onClick={() => router.push("/dashboard/upgrade")} className="w-full rounded-full font-bold">
-                        Pilih {plan.name} ({isYearly ? "Tahunan" : "Bulanan"})
+                        {t("landing.choosePlan", undefined, {
+                          plan: plan.name,
+                          cycle: isYearly ? t("landing.yearly") : t("landing.monthly"),
+                        })}
                       </Button>
                     )}
                   </Card>
@@ -664,10 +671,10 @@ export default function LandingPageClient() {
 
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
-                Siap buat website bisnis Anda?
+                {t("landing.ctaBannerTitle")}
               </h2>
               <p className="mx-auto max-w-xl text-base leading-8 text-muted-foreground">
-                Mulai gratis sekarang. Tidak perlu kartu kredit &mdash; cukup chat singkat dengan AI dan website Anda siap.
+                {t("landing.ctaBannerDesc")}
               </p>
             </div>
 
@@ -677,7 +684,7 @@ export default function LandingPageClient() {
                 size="lg"
                 className="rounded-full px-10 text-lg font-bold shadow-xl shadow-primary/20"
               >
-                Mulai Gratis Sekarang
+                {t("landing.ctaBannerCta")}
               </Button>
               <a
                 href="https://wa.me/6285111221044?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
@@ -685,20 +692,20 @@ export default function LandingPageClient() {
                 rel="noopener noreferrer"
               >
                 <Button variant="outline" size="lg" className="rounded-full px-8">
-                  Konsultasi via WhatsApp
+                  {t("landing.ctaBannerWhatsapp")}
                 </Button>
               </a>
             </div>
 
             <p className="mt-6 text-sm text-muted-foreground">
-              Butuh custom design atau company profile?{" "}
+              {t("landing.ctaBannerHelper")}{" "}
               <a
                 href="https://wa.me/6285111221044"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary underline-offset-4 hover:underline"
               >
-                Hubungi tim kami
+                {t("landing.ctaBannerContact")}
               </a>
             </p>
           </div>
@@ -714,29 +721,32 @@ export default function LandingPageClient() {
               <span className="text-sm font-semibold text-foreground">Webjoz</span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              &copy; {new Date().getFullYear()} Webjoz by Giwangan Studio. AI Website Builder untuk Bisnis Indonesia.
+              {t("landing.footerCopyright", undefined, { year: String(new Date().getFullYear()) })}
             </p>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <Link href="/login" className="hover:text-foreground transition">Login</Link>
-              <Link href="/contact" className="hover:text-foreground transition">Kontak</Link>
+              <Link href="/login" className="hover:text-foreground transition">{t("landing.footerLogin")}</Link>
+              <Link href="/contact" className="hover:text-foreground transition">{t("common.contact")}</Link>
             </div>
           </div>
           <div className="border-t border-border/30 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <Link href="/privacy-policy" className="hover:text-foreground transition">Kebijakan Privasi</Link>
-            <Link href="/terms" className="hover:text-foreground transition">Syarat &amp; Ketentuan</Link>
-            <Link href="/refund-policy" className="hover:text-foreground transition">Kebijakan Refund</Link>
-            <Link href="/contact" className="hover:text-foreground transition">Hubungi Kami</Link>
+            <Link href="/privacy-policy" className="hover:text-foreground transition">{t("landing.footerPrivacy")}</Link>
+            <Link href="/terms" className="hover:text-foreground transition">{t("landing.footerTerms")}</Link>
+            <Link href="/refund-policy" className="hover:text-foreground transition">{t("landing.footerRefund")}</Link>
+            <Link href="/contact" className="hover:text-foreground transition">{t("landing.footerContact")}</Link>
           </div>
         </div>
       </footer>
 
       {/* ── Floating CTA (mobile) ──────────────────────────────────────────── */}
       <div className={`fixed bottom-4 left-4 right-4 z-40 md:hidden transition-all duration-300 transform ${showFloatingCta ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"}`}>
+        <div className="flex items-center justify-end mb-2">
+          <LanguageSwitcher />
+        </div>
         <Button
           onClick={() => startWizard()}
           className="w-full rounded-full py-4 text-sm font-bold shadow-2xl shadow-primary/30"
         >
-          Buat Website Sekarang
+          {t("landing.ctaFloating")}
         </Button>
       </div>
     </main>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 type AuthShellProps = {
   badge: string;
@@ -30,6 +31,9 @@ export function AuthShell({
 }: AuthShellProps) {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-4 sm:px-6 sm:py-10 lg:px-10">
+      <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
+        <LanguageSwitcher />
+      </div>
       {/* Radial top glow — matches the home hero */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 

@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
+import { useI18n } from "@/lib/i18n/context";
 import type { DesignToken } from "@/lib/template-registry";
 
 const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
@@ -32,15 +33,6 @@ const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
 function getDesignToken(templateId: string): DesignToken {
   if (templateId === "TEMPLATE_DYNAMIC") return DYNAMIC_SHOWCASE_TOKEN;
   return (TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] || TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02)!;
-}
-
-function getCategoryLabel(businessType: string): string {
-  const map: Record<string, string> = {
-    kuliner: "Kuliner",
-    jasa: "Jasa",
-    produk: "Produk",
-  };
-  return map[businessType] || businessType;
 }
 
 function TemplatePreview({ templateId, content, designToken }: { templateId: string; content: any; designToken: DesignToken }) {
@@ -80,6 +72,17 @@ function TemplatePreview({ templateId, content, designToken }: { templateId: str
 }
 
 export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: string) => void }) {
+  const { t } = useI18n();
+
+  function getCategoryLabel(businessType: string): string {
+    const map: Record<string, string> = {
+      kuliner: t("landing.categoryKuliner"),
+      jasa: t("landing.categoryJasa"),
+      produk: t("landing.categoryProduk"),
+    };
+    return map[businessType] || businessType;
+  }
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {SHOWCASE_ITEMS.map((item) => {
@@ -111,14 +114,14 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
                   {item.businessName}
                 </p>
                 <p className="text-[11px] text-muted-foreground truncate">
-                  {templateDef?.name ?? "Website"}
+                  {templateDef?.name ?? t("landing.showcaseFallback")}
                 </p>
               </div>
               <button
                 onClick={() => onStart(item.templateId)}
                 className="shrink-0 rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold text-primary-foreground transition hover:brightness-110 active:scale-95"
               >
-                Buat
+                {t("landing.showcaseCreate")}
               </button>
             </div>
           </div>

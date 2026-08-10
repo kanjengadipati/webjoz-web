@@ -6,9 +6,11 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button, Input, Label } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { forgotPassword } from "@/lib/api";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function ForgotPasswordPage() {
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -21,10 +23,10 @@ export default function ForgotPasswordPage() {
     try {
       await forgotPassword(email);
       setState("success");
-      setMessage("Reset link sent. Check your email for the password reset link.");
-      pushToast("Reset link sent.", "success");
+      setMessage(t("auth.forgotSentSuccess"));
+      pushToast(t("auth.forgotSentToast"), "success");
     } catch (error) {
-      const nextMessage = error instanceof Error ? error.message : "Failed to send reset link";
+      const nextMessage = error instanceof Error ? error.message : t("auth.errorForgotSend");
       setState("error");
       setMessage(nextMessage);
       pushToast(nextMessage, "error");
@@ -33,30 +35,30 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthShell
-      badge="Password Recovery"
-      title="Start the backend password reset flow from the dashboard frontend."
-      description="Submit your email and the Go API will issue the reset token and email link through its existing forgot-password flow."
+      badge={t("auth.forgotBadge")}
+      title={t("auth.forgotTitle")}
+      description={t("auth.forgotDesc")}
       stats={[
-        { label: "Delivery", value: "Email Link", helper: "The backend sends a reset link to the email address you submit." },
-        { label: "Reset Route", value: "/reset-password", helper: "The emailed link lands on the dashboard reset page." },
+        { label: t("auth.forgotStat1Label"), value: t("auth.forgotStat1Value"), helper: t("auth.forgotStat1Helper") },
+        { label: t("auth.forgotStat2Label"), value: t("auth.forgotStat2Value"), helper: t("auth.forgotStat2Helper") },
       ]}
-      cardEyebrow="Recovery"
-      cardTitle="Forgot Password"
-      cardDescription="Enter your account email to request a password reset link."
+      cardEyebrow={t("auth.forgotCardEyebrow")}
+      cardTitle={t("auth.forgotCardTitle")}
+      cardDescription={t("auth.forgotCardDesc")}
       footer={
         <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link href="/login" className="font-medium text-primary hover:opacity-80">Back to login</Link>
-          <Link href="/register" className="font-medium text-primary hover:opacity-80">Create account</Link>
+          <Link href="/login" className="font-medium text-primary hover:opacity-80">{t("auth.forgotFooterLogin")}</Link>
+          <Link href="/register" className="font-medium text-primary hover:opacity-80">{t("auth.forgotFooterRegister")}</Link>
         </div>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@mail.com" />
+          <Label htmlFor="email">{t("auth.forgotEmail")}</Label>
+          <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t("auth.forgotEmailPlaceholder")} />
         </div>
         <Button type="submit" disabled={state === "loading"} className="w-full">
-          {state === "loading" ? "Sending link..." : "Send Reset Link"}
+          {state === "loading" ? t("auth.forgotSending") : t("auth.forgotSubmit")}
         </Button>
       </form>
       {message ? (

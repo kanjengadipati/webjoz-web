@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 const SEQUENCE = [
   { step: 0, delay: 0 },
@@ -15,6 +16,7 @@ const SEQUENCE = [
 const CYCLE_MS = 13000;
 
 export function InteractiveMockup() {
+  const { t, translations } = useI18n();
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -116,7 +118,7 @@ export function InteractiveMockup() {
                   style={{ background: "linear-gradient(135deg, color-mix(in srgb,var(--primary) 60%,transparent), color-mix(in srgb,var(--primary) 20%,transparent))", border: "1px solid color-mix(in srgb,var(--primary) 30%,transparent)" }}
                 >✨</div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
-                  Halo! Apa nama bisnis Anda?
+                  {t("landing.mockupGreeting")}
                   {flowStep === 1 && <span className="ml-1 inline-block w-1 h-3 bg-primary animate-pulse rounded-sm" />}
                 </div>
               </div>
@@ -139,16 +141,16 @@ export function InteractiveMockup() {
                   style={{ background: "linear-gradient(135deg, color-mix(in srgb,var(--primary) 60%,transparent), color-mix(in srgb,var(--primary) 20%,transparent))", border: "1px solid color-mix(in srgb,var(--primary) 30%,transparent)" }}
                 >✨</div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
-                  Keren! 👍 Pilih jenis bisnis:
+                  {t("landing.mockupPickType")}
                 </div>
               </div>
 
               {/* Category chips */}
               <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(3)}`}>
-                {["🍜 Kuliner", "🔧 Jasa", "🛍 Produk"].map((t, i) => {
+                {translations.landing.mockupChips.map((chip, i) => {
                   const sel = i === 0 && flowStep >= 4;
                   return (
-                    <div key={t} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
+                    <div key={chip} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
                       sel
                         ? "scale-105"
                         : "bg-card/60 border-border/40 text-muted-foreground"
@@ -159,7 +161,7 @@ export function InteractiveMockup() {
                         color: "#ffffff",
                         boxShadow: "0 4px 14px rgba(99,102,241,0.3)"
                       } : {}}
-                    >{t}</div>
+                    >{chip}</div>
                   );
                 })}
               </div>
@@ -178,7 +180,7 @@ export function InteractiveMockup() {
                   />
                 </div>
                 <p className="mt-1.5 text-[10px] text-muted-foreground font-medium">
-                  {generating ? "⚡ AI sedang generate..." : flowStep >= 6 ? "✅ Website siap!" : "Langkah 2 dari 5"}
+                  {generating ? t("landing.mockupGenerating") : flowStep >= 6 ? t("landing.mockupReady") : t("landing.mockupStep")}
                 </p>
               </div>
             </div>
