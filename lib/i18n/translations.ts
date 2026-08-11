@@ -1086,6 +1086,14 @@ export interface Translations {
       bonus: string;
       tenant: string;
       period: string;
+      markPaid: string;
+      bonusPayoutSuccess: string;
+      bonusPayoutFailed: string;
+      filterAll: string;
+      filterPending: string;
+      filterPaid: string;
+      filterVoided: string;
+      selectAllPending: string;
     };
     adminDesignAssets: {
       accessDenied: string;
@@ -3079,6 +3087,14 @@ export const translations: Record<Locale, Translations> = {
         bonus: "Bonus",
         tenant: "Tenant",
         period: "Periode",
+        markPaid: "Tandai Dibayar ({count})",
+        bonusPayoutSuccess: "{count} bonus berhasil ditandai sebagai dibayar",
+        bonusPayoutFailed: "Gagal menandai bonus sebagai dibayar",
+        filterAll: "Semua Status",
+        filterPending: "Pending",
+        filterPaid: "Dibayar",
+        filterVoided: "Dibatalkan",
+        selectAllPending: "Pilih semua pending di halaman ini",
       },
       adminDesignAssets: {
         accessDenied: "Akses Ditolak",
@@ -5113,6 +5129,14 @@ export const translations: Record<Locale, Translations> = {
         bonus: "Bonus",
         tenant: "Tenant",
         period: "Period",
+        markPaid: "Mark as Paid ({count})",
+        bonusPayoutSuccess: "{count} bonuses marked as paid",
+        bonusPayoutFailed: "Failed to mark bonuses as paid",
+        filterAll: "All Statuses",
+        filterPending: "Pending",
+        filterPaid: "Paid",
+        filterVoided: "Voided",
+        selectAllPending: "Select all pending on this page",
       },
       adminDesignAssets: {
         accessDenied: "Access Denied",
