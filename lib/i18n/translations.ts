@@ -443,6 +443,7 @@ export interface Translations {
       publishOneStep: string;
       publishReady: string;
       subdomainLabel: string;
+      subdomainPlaceholder: string;
       subdomainAvailable: string;
       subdomainInvalidHint: string;
       subdomainHint: string;
@@ -495,6 +496,7 @@ export interface Translations {
       viewSite: string;
       publish: string;
       linkBlog: string;
+      linkEditor: string;
       linkCatalog: string;
       linkMenu: string;
       linkSeo: string;
@@ -508,6 +510,7 @@ export interface Translations {
       copyLinkTitle: string;
       checkTip: string;
       done: string;
+      continueEditing: string;
     };
     leads: {
       loadFailed: string;
@@ -1260,6 +1263,11 @@ export interface Translations {
       closeLabel: string;
       statusLabel: string;
       noItems: string;
+      errorEyebrow: string;
+      errorTitle: string;
+      errorHeading: string;
+      errorDesc: string;
+      tryAgain: string;
     };
     sales: {
       loadFailed: string;
@@ -1967,6 +1975,29 @@ export interface Translations {
       labelWhatsapp: string;
       labelServiceArea: string;
       labelMood: string;
+      appearancePreset: string;
+      colorPattern: string;
+      typographyStyle: string;
+      aiRecommendation: string;
+      aiMadeFor: string;
+      orChoosePreset: string;
+      orChoosePalette: string;
+      orChoosePairing: string;
+      manualFineTune: string;
+      headingFont: string;
+      bodyFont: string;
+      headingWeight: string;
+      heroTitleSize: string;
+      sizeSmall: string;
+      sizeMedium: string;
+      sizeLarge: string;
+      sizeVeryLarge: string;
+      sizeMax: string;
+      weightRegular: string;
+      weightMedium: string;
+      weightSemiBold: string;
+      weightBold: string;
+      weightExtraBold: string;
       categories: {
         kuliner: string;
         kulinerDesc: string;
@@ -2439,6 +2470,7 @@ export const translations: Record<Locale, Translations> = {
         publishOneStep: "Satu Langkah Lagi! 🚀",
         publishReady: "Website {name} Anda siap untuk dipublikasikan ke seluruh dunia.",
         subdomainLabel: "Nama Subdomain",
+        subdomainPlaceholder: "namaanda",
         subdomainAvailable: "Tersedia: {url}",
         subdomainInvalidHint: "Gunakan huruf kecil, angka, atau tanda hubung (-)",
         subdomainHint: "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
@@ -2491,6 +2523,7 @@ export const translations: Record<Locale, Translations> = {
         viewSite: "Lihat Web",
         publish: "Publikasikan",
         linkBlog: "Blog",
+        linkEditor: "Editor",
         linkCatalog: "Katalog",
         linkMenu: "Menu",
         linkSeo: "SEO",
@@ -2504,6 +2537,7 @@ export const translations: Record<Locale, Translations> = {
         copyLinkTitle: "Salin Link",
         checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
+        continueEditing: "Lanjut Edit",
       },
       leads: {
         loadFailed: "Gagal memuat inbox leads",
@@ -3261,6 +3295,11 @@ export const translations: Record<Locale, Translations> = {
         closeLabel: "Tutup detail investigasi",
         statusLabel: "Status",
         noItems: "Tidak ada item yang ditampilkan.",
+        errorEyebrow: "Kesalahan Sistem",
+        errorTitle: "Gagal Memuat Dashboard",
+        errorHeading: "Terjadi kesalahan!",
+        errorDesc: "Kami menemui kesalahan tak terduga saat mencoba memuat modul investigasi. Ini bisa disebabkan masalah jaringan atau kegagalan server sementara.",
+        tryAgain: "Coba Lagi",
       },
       sales: {
         loadFailed: "Gagal memuat kode referral",
@@ -3979,6 +4018,29 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "Nomor WhatsApp",
         labelServiceArea: "Wilayah Layanan",
         labelMood: "Gaya & Suasana Website (Mood)",
+        appearancePreset: "Paket Tampilan",
+        colorPattern: "Corak Warna",
+        typographyStyle: "Gaya Tipografi",
+        aiRecommendation: "Rekomendasi AI",
+        aiMadeFor: "Dibuat khusus berdasarkan info bisnis Anda",
+        orChoosePreset: "— atau pilih paket tampilan favorit Anda —",
+        orChoosePalette: "— atau pilih palet favorit Anda —",
+        orChoosePairing: "— atau pilih pasangan font favorit Anda —",
+        manualFineTune: "Fine-tune manual",
+        headingFont: "Font Heading",
+        bodyFont: "Font Body",
+        headingWeight: "Ketebalan Heading",
+        heroTitleSize: "Ukuran Hero Title",
+        sizeSmall: "Kecil",
+        sizeMedium: "Sedang",
+        sizeLarge: "Besar",
+        sizeVeryLarge: "Sangat Besar",
+        sizeMax: "Maksimal",
+        weightRegular: "Regular",
+        weightMedium: "Medium",
+        weightSemiBold: "Semi-Bold",
+        weightBold: "Bold",
+        weightExtraBold: "Extra-Bold",
         categories: {
           kuliner: "Kuliner",
           kulinerDesc: "Restoran & Cafe",
@@ -4481,6 +4543,7 @@ export const translations: Record<Locale, Translations> = {
         publishOneStep: "One Step Left! 🚀",
         publishReady: "Your website {name} is ready to be published to the world.",
         subdomainLabel: "Subdomain Name",
+        subdomainPlaceholder: "yourname",
         subdomainAvailable: "Available: {url}",
         subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
         subdomainHint: "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
@@ -4533,6 +4596,7 @@ export const translations: Record<Locale, Translations> = {
         viewSite: "View Site",
         publish: "Publish",
         linkBlog: "Blog",
+        linkEditor: "Editor",
         linkCatalog: "Catalog",
         linkMenu: "Menu",
         linkSeo: "SEO",
@@ -4546,6 +4610,7 @@ export const translations: Record<Locale, Translations> = {
         copyLinkTitle: "Copy Link",
         checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
+        continueEditing: "Continue Editing",
       },
       leads: {
         loadFailed: "Failed to load leads inbox",
@@ -5303,6 +5368,11 @@ export const translations: Record<Locale, Translations> = {
         closeLabel: "Close investigation details",
         statusLabel: "Status",
         noItems: "No items returned.",
+        errorEyebrow: "System Error",
+        errorTitle: "Failed to Load Dashboard",
+        errorHeading: "Something went wrong!",
+        errorDesc: "We encountered an unexpected error while trying to load the investigation module. This could be a network issue or a temporary backend failure.",
+        tryAgain: "Try Again",
       },
       sales: {
         loadFailed: "Failed to load referral code",
@@ -6021,6 +6091,29 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "WhatsApp Number",
         labelServiceArea: "Service Area",
         labelMood: "Website Style & Vibe (Mood)",
+        appearancePreset: "Appearance Presets",
+        colorPattern: "Color Patterns",
+        typographyStyle: "Typography Style",
+        aiRecommendation: "AI Recommendation",
+        aiMadeFor: "Made specifically from your business info",
+        orChoosePreset: "— or choose your favorite preset —",
+        orChoosePalette: "— or choose your favorite palette —",
+        orChoosePairing: "— or choose your favorite font pairing —",
+        manualFineTune: "Manual fine-tune",
+        headingFont: "Heading Font",
+        bodyFont: "Body Font",
+        headingWeight: "Heading Weight",
+        heroTitleSize: "Hero Title Size",
+        sizeSmall: "Small",
+        sizeMedium: "Medium",
+        sizeLarge: "Large",
+        sizeVeryLarge: "Very Large",
+        sizeMax: "Maximum",
+        weightRegular: "Regular",
+        weightMedium: "Medium",
+        weightSemiBold: "Semi-Bold",
+        weightBold: "Bold",
+        weightExtraBold: "Extra-Bold",
         categories: {
           kuliner: "Culinary",
           kulinerDesc: "Restaurant & Cafe",

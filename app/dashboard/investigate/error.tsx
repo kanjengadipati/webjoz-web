@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Button, Card, CardContent, CardHeader, SectionTitle } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function InvestigateError({
   error,
@@ -10,6 +11,7 @@ export default function InvestigateError({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
+  const { t } = useI18n();
   useEffect(() => {
     // Log the error to an error reporting service if available
     console.error(error);
@@ -20,8 +22,8 @@ export default function InvestigateError({
       <Card className="w-full max-w-md shadow-lg border-rose-500/20 bg-rose-500/5">
         <CardHeader className="border-b border-border/60">
           <SectionTitle 
-            eyebrow="System Error" 
-            title="Failed to Load Dashboard" 
+            eyebrow={t("dashboard.investigate.errorEyebrow")} 
+            title={t("dashboard.investigate.errorTitle")} 
           />
         </CardHeader>
         <CardContent className="flex flex-col items-center pt-8 pb-6 text-center">
@@ -32,15 +34,15 @@ export default function InvestigateError({
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold mb-2">Something went wrong!</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("dashboard.investigate.errorHeading")}</h2>
           <p className="text-sm text-muted-foreground mb-6">
-            We encountered an unexpected error while trying to load the investigation module. This could be a network issue or a temporary backend failure.
+            {t("dashboard.investigate.errorDesc")}
           </p>
           <Button 
             onClick={() => unstable_retry()}
             className="w-full bg-rose-600 text-white hover:bg-rose-700"
           >
-            Try Again
+            {t("dashboard.investigate.tryAgain")}
           </Button>
         </CardContent>
       </Card>

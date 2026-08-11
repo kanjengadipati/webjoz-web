@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard, SearchIcon } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface SiteSubNavProps {
   siteId: number;
@@ -15,6 +16,7 @@ interface SiteSubNavProps {
 
 export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
   const current = pathname.replace(`/dashboard/sites/${siteId}`, "") || "";
 
   // Determine whether to show the catalog/menu tab and what label/icon to use.
@@ -23,21 +25,21 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
     ? true                        // always show in editor footer
     : (hasCatalog || hasMenu);    // only show when site actually has that section
 
-  const catalogLabel = hasMenu ? "Menu" : "Katalog";
+  const catalogLabel = hasMenu ? t("dashboard.sites.linkMenu") : t("dashboard.sites.linkCatalog");
   const CatalogIcon  = hasMenu ? Utensils : ShoppingBag;
 
   const ALWAYS_TABS = [
-    { href: "",              label: "Editor",    icon: LayoutDashboard },
-    { href: "/blog",         label: "Blog",      icon: FileText },
-    { href: "/integrations", label: "Integrasi", icon: Code },
-    { href: "/testimonials", label: "Testimoni", icon: Star },
+    { href: "",              label: t("dashboard.sites.linkEditor"), icon: LayoutDashboard },
+    { href: "/blog",         label: t("dashboard.sites.linkBlog"),   icon: FileText },
+    { href: "/integrations", label: t("dashboard.sites.linkIntegrations"), icon: Code },
+    { href: "/testimonials", label: t("dashboard.sites.linkTestimonials"), icon: Star },
   ] as const;
 
   const allTabs = [
     ...ALWAYS_TABS.slice(0, 2),
     ...(showCatalogTab ? [{ href: "/katalog" as const, label: catalogLabel, icon: CatalogIcon }] : []),
     ...ALWAYS_TABS.slice(2),
-    { href: "/seo" as const, label: "SEO", icon: SearchIcon },
+    { href: "/seo" as const, label: t("dashboard.sites.linkSeo"), icon: SearchIcon },
   ];
 
   return (

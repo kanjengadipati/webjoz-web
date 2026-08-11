@@ -7,6 +7,7 @@ import {
 } from "@/lib/design-assets-config";
 import { loadGoogleFont } from "@/components/templates/helpers";
 import FontPicker from "./FontPicker";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Props {
   designToken: any;
@@ -25,6 +26,7 @@ export default function TypographyPairingPicker({
   onFieldChange,
   onRestoreAi,
 }: Props) {
+  const { t } = useI18n();
   const [showManual, setShowManual] = useState(false);
   const pairings = getEnabledTypographyPairings();
 
@@ -49,7 +51,7 @@ export default function TypographyPairingPicker({
   return (
     <div className="space-y-3">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-        Gaya Tipografi
+        {t("dashboard.sitesEditor.typographyStyle")}
       </p>
 
       {hasAiRecommendation && (
@@ -63,7 +65,7 @@ export default function TypographyPairingPicker({
           }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1 truncate flex items-center gap-1">
-            <span>✨</span> Rekomendasi AI
+            <span>✨</span> {t("dashboard.sitesEditor.aiRecommendation")}
           </p>
           <div className="space-y-0.5 pointer-events-none">
             <p
@@ -98,7 +100,7 @@ export default function TypographyPairingPicker({
 
       {hasAiRecommendation && (
         <p className="text-[10px] font-medium text-slate-400 text-center">
-          — atau pilih pasangan font favorit Anda —
+          {t("dashboard.sitesEditor.orChoosePairing")}
         </p>
       )}
 
@@ -156,14 +158,14 @@ export default function TypographyPairingPicker({
         className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
       >
         <span>{showManual ? "▾" : "▸"}</span>
-        Fine-tune manual
+        {t("dashboard.sitesEditor.manualFineTune")}
       </button>
 
       {showManual && (
         <div className="space-y-2 pl-3 border-l border-white/10">
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Font Heading
+              {t("dashboard.sitesEditor.headingFont")}
             </label>
             <FontPicker
               value={currentHeading}
@@ -172,7 +174,7 @@ export default function TypographyPairingPicker({
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Font Body
+              {t("dashboard.sitesEditor.bodyFont")}
             </label>
             <FontPicker
               value={currentBody}
@@ -181,34 +183,34 @@ export default function TypographyPairingPicker({
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Ketebalan Heading
+              {t("dashboard.sitesEditor.headingWeight")}
             </label>
             <select
               value={designToken?.typography?.heading_weight || "700"}
               onChange={(e) => onFieldChange?.("typography", "heading_weight", e.target.value)}
               className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
             >
-              <option value="400" className="bg-[#111318]">Regular (400)</option>
-              <option value="500" className="bg-[#111318]">Medium (500)</option>
-              <option value="600" className="bg-[#111318]">Semi-Bold (600)</option>
-              <option value="700" className="bg-[#111318]">Bold (700)</option>
-              <option value="800" className="bg-[#111318]">Extra-Bold (800)</option>
+              <option value="400" className="bg-[#111318]">{t("dashboard.sitesEditor.weightRegular")} (400)</option>
+              <option value="500" className="bg-[#111318]">{t("dashboard.sitesEditor.weightMedium")} (500)</option>
+              <option value="600" className="bg-[#111318]">{t("dashboard.sitesEditor.weightSemiBold")} (600)</option>
+              <option value="700" className="bg-[#111318]">{t("dashboard.sitesEditor.weightBold")} (700)</option>
+              <option value="800" className="bg-[#111318]">{t("dashboard.sitesEditor.weightExtraBold")} (800)</option>
             </select>
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Ukuran Hero Title
+              {t("dashboard.sitesEditor.heroTitleSize")}
             </label>
             <select
               value={designToken?.typography?.heading_size_hero || "3rem"}
               onChange={(e) => onFieldChange?.("typography", "heading_size_hero", e.target.value)}
               className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
             >
-              <option value="2rem" className="bg-[#111318]">Kecil (2rem)</option>
-              <option value="2.5rem" className="bg-[#111318]">Sedang (2.5rem)</option>
-              <option value="3rem" className="bg-[#111318]">Besar (3rem)</option>
-              <option value="3.5rem" className="bg-[#111318]">Sangat Besar (3.5rem)</option>
-              <option value="4rem" className="bg-[#111318]">Maksimal (4rem)</option>
+              <option value="2rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeSmall")} (2rem)</option>
+              <option value="2.5rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeMedium")} (2.5rem)</option>
+              <option value="3rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeLarge")} (3rem)</option>
+              <option value="3.5rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeVeryLarge")} (3.5rem)</option>
+              <option value="4rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeMax")} (4rem)</option>
             </select>
           </div>
         </div>
