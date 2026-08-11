@@ -8,6 +8,18 @@ const MARKETING_HOSTS = new Set([BASE_DOMAIN, `www.${BASE_DOMAIN}`, `stg.${BASE_
 export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
+  // Explicit locale segment pins the locale so SSR + client render in that language
+  const { pathname } = request.nextUrl
+  if (pathname === '/en' || pathname.startsWith('/en/')) {
+    const res = NextResponse.next()
+    res.cookies.set('webjoz_locale', 'en', { path: '/', maxAge: 60 * 60 * 24 * 365 })
+    return res
+  } else if (pathname === '/id' || pathname.startsWith('/id/')) {
+    const res = NextResponse.next()
+    res.cookies.set('webjoz_locale', 'id', { path: '/', maxAge: 60 * 60 * 24 * 365 })
+    return res
+  }
+
   // Pass dashboard or local development requests through normally, unless they are local subdomains
   const isVercelApp = host === 'webjoz.vercel.app' || host.endsWith('.vercel.app')
   if (

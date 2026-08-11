@@ -165,7 +165,7 @@ export default function LandingPageClient() {
   }
 
   return (
-    <main className="min-h-screen pb-20">
+    <main className="min-h-screen pb-20 bg-[#080808] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -201,7 +201,7 @@ export default function LandingPageClient() {
         }}
       />
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#080808]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Image
@@ -223,20 +223,20 @@ export default function LandingPageClient() {
               isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="hidden sm:block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+                  className="hidden sm:block rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10"
                 >
                   {t("landing.navDashboard")}
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
+                  className="hidden rounded-full px-4 py-2 text-xs font-medium text-slate-400 transition hover:text-white sm:block"
                 >
                   {t("landing.navLogin")}
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="rounded-full px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm shadow-lg shadow-primary/20">
+            <Button onClick={() => startWizard()} className="rounded-full bg-white text-black font-bold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
               {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
             </Button>
           </div>
@@ -245,50 +245,50 @@ export default function LandingPageClient() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-10 flex items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-50" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
         <div className="mx-auto max-w-7xl w-full grid gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
             <Badge
               variant="outline"
-              className="border-primary/20 bg-primary/5 text-primary shadow-lg shadow-primary/5 px-4 py-2 animate-pulse w-fit"
+              className="border-amber-500/30 bg-amber-500/10 text-amber-400 shadow-lg px-4 py-2 animate-pulse w-fit rounded-full text-xs font-semibold"
             >
-              <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
+              <span className="flex h-2 w-2 rounded-full bg-amber-400 mr-2" />
               {t("landing.badge")}
             </Badge>
 
-          <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl w-full">
-            <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
-          </h1>
+            <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl w-full">
+              <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
+            </h1>
 
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
-            {t("landing.heroSubtitle")}{" "}
-            <strong className="text-foreground font-semibold">{t("landing.heroSubtitleBold")}</strong>
-          </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
+              {t("landing.heroSubtitle")}{" "}
+              <strong className="text-foreground font-semibold">{t("landing.heroSubtitleBold")}</strong>
+            </p>
 
-          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 w-full">
-            <Button
-              onClick={() => startWizard()}
-              size="lg"
-              className="w-full sm:w-auto rounded-full px-10 py-6 text-base font-bold shadow-xl shadow-primary/20"
-            >
-              {t("landing.ctaPrimary")}
-            </Button>
-          </div>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 w-full">
+              <Button
+                onClick={() => startWizard()}
+                size="lg"
+                className="w-full sm:w-auto rounded-full bg-white text-black font-bold px-10 py-6 text-base shadow-xl hover:bg-slate-200 transition-all active:scale-95 cursor-pointer"
+              >
+                {t("landing.ctaPrimary")}
+              </Button>
+            </div>
 
-          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground w-full">
-            <span className="flex items-center gap-1.5">
-              <span className="shrink-0">✅</span> {t("landing.tryFree")}
-            </span>
-            <span className="text-muted-foreground/30 hidden sm:inline">·</span>
-            <span className="flex items-center gap-1.5">
-              <span className="shrink-0">💬</span> {t("landing.chatNotForm")}
-            </span>
-            <span className="text-muted-foreground/30 hidden sm:inline">·</span>
-            <span className="flex items-center gap-1.5">
-              <span className="shrink-0">🚀</span> {t("landing.activeInMinutes")}
-            </span>
-          </div>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground w-full">
+              <span className="flex items-center gap-1.5">
+                <span className="shrink-0">✅</span> {t("landing.tryFree")}
+              </span>
+              <span className="text-muted-foreground/30 hidden sm:inline">·</span>
+              <span className="flex items-center gap-1.5">
+                <span className="shrink-0">💬</span> {t("landing.chatNotForm")}
+              </span>
+              <span className="text-muted-foreground/30 hidden sm:inline">·</span>
+              <span className="flex items-center gap-1.5">
+                <span className="shrink-0">🚀</span> {t("landing.activeInMinutes")}
+              </span>
+            </div>
           </div>
 
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex items-center justify-center">
@@ -298,14 +298,14 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── How It Works (Pleco-style numbered cards) ──────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               {t("landing.howItWorksSubtitle")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl"
               dangerouslySetInnerHTML={{ __html: t("landing.howItWorksTitle") }}
             />
           </div>
@@ -314,13 +314,13 @@ export default function LandingPageClient() {
             {STEPS.map((step) => (
               <div
                 key={step.num}
-                className="group relative rounded-2xl border border-border/50 bg-card/60 p-6 transition hover:border-primary/20 hover:bg-card/80"
+                className="group relative rounded-2xl border border-white/10 bg-[#111318] p-6 transition-all duration-300 hover:border-amber-500/40 hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 text-sm font-bold font-mono text-amber-400 group-hover:bg-amber-500/10 group-hover:border-amber-500/30 transition-colors">
                   {step.num}
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{t(`landing.${step.descKey}`)}</p>
+                <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
+                <p className="text-xs leading-relaxed text-muted-foreground">{t(`landing.${step.descKey}`)}</p>
               </div>
             ))}
           </div>
@@ -329,7 +329,7 @@ export default function LandingPageClient() {
             <Button
               onClick={() => startWizard()}
               size="lg"
-              className="rounded-full px-8 shadow-lg shadow-primary/20"
+              className="rounded-full bg-white text-black font-bold px-8 hover:bg-slate-200 transition-all cursor-pointer"
             >
               {t("landing.howItWorksCta")}
             </Button>
@@ -338,27 +338,27 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Key Features: Two real feature highlights ──────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               {t("landing.featuresEyebrow")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl"
               dangerouslySetInnerHTML={{ __html: t("landing.featuresTitle") }}
             />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+            <Card className="overflow-hidden border-white/10 bg-[#111318] shadow-2xl">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400 font-semibold">
                     {t("landing.dashboardBadge")}
                   </Badge>
                   <div className="space-y-3">
-                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
+                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl text-foreground">
                       {t("landing.dashboardTitle")}
                     </h3>
                     <p className="text-base leading-7 text-muted-foreground">
@@ -367,7 +367,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.dashboardTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
                         {tag}
                       </span>
                     ))}
@@ -376,14 +376,14 @@ export default function LandingPageClient() {
               </div>
             </Card>
 
-            <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+            <Card className="overflow-hidden border-white/10 bg-[#111318] shadow-2xl">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400 font-semibold">
                     {t("landing.domainBadge")}
                   </Badge>
                   <div className="space-y-3">
-                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl">
+                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl text-foreground">
                       {t("landing.domainTitle")}
                     </h3>
                     <p className="text-base leading-7 text-muted-foreground">
@@ -392,7 +392,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.domainTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
                         {tag}
                       </span>
                     ))}
@@ -405,14 +405,14 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Template Showcase ───────────────────────────────────────────────── */}
-      <section id="templates" className="px-4 py-16 sm:px-6 lg:px-10">
+      <section id="templates" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               {t("landing.templatesEyebrow")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl"
               dangerouslySetInnerHTML={{ __html: t("landing.templatesTitle") }}
             />
             <p className="mx-auto max-w-2xl text-base text-muted-foreground">
@@ -425,7 +425,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Features Grid ──────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
@@ -441,12 +441,12 @@ export default function LandingPageClient() {
             {FEATURES.map((f, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-border/50 bg-card/60 p-6 transition hover:border-primary/20 hover:bg-card"
+                className="rounded-2xl border border-white/10 bg-[#111318] p-6 transition-all hover:border-white/20 hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-2xl">
                   {f.icon}
                 </div>
-                <h3 className="mb-2 font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
+                <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{t(`landing.${f.descKey}`)}</p>
               </div>
             ))}
@@ -455,9 +455,9 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Stats Banner (Pleco-style) ──────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto">
         <div className="mx-auto max-w-5xl">
-          <Card className="border-border/60 bg-gradient-to-br from-background via-card/85 to-primary/5 px-6 py-8 shadow-lg shadow-primary/5 lg:px-8 lg:py-10">
+          <Card className="border-white/10 bg-[#111318] px-6 py-8 shadow-xl lg:px-8 lg:py-10">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { value: t("landing.statsValue1"), label: t("landing.statsLabel1") },
@@ -466,8 +466,8 @@ export default function LandingPageClient() {
                 { value: t("landing.statsValue4"), label: t("landing.statsLabel4") },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl">{stat.value}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{stat.label}</div>
+                  <div className="text-3xl font-bold tracking-tight text-white lg:text-4xl">{stat.value}</div>
+                  <div className="mt-1 text-xs text-muted-foreground font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -476,10 +476,10 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Pricing ───────────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto">
         <div className="mx-auto max-w-5xl">
           <div className="text-center space-y-3 mb-8">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("landing.pricingTitle")}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{t("landing.pricingTitle")}</h2>
             <p className="text-muted-foreground text-base max-w-lg mx-auto">
               {t("landing.pricingSubtitle")}
             </p>
@@ -526,15 +526,15 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10">
+      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-4xl mx-auto">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="relative overflow-hidden rounded-[28px] border border-border/40 bg-gradient-to-br from-background via-card/70 to-primary/5 px-8 py-12 shadow-xl shadow-primary/5">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#14161f] via-[#111318] to-[#0d0e12] px-8 py-12 shadow-2xl">
             <div className="pointer-events-none absolute inset-0 -z-10">
-              <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[80px]" />
+              <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-[90px]" />
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 {t("landing.ctaBannerTitle")}
               </h2>
               <p className="mx-auto max-w-xl text-base leading-8 text-muted-foreground">
@@ -546,7 +546,7 @@ export default function LandingPageClient() {
               <Button
                 onClick={() => startWizard()}
                 size="lg"
-                className="rounded-full px-10 text-lg font-bold shadow-xl shadow-primary/20"
+                className="rounded-full bg-white text-black font-bold px-10 py-6 text-base shadow-xl hover:bg-slate-200 transition-all cursor-pointer"
               >
                 {t("landing.ctaBannerCta")}
               </Button>
@@ -555,19 +555,19 @@ export default function LandingPageClient() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button variant="outline" size="lg" className="rounded-full px-8">
+                <Button variant="outline" size="lg" className="rounded-full border-white/15 bg-white/[0.04] text-slate-200 font-semibold px-8 py-6 text-base hover:border-white/30">
                   {t("landing.ctaBannerWhatsapp")}
                 </Button>
               </a>
             </div>
 
-            <p className="mt-6 text-sm text-muted-foreground">
+            <p className="mt-6 text-sm text-slate-400">
               {t("landing.ctaBannerHelper")}{" "}
               <a
                 href="https://wa.me/6285111221044"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary underline-offset-4 hover:underline"
+                className="text-amber-400 underline-offset-4 hover:underline font-semibold"
               >
                 {t("landing.ctaBannerContact")}
               </a>
@@ -577,26 +577,26 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-border/40 px-4 py-10 sm:px-6 lg:px-8">
+      <footer className="border-t border-white/10 px-4 py-10 sm:px-6 lg:px-8 bg-[#080808]">
         <div className="mx-auto max-w-6xl flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
-              <span className="text-sm font-semibold text-foreground">Webjoz</span>
+              <span className="text-sm font-semibold text-white">Webjoz</span>
             </div>
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-slate-400 text-center">
               {t("landing.footerCopyright", undefined, { year: String(new Date().getFullYear()) })}
             </p>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <Link href="/login" className="hover:text-foreground transition">{t("landing.footerLogin")}</Link>
-              <Link href="/contact" className="hover:text-foreground transition">{t("common.contact")}</Link>
+            <div className="flex items-center gap-4 text-xs text-slate-400">
+              <Link href="/login" className="hover:text-white transition">{t("landing.footerLogin")}</Link>
+              <Link href="/contact" className="hover:text-white transition">{t("common.contact")}</Link>
             </div>
           </div>
-          <div className="border-t border-border/30 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <Link href="/privacy-policy" className="hover:text-foreground transition">{t("landing.footerPrivacy")}</Link>
-            <Link href="/terms" className="hover:text-foreground transition">{t("landing.footerTerms")}</Link>
-            <Link href="/refund-policy" className="hover:text-foreground transition">{t("landing.footerRefund")}</Link>
-            <Link href="/contact" className="hover:text-foreground transition">{t("landing.footerContact")}</Link>
+          <div className="border-t border-white/5 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
+            <Link href="/privacy-policy" className="hover:text-white transition">{t("landing.footerPrivacy")}</Link>
+            <Link href="/terms" className="hover:text-white transition">{t("landing.footerTerms")}</Link>
+            <Link href="/refund-policy" className="hover:text-white transition">{t("landing.footerRefund")}</Link>
+            <Link href="/contact" className="hover:text-white transition">{t("landing.footerContact")}</Link>
           </div>
         </div>
       </footer>
@@ -608,7 +608,7 @@ export default function LandingPageClient() {
         </div>
         <Button
           onClick={() => startWizard()}
-          className="w-full rounded-full py-4 text-sm font-bold shadow-2xl shadow-primary/30"
+          className="w-full rounded-full bg-white text-black font-bold py-4 text-sm shadow-2xl hover:bg-slate-200 transition-all cursor-pointer"
         >
           {t("landing.ctaFloating")}
         </Button>

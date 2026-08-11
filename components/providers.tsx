@@ -52,7 +52,7 @@ function GoogleOAuthHandler() {
   return null;
 }
 
-export function Providers({ children, defaultLocale = "id" }: { children: ReactNode; defaultLocale?: Locale }) {
+export function Providers({ children, defaultLocale = "id", forcedLocale }: { children: ReactNode; defaultLocale?: Locale; forcedLocale?: Locale }) {
   const theme = useThemePreference();
   const accent = useAccentPreference();
 
@@ -77,7 +77,7 @@ export function Providers({ children, defaultLocale = "id" }: { children: ReactN
 
   return (
     <ToastProvider>
-      <I18nProvider defaultLocale={defaultLocale}>
+      <I18nProvider defaultLocale={defaultLocale} forcedLocale={forcedLocale}>
         <GoogleOAuthHandler />
         {children}
       </I18nProvider>

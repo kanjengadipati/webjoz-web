@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
+import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
+import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
 
 const SEQUENCE = [
   { step: 0, delay: 0 },
@@ -15,6 +18,60 @@ const SEQUENCE = [
 ];
 const CYCLE_MS = 13000;
 
+/* ── RealPreviewPanel: renders an actual website template, scaled to fit ── */
+function RealPreviewPanel({
+  TemplateComponent,
+  content,
+  designToken,
+  visible,
+}: {
+  TemplateComponent: React.ComponentType<any>;
+  content: any;
+  designToken: any;
+  visible: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.22);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      setScale(el.offsetWidth / 1280);
+    });
+    obs.observe(el);
+    setScale(el.offsetWidth / 1280);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.7s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
+      <div
+        style={{
+          width: 1280,
+          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      >
+        <TemplateComponent content={content} design_token={designToken} isEditorMode={false} />
+      </div>
+      {/* Vignette overlay so edges blend smoothly */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.55) 100%)" }}
+      />
+    </div>
+  );
+}
+
 export function InteractiveMockup() {
   const { t, translations } = useI18n();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -22,15 +79,24 @@ export function InteractiveMockup() {
   const [isHovered, setIsHovered] = useState(false);
   const [flowStep, setFlowStep] = useState(0);
 
-  /* ── 3D Tilt ──────────────────────────────────────────────────────────── */
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  /* ── 3D Tilt (mouse + touch) ─────────────────────────────────────────── */
+  const applyTilt = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
     const box = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - box.left - box.width / 2;
-    const y = e.clientY - box.top - box.height / 2;
-    const maxR = 10;
+    const x = clientX - box.left - box.width / 2;
+    const y = clientY - box.top - box.height / 2;
+    const maxR = 8;
     setRotate({ x: -(y / (box.height / 2)) * maxR, y: (x / (box.width / 2)) * maxR });
   };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => applyTilt(e.clientX, e.clientY);
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    if (touch) applyTilt(touch.clientX, touch.clientY);
+  };
+
+  const resetTilt = () => { setIsHovered(false); setRotate({ x: 0, y: 0 }); };
 
   /* ── Flow sequence ────────────────────────────────────────────────────── */
   useEffect(() => {
@@ -64,8 +130,11 @@ export function InteractiveMockup() {
       className="w-full"
       style={{ perspective: "1100px" }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => { setIsHovered(false); setRotate({ x: 0, y: 0 }); }}
+      onMouseLeave={resetTilt}
       onMouseMove={handleMouseMove}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={resetTilt}
+      onTouchMove={handleTouchMove}
     >
       {/* ── Outer glow halo ─────────────────────────────────────────────── */}
       <div className="relative">
@@ -105,12 +174,12 @@ export function InteractiveMockup() {
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
           <div
-            className="grid min-h-[320px] gap-0 md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.8rem]"
+            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.8rem]"
             style={{ transformStyle: "preserve-3d" }}
           >
 
             {/* ── Left: Chat panel ──────────────────────────────────────── */}
-            <div className="flex flex-col gap-3 p-5 border-r border-border/20 bg-background/20">
+            <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
               
               {/* AI avatar row */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(1)}`}>
@@ -187,172 +256,89 @@ export function InteractiveMockup() {
 
             {/* ── Right: Live 3D Preview panel ──────────────────────────── */}
             <div
-              className="relative hidden md:block overflow-hidden"
+              className="relative block overflow-hidden bg-[#0c0c0e] min-h-[220px] md:min-h-[480px]"
               style={{
-                background: "linear-gradient(160deg, color-mix(in srgb,var(--primary) 4%,transparent) 0%, transparent 50%, color-mix(in srgb,var(--primary) 2%,transparent) 100%)",
                 transformStyle: "preserve-3d",
               }}
             >
-              {/* Ambient grid overlay */}
-              <div className="absolute inset-0 opacity-[0.03]"
-                style={{ backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)", backgroundSize: "20px 20px" }}
-              />
-
               {/* Scan line on generating */}
               {generating && (
-                <div className="absolute inset-x-0 top-0 z-10 pointer-events-none">
-                  <div className="h-px w-full animate-[scan_1.2s_linear_infinite] bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+                <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
+                  <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
                     style={{ animation: "scan 1.2s linear infinite" }}
                   />
                 </div>
               )}
 
-              {/* Floating particle dots */}
-              {[
-                { top: "12%", left: "15%", size: 4, opacity: 0.4 },
-                { top: "28%", right: "12%", size: 3, opacity: 0.3 },
-                { top: "55%", left: "22%", size: 5, opacity: 0.25 },
-                { top: "70%", right: "18%", size: 3, opacity: 0.35 },
-              ].map((p, i) => (
-                <div key={i}
-                  className={`absolute rounded-full transition-all duration-700 ${flowStep >= 6 ? "opacity-100 scale-100" : "opacity-0 scale-0"}`}
-                  style={{
-                    width: p.size, height: p.size,
-                    top: p.top, left: p.left, right: (p as any).right,
-                    background: "var(--primary)",
-                    opacity: flowStep >= 6 ? p.opacity : 0,
-                    boxShadow: `0 0 ${p.size * 3}px color-mix(in srgb,var(--primary) 60%,transparent)`,
-                    transitionDelay: `${i * 150}ms`,
-                  }}
-                />
-              ))}
-
-              {/* ── Navbar layer ─────────────────────────────── */}
+              {/* ── Real template preview (before step 6: blurred skeleton, after: real) ── */}
               <div
-                className={`absolute left-3 top-3 right-3 h-7 rounded-xl border transition-all duration-600 ${flowStep >= 5 ? "opacity-100" : "opacity-0"}`}
+                className="absolute inset-0 overflow-hidden"
                 style={{
-                  transform: tz(20),
-                  transition: "transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.5s",
-                  background: flowStep >= 6
-                    ? "linear-gradient(90deg, color-mix(in srgb,var(--primary) 12%,transparent), color-mix(in srgb,var(--primary) 5%,transparent))"
-                    : "color-mix(in srgb,var(--foreground) 4%,transparent)",
-                  borderColor: flowStep >= 6 ? "color-mix(in srgb,var(--primary) 25%,transparent)" : "color-mix(in srgb,var(--border) 40%,transparent)",
-                  boxShadow: flowStep >= 6 ? "0 4px 20px color-mix(in srgb,var(--primary) 10%,transparent)" : "none",
+                  opacity: flowStep >= 5 ? 1 : 0,
+                  transition: "opacity 0.6s ease",
                 }}
               >
-                {/* nav dots */}
-                {flowStep >= 6 && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="w-6 h-1 rounded-full opacity-30" style={{ background: "var(--primary)" }} />
-                    ))}
-                  </div>
-                )}
+                {/* Skeleton shimmer shown while generating */}
+                <div
+                  className="absolute inset-0 z-10"
+                  style={{
+                    opacity: flowStep >= 6 ? 0 : 1,
+                    transition: "opacity 0.5s ease",
+                    background: "linear-gradient(110deg, #111 25%, #1a1a1a 50%, #111 75%)",
+                    backgroundSize: "200% 100%",
+                    animation: generating ? "shimmer 1.4s linear infinite" : "none",
+                  }}
+                />
+
+                {/* Real website preview */}
+                {(() => {
+                  const showcaseItem = SHOWCASE_ITEMS[0]; // Kopi Rempah Nusantara (kuliner)
+                  const TemplateComponent = TEMPLATE_REGISTRY.find(
+                    (t) => t.id === showcaseItem.templateId
+                  )?.component;
+                  const token = TEMPLATE_DEFAULT_DESIGN_TOKENS[showcaseItem.templateId]
+                    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02!;
+
+                  if (!TemplateComponent) return null;
+
+                  return (
+                    <RealPreviewPanel
+                      TemplateComponent={TemplateComponent}
+                      content={showcaseItem.content}
+                      designToken={token}
+                      visible={flowStep >= 6}
+                    />
+                  );
+                })()}
               </div>
 
-              {/* ── Hero title line ───────────────────────────── */}
+              {/* Overlay gradient — fades out when real preview shows */}
               <div
-                className={`absolute left-3 right-3 rounded-full transition-all duration-600 ${flowStep >= 5 ? "opacity-100" : "opacity-0"}`}
+                className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-700"
                 style={{
-                  top: "42px", height: "10px",
-                  transform: tz(32),
-                  transition: "transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) 80ms, opacity 0.5s 80ms",
-                  background: flowStep >= 6
-                    ? "linear-gradient(90deg, color-mix(in srgb,var(--foreground) 30%,transparent), color-mix(in srgb,var(--foreground) 10%,transparent))"
-                    : "color-mix(in srgb,var(--foreground) 10%,transparent)",
-                  boxShadow: flowStep >= 6 ? "0 2px 12px rgba(0,0,0,0.15)" : "none",
+                  opacity: flowStep >= 6 ? 0 : 1,
+                  background: "linear-gradient(160deg, color-mix(in srgb,var(--primary) 4%,transparent) 0%, #0c0c0e 100%)",
                 }}
               />
 
-              {/* subtitle lines */}
-              {[56, 70].map((top, i) => (
-                <div key={top}
-                  className={`absolute left-3 rounded-full transition-all duration-600 ${flowStep >= 5 ? "opacity-100" : "opacity-0"}`}
-                  style={{
-                    top, right: i === 0 ? "20px" : "40px", height: "7px",
-                    transform: tz(18 - i * 4),
-                    transition: `transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) ${120 + i * 80}ms, opacity 0.5s ${120 + i * 80}ms`,
-                    background: `color-mix(in srgb,var(--foreground) ${flowStep >= 6 ? 14 : 7}%,transparent)`,
-                  }}
-                />
-              ))}
-
-              {/* ── CTA Button ───────────────────────────────── */}
+              {/* Domain pill — floats above real preview */}
               <div
-                className={`absolute left-3 rounded-xl transition-all duration-600 ${flowStep >= 6 ? "opacity-100" : "opacity-0"}`}
+                className="absolute top-3 left-1/2 -translate-x-1/2 z-30 transition-all duration-500"
                 style={{
-                  top: "84px", width: "56px", height: "18px",
-                  transform: tz(28),
-                  transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 200ms, opacity 0.4s 200ms",
-                  background: "linear-gradient(135deg, var(--primary), color-mix(in srgb,var(--primary) 70%,white))",
-                  boxShadow: "0 4px 18px color-mix(in srgb,var(--primary) 35%,transparent)",
-                }}
-              />
-
-              {/* ── Image hero placeholder ───────────────────── */}
-              <div
-                className={`absolute right-3 rounded-xl border transition-all duration-600 ${flowStep >= 5 ? "opacity-100" : "opacity-0"}`}
-                style={{
-                  top: "38px", left: "55%", bottom: "90px",
-                  transform: tz(10),
-                  transition: "transform 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) 60ms, opacity 0.5s 60ms",
-                  background: flowStep >= 6
-                    ? "linear-gradient(145deg, color-mix(in srgb,var(--primary) 8%,transparent), color-mix(in srgb,var(--primary) 3%,transparent))"
-                    : "color-mix(in srgb,var(--foreground) 4%,transparent)",
-                  borderColor: flowStep >= 6 ? "color-mix(in srgb,var(--primary) 20%,transparent)" : "color-mix(in srgb,var(--border) 20%,transparent)",
-                  boxShadow: flowStep >= 6 ? "0 12px 40px rgba(0,0,0,0.2), 0 0 0 1px color-mix(in srgb,var(--primary) 10%,transparent)" : "none",
+                  opacity: flowStep >= 6 ? 1 : 0,
+                  transform: flowStep >= 6 ? `translateX(-50%) ${tz(30)}` : "translateX(-50%) translateY(-4px)",
+                  transition: "opacity 0.5s, transform 0.6s cubic-bezier(0.34,1.3,0.64,1)",
                 }}
               >
-                {/* image pattern */}
-                {flowStep >= 6 && (
-                  <div className="absolute inset-3 rounded-lg opacity-20"
-                    style={{ background: "repeating-linear-gradient(45deg, var(--primary) 0, var(--primary) 1px, transparent 0, transparent 50%)", backgroundSize: "6px 6px" }}
-                  />
-                )}
-              </div>
-
-              {/* ── Feature cards ────────────────────────────── */}
-              <div
-                className={`absolute left-3 right-3 grid grid-cols-2 gap-2 transition-all duration-600 ${flowStep >= 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
-                style={{ bottom: "50px" }}
-              >
-                {[
-                  { z: 40, delay: 0, accent: true },
-                  { z: 16, delay: 100, accent: false },
-                ].map(({ z, delay, accent }, i) => (
-                  <div
-                    key={i}
-                    className="h-[52px] rounded-xl border transition-all duration-600"
-                    style={{
-                      transform: tz(z),
-                      transition: `transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) ${delay}ms, background 0.5s, border-color 0.5s, box-shadow 0.5s`,
-                      background: flowStep >= 6
-                        ? accent
-                          ? "linear-gradient(135deg, color-mix(in srgb,var(--primary) 18%,transparent), color-mix(in srgb,var(--primary) 8%,transparent))"
-                          : "color-mix(in srgb,var(--foreground) 5%,transparent)"
-                        : "color-mix(in srgb,var(--foreground) 3%,transparent)",
-                      borderColor: flowStep >= 6
-                        ? accent ? "color-mix(in srgb,var(--primary) 35%,transparent)" : "color-mix(in srgb,var(--border) 30%,transparent)"
-                        : "color-mix(in srgb,var(--border) 15%,transparent)",
-                      boxShadow: flowStep >= 6 && accent
-                        ? "0 12px 36px color-mix(in srgb,var(--primary) 18%,transparent), 0 2px 8px rgba(0,0,0,0.15)"
-                        : flowStep >= 6 ? "0 4px 16px rgba(0,0,0,0.12)" : "none",
-                    }}
-                  >
-                    {/* card inner lines */}
-                    {flowStep >= 6 && (
-                      <div className="p-2.5 flex flex-col gap-1.5">
-                        <div className="h-1.5 rounded-full w-3/4 opacity-30" style={{ background: accent ? "var(--primary)" : "var(--foreground)" }} />
-                        <div className="h-1 rounded-full w-1/2 opacity-20" style={{ background: accent ? "var(--primary)" : "var(--foreground)" }} />
-                      </div>
-                    )}
-                  </div>
-                ))}
+                <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  kopirempah.webjoz.com
+                </div>
               </div>
 
               {/* ── Success bar ────────────────────────────────── */}
               <div
-                className={`absolute bottom-3 left-3 right-3 h-9 rounded-xl flex items-center px-3.5 transition-all duration-600`}
+                className="absolute bottom-3 left-3 right-3 h-9 rounded-xl flex items-center px-3.5 z-30"
                 style={{
                   transform: flowStep >= 7 ? tz(22) : "translateZ(0px) translateY(4px)",
                   opacity: flowStep >= 7 ? 1 : 0,
@@ -373,13 +359,17 @@ export function InteractiveMockup() {
         </div>
       </div>
 
-      {/* scan keyframe */}
+      {/* scan + shimmer keyframes */}
       <style>{`
         @keyframes scan {
           0%   { transform: translateY(0); opacity: 0; }
           10%  { opacity: 1; }
           90%  { opacity: 1; }
           100% { transform: translateY(320px); opacity: 0; }
+        }
+        @keyframes shimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
         }
       `}</style>
     </div>

@@ -408,11 +408,10 @@ export function SiteWizard({
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${
-          device.isMobile
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
             : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
-        }`}
+          }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
         <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
@@ -710,9 +709,9 @@ export function SiteWizard({
                 onChange={(e) => chat.setInputValue(e.target.value)}
                 placeholder={
                   chat.isRecording ? t("dashboard.wizard.sttListening", "Mendengarkan...") :
-                  chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
-                    chat.chatStage === "description" ? t("dashboard.wizard.descPlaceholder", "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar") :
-                    t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
+                    chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
+                      chat.chatStage === "description" ? t("dashboard.wizard.descPlaceholder", "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar") :
+                        t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                 }
                 autoFocus
                 disabled={chat.isInitialTyping || chat.isAiTyping}
@@ -769,11 +768,10 @@ export function SiteWizard({
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${
-          device.isMobile
+        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "preview" || device.mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
             : device.mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+          }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <button
