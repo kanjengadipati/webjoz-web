@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Locale } from "@/lib/i18n/translations";
@@ -55,7 +55,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const cookieLocale = (await cookies()).get(LOCALE_STORAGE_KEY)?.value;
-  const defaultLocale: Locale = cookieLocale === "en" ? "en" : "id";
+  const requestHeaders = await headers();
+  const path = requestHeaders.get("x-webjoz-path") || "";
+  const pathIsEn = path === "/en" || path.startsWith("/en/");
+  const pathIsId = path === "/id" || path.startsWith("/id/");
+  const defaultLocale: Locale =
+    pathIsEn ? "en" : pathIsId ? "id" : cookieLocale === "en" ? "en" : "id";
   return (
     <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
       <head />
