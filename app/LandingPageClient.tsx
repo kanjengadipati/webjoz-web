@@ -11,6 +11,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { PricingCards } from "@/components/pricing-cards";
 import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { InteractiveMockup } from "@/components/interactive-mockup";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
@@ -276,18 +277,21 @@ export default function LandingPageClient() {
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-sm text-muted-foreground w-full">
-              <span className="flex items-center gap-1.5">
-                <span className="shrink-0">✅</span> {t("landing.tryFree")}
-              </span>
-              <span className="text-muted-foreground/30 hidden sm:inline">·</span>
-              <span className="flex items-center gap-1.5">
-                <span className="shrink-0">💬</span> {t("landing.chatNotForm")}
-              </span>
-              <span className="text-muted-foreground/30 hidden sm:inline">·</span>
-              <span className="flex items-center gap-1.5">
-                <span className="shrink-0">🚀</span> {t("landing.activeInMinutes")}
-              </span>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1 w-full text-xs">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
+                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                <span className="font-medium tracking-tight">{t("landing.tryFree")}</span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
+                <SparkleIcon className="w-3.5 h-3.5 text-amber-400" />
+                <span className="font-medium tracking-tight">{t("landing.chatNotForm")}</span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-amber-400">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="font-medium tracking-tight">{t("landing.activeInMinutes")}</span>
+              </div>
             </div>
           </div>
 
