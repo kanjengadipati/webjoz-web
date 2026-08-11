@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Rocket, Globe, Copy, Check } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface CongratsModalProps {
   site: {
@@ -19,6 +20,7 @@ export interface CongratsModalProps {
 }
 
 export default function CongratsModal({ site, onClose, onContinueEditing, displayDomain: displayDomainProp, siteUrl: siteUrlProp }: CongratsModalProps) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const displayDomain = displayDomainProp ?? (() => {
@@ -53,7 +55,7 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
-      title="🎉 Selamat! Website Anda Telah Live"
+      title={t("dashboard.sites.congratsTitle")}
     >
       <div className="space-y-6 text-center py-4">
         {/* Celebration icon */}
@@ -69,12 +71,10 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
 
         <div className="space-y-2 max-w-sm mx-auto">
           <h3 className="text-xl font-bold text-white tracking-tight">
-            Website Anda Resmi Mengudara!
+            {t("dashboard.sites.congratsHeading")}
           </h3>
           <p className="text-sm text-[#9b9ba5] leading-relaxed">
-            Selamat! Halaman web{" "}
-            <span className="text-primary font-semibold">{site.name}</span> Anda sekarang aktif
-            dan dapat diakses dari mana saja di seluruh dunia.
+            {t("dashboard.sites.congratsBody", undefined, { name: site.name })}
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[14px] text-white font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
-                title="Buka Website"
+                title={t("dashboard.sites.openWebsite")}
               >
                 {displayDomain}
               </a>
@@ -100,7 +100,7 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
               type="button"
               onClick={handleCopy}
               className="p-2 bg-white/[0.04] border border-white/10 text-[#9b9ba5] hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
-              title="Salin Link"
+              title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? (
                 <Check className="w-4 h-4 text-[#3ddc84]" />
@@ -111,8 +111,7 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
           </div>
 
           <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed m-0 text-left">
-            💡 <strong>Ingin mengecek?</strong> Klik link di atas untuk membuka website live Anda
-            di tab baru.
+            {t("dashboard.sites.checkTip")}
           </p>
         </div>
 
@@ -125,7 +124,7 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
               className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
               onClick={onContinueEditing}
             >
-              Lanjut Edit
+              {t("dashboard.sites.continueEditing")}
             </Button>
           )}
           <Button
@@ -134,14 +133,14 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
             className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
             onClick={onClose}
           >
-            Selesai
+            {t("dashboard.sites.done")}
           </Button>
           <Button
             type="button"
             className="flex-1 rounded-xl h-11 text-[13.5px] font-bold bg-primary text-primary-foreground hover:bg-primary/90 border-0 cursor-pointer shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_30%,transparent)] flex items-center justify-center gap-2"
             onClick={() => window.open(siteUrl, "_blank")}
           >
-            <Globe className="w-4 h-4" /> Buka Website
+            <Globe className="w-4 h-4" /> {t("dashboard.sites.openWebsite")}
           </Button>
         </div>
       </div>

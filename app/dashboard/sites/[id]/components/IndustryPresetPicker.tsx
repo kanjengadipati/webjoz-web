@@ -7,6 +7,7 @@ import {
   getEnabledTypographyPairings,
   getEnabledColorPatterns,
 } from "@/lib/design-assets-config";
+import { useI18n } from "@/lib/i18n/context";
 
 const PALETTE_KEYS = ["primary", "accent", "background", "surface", "text"] as const;
 
@@ -25,6 +26,7 @@ export default function IndustryPresetPicker({
   onApply,
   onRestoreAi,
 }: Props) {
+  const { t } = useI18n();
   const currentHeading = designToken?.typography?.heading_font || "";
   const currentBody = designToken?.typography?.body_font || "";
   const currentPalette = designToken?.palette || {};
@@ -66,7 +68,7 @@ export default function IndustryPresetPicker({
   return (
     <div className="space-y-3">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-        Paket Tampilan
+        {t("dashboard.sitesEditor.appearancePreset")}
       </p>
 
       {hasAiRecommendation && (
@@ -80,7 +82,7 @@ export default function IndustryPresetPicker({
           }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
-            <span>✨</span> Rekomendasi AI
+            <span>✨</span> {t("dashboard.sitesEditor.aiRecommendation")}
           </p>
           <div className="flex gap-1 mb-1.5">
             {PALETTE_KEYS.map((key) => (
@@ -118,14 +120,14 @@ export default function IndustryPresetPicker({
             </p>
           </div>
           <p className="text-[9px] text-amber-200/70 leading-tight mt-1">
-            Dibuat khusus berdasarkan info bisnis Anda
+            {t("dashboard.sitesEditor.aiMadeFor")}
           </p>
         </button>
       )}
 
       {hasAiRecommendation && (
         <p className="text-[10px] font-medium text-slate-400 text-center">
-          — atau pilih paket tampilan favorit Anda —
+          {t("dashboard.sitesEditor.orChoosePreset")}
         </p>
       )}
 

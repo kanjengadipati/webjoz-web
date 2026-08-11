@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Rocket, Globe, Loader2 } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface PublishModalProps {
   site: {
@@ -17,6 +18,7 @@ export interface PublishModalProps {
 }
 
 export default function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+  const { t } = useI18n();
   const [subdomain, setSubdomain] = useState(() => {
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
@@ -45,7 +47,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
       onOpenChange={(open) => {
         if (!open && !loading) onCancel();
       }}
-      title="Publikasikan Website"
+      title={t("dashboard.sites.publishTitle")}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Celebration Header Banner */}
@@ -56,11 +58,10 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           </div>
           <div>
             <h4 className="text-[13.5px] font-bold text-white leading-snug">
-              Satu Langkah Lagi! 🚀
+              {t("dashboard.sites.publishOneStep")}
             </h4>
             <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
-              Website <span className="text-primary font-semibold">{site.name}</span> Anda siap
-              untuk dipublikasikan ke seluruh dunia.
+              {t("dashboard.sites.publishReady", undefined, { name: site.name })}
             </p>
           </div>
         </div>
@@ -68,7 +69,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
         {/* Subdomain Input Field */}
         <div className="space-y-2">
           <label className="text-[12px] font-bold text-[#c8c8d4] tracking-wide block">
-            Nama Subdomain
+            {t("dashboard.sites.subdomainLabel")}
           </label>
           <div
             className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${
@@ -84,7 +85,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
               value={subdomain}
               onChange={handleSubdomainChange}
               disabled={loading}
-              placeholder="namaanda"
+              placeholder={t("dashboard.sites.subdomainPlaceholder")}
               maxLength={30}
               className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
               autoFocus
@@ -105,15 +106,14 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
               <span className="shrink-0 text-[14px]">{isInputValid ? "✓" : "⚠"}</span>
               <span className="truncate leading-none">
                 {isInputValid
-                  ? `Tersedia: https://${previewDomain}`
-                  : "Gunakan huruf kecil, angka, atau tanda hubung (-)"}
+                  ? t("dashboard.sites.subdomainAvailable", undefined, { url: `https://${previewDomain}` })
+                  : t("dashboard.sites.subdomainInvalidHint")}
               </span>
             </div>
           )}
 
           <p className="text-[11px] text-[#6b6b75] leading-relaxed mx-0.5">
-            Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah
-            dipublikasikan.
+            {t("dashboard.sites.subdomainHint")}
           </p>
         </div>
 
@@ -125,22 +125,21 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
-              Hubungkan Custom Domain{" "}
+              {t("dashboard.sites.connectCustomDomain")}{" "}
               <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">
-                Pro
+                {t("dashboard.pro")}
               </span>
             </h5>
             <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
-              Ingin brand yang lebih profesional seperti <strong>domainanda.com</strong>? Anda
-              dapat mengaturnya di{" "}
+              {t("dashboard.sites.customDomainDescPre")}{" "}
               <Link
                 href="/dashboard/domains"
                 className="text-primary font-semibold hover:text-white underline underline-offset-2 transition-colors"
                 onClick={onCancel}
               >
-                Custom Domain
+                {t("dashboard.sites.customDomainLink")}
               </Link>{" "}
-              setelah website Anda live.
+              {t("dashboard.sites.customDomainDescPost")}
             </p>
           </div>
         </div>
@@ -154,7 +153,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             onClick={onCancel}
             disabled={loading}
           >
-            Batal
+            {t("dashboard.sites.cancel")}
           </Button>
           <Button
             type="submit"
@@ -168,12 +167,12 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Meluncurkan...
+                {t("dashboard.sites.launching")}
               </>
             ) : (
               <>
                 <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.5s" }} />
-                Luncurkan Website
+                {t("dashboard.sites.launchWebsite")}
               </>
             )}
           </Button>

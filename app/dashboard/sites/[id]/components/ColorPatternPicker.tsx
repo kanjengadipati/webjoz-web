@@ -5,6 +5,7 @@ import {
   type ColorPattern,
   getEnabledColorPatterns,
 } from "@/lib/design-assets-config";
+import { useI18n } from "@/lib/i18n/context";
 
 const PALETTE_KEYS = ["primary", "accent", "background", "surface", "text"] as const;
 
@@ -23,6 +24,7 @@ export default function ColorPatternPicker({
   onApply,
   onRestoreAi,
 }: Props) {
+  const { t } = useI18n();
   const currentPalette = designToken?.palette || {};
   const patterns = getEnabledColorPatterns();
   const aiPalette = aiDesignToken?.palette || currentPalette;
@@ -53,7 +55,7 @@ export default function ColorPatternPicker({
   return (
     <div className="space-y-3">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-        Corak Warna
+        {t("dashboard.sitesEditor.colorPattern")}
       </p>
 
       {hasAiRecommendation && (
@@ -67,7 +69,7 @@ export default function ColorPatternPicker({
           }`}
         >
           <p className="text-[10px] font-bold text-amber-300 mb-1.5 truncate flex items-center gap-1">
-            <span>✨</span> Rekomendasi AI
+            <span>✨</span> {t("dashboard.sitesEditor.aiRecommendation")}
           </p>
           <div className="flex gap-1 mb-1.5">
             {PALETTE_KEYS.map((key) => (
@@ -80,14 +82,14 @@ export default function ColorPatternPicker({
             ))}
           </div>
           <p className="text-[9px] text-amber-200/70 leading-tight">
-            Dibuat khusus berdasarkan info bisnis Anda
+            {t("dashboard.sitesEditor.aiMadeFor")}
           </p>
         </button>
       )}
 
       {hasAiRecommendation && (
         <p className="text-[10px] font-medium text-slate-400 text-center">
-          — atau pilih palet favorit Anda —
+          {t("dashboard.sitesEditor.orChoosePalette")}
         </p>
       )}
 
