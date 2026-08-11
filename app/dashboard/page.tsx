@@ -340,14 +340,14 @@ export default function DashboardOverviewPage() {
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold tracking-tight flex items-center gap-2">
                 <Building2 className="size-4 text-primary" />
-                {t("dashboard.admin.recentTenants")}
+                {t("dashboard.admin.recentAccounts")}
               </h3>
               <Link href="/dashboard/tenants" className="text-xs font-medium text-primary hover:underline flex items-center gap-1">
                 {t("dashboard.admin.viewAll")} <ArrowUpRight className="size-3" />
               </Link>
             </div>
             {tenants.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic py-12 text-center">{t("dashboard.admin.noTenants")}</p>
+              <p className="text-sm text-muted-foreground italic py-12 text-center">{t("dashboard.admin.noAccounts")}</p>
             ) : (
               <div className="space-y-2">
                 {tenants.map((t) => (
@@ -359,17 +359,13 @@ export default function DashboardOverviewPage() {
                       <div>
                         <p className="font-semibold text-sm text-foreground">{t.name}</p>
                         <p className="text-xs text-muted-foreground flex items-center gap-2">
-                          <span>{t.slug}</span>
-                          <span className="size-1 rounded-full bg-muted-foreground/30" />
                           <span className="inline-flex items-center rounded-full border border-border/40 px-2 py-0.5 text-[10px] font-medium capitalize">{t.plan}</span>
+                          <span className="size-1 rounded-full bg-muted-foreground/30" />
+                          <span className="inline-flex items-center gap-1"><Calendar className="size-3" />{new Date(t.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { year: "numeric", month: "short", day: "numeric" })}</span>
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-5 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1.5"><Globe className="size-3" />{t.site_count}</span>
-                      <span className="flex items-center gap-1.5"><Users className="size-3" />{t.member_count}</span>
-                      <ChevronRight className="size-4 opacity-0 group-hover:opacity-100 transition-all duration-200" />
-                    </div>
+                    <ChevronRight className="size-4 opacity-0 group-hover:opacity-100 transition-all duration-200" />
                   </Link>
                 ))}
               </div>

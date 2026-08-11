@@ -7,7 +7,7 @@ import { request, ApiError } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useToast } from "@/components/toast-provider";
-import { 
+import {
   Palette, 
   Layers, 
   Trash2, 
@@ -18,7 +18,8 @@ import {
   SlidersHorizontal,
   ChevronRight,
   Plus,
-  Loader2
+  Loader2,
+  Sparkles
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import {
@@ -34,6 +35,17 @@ import {
 } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
 
+interface AestheticCritique {
+  verdict?: string;
+  strengths?: string[];
+  improvements?: string[];
+  hierarchy?: number;
+  color_harmony?: number;
+  whitespace?: number;
+  overall?: number;
+  screenshot_url?: string;
+}
+
 interface SeedEntry {
   id: number;
   source_template_id?: string;
@@ -43,6 +55,9 @@ interface SeedEntry {
   design_token: any;
   score: number;
   score_breakdown?: { label: string; score: number; max: number }[];
+  aesthetic_score?: number | null;
+  aesthetic_critique?: AestheticCritique | null;
+  aesthetic_critiqued_at?: string | null;
   created_at: string;
 }
 
@@ -64,6 +79,7 @@ export default function TemplateGalleryPage() {
   const [scoreBelow, setScoreBelow] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [critiquingId, setCritiquingId] = useState<number | null>(null);
   const authToken = useAuthToken();
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
@@ -122,6 +138,28 @@ export default function TemplateGalleryPage() {
       pushToast(t("dashboard.adminTemplates.seedDeleted"), "success");
     } catch (e) {
       pushToast(t("dashboard.adminTemplates.seedDeleteFailed") + ": " + (e as any).message, "error");
+    }
+  };
+
+  const handleCritique = async (seed: SeedEntry) => {
+    if (critiquingId !== null) return;
+    setCritiquingId(seed.id);
+    try {
+      await request(
+        `/ai/templates/${seed.id}/critique`,
+        { method: "POST", body: JSON.stringify({}) },
+        authToken,
+        true,
+        0,
+        180_000
+      );
+      pushToast(t("dashboard.adminTemplates.critiqueDone"), "success");
+      fetchSeeds();
+    } catch (e) {
+      const msg = e instanceof ApiError || e instanceof Error ? e.message : "";
+      pushToast(`${t("dashboard.adminTemplates.critiqueFailed")}${msg ? ": " + msg : ""}`, "error");
+    } finally {
+      setCritiquingId(null);
     }
   };
 
@@ -635,9 +673,29 @@ export default function TemplateGalleryPage() {
                             </div>
                             <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">#{seed.id} · {seed.business_type} {seed.source_template_id && <span>· {t("dashboard.adminTemplates.base")}: <span className="font-bold">{seed.source_template_id}</span></span>}</p>
                           </div>
-                          <Badge variant="outline" className={`font-mono font-bold text-[10px] border shrink-0 ${scoreColorClass}`}>
-                            {t("dashboard.adminTemplates.score")}: {score}
-                          </Badge>
+                          <div className="flex flex-col items-end gap-1 shrink-0">
+                            <Badge variant="outline" className={`font-mono font-bold text-[10px] border shrink-0 ${scoreColorClass}`}>
+                              {t("dashboard.adminTemplates.score")}: {score}
+                            </Badge>
+                            {seed.aesthetic_score != null && (
+                              <>
+                                <Badge variant="outline" className={`font-mono font-bold text-[10px] border shrink-0 ${
+                                  seed.aesthetic_score >= 80
+                                    ? "bg-green-500/10 text-green-500 border-green-500/20"
+                                    : seed.aesthetic_score >= 70
+                                      ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                      : "bg-red-500/10 text-red-500 border-red-500/20"
+                                }`}>
+                                  {t("dashboard.adminTemplates.aestheticScore")}: {seed.aesthetic_score}
+                                </Badge>
+                                {seed.aesthetic_score < 70 && (
+                                  <span className="text-[9px] font-bold uppercase tracking-wider text-red-500">
+                                    {t("dashboard.adminTemplates.needsReview")}
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
 
@@ -699,12 +757,73 @@ export default function TemplateGalleryPage() {
                         </div>
                       )}
 
+                      {/* AI Critique result */}
+                      {seed.aesthetic_critique && (
+                        <div className="space-y-1.5 rounded-lg border border-border/20 bg-muted/20 p-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                              {t("dashboard.adminTemplates.critiqueTitle")}
+                            </span>
+                            {seed.aesthetic_critique.screenshot_url && (
+                              <a
+                                href={seed.aesthetic_critique.screenshot_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[9px] text-primary underline shrink-0"
+                              >
+                                {t("dashboard.adminTemplates.critiqueScreenshot")}
+                              </a>
+                            )}
+                          </div>
+                          {seed.aesthetic_critique.verdict && (
+                            <p className="text-[11px] leading-snug text-muted-foreground line-clamp-3">
+                              {seed.aesthetic_critique.verdict}
+                            </p>
+                          )}
+                          {seed.aesthetic_critique.strengths && seed.aesthetic_critique.strengths.length > 0 && (
+                            <div className="space-y-0.5">
+                              <span className="text-[9px] font-semibold uppercase tracking-wider text-green-600 dark:text-green-500">
+                                {t("dashboard.adminTemplates.critiqueStrengths")}
+                              </span>
+                              {seed.aesthetic_critique.strengths.slice(0, 2).map((s, i) => (
+                                <p key={i} className="text-[10px] text-muted-foreground line-clamp-1">• {s}</p>
+                              ))}
+                            </div>
+                          )}
+                          {seed.aesthetic_critique.improvements && seed.aesthetic_critique.improvements.length > 0 && (
+                            <div className="space-y-0.5">
+                              <span className="text-[9px] font-semibold uppercase tracking-wider text-destructive">
+                                {t("dashboard.adminTemplates.critiqueImprovements")}
+                              </span>
+                              {seed.aesthetic_critique.improvements.slice(0, 2).map((s, i) => (
+                                <p key={i} className="text-[10px] text-muted-foreground line-clamp-1">• {s}</p>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       {/* Date + Actions */}
                       <div className="flex items-center justify-between gap-2 mt-auto pt-1 border-t border-border/20">
                         <span className="text-[10px] text-muted-foreground/60">
                           {new Date(seed.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                         </span>
                         <div className="flex items-center gap-1.5">
+                          <Button
+                            onClick={() => handleCritique(seed)}
+                            disabled={critiquingId !== null}
+                            size="sm"
+                            variant="outline"
+                            className="h-7 px-2.5 text-[10px] bg-background hover:bg-muted/40 font-semibold gap-1 disabled:opacity-50"
+                            title={t("dashboard.adminTemplates.critique")}
+                          >
+                            {critiquingId === seed.id
+                              ? <Loader2 className="size-3 animate-spin" />
+                              : <Sparkles className="size-3" />}
+                            {critiquingId === seed.id
+                              ? t("dashboard.adminTemplates.critiqueRunning")
+                              : t("dashboard.adminTemplates.critique")}
+                          </Button>
                           <Button
                             onClick={() => {
                               const key = "preview_seed_dt";

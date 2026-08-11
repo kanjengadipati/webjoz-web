@@ -70,9 +70,9 @@ function toApiError<T>(response: Response, body: ApiEnvelope<T>) {
   return err;
 }
 
-async function fetchWithTimeout(path: string, init: RequestInit) {
+async function fetchWithTimeout(path: string, init: RequestInit, timeoutMs?: number) {
   const controller = new AbortController();
-  const timeoutId = globalThis.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  const timeoutId = globalThis.setTimeout(() => controller.abort(), timeoutMs ?? API_TIMEOUT_MS);
 
   try {
     return await fetch(`${API_BASE_URL}${path}`, {
@@ -95,6 +95,7 @@ export async function request<T>(
   token?: string,
   canRetry = true,
   retryCount = 0,
+  timeoutMs?: number,
 ): Promise<ApiSuccessResponse<T>> {
   const headers = new Headers(init?.headers || {});
   if (!(init?.body instanceof FormData)) {
@@ -114,7 +115,7 @@ export async function request<T>(
     headers,
     cache: "no-store",
     credentials: "include",
-  });
+  }, timeoutMs);
 
   if (API_DEBUG) {
     console.warn(`[API] ${method} ${path} -> ${response.status}`);
@@ -124,7 +125,7 @@ export async function request<T>(
     try {
       const body = await refreshAccessToken();
       if (body.data.access_token) {
-        return request<T>(path, init, body.data.access_token, false, retryCount + 1);
+        return request<T>(path, init, body.data.access_token, false, retryCount + 1, timeoutMs);
       }
     } catch (err) {
       console.error("Token refresh failed:", err);
