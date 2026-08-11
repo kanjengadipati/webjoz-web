@@ -47,5 +47,5 @@ export const metadata: Metadata = {
 const EN_LOCALE: Locale = "en";
 
 export default function EnLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <Providers defaultLocale={EN_LOCALE}>{children}</Providers>;
+  return <Providers defaultLocale={EN_LOCALE} forcedLocale={EN_LOCALE}>{children}</Providers>;
 }

@@ -35,11 +35,18 @@ function interpolate(text: string, params?: Record<string, string>): string {
   return text.replace(/\{(\w+)\}/g, (_, k) => params[k] || `{${k}}`);
 }
 
-export function I18nProvider({ children, defaultLocale = "id" }: { children: React.ReactNode; defaultLocale?: Locale }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+export function I18nProvider({ children, defaultLocale = "id", forcedLocale }: { children: React.ReactNode; defaultLocale?: Locale; forcedLocale?: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(forcedLocale ?? defaultLocale);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // A pinned locale (e.g. the /en route) must never be overridden by a
+    // previously stored preference, otherwise the English URL renders ID.
+    if (forcedLocale) {
+      setLocaleState(forcedLocale);
+      document.documentElement.lang = forcedLocale === "id" ? "id" : "en";
+      return;
+    }
     try {
       const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
       if (saved === "id" || saved === "en") {
@@ -57,7 +64,7 @@ export function I18nProvider({ children, defaultLocale = "id" }: { children: Rea
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [forcedLocale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
