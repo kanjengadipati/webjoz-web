@@ -231,7 +231,7 @@ export default function LandingPageClient() {
               ) : (
                 <Link
                   href="/login"
-                  className="hidden rounded-full px-4 py-2 text-xs font-medium text-slate-400 transition hover:text-white sm:block"
+                  className="hidden sm:inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:border-white/30"
                 >
                   {t("landing.navLogin")}
                 </Link>
