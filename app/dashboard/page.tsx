@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, SkeletonBlock } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, SectionTitle, SkeletonBlock } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { fetchProfile } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
+import { fetchMyCommissions, CommissionSummary, getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
+import { fetchMyBonuses, BonusSummary } from "@/lib/api/bonuses";
+import { fetchMyReferralCode } from "@/lib/api/referral";
 import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/context";
@@ -16,7 +19,8 @@ import {
   Building2, Users, Globe, CreditCard, Activity, Megaphone, TrendingUp,
   Loader2, Calendar, Zap, Database, Server, Cpu, ChevronRight,
   BarChart3, ShieldCheck, TicketCheck, UserPlus, ArrowUpRight,
-  LayoutDashboard,
+  LayoutDashboard, DollarSign, Award, Clock, Sparkles, Share2,
+  Copy, Check, ArrowRight, Gift, Target,
 } from "lucide-react";
 import type { Profile } from "@/lib/types";
 
@@ -134,6 +138,7 @@ export default function DashboardOverviewPage() {
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { role } = usePermissions();
   const isAdmin = role === "superadmin" || role === "admin";
+  const isSales = !isAdmin && (role === "sales");
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<PlatformStats | null>(null);
@@ -154,6 +159,14 @@ export default function DashboardOverviewPage() {
   } | null>(null);
   const [state, setState] = useState<SectionState>(SectionState.IDLE);
 
+  // ── Sales-specific state ──────────────────────────────────────────────────
+  const [commSummary, setCommSummary] = useState<CommissionSummary>({ total_earned: 0, total_pending: 0, total_voided: 0 });
+  const [bonusSummary, setBonusSummary] = useState<BonusSummary>({ total_earned: 0, total_pending: 0, total_voided: 0, total_paid: 0, onboarding_count: 0, milestone_count: 0 });
+  const [commConfig, setCommConfig] = useState<CommissionConfig | null>(null);
+  const [referralCode, setReferralCode] = useState("");
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
   const refresh = useCallback(async (showToast = false) => {
     if (!token) return;
     setState(SectionState.LOADING);
@@ -172,6 +185,20 @@ export default function DashboardOverviewPage() {
       if (healthRes.status === "fulfilled") setHealth(healthRes.value.data);
       if (tenantsRes.status === "fulfilled") setTenants((tenantsRes.value.data || []).slice(0, 5));
       if (plansRes.status === "fulfilled") setPlanCount((plansRes.value.data || []).length);
+    } else if (isSales) {
+      const [profileRes, commRes, bonusRes, configRes, refRes] = await Promise.allSettled([
+        fetchProfile(token),
+        fetchMyCommissions(token, new URLSearchParams({ page: "1", limit: "1" })),
+        fetchMyBonuses(token, new URLSearchParams({ page: "1", limit: "1" })),
+        getCommissionConfig(token),
+        fetchMyReferralCode(token),
+      ]);
+
+      if (profileRes.status === "fulfilled") setProfile(profileRes.value.data);
+      if (commRes.status === "fulfilled") setCommSummary(commRes.value.data?.summary ?? { total_earned: 0, total_pending: 0, total_voided: 0 });
+      if (bonusRes.status === "fulfilled") setBonusSummary(bonusRes.value.data?.summary ?? { total_earned: 0, total_pending: 0, total_voided: 0, total_paid: 0, onboarding_count: 0, milestone_count: 0 });
+      if (configRes.status === "fulfilled") setCommConfig(configRes.value.data);
+      if (refRes.status === "fulfilled") setReferralCode(refRes.value.data?.referral_code ?? "");
     } else {
       const fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
       const toDate = new Date().toISOString().split("T")[0];
@@ -206,7 +233,7 @@ export default function DashboardOverviewPage() {
 
     setState(SectionState.SUCCESS);
     if (showToast) pushToast(t("dashboard.refreshed"), "success");
-  }, [pushToast, token, activeTenantId, isAdmin, t]);
+  }, [pushToast, token, activeTenantId, isAdmin, isSales, t]);
 
   useEffect(() => {
     if (!token || state !== SectionState.IDLE) return;
@@ -217,7 +244,7 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     if (!token) return;
     setState(SectionState.IDLE);
-  }, [token, isAdmin, activeTenantId]);
+  }, [token, isAdmin, isSales, activeTenantId]);
 
   const metrics = useMemo(() => {
     const publishedSites = sites.filter((s) => s.status === "published");
@@ -256,6 +283,183 @@ export default function DashboardOverviewPage() {
         <div className="grid grid-cols-2 gap-5">
           <SkeletonBlock className="h-64 rounded-3xl" /><SkeletonBlock className="h-64 rounded-3xl" />
         </div>
+      </div>
+    );
+  }
+
+  if (isSales) {
+    const t1 = commConfig ? commConfig.tier1_rate_percent.toFixed(0) : "20";
+    const t2 = commConfig ? commConfig.tier2_rate_percent.toFixed(0) : "10";
+    const months = commConfig?.tier_threshold_months ?? 12;
+    const grandTotal = commSummary.total_earned + bonusSummary.total_earned;
+    const grandPending = commSummary.total_pending + bonusSummary.total_pending;
+    const fmt = (n: number) => `Rp ${n.toLocaleString("id-ID")}`;
+    const referralUrl = typeof window !== "undefined" && referralCode
+      ? `${window.location.origin}/create?ref=${referralCode}`
+      : "";
+
+    const handleCopyCode = () => {
+      if (!referralCode) return;
+      navigator.clipboard.writeText(referralCode);
+      setCodeCopied(true);
+      pushToast(t("dashboard.salesOverview.codeCopied"), "success");
+      setTimeout(() => setCodeCopied(false), 2000);
+    };
+    const handleCopyLink = () => {
+      if (!referralUrl) return;
+      navigator.clipboard.writeText(referralUrl);
+      setLinkCopied(true);
+      pushToast(t("dashboard.salesOverview.linkCopied"), "success");
+      setTimeout(() => setLinkCopied(false), 2000);
+    };
+
+    return (
+      <div className="space-y-8 animate-in fade-in duration-700">
+        {/* ── Hero header ─────────────────────────────────────────────── */}
+        <section className="bg-gradient-to-br from-emerald-500/15 via-emerald-500/5 to-amber-500/10 border border-emerald-500/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="size-14 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
+                <TrendingUp className="size-7 text-emerald-500" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                  {t("dashboard.salesOverview.pageTitle")}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {t("dashboard.salesOverview.pageDesc", undefined, { t1, months: String(months), t2 })}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 shrink-0">
+              <Link href="/dashboard/sales/commissions">
+                <button className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-xs font-semibold hover:bg-muted/40 transition">
+                  <DollarSign className="size-3.5 text-emerald-500" />
+                  {t("dashboard.salesOverview.linkCommissionsTitle")}
+                </button>
+              </Link>
+              <Link href="/dashboard/sales">
+                <button className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-xs font-semibold hover:bg-muted/40 transition">
+                  <Share2 className="size-3.5 text-primary" />
+                  {t("dashboard.salesOverview.linkReferralTitle")}
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Summary cards ────────────────────────────────────────────── */}
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
+            { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-4 text-emerald-500" />, cls: "text-foreground" },
+            { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
+            { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
+          ].map((card) => (
+            <Card key={card.label} className="border-border/40 shadow-sm bg-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
+                  {card.label}
+                  {card.icon}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-extrabold ${card.cls}`}>{card.value}</div>
+                <p className="text-[11px] text-muted-foreground mt-1">{card.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+
+        {/* ── Referral code + commission scheme ───────────────────────── */}
+        <section className="grid gap-5 md:grid-cols-2">
+          {/* Referral code */}
+          <Card className="border-border/40 shadow-sm bg-card">
+            <CardHeader className="pb-3 border-b border-border/20">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Share2 className="size-4 text-primary" />
+                {t("dashboard.salesOverview.refCardTitle")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+                <span className="font-mono text-xl font-bold tracking-widest text-primary">
+                  {referralCode || "—"}
+                </span>
+                <button
+                  onClick={handleCopyCode}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-3 py-1.5 hover:bg-muted transition cursor-pointer"
+                >
+                  {codeCopied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                  {codeCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyCode")}
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  {t("dashboard.salesOverview.refLinkLabel")}
+                </p>
+                <div className="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
+                  <span className="flex-1 text-xs font-mono text-muted-foreground truncate">{referralUrl || "—"}</span>
+                  <button
+                    onClick={handleCopyLink}
+                    className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-md border border-border/60 bg-background px-2.5 py-1 hover:bg-muted transition cursor-pointer"
+                  >
+                    <Copy className="size-3" />
+                    {linkCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyLink")}
+                  </button>
+                </div>
+              </div>
+              <Link
+                href="/dashboard/sales"
+                className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:underline underline-offset-4"
+              >
+                {t("dashboard.salesOverview.manageRef")}
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Commission scheme */}
+          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm">
+            <CardHeader className="pb-3 border-b border-emerald-500/15">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                <Zap className="size-4" />
+                {t("dashboard.salesOverview.schemeTitle")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                  <div>
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
+                  </div>
+                  <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{t1}%</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5">
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tier 2</p>
+                    <p className="text-[11px] text-muted-foreground">{t("dashboard.salesOverview.tier2Desc", undefined, { months: String(months) })}</p>
+                  </div>
+                  <span className="text-2xl font-extrabold text-muted-foreground">{t2}%</span>
+                </div>
+              </div>
+              <div className="pt-1 space-y-1.5">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
+                <div className="flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Gift className="size-3" />
+                    {t("dashboard.salesOverview.bonusOnboarding")}
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Target className="size-3" />
+                    {t("dashboard.salesOverview.bonusMilestone")}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
       </div>
     );
   }
