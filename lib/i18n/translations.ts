@@ -420,6 +420,7 @@ export interface Translations {
       domains: string;
       leads: string;
       analytics: string;
+      salesOverview: string;
       salesReferral: string;
       salesCommissions: string;
       team: string;
@@ -1288,6 +1289,41 @@ export interface Translations {
       cancel: string;
       processing: string;
       confirmRegenerate: string;
+    };
+    salesOverview: {
+      loadFailed: string;
+      loading: string;
+      accessDeniedTitle: string;
+      accessDeniedDesc: string;
+      pageTitle: string;
+      pageDesc: string;
+      cardTotal: string;
+      cardTotalDesc: string;
+      cardCommission: string;
+      cardCommissionDesc: string;
+      cardBonus: string;
+      cardBonusDesc: string;
+      cardPending: string;
+      cardPendingDesc: string;
+      refCardTitle: string;
+      refLinkLabel: string;
+      copyCode: string;
+      copyLink: string;
+      copied: string;
+      manageRef: string;
+      schemeTitle: string;
+      tier1Desc: string;
+      tier2Desc: string;
+      bonusSchemeTitle: string;
+      bonusOnboarding: string;
+      bonusMilestone: string;
+      quickLinksTitle: string;
+      linkCommissionsTitle: string;
+      linkCommissionsDesc: string;
+      linkReferralTitle: string;
+      linkReferralDesc: string;
+      codeCopied: string;
+      linkCopied: string;
     };
     salesCommissions: {
       loadFailed: string;
@@ -2372,6 +2408,7 @@ export const translations: Record<Locale, Translations> = {
         domains: "Custom Domain",
         leads: "Customer Leads",
         analytics: "Web Statistik",
+        salesOverview: "Sales Overview",
         salesReferral: "Kode Referral",
         salesCommissions: "Komisi Saya",
         team: "Tim",
@@ -3245,6 +3282,41 @@ export const translations: Record<Locale, Translations> = {
         cancel: "Batal",
         processing: "Memproses...",
         confirmRegenerate: "Ya, Buat Kode Baru",
+      },
+      salesOverview: {
+        loadFailed: "Gagal memuat data sales",
+        loading: "Memuat ringkasan...",
+        accessDeniedTitle: "Akses Dibatasi",
+        accessDeniedDesc: "Halaman ini khusus untuk Sales Partner & Admin. Hubungi admin untuk mengaktifkan akses.",
+        pageTitle: "Sales Overview",
+        pageDesc: "Ringkasan pendapatan Anda — komisi Tier 1 {t1}% ({months} bln pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
+        cardTotal: "Total Pendapatan",
+        cardTotalDesc: "Komisi + Bonus terakumulasi",
+        cardCommission: "Komisi Recurring",
+        cardCommissionDesc: "Tier 1 {t1}% / Tier 2 {t2}%",
+        cardBonus: "Total Bonus",
+        cardBonusDesc: "{onboarding} Onboarding · {milestone} Milestone",
+        cardPending: "Pending Payout",
+        cardPendingDesc: "Menunggu proses pencairan",
+        refCardTitle: "Kode Referral Anda",
+        refLinkLabel: "Link Referral",
+        copyCode: "Salin Kode",
+        copyLink: "Salin Link",
+        copied: "Tersalin!",
+        manageRef: "Kelola kode referral",
+        schemeTitle: "Skema Komisi Berlaku",
+        tier1Desc: "{months} bulan pertama setelah signup",
+        tier2Desc: "Setelah {months} bulan berjalan",
+        bonusSchemeTitle: "Bonus Tambahan",
+        bonusOnboarding: "Bonus Onboarding per tenant",
+        bonusMilestone: "Bonus Milestone bulanan",
+        quickLinksTitle: "Akses Cepat",
+        linkCommissionsTitle: "Riwayat Komisi & Bonus",
+        linkCommissionsDesc: "Lihat semua transaksi komisi dan bonus yang tercatat beserta statusnya.",
+        linkReferralTitle: "Kelola Kode Referral",
+        linkReferralDesc: "Salin, bagikan, atau regenerasi kode referral Anda.",
+        codeCopied: "Kode disalin!",
+        linkCopied: "Link disalin!",
       },
       salesCommissions: {
         loadFailed: "Gagal memuat data komisi",
@@ -4370,6 +4442,7 @@ export const translations: Record<Locale, Translations> = {
         domains: "Custom Domain",
         leads: "Customer Leads",
         analytics: "Web Statistics",
+        salesOverview: "Sales Overview",
         salesReferral: "Referral Code",
         salesCommissions: "My Commissions",
         team: "Team",
@@ -5243,6 +5316,41 @@ export const translations: Record<Locale, Translations> = {
         cancel: "Cancel",
         processing: "Processing...",
         confirmRegenerate: "Yes, Create New Code",
+      },
+      salesOverview: {
+        loadFailed: "Failed to load sales data",
+        loading: "Loading summary...",
+        accessDeniedTitle: "Access Restricted",
+        accessDeniedDesc: "This page is for Sales Partners & Admins only. Contact an admin to enable access.",
+        pageTitle: "Sales Overview",
+        pageDesc: "Your earnings summary — Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
+        cardTotal: "Total Earnings",
+        cardTotalDesc: "Accumulated Commission + Bonuses",
+        cardCommission: "Recurring Commission",
+        cardCommissionDesc: "Tier 1 {t1}% / Tier 2 {t2}%",
+        cardBonus: "Total Bonuses",
+        cardBonusDesc: "{onboarding} Onboarding · {milestone} Milestone",
+        cardPending: "Pending Payout",
+        cardPendingDesc: "Awaiting payout processing",
+        refCardTitle: "Your Referral Code",
+        refLinkLabel: "Referral Link",
+        copyCode: "Copy Code",
+        copyLink: "Copy Link",
+        copied: "Copied!",
+        manageRef: "Manage referral code",
+        schemeTitle: "Active Commission Scheme",
+        tier1Desc: "First {months} months after signup",
+        tier2Desc: "After {months} months running",
+        bonusSchemeTitle: "Additional Bonuses",
+        bonusOnboarding: "Onboarding bonus per tenant",
+        bonusMilestone: "Monthly milestone bonus",
+        quickLinksTitle: "Quick Access",
+        linkCommissionsTitle: "Commission & Bonus History",
+        linkCommissionsDesc: "View all recorded commission and bonus transactions with their status.",
+        linkReferralTitle: "Manage Referral Code",
+        linkReferralDesc: "Copy, share, or regenerate your referral code.",
+        codeCopied: "Code copied!",
+        linkCopied: "Link copied!",
       },
       salesCommissions: {
         loadFailed: "Failed to load commission data",
