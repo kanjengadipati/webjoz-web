@@ -40,26 +40,26 @@ export function I18nProvider({ children, defaultLocale = "id", forcedLocale }: {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    // A pinned locale (e.g. the /en route) must never be overridden by a
-    // previously stored preference, otherwise the English URL renders ID.
     if (forcedLocale) {
       setLocaleState(forcedLocale);
       document.documentElement.lang = forcedLocale === "id" ? "id" : "en";
       return;
     }
     try {
-      const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
-      if (saved === "id" || saved === "en") {
-        setLocaleState(saved);
-        document.documentElement.lang = saved === "id" ? "id" : "en";
-      } else {
-        const match = document.cookie.match(
-          new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
-        );
-        if (match && (match[1] === "id" || match[1] === "en")) {
-          setLocaleState(match[1] as Locale);
-          document.documentElement.lang = match[1] === "id" ? "id" : "en";
-        }
+      const match = document.cookie.match(
+        new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
+      );
+      const cookieLocale = match && (match[1] === "id" || match[1] === "en") ? (match[1] as Locale) : null;
+      const saved = localStorage.getItem(LOCALE_STORAGE_KEY) as Locale | null;
+
+      const active = cookieLocale || (saved === "id" || saved === "en" ? saved : null);
+      if (active) {
+        setLocaleState(active);
+        document.documentElement.lang = active === "id" ? "id" : "en";
+        try {
+          localStorage.setItem(LOCALE_STORAGE_KEY, active);
+          document.cookie = `${LOCALE_STORAGE_KEY}=${active}; path=/; max-age=31536000; SameSite=Lax`;
+        } catch {}
       }
     } catch {
       /* ignore */

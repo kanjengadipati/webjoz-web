@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 
 const OPTIONS = [
@@ -9,7 +8,6 @@ const OPTIONS = [
 ];
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
-  const router = useRouter();
   const { locale, setLocale } = useI18n();
 
   return (
@@ -21,8 +19,15 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           aria-label={`Switch language to ${opt.label}`}
           aria-pressed={locale === opt.code}
           onClick={() => {
+            if (locale === opt.code) return;
             setLocale(opt.code);
-            router.push(opt.href);
+            try {
+              document.cookie = `webjoz_locale=${opt.code}; path=/; max-age=31536000; SameSite=Lax`;
+              localStorage.setItem("webjoz_locale", opt.code);
+            } catch {}
+            if (typeof window !== "undefined") {
+              window.location.href = opt.href;
+            }
           }}
           className={`rounded-full px-2.5 py-1 transition cursor-pointer ${
             locale === opt.code
