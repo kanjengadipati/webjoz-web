@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2 } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, TrendingUp } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -35,6 +35,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",
   analytics: "dashboard.nav.analytics",
+  "sales-overview": "dashboard.nav.salesOverview",
   "sales-referral": "dashboard.nav.salesReferral",
   "sales-commissions": "dashboard.nav.salesCommissions",
   team: "dashboard.nav.team",
@@ -158,6 +159,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     users: Users,
     dollar: DollarSign,
     share: Share2,
+    "trending-up": TrendingUp,
   };
 
   return (
@@ -383,7 +385,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         variant="ghost"
                         size="icon"
                         className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
-                        aria-label={isMonochrome ? "Switch to blue accent" : "Switch to monochrome accent"}
+                        aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
                         aria-pressed={!isMonochrome}
                         onClick={toggleAccent}
                       >
@@ -397,7 +399,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         variant="ghost"
                         size="icon"
                         className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
-                        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                        aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
                         aria-pressed={theme === "dark"}
                         onClick={toggleTheme}
                       >
