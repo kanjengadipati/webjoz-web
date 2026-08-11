@@ -378,9 +378,9 @@ export interface Translations {
       activePlans: string;
       newUsers7d: string;
       in7Days: string;
-      recentTenants: string;
+      recentAccounts: string;
       viewAll: string;
-      noTenants: string;
+      noAccounts: string;
       systemHealth: string;
       svcDatabase: string;
       svcCache: string;
@@ -994,6 +994,16 @@ export interface Translations {
       bulkDeleteConfirm: string;
       bulkDeleted: string;
       bulkDeletePartialFail: string;
+      critique: string;
+      critiqueRunning: string;
+      critiqueDone: string;
+      critiqueFailed: string;
+      aestheticScore: string;
+      needsReview: string;
+      critiqueTitle: string;
+      critiqueStrengths: string;
+      critiqueImprovements: string;
+      critiqueScreenshot: string;
     };
     adminAnnouncements: {
       noAccess: string;
@@ -2320,9 +2330,9 @@ export const translations: Record<Locale, Translations> = {
         activePlans: "Paket Aktif",
         newUsers7d: "Pengguna Baru (7h)",
         in7Days: "+{count} dalam 7 hari",
-        recentTenants: "Tenant Terbaru",
+        recentAccounts: "Akun Terbaru",
         viewAll: "Lihat semua",
-        noTenants: "Belum ada tenant terdaftar.",
+        noAccounts: "Belum ada akun terdaftar.",
         systemHealth: "Kesehatan Sistem",
         svcDatabase: "Database",
         svcCache: "Cache",
@@ -2941,6 +2951,16 @@ export const translations: Record<Locale, Translations> = {
         bulkDeleteConfirm: "Hapus permanen {count} design token seed yang dipilih?",
         bulkDeleted: "{count} seed berhasil dihapus",
         bulkDeletePartialFail: "{ok} berhasil dihapus, {fail} gagal — coba lagi untuk sisanya",
+        critique: "Kritik AI",
+        critiqueRunning: "Menganalisis...",
+        critiqueDone: "Kritik AI selesai — skor estetika diperbarui",
+        critiqueFailed: "Gagal menjalankan kritik AI",
+        aestheticScore: "Estetika",
+        needsReview: "Perlu Review",
+        critiqueTitle: "Kritik AI",
+        critiqueStrengths: "Kelebihan",
+        critiqueImprovements: "Perbaikan",
+        critiqueScreenshot: "screenshot",
       },
       adminAnnouncements: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -4308,9 +4328,9 @@ export const translations: Record<Locale, Translations> = {
         activePlans: "Active Plans",
         newUsers7d: "New Users (7d)",
         in7Days: "+{count} in 7 days",
-        recentTenants: "Recent Tenants",
+        recentAccounts: "Recent Accounts",
         viewAll: "View all",
-        noTenants: "No tenants registered yet.",
+        noAccounts: "No accounts registered yet.",
         systemHealth: "System Health",
         svcDatabase: "Database",
         svcCache: "Cache",
@@ -4929,6 +4949,16 @@ export const translations: Record<Locale, Translations> = {
         bulkDeleteConfirm: "Permanently delete {count} selected design token seeds?",
         bulkDeleted: "{count} seeds deleted",
         bulkDeletePartialFail: "{ok} deleted, {fail} failed — try again for the rest",
+        critique: "AI Critique",
+        critiqueRunning: "Analyzing...",
+        critiqueDone: "AI critique completed — aesthetic score updated",
+        critiqueFailed: "Failed to run AI critique",
+        aestheticScore: "Aesthetic",
+        needsReview: "Needs Review",
+        critiqueTitle: "AI Critique",
+        critiqueStrengths: "Strengths",
+        critiqueImprovements: "Improvements",
+        critiqueScreenshot: "screenshot",
       },
       adminAnnouncements: {
         noAccess: "You do not have access to this page.",
