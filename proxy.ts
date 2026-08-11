@@ -8,14 +8,21 @@ const MARKETING_HOSTS = new Set([BASE_DOMAIN, `www.${BASE_DOMAIN}`, `stg.${BASE_
 export function proxy(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
+  // Surface the current path to server components (RootLayout) so it can
+  // resolve the locale from the URL segment — App Router server components
+  // have no direct pathname access.
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-webjoz-path', request.nextUrl.pathname)
+  const next = () => NextResponse.next({ request: { headers: requestHeaders } })
+
   // Explicit locale segment pins the locale so SSR + client render in that language
   const { pathname } = request.nextUrl
   if (pathname === '/en' || pathname.startsWith('/en/')) {
-    const res = NextResponse.next()
+    const res = next()
     res.cookies.set('webjoz_locale', 'en', { path: '/', maxAge: 60 * 60 * 24 * 365 })
     return res
   } else if (pathname === '/id' || pathname.startsWith('/id/')) {
-    const res = NextResponse.next()
+    const res = next()
     res.cookies.set('webjoz_locale', 'id', { path: '/', maxAge: 60 * 60 * 24 * 365 })
     return res
   }
@@ -29,7 +36,7 @@ export function proxy(request: NextRequest) {
     host === 'localhost:3000' ||
     host === '127.0.0.1:3000'
   ) {
-    return NextResponse.next()
+    return next()
   }
 
   // Support local subdomain testing: redirect to path-based route /s/[subdomain]
@@ -51,7 +58,7 @@ export function proxy(request: NextRequest) {
   if (host.endsWith(`.${BASE_DOMAIN}`)) {
     const subdomain = host.replace(`.${BASE_DOMAIN}`, '')
     if (subdomain === 'app' || subdomain === 'www') {
-      return NextResponse.next()
+      return next()
     }
     return NextResponse.rewrite(
       new URL(`/site/${subdomain}${request.nextUrl.pathname}`, request.url)
