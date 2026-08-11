@@ -47,6 +47,7 @@ interface SeedEntry {
 }
 
 type Tab = "components" | "seeds";
+type SortOrder = "newest" | "oldest" | "score_asc" | "score_desc";
 
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 
@@ -59,6 +60,10 @@ export default function TemplateGalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedMood, setSelectedMood] = useState("all");
   const [selectedBusinessType, setSelectedBusinessType] = useState("all");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+  const [scoreBelow, setScoreBelow] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const authToken = useAuthToken();
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
@@ -109,9 +114,57 @@ export default function TemplateGalleryPage() {
     try {
       await request(`/ai/templates/${id}`, { method: "DELETE" }, authToken);
       setSeeds((prev) => prev.filter((s) => s.id !== id));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       pushToast(t("dashboard.adminTemplates.seedDeleted"), "success");
     } catch (e) {
       pushToast(t("dashboard.adminTemplates.seedDeleteFailed") + ": " + (e as any).message, "error");
+    }
+  };
+
+  const toggleSelect = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (!window.confirm(t("dashboard.adminTemplates.bulkDeleteConfirm", undefined, { count: String(ids.length) }))) {
+      return;
+    }
+    setBulkDeleting(true);
+    const results = await Promise.allSettled(
+      ids.map((id) => request(`/ai/templates/${id}`, { method: "DELETE" }, authToken))
+    );
+    const failedIds: number[] = [];
+    results.forEach((r, i) => {
+      if (r.status === "rejected") failedIds.push(ids[i]);
+    });
+    const succeededIds = new Set(ids.filter((id) => !failedIds.includes(id)));
+    setSeeds((prev) => prev.filter((s) => !succeededIds.has(s.id)));
+    setSelectedIds(new Set(failedIds));
+    setBulkDeleting(false);
+    if (failedIds.length === 0) {
+      pushToast(t("dashboard.adminTemplates.bulkDeleted", undefined, { count: String(succeededIds.size) }), "success");
+    } else {
+      pushToast(
+        t("dashboard.adminTemplates.bulkDeletePartialFail", undefined, {
+          ok: String(succeededIds.size),
+          fail: String(failedIds.length),
+        }),
+        "error"
+      );
     }
   };
 
@@ -143,18 +196,36 @@ export default function TemplateGalleryPage() {
   const businessTypes = ["all", ...Array.from(new Set(seeds.map((s) => s.business_type)))].sort((a, b) => a === "all" ? -1 : b === "all" ? 1 : a.localeCompare(b));
   const moods = ["all", ...Array.from(new Set(seeds.map((s) => s.mood)))].sort((a, b) => a === "all" ? -1 : b === "all" ? 1 : a.localeCompare(b));
 
-  // Filter seeds based on search + business type + mood
-  const filteredSeeds = seeds.filter((seed) => {
-    const q = searchQuery.toLowerCase();
-    const matchesSearch = q === "" ||
-      seed.business_type.toLowerCase().includes(q) ||
-      seed.mood.toLowerCase().includes(q) ||
-      (seed.source_template_id && seed.source_template_id.toLowerCase().includes(q)) ||
-      String(seed.id).includes(q);
-    const matchesBT = selectedBusinessType === "all" || seed.business_type === selectedBusinessType;
-    const matchesMood = selectedMood === "all" || seed.mood === selectedMood;
-    return matchesSearch && matchesBT && matchesMood;
-  });
+  // Resolve score once per seed up front so filtering, sorting, and rendering agree
+  const seedsScored = seeds.map((seed) => ({
+    seed,
+    score: seed.score ?? scoreDesignToken(seed.design_token).total,
+  }));
+
+  const scoreBelowNum = scoreBelow.trim() === "" ? null : Number(scoreBelow);
+
+  // Filter seeds based on search + business type + mood + score threshold
+  const filteredSeeds = seedsScored
+    .filter(({ seed, score }) => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = q === "" ||
+        seed.business_type.toLowerCase().includes(q) ||
+        seed.mood.toLowerCase().includes(q) ||
+        (seed.source_template_id && seed.source_template_id.toLowerCase().includes(q)) ||
+        String(seed.id).includes(q);
+      const matchesBT = selectedBusinessType === "all" || seed.business_type === selectedBusinessType;
+      const matchesMood = selectedMood === "all" || seed.mood === selectedMood;
+      const matchesScore = scoreBelowNum === null || Number.isNaN(scoreBelowNum) || score < scoreBelowNum;
+      return matchesSearch && matchesBT && matchesMood && matchesScore;
+    })
+    .sort((a, b) => {
+      if (sortOrder === "score_asc") return a.score - b.score;
+      if (sortOrder === "score_desc") return b.score - a.score;
+      const at = new Date(a.seed.created_at).getTime();
+      const bt = new Date(b.seed.created_at).getTime();
+      return sortOrder === "oldest" ? at - bt : bt - at;
+    })
+    .map(({ seed }) => seed);
 
   // Get unique categories for template components filter
   const categories = ["all", ...Array.from(new Set(TEMPLATE_REGISTRY.map((t) => t.category)))];
@@ -267,8 +338,72 @@ export default function TemplateGalleryPage() {
               ))}
             </select>
           )}
+
+          {tab === "seeds" && (
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
+            >
+              <option value="newest">{t("dashboard.adminTemplates.sortNewest")}</option>
+              <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
+              <option value="score_asc">{t("dashboard.adminTemplates.sortScoreAsc")}</option>
+              <option value="score_desc">{t("dashboard.adminTemplates.sortScoreDesc")}</option>
+            </select>
+          )}
+
+          {tab === "seeds" && (
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              placeholder={t("dashboard.adminTemplates.scoreBelowPlaceholder")}
+              value={scoreBelow}
+              onChange={(e) => setScoreBelow(e.target.value)}
+              className="h-10 w-32 text-xs bg-background border-border/40"
+            />
+          )}
         </div>
       </div>
+
+      {/* ── Bulk Selection Bar ── */}
+      {tab === "seeds" && filteredSeeds.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 -mt-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-[11px] gap-1.5"
+            onClick={() => setSelectedIds(new Set(filteredSeeds.map((s) => s.id)))}
+          >
+            {t("dashboard.adminTemplates.selectAllFiltered", undefined, { count: String(filteredSeeds.length) })}
+          </Button>
+          {selectedIds.size > 0 && (
+            <>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 text-[11px]"
+                onClick={() => setSelectedIds(new Set())}
+              >
+                {t("dashboard.adminTemplates.clearSelection")}
+              </Button>
+              <Badge variant="secondary" className="text-[11px] font-semibold">
+                {t("dashboard.adminTemplates.selectedCount", undefined, { count: String(selectedIds.size) })}
+              </Badge>
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={bulkDeleting}
+                className="h-8 text-[11px] gap-1.5"
+                onClick={handleBulkDelete}
+              >
+                {bulkDeleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+                {t("dashboard.adminTemplates.deleteSelected")}
+              </Button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── Content Panes ── */}
       {tab === "components" && (
@@ -453,10 +588,20 @@ export default function TemplateGalleryPage() {
                       ? "bg-orange-500/10 text-orange-500 border-orange-500/20" 
                       : "bg-red-500/10 text-red-500 border-red-500/20";
 
+                const isSelected = selectedIds.has(seed.id);
+
                 return (
-                  <Card key={seed.id} className="overflow-hidden border-border/40 hover:border-border/80 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col h-[520px]">
+                  <Card key={seed.id} className={`overflow-hidden border-border/40 hover:border-border/80 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col h-[520px] relative ${isSelected ? "ring-2 ring-primary/60 border-primary/40" : ""}`}>
                     {/* Top Color Strip */}
                     <div className="h-28 relative flex items-end p-4 border-b border-border/30" style={{ background: pal ? `linear-gradient(135deg, ${pal.background || "#111"}, ${pal.surface || "#222"})` : "var(--muted)" }}>
+                      <label className="absolute top-2 left-2 flex items-center justify-center size-6 rounded-md bg-black/40 backdrop-blur-md border border-white/10 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelect(seed.id)}
+                          className="size-3.5 cursor-pointer accent-primary"
+                        />
+                      </label>
                       {pal && (
                         <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-white/5">
                           {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
