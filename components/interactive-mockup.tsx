@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 const SEQUENCE = [
   { step: 0, delay: 0 },
@@ -183,9 +184,9 @@ export function InteractiveMockup() {
               
               {/* AI avatar row */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(1)}`}>
-                <div className="h-7 w-7 rounded-full flex items-center justify-center text-sm shrink-0 shadow-lg"
-                  style={{ background: "linear-gradient(135deg, color-mix(in srgb,var(--primary) 60%,transparent), color-mix(in srgb,var(--primary) 20%,transparent))", border: "1px solid color-mix(in srgb,var(--primary) 30%,transparent)" }}
-                >✨</div>
+                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
+                  <SparkleIcon className="w-[18px] h-[18px]" />
+                </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupGreeting")}
                   {flowStep === 1 && <span className="ml-1 inline-block w-1 h-3 bg-primary animate-pulse rounded-sm" />}
@@ -206,9 +207,9 @@ export function InteractiveMockup() {
 
               {/* AI asks type */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(3)}`}>
-                <div className="h-7 w-7 rounded-full flex items-center justify-center text-sm shrink-0 shadow-lg"
-                  style={{ background: "linear-gradient(135deg, color-mix(in srgb,var(--primary) 60%,transparent), color-mix(in srgb,var(--primary) 20%,transparent))", border: "1px solid color-mix(in srgb,var(--primary) 30%,transparent)" }}
-                >✨</div>
+                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
+                  <SparkleIcon className="w-[18px] h-[18px]" />
+                </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupPickType")}
                 </div>
