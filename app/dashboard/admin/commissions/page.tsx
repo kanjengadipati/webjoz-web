@@ -11,9 +11,10 @@ import {
   CommissionConfig,
 } from "@/lib/api/commissions";
 import {
-  fetchAllBonuses,
+  fetchAllBonusesFiltered,
   fetchBonusRules,
   updateBonusRule,
+  markBonusesPaid,
   SalesBonus,
   BonusRule,
 } from "@/lib/api/bonuses";
@@ -33,6 +34,8 @@ import {
   Gift,
   Target,
   Save,
+  CheckCircle2,
+  Filter,
 } from "lucide-react";
 
 export default function AdminCommissionsPage() {
@@ -53,6 +56,9 @@ export default function AdminCommissionsPage() {
   const [bonuses, setBonuses] = useState<SalesBonus[]>([]);
   const [bonusPage, setBonusPage] = useState(1);
   const [bonusTotal, setBonusTotal] = useState(0);
+  const [bonusStatusFilter, setBonusStatusFilter] = useState<"" | "pending" | "paid" | "voided">("");
+  const [selectedBonusIds, setSelectedBonusIds] = useState<Set<number>>(new Set());
+  const [markingPaid, setMarkingPaid] = useState(false);
 
   // Commission config state
   const [config, setConfig] = useState<CommissionConfig | null>(null);
@@ -73,10 +79,7 @@ export default function AdminCommissionsPage() {
     if (!token) return;
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      });
+      const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
       const res = await fetchAllCommissions(token, params);
       setCommissions(res.data || []);
       setTotal((res.meta?.total as number) || 0);
@@ -90,13 +93,12 @@ export default function AdminCommissionsPage() {
   const loadBonuses = async () => {
     if (!token) return;
     try {
-      const params = new URLSearchParams({
-        page: bonusPage.toString(),
-        limit: limit.toString(),
-      });
-      const res = await fetchAllBonuses(token, params);
+      const params = new URLSearchParams({ page: bonusPage.toString(), limit: limit.toString() });
+      if (bonusStatusFilter) params.set("status", bonusStatusFilter);
+      const res = await fetchAllBonusesFiltered(token, params);
       setBonuses(res.data || []);
       setBonusTotal((res.meta?.total as number) || 0);
+      setSelectedBonusIds(new Set());
     } catch {
       // ignore
     }
@@ -109,9 +111,7 @@ export default function AdminCommissionsPage() {
       setConfig(res.data);
       setTier1RateInput(res.data.tier1_rate_percent.toFixed(0));
       setTier2RateInput(res.data.tier2_rate_percent.toFixed(0));
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
   };
 
   const loadRules = async () => {
@@ -120,51 +120,33 @@ export default function AdminCommissionsPage() {
       const res = await fetchBonusRules(token);
       setBonusRules(res.data || []);
       const initialMap: Record<number, string> = {};
-      (res.data || []).forEach((r) => {
-        initialMap[r.id] = r.amount.toString();
-      });
+      (res.data || []).forEach((r) => { initialMap[r.id] = r.amount.toString(); });
       setEditedAmounts(initialMap);
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
   };
 
   const handleSaveConfig = async () => {
     if (!token) return;
     const t1 = parseFloat(tier1RateInput);
     const t2 = parseFloat(tier2RateInput);
-    if (isNaN(t1) || t1 < 0 || t1 > 100) {
-      pushToast(t("dashboard.adminCommissions.tier1RangeError"), "error");
-      return;
-    }
-    if (isNaN(t2) || t2 < 0 || t2 > 100) {
-      pushToast(t("dashboard.adminCommissions.tier2RangeError"), "error");
-      return;
-    }
+    if (isNaN(t1) || t1 < 0 || t1 > 100) { pushToast(t("dashboard.adminCommissions.tier1RangeError"), "error"); return; }
+    if (isNaN(t2) || t2 < 0 || t2 > 100) { pushToast(t("dashboard.adminCommissions.tier2RangeError"), "error"); return; }
     try {
       setConfigLoading(true);
       const res = await updateCommissionConfig(token, t1, t2, config?.tier_threshold_months);
       setConfig(res.data);
       setTier1RateInput(res.data.tier1_rate_percent.toFixed(0));
       setTier2RateInput(res.data.tier2_rate_percent.toFixed(0));
-      pushToast(
-        t("dashboard.adminCommissions.configUpdated", undefined, { t1: res.data.tier1_rate_percent.toFixed(0), t2: res.data.tier2_rate_percent.toFixed(0) }),
-        "success",
-      );
+      pushToast(t("dashboard.adminCommissions.configUpdated", undefined, { t1: res.data.tier1_rate_percent.toFixed(0), t2: res.data.tier2_rate_percent.toFixed(0) }), "success");
     } catch (err: any) {
       pushToast(err.message || t("dashboard.adminCommissions.configUpdateFailed"), "error");
-    } finally {
-      setConfigLoading(false);
-    }
+    } finally { setConfigLoading(false); }
   };
 
   const handleSaveRuleAmount = async (ruleId: number) => {
     if (!token) return;
     const val = parseFloat(editedAmounts[ruleId]);
-    if (isNaN(val) || val <= 0) {
-      pushToast(t("dashboard.adminCommissions.amountPositiveError"), "error");
-      return;
-    }
+    if (isNaN(val) || val <= 0) { pushToast(t("dashboard.adminCommissions.amountPositiveError"), "error"); return; }
     try {
       setSavingRuleId(ruleId);
       await updateBonusRule(token, ruleId, { amount: val });
@@ -172,8 +154,39 @@ export default function AdminCommissionsPage() {
       loadRules();
     } catch (err: any) {
       pushToast(err.message || t("dashboard.adminCommissions.ruleUpdateFailed"), "error");
-    } finally {
-      setSavingRuleId(null);
+    } finally { setSavingRuleId(null); }
+  };
+
+  const handleMarkPaid = async () => {
+    if (!token || selectedBonusIds.size === 0) return;
+    setMarkingPaid(true);
+    try {
+      const ids = Array.from(selectedBonusIds);
+      const res = await markBonusesPaid(token, ids);
+      const updated = res.data?.updated_count ?? 0;
+      pushToast(t("dashboard.adminCommissions.bonusPayoutSuccess", undefined, { count: String(updated) }), "success");
+      setSelectedBonusIds(new Set());
+      loadBonuses();
+    } catch (err: any) {
+      pushToast(err.message || t("dashboard.adminCommissions.bonusPayoutFailed"), "error");
+    } finally { setMarkingPaid(false); }
+  };
+
+  const toggleBonusSelect = (id: number) => {
+    setSelectedBonusIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAllPending = () => {
+    const pendingIds = bonuses.filter((b) => b.status === "pending").map((b) => b.id);
+    const allSelected = pendingIds.every((id) => selectedBonusIds.has(id));
+    if (allSelected) {
+      setSelectedBonusIds(new Set());
+    } else {
+      setSelectedBonusIds(new Set(pendingIds));
     }
   };
 
@@ -184,7 +197,7 @@ export default function AdminCommissionsPage() {
       loadConfig();
       loadRules();
     }
-  }, [token, page, bonusPage, canReadAll]);
+  }, [token, page, bonusPage, bonusStatusFilter, canReadAll]);
 
   if (permLoading || loading) {
     return (
@@ -200,9 +213,7 @@ export default function AdminCommissionsPage() {
       <div className="flex flex-col items-center justify-center h-80 gap-4 text-center">
         <ShieldAlert className="size-12 text-destructive/60" />
         <h2 className="text-xl font-bold">{t("dashboard.adminCommissions.accessRestricted")}</h2>
-        <p className="text-sm text-muted-foreground max-w-md">
-          {t("dashboard.adminCommissions.accessRestrictedDesc")}
-        </p>
+        <p className="text-sm text-muted-foreground max-w-md">{t("dashboard.adminCommissions.accessRestrictedDesc")}</p>
       </div>
     );
   }
@@ -210,6 +221,8 @@ export default function AdminCommissionsPage() {
   const totalPages = Math.ceil(total / limit) || 1;
   const totalBonusPages = Math.ceil(bonusTotal / limit) || 1;
   const totalCommissionAmount = commissions.reduce((sum, c) => sum + (c.status === "pending" ? c.amount : 0), 0);
+  const pendingBonusesOnPage = bonuses.filter((b) => b.status === "pending");
+  const allPendingSelected = pendingBonusesOnPage.length > 0 && pendingBonusesOnPage.every((b) => selectedBonusIds.has(b.id));
 
   return (
     <div className="space-y-6">
@@ -219,13 +232,11 @@ export default function AdminCommissionsPage() {
             <DollarSign className="size-5 text-emerald-500" />
             {t("dashboard.adminCommissions.title")}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("dashboard.adminCommissions.subtitle")}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">{t("dashboard.adminCommissions.subtitle")}</p>
         </div>
       </div>
 
-      {/* ── Commission Rate Settings ─────────────────────────────────────── */}
+      {/* ── Commission Rate Settings ── */}
       <Card className="border-border/40 shadow-sm overflow-hidden">
         <CardHeader className="border-b border-border/20 pb-4 bg-muted/20">
           <div className="flex items-center justify-between">
@@ -236,8 +247,7 @@ export default function AdminCommissionsPage() {
             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background px-3 py-1 rounded-full border border-border/50">
               <span>{t("dashboard.adminCommissions.activeScheme")}:</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                Tier 1 {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"} · Tier 2{" "}
-                {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
+                Tier 1 {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"} · Tier 2 {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
               </span>
             </div>
           </div>
@@ -245,93 +255,51 @@ export default function AdminCommissionsPage() {
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div className="space-y-1">
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {t("dashboard.adminCommissions.tieredScheme")}
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("dashboard.adminCommissions.tieredScheme")}</div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"}</span>
+                <span className="text-xs text-muted-foreground">{t("dashboard.adminCommissions.tier1FirstMonths", undefined, { months: String(config?.tier_threshold_months ?? 12) })}</span>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
-                  {config ? `${config.tier1_rate_percent.toFixed(0)}%` : "20%"}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {t("dashboard.adminCommissions.tier1FirstMonths", undefined, { months: String(config?.tier_threshold_months ?? 12) })}
-                </span>
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-emerald-500/80 tracking-tight">
-                  {config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {t("dashboard.adminCommissions.tier2After")}
-                </span>
+                <span className="text-3xl font-extrabold text-emerald-500/80 tracking-tight">{config ? `${config.tier2_rate_percent.toFixed(0)}%` : "10%"}</span>
+                <span className="text-xs text-muted-foreground">{t("dashboard.adminCommissions.tier2After")}</span>
               </div>
             </div>
-
             {isSuperAdmin ? (
               <div className="space-y-3 md:text-right">
                 <div className="flex flex-col gap-2">
                   <div className="space-y-1">
-                    <label htmlFor="commission-tier1-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-                      {t("dashboard.adminCommissions.tier1Label", undefined, { months: String(config?.tier_threshold_months ?? 12) })}
-                    </label>
+                    <label htmlFor="commission-tier1-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">{t("dashboard.adminCommissions.tier1Label", undefined, { months: String(config?.tier_threshold_months ?? 12) })}</label>
                     <div className="flex items-center gap-2 md:justify-end">
                       <div className="relative">
-                        <input
-                          id="commission-tier1-input"
-                          type="number"
-                          min={0}
-                          max={100}
-                          step={1}
-                          value={tier1RateInput}
-                          onChange={(e) => setTier1RateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
-                          className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
-                          placeholder="20"
-                        />
+                        <input id="commission-tier1-input" type="number" min={0} max={100} step={1} value={tier1RateInput} onChange={(e) => setTier1RateInput(e.target.value.replace(/^0+(?=\d)/, ""))} className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition" placeholder="20" />
                         <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
                       </div>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label htmlFor="commission-tier2-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
-                      {t("dashboard.adminCommissions.tier2Label")}
-                    </label>
+                    <label htmlFor="commission-tier2-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">{t("dashboard.adminCommissions.tier2Label")}</label>
                     <div className="flex items-center gap-2 md:justify-end">
                       <div className="relative">
-                        <input
-                          id="commission-tier2-input"
-                          type="number"
-                          min={0}
-                          max={100}
-                          step={1}
-                          value={tier2RateInput}
-                          onChange={(e) => setTier2RateInput(e.target.value.replace(/^0+(?=\d)/, ""))}
-                          className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition"
-                          placeholder="10"
-                        />
+                        <input id="commission-tier2-input" type="number" min={0} max={100} step={1} value={tier2RateInput} onChange={(e) => setTier2RateInput(e.target.value.replace(/^0+(?=\d)/, ""))} className="h-10 w-28 rounded-xl border border-input bg-background pl-3 pr-8 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition" placeholder="10" />
                         <Percent className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
                       </div>
                     </div>
                   </div>
-                  <Button
-                    onClick={handleSaveConfig}
-                    disabled={configLoading}
-                    className="h-10 px-4 font-semibold gap-2"
-                    size="sm"
-                  >
+                  <Button onClick={handleSaveConfig} disabled={configLoading} className="h-10 px-4 font-semibold gap-2" size="sm">
                     {configLoading && <Loader2 className="size-3.5 animate-spin" />}
                     {t("dashboard.adminCommissions.save")}
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="text-xs text-muted-foreground bg-muted/40 rounded-xl p-3 border border-border/30">
-                {t("dashboard.adminCommissions.superadminOnlyEdit", undefined, { superadmin: t("dashboard.adminCommissions.superadmin") })}
-              </div>
+              <div className="text-xs text-muted-foreground bg-muted/40 rounded-xl p-3 border border-border/30">{t("dashboard.adminCommissions.superadminOnlyEdit", undefined, { superadmin: t("dashboard.adminCommissions.superadmin") })}</div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* ── Bonus Rules Administration ────────────────────────────────────── */}
+      {/* ── Bonus Rules ── */}
       <Card className="border-border/40 shadow-sm overflow-hidden">
         <CardHeader className="border-b border-border/20 pb-4 bg-muted/20">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
@@ -346,58 +314,22 @@ export default function AdminCommissionsPage() {
                 <div>
                   <div className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold capitalize px-2 py-0.5 rounded-md bg-muted">
-                      {rule.type === "onboarding" ? (
-                        <Gift className="size-3 text-emerald-500" />
-                      ) : (
-                        <Target className="size-3 text-amber-500" />
-                      )}
+                      {rule.type === "onboarding" ? <Gift className="size-3 text-emerald-500" /> : <Target className="size-3 text-amber-500" />}
                       {rule.type}
                     </span>
-                    {rule.tier && (
-                      <span className="text-[11px] font-bold font-mono text-muted-foreground">
-                        {t("dashboard.adminCommissions.tier")} {rule.tier}
-                      </span>
-                    )}
+                    {rule.tier && <span className="text-[11px] font-bold font-mono text-muted-foreground">{t("dashboard.adminCommissions.tier")} {rule.tier}</span>}
                   </div>
                   <div className="mt-2 text-xs text-muted-foreground">
-                    {rule.type === "onboarding" ? (
-                      t("dashboard.adminCommissions.onboardingDesc")
-                    ) : (
-                      t("dashboard.adminCommissions.milestoneDesc", undefined, { threshold: String(rule.threshold) })
-                    )}
+                    {rule.type === "onboarding" ? t("dashboard.adminCommissions.onboardingDesc") : t("dashboard.adminCommissions.milestoneDesc", undefined, { threshold: String(rule.threshold) })}
                   </div>
                 </div>
-
                 <div className="space-y-2">
-                  <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                    {t("dashboard.adminCommissions.bonusAmount")}
-                  </label>
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">{t("dashboard.adminCommissions.bonusAmount")}</label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      disabled={!isSuperAdmin}
-                      value={editedAmounts[rule.id] ?? rule.amount.toString()}
-                      onChange={(e) =>
-                        setEditedAmounts({
-                          ...editedAmounts,
-                          [rule.id]: e.target.value.replace(/^0+(?=\d)/, ""),
-                        })
-                      }
-                      className="h-9 w-full rounded-lg border border-input bg-background px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition disabled:opacity-60"
-                    />
+                    <input type="number" disabled={!isSuperAdmin} value={editedAmounts[rule.id] ?? rule.amount.toString()} onChange={(e) => setEditedAmounts({ ...editedAmounts, [rule.id]: e.target.value.replace(/^0+(?=\d)/, "") })} className="h-9 w-full rounded-lg border border-input bg-background px-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition disabled:opacity-60" />
                     {isSuperAdmin && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={savingRuleId === rule.id}
-                        onClick={() => handleSaveRuleAmount(rule.id)}
-                        className="h-9 px-2.5 shrink-0"
-                      >
-                        {savingRuleId === rule.id ? (
-                          <Loader2 className="size-3.5 animate-spin" />
-                        ) : (
-                          <Save className="size-3.5" />
-                        )}
+                      <Button size="sm" variant="outline" disabled={savingRuleId === rule.id} onClick={() => handleSaveRuleAmount(rule.id)} className="h-9 px-2.5 shrink-0">
+                        {savingRuleId === rule.id ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
                       </Button>
                     )}
                   </div>
@@ -408,39 +340,23 @@ export default function AdminCommissionsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Tabs: Commissions vs Bonuses ─────────────────────────────────── */}
+      {/* ── Tabs ── */}
       <div className="flex border-b border-border/40 gap-2">
-        <button
-          onClick={() => setActiveTab("commissions")}
-          className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === "commissions"
-              ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
-              : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
-        >
+        <button onClick={() => setActiveTab("commissions")} className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === "commissions" ? "border-emerald-500 text-emerald-600 dark:text-emerald-400" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
           <DollarSign className="size-4" />
           {t("dashboard.adminCommissions.recurringCommissions", undefined, { count: String(total) })}
         </button>
-        <button
-          onClick={() => setActiveTab("bonuses")}
-          className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === "bonuses"
-              ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
-              : "border-transparent text-muted-foreground hover:text-foreground"
-          }`}
-        >
+        <button onClick={() => setActiveTab("bonuses")} className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === "bonuses" ? "border-emerald-500 text-emerald-600 dark:text-emerald-400" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
           <Award className="size-4" />
           {t("dashboard.adminCommissions.allBonuses", undefined, { count: String(bonusTotal) })}
         </button>
       </div>
 
-      {/* ── Commission List Table ────────────────────────────────────────── */}
+      {/* ── Commission List ── */}
       {activeTab === "commissions" && (
         <Card className="border-border/40 shadow-sm">
           <CardHeader className="border-b border-border/20 pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-bold tracking-tight">
-              {t("dashboard.adminCommissions.allCommissionTxns", undefined, { count: String(total) })}
-            </CardTitle>
+            <CardTitle className="text-lg font-bold tracking-tight">{t("dashboard.adminCommissions.allCommissionTxns", undefined, { count: String(total) })}</CardTitle>
             <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg">
               {t("dashboard.adminCommissions.pendingOnPage", undefined, { amount: totalCommissionAmount.toLocaleString("id-ID") })}
             </div>
@@ -469,81 +385,26 @@ export default function AdminCommissionsPage() {
                   <tbody>
                     {commissions.map((c) => (
                       <tr key={c.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
-                        <td className="px-6 py-4 text-xs font-mono text-muted-foreground">
-                          {new Date(c.created_at).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold bg-muted/50 px-2.5 py-1 rounded-md">
-                            <Users className="size-3 text-muted-foreground" />
-                            User #{c.sales_user_id}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-mono text-xs text-muted-foreground">
-                          Tenant #{c.tenant_id}
-                        </td>
-                        <td className="px-6 py-4 font-mono text-xs font-semibold">
-                          {c.order_id}
-                        </td>
-                        <td className="px-6 py-4 text-right font-medium">
-                          Rp {c.gross_amount.toLocaleString("id-ID")}
-                        </td>
-                        <td className="px-6 py-4 text-center text-xs">
-                        <span className="inline-flex flex-col items-center leading-tight">
-                          <span className="font-bold text-emerald-600 dark:text-emerald-400">{t("dashboard.adminCommissions.tier")} {c.tier}</span>
-                          <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
-                        </span>
-                        </td>
-                        <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
-                          Rp {c.amount.toLocaleString("id-ID")}
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${
-                            c.status === "pending"
-                              ? "border-emerald-500/30 text-emerald-600 bg-emerald-500/10"
-                              : "border-destructive/30 text-destructive bg-destructive/10"
-                          }`}>
-                            {c.status}
-                          </span>
-                        </td>
+                        <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{new Date(c.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</td>
+                        <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold bg-muted/50 px-2.5 py-1 rounded-md"><Users className="size-3 text-muted-foreground" />User #{c.sales_user_id}</span></td>
+                        <td className="px-6 py-4 font-mono text-xs text-muted-foreground">Tenant #{c.tenant_id}</td>
+                        <td className="px-6 py-4 font-mono text-xs font-semibold">{c.order_id}</td>
+                        <td className="px-6 py-4 text-right font-medium">Rp {c.gross_amount.toLocaleString("id-ID")}</td>
+                        <td className="px-6 py-4 text-center text-xs"><span className="inline-flex flex-col items-center leading-tight"><span className="font-bold text-emerald-600 dark:text-emerald-400">{t("dashboard.adminCommissions.tier")} {c.tier}</span><span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span></span></td>
+                        <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">Rp {c.amount.toLocaleString("id-ID")}</td>
+                        <td className="px-6 py-4 text-center"><span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${c.status === "pending" ? "border-emerald-500/30 text-emerald-600 bg-emerald-500/10" : "border-destructive/30 text-destructive bg-destructive/10"}`}>{c.status}</span></td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
-
             {totalPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
-                <span className="text-xs text-muted-foreground">
-                  {t("dashboard.adminCommissions.pageOf", undefined, { page: String(page), total: String(totalPages) })}
-                </span>
+                <span className="text-xs text-muted-foreground">{t("dashboard.adminCommissions.pageOf", undefined, { page: String(page), total: String(totalPages) })}</span>
                 <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => p - 1)}
-                    className="gap-1"
-                  >
-                    <ChevronLeft className="size-4" />
-                    {t("dashboard.adminCommissions.previous")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                    className="gap-1"
-                  >
-                    {t("dashboard.adminCommissions.next")}
-                    <ChevronRight className="size-4" />
-                  </Button>
+                  <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="gap-1"><ChevronLeft className="size-4" />{t("dashboard.adminCommissions.previous")}</Button>
+                  <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="gap-1">{t("dashboard.adminCommissions.next")}<ChevronRight className="size-4" /></Button>
                 </div>
               </div>
             )}
@@ -551,13 +412,32 @@ export default function AdminCommissionsPage() {
         </Card>
       )}
 
-      {/* ── Bonus List Table ─────────────────────────────────────────────── */}
+      {/* ── Bonus List with Payout ── */}
       {activeTab === "bonuses" && (
         <Card className="border-border/40 shadow-sm">
-          <CardHeader className="border-b border-border/20 pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-bold tracking-tight">
-              {t("dashboard.adminCommissions.allBonusesTitle", undefined, { count: String(bonusTotal) })}
-            </CardTitle>
+          <CardHeader className="border-b border-border/20 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <CardTitle className="text-lg font-bold tracking-tight">{t("dashboard.adminCommissions.allBonusesTitle", undefined, { count: String(bonusTotal) })}</CardTitle>
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Status filter */}
+                <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs">
+                  <Filter className="size-3 text-muted-foreground" />
+                  <select value={bonusStatusFilter} onChange={(e) => { setBonusStatusFilter(e.target.value as any); setBonusPage(1); }} className="bg-transparent text-xs font-semibold focus:outline-none cursor-pointer">
+                    <option value="">{t("dashboard.adminCommissions.filterAll")}</option>
+                    <option value="pending">{t("dashboard.adminCommissions.filterPending")}</option>
+                    <option value="paid">{t("dashboard.adminCommissions.filterPaid")}</option>
+                    <option value="voided">{t("dashboard.adminCommissions.filterVoided")}</option>
+                  </select>
+                </div>
+                {/* Payout button — only superadmin, only when items selected */}
+                {isSuperAdmin && selectedBonusIds.size > 0 && (
+                  <Button size="sm" onClick={handleMarkPaid} disabled={markingPaid} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+                    {markingPaid ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle2 className="size-3.5" />}
+                    {t("dashboard.adminCommissions.markPaid", undefined, { count: String(selectedBonusIds.size) })}
+                  </Button>
+                )}
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
             {bonuses.length === 0 ? (
@@ -570,6 +450,11 @@ export default function AdminCommissionsPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border/20 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                      {isSuperAdmin && (
+                        <th className="pl-6 pr-3 py-4">
+                          <input type="checkbox" checked={allPendingSelected} onChange={toggleSelectAllPending} className="h-4 w-4 rounded border-border accent-emerald-600 cursor-pointer" title={t("dashboard.adminCommissions.selectAllPending")} />
+                        </th>
+                      )}
                       <th className="px-6 py-4">{t("dashboard.adminCommissions.colDate")}</th>
                       <th className="px-6 py-4">{t("dashboard.adminCommissions.colSalesUser")}</th>
                       <th className="px-6 py-4">{t("dashboard.adminCommissions.colBonusType")}</th>
@@ -580,48 +465,23 @@ export default function AdminCommissionsPage() {
                   </thead>
                   <tbody>
                     {bonuses.map((b) => (
-                      <tr key={b.id} className="border-b border-border/10 hover:bg-muted/30 transition-colors">
-                        <td className="px-6 py-4 text-xs font-mono text-muted-foreground">
-                          {new Date(b.created_at).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold bg-muted/50 px-2.5 py-1 rounded-md">
-                            <Users className="size-3 text-muted-foreground" />
-                            User #{b.sales_user_id}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            {b.type === "onboarding" ? (
-                              <Gift className="size-4 text-emerald-500" />
+                      <tr key={b.id} className={`border-b border-border/10 hover:bg-muted/30 transition-colors ${selectedBonusIds.has(b.id) ? "bg-emerald-500/5" : ""}`}>
+                        {isSuperAdmin && (
+                          <td className="pl-6 pr-3 py-4">
+                            {b.status === "pending" ? (
+                              <input type="checkbox" checked={selectedBonusIds.has(b.id)} onChange={() => toggleBonusSelect(b.id)} className="h-4 w-4 rounded border-border accent-emerald-600 cursor-pointer" />
                             ) : (
-                              <Target className="size-4 text-amber-500" />
+                              <span className="size-4 inline-block" />
                             )}
-                            <span className="font-semibold capitalize">{b.type} {t("dashboard.adminCommissions.bonus")}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-center text-xs font-mono text-muted-foreground">
-                          {b.type === "onboarding"
-                            ? `${t("dashboard.adminCommissions.tenant")} #${b.tenant_id}`
-                            : `${t("dashboard.adminCommissions.period")} ${b.period} (${t("dashboard.adminCommissions.tier")} ${b.tier})`}
-                        </td>
-                        <td className="px-6 py-4 text-right font-bold text-amber-600 dark:text-amber-400">
-                          Rp {b.amount.toLocaleString("id-ID")}
-                        </td>
+                          </td>
+                        )}
+                        <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{new Date(b.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</td>
+                        <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold bg-muted/50 px-2.5 py-1 rounded-md"><Users className="size-3 text-muted-foreground" />User #{b.sales_user_id}</span></td>
+                        <td className="px-6 py-4"><div className="flex items-center gap-2">{b.type === "onboarding" ? <Gift className="size-4 text-emerald-500" /> : <Target className="size-4 text-amber-500" />}<span className="font-semibold capitalize">{b.type} {t("dashboard.adminCommissions.bonus")}</span></div></td>
+                        <td className="px-6 py-4 text-center text-xs font-mono text-muted-foreground">{b.type === "onboarding" ? `${t("dashboard.adminCommissions.tenant")} #${b.tenant_id}` : `${t("dashboard.adminCommissions.period")} ${b.period} (${t("dashboard.adminCommissions.tier")} ${b.tier})`}</td>
+                        <td className="px-6 py-4 text-right font-bold text-amber-600 dark:text-amber-400">Rp {b.amount.toLocaleString("id-ID")}</td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${
-                            b.status === "pending"
-                              ? "border-amber-500/30 text-amber-600 bg-amber-500/10"
-                              : b.status === "paid"
-                              ? "border-emerald-500/30 text-emerald-600 bg-emerald-500/10"
-                              : "border-destructive/30 text-destructive bg-destructive/10"
-                          }`}>
+                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${b.status === "pending" ? "border-amber-500/30 text-amber-600 bg-amber-500/10" : b.status === "paid" ? "border-emerald-500/30 text-emerald-600 bg-emerald-500/10" : "border-destructive/30 text-destructive bg-destructive/10"}`}>
                             {b.status}
                           </span>
                         </td>
@@ -631,33 +491,12 @@ export default function AdminCommissionsPage() {
                 </table>
               </div>
             )}
-
             {totalBonusPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-border/20">
-                <span className="text-xs text-muted-foreground">
-                  {t("dashboard.adminCommissions.pageOf", undefined, { page: String(bonusPage), total: String(totalBonusPages) })}
-                </span>
+                <span className="text-xs text-muted-foreground">{t("dashboard.adminCommissions.pageOf", undefined, { page: String(bonusPage), total: String(totalBonusPages) })}</span>
                 <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={bonusPage <= 1}
-                    onClick={() => setBonusPage((p) => p - 1)}
-                    className="gap-1"
-                  >
-                    <ChevronLeft className="size-4" />
-                    {t("dashboard.adminCommissions.previous")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={bonusPage >= totalBonusPages}
-                    onClick={() => setBonusPage((p) => p + 1)}
-                    className="gap-1"
-                  >
-                    {t("dashboard.adminCommissions.next")}
-                    <ChevronRight className="size-4" />
-                  </Button>
+                  <Button size="sm" variant="outline" disabled={bonusPage <= 1} onClick={() => setBonusPage((p) => p - 1)} className="gap-1"><ChevronLeft className="size-4" />{t("dashboard.adminCommissions.previous")}</Button>
+                  <Button size="sm" variant="outline" disabled={bonusPage >= totalBonusPages} onClick={() => setBonusPage((p) => p + 1)} className="gap-1">{t("dashboard.adminCommissions.next")}<ChevronRight className="size-4" /></Button>
                 </div>
               </div>
             )}

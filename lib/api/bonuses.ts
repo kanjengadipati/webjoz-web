@@ -50,6 +50,19 @@ export async function fetchAllBonuses(token: string, query?: URLSearchParams) {
   return request<SalesBonus[]>(`/bonuses${queryString}`, { method: "GET" }, token);
 }
 
+export async function fetchAllBonusesFiltered(token: string, query?: URLSearchParams) {
+  const queryString = query ? `?${query.toString()}` : "";
+  return request<SalesBonus[]>(`/bonuses/admin${queryString}`, { method: "GET" }, token);
+}
+
+export async function markBonusesPaid(token: string, ids: number[]) {
+  return request<{ updated_count: number }>(
+    "/bonuses/payout",
+    { method: "POST", body: JSON.stringify({ ids }) },
+    token
+  );
+}
+
 export async function fetchBonusRules(token: string) {
   return request<BonusRule[]>("/bonuses/rules", { method: "GET" }, token);
 }
