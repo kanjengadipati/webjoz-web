@@ -982,6 +982,18 @@ export interface Translations {
       base: string;
       view: string;
       delete: string;
+      sortNewest: string;
+      sortOldest: string;
+      sortScoreAsc: string;
+      sortScoreDesc: string;
+      scoreBelowPlaceholder: string;
+      selectAllFiltered: string;
+      clearSelection: string;
+      selectedCount: string;
+      deleteSelected: string;
+      bulkDeleteConfirm: string;
+      bulkDeleted: string;
+      bulkDeletePartialFail: string;
     };
     adminAnnouncements: {
       noAccess: string;
@@ -2917,6 +2929,18 @@ export const translations: Record<Locale, Translations> = {
         base: "Base",
         view: "Lihat",
         delete: "Hapus",
+        sortNewest: "Terbaru",
+        sortOldest: "Terlama",
+        sortScoreAsc: "Skor Terendah",
+        sortScoreDesc: "Skor Tertinggi",
+        scoreBelowPlaceholder: "Skor di bawah...",
+        selectAllFiltered: "Pilih Semua ({count})",
+        clearSelection: "Batal Pilih",
+        selectedCount: "{count} dipilih",
+        deleteSelected: "Hapus Terpilih",
+        bulkDeleteConfirm: "Hapus permanen {count} design token seed yang dipilih?",
+        bulkDeleted: "{count} seed berhasil dihapus",
+        bulkDeletePartialFail: "{ok} berhasil dihapus, {fail} gagal — coba lagi untuk sisanya",
       },
       adminAnnouncements: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -4893,6 +4917,18 @@ export const translations: Record<Locale, Translations> = {
         base: "Base",
         view: "View",
         delete: "Delete",
+        sortNewest: "Newest",
+        sortOldest: "Oldest",
+        sortScoreAsc: "Lowest Score",
+        sortScoreDesc: "Highest Score",
+        scoreBelowPlaceholder: "Score below...",
+        selectAllFiltered: "Select All ({count})",
+        clearSelection: "Clear Selection",
+        selectedCount: "{count} selected",
+        deleteSelected: "Delete Selected",
+        bulkDeleteConfirm: "Permanently delete {count} selected design token seeds?",
+        bulkDeleted: "{count} seeds deleted",
+        bulkDeletePartialFail: "{ok} deleted, {fail} failed — try again for the rest",
       },
       adminAnnouncements: {
         noAccess: "You do not have access to this page.",

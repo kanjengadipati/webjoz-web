@@ -41,7 +41,6 @@ export function I18nProvider({ children, defaultLocale = "id", forcedLocale }: {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (forcedLocale) {
-      setLocaleState(forcedLocale);
       document.documentElement.lang = forcedLocale === "id" ? "id" : "en";
       return;
     }
