@@ -1013,6 +1013,14 @@ export interface Translations {
       critiqueStrengths: string;
       critiqueImprovements: string;
       critiqueScreenshot: string;
+      critiqueViewDetails: string;
+      critiqueDetailsTitle: string;
+      critiqueDimensions: string;
+      critiqueScreenshotTitle: string;
+      critiqueOpenScreenshot: string;
+      critiqueClose: string;
+      critiqueNoScreenshot: string;
+      critiqueVerdict: string;
     };
     adminAnnouncements: {
       noAccess: string;
@@ -3067,6 +3075,14 @@ export const translations: Record<Locale, Translations> = {
         critiqueStrengths: "Kelebihan",
         critiqueImprovements: "Perbaikan",
         critiqueScreenshot: "screenshot",
+        critiqueViewDetails: "Lihat detail",
+        critiqueDetailsTitle: "Detail Kritik AI",
+        critiqueDimensions: "Skor Dimensi",
+        critiqueScreenshotTitle: "Screenshot",
+        critiqueOpenScreenshot: "Buka di tab baru",
+        critiqueClose: "Tutup",
+        critiqueNoScreenshot: "Tidak ada screenshot",
+        critiqueVerdict: "Penilaian",
       },
       adminAnnouncements: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -5162,6 +5178,14 @@ export const translations: Record<Locale, Translations> = {
         critiqueStrengths: "Strengths",
         critiqueImprovements: "Improvements",
         critiqueScreenshot: "screenshot",
+        critiqueViewDetails: "View details",
+        critiqueDetailsTitle: "AI Critique Details",
+        critiqueDimensions: "Dimension Scores",
+        critiqueScreenshotTitle: "Screenshot",
+        critiqueOpenScreenshot: "Open in new tab",
+        critiqueClose: "Close",
+        critiqueNoScreenshot: "No screenshot",
+        critiqueVerdict: "Verdict",
       },
       adminAnnouncements: {
         noAccess: "You do not have access to this page.",
