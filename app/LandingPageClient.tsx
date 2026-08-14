@@ -174,7 +174,7 @@ export default function LandingPageClient() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Webjoz",
-            "url": "https://webjoz.com"
+            "url": "https://www.webjoz.com"
           }),
         }}
       />
@@ -185,8 +185,8 @@ export default function LandingPageClient() {
             "@context": "https://schema.org",
             "@type": "Organization",
             "name": "Webjoz",
-            "url": "https://webjoz.com",
-            "logo": "https://webjoz.com/logo2.png",
+            "url": "https://www.webjoz.com",
+            "logo": "https://www.webjoz.com/logo2.png",
             "description": "Platform AI Website Builder untuk bisnis Indonesia. Buat website profesional dalam 5 menit tanpa coding.",
             "areaServed": "Indonesia",
             "contactPoint": {
@@ -196,8 +196,34 @@ export default function LandingPageClient() {
               "url": "https://wa.me/6285111221044"
             },
             "sameAs": [
-              "https://webjoz.com"
+              "https://www.webjoz.com"
             ]
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Webjoz",
+            "operatingSystem": "Web",
+            "applicationCategory": "BusinessApplication",
+            "description": "AI website builder untuk UMKM dan bisnis Indonesia. Buat website profesional dalam 5 menit tanpa coding.",
+            "url": "https://www.webjoz.com",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "IDR",
+              "description": "Mulai gratis, upgrade kapan saja"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "ratingCount": "120",
+              "bestRating": "5"
+            }
           }),
         }}
       />
@@ -592,6 +618,7 @@ export default function LandingPageClient() {
               {t("landing.footerCopyright", undefined, { year: String(new Date().getFullYear()) })}
             </p>
             <div className="flex items-center gap-4 text-xs text-slate-400">
+              <Link href="/blog" className="hover:text-white transition">{t("landing.footerBlog")}</Link>
               <Link href="/login" className="hover:text-white transition">{t("landing.footerLogin")}</Link>
               <Link href="/contact" className="hover:text-white transition">{t("common.contact")}</Link>
             </div>

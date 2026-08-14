@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { Locale } from "@/lib/i18n/translations";
 import { LOCALE_STORAGE_KEY } from "@/lib/i18n/context";
 import { Providers } from "@/components/providers";
+import { SITE_URL, siteUrl } from "@/lib/site-config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://webjoz.com"),
+  metadataBase: new URL(SITE_URL),
   title: "Webjoz — AI Website Builder untuk Bisnis",
   description:
     "Buat website bisnis profesional dalam 5 menit dengan AI. Isi profil bisnis, pilih template, dan website Anda langsung aktif — tanpa coding, tanpa tunggu tim.",
@@ -32,11 +33,11 @@ export const metadata: Metadata = {
     "landing page AI",
     "website Indonesia",
   ],
-  authors: [{ name: "Webjoz", url: "https://webjoz.com" }],
+  authors: [{ name: "Webjoz", url: SITE_URL }],
   openGraph: {
     title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
-    url: "https://webjoz.com",
+    url: SITE_URL,
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
@@ -50,6 +51,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: siteUrl(),
+    languages: {
+      id: siteUrl(),
+      en: siteUrl("/en"),
+    },
   },
 };
 
