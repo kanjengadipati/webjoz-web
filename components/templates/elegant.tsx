@@ -332,6 +332,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
             leadFormBtnClass="w-full font-bold text-[11px] uppercase tracking-widest hover:brightness-110 transition-all"
             leadFormBtnStyle={{ background: gold }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm   outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/20 text-amber-100 placeholder-neutral-600"
+            formPosition={data.contact.form_position ?? "right"}
             language={language}
           />
         )} />

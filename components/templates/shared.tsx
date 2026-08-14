@@ -1603,6 +1603,7 @@ interface ContactSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
   formPosition?: "right" | "left" | "stack" | null;
+  mapStyle?: "default" | "circular" | null;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -1620,6 +1621,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   language = "id",
   formPosition = "right",
+  mapStyle = "default",
 }) => {
   const isEN = language === "en";
   const effectiveLeadTitleText = leadTitleText ?? (isEN ? "Contact Us" : "Hubungi Kami");
@@ -1655,83 +1657,98 @@ const ContactSection: React.FC<ContactSectionProps> = ({
     { icon: Mail, text: displayEmail, fieldKey: "email", href: `mailto:${displayEmail}` },
   ];
 
+  const colWClass = showForm && !isStacked ? "md:w-1/2" : "";
+  const colClass = `space-y-6 ${colWClass}`;
+  const formCol = isStacked ? "" : "mt-0";
+
+  const InfoBlock = (
+    <div className={colClass}>
+      {title && (
+        <h2 className={`mx-auto ${!showForm ? "max-w-xl" : ""} ${titleClass}`} style={{ ...titleStyle, ...headingVars }}>
+          {title}
+        </h2>
+      )}
+      <div className="space-y-4">
+        {infoItems.map(({ icon: Icon, text, fieldKey, href }) => {
+          const inner = (
+            <div className="inline-flex gap-3 items-center">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
+                <Icon className="w-4 h-4" style={{ color: accentColor }} />
+              </div>
+              <div className="min-w-0">
+                {fieldKey ? (
+                  <InlineText
+                    section="contact"
+                    fieldKey={fieldKey}
+                    value={text}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="p"
+                    className={`${textClass} break-words`}
+                    style={textStyle}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                ) : (
+                  <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
+                )}
+              </div>
+            </div>
+          );
+          if (href && !isEditorMode) {
+            return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{inner}</a>;
+          }
+          return <div key={text}>{inner}</div>;
+        })}
+      </div>
+
+      {showMap !== false && (
+        <div className={`space-y-2 mt-2 w-full ${mapStyle === "circular" ? "flex justify-center" : ""}`}>
+          {mapStyle === "circular" ? (
+            <div className="relative w-64 h-64">
+              <div className="absolute -inset-2 rounded-full opacity-20 blur-[60px] pointer-events-none" style={{ background: accentColor }} />
+              <div className="relative w-full h-full rounded-full overflow-hidden border" style={{ borderColor: `${accentColor}30` }}>
+                <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
+              <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
+            </div>
+          )}
+          <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
+            <Globe className="w-3.5 h-3.5" />
+            Buka di Google Maps
+          </a>
+        </div>
+      )}
+    </div>
+  );
+
+  const FormBlock = showForm ? (
+    <div className={`space-y-6 ${isStacked ? "mt-10" : ""} ${formCol}`}>
+      <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
+        <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
+        <LeadForm
+          onSubmit={onSubmitLead!}
+          submitting={leadSubmitting ?? false}
+          success={leadSuccess ?? false}
+          error={leadError ?? null}
+          buttonClass={leadFormBtnClass || ""}
+          buttonStyle={leadFormBtnStyle}
+          inputClass={leadFormInputClass || ""}
+          inputStyle={leadFormInputStyle}
+          language={language}
+        />
+      </div>
+    </div>
+  ) : null;
+
   return (
     <section id="contact" className={wrapperClass} style={wrapperStyle}>
       <div className={`mx-auto ${showForm && !isStacked ? "max-w-5xl flex flex-col md:flex-row md:gap-10" : "max-w-3xl"} ${!showForm ? "text-center items-center" : ""}`}>
-        {/* Contact info */}
-        <div className={`space-y-6 ${!showForm ? "mx-auto" : ""} ${showForm && !isStacked ? "md:w-1/2" : ""}`}>
-          {title && (
-            <h2 className={`mx-auto ${!showForm ? "max-w-xl" : ""} ${titleClass}`} style={{ ...titleStyle, ...headingVars }}>
-              {title}
-            </h2>
-          )}
-          <div className="space-y-4">
-            {infoItems.map(({ icon: Icon, text, fieldKey, href }) => {
-              const inner = (
-                <div className="inline-flex gap-3 items-center">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
-                    <Icon className="w-4 h-4" style={{ color: accentColor }} />
-                  </div>
-                  <div className="min-w-0">
-                    {fieldKey ? (
-                      <InlineText
-                        section="contact"
-                        fieldKey={fieldKey}
-                        value={text}
-                        onUpdateField={onUpdateField}
-                        isEditorMode={isEditorMode}
-                        isSelected={isSelected}
-                        as="p"
-                        className={`${textClass} break-words`}
-                        style={textStyle}
-                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                        onEditingStateChange={onEditingStateChange}
-                      />
-                    ) : (
-                      <p className={`${textClass} break-words`} style={textStyle}>{text}</p>
-                    )}
-                  </div>
-                </div>
-              );
-              if (href && !isEditorMode) {
-                return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{inner}</a>;
-              }
-              return <div key={text}>{inner}</div>;
-            })}
-          </div>
-
-          {showMap !== false && (
-            <div className="space-y-2 mt-2 w-full">
-              <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
-                <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
-              </div>
-              <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
-                <Globe className="w-3.5 h-3.5" />
-                Buka di Google Maps
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Lead form */}
-        {showForm && (
-          <div className={`space-y-6 ${showForm && !isStacked ? "md:w-1/2" : ""} ${isStacked ? "mt-10" : ""}`}>
-            <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
-              <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
-              <LeadForm
-                onSubmit={onSubmitLead!}
-                submitting={leadSubmitting ?? false}
-                success={leadSuccess ?? false}
-                error={leadError ?? null}
-                buttonClass={leadFormBtnClass || ""}
-                buttonStyle={leadFormBtnStyle}
-                inputClass={leadFormInputClass || ""}
-                inputStyle={leadFormInputStyle}
-                language={language}
-              />
-            </div>
-          </div>
-        )}
+        {formOnRight ? <>{InfoBlock}{FormBlock}</> : <>{FormBlock}{InfoBlock}</>}
       </div>
     </section>
   );
