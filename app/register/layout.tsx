@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Daftar gratis di Webjoz dan buat website bisnis profesional dalam 5 menit dengan AI. Tanpa coding, tanpa kartu kredit. Cocok untuk UMKM Indonesia.",
   robots: {
-    index: true,
+    index: false,
     follow: true,
   },
   alternates: {

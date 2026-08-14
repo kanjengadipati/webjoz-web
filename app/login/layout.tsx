@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Masuk ke akun Webjoz untuk mengelola website bisnis Anda yang dibuat dengan AI. Akses dashboard, edit konten, dan pantau performa situs Anda.",
   robots: {
-    index: true,
+    index: false,
     follow: true,
   },
   alternates: {
