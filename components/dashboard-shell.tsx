@@ -54,7 +54,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const authReady = useAuthReady();
   const token = useAuthToken();
-  const { t } = useI18n();
+  const { t, locale, setLocale } = useI18n();
   const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
   const { hasPermission, role: userRole, loading } = usePermissions();
@@ -261,6 +261,19 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             >
               <ThemeIcon mode={theme} />
             </Button>
+
+            {/* Language toggle */}
+            <div className="flex flex-col items-center justify-center gap-0.5 shrink-0">
+              <button
+                type="button"
+                aria-label="Switch language"
+                onClick={() => setLocale(locale === "id" ? "en" : "id")}
+                className="rounded-full border border-border/50 bg-muted/40 px-2 py-1 text-[9px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
+              >
+                {locale === "id" ? "EN" : "ID"}
+              </button>
+              <span className="text-[7px] text-muted-foreground/60 leading-none">{t("dashboard.language")}</span>
+            </div>
           </div>
         </nav>
       )}
@@ -403,6 +416,28 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       >
                         <ThemeIcon mode={theme} />
                       </Button>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="text-xs font-medium text-muted-foreground/70">{t("dashboard.language")}</span>
+                      <div className="inline-flex items-center rounded-full border border-border/60 bg-background/60 p-0.5 text-[11px] font-semibold">
+                        {(["id", "en"] as const).map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
+                            aria-pressed={locale === code}
+                            onClick={() => setLocale(code)}
+                            className={cn(
+                              "rounded-full px-2.5 py-1 transition cursor-pointer",
+                              locale === code
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            {code === "id" ? "ID" : "EN"}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   {isAuthenticated && (
