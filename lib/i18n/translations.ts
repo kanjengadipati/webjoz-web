@@ -324,6 +324,7 @@ export interface Translations {
     authenticated: string;
     locked: string;
     appearance: string;
+    language: string;
     logout: string;
     backToWebsites: string;
     subDashboard: string;
@@ -2351,6 +2352,7 @@ export const translations: Record<Locale, Translations> = {
       authenticated: "Terautentikasi",
       locked: "Terkunci",
       appearance: "Tampilan",
+      language: "Bahasa",
       logout: "Keluar",
       backToWebsites: "Kembali ke daftar website",
       subDashboard: "Pantau ringkasan performa dan aktivitas website Anda.",
@@ -4424,6 +4426,7 @@ export const translations: Record<Locale, Translations> = {
       authenticated: "Authenticated",
       locked: "Locked",
       appearance: "Appearance",
+      language: "Language",
       logout: "Logout",
       backToWebsites: "Back to websites list",
       subDashboard: "Monitor the summary of your website's performance and activity.",
