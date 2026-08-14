@@ -219,7 +219,6 @@ export interface TemplateProps {
       maps_url?: string | null;
       align?: "left" | "center" | "right" | null;
       form_position?: "right" | "left" | "stack" | null;
-      map_style?: "default" | "circular" | null;
       show_lead_form?: boolean;
       show_map?: boolean;
       map_tile_style?: string;
