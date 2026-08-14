@@ -63,6 +63,7 @@ interface SeedEntry {
 
 type Tab = "components" | "seeds";
 type SortOrder = "newest" | "oldest" | "score_asc" | "score_desc";
+type ScoreFilter = "all" | "excellent" | "good" | "weak";
 
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 
@@ -76,7 +77,7 @@ export default function TemplateGalleryPage() {
   const [selectedMood, setSelectedMood] = useState("all");
   const [selectedBusinessType, setSelectedBusinessType] = useState("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
-  const [scoreBelow, setScoreBelow] = useState("");
+  const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [critiquingId, setCritiquingId] = useState<number | null>(null);
@@ -240,9 +241,21 @@ export default function TemplateGalleryPage() {
     score: seed.score ?? scoreDesignToken(seed.design_token).total,
   }));
 
-  const scoreBelowNum = scoreBelow.trim() === "" ? null : Number(scoreBelow);
+  const scoreFilterOptions: { value: ScoreFilter; labelKey: string; className: string }[] = [
+    { value: "all", labelKey: "dashboard.adminTemplates.scoreFilterAll", className: "" },
+    { value: "excellent", labelKey: "dashboard.adminTemplates.scoreFilterExcellent", className: "text-green-500" },
+    { value: "good", labelKey: "dashboard.adminTemplates.scoreFilterGood", className: "text-yellow-500" },
+    { value: "weak", labelKey: "dashboard.adminTemplates.scoreFilterWeak", className: "text-orange-500" },
+  ];
 
-  // Filter seeds based on search + business type + mood + score threshold
+  const scoreCounts: Record<ScoreFilter, number> = {
+    all: seedsScored.length,
+    excellent: seedsScored.filter(({ score }) => score >= 80).length,
+    good: seedsScored.filter(({ score }) => score >= 60 && score < 80).length,
+    weak: seedsScored.filter(({ score }) => score < 60).length,
+  };
+
+  // Filter seeds based on search + business type + mood + score bucket
   const filteredSeeds = seedsScored
     .filter(({ seed, score }) => {
       const q = searchQuery.toLowerCase();
@@ -253,7 +266,11 @@ export default function TemplateGalleryPage() {
         String(seed.id).includes(q);
       const matchesBT = selectedBusinessType === "all" || seed.business_type === selectedBusinessType;
       const matchesMood = selectedMood === "all" || seed.mood === selectedMood;
-      const matchesScore = scoreBelowNum === null || Number.isNaN(scoreBelowNum) || score < scoreBelowNum;
+      const matchesScore =
+        scoreFilter === "all" ||
+        (scoreFilter === "excellent" && score >= 80) ||
+        (scoreFilter === "good" && score >= 60 && score < 80) ||
+        (scoreFilter === "weak" && score < 60);
       return matchesSearch && matchesBT && matchesMood && matchesScore;
     })
     .sort((a, b) => {
@@ -310,7 +327,7 @@ export default function TemplateGalleryPage() {
             {t("dashboard.adminTemplates.tabComponents")} ({TEMPLATE_REGISTRY.length})
           </button>
           <button 
-            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }} 
+            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); }} 
             className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 ${
               tab === "seeds" 
                 ? "border-primary text-primary font-bold bg-primary/5 rounded-t-lg" 
@@ -391,15 +408,23 @@ export default function TemplateGalleryPage() {
           )}
 
           {tab === "seeds" && (
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              placeholder={t("dashboard.adminTemplates.scoreBelowPlaceholder")}
-              value={scoreBelow}
-              onChange={(e) => setScoreBelow(e.target.value)}
-              className="h-10 w-32 text-xs bg-background border-border/40"
-            />
+            <div className="flex items-center gap-0.5 rounded-lg border border-border/40 bg-background p-1 h-10">
+              {scoreFilterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setScoreFilter(opt.value)}
+                  className={`h-full px-3 text-xs font-semibold rounded-md transition-all cursor-pointer whitespace-nowrap ${
+                    scoreFilter === opt.value
+                      ? "bg-primary/10 text-primary"
+                      : `${opt.className || "text-muted-foreground"} hover:text-foreground`
+                  }`}
+                >
+                  {t(opt.labelKey)}
+                  <span className={`ml-1 ${scoreFilter === opt.value ? "text-primary/60" : "opacity-50"}`}>({scoreCounts[opt.value]})</span>
+                </button>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -601,7 +626,7 @@ export default function TemplateGalleryPage() {
             <SparkleIcon className="size-10 opacity-30 animate-pulse" />
             <p className="text-sm font-medium">{seeds.length === 0 ? t("dashboard.adminTemplates.noSeedsInDb") : t("dashboard.adminTemplates.noSeedsMatch")}</p>
             {seeds.length > 0 && (
-              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>
+              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>
             )}
           </div>
         ) : (
