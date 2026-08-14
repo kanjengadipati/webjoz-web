@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Buat Website Gratis dengan AI — Webjoz",
     description: "Website bisnis profesional dalam 5 menit dengan AI. Tanpa coding, tanpa form panjang.",
-    url: "https://webjoz.com/create",
+    url: "https://www.webjoz.com/create",
     siteName: "Webjoz",
     images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://webjoz.com/create",
+    canonical: "https://www.webjoz.com/create",
   },
 };
 

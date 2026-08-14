@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
   keywords: ["syarat ketentuan webjoz", "terms of service", "aturan penggunaan webjoz"],
   alternates: {
-    canonical: "https://webjoz.com/terms",
+    canonical: "https://www.webjoz.com/terms",
   },
   openGraph: {
     title: "Syarat & Ketentuan | Webjoz",
     description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
-    url: "https://webjoz.com/terms",
+    url: "https://www.webjoz.com/terms",
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",

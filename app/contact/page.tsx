@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Hubungi tim Webjoz — Giwangan Studio. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
   keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website", "giwangan studio"],
   alternates: {
-    canonical: "https://webjoz.com/contact",
+    canonical: "https://www.webjoz.com/contact",
   },
   openGraph: {
     title: "Hubungi Kami | Webjoz",
     description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan seputar platform AI website builder.",
-    url: "https://webjoz.com/contact",
+    url: "https://www.webjoz.com/contact",
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",

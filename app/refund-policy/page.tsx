@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Kebijakan pembatalan dan pengembalian dana layanan Webjoz — garansi uang kembali 7 hari untuk paket berbayar.",
   keywords: ["refund webjoz", "kebijakan pengembalian dana", "pembatalan langganan webjoz"],
   alternates: {
-    canonical: "https://webjoz.com/refund-policy",
+    canonical: "https://www.webjoz.com/refund-policy",
   },
   openGraph: {
     title: "Kebijakan Pengembalian Dana | Webjoz",
     description: "Kebijakan pembatalan dan pengembalian dana layanan Webjoz — garansi uang kembali 7 hari.",
-    url: "https://webjoz.com/refund-policy",
+    url: "https://www.webjoz.com/refund-policy",
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",

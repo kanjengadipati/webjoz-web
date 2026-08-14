@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/site-config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -15,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://webjoz.com/sitemap.xml",
+    sitemap: siteUrl("/sitemap.xml"),
   };
 }

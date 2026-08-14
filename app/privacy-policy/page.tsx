@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna platform AI website builder.",
   keywords: ["privacy policy webjoz", "kebijakan privasi", "perlindungan data"],
   alternates: {
-    canonical: "https://webjoz.com/privacy-policy",
+    canonical: "https://www.webjoz.com/privacy-policy",
   },
   openGraph: {
     title: "Privacy Policy | Webjoz",
     description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna.",
-    url: "https://webjoz.com/privacy-policy",
+    url: "https://www.webjoz.com/privacy-policy",
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
