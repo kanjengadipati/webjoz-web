@@ -19,7 +19,11 @@ import {
   ChevronRight,
   Plus,
   Loader2,
-  Sparkles
+  Sparkles,
+  X,
+  ExternalLink,
+  CheckCircle2,
+  AlertTriangle
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import {
@@ -81,6 +85,7 @@ export default function TemplateGalleryPage() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [critiquingId, setCritiquingId] = useState<number | null>(null);
+  const [viewCritique, setViewCritique] = useState<SeedEntry | null>(null);
   const authToken = useAuthToken();
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
@@ -784,7 +789,7 @@ export default function TemplateGalleryPage() {
 
                       {/* AI Critique result */}
                       {seed.aesthetic_critique && (
-                        <div className="space-y-1.5 rounded-lg border border-border/20 bg-muted/20 p-2">
+                        <div className="space-y-2 rounded-lg border border-border/20 bg-muted/20 p-2">
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
                               {t("dashboard.adminTemplates.critiqueTitle")}
@@ -801,30 +806,17 @@ export default function TemplateGalleryPage() {
                             )}
                           </div>
                           {seed.aesthetic_critique.verdict && (
-                            <p className="text-[11px] leading-snug text-muted-foreground line-clamp-3">
+                            <p className="text-[11px] leading-relaxed text-muted-foreground line-clamp-3">
                               {seed.aesthetic_critique.verdict}
                             </p>
                           )}
-                          {seed.aesthetic_critique.strengths && seed.aesthetic_critique.strengths.length > 0 && (
-                            <div className="space-y-0.5">
-                              <span className="text-[9px] font-semibold uppercase tracking-wider text-green-600 dark:text-green-500">
-                                {t("dashboard.adminTemplates.critiqueStrengths")}
-                              </span>
-                              {seed.aesthetic_critique.strengths.slice(0, 2).map((s, i) => (
-                                <p key={i} className="text-[10px] text-muted-foreground line-clamp-1">• {s}</p>
-                              ))}
-                            </div>
-                          )}
-                          {seed.aesthetic_critique.improvements && seed.aesthetic_critique.improvements.length > 0 && (
-                            <div className="space-y-0.5">
-                              <span className="text-[9px] font-semibold uppercase tracking-wider text-destructive">
-                                {t("dashboard.adminTemplates.critiqueImprovements")}
-                              </span>
-                              {seed.aesthetic_critique.improvements.slice(0, 2).map((s, i) => (
-                                <p key={i} className="text-[10px] text-muted-foreground line-clamp-1">• {s}</p>
-                              ))}
-                            </div>
-                          )}
+                          <button
+                            onClick={() => setViewCritique(seed)}
+                            className="flex items-center gap-1 text-[10px] font-semibold text-primary hover:underline shrink-0"
+                          >
+                            {t("dashboard.adminTemplates.critiqueViewDetails")}
+                            <ChevronRight className="size-3" />
+                          </button>
                         </div>
                       )}
 
@@ -882,6 +874,162 @@ export default function TemplateGalleryPage() {
           </div>
         )
       )}
+
+      {viewCritique?.aesthetic_critique && (
+        <CritiqueDetailModal
+          seed={viewCritique}
+          onClose={() => setViewCritique(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function CritiqueDetailModal({ seed, onClose }: { seed: SeedEntry; onClose: () => void }) {
+  const { t } = useI18n();
+  const c = seed.aesthetic_critique!;
+
+  const dims: { key: string; label: string; value?: number }[] = [
+    { key: "overall", label: "Overall", value: c.overall },
+    { key: "hierarchy", label: "Hierarchy", value: c.hierarchy },
+    { key: "color_harmony", label: "Color Harmony", value: c.color_harmony },
+    { key: "whitespace", label: "Whitespace", value: c.whitespace },
+  ].filter((d) => typeof d.value === "number");
+
+  const dimColor = (v: number) =>
+    v >= 8 ? "bg-green-500/10 text-green-600 dark:text-green-500 border-green-500/20"
+      : v >= 5 ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border-yellow-500/20"
+        : "bg-red-500/10 text-red-600 dark:text-red-500 border-red-500/20";
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/60 p-4 overflow-y-auto"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="relative mx-auto my-8 w-[min(44rem,100%)] rounded-2xl border border-border bg-background shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-border/60 bg-background/95 backdrop-blur px-6 py-4 rounded-t-2xl">
+          <div className="min-w-0">
+            <h2 className="text-base font-bold tracking-tight truncate">
+              {t("dashboard.adminTemplates.critiqueDetailsTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground truncate">
+              {seed.source_name || seed.source_template_id || `#${seed.id}`}
+              {seed.aesthetic_score != null && (
+                <span className="ml-2 font-mono font-bold">
+                  {t("dashboard.adminTemplates.aestheticScore")}: {seed.aesthetic_score}
+                </span>
+              )}
+            </p>
+          </div>
+          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
+            <X className="size-4" />
+          </Button>
+        </div>
+
+        <div className="px-6 py-5 space-y-5">
+          {c.screenshot_url && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {t("dashboard.adminTemplates.critiqueScreenshotTitle")}
+                </span>
+                <a
+                  href={c.screenshot_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary hover:underline shrink-0"
+                >
+                  {t("dashboard.adminTemplates.critiqueOpenScreenshot")}
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+              <a href={c.screenshot_url} target="_blank" rel="noopener noreferrer" className="block">
+                <img
+                  src={c.screenshot_url}
+                  alt="AI critique screenshot"
+                  className="w-full rounded-lg border border-border/40 bg-zinc-900"
+                  loading="lazy"
+                />
+              </a>
+            </div>
+          )}
+
+          {dims.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {t("dashboard.adminTemplates.critiqueDimensions")}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {dims.map((d) => (
+                  <span
+                    key={d.key}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-mono font-bold ${dimColor(d.value!)}`}
+                  >
+                    {d.label}: {d.value}/10
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {c.verdict && (
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                {t("dashboard.adminTemplates.critiqueVerdict")}
+              </span>
+              <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+                {c.verdict}
+              </p>
+            </div>
+          )}
+
+          {c.strengths && c.strengths.length > 0 && (
+            <div className="space-y-1.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-green-600 dark:text-green-500">
+                <CheckCircle2 className="size-3" />
+                {t("dashboard.adminTemplates.critiqueStrengths")}
+              </span>
+              <ul className="space-y-1.5">
+                {c.strengths.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[13px] text-muted-foreground">
+                    <span className="mt-1.5 size-1 shrink-0 rounded-full bg-green-500" />
+                    <span className="leading-relaxed">{s}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {c.improvements && c.improvements.length > 0 && (
+            <div className="space-y-1.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-destructive">
+                <AlertTriangle className="size-3" />
+                {t("dashboard.adminTemplates.critiqueImprovements")}
+              </span>
+              <ul className="space-y-1.5">
+                {c.improvements.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[13px] text-muted-foreground">
+                    <span className="mt-1.5 size-1 shrink-0 rounded-full bg-red-500" />
+                    <span className="leading-relaxed">{s}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-border/60 px-6 py-4">
+          <Button size="sm" variant="outline" onClick={onClose}>
+            {t("dashboard.adminTemplates.critiqueClose")}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
