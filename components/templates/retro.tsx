@@ -309,6 +309,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
             leadFormBtnStyle={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)` }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm outline-none focus:ring-1 text-white placeholder-neutral-500 rounded-[var(--dt-radius)]"
             leadFormInputStyle={{ background: "#1a0d2e", border: `1px solid ${border}` }}
+            formPosition={data.contact.form_position ?? "left"}
             language={language}
           />
         )} />
