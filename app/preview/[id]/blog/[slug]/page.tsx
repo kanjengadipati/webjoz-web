@@ -26,6 +26,7 @@ export default function PreviewBlogDetailPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [dt, setDt] = useState<DesignToken | null>(null);
   const [siteContent, setSiteContent] = useState<any>(null);
+  const [language, setLanguage] = useState<"id" | "en">("id");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +42,7 @@ export default function PreviewBlogDetailPage() {
         if (!siteRes.ok) throw new Error("Situs tidak ditemukan");
         const siteEnvelope = await siteRes.json();
         const siteData = siteEnvelope.data;
+        setLanguage(siteData?.site?.language === "en" ? "en" : "id");
         const designToken = siteData?.design_token as DesignToken | null;
         setDt(designToken);
         setSiteContent(siteData?.content ?? {});
@@ -73,9 +75,9 @@ export default function PreviewBlogDetailPage() {
   if (error || !post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-sm opacity-60">{error || "Postingan tidak ditemukan"}</p>
+        <p className="text-sm opacity-60">{error || (language === "en" ? "Post not found" : "Postingan tidak ditemukan")}</p>
         <Link href={homeHref} className="text-sm underline opacity-70 hover:opacity-100">
-          Kembali ke beranda
+          {language === "en" ? "Back to home" : "Kembali ke beranda"}
         </Link>
       </div>
     );
@@ -84,6 +86,7 @@ export default function PreviewBlogDetailPage() {
   const header = siteContent?.header ?? {};
   const footer = siteContent?.footer ?? {};
   const sectionOrder = (dt?.layout as any)?.section_order ?? ["hero", "about", "benefits", "testimonials", "faq", "cta", "contact"];
+  const locale = language === "en" ? "en-US" : "id-ID";
 
   return (
     <div
@@ -101,6 +104,7 @@ export default function PreviewBlogDetailPage() {
         design_token={dt}
         sectionOrder={sectionOrder}
         hiddenSections={dt?.layout?.hidden_sections}
+        language={language}
         extraLinks={[{ label: "Blog", href: blogIndexHref }]}
       />
 
@@ -112,7 +116,7 @@ export default function PreviewBlogDetailPage() {
             style={{ color: "var(--dt-text-muted)" }}
           >
             <ChevronLeft className="w-4 h-4" />
-            Kembali ke blog
+            {language === "en" ? "Back to blog" : "Kembali ke blog"}
           </Link>
         </div>
 
@@ -141,7 +145,7 @@ export default function PreviewBlogDetailPage() {
           <div className="flex items-center gap-4 text-xs mb-8" style={{ color: "var(--dt-text-muted)" }}>
             <span className="flex items-center gap-1.5 font-medium uppercase tracking-wider">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date(post.published_at).toLocaleDateString("id-ID", {
+              {new Date(post.published_at).toLocaleDateString(locale, {
                 year: "numeric", month: "long", day: "numeric",
               })}
             </span>

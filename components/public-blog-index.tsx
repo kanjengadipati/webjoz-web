@@ -30,7 +30,7 @@ function stripHtml(s: string): string {
 // Card / row components — all use CSS vars from design token
 // ---------------------------------------------------------------------------
 
-function BlogCardGrid({ post, detailHref, compact = false }: { post: BlogPost; detailHref: string; compact?: boolean }) {
+function BlogCardGrid({ post, detailHref, compact = false, locale = "id-ID" }: { post: BlogPost; detailHref: string; compact?: boolean; locale?: string }) {
   const excerpt = stripHtml(post.excerpt);
   return (
     <Link href={detailHref} className="block group">
@@ -63,7 +63,7 @@ function BlogCardGrid({ post, detailHref, compact = false }: { post: BlogPost; d
   );
 }
 
-function BlogRowList({ post, detailHref }: { post: BlogPost; detailHref: string }) {
+function BlogRowList({ post, detailHref, locale = "id-ID" }: { post: BlogPost; detailHref: string; locale?: string }) {
   const excerpt = stripHtml(post.excerpt);
   return (
     <Link href={detailHref} className="flex gap-4 py-5 group" style={{ borderBottom: "1px solid var(--dt-border)" }}>
@@ -90,7 +90,7 @@ function BlogRowList({ post, detailHref }: { post: BlogPost; detailHref: string 
         )}
         {post.published_at && (
           <p className="text-xs mt-2 opacity-50">
-            {new Date(post.published_at).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" })}
+            {new Date(post.published_at).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
           </p>
         )}
       </div>
@@ -98,7 +98,7 @@ function BlogRowList({ post, detailHref }: { post: BlogPost; detailHref: string 
   );
 }
 
-function BlogCardFeatured({ post, detailHref }: { post: BlogPost; detailHref: string }) {
+function BlogCardFeatured({ post, detailHref, locale = "id-ID" }: { post: BlogPost; detailHref: string; locale?: string }) {
   const excerpt = stripHtml(post.excerpt);
   return (
     <Link href={detailHref} className="block group">
@@ -124,7 +124,7 @@ function BlogCardFeatured({ post, detailHref }: { post: BlogPost; detailHref: st
       )}
       {post.published_at && (
         <p className="text-xs mt-2 opacity-50">
-          {new Date(post.published_at).toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" })}
+          {new Date(post.published_at).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
         </p>
       )}
     </Link>
@@ -132,7 +132,7 @@ function BlogCardFeatured({ post, detailHref }: { post: BlogPost; detailHref: st
 }
 
 // Minimal: no image — intentional for warm-earthy / retro moods (text-first).
-function BlogRowMinimal({ post, detailHref }: { post: BlogPost; detailHref: string }) {
+function BlogRowMinimal({ post, detailHref, locale = "id-ID" }: { post: BlogPost; detailHref: string; locale?: string }) {
   return (
     <Link href={detailHref} className="block group py-3" style={{ borderBottom: "1px solid var(--dt-border)" }}>
       <h2
@@ -142,7 +142,7 @@ function BlogRowMinimal({ post, detailHref }: { post: BlogPost; detailHref: stri
         {post.title}
       </h2>
       <p className="text-xs mt-0.5" style={{ color: "var(--dt-text-muted, color-mix(in srgb, var(--dt-text) 70%, var(--dt-bg)))" }}>
-        {new Date(post.published_at).toLocaleDateString("id-ID", {
+        {new Date(post.published_at).toLocaleDateString(locale, {
           year: "numeric", month: "long", day: "numeric",
         })}
       </p>
@@ -158,15 +158,18 @@ export function BlogIndexContent({
   posts,
   variant,
   buildDetailHref,
+  language = "id",
 }: {
   posts: BlogPost[];
   variant: BlogIndexVariant;
   buildDetailHref: (slug: string) => string;
+  language?: "id" | "en";
 }) {
+  const locale = language === "en" ? "en-US" : "id-ID";
   if (variant === "list") {
     return (
       <div>
-        {posts.map(p => <BlogRowList key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} />)}
+        {posts.map(p => <BlogRowList key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} locale={locale} />)}
       </div>
     );
   }
@@ -174,17 +177,17 @@ export function BlogIndexContent({
     const [first, ...rest] = posts;
     return (
       <div className="space-y-10">
-        {first && <BlogCardFeatured post={first} detailHref={buildDetailHref(first.slug)} />}
+        {first && <BlogCardFeatured post={first} detailHref={buildDetailHref(first.slug)} locale={locale} />}
         {rest.length > 0 && (
           <div>
             <div
               className="text-xs font-semibold uppercase tracking-widest mb-4"
               style={{ color: "var(--dt-text-muted)" }}
             >
-              Artikel Lainnya
+              {language === "en" ? "More Articles" : "Artikel Lainnya"}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {rest.map(p => <BlogCardGrid key={p.slug} post={p} compact detailHref={buildDetailHref(p.slug)} />)}
+              {rest.map(p => <BlogCardGrid key={p.slug} post={p} compact detailHref={buildDetailHref(p.slug)} locale={locale} />)}
             </div>
           </div>
         )}
@@ -194,14 +197,14 @@ export function BlogIndexContent({
   if (variant === "minimal") {
     return (
       <div>
-        {posts.map(p => <BlogRowMinimal key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} />)}
+        {posts.map(p => <BlogRowMinimal key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} locale={locale} />)}
       </div>
     );
   }
   // default: grid
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      {posts.map(p => <BlogCardGrid key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} />)}
+      {posts.map(p => <BlogCardGrid key={p.slug} post={p} detailHref={buildDetailHref(p.slug)} locale={locale} />)}
     </div>
   );
 }
@@ -220,6 +223,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
   const [variant, setVariant] = useState<BlogIndexVariant>("grid");
   const [dt, setDt] = useState<DesignToken | null>(null);
   const [siteContent, setSiteContent] = useState<any>(null);
+  const [language, setLanguage] = useState<"id" | "en">("id");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -237,6 +241,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
         const siteId = siteData?.site?.id;
         if (!siteId) throw new Error("Situs tidak ditemukan");
 
+        setLanguage(siteData?.site?.language === "en" ? "en" : "id");
         const designToken = siteData?.design_token as DesignToken | null;
         setDt(designToken);
         setSiteContent(siteData?.content ?? {});
@@ -269,7 +274,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-sm opacity-60">{error}</p>
-        <Link href={homeHref} className="text-sm underline opacity-70 hover:opacity-100">Kembali ke beranda</Link>
+        <Link href={homeHref} className="text-sm underline opacity-70 hover:opacity-100">{language === "en" ? "Back to home" : "Kembali ke beranda"}</Link>
       </div>
     );
   }
@@ -294,6 +299,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
         design_token={dt}
         sectionOrder={sectionOrder}
         hiddenSections={dt?.layout?.hidden_sections}
+        language={language}
         extraLinks={[{ label: "Blog", href: `${routePrefix}/${subdomain}/blog` }]}
       />
 
@@ -309,23 +315,25 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
           </h1>
           {posts.length > 0 && (
             <p className="mt-1 text-sm" style={{ color: "var(--dt-text-muted)" }}>
-              {posts.length} artikel diterbitkan
+              {language === "en"
+                ? `${posts.length} ${posts.length === 1 ? "article published" : "articles published"}`
+                : `${posts.length} artikel diterbitkan`}
             </p>
           )}
         </div>
 
         {posts.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-sm opacity-50">Belum ada postingan yang diterbitkan.</p>
+            <p className="text-sm opacity-50">{language === "en" ? "No posts published yet." : "Belum ada postingan yang diterbitkan."}</p>
             <Link
               href={homeHref}
               className="mt-4 inline-block text-sm font-medium underline underline-offset-4 opacity-70 hover:opacity-100 transition-opacity"
             >
-              ← Kembali ke beranda
+              ← {language === "en" ? "Back to home" : "Kembali ke beranda"}
             </Link>
           </div>
         ) : (
-          <BlogIndexContent posts={posts} variant={variant} buildDetailHref={buildDetailHref} />
+          <BlogIndexContent posts={posts} variant={variant} buildDetailHref={buildDetailHref} language={language} />
         )}
       </main>
 
