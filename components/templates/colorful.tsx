@@ -370,7 +370,6 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             leadFormBtnClass="border-2 border-black font-black uppercase text-sm"
             leadFormBtnStyle={{ background: yellow, color: ctaText }}
             leadFormInputClass="w-full border-2 border-black p-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] bg-white"
-            formPosition={c.form_position ?? "right"}
             language={language}
           />
         )} />
