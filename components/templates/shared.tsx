@@ -1602,6 +1602,7 @@ interface ContactSectionProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
+  formPosition?: "right" | "left" | "stack" | null;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -1618,17 +1619,16 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   leadFormInputClass, leadFormInputStyle,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   language = "id",
+  formPosition = "right",
 }) => {
   const isEN = language === "en";
   const effectiveLeadTitleText = leadTitleText ?? (isEN ? "Contact Us" : "Hubungi Kami");
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
-  const textAlignClass = effectiveAlign === "left" ? "text-left" : effectiveAlign === "right" ? "text-right" : "text-center";
-  const alignItemsClass = effectiveAlign === "left" ? "items-start" : effectiveAlign === "right" ? "items-end" : "items-center";
-  const justifyClass = effectiveAlign === "left" ? "justify-start" : effectiveAlign === "right" ? "justify-end" : "justify-center";
   const isCenter = effectiveAlign === "center";
-  const containerWidthClass = hasLeadForm ? "max-w-5xl" : isCenter ? "max-w-xl" : "max-w-5xl";
-  const containerMarginClass = isCenter ? "mx-auto" : effectiveAlign === "left" ? "mr-auto" : "ml-auto";
+  const isStacked = formPosition === "stack";
+  const showForm = hasLeadForm;
+  const formOnRight = formPosition === "right";
 
   // Use mapsUrl coords as initial, fall back to geolocation or Jakarta
   const urlCoords = parseGoogleMapsCoords(mapsUrl);
@@ -1657,23 +1657,13 @@ const ContactSection: React.FC<ContactSectionProps> = ({
 
   return (
     <section id="contact" className={wrapperClass} style={wrapperStyle}>
-      <div className={`${containerWidthClass} ${containerMarginClass} ${hasLeadForm ? "grid md:grid-cols-2 gap-10 md:gap-14" : textAlignClass}`}>
+      <div className={`mx-auto ${showForm && !isStacked ? "max-w-5xl flex flex-col md:flex-row md:gap-10" : "max-w-3xl"} ${!showForm ? "text-center items-center" : ""}`}>
         {/* Contact info */}
-        <div className={`space-y-6 ${textAlignClass} ${!hasLeadForm ? `flex flex-col ${alignItemsClass}` : ""}`}>
+        <div className={`space-y-6 ${!showForm ? "mx-auto" : ""} ${showForm && !isStacked ? "md:w-1/2" : ""}`}>
           {title && (
-            <InlineText
-              section="contact"
-              fieldKey="title"
-              value={title}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="h2"
-              className={titleClass}
-              style={{ ...titleStyle, ...headingVars }}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
+            <h2 className={`mx-auto ${!showForm ? "max-w-xl" : ""} ${titleClass}`} style={{ ...titleStyle, ...headingVars }}>
+              {title}
+            </h2>
           )}
           <div className="space-y-4">
             {infoItems.map(({ icon: Icon, text, fieldKey, href }) => {
@@ -1682,7 +1672,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
                     <Icon className="w-4 h-4" style={{ color: accentColor }} />
                   </div>
-                  <div className={hasLeadForm ? "flex-1 min-w-0 pt-1" : "min-w-0"}>
+                  <div className="min-w-0">
                     {fieldKey ? (
                       <InlineText
                         section="contact"
@@ -1703,20 +1693,15 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                   </div>
                 </div>
               );
-              const content = hasLeadForm ? (
-                <div className="flex gap-3 items-start">{inner}</div>
-              ) : (
-                <div className={`flex ${justifyClass}`}>{inner}</div>
-              );
               if (href && !isEditorMode) {
-                return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{content}</a>;
+                return <a key={text} href={href} target="_blank" rel="noopener noreferrer" className="block no-underline hover:opacity-80 transition-opacity">{inner}</a>;
               }
-              return <div key={text}>{content}</div>;
+              return <div key={text}>{inner}</div>;
             })}
           </div>
 
           {showMap !== false && (
-            <div className={`space-y-2 mt-2 w-full self-stretch flex flex-col ${alignItemsClass}`}>
+            <div className="space-y-2 mt-2 w-full">
               <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
                 <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
               </div>
@@ -1729,20 +1714,22 @@ const ContactSection: React.FC<ContactSectionProps> = ({
         </div>
 
         {/* Lead form */}
-        {hasLeadForm && (
-          <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
-            <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
-            <LeadForm
-              onSubmit={onSubmitLead!}
-              submitting={leadSubmitting ?? false}
-              success={leadSuccess ?? false}
-              error={leadError ?? null}
-              buttonClass={leadFormBtnClass || ""}
-              buttonStyle={leadFormBtnStyle}
-              inputClass={leadFormInputClass || ""}
-              inputStyle={leadFormInputStyle}
-              language={language}
-            />
+        {showForm && (
+          <div className={`space-y-6 ${showForm && !isStacked ? "md:w-1/2" : ""} ${isStacked ? "mt-10" : ""}`}>
+            <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
+              <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
+              <LeadForm
+                onSubmit={onSubmitLead!}
+                submitting={leadSubmitting ?? false}
+                success={leadSuccess ?? false}
+                error={leadError ?? null}
+                buttonClass={leadFormBtnClass || ""}
+                buttonStyle={leadFormBtnStyle}
+                inputClass={leadFormInputClass || ""}
+                inputStyle={leadFormInputStyle}
+                language={language}
+              />
+            </div>
           </div>
         )}
       </div>

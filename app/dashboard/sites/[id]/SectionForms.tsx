@@ -1680,6 +1680,39 @@ export default function SectionForms({
                 Pilih Lokasi
               </button>
             </div>
+
+            {/* Form position layout selector */}
+            <div className="space-y-1 pt-2">
+              <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+                Tata Letak Form Kontak
+              </label>
+              <div className="flex flex-wrap gap-1">
+                {([
+                  { value: "right", label: "Info kiri, form kanan" },
+                  { value: "left", label: "Form kiri, info kanan" },
+                  { value: "stack", label: "Vertikal (form di bawah)" },
+                ] as const).map((opt) => {
+                  const active = (content.contact.form_position || "right") === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateField("contact", "form_position", opt.value)}
+                      className={`px-2 py-1 rounded text-[10px] font-medium transition ${
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : "border border-white/10 text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-slate-600 leading-relaxed">
+                "Info kiri, form kanan" cocok untuk hero dengan ruang luas. "Vertikal" cocok untuk mobile. Khusus template Natural biasanya default vertikal.
+              </p>
+            </div>
             <div className="flex gap-2 mt-1.5">
               <button
                 type="button"

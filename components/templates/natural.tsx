@@ -314,6 +314,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
             leadFormBtnStyle={{ background: sage, color: ctaText }}
             leadFormInputClass="w-full px-3 py-2.5 rounded-[var(--dt-radius)] text-sm   border outline-none focus:ring-1"
             leadFormInputStyle={{ borderColor: border }}
+            formPosition={data.contact.form_position ?? "stack"}
             language={language}
           />
         )} />
