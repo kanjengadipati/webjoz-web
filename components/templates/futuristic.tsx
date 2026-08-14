@@ -13,6 +13,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import GallerySection from "../sections/gallery";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
+import HeroTechSaas from "../sections/hero/tech-saas";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -47,40 +48,12 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, ${bg} 0%, ${surface} 50%, ${bg} 100%)` }}>
-            <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `linear-gradient(${cyan}11 1px, transparent 1px), linear-gradient(90deg, ${cyan}11 1px, transparent 1px)`, backgroundSize: "50px 50px" }} />
-            <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[150px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${cyan}11, ${blue}22)` }} />
-            {h.image_url && (
-              <img src={h.image_url} alt={h.headline} className="absolute inset-0 w-full h-full object-cover opacity-[0.04] mix-blend-screen" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            )}
-            <div className="max-w-4xl mx-auto relative z-10 space-y-7">
-              {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest" style={{ background: `linear-gradient(90deg, ${cyan}11, ${blue}11)`, border: `1px solid ${cyan}33`, color: cyan }}>
-                  <Cpu className="w-3 h-3" /> {h.eyebrow}
-                </span>
-              )}
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight leading-none text-white" style={headingVars}>
-                {h.headline}
-              </h1>
-              <p className="text-sm md:text-base font-light leading-relaxed max-w-2xl mx-auto" style={{ color: textMuted }}>
-                {h.subheadline}
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:brightness-110" style={{ background: `linear-gradient(135deg, ${blue}, ${cyan})`, boxShadow: `0 0 30px ${cyan}33`, borderRadius: "var(--dt-radius)" }}>
-                  {h.cta_text} <ArrowRight className="w-4 h-4" />
-                </a>
-                {h.cta_secondary_text && (
-                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all" style={{ border: `1px solid ${cyan}55`, color: cyan, borderRadius: "var(--dt-radius)" }}>
-                    {h.cta_secondary_text}
-                  </a>
-                )}
-              </div>
-              {h.badge_text && (
-                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: `${cyan}aa` }}>{h.badge_text}</p>
-              )}
-            </div>
-            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
-          </section>
+          <HeroTechSaas
+            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            design_token={dt}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

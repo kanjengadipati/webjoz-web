@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Award, ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   DynamicIcon, LeadForm, TestimonialsSection,
@@ -13,6 +13,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import HeroMinimalistElegant from "../sections/hero/minimalist-elegant";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -57,30 +58,12 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-24 px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, #0d0c08 0%, ${darkBg} 100%)` }}>
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-[100px] pointer-events-none" style={{ background: gold }} />
-            <div className="max-w-4xl mx-auto relative z-10 space-y-7">
-              {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 border px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest  " style={{ borderColor: `${gold}30`, background: `${gold}08`, color: gold }}>
-                  <Award className="w-3 h-3" /> {h.eyebrow}
-                </span>
-              )}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>
-                {h.headline}
-              </h1>
-              <p className="text-sm md:text-base leading-relaxed max-w-xl mx-auto font-light" style={{ color: "rgba(245,230,192,0.6)",  }}>
-                {h.subheadline}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest transition-all hover:brightness-110" style={{ background: gold, color: ctaText }}>
-                  {h.cta_text} <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-              {h.badge_text && (
-                <p className="text-[10px] uppercase tracking-widest" style={{ color: textMuted }}>{h.badge_text}</p>
-              )}
-            </div>
-          </section>
+          <HeroMinimalistElegant
+            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            design_token={dt}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
