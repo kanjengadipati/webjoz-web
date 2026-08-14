@@ -6,6 +6,7 @@ import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
+import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
@@ -484,6 +485,39 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (overrides.mood !== undefined) moodRef.current = overrides.mood;
   };
 
+  const hydrate = (snap: WizardResumeChat) => {
+    setChatStage(snap.chatStage);
+    setMessages(
+      Array.isArray(snap.messages) && snap.messages.length > 0
+        ? snap.messages
+        : [{ id: "init", sender: "ai", text: initialMessageText }]
+    );
+    setInitialWordCount(initialMessageWords.length);
+    setBusinessName(snap.businessName ?? "");
+    setBusinessType(snap.businessType ?? "");
+    setBusinessSubType(snap.businessSubType ?? "");
+    setDescription(snap.description ?? "");
+    setWhatsapp(snap.whatsapp ?? "");
+    setServiceArea(snap.serviceArea ?? "");
+    setMood(snap.mood ?? "");
+    setSiteLanguage(snap.siteLanguage ?? null);
+    setAwaitingNameConfirm(!!snap.awaitingNameConfirm);
+    setAwaitingInferenceConfirm(!!snap.awaitingInferenceConfirm);
+    setInferenceResult(snap.inferenceResult ?? null);
+    setSuggestedHint(snap.suggestedHint ?? null);
+    setTypeWasInferred(!!snap.typeWasInferred);
+
+    if (snap.chatStage !== "name") hasAskedNameConfirmRef.current = true;
+    businessNameRef.current = snap.businessName ?? "";
+    businessTypeRef.current = snap.businessType ?? "";
+    businessSubTypeRef.current = snap.businessSubType ?? "";
+    descriptionRef.current = snap.description ?? "";
+    whatsappRef.current = snap.whatsapp ?? "";
+    serviceAreaRef.current = snap.serviceArea ?? "";
+    moodRef.current = snap.mood ?? "";
+    siteLanguageRef.current = snap.siteLanguage ?? null;
+  };
+
   return {
     // State
     chatStage,
@@ -545,5 +579,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     typeMessage,
     // Utilities
     syncChatRefs,
+    hydrate,
   };
 }

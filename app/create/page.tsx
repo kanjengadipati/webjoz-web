@@ -9,6 +9,7 @@ import { useToast } from "@/components/toast-provider";
 import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
+import { WIZARD_RESUME_KEY } from "@/components/site-wizard/wizard-persistence";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 
@@ -199,6 +200,7 @@ function PublicWizardContent() {
         }
 
         localStorage.removeItem(PENDING_KEY);
+        localStorage.removeItem(WIZARD_RESUME_KEY);
         localStorage.removeItem("webjoz_login_redirect");
 
         // Redirect langsung ke editor website yang baru dibuat
