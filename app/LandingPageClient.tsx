@@ -3,18 +3,63 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
 import { Check, Loader2 } from "lucide-react";
-import { LandingTemplateShowcase } from "@/components/landing-template-showcase";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { PricingCards } from "@/components/pricing-cards";
 import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
-import { InteractiveMockup } from "@/components/interactive-mockup";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
+
+const LandingTemplateShowcase = dynamic(
+  () =>
+    import("@/components/landing-template-showcase").then(
+      (m) => m.LandingTemplateShowcase
+    ),
+  { ssr: false, loading: () => <ShowcaseSkeleton /> }
+);
+
+const InteractiveMockup = dynamic(
+  () =>
+    import("@/components/interactive-mockup").then((m) => m.InteractiveMockup),
+  { ssr: false, loading: () => <MockupSkeleton /> }
+);
+
+function MockupSkeleton() {
+  return (
+    <div className="w-full rounded-[2rem] border border-white/10 bg-card/50 p-1.5 animate-pulse" aria-hidden>
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-border/30">
+        <div className="flex gap-1.5">
+          {["bg-[#ff5f57]", "bg-[#febc2e]", "bg-[#28c840]"].map((c) => (
+            <div key={c} className={`h-2.5 w-2.5 rounded-full ${c} opacity-80`} />
+          ))}
+        </div>
+        <div className="flex-1 rounded-full bg-muted/40 h-7" />
+      </div>
+      <div className="grid md:grid-cols-[1fr_1.1fr] min-h-[260px] md:min-h-[480px]">
+        <div className="bg-background/20 min-h-[260px] md:min-h-[480px]" />
+        <div className="hidden md:block bg-[#0c0c0e]" />
+      </div>
+    </div>
+  );
+}
+
+function ShowcaseSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse" aria-hidden>
+      <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-white/[0.04] border border-white/10 h-72 sm:h-80 lg:h-[340px]" />
+      <div className="sm:col-span-2 grid grid-cols-2 gap-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="rounded-2xl bg-white/[0.04] border border-white/10 h-36 sm:h-40" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── How it works steps ────────────────────────────────────────────────────────
 
