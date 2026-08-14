@@ -32,7 +32,10 @@ function RealPreviewPanel({
   visible: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const scaleRef = useRef(0.22);
   const [scale, setScale] = useState(0.22);
+  const [scrollMax, setScrollMax] = useState(0);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -45,6 +48,40 @@ function RealPreviewPanel({
     return () => obs.disconnect();
   }, []);
 
+  useEffect(() => {
+    scaleRef.current = scale;
+  }, [scale]);
+
+  // Measure how far the scaled website can scroll within the visible panel.
+  useEffect(() => {
+    const panel = containerRef.current;
+    const inner = innerRef.current;
+    if (!panel || !inner) return;
+    const visHeight = inner.offsetHeight * scaleRef.current;
+    setScrollMax(Math.max(0, visHeight - panel.offsetHeight));
+  }, [scale]);
+
+  // Auto-scroll the website top-to-bottom so more than just the hero is seen.
+  useEffect(() => {
+    const inner = innerRef.current;
+    if (!inner) return;
+    if (!visible || scrollMax <= 0) {
+      inner.style.transform = `scale(${scale})`;
+      return;
+    }
+    let raf: number;
+    const duration = 4500;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - startTime) / duration);
+      const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      inner.style.transform = `translateY(${-scrollMax * eased}px) scale(${scale})`;
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { if (raf) cancelAnimationFrame(raf); };
+  }, [visible, scrollMax, scale]);
+
   return (
     <div
       ref={containerRef}
@@ -55,6 +92,7 @@ function RealPreviewPanel({
       }}
     >
       <div
+        ref={innerRef}
         style={{
           width: 1280,
           transformOrigin: "top left",
@@ -257,7 +295,7 @@ export function InteractiveMockup() {
 
             {/* ── Right: Live 3D Preview panel ──────────────────────────── */}
             <div
-              className="relative block overflow-hidden bg-[#0c0c0e] min-h-[220px] md:min-h-[480px]"
+              className="relative block overflow-hidden bg-[#0c0c0e] min-h-[360px] sm:min-h-[440px] md:min-h-[480px]"
               style={{
                 transformStyle: "preserve-3d",
               }}
