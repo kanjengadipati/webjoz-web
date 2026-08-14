@@ -317,6 +317,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
             leadFormBtnStyle={{ background: red }}
             leadFormInputClass="w-full px-3 py-2.5 text-sm font-light outline-none focus:ring-1 text-white placeholder-neutral-600"
             leadFormInputStyle={{ background: "#1a110e", border: `1px solid ${border}`, borderRadius: 0 }}
+            formPosition={data.contact.form_position ?? "right"}
             language={language}
           />
         )} />
