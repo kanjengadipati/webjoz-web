@@ -463,7 +463,7 @@ function LinkTypeInput({
         </div>
       ) : (
         <div className="space-y-1">
-          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
             {label} {needsAttention && <span className="text-amber-300">⚠️</span>}
           </label>
           <input
@@ -1654,6 +1654,32 @@ export default function SectionForms({
                 >
                   {opt.label}
                 </button>
+                );
+              })}
+            </div>
+          </div>
+          {/* Map shape selector */}
+          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Bentuk Peta</span>
+            <div className="flex gap-1">
+              {([
+                { value: "default", label: "Persegi" },
+                { value: "circular", label: "Lingkaran" },
+              ]).map((opt) => {
+                const active = (content.contact.map_style || "default") === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => updateField("contact", "map_style", opt.value)}
+                    className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                      active
+                        ? "bg-primary text-primary-foreground"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
                 );
               })}
             </div>

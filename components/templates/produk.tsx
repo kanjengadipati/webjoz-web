@@ -264,6 +264,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
             isSelected={activeSection === "contact"}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
+            formPosition={data.contact.form_position ?? "right"}
             language={language}
           />
         )} />
