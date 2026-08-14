@@ -1603,6 +1603,7 @@ interface ContactSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
   formPosition?: "right" | "left" | "stack" | null;
+  mapLayout?: "inline" | "full" | null;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -1620,6 +1621,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   language = "id",
   formPosition = "right",
+  mapLayout = "inline",
 }) => {
   const isEN = language === "en";
   const effectiveLeadTitleText = leadTitleText ?? (isEN ? "Contact Us" : "Hubungi Kami");
@@ -1654,6 +1656,20 @@ const ContactSection: React.FC<ContactSectionProps> = ({
     { icon: Phone, text: displayPhone, fieldKey: "phone", href: `https://wa.me/${displayPhone.replace(/\D/g, "")}` },
     { icon: Mail, text: displayEmail, fieldKey: "email", href: `mailto:${displayEmail}` },
   ];
+
+  const isMapFull = mapLayout === "full";
+
+  const MapBlock = (
+    <div className={`space-y-2 w-full ${isMapFull ? "max-w-none" : ""}`}>
+      <div className={`overflow-hidden border w-full ${isMapFull ? "h-72 md:h-80 rounded-none" : "rounded-xl"}`} style={{ borderColor: `${accentColor}20` }}>
+        <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
+      </div>
+      <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
+        <Globe className="w-3.5 h-3.5" />
+        Buka di Google Maps
+      </a>
+    </div>
+  );
 
   return (
     <section id="contact" className={wrapperClass} style={wrapperStyle}>
@@ -1700,17 +1716,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             })}
           </div>
 
-          {showMap !== false && (
-            <div className="space-y-2 mt-2 w-full">
-              <div className="rounded-xl overflow-hidden border w-full" style={{ borderColor: `${accentColor}20` }}>
-                <MapEmbed lat={mapCoords.lat} lng={mapCoords.lng} tileStyle={mapTileStyle} />
-              </div>
-              <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-medium hover:underline" style={{ color: accentColor }}>
-                <Globe className="w-3.5 h-3.5" />
-                Buka di Google Maps
-              </a>
-            </div>
-          )}
+          {!isMapFull && showMap !== false && MapBlock}
         </div>
 
         {/* Lead form */}
@@ -1733,6 +1739,13 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           </div>
         )}
       </div>
+
+      {/* Full-width map below content */}
+      {isMapFull && showMap !== false && (
+        <div className="mt-10 max-w-none">
+          {MapBlock}
+        </div>
+      )}
     </section>
   );
 };
