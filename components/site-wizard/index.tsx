@@ -22,6 +22,14 @@ import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
+import {
+  loadWizardSnapshot,
+  saveWizardSnapshot,
+  clearWizardSnapshot,
+  snapshotHasProgress,
+  toResumePreview,
+  WizardResumeSnapshot,
+} from "./wizard-persistence";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
@@ -56,6 +64,13 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const isSavingRef = React.useRef(false);
+  // Resume/state persistence: offer to restore an in-progress session on mount
+  const [resumeDraft, setResumeDraft] = useState<WizardResumeSnapshot | null>(() => {
+    const snap = loadWizardSnapshot();
+    if (snap && snapshotHasProgress(snap)) return snap;
+    if (snap) clearWizardSnapshot();
+    return null;
+  });
   // Ref to the preview container so confetti canvas can size itself correctly
   const previewContainerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -368,6 +383,7 @@ export function SiteWizard({
       }
 
       localStorage.removeItem(PENDING_KEY);
+      clearWizardSnapshot();
       router.push(`/dashboard/sites/${siteId}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
@@ -399,6 +415,118 @@ export function SiteWizard({
       whatsapp,
       serviceArea,
     });
+  };
+
+  // ── Resume/state persistence ─────────────────────────────────────────────
+  const resumeSnapshotProgress =
+    chat.messages.length > 1 ||
+    Boolean(chat.businessName) ||
+    Boolean(preview.previewData);
+
+  // Debounced autosave of the wizard session so a refresh/disconnect keeps progress.
+  React.useEffect(() => {
+    if (!resumeSnapshotProgress) return;
+    const timeoutId = setTimeout(() => {
+      const snapshot: WizardResumeSnapshot = {
+        version: 1,
+        savedAt: Date.now(),
+        businessName: chat.businessName,
+        chat: {
+          chatStage: chat.chatStage,
+          messages: chat.messages.filter((m) => m.id !== "typing"),
+          businessName: chat.businessName,
+          businessType: chat.businessType,
+          businessSubType: chat.businessSubType,
+          description: chat.description,
+          whatsapp: chat.whatsapp,
+          serviceArea: chat.serviceArea,
+          mood: chat.mood,
+          siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
+          awaitingNameConfirm: chat.awaitingNameConfirm,
+          awaitingInferenceConfirm: chat.awaitingInferenceConfirm,
+          inferenceResult: chat.inferenceResult,
+          suggestedHint: chat.suggestedHint,
+          typeWasInferred: chat.typeWasInferred,
+        },
+        preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
+      };
+      saveWizardSnapshot(snapshot);
+    }, 600);
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    chat.chatStage,
+    chat.messages,
+    chat.businessName,
+    chat.businessType,
+    chat.businessSubType,
+    chat.description,
+    chat.whatsapp,
+    chat.serviceArea,
+    chat.mood,
+    chat.siteLanguage,
+    chat.awaitingNameConfirm,
+    chat.awaitingInferenceConfirm,
+    chat.inferenceResult,
+    chat.suggestedHint,
+    chat.typeWasInferred,
+    preview.previewData,
+    resumeSnapshotProgress,
+  ]);
+
+  const handleResume = () => {
+    if (!resumeDraft) return;
+    chat.hydrate(resumeDraft.chat);
+    if (resumeDraft.preview) {
+      const restoredPreview: PreviewData = {
+        content: resumeDraft.preview.content,
+        design_token: resumeDraft.preview.designToken ?? {},
+        template_id: resumeDraft.preview.templateId,
+      };
+      preview.setPreviewData(restoredPreview);
+      preview.setPreviewHistory([restoredPreview]);
+      preview.setHistoryIndex(0);
+      preview.setStreamedSections(resumeDraft.preview.content);
+      preview.streamedSectionsRef.current = resumeDraft.preview.content;
+      preview.setStreamedDesignToken(resumeDraft.preview.designToken ?? null);
+      preview.streamedTokenRef.current = resumeDraft.preview.designToken ?? null;
+      preview.setStreamedTemplateId(resumeDraft.preview.templateId ?? "");
+      preview.setPreviewState("result");
+      preview.streamDoneRef.current = true;
+      preview.setStreamDone(true);
+      const mood = resumeDraft.chat.mood;
+      const pool = getTemplatePool(resumeDraft.chat.businessType || resumeDraft.chat.businessSubType, mood);
+      preview.setTemplatePool(pool);
+      preview.setTemplatePoolIndex(0);
+      device.setMobilePreviewOpen(true);
+      if (device.isMobileRef.current) {
+        device.setMobileScreen("preview");
+      }
+    }
+    setResumeDraft(null);
+  };
+
+  const handleStartFresh = () => {
+    clearWizardSnapshot();
+    setResumeDraft(null);
+  };
+
+  const [resumeSavedText, setResumeSavedText] = useState("");
+
+  React.useEffect(() => {
+    if (!resumeDraft) return;
+    setResumeSavedText(formatSavedTime(resumeDraft.savedAt));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeDraft]);
+
+  const formatSavedTime = (savedAt: number) => {
+    const mins = Math.floor((Date.now() - savedAt) / 60000);
+    if (mins < 1) return t("dashboard.wizard.timeJustNow", "baru saja");
+    if (mins < 60) return t("dashboard.wizard.timeMinutesAgo", "{count} menit lalu", { count: String(mins) });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return t("dashboard.wizard.timeHoursAgo", "{count} jam lalu", { count: String(hours) });
+    const days = Math.floor(hours / 24);
+    return t("dashboard.wizard.timeDaysAgo", "{count} hari lalu", { count: String(days) });
   };
 
   return (
@@ -448,6 +576,37 @@ export function SiteWizard({
             </div>
           </div>
         </div>
+
+        {resumeDraft && (
+          <div className="mx-4 mt-3 shrink-0 space-y-2.5 rounded-xl border border-primary/30 bg-primary/10 p-3 animate-in fade-in">
+            <div className="flex items-start gap-2">
+              <SparkleIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-white">{t("dashboard.wizard.resumePrompt", "Lanjutkan sesi sebelumnya?")}</p>
+                <p className="mt-0.5 truncate text-[10px] text-slate-400">
+                  {resumeDraft.businessName ? `${resumeDraft.businessName} · ` : ""}{resumeSavedText}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleResume}
+                className="flex-1 cursor-pointer rounded-lg bg-primary py-2 text-[11px] font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-95"
+              >
+                {t("dashboard.wizard.resumeContinue", "Lanjutkan")}
+              </button>
+              <button
+                type="button"
+                onClick={handleStartFresh}
+                className="flex-1 cursor-pointer rounded-lg border border-white/10 py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-white/30 active:scale-95"
+                style={{ background: "rgba(255,255,255,0.05)" }}
+              >
+                {t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
           {chat.messages.map((m) => {

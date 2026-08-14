@@ -2033,6 +2033,14 @@ export interface Translations {
         minimalistDarkDesc: string;
       };
       subtypes: Record<string, string>;
+      resumePrompt: string;
+      resumeSavedLabel: string;
+      resumeContinue: string;
+      resumeStartFresh: string;
+      timeJustNow: string;
+      timeMinutesAgo: string;
+      timeHoursAgo: string;
+      timeDaysAgo: string;
     };
   };
 }
@@ -4118,6 +4126,14 @@ export const translations: Record<Locale, Translations> = {
           "Hotel & Penginapan": "Hotel",
           "Manufaktur": "Manufaktur",
         },
+        resumePrompt: "Lanjutkan sesi sebelumnya?",
+        resumeSavedLabel: "Tersimpan {time}",
+        resumeContinue: "Lanjutkan",
+        resumeStartFresh: "Mulai baru",
+        timeJustNow: "baru saja",
+        timeMinutesAgo: "{count} menit lalu",
+        timeHoursAgo: "{count} jam lalu",
+        timeDaysAgo: "{count} hari lalu",
       },
     },
   },
@@ -6201,6 +6217,14 @@ export const translations: Record<Locale, Translations> = {
           "Hotel & Penginapan": "Hotel & Lodging",
           "Manufaktur": "Manufacturing",
         },
+        resumePrompt: "Resume your previous session?",
+        resumeSavedLabel: "Saved {time}",
+        resumeContinue: "Resume",
+        resumeStartFresh: "Start over",
+        timeJustNow: "just now",
+        timeMinutesAgo: "{count} min ago",
+        timeHoursAgo: "{count} hr ago",
+        timeDaysAgo: "{count} days ago",
       },
     },
   },
