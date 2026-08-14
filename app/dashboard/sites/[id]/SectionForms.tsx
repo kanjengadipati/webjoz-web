@@ -1710,7 +1710,38 @@ export default function SectionForms({
                 })}
               </div>
               <p className="text-[10px] text-slate-600 leading-relaxed">
-                "Info kiri, form kanan" cocok untuk hero dengan ruang luas. "Vertikal" cocok untuk mobile. Khusus template Natural biasanya default vertikal.
+                "Info kiri, form kanan" cocok untuk hero dengan ruang luas.                 "Vertikal" cocok untuk mobile. Khusus template Natural biasanya default vertikal.
+              </p>
+            </div>
+            {/* Map layout selector */}
+            <div className="space-y-1 pt-2">
+              <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+                Gaya Tata Letak Peta
+              </label>
+              <div className="flex flex-wrap gap-1">
+                {([
+                  { value: "inline", label: "Di dalam kolom info" },
+                  { value: "full", label: "Full-width di bawah" },
+                ] as const).map((opt) => {
+                  const active = (content.contact.map_layout || "inline") === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateField("contact", "map_layout", opt.value)}
+                      className={`px-2 py-1 rounded text-[10px] font-medium transition ${
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : "border border-white/10 text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-slate-600 leading-relaxed">
+                "Full-width di bawah" meletakkan peta penuh lebar di bawah kolom info/form.
               </p>
             </div>
             <div className="flex gap-2 mt-1.5">

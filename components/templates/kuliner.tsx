@@ -262,6 +262,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             formPosition={data.contact.form_position ?? "right"}
+            mapLayout={data.contact.map_layout ?? "inline"}
             language={language}
           />
         )} />
