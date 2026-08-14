@@ -992,6 +992,10 @@ export interface Translations {
       sortScoreAsc: string;
       sortScoreDesc: string;
       scoreBelowPlaceholder: string;
+      scoreFilterAll: string;
+      scoreFilterExcellent: string;
+      scoreFilterGood: string;
+      scoreFilterWeak: string;
       selectAllFiltered: string;
       clearSelection: string;
       selectedCount: string;
@@ -3042,6 +3046,10 @@ export const translations: Record<Locale, Translations> = {
         sortScoreAsc: "Skor Terendah",
         sortScoreDesc: "Skor Tertinggi",
         scoreBelowPlaceholder: "Skor di bawah...",
+        scoreFilterAll: "Semua",
+        scoreFilterExcellent: "≥80",
+        scoreFilterGood: "60–79",
+        scoreFilterWeak: "<60",
         selectAllFiltered: "Pilih Semua ({count})",
         clearSelection: "Batal Pilih",
         selectedCount: "{count} dipilih",
@@ -5133,6 +5141,10 @@ export const translations: Record<Locale, Translations> = {
         sortScoreAsc: "Lowest Score",
         sortScoreDesc: "Highest Score",
         scoreBelowPlaceholder: "Score below...",
+        scoreFilterAll: "All",
+        scoreFilterExcellent: "≥80",
+        scoreFilterGood: "60–79",
+        scoreFilterWeak: "<60",
         selectAllFiltered: "Select All ({count})",
         clearSelection: "Clear Selection",
         selectedCount: "{count} selected",
