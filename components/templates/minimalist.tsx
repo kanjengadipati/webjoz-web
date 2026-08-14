@@ -14,6 +14,7 @@ import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import { BlogPostsSection } from "./blog-section";
+import HeroMinimal from "../sections/hero/minimal";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -53,30 +54,12 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="py-[var(--dt-spacing)] px-6 md:px-12 max-w-5xl mx-auto space-y-8" style={h.background_color ? { background: h.background_color } : undefined}>
-            {h.eyebrow && <span className="text-xs font-semibold tracking-widest uppercase block" style={{ color: zinc500 }}>{h.eyebrow}</span>}
-            <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none" style={{ color: zinc900, ...headingVars }}>
-              {h.headline}
-            </h1>
-            <div className="w-12 h-px" style={{ background: zinc900 }} />
-            <p className="text-sm md:text-base font-light leading-relaxed max-w-2xl" style={{ color: zinc500 }}>{h.subheadline}</p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all hover:opacity-70" style={{ background: zinc900, color: "#fff" }}>
-                {h.cta_text} <ArrowRight className="w-4 h-4" />
-              </a>
-              {h.cta_secondary_text && (
-                <a href="#about" className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-widest border transition-all hover:opacity-70" style={{ borderColor: zinc900, color: zinc900 }}>
-                  {h.cta_secondary_text}
-                </a>
-              )}
-            </div>
-            {h.image_url && (
-              <div className="pt-8 relative">
-                <img src={h.image_url} alt={h.headline} className="w-full max-h-[480px] object-cover" style={{ filter: "grayscale(15%)" }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                <div className="absolute bottom-2 right-2 z-10"><PhotoCredit credit={h.image_credit} /></div>
-              </div>
-            )}
-          </section>
+          <HeroMinimal
+            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            design_token={dt}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

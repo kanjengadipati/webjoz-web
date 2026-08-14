@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Leaf, ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   LeadForm, TestimonialsSection, MenuCatalogCard,
@@ -12,6 +12,7 @@ import {
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import HeroNaturalOrganic from "../sections/hero/natural-organic";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -55,41 +56,12 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="py-[var(--dt-spacing)] px-6 grid md:grid-cols-2 gap-10 items-center max-w-5xl mx-auto" style={h.background_color ? { background: h.background_color } : undefined}>
-            <div className="space-y-5">
-              {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border  " style={{ background: sageLight, borderColor: border, color: sageDark }}>
-                  <Leaf className="w-3 h-3" /> {h.eyebrow}
-                </span>
-              )}
-              <h1 className="text-3xl md:text-5xl font-medium leading-tight" style={{ color: brown, fontFamily: "var(--dt-heading-font)", ...headingVars }}>
-                {h.headline}
-              </h1>
-              <p className="text-sm md:text-base leading-relaxed italic font-light" style={{ color: brownMuted }}>
-                {h.subheadline}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--dt-radius)] text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90" style={{ background: sage, color: ctaText }}>
-                  {h.cta_text} <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-              {h.badge_text && <p className="text-[10px] uppercase tracking-wider  " style={{ color: brownMuted }}>{h.badge_text}</p>}
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 rounded-[var(--dt-radius-lg)] rotate-1" style={{ background: sageLight }} />
-              <div className="relative rounded-[var(--dt-radius-lg)] p-6 text-center space-y-4 border shadow" style={{ background: surface, borderColor: border }}>
-                {h.image_url
-                  ? <div className="relative"><img src={h.image_url} alt={h.headline} className="w-full h-52 object-cover rounded-[var(--dt-radius-lg)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} /><div className="absolute bottom-1 right-2 z-10"><PhotoCredit credit={h.image_credit} /></div></div>
-                  : (
-                    <>
-                      <span className="text-4xl block">🌿</span>
-                      <h3 className="italic text-lg" style={{ color: sageDark, fontFamily: "var(--dt-heading-font)" }}>"{h.headline}"</h3>
-                      <p className="text-[9px] uppercase tracking-widest  " style={{ color: brownMuted }}>{header?.brand_name}</p>
-                    </>
-                  )}
-              </div>
-            </div>
-          </section>
+          <HeroNaturalOrganic
+            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            design_token={dt}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

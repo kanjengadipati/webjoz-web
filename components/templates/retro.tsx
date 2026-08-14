@@ -13,6 +13,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import GallerySection from "../sections/gallery";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
+import HeroNeoBrutalist from "../sections/hero/neo-brutalist";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -48,40 +49,12 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <section className="relative py-[var(--dt-spacing)] px-6 text-center overflow-hidden" style={{ background: h.background_color || `linear-gradient(180deg, ${bg} 0%, ${surface} 60%, ${bg} 100%)` }}>
-            <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#fff_2px,#fff_3px)]" />
-            <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[500px] h-[200px] rounded-full blur-[100px] pointer-events-none" style={{ background: `linear-gradient(90deg, ${pink}, ${cyan})` }} />
-            {h.image_url && (
-              <img src={h.image_url} alt={h.headline} className="absolute inset-0 w-full h-full object-cover opacity-[0.06] mix-blend-screen" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            )}
-            <div className="max-w-4xl mx-auto relative z-10 space-y-7">
-              {h.eyebrow && (
-                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] rounded-[var(--dt-radius)]" style={{ background: "rgba(5,217,232,0.1)", border: `1px solid ${cyan}`, color: cyan }}>
-                  <Zap className="w-3 h-3 fill-current" /> {h.eyebrow}
-                </span>
-              )}
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter leading-none" style={{ background: `linear-gradient(90deg, #fff, ${pink}, ${cyan})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", ...headingVars }}>
-                {h.headline}
-              </h1>
-              <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto" style={{ color: textMuted }}>
-                {h.subheadline}
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center pt-2">
-                <a href={ctaHref(contact.phone, h.cta_url)} className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:brightness-110 rounded-[var(--dt-radius)]" style={{ background: `linear-gradient(90deg, ${pink}, #b91c6b)`, boxShadow: `0 0 24px ${pink}44` }}>
-                  {h.cta_text} <ArrowRight className="w-4 h-4" />
-                </a>
-                {h.cta_secondary_text && (
-                  <a href="#about" className="inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest rounded-[var(--dt-radius)] transition-all" style={{ border: `1px solid ${cyan}`, color: cyan }}>
-                    {h.cta_secondary_text}
-                  </a>
-                )}
-              </div>
-              {h.badge_text && (
-                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: cyan }}>{h.badge_text}</p>
-              )}
-            </div>
-            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
-          </section>
+          <HeroNeoBrutalist
+            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            design_token={dt}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),

@@ -13,6 +13,7 @@ import {
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import HeroSplitEditorial from "../sections/hero/split-editorial";
 import { BlogPostsSection } from "./blog-section";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
@@ -61,71 +62,15 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 bg-gradient-to-tr from-[var(--dt-bg)] via-[var(--dt-bg)] to-[var(--dt-primary-soft)] overflow-hidden" style={hero.background_color ? { background: hero.background_color } : undefined}>
-            {hero.image_url && (
-              <div className="absolute inset-0 w-full h-full opacity-30 mix-blend-luminosity">
-                <InlineImage
-                  section="hero"
-                  fieldKey="image_url"
-                  src={hero.image_url}
-                  alt="Hero"
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={activeSection === "hero"}
-                  className="w-full h-full object-cover"
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                />
-              </div>
-            )}
-            <div className="max-w-4xl text-center space-y-6 relative z-10">
-              <InlineText
-                section="hero"
-                fieldKey="headline"
-                value={hero.headline}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={activeSection === "hero"}
-                as="h1"
-                className="text-4xl md:text-6xl font-black text-[var(--dt-text)] tracking-tight leading-tight"
-                style={headingVars}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-              <InlineText
-                section="hero"
-                fieldKey="subheadline"
-                value={hero.subheadline}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={activeSection === "hero"}
-                as="p"
-                className="text-lg md:text-xl text-[var(--dt-text-muted)] max-w-2xl mx-auto leading-relaxed"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-              <div className="pt-4">
-                <a
-                  href={ctaHref(contact.phone, hero.cta_url)}
-                  className="min-h-11 px-8 py-4 bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] rounded-[var(--dt-radius)] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
-                  style={{ color: "var(--dt-cta-text)" }}
-                >
-                  <InlineText
-                    section="hero"
-                    fieldKey="cta_text"
-                    value={hero.cta_text}
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={activeSection === "hero"}
-                    as="span"
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={onEditingStateChange}
-                  />
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-            <PhotoCredit credit={hero.image_credit} className="absolute bottom-2 right-2 text-[10px] text-white/50 z-10" />
-          </section>
+          <HeroSplitEditorial
+            hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
+            design_token={dt}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "hero"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
