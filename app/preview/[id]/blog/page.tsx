@@ -20,6 +20,7 @@ export default function PreviewBlogIndexPage() {
   const [variant, setVariant] = useState<BlogIndexVariant>("grid");
   const [siteContent, setSiteContent] = useState<any>(null);
   const [dt, setDt] = useState<DesignToken | null>(null);
+  const [language, setLanguage] = useState<"id" | "en">("id");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,6 +36,7 @@ export default function PreviewBlogIndexPage() {
         const siteEnvelope = await siteRes.json();
         const siteData = siteEnvelope.data;
 
+        setLanguage(siteData?.site?.language === "en" ? "en" : "id");
         const designToken = siteData?.design_token as DesignToken | null;
         setDt(designToken);
         setSiteContent(siteData?.content ?? {});
@@ -68,7 +70,7 @@ export default function PreviewBlogIndexPage() {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-sm opacity-60">{error}</p>
         <Link href={homeHref} className="text-sm underline opacity-70 hover:opacity-100">
-          Kembali ke beranda
+          {language === "en" ? "Back to home" : "Kembali ke beranda"}
         </Link>
       </div>
     );
@@ -94,6 +96,7 @@ export default function PreviewBlogIndexPage() {
         design_token={dt}
         sectionOrder={sectionOrder}
         hiddenSections={dt?.layout?.hidden_sections}
+        language={language}
         extraLinks={[{ label: "Blog", href: `/preview/${siteId}/blog` }]}
       />
 
@@ -109,23 +112,25 @@ export default function PreviewBlogIndexPage() {
           </h1>
           {posts.length > 0 && (
             <p className="mt-1 text-sm" style={{ color: "var(--dt-text-muted)" }}>
-              {posts.length} artikel diterbitkan
+              {language === "en"
+                ? `${posts.length} ${posts.length === 1 ? "article published" : "articles published"}`
+                : `${posts.length} artikel diterbitkan`}
             </p>
           )}
         </div>
 
         {posts.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-sm opacity-50">Belum ada postingan yang diterbitkan.</p>
+            <p className="text-sm opacity-50">{language === "en" ? "No posts published yet." : "Belum ada postingan yang diterbitkan."}</p>
             <Link
               href={homeHref}
               className="mt-4 inline-block text-sm font-medium underline underline-offset-4 opacity-70 hover:opacity-100 transition-opacity"
             >
-              ← Kembali ke beranda
+              ← {language === "en" ? "Back to home" : "Kembali ke beranda"}
             </Link>
           </div>
         ) : (
-          <BlogIndexContent posts={posts} variant={variant} buildDetailHref={buildDetailHref} />
+          <BlogIndexContent posts={posts} variant={variant} buildDetailHref={buildDetailHref} language={language} />
         )}
       </main>
 
