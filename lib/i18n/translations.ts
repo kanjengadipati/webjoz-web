@@ -68,6 +68,7 @@ export interface Translations {
     footerRefund: string;
     footerContact: string;
     footerLogin: string;
+    footerBlog: string;
     footerHome: string;
     step1Title: string;
     step1Desc: string;
@@ -287,7 +288,6 @@ export interface Translations {
     aboutEyebrowFallback: string;
     aboutImageAlt: string;
     ctaFallback: string;
-    footerBlog: string;
     footerSocial: string;
     footerBrand: string;
     footerCopyrightFallback: string;
@@ -1646,6 +1646,9 @@ export interface Translations {
       upgradeDesc: string;
       upgradeNow: string;
       later: string;
+      chipMenu: string;
+      chipCatalog: string;
+      chipCategoryCount: string;
     };
     sitesBlog: {
       title: string;
@@ -1870,6 +1873,35 @@ export interface Translations {
       upgradeLabel: string;
       aiInstructionsPlaceholder: string;
       aiDesignInstructionsPlaceholder: string;
+      aiDesignFailed: string;
+      aiHistory: string;
+      aiMadeFor: string;
+      aiRecommendation: string;
+      aiTemplateCategory: string;
+      aiTemplateName: string;
+      appearancePreset: string;
+      bodyFont: string;
+      colorPattern: string;
+      headingFont: string;
+      headingWeight: string;
+      heroTitleSize: string;
+      manualFineTune: string;
+      orChoosePairing: string;
+      orChoosePalette: string;
+      orChoosePreset: string;
+      pageSections: string;
+      sizeLarge: string;
+      sizeMax: string;
+      sizeMedium: string;
+      sizeSmall: string;
+      sizeVeryLarge: string;
+      styleChoiceAria: string;
+      typographyStyle: string;
+      weightBold: string;
+      weightExtraBold: string;
+      weightMedium: string;
+      weightRegular: string;
+      weightSemiBold: string;
     };
     wizard: {
       initialMessage: string;
@@ -1976,29 +2008,6 @@ export interface Translations {
       labelWhatsapp: string;
       labelServiceArea: string;
       labelMood: string;
-      appearancePreset: string;
-      colorPattern: string;
-      typographyStyle: string;
-      aiRecommendation: string;
-      aiMadeFor: string;
-      orChoosePreset: string;
-      orChoosePalette: string;
-      orChoosePairing: string;
-      manualFineTune: string;
-      headingFont: string;
-      bodyFont: string;
-      headingWeight: string;
-      heroTitleSize: string;
-      sizeSmall: string;
-      sizeMedium: string;
-      sizeLarge: string;
-      sizeVeryLarge: string;
-      sizeMax: string;
-      weightRegular: string;
-      weightMedium: string;
-      weightSemiBold: string;
-      weightBold: string;
-      weightExtraBold: string;
       categories: {
         kuliner: string;
         kulinerDesc: string;
@@ -2097,6 +2106,7 @@ export const translations: Record<Locale, Translations> = {
       footerRefund: "Kebijakan Refund",
       footerContact: "Hubungi Kami",
       footerLogin: "Login",
+      footerBlog: "Blog",
       footerHome: "Beranda",
       step1Title: "Kenalkan Bisnis Anda",
       step1Desc: "Chat dengan AI dan beri tahu nama serta apa bisnis yang Anda jalankan. Semuanya lewat percakapan santai.",
@@ -2315,7 +2325,6 @@ export const translations: Record<Locale, Translations> = {
       aboutEyebrowFallback: "Mengenal Kami",
       aboutImageAlt: "About",
       ctaFallback: "Hubungi Kami",
-      footerBlog: "Blog",
       footerSocial: "Media Sosial",
       footerBrand: "Bisnis Kami",
       footerCopyrightFallback: "© {year} {brand}. All rights reserved.",
@@ -3679,6 +3688,9 @@ export const translations: Record<Locale, Translations> = {
         upgradeDesc: "Generate deskripsi dengan AI tersedia tanpa batas di paket Pro.",
         upgradeNow: "Upgrade Sekarang",
         later: "Nanti",
+        chipMenu: "Menu",
+        chipCatalog: "Katalog",
+        chipCategoryCount: "{count} kategori",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -3903,6 +3915,35 @@ export const translations: Record<Locale, Translations> = {
         upgradeLabel: "Upgrade ke Pro",
         aiInstructionsPlaceholder: "cth. \"buat lebih persuasif dan emosional\"",
         aiDesignInstructionsPlaceholder: "cth: tema kopi vintage hangat...",
+        aiDesignFailed: "Terjadi kesalahan saat membuat ulang desain dengan AI",
+        aiHistory: "Riwayat AI",
+        aiMadeFor: "Dibuat khusus berdasarkan info bisnis Anda",
+        aiRecommendation: "Rekomendasi AI",
+        aiTemplateCategory: "Kategori template",
+        aiTemplateName: "Nama template",
+        appearancePreset: "Paket Tampilan",
+        bodyFont: "Font Body",
+        colorPattern: "Corak Warna",
+        headingFont: "Font Heading",
+        headingWeight: "Ketebalan Heading",
+        heroTitleSize: "Ukuran Hero Title",
+        manualFineTune: "Fine-tune manual",
+        orChoosePairing: "— atau pilih pasangan font favorit Anda —",
+        orChoosePalette: "— atau pilih palet favorit Anda —",
+        orChoosePreset: "— atau pilih paket tampilan favorit Anda —",
+        pageSections: "Bagian Halaman",
+        sizeLarge: "Besar",
+        sizeMax: "Maksimal",
+        sizeMedium: "Sedang",
+        sizeSmall: "Kecil",
+        sizeVeryLarge: "Sangat Besar",
+        styleChoiceAria: "Pilih gaya visual",
+        typographyStyle: "Gaya Tipografi",
+        weightBold: "Bold",
+        weightExtraBold: "Extra-Bold",
+        weightMedium: "Medium",
+        weightRegular: "Regular",
+        weightSemiBold: "Semi-Bold",
       },
       wizard: {
         initialMessage: "Halo! Saya AI assistant Anda. Mari buat website bisnis Anda dalam 1 menit! Siapa nama bisnis atau usaha Anda?",
@@ -4020,29 +4061,6 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "Nomor WhatsApp",
         labelServiceArea: "Wilayah Layanan",
         labelMood: "Gaya & Suasana Website (Mood)",
-        appearancePreset: "Paket Tampilan",
-        colorPattern: "Corak Warna",
-        typographyStyle: "Gaya Tipografi",
-        aiRecommendation: "Rekomendasi AI",
-        aiMadeFor: "Dibuat khusus berdasarkan info bisnis Anda",
-        orChoosePreset: "— atau pilih paket tampilan favorit Anda —",
-        orChoosePalette: "— atau pilih palet favorit Anda —",
-        orChoosePairing: "— atau pilih pasangan font favorit Anda —",
-        manualFineTune: "Fine-tune manual",
-        headingFont: "Font Heading",
-        bodyFont: "Font Body",
-        headingWeight: "Ketebalan Heading",
-        heroTitleSize: "Ukuran Hero Title",
-        sizeSmall: "Kecil",
-        sizeMedium: "Sedang",
-        sizeLarge: "Besar",
-        sizeVeryLarge: "Sangat Besar",
-        sizeMax: "Maksimal",
-        weightRegular: "Regular",
-        weightMedium: "Medium",
-        weightSemiBold: "Semi-Bold",
-        weightBold: "Bold",
-        weightExtraBold: "Extra-Bold",
         categories: {
           kuliner: "Kuliner",
           kulinerDesc: "Restoran & Cafe",
@@ -4171,6 +4189,7 @@ export const translations: Record<Locale, Translations> = {
       footerRefund: "Refund Policy",
       footerContact: "Contact Us",
       footerLogin: "Login",
+      footerBlog: "Blog",
       footerHome: "Home",
       step1Title: "Introduce Your Business",
       step1Desc: "Chat with AI and tell them the name and type of business you run. All through a casual conversation.",
@@ -4389,7 +4408,6 @@ export const translations: Record<Locale, Translations> = {
       aboutEyebrowFallback: "About Us",
       aboutImageAlt: "About",
       ctaFallback: "Contact Us",
-      footerBlog: "Blog",
       footerSocial: "Social Media",
       footerBrand: "Our Business",
       footerCopyrightFallback: "© {year} {brand}. All rights reserved.",
@@ -5753,6 +5771,9 @@ export const translations: Record<Locale, Translations> = {
         upgradeDesc: "AI-generated descriptions are available without limits on the Pro plan.",
         upgradeNow: "Upgrade Now",
         later: "Later",
+        chipMenu: "Menu",
+        chipCatalog: "Catalog",
+        chipCategoryCount: "{count} categories",
       },
       sitesBlog: {
         title: "Blog Posts",
@@ -5977,6 +5998,35 @@ export const translations: Record<Locale, Translations> = {
         upgradeLabel: "Upgrade to Pro",
         aiInstructionsPlaceholder: "e.g. \"make it more persuasive and emotional\"",
         aiDesignInstructionsPlaceholder: "e.g. warm vintage coffee theme...",
+        aiDesignFailed: "Failed to regenerate the design with AI",
+        aiHistory: "AI History",
+        aiMadeFor: "Made specifically from your business info",
+        aiRecommendation: "AI Recommendation",
+        aiTemplateCategory: "Template category",
+        aiTemplateName: "Template name",
+        appearancePreset: "Appearance Presets",
+        bodyFont: "Body Font",
+        colorPattern: "Color Patterns",
+        headingFont: "Heading Font",
+        headingWeight: "Heading Weight",
+        heroTitleSize: "Hero Title Size",
+        manualFineTune: "Manual fine-tune",
+        orChoosePairing: "— or choose your favorite font pairing —",
+        orChoosePalette: "— or choose your favorite palette —",
+        orChoosePreset: "— or choose your favorite preset —",
+        pageSections: "Page Sections",
+        sizeLarge: "Large",
+        sizeMax: "Maximum",
+        sizeMedium: "Medium",
+        sizeSmall: "Small",
+        sizeVeryLarge: "Very Large",
+        styleChoiceAria: "Choose a visual style",
+        typographyStyle: "Typography Style",
+        weightBold: "Bold",
+        weightExtraBold: "Extra-Bold",
+        weightMedium: "Medium",
+        weightRegular: "Regular",
+        weightSemiBold: "Semi-Bold",
       },
       wizard: {
         initialMessage: "Hello! I'm your AI assistant. Let's create your business website in 1 minute! What is the name of your business?",
@@ -6094,29 +6144,6 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "WhatsApp Number",
         labelServiceArea: "Service Area",
         labelMood: "Website Style & Vibe (Mood)",
-        appearancePreset: "Appearance Presets",
-        colorPattern: "Color Patterns",
-        typographyStyle: "Typography Style",
-        aiRecommendation: "AI Recommendation",
-        aiMadeFor: "Made specifically from your business info",
-        orChoosePreset: "— or choose your favorite preset —",
-        orChoosePalette: "— or choose your favorite palette —",
-        orChoosePairing: "— or choose your favorite font pairing —",
-        manualFineTune: "Manual fine-tune",
-        headingFont: "Heading Font",
-        bodyFont: "Body Font",
-        headingWeight: "Heading Weight",
-        heroTitleSize: "Hero Title Size",
-        sizeSmall: "Small",
-        sizeMedium: "Medium",
-        sizeLarge: "Large",
-        sizeVeryLarge: "Very Large",
-        sizeMax: "Maximum",
-        weightRegular: "Regular",
-        weightMedium: "Medium",
-        weightSemiBold: "Semi-Bold",
-        weightBold: "Bold",
-        weightExtraBold: "Extra-Bold",
         categories: {
           kuliner: "Culinary",
           kulinerDesc: "Restaurant & Cafe",
