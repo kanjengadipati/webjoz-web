@@ -17,6 +17,7 @@ const DynamicFaqAccordion: React.FC<{
   const [isOpen, setIsOpen] = useState(false);
   const reactId = useId();
   const answerId = `dtfaq-answer-${reactId}`;
+  const Header = isEditorMode ? "div" : "button";
   return (
     <div
       className="dt-faq-item"
@@ -28,11 +29,12 @@ const DynamicFaqAccordion: React.FC<{
         boxShadow: isOpen ? "0 2px 12px color-mix(in srgb, var(--dt-primary) 8%, transparent)" : "none",
       }}
     >
-      <button
-        type="button"
+      <Header
+        {...(isEditorMode
+          ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
+          : { type: "button" as const, "aria-expanded": isOpen, "aria-controls": answerId }
+        )}
         onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-controls={answerId}
         style={{
           width: "100%", padding: "1rem 1.25rem",
           display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -41,7 +43,7 @@ const DynamicFaqAccordion: React.FC<{
           fontFamily: "var(--dt-body-font)",
           color: "var(--dt-text)",
           fontWeight: 600,
-          textAlign: "left",
+          textAlign: "left" as const,
           gap: "1rem",
           transition: "background 0.2s ease",
         }}
@@ -69,7 +71,7 @@ const DynamicFaqAccordion: React.FC<{
             transition: "transform 0.28s ease, color 0.2s ease",
           }}
         />
-      </button>
+      </Header>
 
       {/* Grid trick: smooth height animation without knowing exact height */}
       <div

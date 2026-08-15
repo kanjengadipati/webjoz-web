@@ -35,10 +35,16 @@ function DynamicFaqItem({
   onEditingStateChange?: (isEditing: boolean) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const Header = isEditorMode ? "div" : "button";
   return (
     <div style={{ border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, borderRadius: "var(--dt-radius)", overflow: "hidden" }}>
-      <button type="button" onClick={() => setIsOpen(!isOpen)}
-        style={{ width: "100%", padding: "0.85rem 1rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: "transparent", cursor: "pointer", color: "var(--dt-text)", fontWeight: 600, textAlign: "left", gap: "1rem" }}>
+      <Header
+        {...(isEditorMode
+          ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
+          : { type: "button" as const }
+        )}
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ width: "100%", padding: "0.85rem 1rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: "transparent", cursor: "pointer", color: "var(--dt-text)", fontWeight: 600, textAlign: "left" as const, gap: "1rem" }}>
         <span style={{ fontSize: "0.875rem", flex: 1 }}>
           {isEditorMode ? (
             <InlineText
@@ -55,7 +61,7 @@ function DynamicFaqItem({
           ) : item.question}
         </span>
         <ChevronDown style={{ width: 14, height: 14, flexShrink: 0, color: "var(--dt-text-muted)", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.28s ease" }} />
-      </button>
+      </Header>
       <div style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}>
         <div style={{ overflow: "hidden" }}>
           <div style={{ padding: "0 1rem 1rem", fontSize: "0.85rem", lineHeight: 1.7, color: "var(--dt-text-muted)", borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>

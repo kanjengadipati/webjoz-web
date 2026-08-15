@@ -1187,13 +1187,15 @@ const FaqAccordion: React.FC<{
 
   // ── Numbered variant ────────────────────────────────────────────────────────
   if (variant === "numbered") {
+    const HeaderNumered = isEditorMode ? "div" : "button";
     return (
       <div className={`border-b transition-colors duration-200 ${isDark ? "border-slate-700/50" : "border-stone-200"}`}>
-        <button
-          type="button"
+        <HeaderNumered
+          {...(isEditorMode
+            ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
+            : { type: "button" as const, "aria-expanded": isOpen, "aria-controls": answerId }
+          )}
           onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-controls={answerId}
           className="w-full py-5 flex items-start gap-4 text-left cursor-pointer select-none focus:outline-none"
         >
           <span className={`text-xs font-bold tabular-nums pt-0.5 flex-shrink-0 transition-colors duration-200 ${isDark
@@ -1226,7 +1228,7 @@ const FaqAccordion: React.FC<{
               : isOpen ? "text-[var(--dt-primary,#4F46E5)]" : "text-stone-400"
               }`}
           />
-        </button>
+        </HeaderNumered>
         <div
           id={answerId}
           style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
@@ -1256,13 +1258,15 @@ const FaqAccordion: React.FC<{
 
   // ── Minimal variant ─────────────────────────────────────────────────────────
   if (variant === "minimal") {
+    const HeaderMinimal = isEditorMode ? "div" : "button";
     return (
       <div className={`border-b transition-colors duration-200 ${isDark ? "border-slate-700/50" : "border-stone-200"}`}>
-        <button
-          type="button"
+        <HeaderMinimal
+          {...(isEditorMode
+            ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
+            : { type: "button" as const, "aria-expanded": isOpen, "aria-controls": answerId }
+          )}
           onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-controls={answerId}
           className="w-full py-5 flex items-center justify-between gap-4 text-left cursor-pointer select-none focus:outline-none"
         >
           <span className={`font-medium text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
@@ -1289,7 +1293,7 @@ const FaqAccordion: React.FC<{
               : isOpen ? "text-stone-900" : "text-stone-400"
               }`}
           />
-        </button>
+        </HeaderMinimal>
         <div
           id={answerId}
           style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
@@ -1318,6 +1322,7 @@ const FaqAccordion: React.FC<{
   }
 
   // ── Card variant (default) ──────────────────────────────────────────────────
+  const HeaderCard = isEditorMode ? "div" : "button";
   return (
     <div
       className={`border rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
@@ -1325,11 +1330,12 @@ const FaqAccordion: React.FC<{
         : `border-[#E8DDD0] ${isOpen ? "bg-white shadow-sm" : "bg-[#FAF7F2]/60 hover:bg-white/80"}`
         }`}
     >
-      <button
-        type="button"
+      <HeaderCard
+        {...(isEditorMode
+          ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
+          : { type: "button" as const, "aria-expanded": isOpen, "aria-controls": answerId }
+        )}
         onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-controls={answerId}
         className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-current"
       >
         <span className={`font-semibold text-sm md:text-base flex-1 transition-colors duration-200 ${isDark
@@ -1356,7 +1362,7 @@ const FaqAccordion: React.FC<{
             : isOpen ? "text-amber-700" : "text-amber-500/70"
             }`}
         />
-      </button>
+      </HeaderCard>
       <div
         id={answerId}
         style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
