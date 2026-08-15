@@ -376,7 +376,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         })}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} />
+        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: zinc900, color: "#fff" }} />
