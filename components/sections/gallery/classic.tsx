@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryItem, DesignToken, GalleryLayout } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
+import { InlineText } from "../../templates/shared";
 
 interface GallerySectionProps {
   gallery?: {
@@ -17,6 +18,11 @@ interface GallerySectionProps {
   };
   design_token?: DesignToken | null;
   sectionStyle?: React.CSSProperties;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 function Lightbox({ items, index, onClose }: { items: GalleryItem[]; index: number; onClose: () => void }) {
@@ -109,6 +115,11 @@ function Carousel({
   autoplaySpeed,
   showDots,
   showArrows,
+  isEditorMode,
+  isSelected,
+  onUpdateCaption,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
 }: {
   items: GalleryItem[];
   radius: string;
@@ -116,16 +127,22 @@ function Carousel({
   autoplaySpeed: number;
   showDots: boolean;
   showArrows: boolean;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  onUpdateCaption?: (idx: number, val: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTimer = useCallback(() => {
+    if (isEditorMode) return;
     stopTimer();
     timerRef.current = setInterval(() => {
       setCurrent((i) => (i + 1) % items.length);
     }, autoplaySpeed);
-  }, [items.length, autoplaySpeed]);
+  }, [items.length, autoplaySpeed, isEditorMode]);
 
   const stopTimer = () => {
     if (timerRef.current) {
@@ -144,6 +161,8 @@ function Carousel({
 
   if (items.length === 0) return null;
 
+  const ItemTag = isEditorMode ? "div" : "button";
+
   return (
     <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-xl" style={{ borderRadius: radius }}>
       <div
@@ -151,9 +170,9 @@ function Carousel({
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {items.map((item, idx) => (
-          <button
+          <ItemTag
             key={idx}
-            type="button"
+            {...(!isEditorMode ? { type: "button" as const } : {})}
             onClick={() => setLightboxIndex(idx)}
             className="min-w-full aspect-video relative cursor-pointer p-0 border-0 text-left"
           >
@@ -165,9 +184,25 @@ function Carousel({
                 onError={(e) => { e.currentTarget.style.display = "none"; }}
               />
             )}
-            {item.caption && (
+            {(item.caption || isEditorMode) && (
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                <p className="text-white text-sm font-medium">{item.caption}</p>
+                {isEditorMode ? (
+                  <InlineText
+                    section="gallery"
+                    fieldKey={`items.${idx}.caption`}
+                    value={item.caption || ""}
+                    placeholder="Tambah caption..."
+                    onUpdateField={(_, __, val) => onUpdateCaption?.(idx, val)}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                    as="div"
+                    className="text-white text-sm font-medium"
+                  />
+                ) : (
+                  <p className="text-white text-sm font-medium">{item.caption}</p>
+                )}
               </div>
             )}
             {item.image_credit?.name && (
@@ -175,7 +210,7 @@ function Carousel({
                 <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
               </div>
             )}
-          </button>
+          </ItemTag>
         ))}
       </div>
 
@@ -219,17 +254,33 @@ function Carousel({
   );
 }
 
-function Grid({ items, radius, setLightboxIndex }: {
+function Grid({
+  items,
+  radius,
+  setLightboxIndex,
+  isEditorMode,
+  isSelected,
+  onUpdateCaption,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
   items: GalleryItem[];
   radius: string;
   setLightboxIndex: (i: number) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  onUpdateCaption?: (idx: number, val: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }) {
+  const ItemTag = isEditorMode ? "div" : "button";
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {items.map((item, idx) => (
-        <button
+        <ItemTag
           key={idx}
-          type="button"
+          {...(!isEditorMode ? { type: "button" as const } : {})}
           onClick={() => setLightboxIndex(idx)}
           className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
           style={{ borderRadius: radius, aspectRatio: "4 / 3" }}
@@ -243,9 +294,25 @@ function Grid({ items, radius, setLightboxIndex }: {
             />
           )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-          {item.caption && (
-            <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
+          {(item.caption || isEditorMode) && (
+            <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300`}>
+              {isEditorMode ? (
+                <InlineText
+                  section="gallery"
+                  fieldKey={`items.${idx}.caption`}
+                  value={item.caption || ""}
+                  placeholder="Tambah caption..."
+                  onUpdateField={(_, __, val) => onUpdateCaption?.(idx, val)}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="div"
+                  className="text-white text-sm font-medium leading-tight"
+                />
+              ) : (
+                <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
+              )}
             </div>
           )}
           {item.image_credit?.name && (
@@ -253,53 +320,88 @@ function Grid({ items, radius, setLightboxIndex }: {
               <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
             </div>
           )}
-        </button>
+        </ItemTag>
       ))}
     </div>
   );
 }
 
-function Masonry({ items, radius, setLightboxIndex }: {
+function Masonry({
+  items,
+  radius,
+  setLightboxIndex,
+  isEditorMode,
+  isSelected,
+  onUpdateCaption,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
   items: GalleryItem[];
   radius: string;
   setLightboxIndex: (i: number) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  onUpdateCaption?: (idx: number, val: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }) {
   const col1 = items.filter((_, i) => i % 3 === 0);
   const col2 = items.filter((_, i) => i % 3 === 1);
   const col3 = items.filter((_, i) => i % 3 === 2);
   const heights = [280, 360, 320, 400, 260, 380, 300, 340, 420];
 
+  const ItemTag = isEditorMode ? "div" : "button";
+
   const MasonryCol = ({ colItems, startIdx }: { colItems: GalleryItem[]; startIdx: number }) => (
     <div className="flex flex-col gap-4 md:gap-6">
-      {colItems.map((item, idx) => (
-        <button
-          key={idx}
-          type="button"
-          onClick={() => setLightboxIndex(startIdx + idx * 3)}
-          className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
-          style={{ borderRadius: radius, height: heights[(startIdx / 3 + idx) % heights.length] }}
-        >
-          {item.image_url && (
-            <img
-              src={item.image_url}
-              alt={item.alt_text || item.caption || "Gallery image"}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
-            />
-          )}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-          {item.caption && (
-            <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
-            </div>
-          )}
-          {item.image_credit?.name && (
-            <div className="absolute bottom-1 right-2 z-10">
-              <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
-            </div>
-          )}
-        </button>
-      ))}
+      {colItems.map((item, idx) => {
+        const itemIdx = startIdx + idx * 3;
+        return (
+          <ItemTag
+            key={idx}
+            {...(!isEditorMode ? { type: "button" as const } : {})}
+            onClick={() => setLightboxIndex(itemIdx)}
+            className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
+            style={{ borderRadius: radius, height: heights[(startIdx / 3 + idx) % heights.length] }}
+          >
+            {item.image_url && (
+              <img
+                src={item.image_url}
+                alt={item.alt_text || item.caption || "Gallery image"}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+            )}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+            {(item.caption || isEditorMode) && (
+              <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300`}>
+                {isEditorMode ? (
+                  <InlineText
+                    section="gallery"
+                    fieldKey={`items.${itemIdx}.caption`}
+                    value={item.caption || ""}
+                    placeholder="Tambah caption..."
+                    onUpdateField={(_, __, val) => onUpdateCaption?.(itemIdx, val)}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                    as="div"
+                    className="text-white text-sm font-medium leading-tight"
+                  />
+                ) : (
+                  <p className="text-white text-sm font-medium leading-tight">{item.caption}</p>
+                )}
+              </div>
+            )}
+            {item.image_credit?.name && (
+              <div className="absolute bottom-1 right-2 z-10">
+                <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
+              </div>
+            )}
+          </ItemTag>
+        );
+      })}
     </div>
   );
 
@@ -312,7 +414,13 @@ function Masonry({ items, radius, setLightboxIndex }: {
   );
 }
 
-const GalleryClassic: React.FC<GallerySectionProps> = ({ gallery, design_token, sectionStyle }) => {
+const GalleryClassic: React.FC<GallerySectionProps> = ({
+  gallery, design_token, sectionStyle,
+  onUpdateField, isEditorMode = false, isSelected = false,
+  collapseSheetForInlineEdit, onEditingStateChange,
+}) => {
+  // In editor mode, suppress lightbox so clicking the image doesn't open a
+  // fullscreen overlay that traps the user inside the editor preview.
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!gallery?.items?.length) return null;
@@ -323,31 +431,63 @@ const GalleryClassic: React.FC<GallerySectionProps> = ({ gallery, design_token, 
     rounded: "16px",
   };
   const radius = radiusMap[design_token?.layout?.corner_radius ?? "rounded"] || "16px";
-  // Unify on section_variants.gallery (the same mechanism all other sections use).
-  // Fall back to content.gallery.layout for backward compat with sites that
-  // were generated before section_variants.gallery was the source of truth.
   const layout = design_token?.layout?.section_variants?.gallery ?? gallery.layout ?? "grid";
   const autoplaySpeed = gallery.autoplay_speed ?? 4000;
   const showDots = gallery.show_dots ?? true;
   const showArrows = gallery.show_arrows ?? true;
 
+  const handleLightbox = (i: number) => {
+    if (!isEditorMode) setLightboxIndex(i);
+  };
+
+  const handleUpdateCaption = (idx: number, newCaption: string) => {
+    const nextItems = [...(gallery.items || [])];
+    nextItems[idx] = { ...nextItems[idx], caption: newCaption };
+    onUpdateField?.("gallery", "items", nextItems);
+  };
+
   return (
     <section id="gallery" className="px-5 sm:px-6 py-16 md:py-20 max-w-6xl mx-auto" style={sectionStyle}>
       <div className="space-y-10">
         <div className="text-center space-y-2">
-          {gallery.eyebrow && (
+          {(gallery.eyebrow || isEditorMode) && (
             <span
               className="text-xs font-bold uppercase tracking-widest block"
               style={{ color: design_token?.palette?.primary || "var(--dt-primary, #b45309)" }}
             >
-              {gallery.eyebrow}
+              {isEditorMode ? (
+                <InlineText
+                  section="gallery"
+                  fieldKey="eyebrow"
+                  value={gallery.eyebrow || ""}
+                  placeholder="Tambah eyebrow..."
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                />
+              ) : gallery.eyebrow}
             </span>
           )}
           <h2
             className="text-3xl md:text-4xl font-bold"
             style={{ fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)" }}
           >
-            {gallery.title}
+            {isEditorMode ? (
+              <InlineText
+                section="gallery"
+                fieldKey="title"
+                value={gallery.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : gallery.title}
           </h2>
         </div>
 
@@ -355,15 +495,38 @@ const GalleryClassic: React.FC<GallerySectionProps> = ({ gallery, design_token, 
           <Carousel
             items={gallery.items}
             radius={radius}
-            setLightboxIndex={setLightboxIndex}
+            setLightboxIndex={handleLightbox}
             autoplaySpeed={autoplaySpeed}
             showDots={showDots}
             showArrows={showArrows}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            onUpdateCaption={handleUpdateCaption}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
           />
         ) : layout === "masonry" ? (
-          <Masonry items={gallery.items} radius={radius} setLightboxIndex={setLightboxIndex} />
+          <Masonry
+            items={gallery.items}
+            radius={radius}
+            setLightboxIndex={handleLightbox}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            onUpdateCaption={handleUpdateCaption}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         ) : (
-          <Grid items={gallery.items} radius={radius} setLightboxIndex={setLightboxIndex} />
+          <Grid
+            items={gallery.items}
+            radius={radius}
+            setLightboxIndex={handleLightbox}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            onUpdateCaption={handleUpdateCaption}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )}
       </div>
 
