@@ -1,30 +1,8 @@
-"use client";
-import React from "react";
-import type { ComponentType } from "react";
-import type { DesignToken } from "@/components/templates/types";
-import type { GalleryItem, GalleryLayout } from "@/components/templates/types";
-import GalleryClassic from "./classic";
-
-interface GalleryVariantProps {
-  gallery?: {
-    title: string;
-    eyebrow?: string;
-    items: GalleryItem[];
-    layout?: GalleryLayout;
-    autoplay_speed?: number;
-    show_dots?: boolean;
-    show_arrows?: boolean;
-  };
-  design_token?: DesignToken | null;
-  sectionStyle?: React.CSSProperties;
-}
-
-const variants: Record<string, ComponentType<GalleryVariantProps>> = {
-  grid: GalleryClassic,
-};
-
-export default function GallerySection(props: GalleryVariantProps) {
-  const variant = props.design_token?.layout?.section_variants?.gallery ?? "grid";
-  const Renderer = variants[variant] ?? GalleryClassic;
-  return <Renderer {...props} />;
-}
+// gallery/index.tsx — passthrough to classic.tsx.
+//
+// Previously this file had a variant dispatcher that read
+// design_token.layout.section_variants.gallery, but the map only ever had
+// one entry (grid: GalleryClassic), making it a no-op. The actual
+// grid / masonry / carousel routing lives inside classic.tsx via
+// content.gallery.layout, so this file is now a simple re-export.
+export { default } from "./classic";

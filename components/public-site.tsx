@@ -257,6 +257,12 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
     fetchSite();
   }, [targetHost]);
 
+  useEffect(() => {
+    if (siteData?.site?.language && typeof document !== "undefined") {
+      document.documentElement.lang = siteData.site.language === "en" ? "en" : "id";
+    }
+  }, [siteData]);
+
   const handleSubmitLead = async (data: { name: string; email: string; phone: string; message: string }) => {
     if (!siteData) return;
     try {
@@ -315,18 +321,12 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
   const { content, template_id, design_token, is_premium } = siteData;
   const siteInfo = siteData.site;
 
-  const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_JASA02")!.component;
+  const TemplateComponent = getTemplate(template_id)?.component ?? getTemplate("TEMPLATE_DYNAMIC")!.component;
 
   const showDomainBanner = siteId && siteInfo?.status === "published";
   const domainUrl = siteInfo?.subdomain
     ? `https://${siteInfo.subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`
     : null;
-
-  useEffect(() => {
-    if (siteData?.site?.language && typeof document !== "undefined") {
-      document.documentElement.lang = siteData.site.language === "en" ? "en" : "id";
-    }
-  }, [siteData]);
 
   return (
     <>

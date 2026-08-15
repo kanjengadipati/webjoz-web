@@ -166,7 +166,7 @@ function PhoneMockup() {
   const showcaseItem = SHOWCASE_ITEMS[0];
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
   const token = TEMPLATE_DEFAULT_DESIGN_TOKENS[showcaseItem.templateId]
-    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02!;
+    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_KULINER01!;
 
   return (
     <div
@@ -542,7 +542,7 @@ export function InteractiveMockup() {
                     (t) => t.id === showcaseItem.templateId
                   )?.component;
                   const token = TEMPLATE_DEFAULT_DESIGN_TOKENS[showcaseItem.templateId]
-                    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02!;
+                    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_KULINER01!;
 
                   if (!TemplateComponent) return null;
 

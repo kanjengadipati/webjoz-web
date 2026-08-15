@@ -60,6 +60,28 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
 };
 
+export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
+  header:       ["Make the brand feel more premium", "Make the nav CTA clearer for WhatsApp", "Shorten the brand name so it's easy to remember"],
+  hero:         ["Make the hero more emotional and evocative", "Emphasize the customer's main problem", "Make the CTA more specific and urgent"],
+  about:        ["Make the business story warmer", "Add concrete details: year, location, materials", "Make the narrative more personal and human"],
+  benefits:     ["Turn benefits into real outcomes", "Add numbers/stats where possible", "Make each point shorter and sharper"],
+  testimonials: ["Make quotes more specific and believable", "Add real detail to every testimonial", "Vary the profile of testimonial givers"],
+  menu:         ["Make menu names more appetizing", "Add descriptions that make people hungry", "Update the price of all menu items"],
+  catalog:      ["Make product names more appealing", "Add a Best Seller badge for top products", "Update product prices and descriptions"],
+  faq:          ["Answer objections before purchase", "Make answers friendlier and more reassuring", "Add pricing or ordering process info"],
+  cta:          ["Make the CTA stronger for conversion", "Write a headline that closes doubts", "Add trust signals that reduce friction"],
+  contact:      ["Complete contact info to look more trustworthy", "Make visiting instructions clearer", "Write contact copy in a friendly tone"],
+  gallery:      ["Add ambiance and interior photos", "Use real photos to build trust", "Choose photos with good lighting"],
+  footer:       ["Make the footer tagline more memorable", "Tighten the copyright and tagline", "Match the footer tone with the brand"],
+  seo:          ["Make the SEO title more selling", "Include city and main service", "Make the meta description more click-worthy", "Generate SEO keywords", "Suggest OG type and Twitter card"],
+};
+
+export const getAiSuggestions = (language: string | undefined, section: string): string[] => {
+  const isEn = language?.toLowerCase() === "en";
+  const map = isEn ? AI_SUGGESTIONS_EN : AI_SUGGESTIONS;
+  return map[section] ?? map.hero;
+};
+
 export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmin: string[] = []) => {
   const adminHidden = new Set(hiddenByAdmin);
   const tokenOrder = Array.isArray(designToken?.layout?.section_order)

@@ -25,10 +25,11 @@ export interface FieldIssue {
 }
 
 export interface StreamEvent {
-  type: "design_token" | "section" | "done" | "error";
+  type: "started" | "design_token" | "section" | "done" | "error";
   section?: StreamSection;
   data?: Record<string, any>;
   template_id?: string;
+  generation_source?: string;
   quality_score?: number;
   quality_issues?: FieldIssue[];
   error?: string;
@@ -61,7 +62,7 @@ export interface UseGenerateStreamOptions {
   /** Dipanggil setiap kali satu section konten diterima */
   onSection: (section: StreamSection, data: Record<string, any>) => void;
   /** Dipanggil saat semua section sudah dikirim */
-  onDone: (templateId: string, qualityScore: number, qualityIssues?: FieldIssue[]) => void;
+  onDone: (templateId: string, qualityScore: number, generationSource: string, qualityIssues?: FieldIssue[]) => void;
   /** Dipanggil jika terjadi error */
   onError: (message: string) => void;
 }
@@ -235,7 +236,12 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                 markStage("done");
                 console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${((performance.now() - clientStart) / 1000).toFixed(2)}s`);
                 isDoneReceived = true;
-                onDoneRef.current(event.template_id ?? "", event.quality_score ?? 0, event.quality_issues);
+                onDoneRef.current(
+                  event.template_id ?? "",
+                  event.quality_score ?? 0,
+                  event.generation_source ?? "ai",
+                  event.quality_issues,
+                );
                 break;
 
               case "error":

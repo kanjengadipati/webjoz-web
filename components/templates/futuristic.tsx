@@ -4,16 +4,16 @@ import React from "react";
 import { Cpu, Zap, ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, SharedTestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref, isPlaceholderPrice,
-  ContactSection, BenefitsSection,
+  SharedContactSection, SharedBenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import GallerySection from "../sections/gallery";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
-import HeroTechSaas from "../sections/hero/tech-saas";
+import HeroSection from "../sections/hero";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -47,8 +47,8 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
   const sectionNodes: Record<string, React.ReactNode> = {
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={hero} render={(h) => (
-          <HeroTechSaas
+         <MemoSectionContent content={hero} render={(h) => (
+          <HeroSection
             hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
             design_token={dt}
             isEditorMode={isEditorMode}
@@ -98,7 +98,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSection
+          <SharedBenefitsSection
             benefits={b}
             wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}
@@ -127,7 +127,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
 
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
+        <SharedTestimonialsSection
           testimonials={testimonials}
           designVariant="glassmorphic"
           wrapperClass="py-[var(--dt-spacing)] px-6"
@@ -191,12 +191,12 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     ) : null,
 
     catalog: catalog ? (
-      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="catalog" label={language === "en" ? "Catalog" : "Katalog"} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
           <section id="catalog" className="py-[var(--dt-spacing)] px-6" style={{ background: bg, borderTop: `1px solid ${border}` }}>
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center space-y-3">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>Katalog</span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5" style={{ color: cyan, background: `${cyan}10`, borderRadius: "var(--dt-radius)", border: `1px solid ${glow}` }}>{language === "en" ? "Catalog" : "Katalog"}</span>
                 <h2 className="text-2xl md:text-3xl font-light tracking-tight text-white" style={headingVars}>{c.title}</h2>
                 <div className="h-px w-20 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${cyan}, transparent)` }} />
               </div>
@@ -272,7 +272,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
+          <SharedContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}

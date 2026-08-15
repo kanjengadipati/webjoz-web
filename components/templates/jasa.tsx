@@ -5,10 +5,10 @@ import { Shield, ArrowRight } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
+  DynamicIcon, LeadForm, SharedTestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab,
   WAFloatingButton, BackToTop, ctaHref, FaqAccordion, SeoEditorPreview,
-  ContactSection, BenefitsSection, InlineText, InlineImage,
+  SharedContactSection, SharedBenefitsSection, InlineText, InlineImage,
 } from "./shared";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
@@ -146,7 +146,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <BenefitsSection
+          <SharedBenefitsSection
             benefits={benefits}
             wrapperClass="px-6 py-[var(--dt-spacing)]"
             wrapperStyle={{ background: "var(--dt-primary-dark)", color: "var(--dt-on-dark-muted)" }}
@@ -322,7 +322,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
+          <SharedContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}
@@ -359,7 +359,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
+        <SharedTestimonialsSection
           testimonials={testimonials}
           wrapperClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-6"
           titleClass="text-[var(--dt-text)] font-extrabold tracking-tight"
