@@ -10,4 +10,9 @@ export interface FooterVariantProps {
   design_token?: DesignToken | null;
   brand_name?: string;
   hasBlog?: boolean;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }

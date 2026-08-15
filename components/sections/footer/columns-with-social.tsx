@@ -2,6 +2,7 @@
 import React from "react";
 import type { FooterVariantProps } from "./types";
 import { SocialIcon, SOCIAL_PLATFORMS } from "../social-platforms";
+import { InlineText } from "../../templates/shared";
 
 const FOOTER_BG = "var(--dt-surface)";
 const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
@@ -12,9 +13,14 @@ const TXT_SOCIAL = "color-mix(in srgb, var(--dt-text) 60%, transparent)";
 const TXT_SOCIAL_HOVER = "color-mix(in srgb, var(--dt-text) 90%, transparent)";
 const BORDER_LIGHT = "var(--dt-border)";
 
-export default function ColumnsWithSocial({ footer, brand_name, hasBlog }: FooterVariantProps) {
+export default function ColumnsWithSocial({
+  footer, brand_name, hasBlog,
+  onUpdateField, isEditorMode = false, isSelected = false,
+  collapseSheetForInlineEdit, onEditingStateChange,
+}: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
   const displayTagline = footer?.tagline || "";
+  const displayCopyright = footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
   const links = footer?.social_links ?? [];
 
   return (
@@ -25,7 +31,24 @@ export default function ColumnsWithSocial({ footer, brand_name, hasBlog }: Foote
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-2">
           <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
-          {displayTagline && <p style={{ color: TXT_MED }}>{displayTagline}</p>}
+          {(displayTagline || isEditorMode) && (
+            <p style={{ color: TXT_MED }}>
+              {isEditorMode ? (
+                <InlineText
+                  section="footer"
+                  fieldKey="tagline"
+                  value={displayTagline}
+                  placeholder="Tambah tagline..."
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                />
+              ) : displayTagline}
+            </p>
+          )}
           {hasBlog && (
             <a href="#blog" className="block text-xs transition-colors hover:opacity-80" style={{ color: TXT_HIGH }}>
               Blog
@@ -65,7 +88,19 @@ export default function ColumnsWithSocial({ footer, brand_name, hasBlog }: Foote
       </div>
 
       <div className="mt-8 pt-4 text-center" style={{ color: TXT_LOW, borderTop: `1px solid ${BORDER_LIGHT}` }}>
-        {footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`}
+        {isEditorMode ? (
+          <InlineText
+            section="footer"
+            fieldKey="copyright_text"
+            value={displayCopyright}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+          />
+        ) : displayCopyright}
       </div>
     </footer>
   );
