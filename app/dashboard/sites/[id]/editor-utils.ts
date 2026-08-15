@@ -227,19 +227,29 @@ export const summarizeDiff = (before: any, after: any) => {
   return rows;
 };
 
+export const deepEqual = (a: any, b: any): boolean => {
+  if (a === b) return true;
+  if (a == null || b == null || typeof a !== "object" || typeof b !== "object") return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!deepEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!Object.prototype.hasOwnProperty.call(b, key) || !deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+};
+
 export const isDesignTokenEqual = (a: any, b: any) => {
   if (!a || !b) return false;
-  return (
-    a.mood === b.mood &&
-    a.palette?.primary === b.palette?.primary &&
-    a.palette?.accent === b.palette?.accent &&
-    a.palette?.background === b.palette?.background &&
-    a.palette?.surface === b.palette?.surface &&
-    a.palette?.text === b.palette?.text &&
-    a.typography?.heading_font === b.typography?.heading_font &&
-    a.typography?.body_font === b.typography?.body_font &&
-    JSON.stringify(a.layout?.section_order) === JSON.stringify(b.layout?.section_order)
-  );
+  return deepEqual(a, b);
 };
 
 /**

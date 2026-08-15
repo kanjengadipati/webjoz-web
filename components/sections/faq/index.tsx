@@ -7,15 +7,44 @@ import FaqSimple from "./simple";
 import FaqColumns from "./columns";
 import FaqSidebarCategory from "./sidebar-category";
 
-const variants: Record<string, ComponentType<{ faq: TemplateProps["content"]["faq"]; design_token?: DesignToken | null; language?: "id" | "en" }>> = {
+const variants: Record<string, ComponentType<any>> = {
   accordion: FaqClassic,
   simple: FaqSimple,
   columns: FaqColumns,
   "sidebar-category": FaqSidebarCategory,
 };
 
-export default function FaqSection({ faq, design_token, language }: { faq: TemplateProps["content"]["faq"]; design_token?: DesignToken | null; language?: "id" | "en" }) {
+export default function FaqSection({
+  faq,
+  design_token,
+  language,
+  onUpdateField,
+  isEditorMode = false,
+  isSelected = false,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  faq: TemplateProps["content"]["faq"];
+  design_token?: DesignToken | null;
+  language?: "id" | "en";
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const variant = design_token?.layout?.section_variants?.faq ?? "accordion";
   const Renderer = variants[variant] ?? FaqClassic;
-  return <Renderer faq={faq} design_token={design_token} language={language} />;
+  return (
+    <Renderer
+      faq={faq}
+      design_token={design_token}
+      language={language}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }

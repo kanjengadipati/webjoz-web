@@ -129,6 +129,7 @@ export default function SiteEditorPage() {
   const [customTemplates, setCustomTemplates] = useState<any[]>([]);
   const [customTemplatesTotal, setCustomTemplatesTotal] = useState(0);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [isSuperadmin, setIsSuperadmin] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [confirmPublishOpen, setConfirmPublishOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -138,6 +139,7 @@ export default function SiteEditorPage() {
     if (!token || !activeTenantId || !siteId) return;
     // Only superadmin can access template library
     const role = (() => { try { return JSON.parse(atob(token.split(".")[1]))?.role } catch { } })();
+    setIsSuperadmin(role === "superadmin");
     if (role !== "superadmin") return;
     try {
       setLoadingTemplates(true);
@@ -999,6 +1001,7 @@ export default function SiteEditorPage() {
   };
 
   const globalUndoLastPushRef = useRef<number>(0);
+  const designUndoLastPushRef = useRef<number>(0);
 
   const pushGlobalUndo = (opts?: { force?: boolean }) => {
     if (!designTokenRef.current) return;
@@ -1018,8 +1021,11 @@ export default function SiteEditorPage() {
     setGlobalUndo(rest);
   };
 
-  const pushDesignUndo = () => {
+  const pushDesignUndo = (opts?: { force?: boolean }) => {
     if (!designTokenRef.current) return;
+    const now = Date.now();
+    if (!opts?.force && now - designUndoLastPushRef.current < 1500) return;
+    designUndoLastPushRef.current = now;
     setDesignOnlyUndo(prev => [JSON.parse(JSON.stringify(designTokenRef.current)), ...prev].slice(0, 5));
   };
 
@@ -1031,7 +1037,7 @@ export default function SiteEditorPage() {
   };
 
   const updateDesignTokenField = (group: "palette" | "typography" | "layout", key: string, value: any) => {
-    pushGlobalUndo({ force: true });
+    pushGlobalUndo();
     pushDesignUndo();
     setDesignToken((prev: any) => {
       let next = { ...(prev || {}) };
@@ -1059,7 +1065,7 @@ export default function SiteEditorPage() {
   };
 
   const updateSectionVariant = (section: string, value: string) => {
-    pushGlobalUndo({ force: true });
+    pushGlobalUndo();
     pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = prev ? JSON.parse(JSON.stringify(prev)) : {};
@@ -1088,7 +1094,7 @@ export default function SiteEditorPage() {
   };
 
   const applyTypographyBatch = (fields: Record<string, any>) => {
-    pushGlobalUndo({ force: true });
+    pushGlobalUndo();
     pushDesignUndo();
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
@@ -1099,7 +1105,7 @@ export default function SiteEditorPage() {
 
   const applyColorPattern = (pattern: ColorPattern) => {
     pushGlobalUndo({ force: true });
-    pushDesignUndo();
+    pushDesignUndo({ force: true });
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1115,7 +1121,7 @@ export default function SiteEditorPage() {
     const pattern = getEnabledColorPatterns().find((p) => p.id === preset.pattern_id);
     if (!pairing || !pattern) return;
     pushGlobalUndo({ force: true });
-    pushDesignUndo();
+    pushDesignUndo({ force: true });
     setDesignToken((prev: any) => {
       const next = { ...(prev || {}) };
       next.palette = { ...(next.palette || {}), ...pattern.palette };
@@ -1390,11 +1396,11 @@ export default function SiteEditorPage() {
                   })}
 
                   {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
-                  {customTemplates.length > 0 && (
+                  {isSuperadmin && customTemplates.length > 0 && (
                     <>
                       <div className="border-t border-white/10 my-2.5 pt-2" />
                       <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                        {t("dashboard.sitesEditor.aiHistory")}
+                        {t("dashboard.sitesEditor.templateLibraryAdmin")}
                       </p>
                       {(() => {
                         let hasMatchedActive = false;

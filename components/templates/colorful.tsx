@@ -5,10 +5,10 @@ import { ArrowRight, ChevronDown, Utensils, Image as ImageIcon } from "lucide-re
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  LeadForm, SharedTestimonialsSection, MenuCatalogCard,
+  LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, ctaHref,
-  SharedContactSection, SharedBenefitsSection,
+  ContactSection, BenefitsSection, FaqAccordion,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
@@ -19,7 +19,8 @@ import type { TemplateProps } from "./types";
 
 export const TemplateColorful: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language,
+  onUpdateField, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -163,7 +164,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <SharedTestimonialsSection
+        <TestimonialsSection
           testimonials={testimonials}
           designVariant="neobrutalist"
           wrapperClass="py-14 px-6 border-y-4 border-black"
@@ -309,13 +310,22 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
               <h2 className="text-2xl font-black uppercase text-center border-b-4 border-black pb-4" style={{ color: black, ...headingVars }}>{f.title}</h2>
               <div className="space-y-4">
                 {f.items?.map((item, idx) => (
-                  <details key={idx} className={`border-2 border-black p-4 group ${shadowBlock}`} style={{ background: surface }}>
-                    <summary className="font-black text-sm uppercase cursor-pointer list-none flex justify-between items-center">
-                      {item.question}
-                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform stroke-[3]" />
-                    </summary>
-                    <p className="mt-3 text-sm font-semibold leading-relaxed border-t-2 border-black pt-3" style={{ color: "#444" }}>{item.answer}</p>
-                  </details>
+                  <FaqAccordion
+                    key={idx}
+                    item={item}
+                    variant="card"
+                    index={idx}
+                    onUpdateItem={(index, field, value) => {
+                      const nextItems = [...(f.items || [])];
+                      nextItems[index] = { ...nextItems[index], [field]: value };
+                      onUpdateField?.("faq", "items", nextItems);
+                    }}
+                    section="faq"
+                    isEditorMode={isEditorMode}
+                    isSelected={activeSection === "faq"}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 ))}
               </div>
             </div>
@@ -343,7 +353,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={contact} render={(c) => (
-          <SharedContactSection
+          <ContactSection
             title={c.title}
             address={c.address}
             phone={c.phone}
