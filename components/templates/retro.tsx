@@ -4,10 +4,10 @@ import React from "react";
 import { Music, Zap, ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, SharedTestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref, isPlaceholderPrice,
-  ContactSection, BenefitsSection,
+  SharedContactSection, SharedBenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -99,7 +99,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSection
+          <SharedBenefitsSection
             benefits={b}
             wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}
@@ -128,7 +128,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
 
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
+        <SharedTestimonialsSection
           testimonials={testimonials}
           designVariant="neobrutalist"
           wrapperClass="py-[var(--dt-spacing)] px-6"
@@ -281,7 +281,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
+          <SharedContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}

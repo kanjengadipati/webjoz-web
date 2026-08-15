@@ -32,7 +32,7 @@ const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
 
 function getDesignToken(templateId: string): DesignToken {
   if (templateId === "TEMPLATE_DYNAMIC") return DYNAMIC_SHOWCASE_TOKEN;
-  return (TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] || TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02)!;
+  return (TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] || TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_KULINER01)!;
 }
 
 function TemplatePreview({

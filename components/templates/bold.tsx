@@ -5,10 +5,10 @@ import { ArrowRight } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, SharedTestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref, isPlaceholderPrice,
-  ContactSection, BenefitsSection,
+  SharedContactSection, SharedBenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -107,7 +107,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSection
+          <SharedBenefitsSection
             benefits={b}
             wrapperClass="py-16 px-6"
             wrapperStyle={{ background: bg, borderTop: `2px solid ${border}`, borderBottom: `2px solid ${border}` }}
@@ -136,7 +136,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
 
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
+        <SharedTestimonialsSection
           testimonials={testimonials}
           designVariant="neobrutalist"
           wrapperClass="py-16 px-6"
@@ -289,7 +289,7 @@ export const TemplateBold: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
+          <SharedContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}

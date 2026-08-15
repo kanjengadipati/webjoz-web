@@ -44,6 +44,11 @@ import { useI18n } from "@/lib/i18n/context";
 
 export { type SiteWizardProps };
 
+// Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
+// Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
+const QUALITY_GATE_THRESHOLD = 70;
+const MAX_QUALITY_RETRIES = 1;
+
 export function SiteWizard({
   mode,
   token,
@@ -64,13 +69,20 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const isSavingRef = React.useRef(false);
-  // Resume/state persistence: offer to restore an in-progress session on mount
-  const [resumeDraft, setResumeDraft] = useState<WizardResumeSnapshot | null>(() => {
+  // Hitung auto-retry karena kualitas rendah (per generasi pengguna).
+  const qualityRetryCountRef = React.useRef(0);
+  // Resume/state persistence: offer to restore an in-progress session on mount.
+  // Read localStorage in an effect (not a useState initializer) so SSR and the
+  // first client render agree — otherwise the resume banner causes a hydration mismatch.
+  const [resumeDraft, setResumeDraft] = useState<WizardResumeSnapshot | null>(null);
+  React.useEffect(() => {
     const snap = loadWizardSnapshot();
-    if (snap && snapshotHasProgress(snap)) return snap;
-    if (snap) clearWizardSnapshot();
-    return null;
-  });
+    if (snap && snapshotHasProgress(snap)) {
+      setResumeDraft(snap);
+    } else if (snap) {
+      clearWizardSnapshot();
+    }
+  }, []);
   // Ref to the preview container so confetti canvas can size itself correctly
   const previewContainerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -88,7 +100,21 @@ export function SiteWizard({
       preview.setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
       preview.advanceLoadingStepFromSection(section);
     },
-    onDone: (templateId, _qualityScore, _qualityIssues) => {
+    onDone: (templateId, qualityScore, generationSource, _qualityIssues) => {
+      // Quality gate (lapisan terakhir): backend sudah meng-gate per-grup dan
+      // menandai konten sebagai mock_fallback saat ada grup yang jatuh ke mock.
+      // Kalau konten masih AI murni tapi skornya rendah, auto-retry sekali —
+      // tanpa ini, hasil jelek (mis. score 44) tetap ditampilkan.
+      if (
+        generationSource !== "mock_fallback" &&
+        qualityScore < QUALITY_GATE_THRESHOLD &&
+        qualityRetryCountRef.current < MAX_QUALITY_RETRIES
+      ) {
+        qualityRetryCountRef.current += 1;
+        console.info(`[quality_gate] client auto-retry #${qualityRetryCountRef.current} score=${qualityScore}`);
+        void runGenerate();
+        return;
+      }
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
       const pool = getTemplatePool(chat.businessType, mood);
       preview.setTemplatePool(pool);
@@ -239,7 +265,10 @@ export function SiteWizard({
     generate.handleRetryGeneration(handleGenerate);
   };
 
-  const handleGenerate = async (
+  // runGenerate menjalankan stream tanpa mereset qualityRetryCountRef — dipakai
+  // oleh auto-retry kualitas. handleGenerate (wrapper) mereset counter dulu,
+  // jadi setiap inisiasi baru dari user punya jatah retry segar.
+  const runGenerate = async (
     bName = chat.businessName,
     bType = chat.businessType,
     overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
@@ -286,6 +315,15 @@ export function SiteWizard({
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
     });
+  };
+
+  const handleGenerate = async (
+    bName = chat.businessName,
+    bType = chat.businessType,
+    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
+  ) => {
+    qualityRetryCountRef.current = 0;
+    await runGenerate(bName, bType, overrides);
   };
 
   // Wire up chat handlers with handleGenerate

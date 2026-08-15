@@ -4,10 +4,10 @@ import React from "react";
 import { Globe, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
+  DynamicIcon, LeadForm, SharedTestimonialsSection,
   MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref,
-  ContactSection, BenefitsSection, InlineText, InlineImage,
+  SharedContactSection, SharedBenefitsSection, InlineText, InlineImage,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
@@ -135,7 +135,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <BenefitsSection
+          <SharedBenefitsSection
             benefits={benefits}
             wrapperClass="bg-slate-900/30 border-y border-slate-900 px-6 py-[var(--dt-spacing)]"
             eyebrowClass="font-extrabold tracking-wider uppercase text-xs"
@@ -235,7 +235,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
+          <SharedContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}
@@ -272,7 +272,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
+        <SharedTestimonialsSection
           testimonials={testimonials}
           wrapperClass="bg-slate-950 border-y border-slate-800 py-[var(--dt-spacing)] px-6"
           titleClass="text-white font-extrabold tracking-tight"

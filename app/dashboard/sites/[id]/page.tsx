@@ -24,7 +24,7 @@ import {
   BODY_SECTION_KEYS,
   EDITOR_SECTION_KEYS,
   SECTION_META,
-  AI_SUGGESTIONS,
+  getAiSuggestions,
   getOrderedSections,
   cloneData,
   collectQualityIssues,
@@ -1189,16 +1189,23 @@ export default function SiteEditorPage() {
   const pageOrderSections = SECTIONS;
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
-  const activeSuggestions = AI_SUGGESTIONS[activeTab] ?? AI_SUGGESTIONS.hero;
-  const aiPlaceholder = activeSuggestions[0] || "Buat copy lebih jelas dan meyakinkan...";
+  const activeSuggestions = getAiSuggestions(siteDetails?.language, activeTab);
+  const aiPlaceholder = activeSuggestions[0] || (siteDetails?.language === "en"
+    ? "Make the copy clearer and more compelling..."
+    : "Buat copy lebih jelas dan meyakinkan...");
   const fieldClass = (path: string, base: string) => `${base} ${issuePaths.has(path)
     ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
     : ""
     }`;
   const needsAttention = (path: string) => issuePaths.has(path);
-  const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_JASA02")!;
+  const currentTemplate = getTemplate(siteDetails.template_id) ?? getTemplate("TEMPLATE_DYNAMIC")!;
   const TemplateComponent = currentTemplate.component;
   const dynamicTemplate = TEMPLATE_REGISTRY.find(t => t.id === "TEMPLATE_DYNAMIC");
+
+  // Controls that only make sense for TEMPLATE_DYNAMIC (section variant picker,
+  // hero_style selector) are hidden for fixed branded templates where those
+  // settings are intentionally ignored.
+  const isDynamic = siteDetails.template_id === "TEMPLATE_DYNAMIC";
 
   // Find if active template is one of the custom ones from the library
   const activeCustomTemplate = siteDetails.template_id === "TEMPLATE_DYNAMIC" && customTemplates.find(ct =>
@@ -1856,6 +1863,8 @@ export default function SiteEditorPage() {
                       </select>
                     </div>
 
+                    {/* Hero style — hanya tampil untuk TEMPLATE_DYNAMIC */}
+                    {isDynamic && (
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.heroStyle")}</label>
                       <select
@@ -1869,6 +1878,7 @@ export default function SiteEditorPage() {
                         <option value="minimal" className="bg-[#111318]">{t("dashboard.sitesEditor.heroMinimalist")}</option>
                       </select>
                     </div>
+                    )}
 
 
                   </div>
@@ -1987,12 +1997,13 @@ export default function SiteEditorPage() {
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                     onAiSuccess={refreshTenantUsage}
                     subdomain={siteDetails?.subdomain}
+                    language={siteDetails?.language}
                     fieldUndoStacks={fieldUndoStacks}
                     undoField={undoField}
                   />
 
-                  {/* Variasi tampilan per section */}
-                  {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
+                  {/* Variasi tampilan per section — hanya tampil untuk TEMPLATE_DYNAMIC */}
+                  {isDynamic && SECTION_VARIANT_OPTIONS[activeTab] && (() => {
                     const allVars = SECTION_VARIANT_OPTIONS[activeTab];
                     const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
                     if (enabledOpts.length <= 1) return null;
@@ -2567,6 +2578,7 @@ export default function SiteEditorPage() {
                   onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                   onSubmitLead={async () => { }}
                   isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
+                  language={siteDetails?.language}
                 />
               </div>
             )}
@@ -2797,11 +2809,12 @@ export default function SiteEditorPage() {
                     updateDesignTokenLayout={(key, value) => updateDesignTokenField("layout", key, value)}
                     onAiSuccess={refreshTenantUsage}
                     subdomain={siteDetails?.subdomain}
+                    language={siteDetails?.language}
                     fieldUndoStacks={fieldUndoStacks}
                     undoField={undoField}
                   />
-                  {/* Variasi tampilan per section */}
-                  {SECTION_VARIANT_OPTIONS[activeTab] && (() => {
+                  {/* Variasi tampilan per section — hanya tampil untuk TEMPLATE_DYNAMIC */}
+                  {isDynamic && SECTION_VARIANT_OPTIONS[activeTab] && (() => {
                     const allVars = SECTION_VARIANT_OPTIONS[activeTab];
                     const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
                     if (enabledOpts.length <= 1) return null;
@@ -3068,14 +3081,14 @@ export default function SiteEditorPage() {
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option value="normal">{t("dashboard.sitesEditor.normal")}</option><option value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
                     </select>
-                    <select value={designToken?.layout?.hero_style || "centered"}
+                    {isDynamic && <select value={designToken?.layout?.hero_style || "centered"}
                       onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
                       className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="centered" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroCentered")}</option>
                       <option value="split" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroSplit")}</option>
                       <option value="full-bleed" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroFullBleed")}</option>
                       <option value="minimal" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroMinimalist")}</option>
-                    </select>
+                    </select>}
                   </div>
                 </div>
               )}
@@ -3293,12 +3306,14 @@ export default function SiteEditorPage() {
                       setAiPromptModal(null);
                     }
                   }}
-                  placeholder={`cth. "buat lebih persuasif dan emosional"`}
+                  placeholder={siteDetails?.language === "en"
+                    ? `e.g. "make it more persuasive and emotional"`
+                    : `cth. "buat lebih persuasif dan emosional"`}
                   className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
                 />
                 {/* Quick suggestion chips */}
                 <div className="flex flex-wrap gap-1.5">
-                  {(AI_SUGGESTIONS[aiPromptModal.section] ?? []).slice(0, 3).map((chip) => (
+                  {getAiSuggestions(siteDetails?.language, aiPromptModal.section).slice(0, 3).map((chip) => (
                     <button
                       key={chip}
                       type="button"

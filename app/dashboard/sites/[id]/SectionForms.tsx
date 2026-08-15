@@ -5,7 +5,7 @@ import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
-import { isPlaceholderValue, AI_SUGGESTIONS } from "./editor-utils";
+import { isPlaceholderValue, AI_SUGGESTIONS, getAiSuggestions } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
@@ -36,6 +36,7 @@ export interface SectionFormsProps {
   onUpgradeRequired?: () => void;
   onAiSuccess?: () => void;
   subdomain?: string;
+  language?: string;
   fieldUndoStacks?: Record<string, string[]>;
   undoField?: (section: string, key: string) => void;
 }
@@ -495,6 +496,7 @@ export default function SectionForms({
   onUpgradeRequired,
   onAiSuccess,
   subdomain,
+  language,
   fieldUndoStacks,
   undoField,
 }: SectionFormsProps) {
@@ -2874,10 +2876,10 @@ export default function SectionForms({
               </div>
               <div>
                 <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
-                  Instruksi AI — {fieldPromptModal.label}
+                  {language === "en" ? `AI Instructions — ${fieldPromptModal.label}` : `Instruksi AI — ${fieldPromptModal.label}`}
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Tambahkan instruksi khusus atau langsung klik Generate.
+                  {language === "en" ? "Add a custom instruction or just click Generate." : "Tambahkan instruksi khusus atau langsung klik Generate."}
                 </p>
               </div>
             </div>
@@ -2892,7 +2894,7 @@ export default function SectionForms({
                 if (e.key === "Enter") { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }
                 if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
               }}
-              placeholder='cth. "buat lebih kasual dan ramah"'
+              placeholder={language === "en" ? 'e.g. "make it more casual and friendly"' : 'cth. "buat lebih kasual dan ramah"'}
               className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
             />
 
@@ -2900,11 +2902,13 @@ export default function SectionForms({
             {fieldPromptModal.imageUrl && (
               <button
                 type="button"
-                onClick={() => setFieldPromptInput("Tulis deskripsi berdasarkan foto produk ini")}
+                onClick={() => setFieldPromptInput(language === "en"
+                  ? "Write a description based on this product photo"
+                  : "Tulis deskripsi berdasarkan foto produk ini")}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
               >
                 <span className="text-base leading-none">📸</span>
-                <span>Tulis deskripsi dari foto produk</span>
+                <span>{language === "en" ? "Write a description from the product photo" : "Tulis deskripsi dari foto produk"}</span>
                 <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-white/10">
                   <img src={fieldPromptModal.imageUrl} alt="" className="w-full h-full object-cover" />
                 </span>
@@ -2914,7 +2918,7 @@ export default function SectionForms({
             {/* Quick suggestions */}
             {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).slice(0, 3).map((chip) => (
+                {getAiSuggestions(language, fieldPromptModal.section).slice(0, 3).map((chip) => (
                   <button
                     key={chip}
                     type="button"
