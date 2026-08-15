@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { SharedTestimonialsSection } from "../../templates/shared";
+import { TestimonialsSection } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface TestimonialsVariantProps {
@@ -10,7 +10,7 @@ interface TestimonialsVariantProps {
 
 export default function TestimonialsGrid({ testimonials }: TestimonialsVariantProps) {
   return (
-    <SharedTestimonialsSection
+    <TestimonialsSection
       testimonials={testimonials}
       variant="grid"
       wrapperClass="py-20 px-5 sm:px-6"

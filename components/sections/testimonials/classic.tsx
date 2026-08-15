@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { SharedTestimonialsSection } from "../../templates/shared";
+import { TestimonialsSection } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface TestimonialsVariantProps {
@@ -10,7 +10,7 @@ interface TestimonialsVariantProps {
 
 export default function TestimonialsClassic({ testimonials }: TestimonialsVariantProps) {
   return (
-    <SharedTestimonialsSection
+    <TestimonialsSection
       testimonials={testimonials}
       wrapperClass="py-20 px-5 sm:px-6"
       wrapperStyle={{ background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}

@@ -161,7 +161,18 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ faq: f, dt }} render={(data) => {
               const { faq: ff } = data;
-              return <FaqSectionInner faq={ff} design_token={dt} language={language} />;
+              return (
+                <FaqSectionInner
+                  faq={ff}
+                  design_token={dt}
+                  language={language}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === key}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
             }} />
           </MemoPreviewSectionWrapper>
         );

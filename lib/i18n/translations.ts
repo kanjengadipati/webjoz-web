@@ -1887,6 +1887,7 @@ export interface Translations {
       aiDesignInstructionsPlaceholder: string;
       aiDesignFailed: string;
       aiHistory: string;
+      templateLibraryAdmin: string;
       aiMadeFor: string;
       aiRecommendation: string;
       aiTemplateCategory: string;
@@ -3949,6 +3950,7 @@ export const translations: Record<Locale, Translations> = {
         aiDesignInstructionsPlaceholder: "cth: tema kopi vintage hangat...",
         aiDesignFailed: "Terjadi kesalahan saat membuat ulang desain dengan AI",
         aiHistory: "Riwayat AI",
+        templateLibraryAdmin: "Template Library (Admin)",
         aiMadeFor: "Dibuat khusus berdasarkan info bisnis Anda",
         aiRecommendation: "Rekomendasi AI",
         aiTemplateCategory: "Kategori template",
@@ -6052,6 +6054,7 @@ export const translations: Record<Locale, Translations> = {
         aiDesignInstructionsPlaceholder: "e.g. warm vintage coffee theme...",
         aiDesignFailed: "Failed to regenerate the design with AI",
         aiHistory: "AI History",
+        templateLibraryAdmin: "Template Library (Admin)",
         aiMadeFor: "Made specifically from your business info",
         aiRecommendation: "AI Recommendation",
         aiTemplateCategory: "Template category",

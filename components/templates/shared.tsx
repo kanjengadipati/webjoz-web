@@ -667,7 +667,7 @@ interface TestimonialsSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
+const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   testimonials,
   variant = "grid",
   designVariant = "standard",
@@ -1169,11 +1169,21 @@ const FaqAccordion: React.FC<{
   isDark?: boolean;
   variant?: "card" | "minimal" | "numbered";
   index?: number;
-}> = ({ item, isDark = false, variant = "card", index = 0 }) => {
+  onUpdateItem?: (index: number, field: string, value: string) => void;
+  section?: string;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}> = ({ item, isDark = false, variant = "card", index = 0, onUpdateItem, section, isEditorMode = false, isSelected = false, collapseSheetForInlineEdit, onEditingStateChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const reactId = useId();
   const answerId = `faq-answer-${reactId}`;
   const num = String(index + 1).padStart(2, "0");
+
+  const handleUpdate = (field: string, value: string) => {
+    onUpdateItem?.(index, field, value);
+  };
 
   // ── Numbered variant ────────────────────────────────────────────────────────
   if (variant === "numbered") {
@@ -1196,7 +1206,19 @@ const FaqAccordion: React.FC<{
             ? isOpen ? "text-white" : "text-slate-200"
             : isOpen ? "text-stone-900" : "text-stone-700"
             }`}>
-            {item.question}
+            {isEditorMode ? (
+              <InlineText
+                section={section || "faq"}
+                fieldKey={`items.${index}.question`}
+                value={item.question}
+                onUpdateField={(_, __, val) => handleUpdate("question", val)}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : item.question}
           </span>
           <ChevronDown
             className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
@@ -1210,9 +1232,22 @@ const FaqAccordion: React.FC<{
           style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
         >
           <div className="overflow-hidden">
-            <p className={`pl-8 pb-5 text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-stone-500"}`}>
-              {item.answer}
-            </p>
+            <div className={`pl-8 pb-5 text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-stone-500"}`}>
+              {isEditorMode ? (
+                <InlineText
+                  section={section || "faq"}
+                  fieldKey={`items.${index}.answer`}
+                  value={item.answer}
+                  onUpdateField={(_, __, val) => handleUpdate("answer", val)}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  multiline
+                  as="div"
+                />
+              ) : item.answer}
+            </div>
           </div>
         </div>
       </div>
@@ -1234,7 +1269,19 @@ const FaqAccordion: React.FC<{
             ? isOpen ? "text-white" : "text-slate-300"
             : isOpen ? "text-stone-900" : "text-stone-700"
             }`}>
-            {item.question}
+            {isEditorMode ? (
+              <InlineText
+                section={section || "faq"}
+                fieldKey={`items.${index}.question`}
+                value={item.question}
+                onUpdateField={(_, __, val) => handleUpdate("question", val)}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : item.question}
           </span>
           <ChevronDown
             className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : ""} ${isDark
@@ -1248,9 +1295,22 @@ const FaqAccordion: React.FC<{
           style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 0.28s ease" }}
         >
           <div className="overflow-hidden">
-            <p className={`pb-5 text-sm leading-relaxed font-light ${isDark ? "text-slate-400" : "text-stone-500"}`}>
-              {item.answer}
-            </p>
+            <div className={`pb-5 text-sm leading-relaxed font-light ${isDark ? "text-slate-400" : "text-stone-500"}`}>
+              {isEditorMode ? (
+                <InlineText
+                  section={section || "faq"}
+                  fieldKey={`items.${index}.answer`}
+                  value={item.answer}
+                  onUpdateField={(_, __, val) => handleUpdate("answer", val)}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  multiline
+                  as="div"
+                />
+              ) : item.answer}
+            </div>
           </div>
         </div>
       </div>
@@ -1276,7 +1336,19 @@ const FaqAccordion: React.FC<{
           ? isOpen ? "text-white" : "text-slate-200"
           : isOpen ? "text-amber-950" : "text-amber-900"
           }`}>
-          {item.question}
+          {isEditorMode ? (
+            <InlineText
+              section={section || "faq"}
+              fieldKey={`items.${index}.question`}
+              value={item.question}
+              onUpdateField={(_, __, val) => handleUpdate("question", val)}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
+          ) : item.question}
         </span>
         <ChevronDown
           className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ease-in-out ${isOpen ? "rotate-180" : "rotate-0"} ${isDark
@@ -1294,7 +1366,20 @@ const FaqAccordion: React.FC<{
             ? "text-slate-300 border-slate-700/40"
             : "text-[#6D5D50] border-[#E8DDD0]/60"
             }`}>
-            {item.answer}
+            {isEditorMode ? (
+              <InlineText
+                section={section || "faq"}
+                fieldKey={`items.${index}.answer`}
+                value={item.answer}
+                onUpdateField={(_, __, val) => handleUpdate("answer", val)}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                multiline
+                as="div"
+              />
+            ) : item.answer}
           </div>
         </div>
       </div>
@@ -1606,7 +1691,7 @@ interface ContactSectionProps {
   mapLayout?: "inline" | "full" | null;
 }
 
-const SharedContactSection: React.FC<ContactSectionProps> = ({
+const ContactSection: React.FC<ContactSectionProps> = ({
   title, address, phone, email, mapsUrl,
   align = "center",
   showLeadForm, showMap, mapTileStyle, onSubmitLead, leadSubmitting, leadSuccess, leadError,
@@ -1791,7 +1876,7 @@ interface BenefitsSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-const SharedBenefitsSection: React.FC<BenefitsSectionProps> = ({
+const BenefitsSection: React.FC<BenefitsSectionProps> = ({
   benefits: b,
   variant = "grid",
   wrapperClass = "py-[var(--dt-spacing)] px-6",
@@ -2024,7 +2109,7 @@ export function InlineText({
           onKeyDown={(e) => {
             if (e.key === "Escape") handleCancel();
           }}
-          className={`w-full min-h-[80px] p-2 border-2 border-primary rounded-lg bg-slate-900/90 text-slate-100 font-sans text-sm outline-none resize-y z-50 ${className}`}
+          className={`w-full min-h-[80px] p-2.5 border-2 border-primary rounded-lg bg-slate-900/95 text-slate-100 font-sans text-sm outline-none resize-y shadow-xl z-50 ${className}`}
           style={style}
         />
       );
@@ -2043,14 +2128,17 @@ export function InlineText({
           if (e.key === "Enter") handleCommit();
           if (e.key === "Escape") handleCancel();
         }}
-        className={`w-full px-2 py-1 border-2 border-primary rounded-lg bg-slate-900/90 text-slate-100 font-sans text-sm outline-none z-50 ${className}`}
+        className={`w-full px-2.5 py-1 border-2 border-primary rounded-lg bg-slate-900/95 text-slate-100 font-sans text-sm outline-none shadow-xl z-50 ${className}`}
         style={style}
       />
     );
   }
 
+  const isInline = Component === "span";
+  const wrapperDisplay = isInline ? "inline-flex items-center gap-1.5" : "block";
+
   return (
-    <Component className={`relative inline-flex items-center gap-1.5 group/inline ${className}`} style={style}>
+    <Component className={`relative group/inline ${wrapperDisplay} ${className}`} style={style}>
       <span>{children ?? value ?? placeholder}</span>
       <button
         type="button"
@@ -2059,7 +2147,7 @@ export function InlineText({
         onTouchStart={(e) => e.stopPropagation()}
         title="Edit teks ini"
         aria-label="Edit teks ini"
-        className={`inline-flex h-6.5 w-6.5 items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
+        className={`inline-flex h-5 w-5 ml-1.5 align-middle items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
           isSelected ? "opacity-100 scale-100" : "max-md:opacity-100 max-md:scale-100 opacity-0 md:group-hover:opacity-100 md:group-hover:scale-100 scale-90"
         }`}
         style={{
@@ -2069,7 +2157,7 @@ export function InlineText({
           boxShadow: "0 2px 8px rgba(0,0,0,0.25)"
         }}
       >
-        <Pencil className="h-3.5 w-3.5 text-white flex-shrink-0 stroke-[2.5]" />
+        <Pencil className="h-3 w-3 text-white flex-shrink-0 stroke-[2.5]" />
       </button>
     </Component>
   );
@@ -2178,9 +2266,9 @@ export function InlineImage({
 
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
-  SharedTestimonialsSection, MenuCatalogCard, FaqAccordion,
+  TestimonialsSection, MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
-  SharedContactSection, SharedBenefitsSection,
+  ContactSection, BenefitsSection,
 };
 export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };

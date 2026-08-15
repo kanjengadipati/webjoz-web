@@ -323,7 +323,10 @@ const GalleryClassic: React.FC<GallerySectionProps> = ({ gallery, design_token, 
     rounded: "16px",
   };
   const radius = radiusMap[design_token?.layout?.corner_radius ?? "rounded"] || "16px";
-  const layout = gallery.layout || "grid";
+  // Unify on section_variants.gallery (the same mechanism all other sections use).
+  // Fall back to content.gallery.layout for backward compat with sites that
+  // were generated before section_variants.gallery was the source of truth.
+  const layout = design_token?.layout?.section_variants?.gallery ?? gallery.layout ?? "grid";
   const autoplaySpeed = gallery.autoplay_speed ?? 4000;
   const showDots = gallery.show_dots ?? true;
   const showArrows = gallery.show_arrows ?? true;

@@ -4,10 +4,10 @@ import React from "react";
 import { Music, Zap, ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, SharedTestimonialsSection,
+  DynamicIcon, LeadForm, TestimonialsSection,
   CartProvider, CartFab, AddToCartButton, WAFloatingButton, BackToTop,
   SeoEditorPreview, FaqAccordion, ctaHref, isPlaceholderPrice,
-  SharedContactSection, SharedBenefitsSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -19,7 +19,8 @@ import type { TemplateProps } from "./types";
 
 export const TemplateRetro: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language,
+  onUpdateField, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -99,7 +100,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <SharedBenefitsSection
+          <BenefitsSection
             benefits={b}
             wrapperClass="py-[var(--dt-spacing)] px-6"
             wrapperStyle={{ background: bg, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}
@@ -128,7 +129,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
 
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <SharedTestimonialsSection
+        <TestimonialsSection
           testimonials={testimonials}
           designVariant="neobrutalist"
           wrapperClass="py-[var(--dt-spacing)] px-6"
@@ -250,7 +251,23 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white" style={headingVars}>{f.title}</h2>
               <div className="space-y-3">
                 {f.items?.map((item, idx) => (
-                  <FaqAccordion key={idx} item={item} isDark={true} variant="card" index={idx} />
+                  <FaqAccordion
+                    key={idx}
+                    item={item}
+                    isDark={true}
+                    variant="card"
+                    index={idx}
+                    onUpdateItem={(index, field, value) => {
+                      const nextItems = [...(f.items || [])];
+                      nextItems[index] = { ...nextItems[index], [field]: value };
+                      onUpdateField?.("faq", "items", nextItems);
+                    }}
+                    section="faq"
+                    isEditorMode={isEditorMode}
+                    isSelected={activeSection === "faq"}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 ))}
               </div>
             </div>
@@ -281,7 +298,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <SharedContactSection
+          <ContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}

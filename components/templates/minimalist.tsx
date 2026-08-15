@@ -4,10 +4,10 @@ import React from "react";
 import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  LeadForm, SharedTestimonialsSection, MenuCatalogCard,
+  LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, ctaHref, FaqAccordion,
-  SharedContactSection, SharedBenefitsSection,
+  ContactSection, BenefitsSection,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
@@ -20,7 +20,8 @@ import type { TemplateProps } from "./types";
 
 export const TemplateMinimalist: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
-  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language
+  activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language,
+  onUpdateField, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
   const dt = design_token ?? null;
@@ -121,7 +122,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <SharedTestimonialsSection
+        <TestimonialsSection
           testimonials={testimonials}
           designVariant="minimal"
           wrapperClass="py-[var(--dt-spacing)] px-6 md:px-12"
@@ -258,7 +259,22 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
               <h2 className="text-2xl font-light tracking-tight" style={{ color: zinc900, ...headingVars }}>{f.title}</h2>
               <div className="divide-y" style={{ borderColor: zinc200 }}>
                 {f.items?.map((item, idx) => (
-                  <FaqAccordion key={idx} item={item} variant="minimal" index={idx} />
+                  <FaqAccordion
+                    key={idx}
+                    item={item}
+                    variant="minimal"
+                    index={idx}
+                    onUpdateItem={(index, field, value) => {
+                      const nextItems = [...(f.items || [])];
+                      nextItems[index] = { ...nextItems[index], [field]: value };
+                      onUpdateField?.("faq", "items", nextItems);
+                    }}
+                    section="faq"
+                    isEditorMode={isEditorMode}
+                    isSelected={activeSection === "faq"}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 ))}
               </div>
             </div>
@@ -288,7 +304,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={contact} render={(c) => (
-          <SharedContactSection
+          <ContactSection
             title={c.title}
             address={c.address}
             phone={c.phone}

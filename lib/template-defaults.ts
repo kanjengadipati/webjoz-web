@@ -13,6 +13,32 @@ import type { DesignToken } from "@/components/templates";
  * internal/modules/aisite/service.go — if you change one, change both.
  */
 export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
+    TEMPLATE_DYNAMIC: {
+        palette: {
+            primary: "#7C3AED",
+            accent: "#A78BFA",
+            background: "#0F0A1E",
+            surface: "#1A1330",
+            text: "#F5F3FF",
+        },
+        typography: {
+            heading_font: "Inter",
+            body_font: "Inter",
+            heading_weight: "700",
+            heading_size_hero: "3rem",
+            heading_style: "normal",
+            heading_transform: "none",
+            heading_tracking: "normal",
+        },
+        layout: {
+            hero_style: "centered",
+            corner_radius: "soft",
+            section_spacing: "normal",
+            section_order: ["hero", "benefits", "about", "testimonials", "cta", "faq", "contact"],
+        },
+        mood: "professional",
+        theme_mode: "light",
+    },
     TEMPLATE_KULINER01: {
         palette: {
             primary: "#78350F",
@@ -283,12 +309,13 @@ export const TEMPLATE_DEFAULT_DESIGN_TOKENS: Record<string, DesignToken> = {
 
 /**
  * Returns the default design token for a given template id.
- * Falls back to TEMPLATE_JASA02's defaults for unknown/dynamic ids,
- * since that was the pre-existing generic fallback behavior.
+ * Falls back to TEMPLATE_DYNAMIC's defaults for unknown/dynamic ids —
+ * this is consistent with public-site.tsx and page.tsx, where the
+ * backend always defaults new generations to TEMPLATE_DYNAMIC.
  */
 export function getTemplateDefaultDesignToken(templateId: string): DesignToken {
     return (
         TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] ??
-        TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_JASA02
+        TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_DYNAMIC
     );
 }

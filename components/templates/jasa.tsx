@@ -5,10 +5,10 @@ import { Shield, ArrowRight } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, SharedTestimonialsSection, MenuCatalogCard,
+  DynamicIcon, LeadForm, TestimonialsSection, MenuCatalogCard,
   CartProvider, CartFab,
   WAFloatingButton, BackToTop, ctaHref, FaqAccordion, SeoEditorPreview,
-  SharedContactSection, SharedBenefitsSection, InlineText, InlineImage,
+  ContactSection, BenefitsSection, InlineText, InlineImage,
 } from "./shared";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
@@ -111,7 +111,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
               </div>
             </div>
             <div className="space-y-6" style={{ textAlign: about.textAlign || "left" }}>
-              <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Profil</span>
+              <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs block">Profil</span>
               <InlineText
                 section="about"
                 fieldKey="title"
@@ -146,7 +146,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(benefits) => (
-          <SharedBenefitsSection
+          <BenefitsSection
             benefits={benefits}
             wrapperClass="px-6 py-[var(--dt-spacing)]"
             wrapperStyle={{ background: "var(--dt-primary-dark)", color: "var(--dt-on-dark-muted)" }}
@@ -183,7 +183,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           <section className="px-6 py-[var(--dt-spacing)] bg-[var(--dt-surface)] border-y border-[var(--dt-border)]" id="catalog">
             <div className="max-w-6xl mx-auto space-y-14">
               <div className="text-center space-y-3">
-                {catalogData.eyebrow && <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">{catalogData.eyebrow}</span>}
+                {catalogData.eyebrow && <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs block">{catalogData.eyebrow}</span>}
                 <InlineText
                   section="catalog"
                   fieldKey="title"
@@ -251,7 +251,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         <MemoSectionContent content={faq} render={(faq) => (
           <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-16" id="faq">
             <div className="text-center space-y-2">
-              <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs">Solusi Pertanyaan</span>
+              <span className="text-[var(--dt-primary)] font-extrabold tracking-wider uppercase text-xs block">{language === 'en' ? 'Questions' : 'Solusi Pertanyaan'}</span>
               <InlineText
                 section="faq"
                 fieldKey="title"
@@ -268,7 +268,22 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
             </div>
             <div className="space-y-4">
               {faq.items?.map((item, idx) => (
-                <FaqAccordion key={idx} item={item} variant="numbered" index={idx} />
+                <FaqAccordion
+                  key={idx}
+                  item={item}
+                  variant="numbered"
+                  index={idx}
+                  onUpdateItem={(index, field, value) => {
+                    const nextItems = [...(faq.items || [])];
+                    nextItems[index] = { ...nextItems[index], [field]: value };
+                    onUpdateField?.("faq", "items", nextItems);
+                  }}
+                  section="faq"
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "faq"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               ))}
             </div>
           </section>
@@ -322,7 +337,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <SharedContactSection
+          <ContactSection
             title={data.contact.title}
             address={data.contact.address}
             phone={data.contact.phone}
@@ -359,7 +374,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <SharedTestimonialsSection
+        <TestimonialsSection
           testimonials={testimonials}
           wrapperClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-6"
           titleClass="text-[var(--dt-text)] font-extrabold tracking-tight"
