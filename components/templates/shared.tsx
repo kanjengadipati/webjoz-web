@@ -667,7 +667,7 @@ interface TestimonialsSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
+const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   testimonials,
   variant = "grid",
   designVariant = "standard",
@@ -1697,7 +1697,7 @@ interface ContactSectionProps {
   mapLayout?: "inline" | "full" | null;
 }
 
-const ContactSection: React.FC<ContactSectionProps> = ({
+const SharedContactSection: React.FC<ContactSectionProps> = ({
   title, address, phone, email, mapsUrl,
   align = "center",
   showLeadForm, showMap, mapTileStyle, onSubmitLead, leadSubmitting, leadSuccess, leadError,
@@ -1882,7 +1882,7 @@ interface BenefitsSectionProps {
   onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-const BenefitsSection: React.FC<BenefitsSectionProps> = ({
+const SharedBenefitsSection: React.FC<BenefitsSectionProps> = ({
   benefits: b,
   variant = "grid",
   wrapperClass = "py-[var(--dt-spacing)] px-6",
@@ -2272,9 +2272,14 @@ export function InlineImage({
 
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
-  TestimonialsSection, MenuCatalogCard, FaqAccordion,
+  SharedTestimonialsSection,
+  SharedTestimonialsSection as TestimonialsSection,
+  MenuCatalogCard, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
-  ContactSection, BenefitsSection,
+  SharedContactSection,
+  SharedContactSection as ContactSection,
+  SharedBenefitsSection,
+  SharedBenefitsSection as BenefitsSection,
 };
 export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };
