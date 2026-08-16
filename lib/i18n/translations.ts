@@ -2080,7 +2080,7 @@ export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
       badge: "AI Website Builder untuk Bisnis Anda",
-      heroTitle: 'Generate website instan.<br /><span class="block text-[0.72em] sm:text-[0.8em] font-bold tracking-normal whitespace-nowrap bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Kustomisasi tanpa batas.</span>',
+      heroTitle: 'Generate website instan.<br /><span class="block text-[0.72em] sm:text-[0.8em] font-bold tracking-normal whitespace-nowrap bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Custom tanpa batas.</span>',
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, kustomisasi setiap detail — dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
       ctaPrimary: "Buat Website Sekarang",
