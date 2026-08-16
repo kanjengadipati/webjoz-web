@@ -40,7 +40,7 @@ export default function EnRefundPolicyPage() {
         </div>
 
         <h1 className="text-3xl font-bold mb-2">Refund Policy</h1>
-        <p className="text-sm text-muted-foreground mb-10">Last updated: July 2025 · Applies to Webjoz services</p>
+        <p className="text-sm text-muted-foreground mb-10">Last updated: August 16, 2026 · Applies to Webjoz services</p>
 
         <div className="prose prose-invert max-w-none space-y-8 text-sm leading-relaxed text-foreground/80">
 
@@ -48,6 +48,9 @@ export default function EnRefundPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">1. Overview</h2>
             <p>
               Giwangan Studio is committed to providing a quality Webjoz service. We understand that sometimes a service may not meet your expectations. This policy explains the conditions under which a refund may be granted.
+            </p>
+            <p className="mt-2">
+              This policy forms an integral part of the Webjoz <strong>Terms &amp; Conditions</strong>.
             </p>
           </section>
 
@@ -91,7 +94,7 @@ export default function EnRefundPolicyPage() {
               <li>Send an email to <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a> with the subject: <strong>&quot;Refund Request - [Account Name]&quot;</strong>.</li>
               <li>Include: the transaction number, payment date, and the reason for the refund request.</li>
               <li>Our team will respond within 2 working days.</li>
-              <li>If approved, funds will be returned to the original payment method within 5–14 working days depending on bank/provider policy.</li>
+              <li>If approved, funds will be returned to the original payment method <strong>within no more than 14 working days</strong> from the date of approval, depending on bank/provider policy.</li>
             </ol>
           </section>
 

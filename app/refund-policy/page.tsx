@@ -38,7 +38,7 @@ export default function RefundPolicyPage() {
         </div>
 
         <h1 className="text-3xl font-bold mb-2">Kebijakan Pengembalian Dana</h1>
-        <p className="text-sm text-muted-foreground mb-10">Terakhir diperbarui: Juli 2025 · Berlaku untuk layanan Webjoz</p>
+        <p className="text-sm text-muted-foreground mb-10">Terakhir diperbarui: 16 Agustus 2026 · Berlaku untuk layanan Webjoz</p>
 
         <div className="prose prose-invert max-w-none space-y-8 text-sm leading-relaxed text-foreground/80">
 
@@ -46,6 +46,9 @@ export default function RefundPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">1. Gambaran Umum</h2>
             <p>
               Giwangan Studio berkomitmen memberikan layanan Webjoz yang berkualitas. Kami memahami bahwa terkadang layanan mungkin tidak sesuai dengan harapan. Kebijakan ini menjelaskan kondisi di mana pengembalian dana (<em>refund</em>) dapat dilakukan.
+            </p>
+            <p className="mt-2">
+              Kebijakan ini merupakan bagian yang tidak terpisahkan dari <strong>Syarat &amp; Ketentuan</strong> Webjoz.
             </p>
           </section>
 
@@ -89,7 +92,7 @@ export default function RefundPolicyPage() {
               <li>Kirim email ke <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a> dengan subjek: <strong>&quot;Permintaan Refund - [Nama Akun]&quot;</strong>.</li>
               <li>Sertakan: nomor transaksi, tanggal pembayaran, dan alasan permintaan refund.</li>
               <li>Tim kami akan merespons dalam 2 hari kerja.</li>
-              <li>Jika disetujui, dana akan dikembalikan ke metode pembayaran asal dalam 5–14 hari kerja tergantung kebijakan bank/provider.</li>
+              <li>Jika disetujui, dana akan dikembalikan ke metode pembayaran asal <strong>paling lambat 14 hari kerja</strong> sejak permintaan disetujui, tergantung kebijakan bank/provider.</li>
             </ol>
           </section>
 
