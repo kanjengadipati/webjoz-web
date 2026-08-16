@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { siteUrl } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan | Webjoz",
   description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
   keywords: ["syarat ketentuan webjoz", "terms of service", "aturan penggunaan webjoz"],
   alternates: {
-    canonical: "https://www.webjoz.com/terms",
+    canonical: siteUrl("/terms"),
+    languages: {
+      id: siteUrl("/terms"),
+      en: siteUrl("/en/terms"),
+    },
   },
   openGraph: {
     title: "Syarat & Ketentuan | Webjoz",
     description: "Syarat dan Ketentuan penggunaan layanan Webjoz — platform AI website builder untuk bisnis Indonesia.",
-    url: "https://www.webjoz.com/terms",
+    url: siteUrl("/terms"),
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
@@ -27,7 +32,10 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition mb-8 inline-block">← Kembali ke Beranda</Link>
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition inline-block">← Kembali ke Beranda</Link>
+          <Link href="/en/terms" className="text-xs text-primary hover:underline inline-block">Read in English →</Link>
+        </div>
 
         <h1 className="text-3xl font-bold mb-2">Syarat &amp; Ketentuan</h1>
         <p className="text-sm text-muted-foreground mb-10">Terakhir diperbarui: Juli 2025 · Berlaku untuk layanan Webjoz</p>
@@ -97,7 +105,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">7. Penolakan Jaminan</h2>
             <p>
-              Webjoz disediakan "sebagaimana adanya" (<em>as-is</em>). Kami tidak menjamin bahwa layanan akan selalu tersedia tanpa gangguan atau bebas dari kesalahan. Kami tidak bertanggung jawab atas kerugian bisnis yang timbul akibat gangguan layanan.
+              Webjoz disediakan &quot;sebagaimana adanya&quot; (<em>as-is</em>). Kami tidak menjamin bahwa layanan akan selalu tersedia tanpa gangguan atau bebas dari kesalahan. Kami tidak bertanggung jawab atas kerugian bisnis yang timbul akibat gangguan layanan.
             </p>
           </section>
 

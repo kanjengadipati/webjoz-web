@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { siteUrl } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Kebijakan Pengembalian Dana | Webjoz",
   description: "Kebijakan pembatalan dan pengembalian dana layanan Webjoz — garansi uang kembali 7 hari untuk paket berbayar.",
   keywords: ["refund webjoz", "kebijakan pengembalian dana", "pembatalan langganan webjoz"],
   alternates: {
-    canonical: "https://www.webjoz.com/refund-policy",
+    canonical: siteUrl("/refund-policy"),
+    languages: {
+      id: siteUrl("/refund-policy"),
+      en: siteUrl("/en/refund-policy"),
+    },
   },
   openGraph: {
     title: "Kebijakan Pengembalian Dana | Webjoz",
     description: "Kebijakan pembatalan dan pengembalian dana layanan Webjoz — garansi uang kembali 7 hari.",
-    url: "https://www.webjoz.com/refund-policy",
+    url: siteUrl("/refund-policy"),
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
@@ -27,7 +32,10 @@ export default function RefundPolicyPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition mb-8 inline-block">← Kembali ke Beranda</Link>
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition inline-block">← Kembali ke Beranda</Link>
+          <Link href="/en/refund-policy" className="text-xs text-primary hover:underline inline-block">Read in English →</Link>
+        </div>
 
         <h1 className="text-3xl font-bold mb-2">Kebijakan Pengembalian Dana</h1>
         <p className="text-sm text-muted-foreground mb-10">Terakhir diperbarui: Juli 2025 · Berlaku untuk layanan Webjoz</p>
@@ -78,7 +86,7 @@ export default function RefundPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">5. Cara Mengajukan Refund</h2>
             <p>Untuk mengajukan pengembalian dana:</p>
             <ol className="list-decimal pl-5 space-y-2 mt-2">
-              <li>Kirim email ke <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a> dengan subjek: <strong>"Permintaan Refund - [Nama Akun]"</strong>.</li>
+              <li>Kirim email ke <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a> dengan subjek: <strong>&quot;Permintaan Refund - [Nama Akun]&quot;</strong>.</li>
               <li>Sertakan: nomor transaksi, tanggal pembayaran, dan alasan permintaan refund.</li>
               <li>Tim kami akan merespons dalam 2 hari kerja.</li>
               <li>Jika disetujui, dana akan dikembalikan ke metode pembayaran asal dalam 5–14 hari kerja tergantung kebijakan bank/provider.</li>

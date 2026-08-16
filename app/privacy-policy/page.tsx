@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { siteUrl } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Webjoz",
   description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna platform AI website builder.",
   keywords: ["privacy policy webjoz", "kebijakan privasi", "perlindungan data"],
   alternates: {
-    canonical: "https://www.webjoz.com/privacy-policy",
+    canonical: siteUrl("/privacy-policy"),
+    languages: {
+      id: siteUrl("/privacy-policy"),
+      en: siteUrl("/en/privacy-policy"),
+    },
   },
   openGraph: {
     title: "Privacy Policy | Webjoz",
     description: "Kebijakan Privasi Webjoz — bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna.",
-    url: "https://www.webjoz.com/privacy-policy",
+    url: siteUrl("/privacy-policy"),
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
@@ -27,7 +32,10 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition mb-8 inline-block">← Kembali ke Beranda</Link>
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition inline-block">← Kembali ke Beranda</Link>
+          <Link href="/en/privacy-policy" className="text-xs text-primary hover:underline inline-block">Read in English →</Link>
+        </div>
 
         <h1 className="text-3xl font-bold mb-2">Kebijakan Privasi</h1>
         <p className="text-sm text-muted-foreground mb-10">Terakhir diperbarui: Juli 2025 · Berlaku untuk layanan Webjoz</p>
@@ -37,7 +45,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">1. Pengantar</h2>
             <p>
-              Giwangan Studio ("kami", "kita") mengoperasikan platform Webjoz yang dapat diakses melalui <strong>webjoz.com</strong>. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda ketika menggunakan layanan kami.
+              Giwangan Studio (&quot;kami&quot;, &quot;kita&quot;) mengoperasikan platform Webjoz yang dapat diakses melalui <strong>webjoz.com</strong>. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda ketika menggunakan layanan kami.
             </p>
             <p className="mt-2">
               Dengan menggunakan Webjoz, Anda menyetujui praktik yang dijelaskan dalam kebijakan ini.
