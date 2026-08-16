@@ -333,7 +333,7 @@ export default function LandingPageClient() {
               {t("landing.badge")}
             </Badge>
 
-            <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl w-full text-foreground">
+            <h1 className="text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl w-full text-foreground">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
             </h1>
 
