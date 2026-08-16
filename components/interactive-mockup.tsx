@@ -97,13 +97,13 @@ function RealPreviewPanel({
   TemplateComponent,
   content,
   designToken,
-  visible,
+  flowStep = 0,
   baseWidth = 1280,
 }: {
   TemplateComponent: React.ComponentType<any>;
   content: any;
   designToken: any;
-  visible: boolean;
+  flowStep?: number;
   baseWidth?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,7 +140,7 @@ function RealPreviewPanel({
   useEffect(() => {
     const inner = innerRef.current;
     if (!inner) return;
-    if (!visible || scrollMax <= 0) {
+    if (flowStep < STEP_PREVIEW || scrollMax <= 0) {
       inner.style.transform = `scale(${scale})`;
       return;
     }
@@ -155,15 +155,15 @@ function RealPreviewPanel({
     };
     raf = requestAnimationFrame(tick);
     return () => { if (raf) cancelAnimationFrame(raf); };
-  }, [visible, scrollMax, scale]);
+  }, [flowStep, scrollMax, scale]);
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden"
       style={{
-        opacity: visible ? 1 : 0,
-        transition: "opacity 0.7s cubic-bezier(0.4,0,0.2,1)",
+        opacity: 1,
+        transition: "opacity 0.5s ease-out",
       }}
     >
       <div
@@ -180,267 +180,7 @@ function RealPreviewPanel({
       </div>
       {/* Vignette overlay so edges blend smoothly */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.55) 100%)" }}
-      />
-    </div>
-  );
-}
-
-/* ── PreviewSkeleton: real-wizard-style wireframe shown until generated ── */
-function PreviewSkeleton({
-  sample,
-  token,
-  flowStep,
-  baseWidth = 1280,
-  visible,
-}: {
-  sample: ShowcaseItem;
-  token: DesignToken;
-  flowStep: number;
-  baseWidth?: number;
-  visible: boolean;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0.22);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(() => {
-      setScale(el.offsetWidth / baseWidth);
-    });
-    obs.observe(el);
-    setScale(el.offsetWidth / baseWidth);
-    return () => obs.disconnect();
-  }, [baseWidth]);
-
-  const cssVars = useMemo(() => buildCssVars(token), [token]);
-  const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
-  const subtype = prefill?.businessSubType || prefill?.businessType || sample.businessType;
-  const showName = flowStep >= STEP_NAME;
-  const showType = flowStep >= STEP_PICK_TYPE;
-  const showDesc = flowStep >= STEP_ASK_MOOD;
-  const highlight = flowStep >= STEP_GENERATING;
-
-  const skeletonSubtle = { background: "color-mix(in srgb, var(--dt-text) 4%, transparent)" };
-  const skeletonSoft = { background: "color-mix(in srgb, var(--dt-text) 6%, transparent)" };
-  const skeletonStrong = { background: "color-mix(in srgb, var(--dt-text) 8%, transparent)" };
-  const skeletonPanel = {
-    background: "color-mix(in srgb, var(--dt-text) 3.5%, transparent)",
-    border: "1px solid color-mix(in srgb, var(--dt-text) 5.5%, transparent)",
-  };
-
-  return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 overflow-hidden"
-      style={{
-        opacity: visible ? 1 : 0,
-        transition: "opacity 0.7s cubic-bezier(0.4,0,0.2,1)",
-      }}
-    >
-      <div
-        style={{
-          ...cssVars,
-          width: baseWidth,
-          transformOrigin: "top left",
-          transform: `scale(${scale})`,
-          background: "var(--dt-bg)",
-          color: "var(--dt-text)",
-          fontFamily: "var(--dt-body-font)",
-          pointerEvents: "none",
-          userSelect: "none",
-        }}
-      >
-        <div className="mx-auto w-full max-w-5xl px-10 py-9">
-          {/* AI preview badge */}
-          <div
-            className="mb-5 flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium"
-            style={{
-              background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
-              color: "var(--dt-primary)",
-            }}
-          >
-            <span
-              className="h-1.5 w-1.5 rounded-full animate-pulse"
-              style={{ background: "var(--dt-primary)" }}
-            />
-            Pratinjau desain — hasil akhir sedang dibuat AI
-          </div>
-
-          {/* header */}
-          <header
-            className="mb-10 flex items-center justify-between pb-6"
-            style={{ borderBottom: "1px solid var(--dt-border)" }}
-          >
-            <div className="flex items-center gap-3">
-              {showName ? (
-                <div
-                  className="flex h-7 items-center rounded-md px-3 text-sm font-bold"
-                  style={{
-                    background: "var(--dt-primary-soft)",
-                    border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)",
-                    color: "var(--dt-primary)",
-                    fontFamily: "var(--dt-heading-font)",
-                  }}
-                >
-                  {sample.businessName}
-                </div>
-              ) : (
-                <div className="h-7 w-28 animate-pulse rounded-md" style={skeletonStrong} />
-              )}
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex gap-3">
-                {showType
-                  ? ["Tentang", "Keunggulan", "Kontak"].map((l) => (
-                      <span key={l} className="text-[11px]" style={{ color: "var(--dt-text-muted)" }}>
-                        {l}
-                      </span>
-                    ))
-                  : [0, 1, 2].map((i) => (
-                      <div key={i} className="h-3 w-12 animate-pulse rounded" style={skeletonSoft} />
-                    ))}
-              </div>
-              <div className="h-8 w-24 animate-pulse rounded-md" style={skeletonStrong} />
-            </div>
-          </header>
-
-          {/* hero */}
-          <section
-            className="relative mb-10 overflow-hidden rounded-2xl"
-            style={{
-              ...skeletonPanel,
-              height: 300,
-              border: highlight ? "1px solid var(--dt-primary)" : undefined,
-              boxShadow: highlight
-                ? "0 0 30px color-mix(in srgb, var(--dt-primary) 15%, transparent)"
-                : undefined,
-              transition: "border-color 0.5s, box-shadow 0.5s",
-            }}
-          >
-            <div className="absolute inset-0 flex flex-col justify-center gap-4 px-12">
-              {showType ? (
-                <div
-                  className="flex h-5 w-fit items-center rounded-full px-3 text-[10px] font-bold uppercase tracking-widest"
-                  style={{
-                    background: "var(--dt-primary-soft)",
-                    border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
-                    color: "var(--dt-primary)",
-                  }}
-                >
-                  {subtype}
-                </div>
-              ) : (
-                <div className="h-5 w-20 animate-pulse rounded-full" style={skeletonStrong} />
-              )}
-
-              {showName ? (
-                <div className="space-y-2">
-                  <div
-                    className="flex h-10 items-center rounded-lg px-3 text-xl font-black"
-                    style={{
-                      background: "var(--dt-surface)",
-                      color: "var(--dt-text)",
-                      fontFamily: "var(--dt-heading-font)",
-                    }}
-                  >
-                    {sample.businessName}
-                  </div>
-                  {showDesc ? (
-                    <div
-                      className="flex h-6 items-center rounded-lg px-3 text-xs"
-                      style={{ background: "var(--dt-surface)", color: "var(--dt-text-muted)" }}
-                    >
-                      <span className="truncate">{sample.description}</span>
-                    </div>
-                  ) : (
-                    <div className="h-6 w-1/2 animate-pulse rounded-lg" style={skeletonStrong} />
-                  )}
-                </div>
-              ) : (
-                <div className="h-10 w-3/4 animate-pulse rounded-lg" style={skeletonStrong} />
-              )}
-
-              <div className="h-4 w-2/3 animate-pulse rounded-full" style={skeletonSoft} />
-
-              <div
-                className="flex h-11 w-36 items-center justify-center rounded-lg text-xs font-bold transition-all duration-500"
-                style={highlight
-                  ? {
-                      background: "var(--dt-primary)",
-                      color: "var(--dt-primary-foreground)",
-                      border: "1px solid var(--dt-primary)",
-                    }
-                  : { ...skeletonStrong }}
-              >
-                {highlight ? "Pesan Sekarang →" : ""}
-              </div>
-            </div>
-            <div className="absolute inset-y-0 right-0 w-2/5" style={skeletonSubtle} />
-          </section>
-
-          {/* benefits */}
-          <section className="mb-10 grid grid-cols-4 gap-4">
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="space-y-3 rounded-xl p-4"
-                style={{
-                  ...skeletonPanel,
-                  border: showDesc && i === 0 ? "1px solid var(--dt-primary)" : undefined,
-                  transition: "border-color 0.5s",
-                }}
-              >
-                <div className="h-8 w-8 animate-pulse rounded-full" style={skeletonStrong} />
-                <div className="h-3 w-3/4 animate-pulse rounded" style={skeletonStrong} />
-                <div className="h-2 w-full animate-pulse rounded" style={skeletonSoft} />
-              </div>
-            ))}
-          </section>
-
-          {/* about */}
-          <section className="mb-10 flex items-center gap-8 rounded-xl p-8" style={skeletonPanel}>
-            <div className="flex-1 space-y-4">
-              <div className="h-7 w-3/4 animate-pulse rounded-md" style={skeletonStrong} />
-              <div className="h-3 w-full animate-pulse rounded" style={skeletonSoft} />
-              <div className="h-3 w-5/6 animate-pulse rounded" style={skeletonSoft} />
-              <div className="h-3 w-2/3 animate-pulse rounded" style={skeletonSoft} />
-            </div>
-            <div className="h-36 w-40 shrink-0 animate-pulse rounded-xl" style={skeletonSoft} />
-          </section>
-
-          {/* menu-ish grid */}
-          <section className="mb-10 grid grid-cols-2 gap-4">
-            {[0, 1].map((i) => (
-              <div key={i} className="flex gap-4 rounded-xl p-4" style={skeletonPanel}>
-                <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg" style={skeletonStrong} />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 w-2/3 animate-pulse rounded" style={skeletonStrong} />
-                  <div className="h-2 w-full animate-pulse rounded" style={skeletonSoft} />
-                  <div className="h-2 w-1/2 animate-pulse rounded" style={skeletonSoft} />
-                </div>
-              </div>
-            ))}
-          </section>
-
-          {/* preparing indicator */}
-          {highlight && (
-            <div className="flex items-center gap-2 text-[11px]" style={{ color: "var(--dt-text-muted)" }}>
-              <span
-                className="h-2 w-2 animate-pulse rounded-full"
-                style={{ background: "var(--dt-primary)" }}
-              />
-              <span>AI sedang mempersiapkan desain untuk {sample.businessName}...</span>
-            </div>
-          )}
-        </div>
-      </div>
-      {/* Vignette overlay so edges blend smoothly */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.55) 100%)" }}
+        style={{ background: "radial-gradient(ellipse at center, transparent 65%, rgba(12,12,14,0.45) 100%)" }}
       />
     </div>
   );
@@ -626,23 +366,22 @@ function PhoneMockup({ sample, token }: HeroItem) {
             </div>
           </div>
 
-          {/* ── Site screen (steps 8+) ── */}
+          {/* ── Site screen ── */}
           {TemplateComponent && (
-            <div
-              className={`absolute inset-0 transition-opacity duration-300 ${
-                flowStep >= STEP_PREVIEW ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            >
+            <div className="absolute inset-0">
               <RealPreviewPanel
                 TemplateComponent={TemplateComponent}
                 content={showcaseItem.content}
                 designToken={token}
-                visible={flowStep >= STEP_PREVIEW}
+                flowStep={flowStep}
                 baseWidth={390}
               />
 
               {/* Domain pill */}
-              <div className="absolute left-1/2 top-9 z-30 -translate-x-1/2">
+              <div
+                className="absolute left-1/2 top-9 z-30 -translate-x-1/2 transition-opacity duration-300"
+                style={{ opacity: flowStep >= STEP_PREVIEW ? 1 : 0 }}
+              >
                 <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/70 px-2.5 py-1 font-mono text-[8px] text-white/70 backdrop-blur-md">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   {domainSlug(showcaseItem.businessName)}.webjoz.com
@@ -650,11 +389,11 @@ function PhoneMockup({ sample, token }: HeroItem) {
               </div>
 
               {/* Success bar */}
-                <div
-                  className="absolute bottom-3 left-2.5 right-2.5 z-30 flex h-8 items-center rounded-xl px-3"
-                  style={{
-                    transform: flowStep >= STEP_SUCCESS ? "translateZ(22px)" : "translateZ(0px) translateY(4px)",
-                    opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
+              <div
+                className="absolute bottom-3 left-2.5 right-2.5 z-30 flex h-8 items-center rounded-xl px-3"
+                style={{
+                  transform: flowStep >= STEP_SUCCESS ? "translateZ(22px)" : "translateZ(0px) translateY(4px)",
+                  opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
                   transition: "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s",
                   background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
                   border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
@@ -882,6 +621,16 @@ export function InteractiveMockup() {
                 transformStyle: "preserve-3d",
               }}
             >
+              {/* Real website preview — always visible right from initial load */}
+              {TemplateComponent && (
+                <RealPreviewPanel
+                  TemplateComponent={TemplateComponent}
+                  content={showcaseItem.content}
+                  designToken={token}
+                  flowStep={flowStep}
+                />
+              )}
+
               {/* Scan line on generating */}
               {generating && (
                 <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
@@ -890,14 +639,6 @@ export function InteractiveMockup() {
                   />
                 </div>
               )}
-
-              {/* ── Preview: wizard-style wireframe until generated, then real template ── */}
-              <PreviewSkeleton
-                sample={showcaseItem}
-                token={token}
-                flowStep={flowStep}
-                visible={flowStep < STEP_PREVIEW}
-              />
 
               {/* Generating loading card (mirrors the wizard's LoadingCard) */}
               {generating && (
@@ -920,15 +661,19 @@ export function InteractiveMockup() {
                 </div>
               )}
 
-              {/* Real website preview */}
-              {TemplateComponent && (
-                <RealPreviewPanel
-                  TemplateComponent={TemplateComponent}
-                  content={showcaseItem.content}
-                  designToken={token}
-                  visible={flowStep >= STEP_PREVIEW}
-                />
-              )}
+              {/* Live Preview pill badge before full publish */}
+              <div
+                className="absolute top-3 right-3 z-30 transition-all duration-500"
+                style={{
+                  opacity: flowStep < STEP_PREVIEW ? 1 : 0,
+                  pointerEvents: "none",
+                }}
+              >
+                <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-2.5 py-1 text-[9px] font-mono text-white/80 shadow-md">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Interactive Preview
+                </div>
+              </div>
 
               {/* Domain pill — floats above real preview */}
               <div
