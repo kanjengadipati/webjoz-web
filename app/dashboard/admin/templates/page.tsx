@@ -357,40 +357,42 @@ export default function TemplateGalleryPage() {
   const categories = ["all", ...Array.from(new Set(TEMPLATE_REGISTRY.map((t) => t.category)))];
 
   return (
-    <div className="space-y-6">
-      {/* ── Tabs & Top Action Toolbar ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-3">
-        <div className="flex items-center gap-2">
+    <div className="space-y-5">
+      {/* ── Header Bar: Tabs & Action Buttons ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/40 pb-3">
+        {/* Segmented Tab Switcher */}
+        <div className="inline-flex p-1 bg-muted/40 border border-border/40 rounded-xl gap-1 shrink-0">
           <button 
             onClick={() => { setTab("components"); setSearchQuery(""); setSelectedCategory("all"); }} 
-            className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               tab === "components" 
-                ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                ? "bg-background text-foreground shadow-xs font-bold" 
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             }`}
           >
-            <Layers className="size-4" />
+            <Layers className="size-3.5" />
             <span>{t("dashboard.adminTemplates.tabComponents")}</span>
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-muted/80">
+            <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted/80 text-muted-foreground font-mono">
               {TEMPLATE_REGISTRY.length}
-            </Badge>
+            </span>
           </button>
           <button 
             onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }} 
-            className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               tab === "seeds" 
-                ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                ? "bg-background text-foreground shadow-xs font-bold" 
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             }`}
           >
-            <Sparkles className="size-4" />
+            <Sparkles className="size-3.5 text-primary" />
             <span>{t("dashboard.adminTemplates.tabSeeds")}</span>
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-muted/80">
+            <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted/80 text-muted-foreground font-mono">
               {loading ? "..." : seeds.length}
-            </Badge>
+            </span>
           </button>
         </div>
 
+        {/* Action Buttons */}
         {tab === "seeds" && (
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -398,17 +400,17 @@ export default function TemplateGalleryPage() {
               disabled={bulkCritiquing}
               size="sm"
               variant="outline"
-              className="gap-2 border-primary/30 text-primary hover:bg-primary/10 h-9"
+              className="gap-1.5 border-primary/30 text-primary hover:bg-primary/10 h-8 text-xs font-medium"
             >
-              {bulkCritiquing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
+              {bulkCritiquing ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
               <span>{t("dashboard.adminTemplates.bulkAesthetic")}</span>
             </Button>
-            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-9">
-              <Loader2 className="size-3.5" />
+            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-1.5 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-8 text-xs font-medium">
+              <Loader2 className="size-3" />
               <span>{t("dashboard.adminTemplates.backfillScores")}</span>
             </Button>
-            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2 h-9">
-              <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
+            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="ghost" className="gap-1.5 h-8 text-xs font-medium text-muted-foreground hover:text-foreground">
+              <RefreshCw className={`size-3 ${loading ? "animate-spin" : ""}`} />
               <span>{t("dashboard.adminTemplates.refreshSeeds")}</span>
             </Button>
           </div>
@@ -416,25 +418,25 @@ export default function TemplateGalleryPage() {
       </div>
 
       {/* ── Search & Filter Controls Panel ── */}
-      <div className="rounded-2xl border border-border/40 bg-card/60 p-4 space-y-3.5 shadow-sm">
+      <div className="rounded-xl border border-border/40 bg-card/40 p-3.5 space-y-3 shadow-xs">
         {/* Row 1: Search & Dropdown Filters */}
-        <div className="flex flex-col lg:flex-row gap-3">
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <div className="flex flex-col md:flex-row gap-2.5">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
             <Input 
               placeholder={tab === "components" ? t("dashboard.adminTemplates.searchComponentsPlaceholder") : t("dashboard.adminTemplates.searchSeedsPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-8 h-10 w-full bg-background/80 border-border/40 rounded-xl"
+              className="pl-8.5 pr-8 h-9 text-xs w-full bg-background/80 border-border/40 rounded-lg"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer p-0.5"
                 aria-label="Clear search"
               >
-                <X className="size-3.5" />
+                <X className="size-3" />
               </button>
             )}
           </div>
@@ -444,7 +446,7 @@ export default function TemplateGalleryPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
+                className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
               >
                 <option value="all">{t("dashboard.adminTemplates.allCategories")}</option>
                 {categories.filter(c => c !== "all").map((cat) => (
@@ -459,7 +461,7 @@ export default function TemplateGalleryPage() {
                   <select
                     value={selectedBusinessType}
                     onChange={(e) => setSelectedBusinessType(e.target.value)}
-                    className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
+                    className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
                   >
                     <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")}</option>
                     {businessTypes.filter(b => b !== "all").map((bt) => (
@@ -472,7 +474,7 @@ export default function TemplateGalleryPage() {
                   <select
                     value={selectedMood}
                     onChange={(e) => setSelectedMood(e.target.value)}
-                    className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
+                    className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
                   >
                     <option value="all">{t("dashboard.adminTemplates.allMoods")}</option>
                     {moods.filter(m => m !== "all").map((m) => (
@@ -484,7 +486,7 @@ export default function TemplateGalleryPage() {
                 <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                  className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
+                  className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
                 >
                   <option value="newest">{t("dashboard.adminTemplates.sortNewest")}</option>
                   <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
@@ -500,27 +502,27 @@ export default function TemplateGalleryPage() {
 
         {/* Row 2: Faceted Filter Chips (Only for seeds tab) */}
         {tab === "seeds" && (
-          <div className="pt-3 border-t border-border/30 flex flex-col xl:flex-row xl:items-center gap-3">
+          <div className="pt-2.5 border-t border-border/30 flex flex-col xl:flex-row xl:items-center gap-3">
             {/* Rule-based Quality Score Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 flex items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-muted-foreground/80 shrink-0 flex items-center gap-1">
                 <SlidersHorizontal className="size-3 text-muted-foreground" />
                 {t("dashboard.adminTemplates.ruleScoreLabel")}:
               </span>
-              <div className="flex flex-wrap items-center gap-1 bg-background/70 border border-border/40 rounded-xl p-1">
+              <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
                 {scoreFilterOptions.map((opt) => (
                   <button
                     key={opt.value}
                     type="button"
                     onClick={() => setScoreFilter(opt.value)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                    className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
                       scoreFilter === opt.value
-                        ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-muted/40`
+                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40`
                     }`}
                   >
                     <span>{t(opt.labelKey)}</span>
-                    <span className={`text-[10px] font-mono ${scoreFilter === opt.value ? "text-primary-foreground/90" : "opacity-60"}`}>
+                    <span className="text-[10px] opacity-60 font-mono">
                       ({scoreCounts[opt.value]})
                     </span>
                   </button>
@@ -530,24 +532,24 @@ export default function TemplateGalleryPage() {
 
             {/* AI Aesthetic Critique Score Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 flex items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-muted-foreground/80 shrink-0 flex items-center gap-1">
                 <Sparkles className="size-3 text-primary" />
                 {t("dashboard.adminTemplates.aestheticCritiqueLabel")}:
               </span>
-              <div className="flex flex-wrap items-center gap-1 bg-background/70 border border-border/40 rounded-xl p-1">
+              <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
                 {aestheticFilterOptions.map((opt) => (
                   <button
                     key={opt.value}
                     type="button"
                     onClick={() => setAestheticFilter(opt.value)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                    className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
                       aestheticFilter === opt.value
-                        ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-muted/40`
+                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40`
                     }`}
                   >
                     <span>{t(opt.labelKey)}</span>
-                    <span className={`text-[10px] font-mono ${aestheticFilter === opt.value ? "text-primary-foreground/90" : "opacity-60"}`}>
+                    <span className="text-[10px] opacity-60 font-mono">
                       ({aestheticCounts[opt.value]})
                     </span>
                   </button>
@@ -560,7 +562,7 @@ export default function TemplateGalleryPage() {
 
       {/* ── Status Summary & Bulk Selection Toolbar ── */}
       {tab === "seeds" && (
-        <div className="flex flex-wrap items-center justify-between gap-3 px-1 min-h-[36px]">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-1 min-h-[32px]">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-medium">
             <span>{t("dashboard.adminTemplates.entriesCount", undefined, { shown: String(filteredSeeds.length), total: String(seeds.length) })}</span>
             {filteredSeeds.length > 0 && selectedIds.size === 0 && (
@@ -578,8 +580,8 @@ export default function TemplateGalleryPage() {
           </div>
 
           {selectedIds.size > 0 && (
-            <div className="flex flex-wrap items-center gap-2 p-1.5 px-3 bg-primary/10 border border-primary/20 rounded-xl animate-in fade-in zoom-in-95 duration-200">
-              <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs font-bold">
+            <div className="flex flex-wrap items-center gap-2 p-1 px-2.5 bg-primary/10 border border-primary/20 rounded-lg animate-in fade-in zoom-in-95 duration-200">
+              <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5">
                 {t("dashboard.adminTemplates.selectedCount", undefined, { count: String(selectedIds.size) })}
               </Badge>
               {selectedIds.size < filteredSeeds.length && (
@@ -594,7 +596,7 @@ export default function TemplateGalleryPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-7 text-xs px-2 hover:bg-primary/20 cursor-pointer text-muted-foreground hover:text-foreground"
+                className="h-6.5 text-xs px-2 hover:bg-primary/20 cursor-pointer text-muted-foreground hover:text-foreground"
                 onClick={() => setSelectedIds(new Set())}
               >
                 {t("dashboard.adminTemplates.clearSelection")}
@@ -603,7 +605,7 @@ export default function TemplateGalleryPage() {
                 size="sm"
                 variant="destructive"
                 disabled={bulkDeleting}
-                className="h-7 text-xs px-2.5 gap-1.5 cursor-pointer shadow-sm"
+                className="h-6.5 text-xs px-2.5 gap-1.5 cursor-pointer shadow-xs"
                 onClick={handleBulkDelete}
               >
                 {bulkDeleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
