@@ -358,215 +358,258 @@ export default function TemplateGalleryPage() {
 
   return (
     <div className="space-y-6">
-      {/* ── Page Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2.5 text-foreground">
-            <Palette className="size-6 text-primary" />
-            {t("dashboard.adminTemplates.title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("dashboard.adminTemplates.subtitle")}
-          </p>
+      {/* ── Tabs & Top Action Toolbar ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-3">
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => { setTab("components"); setSearchQuery(""); setSelectedCategory("all"); }} 
+            className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              tab === "components" 
+                ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+            }`}
+          >
+            <Layers className="size-4" />
+            <span>{t("dashboard.adminTemplates.tabComponents")}</span>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-muted/80">
+              {TEMPLATE_REGISTRY.length}
+            </Badge>
+          </button>
+          <button 
+            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }} 
+            className={`px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              tab === "seeds" 
+                ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+            }`}
+          >
+            <Sparkles className="size-4" />
+            <span>{t("dashboard.adminTemplates.tabSeeds")}</span>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-muted/80">
+              {loading ? "..." : seeds.length}
+            </Badge>
+          </button>
         </div>
+
         {tab === "seeds" && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               onClick={handleBulkAestheticCritique}
               disabled={bulkCritiquing}
               size="sm"
               variant="outline"
-              className="gap-2 border-primary/30 text-primary hover:bg-primary/10"
+              className="gap-2 border-primary/30 text-primary hover:bg-primary/10 h-9"
             >
               {bulkCritiquing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
-              {t("dashboard.adminTemplates.bulkAesthetic")}
+              <span>{t("dashboard.adminTemplates.bulkAesthetic")}</span>
             </Button>
-            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 hover:bg-amber-500/10">
+            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-9">
               <Loader2 className="size-3.5" />
-              {t("dashboard.adminTemplates.backfillScores")}
+              <span>{t("dashboard.adminTemplates.backfillScores")}</span>
             </Button>
-            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2">
+            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="outline" className="gap-2 h-9">
               <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
-              {t("dashboard.adminTemplates.refreshSeeds")}
+              <span>{t("dashboard.adminTemplates.refreshSeeds")}</span>
             </Button>
           </div>
         )}
       </div>
 
-      {/* ── Tabs Navigation ── */}
-      <div className="flex items-center justify-between border-b border-border/40 pb-px">
-        <div className="flex gap-1.5">
-          <button 
-            onClick={() => { setTab("components"); setSearchQuery(""); setSelectedCategory("all"); }} 
-            className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 ${
-              tab === "components" 
-                ? "border-primary text-primary font-bold bg-primary/5 rounded-t-lg" 
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Layers className="size-4" />
-            {t("dashboard.adminTemplates.tabComponents")} ({TEMPLATE_REGISTRY.length})
-          </button>
-          <button 
-            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }} 
-            className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 ${
-              tab === "seeds" 
-                ? "border-primary text-primary font-bold bg-primary/5 rounded-t-lg" 
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <SparkleIcon className="size-6" />
-            {t("dashboard.adminTemplates.tabSeeds")} ({loading ? "..." : seeds.length})
-          </button>
-        </div>
-      </div>
-
-      {/* ── Search & Filter Controls ── */}
-      <div className="flex flex-col md:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input 
-            placeholder={tab === "components" ? t("dashboard.adminTemplates.searchComponentsPlaceholder") : t("dashboard.adminTemplates.searchSeedsPlaceholder")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-10 w-full bg-background border-border/40"
-          />
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-2">
-          <SlidersHorizontal className="size-4 text-muted-foreground shrink-0" />
+      {/* ── Search & Filter Controls Panel ── */}
+      <div className="rounded-2xl border border-border/40 bg-card/60 p-4 space-y-3.5 shadow-sm">
+        {/* Row 1: Search & Dropdown Filters */}
+        <div className="flex flex-col lg:flex-row gap-3">
+          <div className="relative flex-1 min-w-[240px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input 
+              placeholder={tab === "components" ? t("dashboard.adminTemplates.searchComponentsPlaceholder") : t("dashboard.adminTemplates.searchSeedsPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-8 h-10 w-full bg-background/80 border-border/40 rounded-xl"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Clear search"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
+          </div>
           
-          {tab === "components" && (
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
-            >
-              <option value="all">{t("dashboard.adminTemplates.allCategories")}</option>
-              {categories.filter(c => c !== "all").map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            {tab === "components" && (
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
+              >
+                <option value="all">{t("dashboard.adminTemplates.allCategories")}</option>
+                {categories.filter(c => c !== "all").map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            )}
 
-          {tab === "seeds" && businessTypes.length > 1 && (
-            <select
-              value={selectedBusinessType}
-              onChange={(e) => setSelectedBusinessType(e.target.value)}
-              className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
-            >
-              <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")}</option>
-              {businessTypes.filter(b => b !== "all").map((bt) => (
-                <option key={bt} value={bt} className="capitalize">{bt}</option>
-              ))}
-            </select>
-          )}
+            {tab === "seeds" && (
+              <>
+                {businessTypes.length > 1 && (
+                  <select
+                    value={selectedBusinessType}
+                    onChange={(e) => setSelectedBusinessType(e.target.value)}
+                    className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
+                  >
+                    <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")}</option>
+                    {businessTypes.filter(b => b !== "all").map((bt) => (
+                      <option key={bt} value={bt} className="capitalize">{bt}</option>
+                    ))}
+                  </select>
+                )}
 
-          {tab === "seeds" && moods.length > 1 && (
-            <select
-              value={selectedMood}
-              onChange={(e) => setSelectedMood(e.target.value)}
-              className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
-            >
-              <option value="all">{t("dashboard.adminTemplates.allMoods")}</option>
-              {moods.filter(m => m !== "all").map((m) => (
-                <option key={m} value={m} className="capitalize">{m}</option>
-              ))}
-            </select>
-          )}
+                {moods.length > 1 && (
+                  <select
+                    value={selectedMood}
+                    onChange={(e) => setSelectedMood(e.target.value)}
+                    className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
+                  >
+                    <option value="all">{t("dashboard.adminTemplates.allMoods")}</option>
+                    {moods.filter(m => m !== "all").map((m) => (
+                      <option key={m} value={m} className="capitalize">{m}</option>
+                    ))}
+                  </select>
+                )}
 
-          {tab === "seeds" && (
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-              className="h-10 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background text-foreground outline-none focus:border-primary/60 cursor-pointer"
-            >
-              <option value="newest">{t("dashboard.adminTemplates.sortNewest")}</option>
-              <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
-              <option value="score_asc">{t("dashboard.adminTemplates.sortScoreAsc")}</option>
-              <option value="score_desc">{t("dashboard.adminTemplates.sortScoreDesc")}</option>
-              <option value="aesthetic_desc">{t("dashboard.adminTemplates.sortAestheticDesc")}</option>
-              <option value="aesthetic_asc">{t("dashboard.adminTemplates.sortAestheticAsc")}</option>
-            </select>
-          )}
-
-          {tab === "seeds" && (
-            <div className="flex items-center gap-0.5 rounded-lg border border-border/40 bg-background p-1 h-10">
-              {scoreFilterOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setScoreFilter(opt.value)}
-                  className={`h-full px-3 text-xs font-semibold rounded-md transition-all cursor-pointer whitespace-nowrap ${
-                    scoreFilter === opt.value
-                      ? "bg-primary/10 text-primary"
-                      : `${opt.className || "text-muted-foreground"} hover:text-foreground`
-                  }`}
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                  className="h-10 px-3 text-xs font-medium rounded-xl border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
                 >
-                  {t(opt.labelKey)}
-                  <span className={`ml-1 ${scoreFilter === opt.value ? "text-primary/60" : "opacity-50"}`}>({scoreCounts[opt.value]})</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {tab === "seeds" && (
-            <div className="flex items-center gap-0.5 rounded-lg border border-border/40 bg-background p-1 h-10" title={t("dashboard.adminTemplates.aestheticFilterTitle")}>
-              {aestheticFilterOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setAestheticFilter(opt.value)}
-                  className={`h-full px-3 text-xs font-semibold rounded-md transition-all cursor-pointer whitespace-nowrap ${
-                    aestheticFilter === opt.value
-                      ? "bg-primary/10 text-primary"
-                      : `${opt.className || "text-muted-foreground"} hover:text-foreground`
-                  }`}
-                >
-                  {t(opt.labelKey)}
-                  <span className={`ml-1 ${aestheticFilter === opt.value ? "text-primary/60" : "opacity-50"}`}>({aestheticCounts[opt.value]})</span>
-                </button>
-              ))}
-            </div>
-          )}
+                  <option value="newest">{t("dashboard.adminTemplates.sortNewest")}</option>
+                  <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
+                  <option value="score_desc">{t("dashboard.adminTemplates.sortScoreDesc")}</option>
+                  <option value="score_asc">{t("dashboard.adminTemplates.sortScoreAsc")}</option>
+                  <option value="aesthetic_desc">{t("dashboard.adminTemplates.sortAestheticDesc")}</option>
+                  <option value="aesthetic_asc">{t("dashboard.adminTemplates.sortAestheticAsc")}</option>
+                </select>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Row 2: Faceted Filter Chips (Only for seeds tab) */}
+        {tab === "seeds" && (
+          <div className="pt-3 border-t border-border/30 flex flex-col xl:flex-row xl:items-center gap-3">
+            {/* Rule-based Quality Score Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 flex items-center gap-1.5">
+                <SlidersHorizontal className="size-3 text-muted-foreground" />
+                {t("dashboard.adminTemplates.ruleScoreLabel")}:
+              </span>
+              <div className="flex flex-wrap items-center gap-1 bg-background/70 border border-border/40 rounded-xl p-1">
+                {scoreFilterOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setScoreFilter(opt.value)}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                      scoreFilter === opt.value
+                        ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-muted/40`
+                    }`}
+                  >
+                    <span>{t(opt.labelKey)}</span>
+                    <span className={`text-[10px] font-mono ${scoreFilter === opt.value ? "text-primary-foreground/90" : "opacity-60"}`}>
+                      ({scoreCounts[opt.value]})
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Aesthetic Critique Score Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground shrink-0 flex items-center gap-1.5">
+                <Sparkles className="size-3 text-primary" />
+                {t("dashboard.adminTemplates.aestheticCritiqueLabel")}:
+              </span>
+              <div className="flex flex-wrap items-center gap-1 bg-background/70 border border-border/40 rounded-xl p-1">
+                {aestheticFilterOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setAestheticFilter(opt.value)}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                      aestheticFilter === opt.value
+                        ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-muted/40`
+                    }`}
+                  >
+                    <span>{t(opt.labelKey)}</span>
+                    <span className={`text-[10px] font-mono ${aestheticFilter === opt.value ? "text-primary-foreground/90" : "opacity-60"}`}>
+                      ({aestheticCounts[opt.value]})
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* ── Bulk Selection Bar ── */}
-      {tab === "seeds" && filteredSeeds.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 -mt-2">
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-8 text-[11px] gap-1.5"
-            onClick={() => setSelectedIds(new Set(filteredSeeds.map((s) => s.id)))}
-          >
-            {t("dashboard.adminTemplates.selectAllFiltered", undefined, { count: String(filteredSeeds.length) })}
-          </Button>
+      {/* ── Status Summary & Bulk Selection Toolbar ── */}
+      {tab === "seeds" && (
+        <div className="flex flex-wrap items-center justify-between gap-3 px-1 min-h-[36px]">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-medium">
+            <span>{t("dashboard.adminTemplates.entriesCount", undefined, { shown: String(filteredSeeds.length), total: String(seeds.length) })}</span>
+            {filteredSeeds.length > 0 && selectedIds.size === 0 && (
+              <>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIds(new Set(filteredSeeds.map((s) => s.id)))}
+                  className="text-primary hover:underline font-semibold cursor-pointer"
+                >
+                  {t("dashboard.adminTemplates.selectAllFiltered", undefined, { count: String(filteredSeeds.length) })}
+                </button>
+              </>
+            )}
+          </div>
+
           {selectedIds.size > 0 && (
-            <>
+            <div className="flex flex-wrap items-center gap-2 p-1.5 px-3 bg-primary/10 border border-primary/20 rounded-xl animate-in fade-in zoom-in-95 duration-200">
+              <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs font-bold">
+                {t("dashboard.adminTemplates.selectedCount", undefined, { count: String(selectedIds.size) })}
+              </Badge>
+              {selectedIds.size < filteredSeeds.length && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedIds(new Set(filteredSeeds.map((s) => s.id)))}
+                  className="text-xs text-primary hover:underline font-medium cursor-pointer"
+                >
+                  {t("dashboard.adminTemplates.selectAllFiltered", undefined, { count: String(filteredSeeds.length) })}
+                </button>
+              )}
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 text-[11px]"
+                className="h-7 text-xs px-2 hover:bg-primary/20 cursor-pointer text-muted-foreground hover:text-foreground"
                 onClick={() => setSelectedIds(new Set())}
               >
                 {t("dashboard.adminTemplates.clearSelection")}
               </Button>
-              <Badge variant="secondary" className="text-[11px] font-semibold">
-                {t("dashboard.adminTemplates.selectedCount", undefined, { count: String(selectedIds.size) })}
-              </Badge>
               <Button
                 size="sm"
                 variant="destructive"
                 disabled={bulkDeleting}
-                className="h-8 text-[11px] gap-1.5"
+                className="h-7 text-xs px-2.5 gap-1.5 cursor-pointer shadow-sm"
                 onClick={handleBulkDelete}
               >
                 {bulkDeleting ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
                 {t("dashboard.adminTemplates.deleteSelected")}
               </Button>
-            </>
+            </div>
           )}
         </div>
       )}

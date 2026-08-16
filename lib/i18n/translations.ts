@@ -998,6 +998,8 @@ export interface Translations {
       sortScoreDesc: string;
       sortAestheticAsc: string;
       sortAestheticDesc: string;
+      ruleScoreLabel: string;
+      aestheticCritiqueLabel: string;
       scoreBelowPlaceholder: string;
       scoreFilterAll: string;
       scoreFilterExcellent: string;
@@ -3077,6 +3079,8 @@ export const translations: Record<Locale, Translations> = {
         sortScoreDesc: "Skor Tertinggi",
         sortAestheticAsc: "Estetika Terendah",
         sortAestheticDesc: "Estetika Tertinggi",
+        ruleScoreLabel: "Skor Kualitas (Rules)",
+        aestheticCritiqueLabel: "Kritik AI (LLM)",
         scoreBelowPlaceholder: "Skor di bawah...",
         scoreFilterAll: "Semua",
         scoreFilterExcellent: "≥80",
@@ -5197,6 +5201,8 @@ export const translations: Record<Locale, Translations> = {
         sortScoreDesc: "Highest Score",
         sortAestheticAsc: "Lowest Aesthetic",
         sortAestheticDesc: "Highest Aesthetic",
+        ruleScoreLabel: "Quality Score (Rules)",
+        aestheticCritiqueLabel: "AI Critique (LLM)",
         scoreBelowPlaceholder: "Score below...",
         scoreFilterAll: "All",
         scoreFilterExcellent: "≥80",
