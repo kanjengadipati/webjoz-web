@@ -11,17 +11,29 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
 type HeroItem = { sample: ShowcaseItem; token: DesignToken };
 
+const STEP_GREET = 1;
+const STEP_NAME = 2;
+const STEP_ASK_TYPE = 3;
+const STEP_PICK_TYPE = 4;
+const STEP_ASK_MOOD = 5;
+const STEP_PICK_MOOD = 6;
+const STEP_GENERATING = 7;
+const STEP_PREVIEW = 8;
+const STEP_SUCCESS = 9;
+
 const SEQUENCE = [
   { step: 0, delay: 0 },
-  { step: 1, delay: 800 },    // AI greets
-  { step: 2, delay: 2000 },   // User types business name
-  { step: 3, delay: 3500 },   // AI asks type
-  { step: 4, delay: 5000 },   // User picks "Kuliner"
-  { step: 5, delay: 6500 },   // Generating...
-  { step: 6, delay: 8000 },   // Preview appears with 3D depth
-  { step: 7, delay: 9500 },   // Success banner
+  { step: STEP_GREET, delay: 700 },       // AI greets
+  { step: STEP_NAME, delay: 1800 },       // User types business name
+  { step: STEP_ASK_TYPE, delay: 3000 },   // AI asks type
+  { step: STEP_PICK_TYPE, delay: 4100 },  // User picks business type
+  { step: STEP_ASK_MOOD, delay: 5300 },   // AI asks mood
+  { step: STEP_PICK_MOOD, delay: 6500 },  // User picks mood
+  { step: STEP_GENERATING, delay: 7800 }, // Generating...
+  { step: STEP_PREVIEW, delay: 9200 },    // Preview appears with 3D depth
+  { step: STEP_SUCCESS, delay: 10700 },   // Success banner
 ];
-const CYCLE_MS = 13000;
+const CYCLE_MS = 14500;
 
 function useFlowStep() {
   const [flowStep, setFlowStep] = useState(0);
@@ -203,7 +215,7 @@ function PhoneMockup({ sample, token }: HeroItem) {
   const visible = (minStep: number) =>
     flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none";
 
-  const generating = flowStep === 5;
+  const generating = flowStep === STEP_GENERATING;
 
   return (
     <div
@@ -244,23 +256,23 @@ function PhoneMockup({ sample, token }: HeroItem) {
           {/* Dynamic island */}
           <div className="absolute left-1/2 top-2 z-40 h-[22px] w-20 -translate-x-1/2 rounded-full border border-white/10 bg-black" />
 
-          {/* ── Chat screen (steps 0-5) ── */}
+          {/* ── Chat screen (steps 0-7) ── */}
           <div
             className={`absolute inset-0 flex flex-col gap-2.5 px-4 pb-4 pt-12 transition-opacity duration-300 ${
-              flowStep >= 6 ? "pointer-events-none opacity-0" : "opacity-100"
+              flowStep >= STEP_PREVIEW ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(1)}`}>
+            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_GREET)}`}>
               <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
                 <SparkleIcon className="h-[15px] w-[15px]" />
               </div>
               <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border/50 bg-card/70 px-3 py-2 text-[11px] text-foreground shadow-md backdrop-blur-sm">
                 {t("landing.mockupGreeting")}
-                {flowStep === 1 && <span className="ml-1 inline-block h-2.5 w-1 animate-pulse rounded-sm bg-primary" />}
+                {flowStep === STEP_GREET && <span className="ml-1 inline-block h-2.5 w-1 animate-pulse rounded-sm bg-primary" />}
               </div>
             </div>
 
-            <div className={`flex justify-end transition-all duration-500 ${visible(2)}`}>
+            <div className={`flex justify-end transition-all duration-500 ${visible(STEP_NAME)}`}>
               <div
                 className="max-w-[80%] rounded-2xl rounded-br-sm px-3 py-2 text-[11px] font-medium shadow-md"
                 style={{
@@ -273,7 +285,7 @@ function PhoneMockup({ sample, token }: HeroItem) {
               </div>
             </div>
 
-            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(3)}`}>
+            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
               <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
                 <SparkleIcon className="h-[15px] w-[15px]" />
               </div>
@@ -282,9 +294,9 @@ function PhoneMockup({ sample, token }: HeroItem) {
               </div>
             </div>
 
-            <div className={`ml-8 flex flex-wrap gap-1.5 transition-all duration-500 ${visible(3)}`}>
+            <div className={`ml-8 flex flex-wrap gap-1.5 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
               {translations.landing.mockupChips.map((chip, i) => {
-                const sel = i === 0 && flowStep >= 4;
+                const sel = i === 0 && flowStep >= STEP_PICK_TYPE;
                 return (
                   <div
                     key={chip}
@@ -304,12 +316,43 @@ function PhoneMockup({ sample, token }: HeroItem) {
               })}
             </div>
 
-            <div className={`ml-8 transition-all duration-500 ${visible(4)}`}>
+            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                <SparkleIcon className="h-[15px] w-[15px]" />
+              </div>
+              <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border/50 bg-card/70 px-3 py-2 text-[11px] text-foreground shadow-md backdrop-blur-sm">
+                {t("landing.mockupPickMood")}
+              </div>
+            </div>
+
+            <div className={`ml-8 flex flex-wrap gap-1.5 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
+              {translations.landing.mockupMoodChips.map((chip, i) => {
+                const sel = i === 0 && flowStep >= STEP_PICK_MOOD;
+                return (
+                  <div
+                    key={chip}
+                    className={`rounded-full border px-2.5 py-0.5 text-[9px] font-semibold transition-all duration-400 ${
+                      sel ? "scale-105" : "bg-card/60 border-border/40 text-muted-foreground"
+                    }`}
+                    style={sel ? {
+                      background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+                      borderColor: "rgba(139,92,246,0.5)",
+                      color: "#ffffff",
+                      boxShadow: "0 4px 14px rgba(139,92,246,0.3)",
+                    } : {}}
+                  >
+                    {chip}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className={`ml-8 transition-all duration-500 ${visible(STEP_PICK_MOOD)}`}>
               <div className="h-1.5 w-28 overflow-hidden rounded-full bg-muted/50 shadow-inner">
                 <div
                   className="h-full rounded-full"
                   style={{
-                    width: generating ? "85%" : flowStep >= 6 ? "100%" : "30%",
+                    width: generating ? "85%" : flowStep >= STEP_PREVIEW ? "100%" : "30%",
                     background: "linear-gradient(90deg, var(--primary), color-mix(in srgb,var(--primary) 60%,white))",
                     boxShadow: "0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)",
                     transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -317,23 +360,23 @@ function PhoneMockup({ sample, token }: HeroItem) {
                 />
               </div>
               <p className="mt-1 text-[9px] font-medium text-muted-foreground">
-                {generating ? t("landing.mockupGenerating") : flowStep >= 6 ? t("landing.mockupReady") : t("landing.mockupStep")}
+                {generating ? t("landing.mockupGenerating") : flowStep >= STEP_PREVIEW ? t("landing.mockupReady") : t("landing.mockupStep")}
               </p>
             </div>
           </div>
 
-          {/* ── Site screen (steps 6+) ── */}
+          {/* ── Site screen (steps 8+) ── */}
           {TemplateComponent && (
             <div
               className={`absolute inset-0 transition-opacity duration-300 ${
-                flowStep >= 6 ? "opacity-100" : "pointer-events-none opacity-0"
+                flowStep >= STEP_PREVIEW ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
             >
               <RealPreviewPanel
                 TemplateComponent={TemplateComponent}
                 content={showcaseItem.content}
                 designToken={token}
-                visible={flowStep >= 6}
+                visible={flowStep >= STEP_PREVIEW}
                 baseWidth={390}
               />
 
@@ -346,11 +389,11 @@ function PhoneMockup({ sample, token }: HeroItem) {
               </div>
 
               {/* Success bar */}
-              <div
-                className="absolute bottom-3 left-2.5 right-2.5 z-30 flex h-8 items-center rounded-xl px-3"
-                style={{
-                  transform: flowStep >= 7 ? "translateZ(22px)" : "translateZ(0px) translateY(4px)",
-                  opacity: flowStep >= 7 ? 1 : 0,
+                <div
+                  className="absolute bottom-3 left-2.5 right-2.5 z-30 flex h-8 items-center rounded-xl px-3"
+                  style={{
+                    transform: flowStep >= STEP_SUCCESS ? "translateZ(22px)" : "translateZ(0px) translateY(4px)",
+                    opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
                   transition: "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s",
                   background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
                   border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
@@ -405,9 +448,9 @@ export function InteractiveMockup() {
     flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none";
 
   const tz = (z: number) =>
-    flowStep >= 6 ? `translateZ(${z}px)` : "translateZ(0px)";
+    flowStep >= STEP_PREVIEW ? `translateZ(${z}px)` : "translateZ(0px)";
 
-  const generating = flowStep === 5;
+  const generating = flowStep === STEP_GENERATING;
 
   return (
     <>
@@ -468,17 +511,17 @@ export function InteractiveMockup() {
             <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
               
               {/* AI avatar row */}
-              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(1)}`}>
+              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_GREET)}`}>
                 <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
                   <SparkleIcon className="w-[18px] h-[18px]" />
                 </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupGreeting")}
-                  {flowStep === 1 && <span className="ml-1 inline-block w-1 h-3 bg-primary animate-pulse rounded-sm" />}
+                  {flowStep === STEP_GREET && <span className="ml-1 inline-block w-1 h-3 bg-primary animate-pulse rounded-sm" />}
                 </div>
               </div>
 
-              <div className={`flex justify-end transition-all duration-500 ${visible(2)}`}>
+              <div className={`flex justify-end transition-all duration-500 ${visible(STEP_NAME)}`}>
                 <div className="rounded-2xl rounded-br-sm px-3.5 py-2.5 text-xs max-w-[75%] shadow-md font-medium"
                   style={{
                     background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
@@ -491,7 +534,7 @@ export function InteractiveMockup() {
               </div>
 
               {/* AI asks type */}
-              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(3)}`}>
+              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
                 <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
                   <SparkleIcon className="w-[18px] h-[18px]" />
                 </div>
@@ -501,9 +544,9 @@ export function InteractiveMockup() {
               </div>
 
               {/* Category chips */}
-              <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(3)}`}>
+              <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
                 {translations.landing.mockupChips.map((chip, i) => {
-                  const sel = i === 0 && flowStep >= 4;
+                  const sel = i === 0 && flowStep >= STEP_PICK_TYPE;
                   return (
                     <div key={chip} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
                       sel
@@ -521,13 +564,44 @@ export function InteractiveMockup() {
                 })}
               </div>
 
+              {/* AI asks mood */}
+              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
+                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
+                  <SparkleIcon className="w-[18px] h-[18px]" />
+                </div>
+                <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
+                  {t("landing.mockupPickMood")}
+                </div>
+              </div>
+
+              {/* Mood chips */}
+              <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
+                {translations.landing.mockupMoodChips.map((chip, i) => {
+                  const sel = i === 0 && flowStep >= STEP_PICK_MOOD;
+                  return (
+                    <div key={chip} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
+                      sel
+                        ? "scale-105"
+                        : "bg-card/60 border-border/40 text-muted-foreground"
+                    }`}
+                      style={sel ? {
+                        background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+                        borderColor: "rgba(139,92,246,0.5)",
+                        color: "#ffffff",
+                        boxShadow: "0 4px 14px rgba(139,92,246,0.3)"
+                      } : {}}
+                    >{chip}</div>
+                  );
+                })}
+              </div>
+
               {/* Progress bar */}
-              <div className={`ml-9 transition-all duration-500 ${visible(4)}`}>
+              <div className={`ml-9 transition-all duration-500 ${visible(STEP_PICK_MOOD)}`}>
                 <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden w-36 shadow-inner">
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: generating ? "85%" : flowStep >= 6 ? "100%" : "30%",
+                      width: generating ? "85%" : flowStep >= STEP_PREVIEW ? "100%" : "30%",
                       background: "linear-gradient(90deg, var(--primary), color-mix(in srgb,var(--primary) 60%,white))",
                       boxShadow: "0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)",
                       transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)"
@@ -535,7 +609,7 @@ export function InteractiveMockup() {
                   />
                 </div>
                 <p className="mt-1.5 text-[10px] text-muted-foreground font-medium">
-                  {generating ? t("landing.mockupGenerating") : flowStep >= 6 ? t("landing.mockupReady") : t("landing.mockupStep")}
+                  {generating ? t("landing.mockupGenerating") : flowStep >= STEP_PREVIEW ? t("landing.mockupReady") : t("landing.mockupStep")}
                 </p>
               </div>
             </div>
@@ -556,11 +630,11 @@ export function InteractiveMockup() {
                 </div>
               )}
 
-              {/* ── Real template preview (before step 6: blurred skeleton, after: real) ── */}
+              {/* ── Real template preview (before preview: blurred skeleton, after: real) ── */}
               <div
                 className="absolute inset-0 overflow-hidden"
                 style={{
-                  opacity: flowStep >= 5 ? 1 : 0,
+                  opacity: flowStep >= STEP_GENERATING ? 1 : 0,
                   transition: "opacity 0.6s ease",
                 }}
               >
@@ -568,7 +642,7 @@ export function InteractiveMockup() {
                 <div
                   className="absolute inset-0 z-10"
                   style={{
-                    opacity: flowStep >= 6 ? 0 : 1,
+                    opacity: flowStep >= STEP_PREVIEW ? 0 : 1,
                     transition: "opacity 0.5s ease",
                     background: "linear-gradient(110deg, #111 25%, #1a1a1a 50%, #111 75%)",
                     backgroundSize: "200% 100%",
@@ -582,7 +656,7 @@ export function InteractiveMockup() {
                     TemplateComponent={TemplateComponent}
                     content={showcaseItem.content}
                     designToken={token}
-                    visible={flowStep >= 6}
+                    visible={flowStep >= STEP_PREVIEW}
                   />
                 )}
               </div>
@@ -591,7 +665,7 @@ export function InteractiveMockup() {
               <div
                 className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-700"
                 style={{
-                  opacity: flowStep >= 6 ? 0 : 1,
+                  opacity: flowStep >= STEP_PREVIEW ? 0 : 1,
                   background: "linear-gradient(160deg, color-mix(in srgb,var(--primary) 4%,transparent) 0%, #0c0c0e 100%)",
                 }}
               />
@@ -600,8 +674,8 @@ export function InteractiveMockup() {
               <div
                 className="absolute top-3 left-1/2 -translate-x-1/2 z-30 transition-all duration-500"
                 style={{
-                  opacity: flowStep >= 6 ? 1 : 0,
-                  transform: flowStep >= 6 ? `translateX(-50%) ${tz(30)}` : "translateX(-50%) translateY(-4px)",
+                  opacity: flowStep >= STEP_PREVIEW ? 1 : 0,
+                  transform: flowStep >= STEP_PREVIEW ? `translateX(-50%) ${tz(30)}` : "translateX(-50%) translateY(-4px)",
                   transition: "opacity 0.5s, transform 0.6s cubic-bezier(0.34,1.3,0.64,1)",
                 }}
               >
@@ -615,8 +689,8 @@ export function InteractiveMockup() {
               <div
                 className="absolute bottom-3 left-3 right-3 h-9 rounded-xl flex items-center px-3.5 z-30"
                 style={{
-                  transform: flowStep >= 7 ? tz(22) : "translateZ(0px) translateY(4px)",
-                  opacity: flowStep >= 7 ? 1 : 0,
+                  transform: flowStep >= STEP_SUCCESS ? tz(22) : "translateZ(0px) translateY(4px)",
+                  opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
                   transition: "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s",
                   background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
                   border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
