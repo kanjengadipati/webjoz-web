@@ -137,10 +137,11 @@ function RealPreviewPanel({
   }, [scale]);
 
   // Auto-scroll the website top-to-bottom so more than just the hero is seen.
+  const hasReachedPreview = flowStep >= STEP_PREVIEW;
   useEffect(() => {
     const inner = innerRef.current;
     if (!inner) return;
-    if (flowStep < STEP_PREVIEW || scrollMax <= 0) {
+    if (!hasReachedPreview || scrollMax <= 0) {
       inner.style.transform = `scale(${scale})`;
       return;
     }
@@ -155,7 +156,8 @@ function RealPreviewPanel({
     };
     raf = requestAnimationFrame(tick);
     return () => { if (raf) cancelAnimationFrame(raf); };
-  }, [flowStep, scrollMax, scale]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasReachedPreview, scrollMax, scale]);
 
   return (
     <div
