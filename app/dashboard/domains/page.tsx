@@ -94,11 +94,8 @@ export default function DomainsPage() {
     try {
       const pr = await request<PurchasedDomain[]>("/domain-purchases", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token);
       setPurchased(pr.data || []);
-    } catch (err: unknown) {
-      const statusCode = (err as { statusCode?: number })?.statusCode;
-      if (statusCode && statusCode >= 500) {
-        setPurchaseAvailable(false);
-      }
+    } catch {
+      setPurchaseAvailable(false);
     }
   };
 
@@ -337,21 +334,23 @@ export default function DomainsPage() {
           TAB SWITCHER — Buy New Domain / Already Own
       ══════════════════════════════════════════════ */}
       <div className="flex items-center gap-1 bg-[#15151a] border border-white/[0.08] rounded-2xl p-1.5 w-fit">
-        <button
-          type="button"
-          onClick={() => setTab("buy")}
-          className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-            tab === "buy" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
-          }`}
-        >
-          <ShoppingCart className="w-3.5 h-3.5" />
-          {t("dashboard.domains.buyTab")}
-        </button>
+        {purchaseAvailable && (
+          <button
+            type="button"
+            onClick={() => setTab("buy")}
+            className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
+              tab === "buy" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+            }`}
+          >
+            <ShoppingCart className="w-3.5 h-3.5" />
+            {t("dashboard.domains.buyTab")}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setTab("own")}
           className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-            tab === "own" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
           }`}
         >
           <Globe className="w-3.5 h-3.5" />
@@ -362,15 +361,8 @@ export default function DomainsPage() {
       {/* ═══════════════════════════════════════════════
           TAB — BUY NEW DOMAIN
       ══════════════════════════════════════════════ */}
-      {tab === "buy" && (
+      {tab === "buy" && purchaseAvailable && (
         <section className="space-y-6">
-
-          {!purchaseAvailable && (
-            <div className="flex items-start gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3.5">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-              <p className="text-[13px] text-amber-300 font-medium m-0">{t("dashboard.domains.purchaseInactive")}</p>
-            </div>
-          )}
 
           {/* Purchased domains list */}
           {purchased.length > 0 && (
@@ -551,12 +543,11 @@ export default function DomainsPage() {
       {/* ═══════════════════════════════════════════════
           TAB — ALREADY OWN A DOMAIN (BYOD)
       ══════════════════════════════════════════════ */}
-      {tab === "own" && (
+      {(tab === "own" || !purchaseAvailable) && (
       <>
       {/* ═══════════════════════════════════════════════
           SECTION 1 — Connected Custom Domains List
-      ══════════════════════════════════════════════ */}
-      {domains.length > 0 && (
+      ══════════════════════════════════════════════ */}      {domains.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
             {t("dashboard.domains.connectedTitle", undefined, { count: String(domains.length) })}
