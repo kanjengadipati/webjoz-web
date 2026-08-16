@@ -468,7 +468,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     )}
                     <span>{activeLabel}</span>
                   </div>
-                  {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings") && (
+                  {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings" || pathname === "/dashboard/admin/templates") && (
                     <p className="text-xs text-muted-foreground">
                       {pathname === "/dashboard" && t("dashboard.subDashboard")}
                       {pathname === "/dashboard/sites" && t("dashboard.subSites")}
@@ -476,6 +476,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       {pathname === "/dashboard/leads" && t("dashboard.subLeads")}
                       {pathname === "/dashboard/analytics" && t("dashboard.subAnalytics")}
                       {pathname === "/dashboard/settings" && t("dashboard.subSettings")}
+                      {pathname === "/dashboard/admin/templates" && t("dashboard.adminTemplates.subtitle")}
                     </p>
                   )}
                 </div>
