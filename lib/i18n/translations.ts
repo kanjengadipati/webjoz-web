@@ -2079,7 +2079,7 @@ export interface Translations {
 export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
-      badge: "AI Website Builder untuk Bisnis Indonesia",
+      badge: "AI Website Builder untuk Bisnis Anda",
       heroTitle: "Generate website instan.<br />Kustomisasi tanpa batas.",
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, kustomisasi setiap detail — dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
@@ -4201,7 +4201,7 @@ export const translations: Record<Locale, Translations> = {
   },
   en: {
     landing: {
-      badge: "AI Website Builder for Indonesian Businesses",
+      badge: "AI Website Builder for Your Business",
       heroTitle: "Generate your website in an instant.<br />Unlimited customization.",
       heroSubtitle: "Have a quick chat with AI, choose a visual style, customize every detail — and your business website is ready to publish.",
       heroSubtitleBold: "No coding, no long forms.",
