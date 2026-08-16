@@ -321,23 +321,23 @@ export default function LandingPageClient() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-10 flex items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="mx-auto max-w-7xl w-full grid gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
             <Badge
               variant="outline"
-              className="border-amber-500/30 bg-amber-500/10 text-amber-400 shadow-lg px-4 py-2 animate-pulse w-fit rounded-full text-xs font-semibold"
+              className="border-amber-500/30 bg-amber-500/10 text-amber-300 shadow-sm px-3.5 py-1.5 w-fit rounded-full text-xs font-semibold backdrop-blur-md"
             >
-              <span className="flex h-2 w-2 rounded-full bg-amber-400 mr-2" />
+              <span className="flex h-2 w-2 rounded-full bg-amber-400 mr-2 shadow-[0_0_8px_#fbbf24] animate-pulse" />
               {t("landing.badge")}
             </Badge>
 
-            <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl w-full">
+            <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl w-full text-foreground">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
             </h1>
 
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl">
               {t("landing.heroSubtitle")}{" "}
               <strong className="text-foreground font-semibold">{t("landing.heroSubtitleBold")}</strong>
             </p>
