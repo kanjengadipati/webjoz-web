@@ -2,10 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
+import { TEMPLATE_REGISTRY, type DesignToken } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
-import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
+import { SHOWCASE_ITEMS, findShowcaseSample } from "@/lib/landing-showcase-data";
+import { fetchDesignTokenLibrary } from "@/lib/design-token-library";
 import { SparkleIcon } from "@/components/sparkle-icon";
+
+type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
+type HeroItem = { sample: ShowcaseItem; token: DesignToken };
 
 const SEQUENCE = [
   { step: 0, delay: 0 },
@@ -38,6 +42,41 @@ function useFlowStep() {
     return () => { timers.forEach(clearTimeout); clearInterval(loop); };
   }, []);
   return flowStep;
+}
+
+/* ── Best hero template (highest AI aesthetic score) ───────────────────── */
+function getDefaultToken(templateId: string): DesignToken {
+  return TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_DYNAMIC!;
+}
+
+function domainSlug(businessName: string): string {
+  const words = (businessName || "").toLowerCase().split(/\s+/).filter(Boolean);
+  return (words.slice(0, 2).join("").replace(/[^a-z0-9]/g, "") || "mywebsite").slice(0, 20);
+}
+
+const FALLBACK_HERO: HeroItem = {
+  sample: SHOWCASE_ITEMS[0],
+  token: getDefaultToken(SHOWCASE_ITEMS[0].templateId),
+};
+
+function useBestHero(): HeroItem {
+  const [hero, setHero] = useState<HeroItem>(FALLBACK_HERO);
+  useEffect(() => {
+    let cancelled = false;
+    fetchDesignTokenLibrary(100).then((tokens) => {
+      if (cancelled || tokens.length === 0) return;
+      const sorted = [...tokens].sort(
+        (a, b) =>
+          (b.aesthetic_score ?? -1) - (a.aesthetic_score ?? -1) ||
+          (b.score ?? 0) - (a.score ?? 0)
+      );
+      const best = sorted[0];
+      if (!best) return;
+      setHero({ sample: findShowcaseSample(best.business_type, best.id), token: best.design_token });
+    });
+    return () => { cancelled = true; };
+  }, []);
+  return hero;
 }
 
 /* ── RealPreviewPanel: renders an actual website template, scaled to fit ── */
@@ -135,12 +174,15 @@ function RealPreviewPanel({
 }
 
 /* ── PhoneMockup: mobile-first hero showcase inside a phone frame ───────── */
-function PhoneMockup() {
+function PhoneMockup({ sample, token }: HeroItem) {
   const { t, translations } = useI18n();
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const flowStep = useFlowStep();
+
+  const showcaseItem = sample;
+  const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
 
   const applyTilt = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
@@ -162,11 +204,6 @@ function PhoneMockup() {
     flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none";
 
   const generating = flowStep === 5;
-
-  const showcaseItem = SHOWCASE_ITEMS[0];
-  const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
-  const token = TEMPLATE_DEFAULT_DESIGN_TOKENS[showcaseItem.templateId]
-    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_DYNAMIC!;
 
   return (
     <div
@@ -232,7 +269,7 @@ function PhoneMockup() {
                   boxShadow: "0 4px 16px rgba(99,102,241,0.35)",
                 }}
               >
-                Toko Kopi Nusantara ☕
+                {showcaseItem.businessName}
               </div>
             </div>
 
@@ -304,7 +341,7 @@ function PhoneMockup() {
               <div className="absolute left-1/2 top-9 z-30 -translate-x-1/2">
                 <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/70 px-2.5 py-1 font-mono text-[8px] text-white/70 backdrop-blur-md">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  kopirempah.webjoz.com
+                  {domainSlug(showcaseItem.businessName)}.webjoz.com
                 </div>
               </div>
 
@@ -339,6 +376,10 @@ export function InteractiveMockup() {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const flowStep = useFlowStep();
+
+  const { sample, token } = useBestHero();
+  const showcaseItem = sample;
+  const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
 
   /* ── 3D Tilt (mouse + touch) ─────────────────────────────────────────── */
   const applyTilt = (clientX: number, clientY: number) => {
@@ -445,7 +486,7 @@ export function InteractiveMockup() {
                     boxShadow: "0 4px 16px rgba(99,102,241,0.35)"
                   }}
                 >
-                  Toko Kopi Nusantara ☕
+                  {showcaseItem.businessName}
                 </div>
               </div>
 
@@ -536,25 +577,14 @@ export function InteractiveMockup() {
                 />
 
                 {/* Real website preview */}
-                {(() => {
-                  const showcaseItem = SHOWCASE_ITEMS[0]; // Kopi Rempah Nusantara (kuliner)
-                  const TemplateComponent = TEMPLATE_REGISTRY.find(
-                    (t) => t.id === showcaseItem.templateId
-                  )?.component;
-                  const token = TEMPLATE_DEFAULT_DESIGN_TOKENS[showcaseItem.templateId]
-                    ?? TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_DYNAMIC!;
-
-                  if (!TemplateComponent) return null;
-
-                  return (
-                    <RealPreviewPanel
-                      TemplateComponent={TemplateComponent}
-                      content={showcaseItem.content}
-                      designToken={token}
-                      visible={flowStep >= 6}
-                    />
-                  );
-                })()}
+                {TemplateComponent && (
+                  <RealPreviewPanel
+                    TemplateComponent={TemplateComponent}
+                    content={showcaseItem.content}
+                    designToken={token}
+                    visible={flowStep >= 6}
+                  />
+                )}
               </div>
 
               {/* Overlay gradient — fades out when real preview shows */}
@@ -577,7 +607,7 @@ export function InteractiveMockup() {
               >
                 <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/70">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  kopirempah.webjoz.com
+                  {domainSlug(showcaseItem.businessName)}.webjoz.com
                 </div>
               </div>
 
@@ -621,7 +651,7 @@ export function InteractiveMockup() {
 
       {/* ── Mobile: phone mockup (desktop uses browser mockup above) ───── */}
       <div className="md:hidden">
-        <PhoneMockup />
+        <PhoneMockup sample={sample} token={token} />
       </div>
     </>
   );
