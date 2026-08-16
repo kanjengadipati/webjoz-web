@@ -101,32 +101,17 @@ function TemplatePreview({
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
 type GalleryItem = DesignTokenLibraryItem & { sample: ShowcaseItem };
 
-function hexToHue(hex: string): number {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex);
-  if (!m) return 0;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255);
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const d = max - min;
-  if (d === 0) return 0;
-  let h: number;
-  if (max === r) h = ((g - b) / d) % 6;
-  else if (max === g) h = (b - r) / d + 2;
-  else h = (r - g) / d + 4;
-  return (h * 60 + 360) % 360;
-}
-
 // Kurasi statis: selalu tampilkan 18 SHOWCARE_ITEMS (konten + template + nama
 // bisnis bervariasi), lalu warnai preview tiap kartu dengan design token dari
-// library. Token diurutkan berdasarkan hue warna primer supaya antar kartu
-// beda warna. Bila API kosong, pakai default token template masing-masing.
+// library. Token dan kartu diurutkan berdasarkan skor estetika AI (null di
+// akhir) supaya kartu paling bagus tampil di depan; tie-break memakai skor
+// desain. Bila API kosong, pakai default token template masing-masing.
 function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem[] {
-  const ordered = [...tokens].sort(
-    (a, b) =>
-      hexToHue(a.design_token?.palette?.primary ?? "#000") -
-      hexToHue(b.design_token?.palette?.primary ?? "#000")
-  );
-  return SHOWCASE_ITEMS.map((s, i) => {
+  const byAesthetic = (a: DesignTokenLibraryItem, b: DesignTokenLibraryItem) =>
+    (b.aesthetic_score ?? -1) - (a.aesthetic_score ?? -1) ||
+    (b.score ?? 0) - (a.score ?? 0);
+  const ordered = [...tokens].sort(byAesthetic);
+  const items = SHOWCASE_ITEMS.map((s, i) => {
     const preferred = TEMPLATE_PREFILL_MAP[s.templateId]?.businessSubType || s.businessType;
     const token =
       ordered.find((t) => t.business_type?.toLowerCase() === preferred.toLowerCase()) ||
@@ -139,10 +124,12 @@ function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem
       mood: dt.mood ?? "",
       design_token: dt,
       score: scoreDesignToken(dt).total,
+      aesthetic_score: token?.aesthetic_score ?? null,
       created_at: token?.created_at ?? "",
       sample: s,
     };
   });
+  return items.sort(byAesthetic);
 }
 
 function galleryScore(item: GalleryItem): number {
