@@ -84,6 +84,7 @@ export default function TemplateGalleryPage() {
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkCritiquing, setBulkCritiquing] = useState(false);
   const [critiquingId, setCritiquingId] = useState<number | null>(null);
   const [viewCritique, setViewCritique] = useState<SeedEntry | null>(null);
   const authToken = useAuthToken();
@@ -126,6 +127,41 @@ export default function TemplateGalleryPage() {
       fetchSeeds();
     } catch (e) {
       pushToast(t("dashboard.adminTemplates.backfillFailed") + ": " + (e as any).message, "error");
+    }
+  };
+
+  const handleBulkAestheticCritique = async () => {
+    if (bulkCritiquing) return;
+    if (!window.confirm(t("dashboard.adminTemplates.bulkAestheticConfirm"))) return;
+    setBulkCritiquing(true);
+    try {
+      const res = await request<any>(
+        "/ai/templates/backfill-aesthetic-critique?limit=50",
+        { method: "POST" },
+        authToken,
+        true,
+        0,
+        600_000
+      );
+      const r = res.data;
+      const rateLimitNote = r.stopped
+        ? " — " + t("dashboard.adminTemplates.bulkAestheticRateLimit", undefined, { sec: String(r.retry_after_seconds ?? "") })
+        : "";
+      pushToast(
+        t("dashboard.adminTemplates.bulkAestheticDone", undefined, {
+          processed: String(r.processed ?? 0),
+          critiqued: String(r.critiqued ?? 0),
+          failed: String(r.failed ?? 0),
+          pending: String(r.pending ?? 0),
+        }) + rateLimitNote,
+        (r.failed ?? 0) > 0 ? "error" : "success"
+      );
+      fetchSeeds();
+    } catch (e) {
+      const msg = e instanceof ApiError || e instanceof Error ? e.message : "";
+      pushToast(`${t("dashboard.adminTemplates.bulkAestheticFailed")}${msg ? ": " + msg : ""}`, "error");
+    } finally {
+      setBulkCritiquing(false);
     }
   };
 
@@ -305,6 +341,16 @@ export default function TemplateGalleryPage() {
         </div>
         {tab === "seeds" && (
           <div className="flex items-center gap-2">
+            <Button
+              onClick={handleBulkAestheticCritique}
+              disabled={bulkCritiquing}
+              size="sm"
+              variant="outline"
+              className="gap-2 border-primary/30 text-primary hover:bg-primary/10"
+            >
+              {bulkCritiquing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
+              {t("dashboard.adminTemplates.bulkAesthetic")}
+            </Button>
             <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-2 border-amber-500/30 text-amber-600 hover:bg-amber-500/10">
               <Loader2 className="size-3.5" />
               {t("dashboard.adminTemplates.backfillScores")}

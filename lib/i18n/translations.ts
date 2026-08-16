@@ -957,6 +957,11 @@ export interface Translations {
       subtitle: string;
       backfillScores: string;
       refreshSeeds: string;
+      bulkAesthetic: string;
+      bulkAestheticConfirm: string;
+      bulkAestheticDone: string;
+      bulkAestheticFailed: string;
+      bulkAestheticRateLimit: string;
       tabComponents: string;
       tabSeeds: string;
       searchComponentsPlaceholder: string;
@@ -2005,6 +2010,8 @@ export interface Translations {
       chooseMoodHint: string;
       suggestedBadge: string;
       typeSelectedChooseSub: string;
+      prefillTypePrompt: string;
+      btnContinueType: string;
       wireframeAbout: string;
       wireframeFeatures: string;
       wireframeContact: string;
@@ -3020,6 +3027,11 @@ export const translations: Record<Locale, Translations> = {
         subtitle: "Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.",
         backfillScores: "Backfill Scores",
         refreshSeeds: "Refresh Seeds",
+        bulkAesthetic: "Bulk Aesthetic Critique",
+        bulkAestheticConfirm: "Jalankan aesthetic critique massal pada seed yang belum dinilai (50 per run, berhenti saat rate limit)?",
+        bulkAestheticDone: "Bulk critique selesai — {processed} diproses, {critiqued} berhasil, {failed} gagal, {pending} menunggu",
+        bulkAestheticFailed: "Bulk aesthetic critique gagal",
+        bulkAestheticRateLimit: "berhenti karena rate limit, coba lagi dalam {sec}s",
         tabComponents: "Komponen Template",
         tabSeeds: "Design Token Seeds",
         searchComponentsPlaceholder: "Cari nama, ID, atau deskripsi template...",
@@ -4079,6 +4091,8 @@ export const translations: Record<Locale, Translations> = {
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
         suggestedBadge: "✨ Disarankan",
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
+        prefillTypePrompt: "Saya sudah memperkirakan jenis bisnis Anda di bawah. Lanjutkan jika sesuai, atau ubah dulu:",
+        btnContinueType: "Lanjut dengan jenis ini →",
         wireframeAbout: "Tentang",
         wireframeFeatures: "Keunggulan",
         wireframeContact: "Kontak",
@@ -5124,6 +5138,11 @@ export const translations: Record<Locale, Translations> = {
         subtitle: "Review system built-in templates and design token seeds from AI generator incubation.",
         backfillScores: "Backfill Scores",
         refreshSeeds: "Refresh Seeds",
+        bulkAesthetic: "Bulk Aesthetic Critique",
+        bulkAestheticConfirm: "Run bulk aesthetic critique on unscored seeds (50 per run, stops on rate limit)?",
+        bulkAestheticDone: "Bulk critique done — {processed} processed, {critiqued} scored, {failed} failed, {pending} remaining",
+        bulkAestheticFailed: "Bulk aesthetic critique failed",
+        bulkAestheticRateLimit: "stopped on rate limit, retry in {sec}s",
         tabComponents: "Template Components",
         tabSeeds: "Design Token Seeds",
         searchComponentsPlaceholder: "Search template name, ID, or description...",
@@ -6183,6 +6202,8 @@ export const translations: Record<Locale, Translations> = {
         chooseMoodHint: "Choose a mood that fits your brand",
         suggestedBadge: "✨ Suggested",
         typeSelectedChooseSub: "✓ Selected — choose type below",
+        prefillTypePrompt: "I've estimated your business type below. Continue if it's correct, or change it first:",
+        btnContinueType: "Continue with this type →",
         wireframeAbout: "About",
         wireframeFeatures: "Features",
         wireframeContact: "Contact",

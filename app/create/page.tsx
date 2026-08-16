@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -9,6 +9,7 @@ import { useToast } from "@/components/toast-provider";
 import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
+import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY } from "@/components/site-wizard/wizard-persistence";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
@@ -25,6 +26,14 @@ function PublicWizardContent() {
   const initialBusinessType = searchParams.get("businessType") || undefined;
   const initialBusinessSubType = searchParams.get("businessSubType") || undefined;
   const refParam = searchParams.get("ref") || searchParams.get("referral_code");
+
+  // Design token dipilih dari galeri landing page — dipakai sebagai starting
+  // point visual di wizard (seed preview + design_token hint ke backend).
+  const dtParam = searchParams.get("dt");
+  const initialDesignToken = useMemo(
+    () => (dtParam ? decodeDesignTokenParam(dtParam) : null),
+    [dtParam]
+  );
 
   const [activeReferralCode, setActiveReferralCode] = useState<string>("");
 
@@ -305,6 +314,7 @@ function PublicWizardContent() {
         onNeedAuth={handleNeedAuth}
         initialBusinessType={initialBusinessType}
         initialBusinessSubType={initialBusinessSubType}
+        initialDesignToken={initialDesignToken ?? undefined}
       />
     </div>
   );
