@@ -2080,7 +2080,7 @@ export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
       badge: "AI Website Builder untuk Bisnis Anda",
-      heroTitle: 'Generate website instan.<br /><span class="block text-[0.72em] sm:text-[0.8em] font-bold tracking-normal whitespace-nowrap bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Custom tanpa batas.</span>',
+      heroTitle: 'Generate website instan.<br /><span class="block text-[0.7em] sm:text-[0.78em] font-bold tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Custom tanpa batas.</span>',
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, kustomisasi setiap detail — dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
       ctaPrimary: "Buat Website Sekarang",
@@ -4202,7 +4202,7 @@ export const translations: Record<Locale, Translations> = {
   en: {
     landing: {
       badge: "AI Website Builder for Your Business",
-      heroTitle: 'Generate your website in an instant.<br /><span class="block text-[0.72em] sm:text-[0.8em] font-bold tracking-normal whitespace-nowrap bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Unlimited customization.</span>',
+      heroTitle: 'Generate websites instantly.<br /><span class="block text-[0.66em] sm:text-[0.74em] font-bold tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent mt-1 sm:mt-2">Unlimited customization.</span>',
       heroSubtitle: "Have a quick chat with AI, choose a visual style, customize every detail — and your business website is ready to publish.",
       heroSubtitleBold: "No coding, no long forms.",
       ctaPrimary: "Create Website Now",
