@@ -66,8 +66,9 @@ interface SeedEntry {
 }
 
 type Tab = "components" | "seeds";
-type SortOrder = "newest" | "oldest" | "score_asc" | "score_desc";
+type SortOrder = "newest" | "oldest" | "score_asc" | "score_desc" | "aesthetic_asc" | "aesthetic_desc";
 type ScoreFilter = "all" | "excellent" | "good" | "weak";
+type AestheticFilter = "all" | "reviewed" | "unreviewed" | "high" | "mid" | "low";
 
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 
@@ -82,6 +83,7 @@ export default function TemplateGalleryPage() {
   const [selectedBusinessType, setSelectedBusinessType] = useState("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
+  const [aestheticFilter, setAestheticFilter] = useState<AestheticFilter>("all");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkCritiquing, setBulkCritiquing] = useState(false);
@@ -280,6 +282,7 @@ export default function TemplateGalleryPage() {
   const seedsScored = seeds.map((seed) => ({
     seed,
     score: seed.score ?? scoreDesignToken(seed.design_token).total,
+    aesthetic: seed.aesthetic_score ?? null,
   }));
 
   const scoreFilterOptions: { value: ScoreFilter; labelKey: string; className: string }[] = [
@@ -296,9 +299,27 @@ export default function TemplateGalleryPage() {
     weak: seedsScored.filter(({ score }) => score < 60).length,
   };
 
-  // Filter seeds based on search + business type + mood + score bucket
+  const aestheticFilterOptions: { value: AestheticFilter; labelKey: string; className: string }[] = [
+    { value: "all", labelKey: "dashboard.adminTemplates.aestheticFilterAll", className: "" },
+    { value: "reviewed", labelKey: "dashboard.adminTemplates.aestheticFilterReviewed", className: "text-green-500" },
+    { value: "unreviewed", labelKey: "dashboard.adminTemplates.aestheticFilterUnreviewed", className: "text-orange-500" },
+    { value: "high", labelKey: "dashboard.adminTemplates.aestheticFilterHigh", className: "text-green-500" },
+    { value: "mid", labelKey: "dashboard.adminTemplates.aestheticFilterMid", className: "text-yellow-500" },
+    { value: "low", labelKey: "dashboard.adminTemplates.aestheticFilterLow", className: "text-red-500" },
+  ];
+
+  const aestheticCounts: Record<AestheticFilter, number> = {
+    all: seedsScored.length,
+    reviewed: seedsScored.filter(({ aesthetic }) => aesthetic != null).length,
+    unreviewed: seedsScored.filter(({ aesthetic }) => aesthetic == null).length,
+    high: seedsScored.filter(({ aesthetic }) => aesthetic != null && aesthetic >= 80).length,
+    mid: seedsScored.filter(({ aesthetic }) => aesthetic != null && aesthetic >= 70 && aesthetic < 80).length,
+    low: seedsScored.filter(({ aesthetic }) => aesthetic != null && aesthetic < 70).length,
+  };
+
+  // Filter seeds based on search + business type + mood + score bucket + aesthetic bucket
   const filteredSeeds = seedsScored
-    .filter(({ seed, score }) => {
+    .filter(({ seed, score, aesthetic }) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch = q === "" ||
         seed.business_type.toLowerCase().includes(q) ||
@@ -312,11 +333,20 @@ export default function TemplateGalleryPage() {
         (scoreFilter === "excellent" && score >= 80) ||
         (scoreFilter === "good" && score >= 60 && score < 80) ||
         (scoreFilter === "weak" && score < 60);
-      return matchesSearch && matchesBT && matchesMood && matchesScore;
+      const matchesAesthetic =
+        aestheticFilter === "all" ||
+        (aestheticFilter === "reviewed" && aesthetic != null) ||
+        (aestheticFilter === "unreviewed" && aesthetic == null) ||
+        (aestheticFilter === "high" && aesthetic != null && aesthetic >= 80) ||
+        (aestheticFilter === "mid" && aesthetic != null && aesthetic >= 70 && aesthetic < 80) ||
+        (aestheticFilter === "low" && aesthetic != null && aesthetic < 70);
+      return matchesSearch && matchesBT && matchesMood && matchesScore && matchesAesthetic;
     })
     .sort((a, b) => {
       if (sortOrder === "score_asc") return a.score - b.score;
       if (sortOrder === "score_desc") return b.score - a.score;
+      if (sortOrder === "aesthetic_desc") return (b.aesthetic ?? -1) - (a.aesthetic ?? -1);
+      if (sortOrder === "aesthetic_asc") return (a.aesthetic ?? -1) - (b.aesthetic ?? -1);
       const at = new Date(a.seed.created_at).getTime();
       const bt = new Date(b.seed.created_at).getTime();
       return sortOrder === "oldest" ? at - bt : bt - at;
@@ -378,7 +408,7 @@ export default function TemplateGalleryPage() {
             {t("dashboard.adminTemplates.tabComponents")} ({TEMPLATE_REGISTRY.length})
           </button>
           <button 
-            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); }} 
+            onClick={() => { setTab("seeds"); setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }} 
             className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 ${
               tab === "seeds" 
                 ? "border-primary text-primary font-bold bg-primary/5 rounded-t-lg" 
@@ -455,6 +485,8 @@ export default function TemplateGalleryPage() {
               <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
               <option value="score_asc">{t("dashboard.adminTemplates.sortScoreAsc")}</option>
               <option value="score_desc">{t("dashboard.adminTemplates.sortScoreDesc")}</option>
+              <option value="aesthetic_desc">{t("dashboard.adminTemplates.sortAestheticDesc")}</option>
+              <option value="aesthetic_asc">{t("dashboard.adminTemplates.sortAestheticAsc")}</option>
             </select>
           )}
 
@@ -473,6 +505,26 @@ export default function TemplateGalleryPage() {
                 >
                   {t(opt.labelKey)}
                   <span className={`ml-1 ${scoreFilter === opt.value ? "text-primary/60" : "opacity-50"}`}>({scoreCounts[opt.value]})</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {tab === "seeds" && (
+            <div className="flex items-center gap-0.5 rounded-lg border border-border/40 bg-background p-1 h-10" title={t("dashboard.adminTemplates.aestheticFilterTitle")}>
+              {aestheticFilterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setAestheticFilter(opt.value)}
+                  className={`h-full px-3 text-xs font-semibold rounded-md transition-all cursor-pointer whitespace-nowrap ${
+                    aestheticFilter === opt.value
+                      ? "bg-primary/10 text-primary"
+                      : `${opt.className || "text-muted-foreground"} hover:text-foreground`
+                  }`}
+                >
+                  {t(opt.labelKey)}
+                  <span className={`ml-1 ${aestheticFilter === opt.value ? "text-primary/60" : "opacity-50"}`}>({aestheticCounts[opt.value]})</span>
                 </button>
               ))}
             </div>
@@ -677,7 +729,7 @@ export default function TemplateGalleryPage() {
             <SparkleIcon className="size-10 opacity-30 animate-pulse" />
             <p className="text-sm font-medium">{seeds.length === 0 ? t("dashboard.adminTemplates.noSeedsInDb") : t("dashboard.adminTemplates.noSeedsMatch")}</p>
             {seeds.length > 0 && (
-              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>
+              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>
             )}
           </div>
         ) : (
