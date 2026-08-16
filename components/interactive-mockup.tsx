@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { TEMPLATE_REGISTRY, type DesignToken } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
-import { SHOWCASE_ITEMS, findShowcaseSample } from "@/lib/landing-showcase-data";
+import { SHOWCASE_ITEMS, findShowcaseSample, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { fetchDesignTokenLibrary } from "@/lib/design-token-library";
+import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
@@ -179,6 +180,266 @@ function RealPreviewPanel({
       </div>
       {/* Vignette overlay so edges blend smoothly */}
       <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.55) 100%)" }}
+      />
+    </div>
+  );
+}
+
+/* ── PreviewSkeleton: real-wizard-style wireframe shown until generated ── */
+function PreviewSkeleton({
+  sample,
+  token,
+  flowStep,
+  baseWidth = 1280,
+  visible,
+}: {
+  sample: ShowcaseItem;
+  token: DesignToken;
+  flowStep: number;
+  baseWidth?: number;
+  visible: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.22);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      setScale(el.offsetWidth / baseWidth);
+    });
+    obs.observe(el);
+    setScale(el.offsetWidth / baseWidth);
+    return () => obs.disconnect();
+  }, [baseWidth]);
+
+  const cssVars = useMemo(() => buildCssVars(token), [token]);
+  const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
+  const subtype = prefill?.businessSubType || prefill?.businessType || sample.businessType;
+  const showName = flowStep >= STEP_NAME;
+  const showType = flowStep >= STEP_PICK_TYPE;
+  const showDesc = flowStep >= STEP_ASK_MOOD;
+  const highlight = flowStep >= STEP_GENERATING;
+
+  const skeletonSubtle = { background: "color-mix(in srgb, var(--dt-text) 4%, transparent)" };
+  const skeletonSoft = { background: "color-mix(in srgb, var(--dt-text) 6%, transparent)" };
+  const skeletonStrong = { background: "color-mix(in srgb, var(--dt-text) 8%, transparent)" };
+  const skeletonPanel = {
+    background: "color-mix(in srgb, var(--dt-text) 3.5%, transparent)",
+    border: "1px solid color-mix(in srgb, var(--dt-text) 5.5%, transparent)",
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.7s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
+      <div
+        style={{
+          ...cssVars,
+          width: baseWidth,
+          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          background: "var(--dt-bg)",
+          color: "var(--dt-text)",
+          fontFamily: "var(--dt-body-font)",
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      >
+        <div className="mx-auto w-full max-w-5xl px-10 py-9">
+          {/* AI preview badge */}
+          <div
+            className="mb-5 flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium"
+            style={{
+              background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
+              color: "var(--dt-primary)",
+            }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full animate-pulse"
+              style={{ background: "var(--dt-primary)" }}
+            />
+            Pratinjau desain — hasil akhir sedang dibuat AI
+          </div>
+
+          {/* header */}
+          <header
+            className="mb-10 flex items-center justify-between pb-6"
+            style={{ borderBottom: "1px solid var(--dt-border)" }}
+          >
+            <div className="flex items-center gap-3">
+              {showName ? (
+                <div
+                  className="flex h-7 items-center rounded-md px-3 text-sm font-bold"
+                  style={{
+                    background: "var(--dt-primary-soft)",
+                    border: "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)",
+                    color: "var(--dt-primary)",
+                    fontFamily: "var(--dt-heading-font)",
+                  }}
+                >
+                  {sample.businessName}
+                </div>
+              ) : (
+                <div className="h-7 w-28 animate-pulse rounded-md" style={skeletonStrong} />
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-3">
+                {showType
+                  ? ["Tentang", "Keunggulan", "Kontak"].map((l) => (
+                      <span key={l} className="text-[11px]" style={{ color: "var(--dt-text-muted)" }}>
+                        {l}
+                      </span>
+                    ))
+                  : [0, 1, 2].map((i) => (
+                      <div key={i} className="h-3 w-12 animate-pulse rounded" style={skeletonSoft} />
+                    ))}
+              </div>
+              <div className="h-8 w-24 animate-pulse rounded-md" style={skeletonStrong} />
+            </div>
+          </header>
+
+          {/* hero */}
+          <section
+            className="relative mb-10 overflow-hidden rounded-2xl"
+            style={{
+              ...skeletonPanel,
+              height: 300,
+              border: highlight ? "1px solid var(--dt-primary)" : undefined,
+              boxShadow: highlight
+                ? "0 0 30px color-mix(in srgb, var(--dt-primary) 15%, transparent)"
+                : undefined,
+              transition: "border-color 0.5s, box-shadow 0.5s",
+            }}
+          >
+            <div className="absolute inset-0 flex flex-col justify-center gap-4 px-12">
+              {showType ? (
+                <div
+                  className="flex h-5 w-fit items-center rounded-full px-3 text-[10px] font-bold uppercase tracking-widest"
+                  style={{
+                    background: "var(--dt-primary-soft)",
+                    border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
+                    color: "var(--dt-primary)",
+                  }}
+                >
+                  {subtype}
+                </div>
+              ) : (
+                <div className="h-5 w-20 animate-pulse rounded-full" style={skeletonStrong} />
+              )}
+
+              {showName ? (
+                <div className="space-y-2">
+                  <div
+                    className="flex h-10 items-center rounded-lg px-3 text-xl font-black"
+                    style={{
+                      background: "var(--dt-surface)",
+                      color: "var(--dt-text)",
+                      fontFamily: "var(--dt-heading-font)",
+                    }}
+                  >
+                    {sample.businessName}
+                  </div>
+                  {showDesc ? (
+                    <div
+                      className="flex h-6 items-center rounded-lg px-3 text-xs"
+                      style={{ background: "var(--dt-surface)", color: "var(--dt-text-muted)" }}
+                    >
+                      <span className="truncate">{sample.description}</span>
+                    </div>
+                  ) : (
+                    <div className="h-6 w-1/2 animate-pulse rounded-lg" style={skeletonStrong} />
+                  )}
+                </div>
+              ) : (
+                <div className="h-10 w-3/4 animate-pulse rounded-lg" style={skeletonStrong} />
+              )}
+
+              <div className="h-4 w-2/3 animate-pulse rounded-full" style={skeletonSoft} />
+
+              <div
+                className="flex h-11 w-36 items-center justify-center rounded-lg text-xs font-bold transition-all duration-500"
+                style={highlight
+                  ? {
+                      background: "var(--dt-primary)",
+                      color: "var(--dt-primary-foreground)",
+                      border: "1px solid var(--dt-primary)",
+                    }
+                  : { ...skeletonStrong }}
+              >
+                {highlight ? "Pesan Sekarang →" : ""}
+              </div>
+            </div>
+            <div className="absolute inset-y-0 right-0 w-2/5" style={skeletonSubtle} />
+          </section>
+
+          {/* benefits */}
+          <section className="mb-10 grid grid-cols-4 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="space-y-3 rounded-xl p-4"
+                style={{
+                  ...skeletonPanel,
+                  border: showDesc && i === 0 ? "1px solid var(--dt-primary)" : undefined,
+                  transition: "border-color 0.5s",
+                }}
+              >
+                <div className="h-8 w-8 animate-pulse rounded-full" style={skeletonStrong} />
+                <div className="h-3 w-3/4 animate-pulse rounded" style={skeletonStrong} />
+                <div className="h-2 w-full animate-pulse rounded" style={skeletonSoft} />
+              </div>
+            ))}
+          </section>
+
+          {/* about */}
+          <section className="mb-10 flex items-center gap-8 rounded-xl p-8" style={skeletonPanel}>
+            <div className="flex-1 space-y-4">
+              <div className="h-7 w-3/4 animate-pulse rounded-md" style={skeletonStrong} />
+              <div className="h-3 w-full animate-pulse rounded" style={skeletonSoft} />
+              <div className="h-3 w-5/6 animate-pulse rounded" style={skeletonSoft} />
+              <div className="h-3 w-2/3 animate-pulse rounded" style={skeletonSoft} />
+            </div>
+            <div className="h-36 w-40 shrink-0 animate-pulse rounded-xl" style={skeletonSoft} />
+          </section>
+
+          {/* menu-ish grid */}
+          <section className="mb-10 grid grid-cols-2 gap-4">
+            {[0, 1].map((i) => (
+              <div key={i} className="flex gap-4 rounded-xl p-4" style={skeletonPanel}>
+                <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg" style={skeletonStrong} />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-2/3 animate-pulse rounded" style={skeletonStrong} />
+                  <div className="h-2 w-full animate-pulse rounded" style={skeletonSoft} />
+                  <div className="h-2 w-1/2 animate-pulse rounded" style={skeletonSoft} />
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* preparing indicator */}
+          {highlight && (
+            <div className="flex items-center gap-2 text-[11px]" style={{ color: "var(--dt-text-muted)" }}>
+              <span
+                className="h-2 w-2 animate-pulse rounded-full"
+                style={{ background: "var(--dt-primary)" }}
+              />
+              <span>AI sedang mempersiapkan desain untuk {sample.businessName}...</span>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Vignette overlay so edges blend smoothly */}
+      <div
+        className="absolute inset-0 pointer-events-none"
         style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.55) 100%)" }}
       />
     </div>
@@ -630,45 +891,44 @@ export function InteractiveMockup() {
                 </div>
               )}
 
-              {/* ── Real template preview (before preview: blurred skeleton, after: real) ── */}
-              <div
-                className="absolute inset-0 overflow-hidden"
-                style={{
-                  opacity: flowStep >= STEP_GENERATING ? 1 : 0,
-                  transition: "opacity 0.6s ease",
-                }}
-              >
-                {/* Skeleton shimmer shown while generating */}
-                <div
-                  className="absolute inset-0 z-10"
-                  style={{
-                    opacity: flowStep >= STEP_PREVIEW ? 0 : 1,
-                    transition: "opacity 0.5s ease",
-                    background: "linear-gradient(110deg, #111 25%, #1a1a1a 50%, #111 75%)",
-                    backgroundSize: "200% 100%",
-                    animation: generating ? "shimmer 1.4s linear infinite" : "none",
-                  }}
-                />
-
-                {/* Real website preview */}
-                {TemplateComponent && (
-                  <RealPreviewPanel
-                    TemplateComponent={TemplateComponent}
-                    content={showcaseItem.content}
-                    designToken={token}
-                    visible={flowStep >= STEP_PREVIEW}
-                  />
-                )}
-              </div>
-
-              {/* Overlay gradient — fades out when real preview shows */}
-              <div
-                className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-700"
-                style={{
-                  opacity: flowStep >= STEP_PREVIEW ? 0 : 1,
-                  background: "linear-gradient(160deg, color-mix(in srgb,var(--primary) 4%,transparent) 0%, #0c0c0e 100%)",
-                }}
+              {/* ── Preview: wizard-style wireframe until generated, then real template ── */}
+              <PreviewSkeleton
+                sample={showcaseItem}
+                token={token}
+                flowStep={flowStep}
+                visible={flowStep < STEP_PREVIEW}
               />
+
+              {/* Generating loading card (mirrors the wizard's LoadingCard) */}
+              {generating && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                  <div className="rounded-xl border border-white/15 bg-black/75 px-4 py-3 shadow-2xl backdrop-blur-md">
+                    <div className="flex items-center gap-2">
+                      <SparkleIcon className="h-3.5 w-3.5 animate-pulse text-primary" />
+                      <span className="text-[11px] font-semibold text-white">⚡ AI sedang generate...</span>
+                    </div>
+                    <div className="mt-2.5 space-y-1.5">
+                      {[100, 78, 56].map((w, i) => (
+                        <div
+                          key={i}
+                          className="h-1 animate-pulse rounded-full bg-white/20"
+                          style={{ width: `${w}%`, animationDelay: `${i * 120}ms` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Real website preview */}
+              {TemplateComponent && (
+                <RealPreviewPanel
+                  TemplateComponent={TemplateComponent}
+                  content={showcaseItem.content}
+                  designToken={token}
+                  visible={flowStep >= STEP_PREVIEW}
+                />
+              )}
 
               {/* Domain pill — floats above real preview */}
               <div
@@ -708,17 +968,13 @@ export function InteractiveMockup() {
         </div>
       </div>
 
-      {/* scan + shimmer keyframes */}
+      {/* scan keyframes */}
       <style>{`
         @keyframes scan {
           0%   { transform: translateY(0); opacity: 0; }
           10%  { opacity: 1; }
           90%  { opacity: 1; }
           100% { transform: translateY(320px); opacity: 0; }
-        }
-        @keyframes shimmer {
-          0%   { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
         }
       `}</style>
       </div>
