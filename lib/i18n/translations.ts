@@ -105,6 +105,8 @@ export interface Translations {
     mockupGreeting: string;
     mockupPickType: string;
     mockupChips: string[];
+    mockupPickMood: string;
+    mockupMoodChips: string[];
     mockupGenerating: string;
     mockupReady: string;
     mockupStep: string;
@@ -2182,9 +2184,11 @@ export const translations: Record<Locale, Translations> = {
       mockupGreeting: "Halo! Apa nama bisnis Anda?",
       mockupPickType: "Keren! 👍 Pilih jenis bisnis:",
       mockupChips: ["🍜 Kuliner", "🔧 Jasa", "🛍 Produk"],
+      mockupPickMood: "Mantap! 🎨 Pilih mood desain:",
+      mockupMoodChips: ["✨ Modern & Clean", "🕯️ Warm & Vintage", "🔥 Bold & Energetic", "💎 Elegant & Luxury", "🌑 Minimalist Dark"],
       mockupGenerating: "⚡ AI sedang generate...",
       mockupReady: "✅ Website siap!",
-      mockupStep: "Langkah 2 dari 5",
+      mockupStep: "Langkah 3 dari 6",
       showcaseCreate: "Buat",
       showcaseFallback: "Website",
       categoryKuliner: "Kuliner",
@@ -4304,9 +4308,11 @@ export const translations: Record<Locale, Translations> = {
       mockupGreeting: "Hi! What's your business name?",
       mockupPickType: "Awesome! 👍 Pick your business type:",
       mockupChips: ["🍜 Food & Beverage", "🔧 Services", "🛍 Products"],
+      mockupPickMood: "Nice! 🎨 Pick a design mood:",
+      mockupMoodChips: ["✨ Modern & Clean", "🕯️ Warm & Vintage", "🔥 Bold & Energetic", "💎 Elegant & Luxury", "🌑 Minimalist Dark"],
       mockupGenerating: "⚡ AI is generating...",
       mockupReady: "✅ Website ready!",
-      mockupStep: "Step 2 of 5",
+      mockupStep: "Step 3 of 6",
       showcaseCreate: "Create",
       showcaseFallback: "Website",
       categoryKuliner: "Food & Beverage",
