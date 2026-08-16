@@ -996,11 +996,20 @@ export interface Translations {
       sortOldest: string;
       sortScoreAsc: string;
       sortScoreDesc: string;
+      sortAestheticAsc: string;
+      sortAestheticDesc: string;
       scoreBelowPlaceholder: string;
       scoreFilterAll: string;
       scoreFilterExcellent: string;
       scoreFilterGood: string;
       scoreFilterWeak: string;
+      aestheticFilterTitle: string;
+      aestheticFilterAll: string;
+      aestheticFilterReviewed: string;
+      aestheticFilterUnreviewed: string;
+      aestheticFilterHigh: string;
+      aestheticFilterMid: string;
+      aestheticFilterLow: string;
       selectAllFiltered: string;
       clearSelection: string;
       selectedCount: string;
@@ -3066,11 +3075,20 @@ export const translations: Record<Locale, Translations> = {
         sortOldest: "Terlama",
         sortScoreAsc: "Skor Terendah",
         sortScoreDesc: "Skor Tertinggi",
+        sortAestheticAsc: "Estetika Terendah",
+        sortAestheticDesc: "Estetika Tertinggi",
         scoreBelowPlaceholder: "Skor di bawah...",
         scoreFilterAll: "Semua",
         scoreFilterExcellent: "≥80",
         scoreFilterGood: "60–79",
         scoreFilterWeak: "<60",
+        aestheticFilterTitle: "Filter Skor Estetika (AI)",
+        aestheticFilterAll: "Semua",
+        aestheticFilterReviewed: "Ada Skor",
+        aestheticFilterUnreviewed: "Belum Review",
+        aestheticFilterHigh: "≥80",
+        aestheticFilterMid: "70–79",
+        aestheticFilterLow: "<70",
         selectAllFiltered: "Pilih Semua ({count})",
         clearSelection: "Batal Pilih",
         selectedCount: "{count} dipilih",
@@ -5177,11 +5195,20 @@ export const translations: Record<Locale, Translations> = {
         sortOldest: "Oldest",
         sortScoreAsc: "Lowest Score",
         sortScoreDesc: "Highest Score",
+        sortAestheticAsc: "Lowest Aesthetic",
+        sortAestheticDesc: "Highest Aesthetic",
         scoreBelowPlaceholder: "Score below...",
         scoreFilterAll: "All",
         scoreFilterExcellent: "≥80",
         scoreFilterGood: "60–79",
         scoreFilterWeak: "<60",
+        aestheticFilterTitle: "Aesthetic (AI) Score Filter",
+        aestheticFilterAll: "All",
+        aestheticFilterReviewed: "Has Score",
+        aestheticFilterUnreviewed: "Not Reviewed",
+        aestheticFilterHigh: "≥80",
+        aestheticFilterMid: "70–79",
+        aestheticFilterLow: "<70",
         selectAllFiltered: "Select All ({count})",
         clearSelection: "Clear Selection",
         selectedCount: "{count} selected",
