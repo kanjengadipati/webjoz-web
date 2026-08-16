@@ -245,7 +245,7 @@ function LiveAdaptiveSkeleton({
           fontFamily: "var(--dt-body-font)",
           pointerEvents: "none",
           userSelect: "none",
-          minHeight: 1400,
+          minHeight: 3400,
         }}
       >
         {/* Ambient glow blob using token primary */}
@@ -277,11 +277,11 @@ function LiveAdaptiveSkeleton({
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               {showType ? (
-                ["Beranda", "Produk", "Kontak"].map((l) => (
+                ["Beranda", "Produk", "Galeri", "Kontak"].map((l) => (
                   <span key={l} style={{ fontSize: 12, color: "var(--dt-text-muted)", fontWeight: 600 }}>{l}</span>
                 ))
               ) : (
-                [80, 60, 50].map((w, i) => (
+                [80, 60, 50, 60].map((w, i) => (
                   <div key={i} style={{ height: 12, width: w, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
                     animation: "pulse 2s infinite" }} />
                 ))
@@ -392,6 +392,22 @@ function LiveAdaptiveSkeleton({
             </div>
           </div>
 
+          {/* ── Stats / Trust highlights ── */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} style={{
+                borderRadius: 14,
+                border: "1px solid color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                background: "color-mix(in srgb,var(--dt-text) 2.5%,transparent)",
+                padding: "16px 20px",
+                display: "flex", flexDirection: "column", gap: 6,
+              }}>
+                <div style={{ height: 18, width: "55%", borderRadius: 4, background: "color-mix(in srgb,var(--dt-primary) 35%,transparent)", animation: "pulse 2s infinite" }} />
+                <div style={{ height: 11, width: "75%", borderRadius: 3, background: "color-mix(in srgb,var(--dt-text) 8%,transparent)", animation: "pulse 2s infinite" }} />
+              </div>
+            ))}
+          </div>
+
           {/* ── Feature cards ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
             {[0, 1, 2].map((i) => (
@@ -465,6 +481,145 @@ function LiveAdaptiveSkeleton({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* ── Visual Gallery / Showcase ── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div style={{ height: 18, width: 170, borderRadius: 6,
+              background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
+              animation: "pulse 2s infinite",
+            }} />
+            <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr 1fr", gap: 16 }}>
+              {[0, 1, 2].map((i) => (
+                <div key={i} style={{
+                  height: 150,
+                  borderRadius: 16,
+                  border: "1px solid color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                  background: `color-mix(in srgb,var(--dt-primary) ${8 + i * 2}%,color-mix(in srgb,var(--dt-text) 4%,transparent))`,
+                  animation: "pulse 2s infinite",
+                }} />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Testimonial section ── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div style={{ height: 20, width: 220, borderRadius: 6,
+              background: "color-mix(in srgb,var(--dt-text) 10%,transparent)",
+              animation: "pulse 2s infinite",
+            }} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+              {[0, 1, 2].map((i) => (
+                <div key={i} style={{
+                  borderRadius: 14,
+                  border: "1px solid color-mix(in srgb,var(--dt-text) 7%,transparent)",
+                  background: "color-mix(in srgb,var(--dt-text) 3%,transparent)",
+                  padding: 20,
+                  display: "flex", flexDirection: "column", gap: 12,
+                }}>
+                  {/* Stars */}
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {[0,1,2,3,4].map((s) => (
+                      <div key={s} style={{ width: 12, height: 12, borderRadius: 2,
+                        background: `color-mix(in srgb,var(--dt-primary) ${70 - s * 5}%,transparent)`,
+                      }} />
+                    ))}
+                  </div>
+                  {/* Review text lines */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div style={{ height: 11, width: "95%", borderRadius: 3,
+                      background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                      animation: "pulse 2s infinite" }} />
+                    <div style={{ height: 11, width: "80%", borderRadius: 3,
+                      background: "color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                      animation: "pulse 2s infinite" }} />
+                    <div style={{ height: 11, width: "60%", borderRadius: 3,
+                      background: "color-mix(in srgb,var(--dt-text) 5%,transparent)",
+                      animation: "pulse 2s infinite" }} />
+                  </div>
+                  {/* Avatar row */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 4 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: "50%",
+                      background: `color-mix(in srgb,var(--dt-primary) ${14 - i * 3}%,color-mix(in srgb,var(--dt-text) 10%,transparent))`,
+                    }} />
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <div style={{ height: 10, width: 70, borderRadius: 3,
+                        background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
+                        animation: "pulse 2s infinite" }} />
+                      <div style={{ height: 8, width: 50, borderRadius: 3,
+                        background: "color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                        animation: "pulse 2s infinite" }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Contact & Location Card ── */}
+          <div style={{
+            borderRadius: 20,
+            border: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+            background: "color-mix(in srgb,var(--dt-text) 3%,transparent)",
+            padding: "32px 40px",
+            display: "grid",
+            gridTemplateColumns: "1.2fr 1fr",
+            gap: 28,
+            alignItems: "center",
+          }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ height: 20, width: 180, borderRadius: 5, background: "color-mix(in srgb,var(--dt-text) 14%,transparent)", animation: "pulse 2s infinite" }} />
+              <div style={{ height: 12, width: 240, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 7%,transparent)", animation: "pulse 2s infinite" }} />
+              <div style={{ height: 12, width: 200, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 6%,transparent)", animation: "pulse 2s infinite" }} />
+            </div>
+            <div style={{
+              height: 120,
+              borderRadius: 14,
+              background: "color-mix(in srgb,var(--dt-text) 6%,transparent)",
+              border: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <div style={{ height: 12, width: 120, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 12%,transparent)" }} />
+            </div>
+          </div>
+
+          {/* ── CTA Banner ── */}
+          <div style={{
+            borderRadius: 20,
+            background: `linear-gradient(135deg, color-mix(in srgb,var(--dt-primary) 14%,transparent), color-mix(in srgb,var(--dt-primary) 6%,transparent))`,
+            border: "1px solid color-mix(in srgb,var(--dt-primary) 22%,transparent)",
+            padding: "36px 48px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+          }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ height: 22, width: 280, borderRadius: 6,
+                background: "color-mix(in srgb,var(--dt-text) 16%,transparent)",
+                animation: "pulse 2s infinite" }} />
+              <div style={{ height: 14, width: 200, borderRadius: 4,
+                background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                animation: "pulse 2s infinite" }} />
+            </div>
+            <div style={{
+              height: 44, padding: "0 28px", borderRadius: 10, flexShrink: 0,
+              background: highlight ? "var(--dt-primary)" : "color-mix(in srgb,var(--dt-primary) 22%,transparent)",
+              border: "1px solid color-mix(in srgb,var(--dt-primary) 35%,transparent)",
+              display: "flex", alignItems: "center",
+              fontSize: 12, fontWeight: 700,
+              color: highlight ? "var(--dt-primary-foreground)" : "var(--dt-primary)",
+              transition: "all 0.5s",
+            }}>{showType ? "Mulai Sekarang" : ""}</div>
+          </div>
+
+          {/* ── Footer ── */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            paddingTop: 32, borderTop: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 24, height: 24, borderRadius: 6, background: "var(--dt-primary)", opacity: 0.8 }} />
+              <div style={{ height: 12, width: 90, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 10%,transparent)" }} />
+            </div>
+            <div style={{ height: 10, width: 160, borderRadius: 3, background: "color-mix(in srgb,var(--dt-text) 6%,transparent)" }} />
           </div>
         </div>
       </div>
