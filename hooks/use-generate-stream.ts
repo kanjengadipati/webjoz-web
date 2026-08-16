@@ -54,6 +54,8 @@ export interface GenerateStreamRequest {
   story?: string;
   tagline?: string;
   proof?: string;
+  /** Design token pilihan dari galeri — dipakai backend sebagai starting point (skip AI generate token). */
+  design_token?: Record<string, any>;
 }
 
 export interface UseGenerateStreamOptions {

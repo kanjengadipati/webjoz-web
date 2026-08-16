@@ -9,6 +9,8 @@ export interface SiteWizardProps {
   onNeedAuth?: () => void;
   initialBusinessType?: string;
   initialBusinessSubType?: string;
+  /** Design token yang dipilih user dari galeri landing page (starting point visual). */
+  initialDesignToken?: Record<string, any>;
 }
 
 export type Message = {

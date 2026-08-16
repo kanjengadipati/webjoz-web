@@ -48,7 +48,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
         businessSubType={chat.businessSubType}
         description={chat.description}
         chatStage={chat.chatStage}
-        designToken={isStreamingLive ? streamedDesignToken : null}
+        designToken={streamedDesignToken ?? null}
       />
     );
   }
@@ -77,7 +77,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       businessSubType={chat.businessSubType}
       description={chat.description}
       chatStage={chat.chatStage}
-      designToken={isStreamingLive ? streamedDesignToken : null}
+      designToken={streamedDesignToken ?? null}
     />
   );
 

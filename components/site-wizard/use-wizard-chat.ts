@@ -42,6 +42,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
+  // ID pesan bubble user yang berisi nama bisnis — dipakai untuk tombol "Ubah nama"
+  const [nameMessageId, setNameMessageId] = useState<string>("");
 
   // ── Voice Input (STT) ──
   const [isRecording, setIsRecording] = useState(false);
@@ -373,18 +375,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
       setTimeout(() => {
         if (prefill?.businessType && prefill?.businessSubType) {
-          typeMessage(pickVariant(nameAckVariants), () => {
-            setChatStage("language");
+          // Prefill dari galeri dibawa — tapi jangan di-skip: tampilkan chip
+          // jenis bisnis yang sudah terpilih supaya user bisa mengoreksinya
+          // sebelum lanjut ke bahasa/generate.
+          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.prefillTypePrompt", "Saya sudah memperkirakan jenis bisnis Anda di bawah. Lanjutkan jika sesuai, atau ubah dulu:")}`, () => {
             setMessages((prev) => [
               ...prev,
-              { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
+              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
             ]);
-            setTimeout(() => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
-              ]);
-            }, 500);
+            setChatStage("type");
           });
         } else {
           typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {

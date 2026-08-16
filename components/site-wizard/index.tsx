@@ -57,6 +57,7 @@ export function SiteWizard({
   onNeedAuth,
   initialBusinessType,
   initialBusinessSubType,
+  initialDesignToken,
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
@@ -65,6 +66,20 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  // Design token dari galeri landing page — disimpan di ref agar tetap dipakai
+  // pada semua generasi (dan tersedia di runGenerate yang closure-bound).
+  const initialDesignTokenRef = React.useRef<Record<string, any> | null>(initialDesignToken ?? null);
+
+  // Seed preview dengan design token pilihan pada mount, supaya wireframe
+  // langsung menampilkan warna/brand yang dipilih sebelum generasi pertama.
+  React.useEffect(() => {
+    if (initialDesignToken) {
+      preview.setStreamedDesignToken(initialDesignToken);
+      preview.streamedTokenRef.current = initialDesignToken;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -314,6 +329,7 @@ export function SiteWizard({
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
+      design_token: initialDesignTokenRef.current ?? undefined,
     });
   };
 
@@ -862,6 +878,16 @@ export function SiteWizard({
                           );
                         })}
                       </div>
+                      {chat.businessSubType && (
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSubType(chat.businessSubType)}
+                          className="mt-2.5 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white border transition-all hover:bg-emerald-500/10 active:scale-95"
+                          style={{ background: "rgba(16,185,129,0.15)", borderColor: "rgba(16,185,129,0.5)" }}
+                        >
+                          {t("dashboard.wizard.btnContinueType", "Lanjut dengan jenis ini →")}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

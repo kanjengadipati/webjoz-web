@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
-import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
+import { SHOWCASE_ITEMS, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
+import { fetchDesignTokenLibrary, type DesignTokenLibraryItem } from "@/lib/design-token-library";
+import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignToken } from "@/lib/template-registry";
 
@@ -40,32 +42,47 @@ function TemplatePreview({
   content,
   designToken,
   scaleBase = 1280,
+  scrollable = false,
 }: {
   templateId: string;
   content: any;
   designToken: DesignToken;
   scaleBase?: number;
+  scrollable?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.2);
+  const [innerHeight, setInnerHeight] = useState(0);
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === templateId)?.component;
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !TemplateComponent) return;
-    const obs = new ResizeObserver(() => {
-      setScale(el.offsetWidth / scaleBase);
-    });
+    const update = () => {
+      const s = el.offsetWidth / scaleBase;
+      setScale(s);
+      // Scrollable mode: container height = tinggi layout asli × scale, supaya
+      // area scroll tepat setinggi tampilan yang ter-skalakan (bukan tinggi layout
+      // yang belum di-scale = ribuan px dengan ruang kosong besar di bawah).
+      if (scrollable && innerRef.current) setInnerHeight(innerRef.current.offsetHeight);
+    };
+    const obs = new ResizeObserver(update);
     obs.observe(el);
-    setScale(el.offsetWidth / scaleBase);
+    update();
     return () => obs.disconnect();
-  }, [TemplateComponent, scaleBase]);
+  }, [TemplateComponent, scaleBase, scrollable]);
 
   if (!TemplateComponent) return null;
 
   return (
-    <div ref={containerRef} className="relative w-full h-full overflow-hidden bg-white">
+    <div
+      ref={containerRef}
+      className={`relative w-full bg-white ${scrollable ? "overflow-visible" : "h-full overflow-hidden"}`}
+      style={scrollable ? { height: Math.round(innerHeight * scale) } : undefined}
+    >
       <div
+        ref={innerRef}
         style={{
           width: scaleBase,
           transformOrigin: "top left",
@@ -80,22 +97,79 @@ function TemplatePreview({
   );
 }
 
-/* ── Preview Modal ──────────────────────────────────────────────────────── */
-type SelectedItem = (typeof SHOWCASE_ITEMS)[number];
+/* ── Gallery item ───────────────────────────────────────────────────────── */
+type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
+type GalleryItem = DesignTokenLibraryItem & { sample: ShowcaseItem };
 
+function hexToHue(hex: string): number {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return 0;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  if (d === 0) return 0;
+  let h: number;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return (h * 60 + 360) % 360;
+}
+
+// Kurasi statis: selalu tampilkan 18 SHOWCARE_ITEMS (konten + template + nama
+// bisnis bervariasi), lalu warnai preview tiap kartu dengan design token dari
+// library. Token diurutkan berdasarkan hue warna primer supaya antar kartu
+// beda warna. Bila API kosong, pakai default token template masing-masing.
+function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem[] {
+  const ordered = [...tokens].sort(
+    (a, b) =>
+      hexToHue(a.design_token?.palette?.primary ?? "#000") -
+      hexToHue(b.design_token?.palette?.primary ?? "#000")
+  );
+  return SHOWCASE_ITEMS.map((s, i) => {
+    const preferred = TEMPLATE_PREFILL_MAP[s.templateId]?.businessSubType || s.businessType;
+    const token =
+      ordered.find((t) => t.business_type?.toLowerCase() === preferred.toLowerCase()) ||
+      ordered[i % Math.max(ordered.length, 1)];
+    const dt = token?.design_token || getDesignToken(s.templateId);
+    return {
+      id: i + 1,
+      source_template_id: s.templateId,
+      business_type: preferred,
+      mood: dt.mood ?? "",
+      design_token: dt,
+      score: scoreDesignToken(dt).total,
+      created_at: token?.created_at ?? "",
+      sample: s,
+    };
+  });
+}
+
+function galleryScore(item: GalleryItem): number {
+  return item.score ?? scoreDesignToken(item.design_token).total;
+}
+
+// Badge kategori: untuk sample template khusus (bukan AI dynamic) tampilkan
+// kategori template-nya, untuk AI dynamic tampilkan jenis bisnis aslinya.
+function badgeLabel(item: GalleryItem): string {
+  if (item.sample.templateId === "TEMPLATE_DYNAMIC") return item.business_type;
+  return TEMPLATE_REGISTRY.find((t) => t.id === item.sample.templateId)?.category || item.business_type;
+}
+
+/* ── Preview Modal ──────────────────────────────────────────────────────── */
 function PreviewModal({
   item,
   onClose,
   onStart,
   t,
 }: {
-  item: SelectedItem;
+  item: GalleryItem;
   onClose: () => void;
-  onStart: (id: string) => void;
+  onStart: (item: GalleryItem) => void;
   t: (key: string, fallback?: string) => string;
 }) {
-  const templateDef = TEMPLATE_REGISTRY.find((td) => td.id === item.templateId);
-  const token = getDesignToken(item.templateId);
+  const templateDef = TEMPLATE_REGISTRY.find((td) => td.id === item.sample.templateId);
+  const token = item.design_token;
 
   // Close on Escape
   useEffect(() => {
@@ -108,6 +182,8 @@ function PreviewModal({
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  const score = galleryScore(item);
 
   return (
     <div
@@ -138,10 +214,11 @@ function PreviewModal({
         {/* ── Preview area (scrollable) ── */}
         <div className="flex-1 overflow-y-auto bg-white min-h-[320px] lg:min-h-0 relative">
           <TemplatePreview
-            templateId={item.templateId}
-            content={item.content}
+            templateId={item.sample.templateId}
+            content={item.sample.content}
             designToken={token}
             scaleBase={1280}
+            scrollable
           />
         </div>
 
@@ -149,16 +226,21 @@ function PreviewModal({
         <div className="w-full lg:w-72 shrink-0 flex flex-col p-6 gap-5 border-t lg:border-t-0 lg:border-l border-white/10">
           {/* Header */}
           <div>
-            {templateDef?.category && (
-              <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
-                {templateDef.category}
+            <div className="flex items-center justify-between gap-2">
+              {templateDef?.category && (
+                <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
+                  {templateDef.category}
+                </span>
+              )}
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scoreBadgeClass(score)}`}>
+                {score}/100
               </span>
-            )}
+            </div>
             <h3 className="text-lg font-bold text-white mt-1 leading-snug">
-              {item.businessName}
+              {item.sample.businessName}
             </h3>
             <p className="text-sm text-slate-400 mt-1">
-              {templateDef?.name ?? "Template Website"}
+              {item.business_type} · {item.mood}
             </p>
           </div>
 
@@ -200,7 +282,7 @@ function PreviewModal({
           {/* CTA */}
           <div className="space-y-2">
             <button
-              onClick={() => { onStart(item.templateId); onClose(); }}
+              onClick={() => { onStart(item); onClose(); }}
               className="w-full rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm py-3 transition-all active:scale-95 shadow-[0_4px_20px_rgba(251,191,36,0.3)]"
             >
               {t("landing.showcaseCreate", "Buat Website Ini")} →
@@ -227,36 +309,34 @@ function PreviewModal({
 }
 
 /* ── Main Component ─────────────────────────────────────────────────────── */
-export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: string) => void }) {
+export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryItem) => void }) {
   const { t } = useI18n();
-  const [selected, setSelected] = useState<SelectedItem | null>(null);
+  const [items, setItems] = useState<GalleryItem[] | null>(null);
+  const [selected, setSelected] = useState<GalleryItem | null>(null);
   const [showAll, setShowAll] = useState(false);
 
-  function getCategoryLabel(businessType: string): string {
-    const map: Record<string, string> = {
-      kuliner: t("landing.categoryKuliner"),
-      jasa: t("landing.categoryJasa"),
-      produk: t("landing.categoryProduk"),
-    };
-    return map[businessType] || businessType;
-  }
-
-  const featured = SHOWCASE_ITEMS[0];
-  const secondary = SHOWCASE_ITEMS.slice(1, 5);
-  const rest = SHOWCASE_ITEMS.slice(5);
+  useEffect(() => {
+    let cancelled = false;
+    // Fetch pool besar, API sudah mengurutkan aesthetic_score DESC → ambil
+    // 30 terbaiknya untuk mewarnai kartu. Selama pool belum terisi oleh bulk
+    // critique, sisanya diisi token ber-score tinggi sebagai fallback.
+    fetchDesignTokenLibrary(100).then((raw) => {
+      if (cancelled) return;
+      setItems(buildCuratedGalleryItems(raw.length > 30 ? raw.slice(0, 30) : raw));
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   function ShowcaseCard({
     item,
     height = "h-48",
     showLabel = true,
   }: {
-    item: (typeof SHOWCASE_ITEMS)[number];
+    item: GalleryItem;
     height?: string;
     showLabel?: boolean;
   }) {
-    const templateDef = TEMPLATE_REGISTRY.find((t) => t.id === item.templateId);
-    const token = getDesignToken(item.templateId);
-    const category = templateDef?.category || getCategoryLabel(item.businessType);
+    const score = galleryScore(item);
 
     return (
       <div
@@ -277,14 +357,20 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
         {/* Template preview */}
         <div className={`relative ${height} overflow-hidden bg-white`}>
           <TemplatePreview
-            templateId={item.templateId}
-            content={item.content}
-            designToken={token}
+            templateId={item.sample.templateId}
+            content={item.sample.content}
+            designToken={item.design_token}
           />
           {/* Category badge */}
           <div className="absolute top-2.5 left-2.5 z-10">
             <span className="text-[10px] font-semibold bg-black/60 backdrop-blur-sm text-white/80 border border-white/20 px-2 py-0.5 rounded-full">
-              {category}
+              {badgeLabel(item)}
+            </span>
+          </div>
+          {/* Score badge */}
+          <div className="absolute top-2.5 right-2.5 z-10">
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border bg-black/60 backdrop-blur-sm ${scoreBadgeClass(score)}`}>
+              {score}/100
             </span>
           </div>
           {/* Bottom fade */}
@@ -296,14 +382,14 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
           <div className="px-3.5 py-3 flex items-center justify-between gap-2">
             <div className="min-w-0">
               <p className="text-sm font-bold text-white truncate leading-tight">
-                {item.businessName}
+                {item.sample.businessName}
               </p>
               <p className="text-[11px] text-slate-400 truncate mt-0.5">
-                {templateDef?.name ?? t("landing.showcaseFallback")}
+                {item.business_type}
               </p>
             </div>
             <button
-              onClick={(e) => { e.stopPropagation(); onStart(item.templateId); }}
+              onClick={(e) => { e.stopPropagation(); onStart(item); }}
               className="shrink-0 rounded-full bg-white text-black px-3.5 py-1.5 text-[11px] font-bold transition-all hover:bg-slate-100 active:scale-95"
             >
               {t("landing.showcaseCreate")}
@@ -313,6 +399,23 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
       </div>
     );
   }
+
+  if (items === null) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse" aria-hidden>
+        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-white/[0.04] border border-white/10 h-72 sm:h-80 lg:h-[340px]" />
+        <div className="sm:col-span-2 grid grid-cols-2 gap-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="rounded-2xl bg-white/[0.04] border border-white/10 h-36 sm:h-40" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const featured = items[0];
+  const secondary = items.slice(1, 5);
+  const rest = items.slice(5);
 
   return (
     <>
@@ -336,49 +439,45 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
                 </div>
               </div>
 
-              {(() => {
-                const templateDef = TEMPLATE_REGISTRY.find((t) => t.id === featured.templateId);
-                const token = getDesignToken(featured.templateId);
-                const category = templateDef?.category || getCategoryLabel(featured.businessType);
-                return (
-                  <>
-                    <div className="relative h-72 sm:h-80 lg:h-[340px] overflow-hidden bg-white">
-                      <TemplatePreview
-                        templateId={featured.templateId}
-                        content={featured.content}
-                        designToken={token}
-                      />
-                      <div className="absolute top-2.5 left-2.5 z-10">
-                        <span className="text-[10px] font-semibold bg-black/60 backdrop-blur-sm text-white/80 border border-white/20 px-2 py-0.5 rounded-full">
-                          {category}
-                        </span>
-                      </div>
-                      <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#111318] to-transparent pointer-events-none" />
-                    </div>
-                    <div className="px-4 py-3.5 flex items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-base font-bold text-white truncate">{featured.businessName}</p>
-                        <p className="text-[11px] text-slate-400 truncate mt-0.5">
-                          {templateDef?.name ?? t("landing.showcaseFallback")}
-                        </p>
-                      </div>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onStart(featured.templateId); }}
-                        className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-bold transition-all hover:bg-slate-100 active:scale-95"
-                      >
-                        {t("landing.showcaseCreate")}
-                      </button>
-                    </div>
-                  </>
-                );
-              })()}
+              <div className="relative h-72 sm:h-80 lg:h-[340px] overflow-hidden bg-white">
+                <TemplatePreview
+                  templateId={featured.sample.templateId}
+                  content={featured.sample.content}
+                  designToken={featured.design_token}
+                />
+                <div className="absolute top-2.5 left-2.5 z-10">
+                  <span className="text-[10px] font-semibold bg-black/60 backdrop-blur-sm text-white/80 border border-white/20 px-2 py-0.5 rounded-full">
+                    {badgeLabel(featured)}
+                  </span>
+                </div>
+                <div className="absolute top-2.5 right-2.5 z-10">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border bg-black/60 backdrop-blur-sm ${scoreBadgeClass(galleryScore(featured))}`}>
+                    {galleryScore(featured)}/100
+                  </span>
+                </div>
+                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#111318] to-transparent pointer-events-none" />
+              </div>
+              <div className="px-4 py-3.5 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-base font-bold text-white truncate">{featured.sample.businessName}</p>
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                    {featured.business_type}
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onStart(featured); }}
+                  className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-bold transition-all hover:bg-slate-100 active:scale-95"
+                >
+                  {t("landing.showcaseCreate")}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* 2×2 smaller cards */}
           <div className="sm:col-span-2 grid grid-cols-2 gap-4">
             {secondary.map((item) => (
-              <ShowcaseCard key={item.templateId} item={item} height="h-36 sm:h-40" />
+              <ShowcaseCard key={item.id} item={item} height="h-36 sm:h-40" />
             ))}
           </div>
         </div>
@@ -394,14 +493,14 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
             }}
           >
             {rest.map((item) => (
-              <ShowcaseCard key={item.templateId} item={item} height="h-32 sm:h-36" />
+              <ShowcaseCard key={item.id} item={item} height="h-32 sm:h-36" />
             ))}
           </div>
         )}
 
-        {/* ── Load More / All shown CTA ── */}
-        <div className="text-center pt-2">
-          {!showAll ? (
+        {/* ── Load More CTA ── */}
+        {!showAll && rest.length > 0 && (
+          <div className="text-center pt-2">
             <button
               onClick={() => setShowAll(true)}
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-all border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 px-5 py-2.5 rounded-full group"
@@ -415,16 +514,8 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (templateId: str
               {t("landing.templatesViewMore", "Lihat lebih banyak contoh website")}
               <span className="text-amber-400">+{rest.length}</span>
             </button>
-          ) : (
-            <a
-              href="/template-gallery"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 px-5 py-2.5 rounded-full"
-            >
-              Lihat semua template di gallery
-              <span className="text-amber-400">→</span>
-            </a>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* ── Preview Modal ── */}

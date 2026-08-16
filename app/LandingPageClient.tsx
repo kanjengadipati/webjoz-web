@@ -9,7 +9,7 @@ import { Badge, Button, Card } from "@/components/ui";
 import { Check, Loader2 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { PricingCards } from "@/components/pricing-cards";
-import { TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
+import { prefillForLibraryBusinessType, encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -203,11 +203,15 @@ export default function LandingPageClient() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  function startWizard(templateId?: string) {
-    if (!templateId) { router.push("/create"); return; }
-    const prefill = TEMPLATE_PREFILL_MAP[templateId];
-    if (!prefill) { router.push("/create"); return; }
-    router.push(`/create?businessType=${encodeURIComponent(prefill.businessType)}&businessSubType=${encodeURIComponent(prefill.businessSubType)}`);
+  function startWizard(item?: DesignTokenLibraryItem) {
+    if (!item) { router.push("/create"); return; }
+    const prefill = prefillForLibraryBusinessType(item.business_type);
+    const dtParam = encodeDesignTokenParam(item.design_token);
+    const params = new URLSearchParams();
+    if (prefill.businessType) params.set("businessType", prefill.businessType);
+    if (prefill.businessSubType) params.set("businessSubType", prefill.businessSubType);
+    if (dtParam) params.set("dt", dtParam);
+    router.push(`/create?${params.toString()}`);
   }
 
   return (
@@ -495,7 +499,7 @@ export default function LandingPageClient() {
             </p>
           </div>
 
-          <LandingTemplateShowcase onStart={(templateId) => startWizard(templateId)} />
+          <LandingTemplateShowcase onStart={(item) => startWizard(item)} />
         </div>
       </section>
 
