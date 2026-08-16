@@ -655,6 +655,26 @@ export interface Translations {
       limitTitle: string;
       limitDesc: string;
       limitDesc2: string;
+      buyTab: string;
+      ownTab: string;
+      buyTitle: string;
+      buyDesc: string;
+      searchLabel: string;
+      searchPlaceholder: string;
+      searchBtn: string;
+      searching: string;
+      chooseTlds: string;
+      noResults: string;
+      available: string;
+      unavailable: string;
+      perYear: string;
+      buyBtn: string;
+      buying: string;
+      buySuccess: string;
+      buyFailed: string;
+      purchasedTitle: string;
+      expiresAt: string;
+      purchaseInactive: string;
     };
     settings: {
       tabProfile: string;
@@ -2733,6 +2753,26 @@ export const translations: Record<Locale, Translations> = {
         limitTitle: "Batas Custom Domain Tercapai",
         limitDesc: "Paket {plan} Anda hanya mencakup {max} custom domain (berlaku untuk seluruh akun, bukan per website).",
         limitDesc2: "Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.",
+        buyTab: "Beli Domain Baru",
+        ownTab: "Sudah Punya Domain",
+        buyTitle: "Beli Domain Baru",
+        buyDesc: "Daftarkan domain untuk website Anda langsung dari Webjoz. Setelah pembelian, DNS otomatis diarahkan ke website Anda.",
+        searchLabel: "Nama Domain",
+        searchPlaceholder: "cth. kopirempah",
+        searchBtn: "Cari Ketersediaan",
+        searching: "Memeriksa ketersediaan...",
+        chooseTlds: "Pilih Ekstensi (TLD)",
+        noResults: "Masukkan nama domain dan pilih minimal satu ekstensi untuk memeriksa ketersediaan.",
+        available: "Tersedia",
+        unavailable: "Sudah terdaftar / tidak tersedia",
+        perYear: "/tahun",
+        buyBtn: "Beli Sekarang",
+        buying: "Memproses pembelian...",
+        buySuccess: "Domain berhasil dibeli! DNS sedang diarahkan ke website Anda.",
+        buyFailed: "Gagal membeli domain",
+        purchasedTitle: "Domain Saya",
+        expiresAt: "Berlaku hingga",
+        purchaseInactive: "Pembelian domain sedang tidak aktif. Hubungi administrator.",
       },
       settings: {
         tabProfile: "Profil",
@@ -4857,6 +4897,26 @@ export const translations: Record<Locale, Translations> = {
         limitTitle: "Custom Domain Limit Reached",
         limitDesc: "Your {plan} plan only includes {max} custom domains (applies to the whole account, not per website).",
         limitDesc2: "To add more custom domains, please upgrade to a higher plan.",
+        buyTab: "Buy New Domain",
+        ownTab: "I Already Own a Domain",
+        buyTitle: "Buy a New Domain",
+        buyDesc: "Register a domain for your website right from Webjoz. After purchase, DNS is automatically pointed to your website.",
+        searchLabel: "Domain Name",
+        searchPlaceholder: "e.g. kopirempah",
+        searchBtn: "Check Availability",
+        searching: "Checking availability...",
+        chooseTlds: "Choose Extensions (TLDs)",
+        noResults: "Enter a domain name and select at least one extension to check availability.",
+        available: "Available",
+        unavailable: "Already registered / not available",
+        perYear: "/year",
+        buyBtn: "Buy Now",
+        buying: "Processing purchase...",
+        buySuccess: "Domain purchased! DNS is being pointed to your website.",
+        buyFailed: "Failed to buy domain",
+        purchasedTitle: "My Domains",
+        expiresAt: "Valid until",
+        purchaseInactive: "Domain purchase is currently inactive. Contact an administrator.",
       },
       settings: {
         tabProfile: "Profile",

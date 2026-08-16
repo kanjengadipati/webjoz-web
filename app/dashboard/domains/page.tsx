@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   Loader2, Trash2, Globe, Clock, RefreshCw,
   Server, Copy, Info, Check, Link2, ExternalLink,
-  AlertCircle,
+  AlertCircle, Search, ShoppingCart,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
@@ -34,8 +34,26 @@ interface Site {
   template_id?: string;
 }
 
+interface AvailabilityResult {
+  domain: string;
+  status: string;
+  currency: string;
+  wholesale_price_usd: number;
+  sell_price_idr: number;
+}
+
+interface PurchasedDomain {
+  id: number;
+  domain_name: string;
+  sell_price_idr: number;
+  expires_at: string;
+  status: string;
+  years: number;
+}
+
 const CNAME_TARGET = "sites.webjoz.com";
 const customDomainRegex = /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
+const POPULAR_TLDS = ["com", "net", "org", "id", "co.id", "web.id", "xyz", "store"];
 
 export default function DomainsPage() {
   const token         = useAuthToken();
@@ -59,7 +77,31 @@ export default function DomainsPage() {
   const [showUpsellModal, setShowUpsellModal] = useState(false);
   const [showLimitModal,  setShowLimitModal]  = useState(false);
 
+  // Tab + buy-domain states
+  const [tab,               setTab]               = useState<"buy" | "own">("buy");
+  const [purchased,         setPurchased]         = useState<PurchasedDomain[]>([]);
+  const [buyName,           setBuyName]           = useState("");
+  const [selectedTlds,      setSelectedTlds]      = useState<string[]>(["com"]);
+  const [searching,         setSearching]         = useState(false);
+  const [results,           setResults]           = useState<AvailabilityResult[]>([]);
+  const [searched,          setSearched]          = useState(false);
+  const [buyingDomain,      setBuyingDomain]      = useState<string | null>(null);
+  const [purchaseAvailable, setPurchaseAvailable] = useState(true);
+
   // ────────────────────────────────────────────────────────
+  const fetchPurchased = async () => {
+    if (!token || !activeTenantId) return;
+    try {
+      const pr = await request<PurchasedDomain[]>("/domain-purchases", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token);
+      setPurchased(pr.data || []);
+    } catch (err: unknown) {
+      const statusCode = (err as { statusCode?: number })?.statusCode;
+      if (statusCode && statusCode >= 500) {
+        setPurchaseAvailable(false);
+      }
+    }
+  };
+
   const fetchData = async () => {
     if (!token || !activeTenantId) return;
     try {
@@ -86,9 +128,64 @@ export default function DomainsPage() {
     } finally {
       setLoading(false);
     }
+    fetchPurchased();
   };
 
   useEffect(() => { if (activeTenantId) fetchData(); }, [activeTenantId]);
+
+  // ── Buy-domain helpers ──────────────────────────────────
+  const formatIDR = (n: number) => {
+    if (!n) return "Rp0";
+    return "Rp" + Math.round(n).toLocaleString("id-ID");
+  };
+
+  const toggleTld = (tld: string) => {
+    setSelectedTlds(prev =>
+      prev.includes(tld) ? prev.filter(t => t !== tld) : [...prev, tld],
+    );
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !activeTenantId || !buyName.trim() || selectedTlds.length === 0) return;
+    try {
+      setSearching(true);
+      setSearched(false);
+      const sr = await request<AvailabilityResult[]>("/domain-purchases/search", {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ name: buyName.toLowerCase().trim(), tlds: selectedTlds.join(",") }),
+      }, token);
+      setResults(sr.data || []);
+      setSearched(true);
+    } catch (err: unknown) {
+      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleBuy = async (domain: string) => {
+    if (!token || !activeTenantId || !siteId) return;
+    try {
+      setBuyingDomain(domain);
+      await request<PurchasedDomain>("/domain-purchases", {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ site_id: Number(siteId), domain_name: domain, years: 1 }),
+      }, token);
+      pushToast(t("dashboard.domains.buySuccess"), "success");
+      setResults([]);
+      setSearched(false);
+      setBuyName("");
+      fetchPurchased();
+      fetchData();
+    } catch (err: unknown) {
+      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
+    } finally {
+      setBuyingDomain(null);
+    }
+  };
 
   // ── Submit helpers ────────────────────────────────────────
   const proceedAddDomain = async (finalDomain: string) => {
@@ -236,6 +333,226 @@ export default function DomainsPage() {
   return (
     <div className="max-w-3xl text-[#f3f3f4] font-sans space-y-8">
 
+      {/* ═══════════════════════════════════════════════
+          TAB SWITCHER — Buy New Domain / Already Own
+      ══════════════════════════════════════════════ */}
+      <div className="flex items-center gap-1 bg-[#15151a] border border-white/[0.08] rounded-2xl p-1.5 w-fit">
+        <button
+          type="button"
+          onClick={() => setTab("buy")}
+          className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
+            tab === "buy" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+          }`}
+        >
+          <ShoppingCart className="w-3.5 h-3.5" />
+          {t("dashboard.domains.buyTab")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("own")}
+          className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
+            tab === "own" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+          }`}
+        >
+          <Globe className="w-3.5 h-3.5" />
+          {t("dashboard.domains.ownTab")}
+        </button>
+      </div>
+
+      {/* ═══════════════════════════════════════════════
+          TAB — BUY NEW DOMAIN
+      ══════════════════════════════════════════════ */}
+      {tab === "buy" && (
+        <section className="space-y-6">
+
+          {!purchaseAvailable && (
+            <div className="flex items-start gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3.5">
+              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-[13px] text-amber-300 font-medium m-0">{t("dashboard.domains.purchaseInactive")}</p>
+            </div>
+          )}
+
+          {/* Purchased domains list */}
+          {purchased.length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
+                {t("dashboard.domains.purchasedTitle")} ({purchased.length})
+              </h2>
+              <div className="flex flex-col gap-2">
+                {purchased.map(d => (
+                  <div key={d.id} className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-5 py-3.5 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-[#3ddc84]/12 text-[#5fe3a0] flex items-center justify-center shrink-0">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{d.domain_name}</p>
+                      <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5">
+                        {t("dashboard.domains.expiresAt")} {new Date(d.expires_at).toLocaleDateString("id-ID")}
+                      </p>
+                    </div>
+                    <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 bg-[#3ddc84]/12 text-[#5fe3a0]">
+                      {t("dashboard.domains.active")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Search form */}
+          <div className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
+            <div>
+              <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
+                <Search className="w-4 h-4 text-primary" /> {t("dashboard.domains.buyTitle")}
+              </h2>
+              <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
+                {t("dashboard.domains.buyDesc")}
+              </p>
+            </div>
+
+            {publishedSites.length === 0 ? (
+              <div className="flex items-start gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3.5">
+                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-[13px] text-amber-300 font-medium m-0">
+                    {t("dashboard.domains.noPublished")}
+                  </p>
+                  <p className="text-[12px] text-[#9a9aa3] m-0 leading-relaxed">
+                    {t("dashboard.domains.noPublishedDesc")}{" "}
+                    <Link href="/dashboard/sites" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
+                      {t("dashboard.domains.myWebsites")}
+                    </Link>
+                    .
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSearch} className="space-y-5">
+                {/* Website Selection */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-primary mb-1.5">
+                    {t("dashboard.domains.linkToSite")}
+                  </label>
+                  <select
+                    value={siteId}
+                    onChange={e => setSiteId(e.target.value)}
+                    className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary cursor-pointer"
+                  >
+                    {publishedSites.map(s => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} ({s.subdomain}.webjoz.com)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Domain name */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-primary mb-1.5">
+                    {t("dashboard.domains.searchLabel")}
+                  </label>
+                  <input
+                    type="text"
+                    value={buyName}
+                    onChange={e => setBuyName(e.target.value)}
+                    placeholder={t("dashboard.domains.searchPlaceholder")}
+                    className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary placeholder:text-[#6b6b75]"
+                  />
+                </div>
+
+                {/* TLD checkboxes */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-primary mb-2">
+                    {t("dashboard.domains.chooseTlds")}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {POPULAR_TLDS.map(tld => {
+                      const selected = selectedTlds.includes(tld);
+                      return (
+                        <button
+                          key={tld}
+                          type="button"
+                          onClick={() => toggleTld(tld)}
+                          className={`px-3 py-1.5 rounded-lg text-[12px] font-mono font-semibold border transition-colors cursor-pointer ${
+                            selected
+                              ? "bg-primary/20 text-primary border-primary/40"
+                              : "bg-[#0b0b0d] text-[#9a9aa3] border-white/15 hover:text-white hover:border-white/30"
+                          }`}
+                        >
+                          .{tld}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={searching || !buyName.trim() || selectedTlds.length === 0}
+                  className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+                    searching || !buyName.trim() || selectedTlds.length === 0
+                      ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  }`}
+                >
+                  {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  {searching ? t("dashboard.domains.searching") : t("dashboard.domains.searchBtn")}
+                </button>
+              </form>
+            )}
+
+            {/* Results */}
+            {searched && results.length > 0 && (
+              <div className="space-y-2">
+                {results.map(r => {
+                  const ok = r.status === "available";
+                  const busy = buyingDomain === r.domain;
+                  return (
+                    <div key={r.domain} className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-5 py-4 flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
+                        {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] font-mono truncate">{r.domain}</p>
+                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-[#5fe3a0]" : "text-[#6b6b75]"}`}>
+                          {ok ? t("dashboard.domains.available") : t("dashboard.domains.unavailable")}
+                        </p>
+                      </div>
+                      {ok && (
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="text-[14px] font-bold text-[#f3f3f4]">
+                            {formatIDR(r.sell_price_idr)}
+                            <span className="text-[11px] font-medium text-[#6b6b75]">{t("dashboard.domains.perYear")}</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleBuy(r.domain)}
+                            disabled={busy || !siteId}
+                            className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
+                          >
+                            {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
+                            {busy ? t("dashboard.domains.buying") : t("dashboard.domains.buyBtn")}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {searched && results.length === 0 && (
+              <p className="text-[13px] text-[#6b6b75] m-0">{t("dashboard.domains.noResults")}</p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════════════════════════════════════
+          TAB — ALREADY OWN A DOMAIN (BYOD)
+      ══════════════════════════════════════════════ */}
+      {tab === "own" && (
+      <>
       {/* ═══════════════════════════════════════════════
           SECTION 1 — Connected Custom Domains List
       ══════════════════════════════════════════════ */}
@@ -507,6 +824,8 @@ export default function DomainsPage() {
           </div>
         </div>
       </Dialog>
+      </>
+      )}
     </div>
   );
 }
