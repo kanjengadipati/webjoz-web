@@ -2080,7 +2080,7 @@ export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
       badge: "AI Website Builder untuk Bisnis Indonesia",
-      heroTitle: "Generate website instant.<br />Kustomisasi tanpa batas.",
+      heroTitle: "Generate website instan.<br />Kustomisasi tanpa batas.",
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
       ctaPrimary: "Buat Website Sekarang",
