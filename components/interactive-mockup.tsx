@@ -162,8 +162,8 @@ function RealPreviewPanel({
       ref={containerRef}
       className="absolute inset-0 overflow-hidden"
       style={{
-        opacity: 1,
-        transition: "opacity 0.5s ease-out",
+        opacity: flowStep >= STEP_PREVIEW ? 1 : 0,
+        transition: "opacity 0.8s cubic-bezier(0.4,0,0.2,1)",
       }}
     >
       <div
@@ -181,6 +181,294 @@ function RealPreviewPanel({
       {/* Vignette overlay so edges blend smoothly */}
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: "radial-gradient(ellipse at center, transparent 65%, rgba(12,12,14,0.45) 100%)" }}
+      />
+    </div>
+  );
+}
+
+/* ── LiveAdaptiveSkeleton: token-themed wireframe that evolves with the chat ── */
+function LiveAdaptiveSkeleton({
+  sample,
+  token,
+  flowStep,
+  baseWidth = 1280,
+  visible,
+}: {
+  sample: ShowcaseItem;
+  token: DesignToken;
+  flowStep: number;
+  baseWidth?: number;
+  visible: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.22);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      setScale(el.offsetWidth / baseWidth);
+    });
+    obs.observe(el);
+    setScale(el.offsetWidth / baseWidth);
+    return () => obs.disconnect();
+  }, [baseWidth]);
+
+  const cssVars = useMemo(() => buildCssVars(token), [token]);
+  const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
+  const subtype = prefill?.businessSubType || prefill?.businessType || sample.businessType;
+  const showName  = flowStep >= STEP_NAME;
+  const showType  = flowStep >= STEP_PICK_TYPE;
+  const showMood  = flowStep >= STEP_PICK_MOOD;
+  const highlight = flowStep >= STEP_GENERATING;
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        opacity: visible ? 1 : 0,
+        pointerEvents: "none",
+        transition: "opacity 0.7s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
+      <div
+        style={{
+          ...cssVars,
+          width: baseWidth,
+          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          background: "var(--dt-bg)",
+          color: "var(--dt-text)",
+          fontFamily: "var(--dt-body-font)",
+          pointerEvents: "none",
+          userSelect: "none",
+          minHeight: 1400,
+        }}
+      >
+        {/* Ambient glow blob using token primary */}
+        <div style={{
+          position: "absolute", top: -80, right: -80,
+          width: 480, height: 480,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, color-mix(in srgb,var(--dt-primary) 18%,transparent) 0%, transparent 70%)",
+          filter: "blur(48px)",
+          pointerEvents: "none",
+        }} />
+
+        <div style={{ padding: "40px 48px", display: "flex", flexDirection: "column", gap: 36, position: "relative", zIndex: 1 }}>
+
+          {/* ── Navbar ── */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 28, borderBottom: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {/* Logo icon */}
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "var(--dt-primary)", opacity: 0.9, flexShrink: 0 }} />
+              {showName ? (
+                <div style={{
+                  fontSize: 15, fontWeight: 800, color: "var(--dt-text)",
+                  fontFamily: "var(--dt-heading-font)", letterSpacing: "-0.3px"
+                }}>{sample.businessName}</div>
+              ) : (
+                <div style={{ height: 18, width: 120, borderRadius: 6, background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
+                  animation: "pulse 2s infinite" }} />
+              )}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+              {showType ? (
+                ["Beranda", "Produk", "Kontak"].map((l) => (
+                  <span key={l} style={{ fontSize: 12, color: "var(--dt-text-muted)", fontWeight: 600 }}>{l}</span>
+                ))
+              ) : (
+                [80, 60, 50].map((w, i) => (
+                  <div key={i} style={{ height: 12, width: w, borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                    animation: "pulse 2s infinite" }} />
+                ))
+              )}
+              <div style={{
+                height: 34, padding: "0 18px", borderRadius: 8,
+                background: highlight ? "var(--dt-primary)" : "color-mix(in srgb,var(--dt-primary) 18%,transparent)",
+                border: "1px solid color-mix(in srgb,var(--dt-primary) 40%,transparent)",
+                display: "flex", alignItems: "center",
+                fontSize: 11, fontWeight: 700,
+                color: highlight ? "var(--dt-primary-foreground)" : "var(--dt-primary)",
+                transition: "all 0.5s",
+              }}>{showType ? "Hubungi Kami" : ""}</div>
+            </div>
+          </div>
+
+          {/* ── Hero section ── */}
+          <div style={{
+            borderRadius: 24,
+            border: highlight
+              ? "1px solid color-mix(in srgb,var(--dt-primary) 40%,transparent)"
+              : "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+            background: "color-mix(in srgb,var(--dt-text) 4%,transparent)",
+            padding: "52px 48px",
+            position: "relative",
+            overflow: "hidden",
+            boxShadow: highlight ? "0 0 40px color-mix(in srgb,var(--dt-primary) 10%,transparent)" : "none",
+            transition: "border-color 0.6s, box-shadow 0.6s",
+          }}>
+            {/* right image placeholder */}
+            <div style={{
+              position: "absolute", right: 0, top: 0, bottom: 0, width: "38%",
+              background: "color-mix(in srgb,var(--dt-text) 5%,transparent)",
+            }} />
+
+            <div style={{ maxWidth: "55%", display: "flex", flexDirection: "column", gap: 20, position: "relative", zIndex: 1 }}>
+              {/* Category badge */}
+              {showType ? (
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "4px 12px", borderRadius: 99,
+                  background: "color-mix(in srgb,var(--dt-primary) 14%,transparent)",
+                  border: "1px solid color-mix(in srgb,var(--dt-primary) 28%,transparent)",
+                  color: "var(--dt-primary)",
+                  fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2,
+                  width: "fit-content"
+                }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 99, background: "var(--dt-primary)" }} />
+                  {subtype}
+                </div>
+              ) : (
+                <div style={{ height: 22, width: 100, borderRadius: 99, background: "color-mix(in srgb,var(--dt-text) 10%,transparent)",
+                  animation: "pulse 2s infinite" }} />
+              )}
+
+              {/* Headline */}
+              {showName ? (
+                <div style={{
+                  fontSize: 38, fontWeight: 900, lineHeight: 1.12,
+                  color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)",
+                  letterSpacing: "-0.5px"
+                }}>{sample.businessName}</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div style={{ height: 40, width: "85%", borderRadius: 10, background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
+                    animation: "pulse 2s infinite" }} />
+                  <div style={{ height: 40, width: "60%", borderRadius: 10, background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                    animation: "pulse 2s infinite" }} />
+                </div>
+              )}
+
+              {/* Description */}
+              {showMood ? (
+                <div style={{ fontSize: 13, color: "var(--dt-text-muted)", lineHeight: 1.65, maxWidth: 420 }}>
+                  {sample.description || "Bisnis Anda hadir dengan tampilan profesional, desain menarik, dan informasi lengkap untuk pelanggan."}
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ height: 13, width: "90%", borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 7%,transparent)",
+                    animation: "pulse 2s infinite" }} />
+                  <div style={{ height: 13, width: "70%", borderRadius: 4, background: "color-mix(in srgb,var(--dt-text) 5%,transparent)",
+                    animation: "pulse 2s infinite" }} />
+                </div>
+              )}
+
+              {/* CTA buttons */}
+              <div style={{ display: "flex", gap: 12, paddingTop: 4 }}>
+                <div style={{
+                  height: 44, padding: "0 24px", borderRadius: 10,
+                  background: highlight ? "var(--dt-primary)" : "color-mix(in srgb,var(--dt-primary) 20%,transparent)",
+                  border: `1px solid color-mix(in srgb,var(--dt-primary) ${highlight ? 100 : 30}%,transparent)`,
+                  display: "flex", alignItems: "center", gap: 8,
+                  fontSize: 12, fontWeight: 700,
+                  color: highlight ? "var(--dt-primary-foreground)" : "var(--dt-primary)",
+                  transition: "all 0.5s",
+                }}>
+                  {highlight ? "Hubungi via WhatsApp →" : ""}
+                </div>
+                <div style={{
+                  height: 44, padding: "0 20px", borderRadius: 10,
+                  background: "color-mix(in srgb,var(--dt-text) 5%,transparent)",
+                  border: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                  display: "flex", alignItems: "center",
+                  fontSize: 12, fontWeight: 600,
+                  color: "var(--dt-text-muted)",
+                }}>{showType ? "Lihat Produk" : ""}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Feature cards ── */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
+            {[0, 1, 2].map((i) => (
+              <div key={i} style={{
+                borderRadius: 16,
+                border: "1px solid color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                background: "color-mix(in srgb,var(--dt-text) 3%,transparent)",
+                padding: 24, display: "flex", flexDirection: "column", gap: 14,
+              }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10,
+                  background: `color-mix(in srgb,var(--dt-primary) ${18 - i * 4}%,transparent)`,
+                  border: "1px solid color-mix(in srgb,var(--dt-primary) 22%,transparent)",
+                }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ height: 14, width: showType ? "75%" : "70%",
+                    borderRadius: 4, background: showType
+                      ? "color-mix(in srgb,var(--dt-text) 16%,transparent)"
+                      : "color-mix(in srgb,var(--dt-text) 10%,transparent)",
+                    animation: "pulse 2s infinite"
+                  }} />
+                  <div style={{ height: 11, width: "90%", borderRadius: 4,
+                    background: "color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                    animation: "pulse 2s infinite"
+                  }} />
+                  <div style={{ height: 11, width: "65%", borderRadius: 4,
+                    background: "color-mix(in srgb,var(--dt-text) 4%,transparent)",
+                    animation: "pulse 2s infinite"
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Product/catalog grid ── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ height: 18, width: showType ? 200 : 160,
+                borderRadius: 6, fontWeight: 800,
+                background: showType
+                  ? "color-mix(in srgb,var(--dt-text) 16%,transparent)"
+                  : "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                animation: "pulse 2s infinite",
+              }} />
+              <div style={{ height: 12, width: 80, borderRadius: 4,
+                background: "color-mix(in srgb,var(--dt-text) 6%,transparent)",
+                animation: "pulse 2s infinite"
+              }} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} style={{
+                  borderRadius: 14,
+                  border: "1px solid color-mix(in srgb,var(--dt-text) 7%,transparent)",
+                  background: "color-mix(in srgb,var(--dt-text) 3%,transparent)",
+                  padding: 14,
+                  display: "flex", flexDirection: "column", gap: 12,
+                }}>
+                  <div style={{
+                    height: 110, borderRadius: 10,
+                    background: `color-mix(in srgb,var(--dt-primary) ${10 - i * 1.5}%,color-mix(in srgb,var(--dt-text) 6%,transparent))`,
+                    animation: "pulse 2s infinite",
+                  }} />
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div style={{ height: 12, width: "75%", borderRadius: 4,
+                      background: "color-mix(in srgb,var(--dt-text) 10%,transparent)",
+                      animation: "pulse 2s infinite" }} />
+                    <div style={{ height: 10, width: "50%", borderRadius: 4,
+                      background: "color-mix(in srgb,var(--dt-primary) 22%,transparent)",
+                      animation: "pulse 2s infinite" }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Vignette overlay */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(12,12,14,0.6) 100%)" }}
       />
     </div>
   );
@@ -621,7 +909,15 @@ export function InteractiveMockup() {
                 transformStyle: "preserve-3d",
               }}
             >
-              {/* Real website preview — always visible right from initial load */}
+              {/* Skeleton — visible during AI chat (steps 0-7) */}
+              <LiveAdaptiveSkeleton
+                sample={showcaseItem}
+                token={token}
+                flowStep={flowStep}
+                visible={flowStep < STEP_PREVIEW}
+              />
+
+              {/* Real website preview — crossfades in at step 8 */}
               {TemplateComponent && (
                 <RealPreviewPanel
                   TemplateComponent={TemplateComponent}
