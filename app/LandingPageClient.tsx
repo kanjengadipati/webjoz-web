@@ -408,34 +408,9 @@ export default function LandingPageClient() {
             </div>
           </div>
 
-          {/* Interactive Mockup + Social Proof */}
+          {/* Interactive Mockup */}
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex flex-col items-center justify-center w-full">
             <InteractiveMockup />
-
-            {/* Social Proof */}
-            <div className="flex items-center justify-center gap-2.5 pt-6 pb-2 text-xs text-white/80">
-              <div className="flex -space-x-2 items-center">
-                {[
-                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop&q=80",
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop&q=80",
-                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&fit=crop&q=80",
-                  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop&q=80",
-                ].map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt="User"
-                    className="size-6 sm:size-7 rounded-full border-2 border-[#080808] object-cover"
-                  />
-                ))}
-              </div>
-              <div className="flex items-center text-white tracking-widest text-xs">
-                ★★★★★
-              </div>
-              <span className="text-[11px] sm:text-xs text-white/70 font-medium">
-                {translations.landing.trustedBy || "Trusted by 1,000+ business owners"}
-              </span>
-            </div>
           </div>
         </div>
       </section>
