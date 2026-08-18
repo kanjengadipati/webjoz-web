@@ -338,10 +338,9 @@ export default function LandingPageClient() {
             </h1>
 
             {/* Subtitle */}
-            <div className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl space-y-1">
-              <p>{t("landing.heroSubtitle")}</p>
-              <p className="text-foreground font-bold">{t("landing.heroSubtitleBold")}</p>
-            </div>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl">
+              <span dangerouslySetInnerHTML={{ __html: t("landing.heroSubtitle") }} />
+            </p>
 
             {/* Primary CTA Button */}
             <div className="flex flex-col items-center lg:items-start gap-3 w-full pt-1">
