@@ -347,11 +347,11 @@ export default function LandingPageClient() {
               <Button
                 onClick={() => startWizard()}
                 size="lg"
-                className="w-full sm:w-auto rounded-2xl sm:rounded-full bg-white text-black font-extrabold px-8 py-6 text-base sm:text-lg shadow-[0_10px_35px_rgba(255,255,255,0.18)] hover:bg-slate-200 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-3 group"
+                className="w-auto rounded-full bg-white text-black font-extrabold px-7 py-5 sm:px-9 sm:py-6 text-base sm:text-lg shadow-[0_10px_35px_rgba(255,255,255,0.18)] hover:bg-slate-200 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group"
               >
-                <SparkleIcon className="size-4.5 text-black" />
+                <SparkleIcon className="size-4 sm:size-4.5 text-black" />
                 <span>{t("landing.ctaPrimary")}</span>
-                <ArrowRight className="size-4.5 text-black group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="size-4 sm:size-4.5 text-black group-hover:translate-x-1 transition-transform" />
               </Button>
 
               {/* Sub-features with checkmarks */}
