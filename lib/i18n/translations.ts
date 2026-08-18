@@ -133,7 +133,7 @@ export interface Translations {
     featureLiveInstant: string;
     bottomNavHome: string;
     bottomNavFeatures: string;
-    bottomNavTemplates: string;
+    bottomNavCreate: string;
     bottomNavPricing: string;
     bottomNavAccount: string;
   };
@@ -2244,11 +2244,11 @@ export const translations: Record<Locale, Translations> = {
       featureFreeCard: "Tanpa kartu kredit",
       featureChatEasy: "Alami & mudah",
       featureLiveInstant: "Publish instan",
-      bottomNavHome: "Home",
-      bottomNavFeatures: "Features",
-      bottomNavTemplates: "Templates",
-      bottomNavPricing: "Pricing",
-      bottomNavAccount: "Account",
+      bottomNavHome: "Beranda",
+      bottomNavFeatures: "Fitur",
+      bottomNavCreate: "Buat",
+      bottomNavPricing: "Harga",
+      bottomNavAccount: "Akun",
     },
     auth: {
       loginTitle: "Lanjutkan kelola website bisnis Anda.",
@@ -4405,7 +4405,7 @@ export const translations: Record<Locale, Translations> = {
       featureLiveInstant: "Publish instantly",
       bottomNavHome: "Home",
       bottomNavFeatures: "Features",
-      bottomNavTemplates: "Templates",
+      bottomNavCreate: "Create",
       bottomNavPricing: "Pricing",
       bottomNavAccount: "Account",
     },
