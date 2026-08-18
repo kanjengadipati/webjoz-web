@@ -132,7 +132,7 @@ export default function DomainsPage() {
 
   // ── Buy-domain helpers ──────────────────────────────────
   const formatIDR = (n: number) => {
-    if (!n) return "Rp0";
+    if (!n) return "-";
     return "Rp" + Math.round(n).toLocaleString("id-ID");
   };
 
