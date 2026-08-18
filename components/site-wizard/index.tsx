@@ -774,7 +774,7 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
@@ -783,23 +783,58 @@ export function SiteWizard({
                         "bold-vibrant": "playfulFun",
                         "dark-premium": "elegantLuxury",
                         "bold-dark": "boldEnergetic",
-                        "retro": "warmVintage",
-                        "futuristic": "minimalistDark",
+                        "retro": "retro",
+                        "futuristic": "futuristic",
                       };
                       const moodKey = moodKeyMap[mo.value];
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
+                      const bg = mo.img
+                        ? `url(${mo.img})`
+                        : (mo.gradient ?? "linear-gradient(135deg,#1e293b,#0f172a)");
                       return (
                         <button
                           key={mo.value}
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all ${isSelected ? "text-white border-primary/60" : isLocked ? "text-slate-600 border-white/5 cursor-not-allowed" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white cursor-pointer active:scale-95"}`}
-                          style={{ background: isSelected ? "rgba(99,102,241,0.2)" : isLocked ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)" }}
+                          className={`relative overflow-hidden rounded-xl border transition-all duration-200 aspect-video flex flex-col justify-end text-left ${
+                            isSelected
+                              ? "border-primary ring-2 ring-primary/40 shadow-lg shadow-primary/20"
+                              : isLocked
+                              ? "border-white/5 cursor-not-allowed opacity-50"
+                              : "border-white/10 hover:border-primary/50 hover:scale-[1.02] cursor-pointer"
+                          }`}
+                          style={{
+                            backgroundImage: bg,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center top",
+                          }}
                         >
-                          <span>{mo.emoji}</span>
-                          <span>{translatedMoodLabel}</span>
-                          {isSelected && <span className="text-primary text-[10px]">✓</span>}
+                          {/* Dark gradient overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+                          {/* Selected check */}
+                          {isSelected && (
+                            <div className="absolute top-1.5 right-1.5 z-10 size-5 rounded-full bg-primary flex items-center justify-center shadow-md">
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            </div>
+                          )}
+
+                          {/* Futuristic — neon glow effect */}
+                          {mo.value === "futuristic" && (
+                            <div className="absolute inset-0 pointer-events-none">
+                              <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-violet-500/20 blur-2xl" />
+                              <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-cyan-400/20 blur-xl" />
+                              <span className="absolute top-3 left-0 right-0 text-center text-3xl">🤖</span>
+                            </div>
+                          )}
+
+                          {/* Label */}
+                          <div className="relative z-10 px-2 pb-2">
+                            <p className="text-[11px] font-bold text-white leading-tight drop-shadow">{translatedMoodLabel}</p>
+                          </div>
                         </button>
                       );
                     })}
