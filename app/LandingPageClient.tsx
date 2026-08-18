@@ -415,7 +415,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── How It Works (Pleco-style numbered cards) ──────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
+      <section id="how-it-works" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto scroll-mt-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
@@ -455,7 +455,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Key Features: Two real feature highlights ──────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
+      <section id="features" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto scroll-mt-16">
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
@@ -593,7 +593,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Pricing ───────────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto">
+      <section id="pricing" className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto scroll-mt-16">
         <div className="mx-auto max-w-5xl">
           <div className="text-center space-y-3 mb-8">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{t("landing.pricingTitle")}</h2>
@@ -720,27 +720,36 @@ export default function LandingPageClient() {
       </footer>
 
       {/* ── Sticky Mobile Bottom Navigation Bar ────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-3 py-2">
+      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-1.5 pb-2.5">
         <div className="flex items-center justify-around">
-          <Link href="/" className="flex flex-col items-center gap-1 text-white font-semibold text-[10px]">
+          <Link href="/" className="flex flex-col items-center gap-0.5 text-white font-semibold text-[10px] min-w-[54px]">
             <Home className="size-5 text-white" />
-            <span>{translations.landing.bottomNavHome || "Home"}</span>
+            <span>{t("landing.bottomNavHome")}</span>
           </Link>
-          <a href="#features" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
-            <SparkleIcon className="size-5 text-white/55" />
-            <span>{translations.landing.bottomNavFeatures || "Features"}</span>
+          <a href="#features" className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
+            <Zap className="size-5 text-white/60" />
+            <span>{t("landing.bottomNavFeatures")}</span>
           </a>
-          <Link href="/template-gallery" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
-            <LayoutGrid className="size-5 text-white/55" />
-            <span>{translations.landing.bottomNavTemplates || "Templates"}</span>
-          </Link>
-          <a href="#pricing" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
-            <Tag className="size-5 text-white/55" />
-            <span>{translations.landing.bottomNavPricing || "Pricing"}</span>
+
+          {/* Center Elevated Action: Gen AI Spark Create */}
+          <button
+            type="button"
+            onClick={() => startWizard()}
+            className="flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
+          >
+            <div className="size-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_22px_rgba(255,255,255,0.45)] ring-4 ring-[#08080a] group-hover:scale-105 transition-all">
+              <SparkleIcon className="size-6 text-black fill-black" />
+            </div>
+            <span className="text-[10px] font-bold text-white mt-0.5">{t("landing.bottomNavCreate")}</span>
+          </button>
+
+          <a href="#pricing" className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
+            <Tag className="size-5 text-white/60" />
+            <span>{t("landing.bottomNavPricing")}</span>
           </a>
-          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
-            <UserCircle className="size-5 text-white/55" />
-            <span>{translations.landing.bottomNavAccount || "Account"}</span>
+          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
+            <UserCircle className="size-5 text-white/60" />
+            <span>{t("landing.bottomNavAccount")}</span>
           </Link>
         </div>
       </nav>
