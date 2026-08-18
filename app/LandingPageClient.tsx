@@ -162,6 +162,10 @@ interface PlanItem {
   max_custom_domain: number;
   features: string;
   active: boolean;
+  price_monthly_usd: number;
+  price_yearly_usd: number;
+  promo_price_monthly_usd: number;
+  promo_price_yearly_usd: number;
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────

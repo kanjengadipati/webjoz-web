@@ -23,6 +23,10 @@ export interface PlanItem {
   max_members: number;
   max_custom_domain: number;
   features: string;
+  price_monthly_usd: number;
+  price_yearly_usd: number;
+  promo_price_monthly_usd: number;
+  promo_price_yearly_usd: number;
 }
 
 interface PricingCardsProps {
@@ -33,6 +37,7 @@ interface PricingCardsProps {
   currentPlanSlug?: string;
   payingPlanId?: number | null;
   onSelectPlan: (plan: PlanItem) => void;
+  currency?: "IDR" | "USD";
   // ── Billing toggle labels ──────────────────────────────────────────────────
   monthlyLabel?: string;
   yearlyLabel?: string;
@@ -79,6 +84,7 @@ export function PricingCards({
   currentPlanSlug,
   payingPlanId = null,
   onSelectPlan,
+  currency = "IDR",
   monthlyLabel = "Bulanan",
   yearlyLabel = "Tahunan",
   saveBadgeLabel = "Hemat ~16%",
@@ -135,14 +141,22 @@ export function PricingCards({
           const isYearly = billingCycle === "yearly";
 
           // ── Price calculation ──────────────────────────────────────────────
-          const normalYearly = plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12;
-          const effectiveYearly = plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearly;
-          const effectiveMonthly =
-            plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
-              ? plan.promo_price_monthly
-              : plan.price_monthly;
+          const isUSD = currency === "USD";
+          const normalYearly = isUSD
+            ? (plan.price_yearly_usd > 0 ? plan.price_yearly_usd : plan.price_monthly_usd * 12)
+            : (plan.price_yearly > 0 ? plan.price_yearly : plan.price_monthly * 12);
+          const effectiveYearly = isUSD
+            ? (plan.promo_price_yearly_usd > 0 ? plan.promo_price_yearly_usd : normalYearly)
+            : (plan.promo_price_yearly > 0 ? plan.promo_price_yearly : normalYearly);
+          const effectiveMonthly = isUSD
+            ? (plan.promo_price_monthly_usd > 0 && plan.promo_duration_months > 0
+                ? plan.promo_price_monthly_usd
+                : plan.price_monthly_usd)
+            : (plan.promo_price_monthly > 0 && plan.promo_duration_months > 0
+                ? plan.promo_price_monthly
+                : plan.price_monthly);
           const monthlyEquivalent = Math.round(effectiveYearly / 12);
-          const yearlySavings = plan.price_monthly * 12 - effectiveYearly;
+          const yearlySavings = (isUSD ? plan.price_monthly_usd * 12 : plan.price_monthly * 12) - effectiveYearly;
 
           // ── Feature list (localised via props) ────────────────────────────
           const featureList = [
@@ -199,13 +213,18 @@ export function PricingCards({
                 ) : isYearly ? (
                   <div className="mb-6">
                     <div className="text-4xl font-bold text-foreground mb-1">
-                      Rp {(effectiveYearly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}
-                      <span className="text-lg font-semibold">.000</span>
+                      {isUSD ? "$" : "Rp "}{isUSD
+                        ? effectiveYearly.toLocaleString("en-US", { maximumFractionDigits: 0 })
+                        : (effectiveYearly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })
+                      }{isUSD ? "" : <span className="text-lg font-semibold">.000</span>}
                     </div>
-                    {plan.promo_price_yearly > 0 && (
+                    {(isUSD ? plan.promo_price_yearly_usd : plan.promo_price_yearly) > 0 && (
                       <div className="flex items-center justify-center gap-2 mb-1">
                         <span className="text-sm text-muted-foreground line-through">
-                          Rp {normalYearly.toLocaleString("id-ID")}
+                          {isUSD ? "$" : "Rp "}{isUSD
+                            ? normalYearly.toLocaleString("en-US")
+                            : normalYearly.toLocaleString("id-ID")
+                          }
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
                           {plan.promo_label || promoLabel}
@@ -215,33 +234,47 @@ export function PricingCards({
                     <p className="text-sm text-muted-foreground">
                       {perYearLabel} ·{" "}
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        {fill(monthlyEqLabel, monthlyEquivalent.toLocaleString("id-ID"))}
+                        {isUSD
+                          ? `$${monthlyEquivalent}/mo`
+                          : fill(monthlyEqLabel, monthlyEquivalent.toLocaleString("id-ID"))
+                        }
                       </span>
                     </p>
                     {yearlySavings > 0 && (
                       <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-                        {fill(yearlySavingsLabel, yearlySavings.toLocaleString("id-ID"))}
+                        {isUSD
+                          ? `Save $${yearlySavings}/year`
+                          : fill(yearlySavingsLabel, yearlySavings.toLocaleString("id-ID"))
+                        }
                       </p>
                     )}
                   </div>
                 ) : (
                   <div className="mb-6">
                     <div className="text-4xl font-bold text-foreground mb-1">
-                      Rp {(effectiveMonthly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}
-                      <span className="text-lg font-semibold">.000</span>
+                      {isUSD ? "$" : "Rp "}{isUSD
+                        ? effectiveMonthly.toLocaleString("en-US", { maximumFractionDigits: 0 })
+                        : (effectiveMonthly / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })
+                      }{isUSD ? "" : <span className="text-lg font-semibold">.000</span>}
                     </div>
-                    {plan.promo_price_monthly > 0 && plan.promo_duration_months > 0 && (
+                    {(isUSD ? plan.promo_price_monthly_usd : plan.promo_price_monthly) > 0 && plan.promo_duration_months > 0 && (
                       <div className="flex items-center justify-center gap-2 mb-1">
                         <span className="text-sm text-muted-foreground line-through">
-                          Rp {plan.price_monthly.toLocaleString("id-ID")}
+                          {isUSD ? "$" : "Rp "}{isUSD
+                            ? plan.price_monthly_usd.toLocaleString("en-US")
+                            : plan.price_monthly.toLocaleString("id-ID")
+                          }
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
-                          {plan.promo_label || `${promoLabel} ${plan.promo_duration_months} bln`}
+                          {isUSD ? (plan.promo_label || promoLabel) : (plan.promo_label || `${promoLabel} ${plan.promo_duration_months} bln`)}
                         </span>
                       </div>
                     )}
                     <p className="text-sm text-muted-foreground">
-                      {perMonthLabel} · Rp {normalYearly.toLocaleString("id-ID")}{perYearShortLabel}
+                      {isUSD
+                        ? `${perMonthLabel} · $${normalYearly}/yr`
+                        : `${perMonthLabel} · Rp ${normalYearly.toLocaleString("id-ID")}${perYearShortLabel}`
+                      }
                     </p>
                   </div>
                 )}

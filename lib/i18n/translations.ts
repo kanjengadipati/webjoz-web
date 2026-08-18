@@ -412,6 +412,7 @@ export interface Translations {
       overview: string;
       notifications: string;
       plans: string;
+      promos: string;
       health: string;
       announcements: string;
       commissions: string;
@@ -2510,6 +2511,7 @@ export const translations: Record<Locale, Translations> = {
         overview: "Ringkasan",
         notifications: "Notifikasi",
         plans: "Manajemen Paket",
+        promos: "Kode Promo",
         health: "Kesehatan Sistem",
         announcements: "Pengumuman",
         commissions: "Semua Komisi",
@@ -4654,6 +4656,7 @@ export const translations: Record<Locale, Translations> = {
         overview: "Overview",
         notifications: "Notifications",
         plans: "Plan Management",
+        promos: "Promo Codes",
         health: "System Health",
         announcements: "Announcements",
         commissions: "All Commissions",
