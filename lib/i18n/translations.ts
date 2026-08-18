@@ -126,6 +126,16 @@ export interface Translations {
     seoBooster: string;
     subdomainFeature: string;
     hostingFeature: string;
+    typeMessage: string;
+    trustedBy: string;
+    featureFreeCard: string;
+    featureChatEasy: string;
+    featureLiveInstant: string;
+    bottomNavHome: string;
+    bottomNavFeatures: string;
+    bottomNavTemplates: string;
+    bottomNavPricing: string;
+    bottomNavAccount: string;
   };
   auth: {
     loginTitle: string;
@@ -2102,12 +2112,12 @@ export interface Translations {
 export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
-      badge: "AI Website Builder untuk Bisnis Anda",
-      heroTitle: 'Generate website instan.<br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-sm mt-2 sm:mt-2.5 shadow-sm">Custom tanpa batas.</span>',
+      badge: "AI WEBSITE BUILDER UNTUK BISNIS ANDA",
+      heroTitle: 'Generate website<br />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-5 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, kustomisasi setiap detail — dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
-      ctaPrimary: "Buat Website Sekarang",
-      ctaFloating: "Buat Website Sekarang",
+      ctaPrimary: "Generate Website Saya",
+      ctaFloating: "Generate Website Saya",
       tryFree: "Gratis dicoba",
       chatNotForm: "Chat AI, bukan form",
       activeInMinutes: "Aktif dalam menit",
@@ -2225,6 +2235,16 @@ export const translations: Record<Locale, Translations> = {
       seoBooster: "SEO Booster",
       subdomainFeature: "Subdomain .webjoz.app",
       hostingFeature: "Hosting & SSL gratis",
+      typeMessage: "Ketik pesan Anda...",
+      trustedBy: "Dipercaya oleh 1.000+ pemilik bisnis",
+      featureFreeCard: "Tanpa kartu kredit",
+      featureChatEasy: "Alami & mudah",
+      featureLiveInstant: "Publish instan",
+      bottomNavHome: "Home",
+      bottomNavFeatures: "Features",
+      bottomNavTemplates: "Templates",
+      bottomNavPricing: "Pricing",
+      bottomNavAccount: "Account",
     },
     auth: {
       loginTitle: "Lanjutkan kelola website bisnis Anda.",
@@ -4247,12 +4267,12 @@ export const translations: Record<Locale, Translations> = {
   },
   en: {
     landing: {
-      badge: "AI Website Builder for Your Business",
-      heroTitle: 'Generate websites instantly.<br /><span class="inline-block text-[0.64em] sm:text-[0.72em] font-extrabold tracking-tight bg-white text-black px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-sm mt-2 sm:mt-2.5 shadow-sm">Unlimited customization.</span>',
+      badge: "AI WEBSITE BUILDER FOR YOUR BUSINESS",
+      heroTitle: 'Generate websites<br />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.64em] sm:text-[0.72em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-5 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
       heroSubtitle: "Have a quick chat with AI, choose a visual style, customize every detail — and your business website is ready to publish.",
       heroSubtitleBold: "No coding, no long forms.",
-      ctaPrimary: "Create Website Now",
-      ctaFloating: "Create Website Now",
+      ctaPrimary: "Generate My Website",
+      ctaFloating: "Generate My Website",
       tryFree: "Try for free",
       chatNotForm: "AI Chat, not forms",
       activeInMinutes: "Live in minutes",
@@ -4370,6 +4390,16 @@ export const translations: Record<Locale, Translations> = {
       seoBooster: "SEO Booster",
       subdomainFeature: "Subdomain .webjoz.app",
       hostingFeature: "Free Hosting & SSL",
+      typeMessage: "Type your message...",
+      trustedBy: "Trusted by 1,000+ business owners",
+      featureFreeCard: "No credit card",
+      featureChatEasy: "Natural & easy",
+      featureLiveInstant: "Publish instantly",
+      bottomNavHome: "Home",
+      bottomNavFeatures: "Features",
+      bottomNavTemplates: "Templates",
+      bottomNavPricing: "Pricing",
+      bottomNavAccount: "Account",
     },
     auth: {
       loginTitle: "Continue managing your business website.",
