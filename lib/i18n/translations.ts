@@ -2113,12 +2113,12 @@ export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
       badge: "AI WEBSITE BUILDER UNTUK BISNIS ANDA",
-      heroTitle: 'Generate website<br />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-5 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
+      heroTitle: 'Generate website<br />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.72em] sm:text-[0.78em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Custom tanpa batas.</span>',
       heroSubtitle: "Chat singkat dengan AI, pilih gaya visual, kustomisasi setiap detail — dan website bisnis Anda siap dipublish.",
       heroSubtitleBold: "Tanpa coding, tanpa form panjang.",
       ctaPrimary: "Generate Website Saya",
       ctaFloating: "Generate Website Saya",
-      tryFree: "Gratis dicoba",
+      tryFree: "Gratis",
       chatNotForm: "Chat AI, bukan form",
       activeInMinutes: "Aktif dalam menit",
       howItWorksTitle: 'Dari chat ke website dalam <span class="text-primary">4 langkah mudah</span>',
@@ -4268,7 +4268,7 @@ export const translations: Record<Locale, Translations> = {
   en: {
     landing: {
       badge: "AI WEBSITE BUILDER FOR YOUR BUSINESS",
-      heroTitle: 'Generate websites<br />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.64em] sm:text-[0.72em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-5 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
+      heroTitle: 'Generate websites<br />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Unlimited customization.</span>',
       heroSubtitle: "Have a quick chat with AI, choose a visual style, customize every detail — and your business website is ready to publish.",
       heroSubtitleBold: "No coding, no long forms.",
       ctaPrimary: "Generate My Website",
