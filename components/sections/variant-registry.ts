@@ -88,9 +88,9 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "transparent-overlay", label: "Transparan (Hero Overlay)", description: "Transparan di atas hero, solid setelah scroll." },
   ],
   footer: [
-    { value: "minimal-band", label: "Band Minimal", description: "Brand + tagline + copyright dalam satu baris gelap." },
-    { value: "columns-with-social", label: "Kolom + Sosial Media", description: "Multi-kolom dengan link media sosial." },
-    { value: "newsletter-cta", label: "Newsletter CTA", description: "Ajakan hubungi kami + copyright." },
+    { value: "minimal-band", label: "Band Minimal", description: "Brand + tagline + copyright dalam satu baris gelap bersih." },
+    { value: "columns-with-nav", label: "Kolom + Navigasi Cepat", description: "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas." },
+    { value: "columns-with-social", label: "Kolom + Media Sosial", description: "Multi-kolom dengan tautan akun media sosial bisnis." },
   ],
   blog: [
     { value: "grid", label: "Grid", description: "Kartu dalam 3 kolom rapi." },
