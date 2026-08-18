@@ -76,11 +76,12 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "horizontal-swipe-carousel", label: "Carousel Horizontal", group: "Visual Foto", description: "Card besar yang bisa di-swipe horizontal." },
   ],
   contact: [
-    { value: "classic-split", label: "Klasik Split", description: "Form kiri, info kontak kanan." },
-    { value: "minimal-centered", label: "Minimal Tengah", description: "Kontak terpusat tanpa peta." },
-    { value: "overlay-map", label: "Overlay Peta", description: "Peta penuh dengan info overlay di atas." },
-    { value: "bento-grid", label: "Bento Grid", description: "Kartu info tersusun bento." },
-    { value: "dark-split", label: "Dark Split", description: "Split gelap premium, form + kontak." },
+    { value: "classic-split", label: "Klasik Split", description: "Form pesan di kiri, info kontak & peta di kanan." },
+    { value: "whatsapp-direct", label: "WhatsApp Instan", description: "Fokus tombol aksi WhatsApp cepat + preview pesan & badge online." },
+    { value: "bento-grid", label: "Bento Grid", description: "Kartu modular tersusun rapi gaya bento box modern." },
+    { value: "overlay-map", label: "Overlay Peta", description: "Peta interaktif penuh dengan kartu kontak melayang." },
+    { value: "dark-split", label: "Dark Split", description: "Tema gelap premium kontras tinggi dengan aksen bercahaya." },
+    { value: "minimal-centered", label: "Minimal Tengah", description: "Kartu kontak ringkas terpusat tanpa peta." },
   ],
   header: [
     { value: "left-logo-inline-nav", label: "Logo Kiri + Nav Inline", description: "Logo di kiri, navigasi sejajar di kanan, CTA tombol." },
