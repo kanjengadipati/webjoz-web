@@ -98,6 +98,9 @@ export interface Translations {
     featureCatalogDesc: string;
     featureMenuTitle: string;
     featureMenuDesc: string;
+    navHowItWorks: string;
+    navFeatures: string;
+    navPricing: string;
     navDashboard: string;
     navLogin: string;
     navCreateNew: string;
@@ -2212,6 +2215,9 @@ export const translations: Record<Locale, Translations> = {
       featureCatalogDesc: "Tampilkan koleksi produk atau layanan Anda dengan katalog yang rapi, profesional, dan menarik.",
       featureMenuTitle: "Menu Jualan",
       featureMenuDesc: "Mudahkan pelanggan memesan dengan fitur menu interaktif yang siap digunakan untuk bertransaksi.",
+      navHowItWorks: "Cara Kerja",
+      navFeatures: "Fitur",
+      navPricing: "Harga",
       navDashboard: "Dashboard",
       navLogin: "Login",
       navCreateNew: "Buat Website Baru",
@@ -4371,6 +4377,9 @@ export const translations: Record<Locale, Translations> = {
       featureCatalogDesc: "Showcase your products or services with a neat, professional, and attractive catalog.",
       featureMenuTitle: "Sales Menu",
       featureMenuDesc: "Make it easy for customers to order with an interactive menu ready for transactions.",
+      navHowItWorks: "How It Works",
+      navFeatures: "Features",
+      navPricing: "Pricing",
       navDashboard: "Dashboard",
       navLogin: "Login",
       navCreateNew: "Create New Website",
