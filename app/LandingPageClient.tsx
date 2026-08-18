@@ -343,13 +343,13 @@ export default function LandingPageClient() {
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 pt-6 pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
+      <section className="relative overflow-hidden px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
-        <div className="mx-auto max-w-7xl w-full grid gap-8 lg:gap-12 lg:grid-cols-2 items-center">
-          <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
+        <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
+          <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
             {/* Top pill badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/90 shadow-sm">
+            <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/90 shadow-sm">
               <SparkleIcon className="w-3.5 h-3.5 text-white" />
               <span>{t("landing.badge")}</span>
             </div>
@@ -365,7 +365,7 @@ export default function LandingPageClient() {
             </p>
 
             {/* Primary CTA Button */}
-            <div className="flex flex-col items-center lg:items-start gap-3 w-full pt-1">
+            <div className="flex flex-col items-center lg:items-start gap-2.5 w-full pt-0.5 sm:pt-1">
               <Button
                 onClick={() => startWizard()}
                 size="lg"
@@ -375,62 +375,62 @@ export default function LandingPageClient() {
                 <span>{t("landing.ctaPrimary")}</span>
                 <ArrowRight className="size-4 sm:size-4.5 text-black group-hover:translate-x-1 transition-transform" />
               </Button>
+            </div>
 
-              {/* Sub-features with checkmarks */}
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-white/70 pt-1">
-                <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
-                  <span>{t("landing.tryFree")}</span>
-                </div>
-                <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
-                  <span>{translations.landing.heroSubtitleBold.includes("coding") ? "Tanpa coding" : "No coding"}</span>
-                </div>
-                <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
-                  <span>{translations.landing.heroSubtitleBold.includes("form") ? "Tanpa form panjang" : "No long forms"}</span>
-                </div>
+            {/* Mobile View: Clean Inline Highlights (Non-Card) */}
+            <div className="flex sm:hidden items-center justify-center gap-2.5 py-1.5 px-3 rounded-full border border-white/10 bg-white/[0.03] text-[11px] text-white/80">
+              <div className="flex items-center gap-1">
+                <Zap className="size-3 text-white" />
+                <span>{t("landing.tryFree")}</span>
+              </div>
+              <span className="text-white/25">•</span>
+              <div className="flex items-center gap-1">
+                <SparkleIcon className="size-3 text-white" />
+                <span>{t("landing.chatNotForm")}</span>
+              </div>
+              <span className="text-white/25">•</span>
+              <div className="flex items-center gap-1">
+                <Zap className="size-3 text-white" />
+                <span>{t("landing.activeInMinutes")}</span>
               </div>
             </div>
 
-            {/* 3-Feature Highlights Bar */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-xl pt-2">
-              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <Zap className="size-3.5 sm:size-4 text-white" />
+            {/* Desktop View: 3-Feature Highlights Cards */}
+            <div className="hidden sm:grid grid-cols-3 gap-3 w-full max-w-xl pt-2">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Zap className="size-4 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.tryFree")}</div>
-                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureFreeCard || "No credit card"}</div>
+                  <div className="text-xs font-bold text-white truncate">{t("landing.tryFree")}</div>
+                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureFreeCard || "Tanpa daftar di awal"}</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <SparkleIcon className="size-3.5 sm:size-4 text-white" />
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <SparkleIcon className="size-4 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.chatNotForm")}</div>
-                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureChatEasy || "Natural & easy"}</div>
+                  <div className="text-xs font-bold text-white truncate">{t("landing.chatNotForm")}</div>
+                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureChatEasy || "Tinggal ketik santai"}</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <Zap className="size-3.5 sm:size-4 text-white" />
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Zap className="size-4 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.activeInMinutes")}</div>
-                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureLiveInstant || "Publish instantly"}</div>
+                  <div className="text-xs font-bold text-white truncate">{t("landing.activeInMinutes")}</div>
+                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureLiveInstant || "Preview instan & live"}</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Interactive Mockup */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex flex-col items-center justify-center w-full">
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex flex-col items-center justify-center w-full -mt-2 sm:mt-0">
             <InteractiveMockup />
           </div>
         </div>

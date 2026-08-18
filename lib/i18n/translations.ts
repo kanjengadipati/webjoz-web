@@ -134,6 +134,7 @@ export interface Translations {
     featureFreeCard: string;
     featureChatEasy: string;
     featureLiveInstant: string;
+    heroReassurance: string;
     bottomNavHome: string;
     bottomNavFeatures: string;
     bottomNavCreate: string;
@@ -2125,9 +2126,9 @@ export const translations: Record<Locale, Translations> = {
       heroSubtitleBold: "",
       ctaPrimary: "Generate Website Saya",
       ctaFloating: "Generate Website Saya",
-      tryFree: "Gratis",
+      tryFree: "100% Gratis",
       chatNotForm: "Chat AI, bukan form",
-      activeInMinutes: "Aktif dalam menit",
+      activeInMinutes: "Langsung Jadi",
       howItWorksTitle: 'Dari chat ke website dalam <span class="text-primary">4 langkah mudah</span>',
       howItWorksSubtitle: "CARA KERJANYA",
       howItWorksCta: "Coba Sekarang — Gratis",
@@ -2247,9 +2248,10 @@ export const translations: Record<Locale, Translations> = {
       hostingFeature: "Hosting & SSL gratis",
       typeMessage: "Ketik pesan Anda...",
       trustedBy: "Dipercaya oleh 1.000+ pemilik bisnis",
-      featureFreeCard: "Tanpa kartu kredit",
-      featureChatEasy: "Alami & mudah",
-      featureLiveInstant: "Publish instan",
+      featureFreeCard: "Tanpa daftar di awal",
+      featureChatEasy: "Tinggal ketik santai",
+      featureLiveInstant: "Preview instan & live",
+      heroReassurance: "Langsung coba tanpa daftar • 100% Gratis • Preview instan",
       bottomNavHome: "Beranda",
       bottomNavFeatures: "Fitur",
       bottomNavCreate: "Buat",
@@ -4287,9 +4289,9 @@ export const translations: Record<Locale, Translations> = {
       heroSubtitleBold: "",
       ctaPrimary: "Generate My Website",
       ctaFloating: "Generate My Website",
-      tryFree: "Try for free",
+      tryFree: "100% Free",
       chatNotForm: "AI Chat, not forms",
-      activeInMinutes: "Live in minutes",
+      activeInMinutes: "Live in Minutes",
       howItWorksTitle: 'From chat to website in <span class="text-primary">4 easy steps</span>',
       howItWorksSubtitle: "HOW IT WORKS",
       howItWorksCta: "Try Now — Free",
@@ -4409,9 +4411,10 @@ export const translations: Record<Locale, Translations> = {
       hostingFeature: "Free Hosting & SSL",
       typeMessage: "Type your message...",
       trustedBy: "Trusted by 1,000+ business owners",
-      featureFreeCard: "No credit card",
-      featureChatEasy: "Natural & easy",
-      featureLiveInstant: "Publish instantly",
+      featureFreeCard: "No sign-up upfront",
+      featureChatEasy: "Natural & effortless",
+      featureLiveInstant: "Live preview in 60s",
+      heroReassurance: "Try instantly without signing up • 100% Free • Live preview",
       bottomNavHome: "Home",
       bottomNavFeatures: "Features",
       bottomNavCreate: "Create",
