@@ -2,42 +2,32 @@
 
 import { useI18n } from "@/lib/i18n/context";
 
-const OPTIONS = [
-  { code: "id" as const, label: "ID", href: "/" },
-  { code: "en" as const, label: "EN", href: "/en" },
-];
-
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useI18n();
 
+  const toggleLanguage = () => {
+    const nextLocale = locale === "id" ? "en" : "id";
+    setLocale(nextLocale);
+    try {
+      document.cookie = `webjoz_locale=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      localStorage.setItem("webjoz_locale", nextLocale);
+    } catch {}
+    if (typeof window !== "undefined") {
+      window.location.href = nextLocale === "en" ? "/en" : "/";
+    }
+  };
+
   return (
-    <div className={`inline-flex items-center rounded-full border border-border/60 bg-background/80 p-0.5 text-xs font-semibold backdrop-blur ${className}`}>
-      {OPTIONS.map((opt) => (
-        <button
-          key={opt.code}
-          type="button"
-          aria-label={`Switch language to ${opt.label}`}
-          aria-pressed={locale === opt.code}
-          onClick={() => {
-            if (locale === opt.code) return;
-            setLocale(opt.code);
-            try {
-              document.cookie = `webjoz_locale=${opt.code}; path=/; max-age=31536000; SameSite=Lax`;
-              localStorage.setItem("webjoz_locale", opt.code);
-            } catch {}
-            if (typeof window !== "undefined") {
-              window.location.href = opt.href;
-            }
-          }}
-          className={`rounded-full px-2.5 py-1 transition cursor-pointer ${
-            locale === opt.code
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      onClick={toggleLanguage}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-all cursor-pointer backdrop-blur-md shadow-xs ${className}`}
+      aria-label={`Switch language from ${locale.toUpperCase()}`}
+    >
+      <span>{locale.toUpperCase()}</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </button>
   );
 }

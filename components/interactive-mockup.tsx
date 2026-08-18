@@ -631,227 +631,167 @@ function LiveAdaptiveSkeleton({
   );
 }
 
-/* ── PhoneMockup: mobile-first hero showcase inside a phone frame ───────── */
-function PhoneMockup({ sample, token }: HeroItem) {
+/* ── MobileChatCard: Native mobile chat card matching screenshot design ── */
+function MobileChatCard({ sample }: HeroItem) {
   const { t, translations } = useI18n();
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
   const flowStep = useFlowStep();
-
   const showcaseItem = sample;
-  const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
-
-  const applyTilt = (clientX: number, clientY: number) => {
-    if (!cardRef.current) return;
-    const box = cardRef.current.getBoundingClientRect();
-    const x = clientX - box.left - box.width / 2;
-    const y = clientY - box.top - box.height / 2;
-    const maxR = 10;
-    setRotate({ x: -(y / (box.height / 2)) * maxR, y: (x / (box.width / 2)) * maxR });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => applyTilt(e.clientX, e.clientY);
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const touch = e.touches[0];
-    if (touch) applyTilt(touch.clientX, touch.clientY);
-  };
-  const resetTilt = () => { setIsHovered(false); setRotate({ x: 0, y: 0 }); };
 
   const visible = (minStep: number) =>
-    flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none";
+    flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none";
 
-  const generating = flowStep === STEP_GENERATING;
+  const MOOD_OPTIONS = [
+    {
+      id: "modern",
+      name: "Modern & Clean",
+      img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=300&auto=format&fit=crop&q=75",
+    },
+    {
+      id: "minimal",
+      name: "Minimal",
+      img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300&auto=format&fit=crop&q=75",
+    },
+    {
+      id: "natural",
+      name: "Natural",
+      img: "https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=300&auto=format&fit=crop&q=75",
+    },
+    {
+      id: "elegant",
+      name: "Elegant",
+      img: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=300&auto=format&fit=crop&q=75",
+    },
+  ];
 
   return (
-    <div
-      className="relative flex w-full justify-center"
-      style={{ perspective: "1100px" }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={resetTilt}
-      onMouseMove={handleMouseMove}
-      onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={resetTilt}
-      onTouchMove={handleTouchMove}
-    >
-      {/* ── Outer glow halo ─────────────────────────────────────────────── */}
-      <div
-        className="pointer-events-none absolute -inset-6 rounded-[3rem] opacity-0 transition-opacity duration-500"
-        style={{
-          background: "radial-gradient(ellipse at center, color-mix(in srgb,var(--primary) 25%,transparent), transparent 70%)",
-          opacity: isHovered ? 1 : 0,
-          filter: "blur(22px)",
-        }}
-      />
-
-      {/* ── Phone frame ─────────────────────────────────────────────────── */}
-      <div
-        ref={cardRef}
-        style={{
-          transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
-          transformStyle: "preserve-3d",
-          transition: isHovered ? "transform 0.08s linear" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
-        className="relative w-[282px] sm:w-[310px] rounded-[2.6rem] border border-white/15 bg-[#0b0c10] p-2 shadow-[0_45px_130px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
-      >
-        {/* inner-top highlight */}
-        <div className="pointer-events-none absolute inset-x-6 top-0 h-px rounded-t-[2.6rem] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-        {/* ── Screen ─────────────────────────────────────────────────────── */}
-        <div className="relative aspect-[9/19.2] overflow-hidden rounded-[2.1rem] bg-[#0c0c0e]">
-          {/* Dynamic island */}
-          <div className="absolute left-1/2 top-2 z-40 h-[22px] w-20 -translate-x-1/2 rounded-full border border-white/10 bg-black" />
-
-          {/* ── Chat screen (steps 0-7) ── */}
-          <div
-            className={`absolute inset-0 flex flex-col gap-2.5 px-4 pb-4 pt-12 transition-opacity duration-300 ${
-              flowStep >= STEP_PREVIEW ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}
-          >
-            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_GREET)}`}>
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-                <SparkleIcon className="h-[15px] w-[15px]" />
-              </div>
-              <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border/50 bg-card/70 px-3 py-2 text-[11px] text-foreground shadow-md backdrop-blur-sm">
-                {t("landing.mockupGreeting")}
-                {flowStep === STEP_GREET && <span className="ml-1 inline-block h-2.5 w-1 animate-pulse rounded-sm bg-primary" />}
-              </div>
-            </div>
-
-            <div className={`flex justify-end transition-all duration-500 ${visible(STEP_NAME)}`}>
-              <div
-                className="max-w-[80%] rounded-2xl rounded-br-sm px-3 py-2 text-[11px] font-medium shadow-md"
-                style={{
-                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                  color: "#ffffff",
-                  boxShadow: "0 4px 16px rgba(99,102,241,0.35)",
-                }}
-              >
-                {showcaseItem.businessName}
-              </div>
-            </div>
-
-            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-                <SparkleIcon className="h-[15px] w-[15px]" />
-              </div>
-              <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border/50 bg-card/70 px-3 py-2 text-[11px] text-foreground shadow-md backdrop-blur-sm">
-                {t("landing.mockupPickType")}
-              </div>
-            </div>
-
-            <div className={`ml-8 flex flex-wrap gap-1.5 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
-              {translations.landing.mockupChips.map((chip, i) => {
-                const sel = i === 0 && flowStep >= STEP_PICK_TYPE;
-                return (
-                  <div
-                    key={chip}
-                    className={`rounded-full border px-2.5 py-0.5 text-[9px] font-semibold transition-all duration-400 ${
-                      sel ? "scale-105" : "bg-card/60 border-border/40 text-muted-foreground"
-                    }`}
-                    style={sel ? {
-                      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                      borderColor: "rgba(99,102,241,0.5)",
-                      color: "#ffffff",
-                      boxShadow: "0 4px 14px rgba(99,102,241,0.3)",
-                    } : {}}
-                  >
-                    {chip}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className={`flex items-end gap-2 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-                <SparkleIcon className="h-[15px] w-[15px]" />
-              </div>
-              <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border/50 bg-card/70 px-3 py-2 text-[11px] text-foreground shadow-md backdrop-blur-sm">
-                {t("landing.mockupPickMood")}
-              </div>
-            </div>
-
-            <div className={`ml-8 flex flex-wrap gap-1.5 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
-              {translations.landing.mockupMoodChips.map((chip, i) => {
-                const sel = i === 0 && flowStep >= STEP_PICK_MOOD;
-                return (
-                  <div
-                    key={chip}
-                    className={`rounded-full border px-2.5 py-0.5 text-[9px] font-semibold transition-all duration-400 ${
-                      sel ? "scale-105" : "bg-card/60 border-border/40 text-muted-foreground"
-                    }`}
-                    style={sel ? {
-                      background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-                      borderColor: "rgba(139,92,246,0.5)",
-                      color: "#ffffff",
-                      boxShadow: "0 4px 14px rgba(139,92,246,0.3)",
-                    } : {}}
-                  >
-                    {chip}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className={`ml-8 transition-all duration-500 ${visible(STEP_PICK_MOOD)}`}>
-              <div className="h-1.5 w-28 overflow-hidden rounded-full bg-muted/50 shadow-inner">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: generating ? "85%" : flowStep >= STEP_PREVIEW ? "100%" : "30%",
-                    background: "linear-gradient(90deg, var(--primary), color-mix(in srgb,var(--primary) 60%,white))",
-                    boxShadow: "0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)",
-                    transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  }}
-                />
-              </div>
-              <p className="mt-1 text-[9px] font-medium text-muted-foreground">
-                {generating ? t("landing.mockupGenerating") : flowStep >= STEP_PREVIEW ? t("landing.mockupReady") : t("landing.mockupStep")}
-              </p>
+    <div className="w-full max-w-[420px] mx-auto rounded-[2rem] border border-white/10 bg-[#0e0f14]/95 p-4 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+      {/* ── Card Header ── */}
+      <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/5">
+        <div className="flex items-center gap-2.5">
+          <div className="size-8 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-white shadow-sm">
+            <SparkleIcon className="size-4 text-white" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-white tracking-tight">AI Chat</div>
+            <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Online</span>
             </div>
           </div>
+        </div>
+        <SparkleIcon className="size-4 text-white/40" />
+      </div>
 
-          {/* ── Site screen ── */}
-          {TemplateComponent && (
-            <div className="absolute inset-0">
-              <RealPreviewPanel
-                TemplateComponent={TemplateComponent}
-                content={showcaseItem.content}
-                designToken={token}
-                flowStep={flowStep}
-                baseWidth={390}
-              />
+      {/* ── Chat Messages ── */}
+      <div className="space-y-3">
+        {/* Msg 1: Bot Greeting */}
+        <div className={`flex items-start gap-2.5 transition-all duration-400 ${visible(STEP_GREET)}`}>
+          <div className="size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
+            <SparkleIcon className="size-3.5 text-white" />
+          </div>
+          <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3.5 py-2.5 text-xs text-white/90 shadow-sm leading-relaxed">
+            {t("landing.mockupGreeting")}
+            {flowStep === STEP_GREET && (
+              <span className="ml-1.5 inline-block w-1 h-3 bg-white animate-pulse rounded-xs" />
+            )}
+          </div>
+        </div>
 
-              {/* Domain pill */}
-              <div
-                className="absolute left-1/2 top-9 z-30 -translate-x-1/2 transition-opacity duration-300"
-                style={{ opacity: flowStep >= STEP_PREVIEW ? 1 : 0 }}
-              >
-                <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/70 px-2.5 py-1 font-mono text-[8px] text-white/70 backdrop-blur-md">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {domainSlug(showcaseItem.businessName)}.webjoz.com
-                </div>
+        {/* Msg 2: User Business Name */}
+        <div className={`flex justify-end transition-all duration-400 ${visible(STEP_NAME)}`}>
+          <div className="rounded-2xl rounded-br-xs bg-white text-black font-semibold px-4 py-2 text-xs shadow-md">
+            {showcaseItem.businessName}
+          </div>
+        </div>
+
+        {/* Msg 3: Bot Ask Type */}
+        <div className={`flex items-start gap-2.5 transition-all duration-400 ${visible(STEP_ASK_TYPE)}`}>
+          <div className="size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
+            <SparkleIcon className="size-3.5 text-white" />
+          </div>
+          <div className="space-y-2.5 flex-1 min-w-0">
+            <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3.5 py-2.5 text-xs text-white/90 shadow-sm">
+              {t("landing.mockupPickType")}
+            </div>
+
+            {/* Chips */}
+            <div className="flex flex-wrap gap-1.5">
+              <div className={`rounded-full px-3.5 py-1.5 text-[11px] font-semibold flex items-center gap-1.5 transition-all duration-300 ${
+                flowStep >= STEP_PICK_TYPE
+                  ? "bg-white text-black shadow-md scale-[1.02]"
+                  : "bg-white/5 border border-white/10 text-white/80"
+              }`}>
+                <span>☕</span>
+                <span>{translations.landing.mockupChips[0] || "Food & Beverage"}</span>
               </div>
-
-              {/* Success bar */}
-              <div
-                className="absolute bottom-3 left-2.5 right-2.5 z-30 flex h-8 items-center rounded-xl px-3"
-                style={{
-                  transform: flowStep >= STEP_SUCCESS ? "translateZ(22px)" : "translateZ(0px) translateY(4px)",
-                  opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
-                  transition: "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s",
-                  background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
-                  border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
-                  boxShadow: "0 4px 20px color-mix(in srgb,#22c55e 12%,transparent)",
-                }}
-              >
-                <span className="flex items-center gap-2 text-[9px] font-semibold text-emerald-400">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_6px_#22c55e]" />
-                  ✓ Website siap dipublikasikan!
-                </span>
+              <div className="rounded-full px-3.5 py-1.5 text-[11px] font-medium bg-white/5 border border-white/10 text-white/60 flex items-center gap-1.5">
+                <span>🛠</span>
+                <span>{translations.landing.mockupChips[1] || "Services"}</span>
+              </div>
+              <div className="rounded-full px-3.5 py-1.5 text-[11px] font-medium bg-white/5 border border-white/10 text-white/60 flex items-center gap-1.5">
+                <span>🛍</span>
+                <span>{translations.landing.mockupChips[2] || "Products"}</span>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Msg 4: Bot Ask Mood */}
+        <div className={`flex items-start gap-2.5 transition-all duration-400 ${visible(STEP_ASK_MOOD)}`}>
+          <div className="size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
+            <SparkleIcon className="size-3.5 text-white" />
+          </div>
+          <div className="space-y-2.5 flex-1 min-w-0">
+            <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3.5 py-2.5 text-xs text-white/90 shadow-sm">
+              {t("landing.mockupPickMood")}
+            </div>
+
+            {/* 4 Mood Cards Grid */}
+            <div className="grid grid-cols-4 gap-1.5 pt-1">
+              {MOOD_OPTIONS.map((mood, idx) => {
+                const isSelected = idx === 0 && flowStep >= STEP_PICK_MOOD;
+                return (
+                  <div
+                    key={mood.id}
+                    className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-end aspect-[3/4] p-1.5 ${
+                      isSelected
+                        ? "border-white ring-2 ring-white/20 shadow-lg"
+                        : "border-white/10 opacity-70"
+                    }`}
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.85) 100%), url(${mood.img})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    {isSelected && (
+                      <div className="absolute top-1.5 right-1.5 size-4 rounded-full bg-white text-black flex items-center justify-center shadow-md">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    )}
+                    <span className="text-[9px] font-bold text-white text-center leading-tight">
+                      {mood.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Input Bar ── */}
+      <div className="mt-4 pt-2 flex items-center justify-between rounded-full bg-white/[0.04] border border-white/10 p-1.5 pl-4">
+        <span className="text-xs text-white/40 font-normal">
+          {translations.landing.typeMessage || "Type your message..."}
+        </span>
+        <div className="size-8 rounded-full bg-white text-black flex items-center justify-center shadow-md cursor-pointer hover:bg-slate-200 transition">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="translate-x-0.5">
+            <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -1177,9 +1117,9 @@ export function InteractiveMockup() {
       `}</style>
       </div>
 
-      {/* ── Mobile: phone mockup (desktop uses browser mockup above) ───── */}
-      <div className="md:hidden">
-        <PhoneMockup sample={sample} token={token} />
+      {/* ── Mobile: sleek native chat card (desktop uses 3D browser mockup above) ───── */}
+      <div className="md:hidden w-full flex justify-center">
+        <MobileChatCard sample={sample} token={token} />
       </div>
     </>
   );

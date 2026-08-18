@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { PricingCards } from "@/components/pricing-cards";
 import { prefillForLibraryBusinessType, encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
@@ -283,22 +283,19 @@ export default function LandingPageClient() {
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#080808]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo2.png"
               alt="Webjoz"
               width={120}
               height={72}
-              className="h-9 w-auto object-contain"
+              className="h-8 sm:h-9 w-auto object-contain"
               priority
             />
-            <span className="hidden sm:block text-sm font-semibold tracking-tight text-foreground">
-              Webjoz
-            </span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSwitcher className="hidden sm:inline-flex" />
+            <LanguageSwitcher />
             {authReady && (
               isLoggedIn ? (
                 <Link
@@ -316,7 +313,7 @@ export default function LandingPageClient() {
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="rounded-full bg-white text-black font-bold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
+            <Button onClick={() => startWizard()} className="hidden sm:inline-flex rounded-full bg-white text-black font-bold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
               {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
             </Button>
           </div>
@@ -324,58 +321,121 @@ export default function LandingPageClient() {
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-10 flex items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
+      <section className="relative overflow-hidden px-4 pt-6 pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
-        <div className="mx-auto max-w-7xl w-full grid gap-12 lg:grid-cols-2 items-center">
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
-            <Badge
-              variant="outline"
-              className="border-amber-500/30 bg-amber-500/10 text-amber-300 shadow-sm px-3.5 py-1.5 w-fit rounded-full text-xs font-semibold backdrop-blur-md"
-            >
-              <span className="flex h-2 w-2 rounded-full bg-amber-400 mr-2 shadow-[0_0_8px_#fbbf24] animate-pulse" />
-              {t("landing.badge")}
-            </Badge>
+        <div className="mx-auto max-w-7xl w-full grid gap-8 lg:gap-12 lg:grid-cols-2 items-center">
+          <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
+            {/* Top pill badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/90 shadow-sm">
+              <SparkleIcon className="w-3.5 h-3.5 text-white" />
+              <span>{t("landing.badge")}</span>
+            </div>
 
-            <h1 className="text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl w-full text-foreground">
+            {/* Main headline */}
+            <h1 className="text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl w-full text-foreground">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
             </h1>
 
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl">
-              {t("landing.heroSubtitle")}{" "}
-              <strong className="text-foreground font-semibold">{t("landing.heroSubtitleBold")}</strong>
-            </p>
+            {/* Subtitle */}
+            <div className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl space-y-1">
+              <p>{t("landing.heroSubtitle")}</p>
+              <p className="text-foreground font-bold">{t("landing.heroSubtitleBold")}</p>
+            </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 w-full">
+            {/* Primary CTA Button */}
+            <div className="flex flex-col items-center lg:items-start gap-3 w-full pt-1">
               <Button
                 onClick={() => startWizard()}
                 size="lg"
-                className="w-full sm:w-auto rounded-full bg-white text-black font-bold px-10 py-6 text-base shadow-xl hover:bg-slate-200 transition-all active:scale-95 cursor-pointer"
+                className="w-full sm:w-auto rounded-2xl sm:rounded-full bg-white text-black font-extrabold px-8 py-6 text-base sm:text-lg shadow-[0_10px_35px_rgba(255,255,255,0.18)] hover:bg-slate-200 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-3 group"
               >
-                {t("landing.ctaPrimary")}
+                <SparkleIcon className="size-4.5 text-black" />
+                <span>{t("landing.ctaPrimary")}</span>
+                <ArrowRight className="size-4.5 text-black group-hover:translate-x-1 transition-transform" />
               </Button>
+
+              {/* Sub-features with checkmarks */}
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-white/70 pt-1">
+                <div className="flex items-center gap-1.5">
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
+                  <span>{t("landing.tryFree")}</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
+                  <span>Tanpa coding</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
+                  <span>Tanpa form panjang</span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1 w-full text-xs">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                <span className="font-medium tracking-tight">{t("landing.tryFree")}</span>
+            {/* 3-Feature Highlights Bar */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-xl pt-2">
+              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Zap className="size-3.5 sm:size-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.tryFree")}</div>
+                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureFreeCard || "No credit card"}</div>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
-                <SparkleIcon className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-medium tracking-tight">{t("landing.chatNotForm")}</span>
+
+              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <SparkleIcon className="size-3.5 sm:size-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.chatNotForm")}</div>
+                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureChatEasy || "Natural & easy"}</div>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 backdrop-blur-md text-slate-300 shadow-sm transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-amber-400">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span className="font-medium tracking-tight">{t("landing.activeInMinutes")}</span>
+
+              <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
+                <div className="size-7 sm:size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Zap className="size-3.5 sm:size-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11px] sm:text-xs font-bold text-white truncate">{t("landing.activeInMinutes")}</div>
+                  <div className="text-[9px] sm:text-[10px] text-white/50 truncate">{translations.landing.featureLiveInstant || "Publish instantly"}</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex items-center justify-center">
+          {/* Interactive Mockup + Social Proof */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex flex-col items-center justify-center w-full">
             <InteractiveMockup />
+
+            {/* Social Proof */}
+            <div className="flex items-center justify-center gap-2.5 pt-6 pb-2 text-xs text-white/80">
+              <div className="flex -space-x-2 items-center">
+                {[
+                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop&q=80",
+                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop&q=80",
+                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&fit=crop&q=80",
+                  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop&q=80",
+                ].map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt="User"
+                    className="size-6 sm:size-7 rounded-full border-2 border-[#080808] object-cover"
+                  />
+                ))}
+              </div>
+              <div className="flex items-center text-white tracking-widest text-xs">
+                ★★★★★
+              </div>
+              <span className="text-[11px] sm:text-xs text-white/70 font-medium">
+                {translations.landing.trustedBy || "Trusted by 1,000+ business owners"}
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -685,18 +745,31 @@ export default function LandingPageClient() {
         </div>
       </footer>
 
-      {/* ── Floating CTA (mobile) ──────────────────────────────────────────── */}
-      <div className={`fixed bottom-4 left-4 right-4 z-40 md:hidden transition-all duration-300 transform ${showFloatingCta ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"}`}>
-        <div className="flex items-center justify-end mb-2">
-          <LanguageSwitcher />
+      {/* ── Sticky Mobile Bottom Navigation Bar ────────────────────────────── */}
+      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-3 py-2">
+        <div className="flex items-center justify-around">
+          <Link href="/" className="flex flex-col items-center gap-1 text-white font-semibold text-[10px]">
+            <Home className="size-5 text-white" />
+            <span>{translations.landing.bottomNavHome || "Home"}</span>
+          </Link>
+          <a href="#features" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
+            <SparkleIcon className="size-5 text-white/55" />
+            <span>{translations.landing.bottomNavFeatures || "Features"}</span>
+          </a>
+          <Link href="/template-gallery" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
+            <LayoutGrid className="size-5 text-white/55" />
+            <span>{translations.landing.bottomNavTemplates || "Templates"}</span>
+          </Link>
+          <a href="#pricing" className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
+            <Tag className="size-5 text-white/55" />
+            <span>{translations.landing.bottomNavPricing || "Pricing"}</span>
+          </a>
+          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-1 text-white/55 hover:text-white transition text-[10px]">
+            <UserCircle className="size-5 text-white/55" />
+            <span>{translations.landing.bottomNavAccount || "Account"}</span>
+          </Link>
         </div>
-        <Button
-          onClick={() => startWizard()}
-          className="w-full rounded-full bg-white text-black font-bold py-4 text-sm shadow-2xl hover:bg-slate-200 transition-all cursor-pointer"
-        >
-          {t("landing.ctaFloating")}
-        </Button>
-      </div>
+      </nav>
     </main>
   );
 }
