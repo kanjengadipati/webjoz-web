@@ -294,6 +294,28 @@ export default function LandingPageClient() {
             />
           </Link>
 
+          {/* ── Desktop Center Nav Links ── */}
+          <nav className="hidden md:flex items-center gap-1">
+            <a
+              href="#how-it-works"
+              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+            >
+              {t("landing.navHowItWorks")}
+            </a>
+            <a
+              href="#features"
+              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+            >
+              {t("landing.navFeatures")}
+            </a>
+            <a
+              href="#pricing"
+              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+            >
+              {t("landing.navPricing")}
+            </a>
+          </nav>
+
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher />
             {authReady && (
