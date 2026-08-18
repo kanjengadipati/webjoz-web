@@ -333,7 +333,7 @@ export default function LandingPageClient() {
             </div>
 
             {/* Main headline */}
-            <h1 className="text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl w-full text-foreground">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight w-full text-foreground">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
             </h1>
 
@@ -358,18 +358,18 @@ export default function LandingPageClient() {
               {/* Sub-features with checkmarks */}
               <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-white/70 pt-1">
                 <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
                   <span>{t("landing.tryFree")}</span>
                 </div>
                 <span className="text-white/30">•</span>
                 <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
-                  <span>Tanpa coding</span>
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
+                  <span>{translations.landing.heroSubtitleBold.includes("coding") ? "Tanpa coding" : "No coding"}</span>
                 </div>
                 <span className="text-white/30">•</span>
                 <div className="flex items-center gap-1.5">
-                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white">✓</div>
-                  <span>Tanpa form panjang</span>
+                  <div className="size-3.5 rounded-full border border-white/30 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
+                  <span>{translations.landing.heroSubtitleBold.includes("form") ? "Tanpa form panjang" : "No long forms"}</span>
                 </div>
               </div>
             </div>
