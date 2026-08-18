@@ -2093,6 +2093,10 @@ export interface Translations {
         elegantLuxuryDesc: string;
         playfulFun: string;
         playfulFunDesc: string;
+        retro: string;
+        retroDesc: string;
+        futuristic: string;
+        futuristicDesc: string;
         minimalistDark: string;
         minimalistDarkDesc: string;
       };
@@ -4208,18 +4212,22 @@ export const translations: Record<Locale, Translations> = {
           companyDesc: "Corporate",
         },
         moods: {
-          modernClean: "Modern & Clean",
-          modernCleanDesc: "Bersih, rapi, profesional",
-          warmVintage: "Warm & Vintage",
-          warmVintageDesc: "Hangat, klasik, berkarakter",
-          boldEnergetic: "Bold & Energetic",
-          boldEnergeticDesc: "Kontras tinggi, penuh energi",
-          elegantLuxury: "Elegant & Luxury",
-          elegantLuxuryDesc: "Mewah, eksklusif, anggun",
-          playfulFun: "Playful & Fun",
-          playfulFunDesc: "Ceria, ramah, berwarna",
-          minimalistDark: "Minimalist Dark",
-          minimalistDarkDesc: "Gelap, futuristik, modern",
+          modernClean: "Modern & Bersih",
+          modernCleanDesc: "Bersih, rapi, dan profesional",
+          warmVintage: "Hangat & Alami",
+          warmVintageDesc: "Hangat, alami, dan bersahaja",
+          boldEnergetic: "Tegas & Berenergi",
+          boldEnergeticDesc: "Kontras tinggi, tegas, dan bersemangat",
+          elegantLuxury: "Elegan & Mewah",
+          elegantLuxuryDesc: "Mewah, eksklusif, dan anggun",
+          playfulFun: "Ceria & Berwarna",
+          playfulFunDesc: "Ceria, ramah, dan penuh warna",
+          retro: "Klasik & Retro",
+          retroDesc: "Klasik, nostalgia, dan berkarakter",
+          futuristic: "Futuristik & Modern",
+          futuristicDesc: "Modern, teknologi, dan futuristik",
+          minimalistDark: "Minimalis Gelap",
+          minimalistDarkDesc: "Gelap, futuristik, dan modern",
         },
         subtypes: {
           "Restoran": "Restoran",
@@ -6365,14 +6373,18 @@ export const translations: Record<Locale, Translations> = {
         moods: {
           modernClean: "Modern & Clean",
           modernCleanDesc: "Clean, tidy, professional",
-          warmVintage: "Warm & Vintage",
-          warmVintageDesc: "Warm, classic, characterful",
+          warmVintage: "Warm & Natural",
+          warmVintageDesc: "Warm, natural, and cozy",
           boldEnergetic: "Bold & Energetic",
           boldEnergeticDesc: "High contrast, energetic",
           elegantLuxury: "Elegant & Luxury",
           elegantLuxuryDesc: "Luxurious, exclusive, graceful",
           playfulFun: "Playful & Fun",
           playfulFunDesc: "Cheerful, friendly, colorful",
+          retro: "Retro & Vintage",
+          retroDesc: "Classic, nostalgic, and unique",
+          futuristic: "Futuristic & Tech",
+          futuristicDesc: "Modern, high-tech, and futuristic",
           minimalistDark: "Minimalist Dark",
           minimalistDarkDesc: "Dark, futuristic, modern",
         },
