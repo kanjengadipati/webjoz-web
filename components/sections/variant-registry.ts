@@ -18,6 +18,8 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
   ],
   benefits: [
     { value: "grid", label: "Grid", description: "Kartu ikon tersusun grid rapi." },
+    { value: "featured-grid", label: "Grid Highlight", description: "Kartu pertama berukuran besar sebagai sorotan utama, sisanya dalam grid rapi." },
+    { value: "icon-row", label: "Baris Ikon Horizontal", description: "Ikon lingkaran besar terpusat berjajar horizontal dengan garis pemisah." },
     { value: "stat-grid", label: "Grid Statistik", description: "Grid dengan angka/statistik di tiap item." },
     { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
     { value: "comparison-table", label: "Tabel Perbandingan", description: "Perbandingan A vs B dalam tabel (membutuhkan comparison)." },
