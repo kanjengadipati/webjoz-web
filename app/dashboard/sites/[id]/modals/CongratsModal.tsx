@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Rocket, Globe, Copy, Check } from "lucide-react";
+import Link from "next/link";
+import { Rocket, Globe, Copy, Check, ExternalLink } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
@@ -11,6 +12,7 @@ export interface CongratsModalProps {
     name: string;
     subdomain: string;
   };
+  siteId?: number;
   onClose: () => void;
   onContinueEditing?: () => void;
   /** Pre-computed display domain, e.g. "mysite.webjoz.com" */
@@ -19,7 +21,7 @@ export interface CongratsModalProps {
   siteUrl?: string;
 }
 
-export default function CongratsModal({ site, onClose, onContinueEditing, displayDomain: displayDomainProp, siteUrl: siteUrlProp }: CongratsModalProps) {
+export default function CongratsModal({ site, siteId, onClose, onContinueEditing, displayDomain: displayDomainProp, siteUrl: siteUrlProp }: CongratsModalProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
@@ -114,6 +116,25 @@ export default function CongratsModal({ site, onClose, onContinueEditing, displa
             {t("dashboard.sites.checkTip")}
           </p>
         </div>
+
+        {/* Custom Domain CTA */}
+        {siteId && (
+          <Link
+            href={`/dashboard/sites/${siteId}/domain`}
+            onClick={onClose}
+            className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-primary/25 hover:border-primary/50 hover:bg-primary/[0.06] rounded-2xl px-5 py-3.5 max-w-md mx-auto w-full transition-all group"
+          >
+            <div className="flex flex-col gap-0.5 text-left">
+              <span className="text-[13px] font-semibold text-primary group-hover:text-primary/90">
+                {t("dashboard.sites.customDomainLinkLabel")}
+              </span>
+              <span className="text-[11px] text-[#9b9ba5] leading-relaxed">
+                {t("dashboard.sites.customDomainLinkHint")}
+              </span>
+            </div>
+            <ExternalLink className="w-4 h-4 text-primary/60 group-hover:text-primary shrink-0 transition-colors" />
+          </Link>
+        )}
 
         {/* CTA Buttons */}
         <div className="flex gap-3 max-w-sm mx-auto pt-2">

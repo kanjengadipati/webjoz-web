@@ -520,6 +520,7 @@ export interface Translations {
       linkSeo: string;
       linkIntegrations: string;
       linkTestimonials: string;
+      linkCustomDomain: string;
       loadMore: string;
       congratsTitle: string;
       congratsHeading: string;
@@ -529,6 +530,8 @@ export interface Translations {
       checkTip: string;
       done: string;
       continueEditing: string;
+      customDomainLinkLabel: string;
+      customDomainLinkHint: string;
     };
     leads: {
       loadFailed: string;
@@ -2637,6 +2640,7 @@ export const translations: Record<Locale, Translations> = {
         linkSeo: "SEO",
         linkIntegrations: "Integrasi",
         linkTestimonials: "Testimoni",
+        linkCustomDomain: "Custom Domain",
         loadMore: "Muat Lebih Banyak",
         congratsTitle: "🎉 Selamat! Website Anda Telah Live",
         congratsHeading: "Website Anda Resmi Mengudara!",
@@ -2646,6 +2650,8 @@ export const translations: Record<Locale, Translations> = {
         checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
         continueEditing: "Lanjut Edit",
+        customDomainLinkLabel: "🔗 Hubungkan Custom Domain",
+        customDomainLinkHint: "Ingin pakai domain sendiri? Hubungkan domain kustom Anda ke website ini.",
       },
       leads: {
         loadFailed: "Gagal memuat inbox leads",
@@ -4800,6 +4806,7 @@ export const translations: Record<Locale, Translations> = {
         linkSeo: "SEO",
         linkIntegrations: "Integrations",
         linkTestimonials: "Testimonials",
+        linkCustomDomain: "Custom Domain",
         loadMore: "Load More",
         congratsTitle: "🎉 Congratulations! Your Website Is Live",
         congratsHeading: "Your Website Is Officially Live!",
@@ -4809,6 +4816,8 @@ export const translations: Record<Locale, Translations> = {
         checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
         continueEditing: "Continue Editing",
+        customDomainLinkLabel: "🔗 Connect Custom Domain",
+        customDomainLinkHint: "Want to use your own domain? Connect a custom domain to this website.",
       },
       leads: {
         loadFailed: "Failed to load leads inbox",
