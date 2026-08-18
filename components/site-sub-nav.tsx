@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard, SearchIcon } from "lucide-react";
+import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard, SearchIcon, Globe } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 interface SiteSubNavProps {
@@ -33,6 +33,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
     { href: "/blog",         label: t("dashboard.sites.linkBlog"),   icon: FileText },
     { href: "/integrations", label: t("dashboard.sites.linkIntegrations"), icon: Code },
     { href: "/testimonials", label: t("dashboard.sites.linkTestimonials"), icon: Star },
+    { href: "/domain",       label: t("dashboard.sites.linkCustomDomain"), icon: Globe },
   ] as const;
 
   const allTabs = [

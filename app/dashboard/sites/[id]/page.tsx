@@ -3224,6 +3224,7 @@ export default function SiteEditorPage() {
         {showCongrats && siteDetails && (
           <CongratsModal
             site={siteDetails}
+            siteId={siteId ?? undefined}
             onContinueEditing={() => setShowCongrats(false)}
             onClose={() => {
               setShowCongrats(false);

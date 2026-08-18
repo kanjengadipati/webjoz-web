@@ -1041,6 +1041,9 @@ export default function SitesPage() {
                     <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkTestimonials")}
                     </Link>
+                    <Link href={`/dashboard/sites/${site.id}/domain`} className="shrink-0 py-1.5 px-3 rounded-lg border border-primary/30 text-primary/80 hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-medium">
+                      {t("dashboard.sites.linkCustomDomain")}
+                    </Link>
                   </div>
                 </div>
               );
