@@ -134,9 +134,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     if (isAdmin) return true;
     return hasPermission(item.permission);
   });
+  const activeNavItem = DASHBOARD_NAVIGATION.find((item) => item.href === pathname);
   const activeLabel = pathname === "/dashboard/sites/new"
     ? t("dashboard.createWebsite")
-    : (DASHBOARD_NAVIGATION.find((item) => item.href === pathname)?.label || t("common.dashboard"));
+    : activeNavItem
+      ? t(NAV_LABEL_KEYS[activeNavItem.id] ?? "", activeNavItem.label)
+      : t("common.dashboard");
 
   const pathParts = pathname.split("/").filter(Boolean);
   const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new" && pathParts.length <= 3;
