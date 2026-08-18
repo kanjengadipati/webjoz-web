@@ -1068,7 +1068,7 @@ function MenuCatalogCard({
   const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
 
   const imageNode = image_url ? (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <img
         src={image_url}
         alt={itemName}
@@ -1087,8 +1087,24 @@ function MenuCatalogCard({
       )}
     </div>
   ) : (
-    <div className={placeholderClassName} style={placeholderStyle}>
-      {React.createElement(icon, { className: placeholderIconClassName, style: placeholderIconStyle })}
+    <div
+      className={placeholderClassName || "w-full h-44 flex flex-col items-center justify-center relative overflow-hidden"}
+      style={{
+        background: placeholderStyle?.background || `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 14%, var(--dt-surface)) 0%, color-mix(in srgb, var(--dt-surface) 96%, transparent) 100%)`,
+        ...placeholderStyle,
+      }}
+    >
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-white/[0.04] shadow-sm">
+        {React.createElement(icon, {
+          className: placeholderIconClassName || "w-6 h-6",
+          style: placeholderIconStyle || { color: "var(--dt-primary)", opacity: 0.9 }
+        })}
+      </div>
+      {category && (
+        <span className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60" style={{ color: "var(--dt-text)" }}>
+          {category}
+        </span>
+      )}
     </div>
   );
 
