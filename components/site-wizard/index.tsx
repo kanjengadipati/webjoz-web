@@ -109,9 +109,12 @@ export function SiteWizard({
         preview.setStreamedTemplateId(token.template_id);
       }
     },
-    onSection: (section, data) => {
+    onSection: (section, data, sectionSource) => {
       preview.streamedSectionsRef.current = { ...preview.streamedSectionsRef.current, [section]: data };
       preview.setStreamedSections((prev) => ({ ...prev, [section]: data }));
+      if (sectionSource) {
+        preview.setSectionSources((prev) => ({ ...prev, [section]: String(sectionSource) }));
+      }
       preview.setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
       preview.advanceLoadingStepFromSection(section);
     },
@@ -121,7 +124,7 @@ export function SiteWizard({
       // Kalau konten masih AI murni tapi skornya rendah, auto-retry sekali —
       // tanpa ini, hasil jelek (mis. score 44) tetap ditampilkan.
       if (
-        generationSource !== "mock_fallback" &&
+        generationSource !== 2 &&
         qualityScore < QUALITY_GATE_THRESHOLD &&
         qualityRetryCountRef.current < MAX_QUALITY_RETRIES
       ) {
@@ -296,6 +299,7 @@ export function SiteWizard({
     const nextLanguage = overrides.language ?? chat.siteLanguageRef.current ?? chat.siteLanguage ?? "id";
 
     preview.setStreamedSections({});
+    preview.setSectionSources({});
     preview.setStreamedDesignToken(null);
     preview.setArrivedSections([]);
     preview.setStreamedTemplateId("");
@@ -330,6 +334,9 @@ export function SiteWizard({
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
       design_token: initialDesignTokenRef.current ?? undefined,
+      story: nextDescription || undefined,
+      tagline: undefined,
+      proof: undefined,
     });
   };
 

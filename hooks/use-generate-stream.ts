@@ -27,9 +27,10 @@ export interface FieldIssue {
 export interface StreamEvent {
   type: "started" | "design_token" | "section" | "done" | "error";
   section?: StreamSection;
+  section_source?: number;
   data?: Record<string, any>;
   template_id?: string;
-  generation_source?: string;
+  generation_source?: number;
   quality_score?: number;
   quality_issues?: FieldIssue[];
   error?: string;
@@ -62,9 +63,9 @@ export interface UseGenerateStreamOptions {
   /** Dipanggil saat design token diterima (bisa dipanggil lebih dari sekali) */
   onDesignToken: (token: Record<string, any>) => void;
   /** Dipanggil setiap kali satu section konten diterima */
-  onSection: (section: StreamSection, data: Record<string, any>) => void;
+  onSection: (section: StreamSection, data: Record<string, any>, sectionSource?: number) => void;
   /** Dipanggil saat semua section sudah dikirim */
-  onDone: (templateId: string, qualityScore: number, generationSource: string, qualityIssues?: FieldIssue[]) => void;
+  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[]) => void;
   /** Dipanggil jika terjadi error */
   onError: (message: string) => void;
 }
@@ -230,7 +231,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
               case "section":
                 markStage(`section_received:${event.section}`);
                 if (event.section && event.data) {
-                  onSectionRef.current(event.section, event.data);
+                  onSectionRef.current(event.section, event.data, event.section_source);
                 }
                 break;
 
@@ -241,7 +242,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                 onDoneRef.current(
                   event.template_id ?? "",
                   event.quality_score ?? 0,
-                  event.generation_source ?? "ai",
+                  event.generation_source ?? 1,
                   event.quality_issues,
                 );
                 break;
