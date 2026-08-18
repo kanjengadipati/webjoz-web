@@ -2114,7 +2114,7 @@ export const translations: Record<Locale, Translations> = {
     landing: {
       badge: "AI WEBSITE BUILDER UNTUK BISNIS ANDA",
       heroTitle: 'Generate website<br />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.72em] sm:text-[0.78em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Custom tanpa batas.</span>',
-      heroSubtitle: 'Hanya butuh <strong class="text-white font-bold">chat singkat</strong>, <strong class="text-white font-bold">tanpa coding</strong>, website bisnis Anda <strong class="text-white font-bold">langsung live</strong> siap pakai.',
+      heroSubtitle: 'Hanya butuh <strong class="text-white font-bold">chat singkat</strong>, <strong class="text-white font-bold">tanpa coding</strong> —<br />website bisnis Anda <strong class="text-white font-bold">langsung live</strong> siap pakai.',
       heroSubtitleBold: "",
       ctaPrimary: "Generate Website Saya",
       ctaFloating: "Generate Website Saya",
@@ -4269,7 +4269,7 @@ export const translations: Record<Locale, Translations> = {
     landing: {
       badge: "AI WEBSITE BUILDER FOR YOUR BUSINESS",
       heroTitle: 'Generate websites<br />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Unlimited customization.</span>',
-      heroSubtitle: 'Just a <strong class="text-white font-bold">quick chat</strong>, <strong class="text-white font-bold">no coding</strong>, your business website is <strong class="text-white font-bold">instantly live</strong>.',
+      heroSubtitle: 'Just a <strong class="text-white font-bold">quick chat</strong>, <strong class="text-white font-bold">no coding</strong> —<br />your business website is <strong class="text-white font-bold">instantly live</strong>.',
       heroSubtitleBold: "",
       ctaPrimary: "Generate My Website",
       ctaFloating: "Generate My Website",
