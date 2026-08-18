@@ -2113,7 +2113,7 @@ export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
       badge: "AI WEBSITE BUILDER UNTUK BISNIS ANDA",
-      heroTitle: 'Generate website<br />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.72em] sm:text-[0.78em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Custom tanpa batas.</span>',
+      heroTitle: 'Generate website <br className="lg:hidden" />instan. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.6em] sm:text-[0.68em] lg:text-[0.62em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
       heroSubtitle: 'Hanya butuh <strong class="text-white font-bold">chat singkat</strong>, <strong class="text-white font-bold">tanpa coding</strong> —<br />website bisnis Anda <strong class="text-white font-bold">langsung live</strong> siap pakai.',
       heroSubtitleBold: "",
       ctaPrimary: "Generate Website Saya",
@@ -4268,7 +4268,7 @@ export const translations: Record<Locale, Translations> = {
   en: {
     landing: {
       badge: "AI WEBSITE BUILDER FOR YOUR BUSINESS",
-      heroTitle: 'Generate websites<br />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.68em] sm:text-[0.76em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-2 rounded-full mt-2.5 sm:mt-3 shadow-lg">Unlimited customization.</span>',
+      heroTitle: 'Generate websites <br className="lg:hidden" />instantly. <span class="inline-block text-white">✧</span><br /><span class="inline-block text-[0.58em] sm:text-[0.66em] lg:text-[0.6em] font-extrabold tracking-tight bg-white text-black px-4 py-1 sm:px-6 sm:py-1.5 rounded-full mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
       heroSubtitle: 'Just a <strong class="text-white font-bold">quick chat</strong>, <strong class="text-white font-bold">no coding</strong> —<br />your business website is <strong class="text-white font-bold">instantly live</strong>.',
       heroSubtitleBold: "",
       ctaPrimary: "Generate My Website",
