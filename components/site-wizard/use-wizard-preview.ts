@@ -10,6 +10,7 @@ export function useWizardPreview() {
   const [previewState, setPreviewState] = useState<PreviewState>("wireframe");
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [streamedSections, setStreamedSections] = useState<Record<string, any>>({});
+  const [sectionSources, setSectionSources] = useState<Record<string, string>>({});
   const [streamedDesignToken, setStreamedDesignToken] = useState<Record<string, any> | null>(null);
   const [streamedTemplateId, setStreamedTemplateId] = useState<string>("");
   const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
@@ -247,6 +248,8 @@ export function useWizardPreview() {
     setPreviewData,
     streamedSections,
     setStreamedSections,
+    sectionSources,
+    setSectionSources,
     streamedDesignToken,
     setStreamedDesignToken,
     streamedTemplateId,

@@ -6,8 +6,8 @@ import { PENDING_KEY } from "./constants";
 
 export interface GenerateCallbacks {
   onDesignToken: (token: Record<string, any>) => void;
-  onSection: (section: StreamSection, data: Record<string, any>) => void;
-  onDone: (templateId: string, qualityScore: number, generationSource: string, qualityIssues?: FieldIssue[]) => void;
+  onSection: (section: StreamSection, data: Record<string, any>, sectionSource?: number) => void;
+  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[]) => void;
   onError: (message: string) => void;
 }
 
