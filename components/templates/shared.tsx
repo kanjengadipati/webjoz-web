@@ -1488,9 +1488,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
 
 // ─── Dynamic Icon Helper ──────────────────────────────────────────────────────
 
+const toPascalCase = (s: string) =>
+  s.replace(/(^\w|-\w)/g, (c) => c.replace("-", "").toUpperCase());
+
 const DynamicIcon = ({ name, defaultIcon, className }: { name?: string; defaultIcon: any; className?: string }) => {
   if (name) {
-    const IconComponent = (LucideIcons as any)[name];
+    // Try exact match first (PascalCase from AI), then try PascalCase-converted (kebab-case / lowercase from AI)
+    const IconComponent = (LucideIcons as any)[name] ?? (LucideIcons as any)[toPascalCase(name)];
     if (IconComponent) return <IconComponent className={className} />;
   }
   const Default = defaultIcon;
