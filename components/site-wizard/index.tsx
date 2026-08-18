@@ -597,7 +597,7 @@ export function SiteWizard({
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[380px] md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[410px] lg:w-[430px] md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
             : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
           }`}
@@ -811,21 +811,21 @@ export function SiteWizard({
                           }`}
                         >
                           {/* Header: Emoji, Label & Selected checkmark / theme tag */}
-                          <div className="flex items-center justify-between gap-1">
-                            <div className="flex items-center gap-1 min-w-0">
-                              <span className="text-xs sm:text-sm shrink-0">{mo.emoji}</span>
-                              <span className="text-[10.5px] sm:text-xs font-bold text-white leading-tight truncate">
+                          <div className="flex items-start justify-between gap-1.5 min-h-[22px]">
+                            <div className="flex items-start gap-1.5 min-w-0 flex-1">
+                              <span className="text-xs sm:text-sm shrink-0 mt-0.5">{mo.emoji}</span>
+                              <span className="text-[11px] sm:text-xs font-bold text-white leading-snug break-words">
                                 {translatedMoodLabel}
                               </span>
                             </div>
                             {isSelected ? (
-                              <div className="size-4 sm:size-4.5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                              <div className="size-4 sm:size-4.5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                                 <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12" />
                                 </svg>
                               </div>
                             ) : (
-                              <span className="text-[8px] sm:text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1 py-0.5 rounded bg-white/[0.04] border border-white/5 shrink-0">
+                              <span className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 shrink-0 mt-0.5">
                                 {mo.dark ? "Dark" : "Light"}
                               </span>
                             )}
