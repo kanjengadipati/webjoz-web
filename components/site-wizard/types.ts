@@ -56,6 +56,9 @@ export type MoodItem = {
   emoji: string;
   label: string;
   desc: string;
-  img?: string;
-  gradient?: string;
+  palette: [string, string, string]; // [bg, primary, accent]
+  font: string;
+  fontPreview?: string;
+  suitableFor?: string;
+  dark?: boolean;
 };
