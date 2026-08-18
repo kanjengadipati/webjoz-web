@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PreviewData } from "./types";
-import { getTemplateComponent } from "./helpers";
+import { getTemplateComponent, getTemplatePool } from "./helpers";
 import { buildFullContent } from "@/lib/build-full-content";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -52,9 +52,13 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       />
     );
   }
+  const candidatePool = getTemplatePool(chat.businessType, chat.mood);
+  const fallbackTemplateId = candidatePool[0] || "TEMPLATE_JASA02";
   const liveContent = isStreamingLive ? streamedSections : (previewData?.content || {});
   const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : (previewData?.design_token || {});
-  const liveTemplateId = isStreamingLive ? streamedTemplateId : (previewData?.template_id || "");
+  const liveTemplateId = isStreamingLive
+    ? (streamedTemplateId || (streamedDesignToken as any)?.template_id || fallbackTemplateId)
+    : (previewData?.template_id || fallbackTemplateId);
   const TemplateComponent = liveTemplateId ? getTemplateComponent(liveTemplateId) : null;
   const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
 
