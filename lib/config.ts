@@ -83,3 +83,6 @@ export const MIDTRANS_SNAP_BASE_URL =
   process.env.NEXT_PUBLIC_MIDTRANS_ENV === "production"
     ? "https://app.midtrans.com"
     : "https://app.sandbox.midtrans.com";
+
+export const PAYPAL_ENABLED = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === "true";
+export const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
