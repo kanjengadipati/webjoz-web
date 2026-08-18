@@ -7,9 +7,11 @@ import MinimalCentered from "./minimal-centered";
 import OverlayMap from "./overlay-map";
 import BentoGrid from "./bento-grid";
 import DarkSplit from "./dark-split";
+import WhatsAppDirect from "./whatsapp-direct";
 
 const variants: Record<string, ComponentType<ContactVariantProps>> = {
   "classic-split": ClassicSplit,
+  "whatsapp-direct": WhatsAppDirect,
   "minimal-centered": MinimalCentered,
   "overlay-map": OverlayMap,
   "bento-grid": BentoGrid,
