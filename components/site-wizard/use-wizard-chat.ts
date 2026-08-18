@@ -277,8 +277,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       "bold-vibrant": "playfulFun",
       "dark-premium": "elegantLuxury",
       "bold-dark": "boldEnergetic",
-      "retro": "warmVintage",
-      "futuristic": "minimalistDark",
+      "retro": "retro",
+      "futuristic": "futuristic",
     };
     const moodKey = moodItem ? moodKeyMap[moodItem.value] : undefined;
     const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, moodItem?.label ?? selectedMood) : (moodItem?.label ?? selectedMood);

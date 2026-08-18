@@ -773,8 +773,8 @@ export function SiteWizard({
             if (m.widget === "mood-chips") {
               const isLocked = chat.chatStage !== "mood";
               return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-2 gap-2">
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
@@ -788,58 +788,75 @@ export function SiteWizard({
                       };
                       const moodKey = moodKeyMap[mo.value];
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
-                      const bg = mo.img
-                        ? `url(${mo.img})`
-                        : (mo.gradient ?? "linear-gradient(135deg,#1e293b,#0f172a)");
+
                       return (
                         <button
                           key={mo.value}
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`relative overflow-hidden rounded-xl border transition-all duration-200 aspect-video flex flex-col justify-end text-left ${
+                          className={`group relative overflow-hidden rounded-xl border p-2.5 text-left transition-all duration-200 ${
                             isSelected
-                              ? "border-primary ring-2 ring-primary/40 shadow-lg shadow-primary/20"
+                              ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-lg shadow-primary/20"
                               : isLocked
-                              ? "border-white/5 cursor-not-allowed opacity-50"
-                              : "border-white/10 hover:border-primary/50 hover:scale-[1.02] cursor-pointer"
+                              ? "border-white/5 bg-white/[0.02] opacity-45 cursor-not-allowed"
+                              : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] cursor-pointer active:scale-95"
                           }`}
-                          style={{
-                            backgroundImage: bg,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center top",
-                          }}
                         >
-                          {/* Dark gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-                          {/* Selected check */}
-                          {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 z-10 size-5 rounded-full bg-primary flex items-center justify-center shadow-md">
-                              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
+                          {/* Header: Emoji, Label & Selected checkmark */}
+                          <div className="flex items-center justify-between gap-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="text-sm shrink-0">{mo.emoji}</span>
+                              <span className="text-xs font-bold text-white leading-tight truncate">
+                                {translatedMoodLabel}
+                              </span>
                             </div>
-                          )}
-
-                          {/* Futuristic — neon glow effect */}
-                          {mo.value === "futuristic" && (
-                            <div className="absolute inset-0 pointer-events-none">
-                              <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-violet-500/20 blur-2xl" />
-                              <div className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-cyan-400/20 blur-xl" />
-                              <span className="absolute top-3 left-0 right-0 text-center text-3xl">🤖</span>
-                            </div>
-                          )}
-
-                          {/* Label */}
-                          <div className="relative z-10 px-2 pb-2">
-                            <p className="text-[11px] font-bold text-white leading-tight drop-shadow">{translatedMoodLabel}</p>
+                            {isSelected ? (
+                              <div className="size-4.5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </div>
+                            ) : (
+                              <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/5">
+                                {mo.dark ? "Dark" : "Light"}
+                              </span>
+                            )}
                           </div>
+
+                          {/* Color Palette Swatches & Font Preview */}
+                          <div className="mt-2 flex items-center justify-between gap-1.5 pt-1.5 border-t border-white/5">
+                            {/* 3 Color Swatch Circles */}
+                            <div className="flex items-center gap-1">
+                              {mo.palette.map((color, cIdx) => (
+                                <div
+                                  key={cIdx}
+                                  className="size-3.5 rounded-full border border-white/25 shadow-xs ring-1 ring-black/40"
+                                  style={{ backgroundColor: color }}
+                                  title={color}
+                                />
+                              ))}
+                            </div>
+
+                            {/* Font Pill */}
+                            <div className="flex items-center gap-1 rounded bg-white/[0.05] border border-white/10 px-1.5 py-0.5 text-[9.5px] text-slate-300">
+                              <span className="font-semibold text-white/90">Aa</span>
+                              <span className="text-slate-400 truncate max-w-[85px]">{mo.font}</span>
+                            </div>
+                          </div>
+
+                          {/* Business Relevance / Suitable For */}
+                          {mo.suitableFor && (
+                            <div className="mt-1.5 text-[9.5px] text-slate-400 leading-tight truncate">
+                              <span className="text-slate-500 font-medium">Cocok: </span>
+                              {mo.suitableFor}
+                            </div>
+                          )}
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih mood yang sesuai dengan brand Anda")}</p>
+                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual (palet warna & font) yang cocok untuk website Anda")}</p>
                 </div>
               );
             }
