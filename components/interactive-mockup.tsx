@@ -718,17 +718,17 @@ function MobileChatCard({ sample, token }: HeroItem) {
       </div>
 
       {/* ── Screen Body (Chat vs Preview) ── */}
-      <div className="relative min-h-[390px] sm:min-h-[440px] rounded-2xl overflow-hidden">
+      <div className="relative h-[440px] sm:h-[490px] w-full rounded-2xl overflow-hidden bg-[#0c0c0e]">
         {/* Layer 1: Chat View */}
         <div
-          className={`transition-all duration-500 ${
+          className={`absolute inset-0 p-2 sm:p-3 flex flex-col justify-between overflow-y-auto transition-all duration-500 ${
             !isPreview
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 -translate-y-3 pointer-events-none absolute inset-0"
+              ? "opacity-100 translate-y-0 pointer-events-auto z-10"
+              : "opacity-0 -translate-y-3 pointer-events-none z-0"
           }`}
         >
           {/* Chat Messages */}
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {/* Msg 1: Bot Greeting */}
             <div className={`flex items-start gap-2 transition-all duration-400 ${visible(STEP_GREET)}`}>
               <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -828,7 +828,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
           </div>
 
           {/* Input Bar */}
-          <div className="mt-3 pt-1 flex items-center justify-between rounded-full bg-white/[0.04] border border-white/10 p-1 pl-3.5">
+          <div className="mt-2 pt-1 flex items-center justify-between rounded-full bg-white/[0.04] border border-white/10 p-1 pl-3.5">
             <span className="text-xs text-white/40 font-normal">
               {translations.landing.typeMessage || "Type your message..."}
             </span>
@@ -843,10 +843,10 @@ function MobileChatCard({ sample, token }: HeroItem) {
 
         {/* Layer 2: Live Web Preview View */}
         <div
-          className={`relative min-h-[390px] sm:min-h-[440px] rounded-2xl overflow-hidden bg-[#0c0c0e] border border-white/10 transition-all duration-500 ${
+          className={`absolute inset-0 rounded-2xl overflow-hidden bg-[#0c0c0e] border border-white/10 transition-all duration-500 ${
             isPreview
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 translate-y-3 pointer-events-none absolute inset-0"
+              ? "opacity-100 translate-y-0 pointer-events-auto z-10"
+              : "opacity-0 translate-y-3 pointer-events-none z-0"
           }`}
         >
           {/* Skeleton — visible during initial steps */}
