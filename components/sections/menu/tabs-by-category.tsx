@@ -34,11 +34,11 @@ export default function MenuTabsByCategory({ menu }: { menu: TemplateProps["cont
           <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
         </div>
 
-        {/* Tab bar */}
-        <div style={{
-          display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center",
-          marginBottom: "2rem",
-        }}>
+        {/* Tab bar — smooth horizontal scroll on mobile, centered on desktop */}
+        <div
+          className="flex items-center gap-2 overflow-x-auto pb-2 mb-8 no-scrollbar justify-start sm:justify-center"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           {cats.map((cat, i) => {
             const isActive = i === activeIdx;
             return (
