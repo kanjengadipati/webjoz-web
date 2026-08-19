@@ -172,8 +172,8 @@ export function PricingCards({
               ? customDomainLabel
               : noCustomDomainLabel,
             seoLabel,
-            !isFree && subdomainLabel,
-            isFree && hostingLabel,
+            subdomainLabel,
+            hostingLabel,
           ].filter(Boolean) as string[];
 
           return (
