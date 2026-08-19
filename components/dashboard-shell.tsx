@@ -166,7 +166,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Mobile Bottom Navigation */}
       {!isFullscreenWorkspace && (
         <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label={t("dashboard.mainNav")}>
