@@ -123,7 +123,7 @@ export function SocialAuthButtons({
       `&response_type=id_token` +
       `&scope=openid%20email%20profile` +
       `&nonce=${nonce}` +
-      `&prompt=select_account`;
+      `&prompt=login`;
 
     window.location.href = googleAuthUrl;
   }, [pushToast]);
