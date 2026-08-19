@@ -316,31 +316,48 @@ export default function DashboardOverviewPage() {
     return (
       <div className="space-y-8 animate-in fade-in duration-700">
         {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section className="bg-gradient-to-br from-emerald-500/15 via-emerald-500/5 to-amber-500/10 border border-emerald-500/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="size-14 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
-                <TrendingUp className="size-7 text-emerald-500" />
+        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-card to-background p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group">
+          {/* Ambient Lighting Glows */}
+          <div className="absolute -right-16 -top-16 size-56 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -left-16 -bottom-16 size-56 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
+            <div className="flex items-start sm:items-center gap-4">
+              {/* Glowing Emerald Icon Badge */}
+              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] text-white">
+                <TrendingUp className="size-6 sm:size-7 stroke-[2.5]" />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                  {t("dashboard.salesOverview.pageTitle")}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                    {t("dashboard.salesOverview.pageTitle")}
+                  </h2>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 tracking-wide">
+                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Partner Active
+                  </span>
+                </div>
+                <p className="text-xs sm:text-[13px] text-muted-foreground max-w-xl leading-relaxed">
                   {t("dashboard.salesOverview.pageDesc", undefined, { t1, months: String(months), t2 })}
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2 shrink-0">
-              <Link href="/dashboard/sales/commissions">
-                <button className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-xs font-semibold hover:bg-muted/40 transition">
-                  <DollarSign className="size-3.5 text-emerald-500" />
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto pt-2 sm:pt-0">
+              <Link href="/dashboard/sales/commissions" className="flex-1 sm:flex-none">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-card hover:bg-emerald-500/10 hover:border-emerald-500/50 px-4 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
+                  <span className="flex size-5 items-center justify-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">
+                    $
+                  </span>
                   {t("dashboard.salesOverview.linkCommissionsTitle")}
                 </button>
               </Link>
-              <Link href="/dashboard/sales">
-                <button className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-xs font-semibold hover:bg-muted/40 transition">
-                  <Share2 className="size-3.5 text-primary" />
+              <Link href="/dashboard/sales" className="flex-1 sm:flex-none">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card hover:bg-muted hover:border-border/80 px-4 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
+                  <span className="flex size-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Share2 className="size-3" />
+                  </span>
                   {t("dashboard.salesOverview.linkReferralTitle")}
                 </button>
               </Link>
