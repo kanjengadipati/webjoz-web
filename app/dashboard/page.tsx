@@ -344,21 +344,21 @@ export default function DashboardOverviewPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto pt-2 sm:pt-0">
-              <Link href="/dashboard/sales/commissions" className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-card hover:bg-emerald-500/10 hover:border-emerald-500/50 px-4 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
-                  <span className="flex size-5 items-center justify-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5 w-full sm:w-auto pt-2 sm:pt-0">
+              <Link href="/dashboard/sales/commissions" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-card hover:bg-emerald-500/10 hover:border-emerald-500/50 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">
                     $
                   </span>
-                  {t("dashboard.salesOverview.linkCommissionsTitle")}
+                  <span className="truncate">{t("dashboard.salesOverview.linkCommissionsTitle")}</span>
                 </button>
               </Link>
-              <Link href="/dashboard/sales" className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card hover:bg-muted hover:border-border/80 px-4 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
-                  <span className="flex size-5 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <Link href="/dashboard/sales" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card hover:bg-muted hover:border-border/80 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                     <Share2 className="size-3" />
                   </span>
-                  {t("dashboard.salesOverview.linkReferralTitle")}
+                  <span className="truncate">{t("dashboard.salesOverview.linkReferralTitle")}</span>
                 </button>
               </Link>
             </div>
@@ -366,63 +366,63 @@ export default function DashboardOverviewPage() {
         </section>
 
         {/* ── Summary cards ────────────────────────────────────────────── */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 min-w-0">
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 min-w-0">
           {[
-            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
-            { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-4 text-emerald-500" />, cls: "text-foreground" },
-            { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
-            { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
+            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
+            { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-foreground" },
+            { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-3.5 sm:size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
+            { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-3.5 sm:size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
           ].map((card) => (
-            <Card key={card.label} className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
+            <Card key={card.label} className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden rounded-2xl">
+              <CardHeader className="p-3 sm:p-4 pb-1 sm:pb-2">
+                <CardTitle className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-tight sm:tracking-wider flex items-center justify-between gap-1">
                   <span className="truncate">{card.label}</span>
-                  {card.icon}
+                  <span className="shrink-0">{card.icon}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className={`text-xl sm:text-2xl font-extrabold truncate ${card.cls}`}>{card.value}</div>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">{card.desc}</p>
+              <CardContent className="p-3 sm:p-4 pt-0 sm:pt-0">
+                <div className={`text-lg sm:text-2xl font-extrabold truncate ${card.cls}`}>{card.value}</div>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 truncate leading-tight">{card.desc}</p>
               </CardContent>
             </Card>
           ))}
         </section>
 
         {/* ── Referral code + commission scheme ───────────────────────── */}
-        <section className="grid gap-5 md:grid-cols-2 min-w-0">
+        <section className="grid gap-4 sm:gap-5 md:grid-cols-2 min-w-0">
           {/* Referral code */}
-          <Card className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden">
-            <CardHeader className="pb-3 border-b border-border/20">
+          <Card className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden rounded-2xl">
+            <CardHeader className="p-4 pb-3 border-b border-border/20">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Share2 className="size-4 text-primary" />
                 {t("dashboard.salesOverview.refCardTitle")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-4 min-w-0">
-              <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
-                <span className="font-mono text-lg sm:text-xl font-bold tracking-widest text-primary truncate min-w-0">
+            <CardContent className="p-4 pt-4 space-y-4 min-w-0">
+              <div className="flex items-center justify-between gap-2.5 min-w-0 rounded-xl border border-primary/20 bg-primary/5 px-3.5 py-2.5 sm:px-4 sm:py-3">
+                <span className="font-mono text-base sm:text-xl font-bold tracking-widest text-primary truncate min-w-0">
                   {referralCode || "—"}
                 </span>
                 <button
                   onClick={handleCopyCode}
-                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-3 py-1.5 hover:bg-muted transition cursor-pointer"
+                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-2.5 py-1.5 sm:px-3 hover:bg-muted transition cursor-pointer shadow-sm"
                 >
                   {codeCopied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
-                  {codeCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyCode")}
+                  <span>{codeCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyCode")}</span>
                 </button>
               </div>
               <div className="space-y-1.5 min-w-0">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <p className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("dashboard.salesOverview.refLinkLabel")}
                 </p>
-                <div className="flex items-center gap-2 min-w-0 rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
+                <div className="flex items-center gap-2 min-w-0 rounded-xl border border-border/40 bg-muted/30 p-2 sm:px-3">
                   <span className="flex-1 min-w-0 text-xs font-mono text-muted-foreground truncate block">{referralUrl || "—"}</span>
                   <button
                     onClick={handleCopyLink}
-                    className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-md border border-border/60 bg-background px-2.5 py-1 hover:bg-muted transition cursor-pointer"
+                    className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-lg border border-border/60 bg-background px-2.5 py-1 hover:bg-muted transition cursor-pointer shadow-sm"
                   >
                     <Copy className="size-3" />
-                    {linkCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyLink")}
+                    <span>{linkCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyLink")}</span>
                   </button>
                 </div>
               </div>
@@ -437,39 +437,39 @@ export default function DashboardOverviewPage() {
           </Card>
 
           {/* Commission scheme */}
-          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden">
-            <CardHeader className="pb-3 border-b border-emerald-500/15">
+          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden rounded-2xl">
+            <CardHeader className="p-4 pb-3 border-b border-emerald-500/15">
               <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                 <Zap className="size-4" />
                 {t("dashboard.salesOverview.schemeTitle")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-3 min-w-0">
+            <CardContent className="p-4 pt-4 space-y-3 min-w-0">
               <div className="space-y-2 min-w-0">
-                <div className="flex items-center justify-between gap-3 min-w-0 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
                     <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
                 </div>
-                <div className="flex items-center justify-between gap-3 min-w-0 rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tier 2</p>
                     <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier2Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-2xl font-extrabold text-muted-foreground shrink-0">{t2}%</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-muted-foreground shrink-0">{t2}%</span>
                 </div>
               </div>
               <div className="pt-1 space-y-1.5 min-w-0">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
-                <div className="flex flex-wrap gap-2 min-w-0">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Gift className="size-3 shrink-0" />
+                <p className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Gift className="size-3.5 shrink-0 text-amber-500" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusOnboarding")}</span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Target className="size-3 shrink-0" />
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Target className="size-3.5 shrink-0 text-amber-500" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusMilestone")}</span>
                   </div>
                 </div>
