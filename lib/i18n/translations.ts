@@ -126,6 +126,8 @@ export interface Translations {
     aiRegen: string;
     aiDesign: string;
     noCustomDomain: string;
+    customDomainFeature: string;
+    customDomainSubtext: string;
     seoBooster: string;
     subdomainFeature: string;
     hostingFeature: string;
@@ -869,6 +871,8 @@ export interface Translations {
       sectionRegenPerMonth: string;
       designRegenPerMonth: string;
       noCustomDomain: string;
+      customDomainFeature: string;
+      customDomainSubtext: string;
       basicSeo: string;
       popular: string;
       perYear: string;
@@ -2256,6 +2260,8 @@ export const translations: Record<Locale, Translations> = {
       aiRegen: "AI Regenerasi {n}x/bulan",
       aiDesign: "AI Design {n}x/bulan",
       noCustomDomain: "Tidak ada custom domain",
+      customDomainFeature: "Custom Domain",
+      customDomainSubtext: "tidak termasuk domain",
       seoBooster: "SEO Booster",
       subdomainFeature: "Subdomain .webjoz.app",
       hostingFeature: "Hosting & SSL gratis",
@@ -3016,6 +3022,8 @@ export const translations: Record<Locale, Translations> = {
         yearly: "Tahunan",
         monthly: "Bulanan",
         customDomainCount: "{n} Custom Domain",
+        customDomainFeature: "Custom Domain",
+        customDomainSubtext: "tidak termasuk domain",
         seoOptimized: "SEO optimasi",
       },
       adminPlans: {
@@ -4432,6 +4440,8 @@ export const translations: Record<Locale, Translations> = {
       aiRegen: "AI Regen {n}x/month",
       aiDesign: "AI Design {n}x/month",
       noCustomDomain: "No custom domain",
+      customDomainFeature: "Custom Domain",
+      customDomainSubtext: "domain not included",
       seoBooster: "SEO Booster",
       subdomainFeature: "Subdomain .webjoz.app",
       hostingFeature: "Free Hosting & SSL",
@@ -5192,6 +5202,8 @@ export const translations: Record<Locale, Translations> = {
         yearly: "Yearly",
         monthly: "Monthly",
         customDomainCount: "{n} Custom Domains",
+        customDomainFeature: "Custom Domain",
+        customDomainSubtext: "domain not included",
         seoOptimized: "SEO optimized",
       },
       adminPlans: {

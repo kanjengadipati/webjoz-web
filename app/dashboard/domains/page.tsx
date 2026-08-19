@@ -14,6 +14,8 @@ import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import { MIDTRANS_CLIENT_KEY, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
+import PaymentModal from "@/components/payment-modal";
 
 // Common country list for WHOIS registration
 const COUNTRY_LIST = [
@@ -95,7 +97,6 @@ export default function DomainsPage() {
   const [submitting,     setSubmitting]     = useState(false);
   const [copied,         setCopied]         = useState(false);
   const [showUpsellModal, setShowUpsellModal] = useState(false);
-  const [showLimitModal,  setShowLimitModal]  = useState(false);
 
   // Tab + buy-domain states
   const [tab,               setTab]               = useState<"buy" | "own">("buy");
@@ -114,6 +115,13 @@ export default function DomainsPage() {
   const [phoneCC,            setPhoneCC]            = useState("+62");
   const [phoneLocal,         setPhoneLocal]         = useState("");
   const [zipLoading,         setZipLoading]         = useState(false);
+  const [isConfirming,       setIsConfirming]       = useState(false);
+  const [showPaymentModal,    setShowPaymentModal]    = useState(false);
+  const [paymentGateway,      setPaymentGateway]      = useState<"midtrans" | "paypal">("midtrans");
+  const [paymentOrder,        setPaymentOrder]        = useState<any>(null);
+  const [snapReady,           setSnapReady]           = useState(false);
+  const [paypalModal,         setPaypalModal]         = useState(false);
+  const [paypalPendingOrderID,setPaypalPendingOrderID] = useState<string | null>(null);
   const [purchaser, setPurchaser] = useState({
     name: "",
     company: "",
@@ -264,14 +272,110 @@ export default function DomainsPage() {
 
   const handleBuy = async (domain: string) => {
     setPurchaserDomain(domain);
-    setBuyingDomain(domain);   // show spinner immediately on click
     setShowPurchaserModal(true);
   };
 
   const confirmBuy = async () => {
     if (!token || !activeTenantId || !siteId || !purchaserDomain) return;
     try {
+      setIsConfirming(true);
       setBuyingDomain(purchaserDomain);
+      setPaymentOrder(null);
+
+      // Build purchaser payload
+      const purchaserPayload = {
+        name: purchaser.name,
+        company: purchaser.company,
+        email: purchaser.email,
+        phone: purchaser.phone,
+        address: purchaser.address,
+        city: purchaser.city,
+        state: purchaser.state,
+        country: purchaser.country,
+        zip: purchaser.zip,
+      };
+
+      if (paymentGateway === "paypal") {
+        // PayPal flow
+        const callbackUrl = `${window.location.origin}/dashboard/domains?payment=paypal&domain=${encodeURIComponent(purchaserDomain)}`;
+        const res = await request<any>("/payments", {
+          method: "POST",
+          headers: { "X-Tenant-ID": activeTenantId.toString() },
+          body: JSON.stringify({
+            plan_id: null,
+            reference_type: "domain",
+            reference_id: purchaserDomain,
+            callback_url: callbackUrl,
+            amount: 0,
+            gateway: "paypal",
+            currency: "USD",
+          }),
+        }, token);
+
+        if (!res.data?.approval_url) {
+          pushToast("PayPal order creation failed", "error");
+          return;
+        }
+
+        // Open PayPal popup
+        const popup = window.open(res.data.approval_url, "paypal_checkout", "width=600,height=750,scrollbars=no");
+        setPaypalPendingOrderID(res.data.order_id);
+        setShowPurchaserModal(false);
+
+        // Poll for payment completion
+        const checkInterval = setInterval(async () => {
+          try {
+            const checkRes = await request<any>(`/payments/${res.data.order_id}`, {
+              headers: { "X-Tenant-ID": activeTenantId.toString() },
+            }, token);
+            if (checkRes.data?.status === "success" || checkRes.data?.status === "settlement") {
+              clearInterval(checkInterval);
+              popup?.close();
+              await completePurchase(purchaserPayload);
+            }
+          } catch {}
+        }, 3000);
+
+        // Stop polling after 5 minutes
+        setTimeout(() => clearInterval(checkInterval), 300000);
+
+      } else {
+        // Midtrans flow
+        const callbackUrl = `${window.location.origin}/dashboard/domains?payment=midtrans&domain=${encodeURIComponent(purchaserDomain)}`;
+        const res = await request<any>("/payments", {
+          method: "POST",
+          headers: { "X-Tenant-ID": activeTenantId.toString() },
+          body: JSON.stringify({
+            plan_id: null,
+            reference_type: "domain",
+            reference_id: purchaserDomain,
+            callback_url: callbackUrl,
+            amount: 0,
+            gateway: "midtrans",
+            currency: "IDR",
+          }),
+        }, token);
+
+        if (!res.data?.snap_token) {
+          pushToast("Midtrans payment creation failed", "error");
+          return;
+        }
+
+        setPaymentOrder(res.data);
+        setShowPurchaserModal(false);
+        setShowPaymentModal(true);
+      }
+    } catch (err: unknown) {
+      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
+    } finally {
+      setIsConfirming(false);
+      setBuyingDomain(null);
+    }
+  };
+
+  const completePurchase = async (purchaserPayload: any) => {
+    if (!token || !activeTenantId || !siteId || !purchaserDomain) return;
+    try {
       await request<PurchasedDomain>("/domain-purchases", {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
@@ -279,30 +383,18 @@ export default function DomainsPage() {
           site_id: Number(siteId),
           domain_name: purchaserDomain,
           years: 1,
-          purchaser: {
-            name: purchaser.name,
-            company: purchaser.company,
-            email: purchaser.email,
-            phone: purchaser.phone,
-            address: purchaser.address,
-            city: purchaser.city,
-            state: purchaser.state,
-            country: purchaser.country,
-            zip: purchaser.zip,
-          },
+          purchaser: purchaserPayload,
         }),
       }, token);
       pushToast(t("dashboard.domains.buySuccess"), "success");
       setResults([]);
       setSearched(false);
       setBuyName("");
-      setShowPurchaserModal(false);
+      setShowPaymentModal(false);
       fetchPurchased();
       fetchData();
     } catch (err: unknown) {
       pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
-    } finally {
-      setBuyingDomain(null);
     }
   };
 
@@ -335,9 +427,7 @@ export default function DomainsPage() {
       pushToast(t("dashboard.domains.invalidFormat"), "error");
       return;
     }
-    if (domainLimitReached) {
-      setShowLimitModal(true);
-    } else if (isPremium) {
+    if (isPremium) {
       await proceedAddDomain(trimmed);
     } else {
       setShowUpsellModal(true);
@@ -388,8 +478,6 @@ export default function DomainsPage() {
   // Published sites (have a real subdomain)
   const publishedSites = sites.filter(s => s.status === "published" && s.subdomain && !s.subdomain.startsWith("draft-"));
 
-  const maxDomains = currentPlan?.max_custom_domain ?? 0;
-  const domainLimitReached = isPremium && maxDomains > 0 && domains.length >= maxDomains;
 
   // ── Upselling Modal Footer ───────────────────────────────
   const upsellFooter = (
@@ -414,29 +502,6 @@ export default function DomainsPage() {
         >
           {t("dashboard.domains.upgradeToPro")}
         </button>
-    </div>
-  );
-
-  // ── Limit Modal Footer ─────────────────────────────────
-  const limitFooter = (
-    <div className="flex w-full gap-3">
-      <button
-        type="button"
-        onClick={() => setShowLimitModal(false)}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-muted/50 transition-colors cursor-pointer"
-      >
-        {t("dashboard.domains.close")}
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setShowLimitModal(false);
-          router.push("/dashboard/upgrade");
-        }}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_40%,transparent)] cursor-pointer"
-      >
-        {t("dashboard.domains.upgradePlan")}
-      </button>
     </div>
   );
 
@@ -687,11 +752,7 @@ export default function DomainsPage() {
           <h2 className="text-[14px] font-bold text-muted-foreground uppercase tracking-wider">
             {t("dashboard.domains.connectedTitle", undefined, { count: String(domains.length) })}
           </h2>
-          {isPremium && maxDomains > 0 && (
-            <p className="text-[11px] text-muted-foreground m-0 mt-0.5" title={t("dashboard.domains.quotaTitle", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}>
-              {t("dashboard.domains.quota", undefined, { used: String(domains.length), max: String(maxDomains) })}
-            </p>
-          )}
+
           <div className="flex flex-col gap-2">
             {domains.map(dom => {
               const site = sites.find(s => s.id === dom.site_id);
@@ -855,22 +916,6 @@ export default function DomainsPage() {
                           >
                             {copied ? <Check className="w-3 h-3 text-emerald-600 dark:text-[#5fe3a0]" /> : <Copy className="w-3 h-3" />}
                           </button>
-      {/* Limit Reached Dialog */}
-      <Dialog
-        open={showLimitModal}
-        onOpenChange={setShowLimitModal}
-        title={t("dashboard.domains.limitTitle")}
-        footer={limitFooter}
-      >
-        <div className="space-y-4">
-          <p className="text-[14px] leading-relaxed text-muted-foreground m-0">
-            {t("dashboard.domains.limitDesc", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}
-          </p>
-          <p className="text-[14px] leading-relaxed text-muted-foreground m-0">
-            {t("dashboard.domains.limitDesc2")}
-          </p>
-        </div>
-      </Dialog>
     </div>
                       </div>
                     </div>
@@ -897,9 +942,9 @@ export default function DomainsPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!inputValid || submitting || !siteId || domainLimitReached}
+              disabled={!inputValid || submitting || !siteId}
               className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
-                !inputValid || submitting || !siteId || domainLimitReached
+                !inputValid || submitting || !siteId
                   ? "bg-muted text-muted-foreground cursor-not-allowed"
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
               }`}
@@ -1090,6 +1135,41 @@ export default function DomainsPage() {
             </div>
           </div>
 
+          {/* Payment Gateway Selection */}
+          {(PAYPAL_ENABLED || MIDTRANS_CLIENT_KEY) && (
+            <div className="mt-4 p-3 border border-border rounded-xl bg-muted/20">
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-2">Gateway Pembayaran</label>
+              <div className="flex gap-2">
+                {MIDTRANS_CLIENT_KEY && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentGateway("midtrans")}
+                    className={`flex-1 py-2 rounded-xl text-[12px] font-semibold border transition-all ${
+                      paymentGateway === "midtrans"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-muted/30 text-muted-foreground border-border hover:bg-muted"
+                    }`}
+                  >
+                    Midtrans (IDR)
+                  </button>
+                )}
+                {PAYPAL_ENABLED && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentGateway("paypal")}
+                    className={`flex-1 py-2 rounded-xl text-[12px] font-semibold border transition-all ${
+                      paymentGateway === "paypal"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-muted/30 text-muted-foreground border-border hover:bg-muted"
+                    }`}
+                  >
+                    PayPal (USD)
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-3 mt-5">
             <button
               onClick={() => { setShowPurchaserModal(false); setBuyingDomain(null); }}
@@ -1099,14 +1179,32 @@ export default function DomainsPage() {
             </button>
             <button
               onClick={confirmBuy}
-              disabled={!purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip || (buyingDomain !== null && buyingDomain !== purchaserDomain)}
-              className="flex-1 py-2 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
+              disabled={isConfirming || !purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip}
+              className="flex-1 py-2 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {buyingDomain === purchaserDomain && !showPurchaserModal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
-              {t("dashboard.domains.buyBtn")}
+              {isConfirming ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
+              {isConfirming ? t("dashboard.domains.buying") : t("dashboard.domains.buyBtn")}
             </button>
           </div>
         </Dialog>
+      )}
+
+      {/* ── Payment Modal (Midtrans) ──────────────────────────── */}
+      {showPaymentModal && paymentOrder && (
+        <PaymentModal
+          snapToken={paymentOrder.snap_token}
+          clientKey={MIDTRANS_CLIENT_KEY}
+          onClose={() => setShowPaymentModal(false)}
+          onPaymentSuccess={() => {
+            setShowPaymentModal(false);
+            setPaymentOrder(null);
+            pushToast(t("dashboard.domains.paymentSuccess"), "success");
+            setTimeout(() => {
+              fetchPurchased();
+              fetchData();
+            }, 1000);
+          }}
+        />
       )}
     </div>
   );
