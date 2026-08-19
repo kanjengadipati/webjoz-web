@@ -346,39 +346,32 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="rounded-2xl border border-border/50 bg-card/80 p-3.5 space-y-3 shadow-sm">
                     {/* Theme / Appearance Row */}
                     <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/85">
-                        <SunIcon size="sm" className="size-3.5 text-muted-foreground" />
-                        <span>{t("dashboard.appearance")}</span>
-                      </div>
-                      <div className="inline-flex items-center rounded-full border border-border bg-background/80 p-0.5 text-[11px] font-semibold shadow-inner">
-                        <button
-                          type="button"
-                          aria-label={t("dashboard.switchLight")}
-                          aria-pressed={theme === "light"}
-                          onClick={() => theme !== "light" && toggleTheme()}
-                          className={cn(
-                            "flex items-center justify-center rounded-full px-2.5 py-1 transition-all cursor-pointer",
-                            theme === "light"
-                              ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                              : "text-muted-foreground hover:text-foreground"
-                          )}
+                      <span className="text-xs font-medium text-muted-foreground/70">{t("dashboard.appearance")}</span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-9 rounded-xl border border-border/50 bg-background/50 hover:bg-primary/5 cursor-pointer"
+                          aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+                          aria-pressed={!isMonochrome}
+                          onClick={toggleAccent}
                         >
-                          <SunIcon size="sm" className="size-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={t("dashboard.switchDark")}
+                          <div className={cn(
+                            "size-4 rounded-full border-2",
+                            MOTION.slow,
+                            accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
+                          )} aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-9 rounded-xl border border-border/50 bg-background/50 hover:bg-primary/5 cursor-pointer"
+                          aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
                           aria-pressed={theme === "dark"}
-                          onClick={() => theme !== "dark" && toggleTheme()}
-                          className={cn(
-                            "flex items-center justify-center rounded-full px-2.5 py-1 transition-all cursor-pointer",
-                            theme === "dark"
-                              ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                              : "text-muted-foreground hover:text-foreground"
-                          )}
+                          onClick={toggleTheme}
                         >
-                          <MoonIcon size="sm" className="size-3.5" />
-                        </button>
+                          {theme === "dark" ? <SunIcon size="sm" /> : <MoonIcon size="sm" />}
+                        </Button>
                       </div>
                     </div>
 
