@@ -619,7 +619,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     )}
                     <span>{activeLabel}</span>
                   </div>
-                  {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings" || pathname === "/dashboard/admin/templates") && (
+                  {(pathname === "/dashboard" || pathname === "/dashboard/sites" || pathname === "/dashboard/domains" || pathname === "/dashboard/leads" || pathname === "/dashboard/analytics" || pathname === "/dashboard/settings" || pathname === "/dashboard/admin/templates" || pathname === "/dashboard/sales" || pathname === "/dashboard/sales/commissions") && (
                     <p className="text-xs text-muted-foreground">
                       {pathname === "/dashboard" && t("dashboard.subDashboard")}
                       {pathname === "/dashboard/sites" && t("dashboard.subSites")}
@@ -628,6 +628,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       {pathname === "/dashboard/analytics" && t("dashboard.subAnalytics")}
                       {pathname === "/dashboard/settings" && t("dashboard.subSettings")}
                       {pathname === "/dashboard/admin/templates" && t("dashboard.adminTemplates.subtitle")}
+                      {pathname === "/dashboard/sales" && t("dashboard.sales.pageDesc")}
+                      {pathname === "/dashboard/sales/commissions" && t("dashboard.salesCommissions.pageDesc")}
                     </p>
                   )}
                 </div>
@@ -636,6 +638,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
                         <Plus className="w-4 h-4" /> {t("dashboard.newWebsiteAi")}
+                      </button>
+                    </Link>
+                  )}
+                  {pathname === "/dashboard/sales" && (
+                    <Link href="/dashboard/sales/commissions">
+                      <button className="flex items-center gap-1.5 bg-card hover:bg-muted text-foreground border border-border/80 transition-all px-3.5 py-2 rounded-full font-semibold text-xs cursor-pointer shadow-sm">
+                        <DollarSign className="w-3.5 h-3.5 text-emerald-500" /> {t("dashboard.sales.viewCommissions")}
+                      </button>
+                    </Link>
+                  )}
+                  {pathname === "/dashboard/sales/commissions" && (
+                    <Link href="/dashboard/sales">
+                      <button className="flex items-center gap-1.5 bg-card hover:bg-muted text-foreground border border-border/80 transition-all px-3.5 py-2 rounded-full font-semibold text-xs cursor-pointer shadow-sm">
+                        <Share2 className="w-3.5 h-3.5 text-primary" /> {t("dashboard.salesCommissions.linkReferralCode")}
                       </button>
                     </Link>
                   )}

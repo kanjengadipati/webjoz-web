@@ -146,23 +146,8 @@ export default function MyCommissionsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/dashboard/sales" className="p-2 rounded-xl hover:bg-muted/50 transition">
-          <ArrowLeft className="size-5 text-muted-foreground" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <DollarSign className="size-6 text-emerald-500" />
-            {t("dashboard.salesCommissions.pageTitle")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("dashboard.salesCommissions.pageDesc", undefined, { t1, months: String(months), t2 })}
-          </p>
-        </div>
-      </div>
-
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <Card className="border-border/40 shadow-sm bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">

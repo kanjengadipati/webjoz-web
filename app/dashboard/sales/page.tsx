@@ -102,24 +102,6 @@ export default function SalesReferralPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Share2 className="size-5 sm:size-6 text-primary shrink-0" />
-            <span>{t("dashboard.sales.pageTitle")}</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            {t("dashboard.sales.pageDesc")}
-          </p>
-        </div>
-        <Link href="/dashboard/sales/commissions" className="w-full sm:w-auto">
-          <Button variant="outline" className="w-full sm:w-auto gap-2 rounded-xl text-xs sm:text-sm h-10 cursor-pointer">
-            <DollarSign className="size-4 text-emerald-500" />
-            {t("dashboard.sales.viewCommissions")}
-          </Button>
-        </Link>
-      </div>
-
       <div className="grid gap-4 sm:gap-6 md:grid-cols-2 min-w-0">
         {/* Card 1: Main Referral Code */}
         <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between rounded-2xl min-w-0 overflow-hidden">
