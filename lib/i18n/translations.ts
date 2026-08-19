@@ -1425,6 +1425,7 @@ export interface Translations {
       linkCopied: string;
     };
     salesCommissions: {
+      linkReferralCode: string;
       loadFailed: string;
       loading: string;
       accessDeniedTitle: string;
@@ -3564,6 +3565,7 @@ export const translations: Record<Locale, Translations> = {
         linkCopied: "Link disalin!",
       },
       salesCommissions: {
+        linkReferralCode: "Kode Referral",
         loadFailed: "Gagal memuat data komisi",
         loading: "Memuat data pendapatan...",
         accessDeniedTitle: "Akses Dibatasi",
@@ -5744,6 +5746,7 @@ export const translations: Record<Locale, Translations> = {
         linkCopied: "Link copied!",
       },
       salesCommissions: {
+        linkReferralCode: "Referral Code",
         loadFailed: "Failed to load commission data",
         loading: "Loading earnings data...",
         accessDeniedTitle: "Access Restricted",
