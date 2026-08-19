@@ -633,7 +633,7 @@ export function SeoForm({
 
           {/* Meta tag preview */}
           {gscInput.trim() && (
-            <div className="rounded-md bg-[#0d0f14] border border-white/5 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+            <div className="rounded-md bg-background border border-white/5 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
               {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
             </div>
           )}

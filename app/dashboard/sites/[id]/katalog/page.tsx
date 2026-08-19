@@ -565,7 +565,7 @@ export default function KatalogManagerPage() {
             />
             <div className="flex gap-2">
               <button type="button" onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] font-medium hover:bg-white/[0.04] transition-colors"
+                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] font-medium hover:bg-muted/50 transition-colors"
               >{t("dashboard.sitesKatalog.cancel")}</button>
               <button type="button" onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:bg-primary/90 transition-colors"
@@ -589,7 +589,7 @@ export default function KatalogManagerPage() {
             <p className="text-[12px] text-slate-400">{t("dashboard.sitesKatalog.upgradeDesc")}</p>
             <div className="flex gap-2">
               <button type="button" onClick={() => setUpgradePromptOpen(false)}
-                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
+                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-muted/50 transition-colors"
               >{t("dashboard.sitesKatalog.later")}</button>
               <Link href="/dashboard/upgrade"
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center hover:bg-primary/90 transition-colors"

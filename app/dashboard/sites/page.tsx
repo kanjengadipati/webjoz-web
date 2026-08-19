@@ -40,11 +40,11 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
       />
 
       {/* Panel */}
-      <div className="relative z-10 w-full max-w-md bg-[#13131a] border border-red-500/20 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6 space-y-5">
+      <div className="relative z-10 w-full max-w-md bg-card border border-red-500/20 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6 space-y-5">
         {!loading && (
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 text-[#65656f] hover:text-white transition-colors cursor-pointer"
+            className="absolute top-4 right-4 text-muted-foreground hover:text-white transition-colors cursor-pointer"
             aria-label={t("dashboard.sites.close")}
           >
             <X className="w-4 h-4" />
@@ -89,7 +89,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
         <div className="flex gap-3 pt-1">
           <Button
             variant="outline"
-            className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-muted/50"
             onClick={onCancel}
             disabled={loading}
           >
@@ -150,11 +150,11 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
       />
 
       {/* Panel */}
-      <div className="relative z-10 w-full max-w-md bg-[#13131a] border border-border rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
+      <div className="relative z-10 w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
         {!loading && (
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 text-[#65656f] hover:text-white transition-colors cursor-pointer"
+            className="absolute top-4 right-4 text-muted-foreground hover:text-white transition-colors cursor-pointer"
             aria-label={t("dashboard.sites.close")}
           >
             <X className="w-4 h-4" />
@@ -178,7 +178,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-white/[0.04]"
+              className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-muted/50"
               onClick={onCancel}
               disabled={loading}
             >
@@ -265,7 +265,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_color-mix(in_srgb,#3ddc84_15%,transparent)] bg-[#3ddc84]/[0.01]"
-                  : "border-border hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
+                  : "border-border hover:border-border focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
               }`}
           >
             <input
@@ -333,7 +333,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-muted/50"
             onClick={onCancel}
             disabled={loading}
           >
@@ -387,7 +387,7 @@ function IframePreview({ siteId }: IframePreviewProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-[#0d0f14]">
+    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-background">
       <iframe
         src={`/preview/${siteId}`}
         loading="lazy"
@@ -786,18 +786,18 @@ export default function SitesPage() {
 
       {/* Search Input bar */}
       <div className="relative">
-        <Search className="absolute left-[18px] top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#65656f] pointer-events-none" />
+        <Search className="absolute left-[18px] top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-muted-foreground pointer-events-none" />
         <input
           type="text"
           placeholder={t("dashboard.sites.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#1a1a23] border border-border hover:border-border focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
+          className="w-full bg-muted/60 border border-border hover:border-border focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-foreground outline-none transition-all placeholder:text-muted-foreground"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-white cursor-pointer"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
           >
             {t("dashboard.sites.reset")}
           </button>
@@ -809,29 +809,29 @@ export default function SitesPage() {
         <button
           onClick={() => setCurrentFilter("all")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "all"
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
+              ? "bg-foreground text-background border-foreground"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
+          {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-background/60" : "text-muted-foreground"}`}>{countAll}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("draft")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "draft"
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
+              ? "bg-foreground text-background border-foreground"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
+          {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-background/60" : "text-muted-foreground"}`}>{countDraft}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("published")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "published"
-              ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
+              ? "bg-foreground text-background border-foreground"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
+          {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-background/60" : "text-muted-foreground"}`}>{countPublished}</span>
         </button>
       </div>
 
@@ -842,8 +842,8 @@ export default function SitesPage() {
           <p className="text-xs text-muted-foreground">{t("dashboard.sites.loadingSites")}</p>
         </div>
       ) : filteredSites.length === 0 ? (
-        <div className="bg-[#13131a] border border-border rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
-          <div className="w-12 h-12 bg-white/[0.03] border border-border rounded-full flex items-center justify-center text-[#65656f]">
+        <div className="bg-card border border-border rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
+          <div className="w-12 h-12 bg-white/[0.03] border border-border rounded-full flex items-center justify-center text-muted-foreground">
             <Search className="w-5 h-5" />
           </div>
           <h3 className="font-bold text-lg text-foreground m-0">{t("dashboard.sites.noSitesMatch")}</h3>
@@ -851,7 +851,7 @@ export default function SitesPage() {
             {t("dashboard.sites.noSitesMatchDesc")}
           </p>
           {searchQuery && (
-            <Button variant="outline" className="rounded-xl text-xs h-8 border-border hover:bg-white/[0.04] mt-2" onClick={() => setSearchQuery("")}>
+            <Button variant="outline" className="rounded-xl text-xs h-8 border-border hover:bg-muted/50 mt-2" onClick={() => setSearchQuery("")}>
               {t("dashboard.sites.clearSearch")}
             </Button>
           )}
@@ -864,9 +864,9 @@ export default function SitesPage() {
               const isDraftSubdomain = isTemporarySubdomain(site.subdomain);
 
               return (
-                <div key={site.id} className="bg-[#13131a] border border-border hover:border-white/[0.14] rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
+                <div key={site.id} className="bg-card border border-border hover:border-border rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
                   {/* Preview iframe */}
-                  <div className="w-full aspect-video rounded-lg relative overflow-hidden select-none bg-[#19191f]">
+                  <div className="w-full aspect-video rounded-lg relative overflow-hidden select-none bg-muted/40">
                     <IframePreview siteId={site.id} />
                   </div>
 
@@ -880,7 +880,7 @@ export default function SitesPage() {
                       {/* Status badge */}
                       <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${isLive
                           ? "bg-[#34c77b]/12 text-[#34c77b] border border-[#34c77b]/35 flex items-center gap-1"
-                          : "bg-[#1a1a23] text-muted-foreground"
+                          : "bg-muted/60 text-muted-foreground"
                         }`}>
                         {isLive && <span className="w-1.5 h-1.5 rounded-full bg-[#34c77b]" />}
                         {isLive ? t("dashboard.sites.statusLive") : t("dashboard.sites.statusDraft")}
@@ -893,7 +893,7 @@ export default function SitesPage() {
                             e.stopPropagation();
                             setActiveDropdown(activeDropdown === site.id ? null : site.id);
                           }}
-                          className="p-1 rounded-lg text-muted-foreground hover:text-white hover:bg-[#1a1a23] transition-colors cursor-pointer"
+                          className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
                           aria-label={t("dashboard.sites.moreOptions")}
                         >
                           <MoreVertical className="w-4.5 h-4.5" />
@@ -902,7 +902,7 @@ export default function SitesPage() {
                         {activeDropdown === site.id && (
                           <div
                             onClick={(e) => e.stopPropagation()}
-                            className="absolute top-8 right-0 z-20 bg-[#1a1a23] border border-white/[0.14] rounded-lg p-1.5 min-w-[170px] shadow-2xl flex flex-col gap-0.5 animate-in fade-in slide-in-from-top-1 duration-150"
+                            className="absolute top-8 right-0 z-20 bg-popover border border-border rounded-lg p-1.5 min-w-[170px] shadow-2xl flex flex-col gap-0.5 animate-in fade-in slide-in-from-top-1 duration-150"
                           >
                             <button
                               onClick={() => {
@@ -910,7 +910,7 @@ export default function SitesPage() {
                                 setActiveDropdown(null);
                               }}
                               disabled={actionLoading === site.id}
-                              className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
+                              className="w-full text-left bg-transparent border-none text-foreground hover:bg-muted/70 text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
                               <Copy className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionDuplicate")}
                             </button>
@@ -919,7 +919,7 @@ export default function SitesPage() {
                                 setRenameTarget(site);
                                 setActiveDropdown(null);
                               }}
-                              className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors"
+                              className="w-full text-left bg-transparent border-none text-foreground hover:bg-muted/70 text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors"
                             >
                               <Edit3 className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionRename")}
                             </button>
@@ -930,7 +930,7 @@ export default function SitesPage() {
                                   setActiveDropdown(null);
                                 }}
                                 disabled={actionLoading === site.id}
-                                className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
+                                className="w-full text-left bg-transparent border-none text-foreground hover:bg-muted/70 text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                               >
                                 <EyeOff className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionUnpublish")}
                               </button>
@@ -952,15 +952,15 @@ export default function SitesPage() {
                   </div>
 
                   {/* URL / Subdomain Row */}
-                  <div className="bg-[#1a1a23] rounded-lg px-3 py-2 flex items-center justify-between gap-2 border border-white/[0.02]">
+                  <div className="bg-muted/60 rounded-lg px-3 py-2 flex items-center justify-between gap-2 border border-border/20">
                     <div className="flex items-center gap-2 min-w-0">
-                      <Globe className="w-3.5 h-3.5 text-[#65656f] shrink-0" />
+                      <Globe className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                       {(!isLive || isDraftSubdomain) ? (
-                        <span className="text-[12px] text-[#65656f] italic truncate">
+                        <span className="text-[12px] text-muted-foreground italic truncate">
                           {t("dashboard.sites.domainNotSet")}
                         </span>
                       ) : (
-                        <span className="text-[12.5px] text-[#f5f5f7] font-mono truncate select-all">
+                        <span className="text-[12.5px] text-foreground font-mono truncate select-all">
                           {getFriendlyDisplayDomain(site)}
                         </span>
                       )}
@@ -968,7 +968,7 @@ export default function SitesPage() {
                     {isLive && !isDraftSubdomain && (
                       <button
                         onClick={() => handleCopyLink(site)}
-                        className={`p-1 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
+                        className={`p-1 text-muted-foreground hover:text-foreground hover:bg-muted/70 rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
                         aria-label={t("dashboard.sites.copyLink")}
                       >
                         {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
@@ -977,7 +977,7 @@ export default function SitesPage() {
                   </div>
 
                   {/* Modification Time Row */}
-                  <div className="flex items-center gap-1 text-[11.5px] text-[#65656f] font-medium">
+                  <div className="flex items-center gap-1 text-[11.5px] text-muted-foreground font-medium">
                     <Info className="w-3.5 h-3.5" />
                     <span>{getFriendlyDate(site, t, dateLocale)}</span>
                   </div>
@@ -986,7 +986,7 @@ export default function SitesPage() {
                   <div className="flex gap-2 border-t border-border pt-3.5 mt-1">
                     <Link
                       href={`/dashboard/sites/${site.id}`}
-                      className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                      className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-muted/50 transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
                     </Link>
@@ -994,7 +994,7 @@ export default function SitesPage() {
                     {isLive ? (
                       <button
                         onClick={() => window.open(getSiteUrl(site), "_blank")}
-                        className="flex-1 py-2 px-1 rounded-xl border border-border bg-[#1a1a23] text-foreground hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        className="flex-1 py-2 px-1 rounded-xl border border-border bg-muted/60 text-foreground hover:bg-muted/70 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> {t("dashboard.sites.viewSite")}
                       </button>
@@ -1018,27 +1018,27 @@ export default function SitesPage() {
 
                   {/* Secondary action links */}
                   <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-none">
-                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkBlog")}
                     </Link>
                     {site.has_catalog && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                         {t("dashboard.sites.linkCatalog")}
                       </Link>
                     )}
                     {site.has_menu && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                         {t("dashboard.sites.linkMenu")}
                       </Link>
                     )}
-                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkSeo")}
                     </Link>
                     <div className="shrink-0 w-px bg-white/[0.06] self-stretch mx-0.5" />
-                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkIntegrations")}
                     </Link>
-                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkTestimonials")}
                     </Link>
                     <Link href={`/dashboard/sites/${site.id}/domain`} className="shrink-0 py-1.5 px-3 rounded-lg border border-primary/30 text-primary/80 hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-medium">
@@ -1055,7 +1055,7 @@ export default function SitesPage() {
             <div className="flex justify-center pt-4">
               <button
                 onClick={() => setLimit(prev => prev + 10)}
-                className="bg-transparent border border-white/[0.14] hover:bg-white/[0.04] text-foreground font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
+                className="bg-transparent border border-border hover:bg-muted/50 text-foreground font-medium text-xs px-6 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> {t("dashboard.sites.loadMore")}
               </button>
@@ -1099,7 +1099,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
         {/* Celebration Anim/Icon */}
         <div className="flex justify-center">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_color-mix(in_srgb,var(--primary)_30%,transparent)] relative">
-            <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
+            <div className="absolute inset-0 rounded-full border-4 border-border animate-ping" />
             <Rocket className="w-10 h-10 text-foreground animate-bounce" style={{ animationDuration: "2.5s" }} />
           </div>
         </div>
@@ -1149,7 +1149,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-muted/50"
             onClick={onClose}
           >
             {t("dashboard.sites.done")}

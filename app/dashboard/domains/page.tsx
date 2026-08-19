@@ -278,7 +278,7 @@ export default function DomainsPage() {
           setShowUpsellModal(false);
           proceedAddDomain(domainInput.toLowerCase().trim());
         }}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-white/[0.04] transition-colors cursor-pointer"
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-muted/50 transition-colors cursor-pointer"
       >
         {t("dashboard.domains.continueConnect")}
       </button>
@@ -301,7 +301,7 @@ export default function DomainsPage() {
       <button
         type="button"
         onClick={() => setShowLimitModal(false)}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-white/[0.04] transition-colors cursor-pointer"
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-muted/50 transition-colors cursor-pointer"
       >
         {t("dashboard.domains.close")}
       </button>
@@ -468,7 +468,7 @@ export default function DomainsPage() {
                           className={`px-3 py-1.5 rounded-lg text-[12px] font-mono font-semibold border transition-colors cursor-pointer ${
                             selected
                               ? "bg-primary/20 text-primary border-primary/40"
-                              : "bg-background text-muted-foreground border-border hover:text-white hover:border-white/30"
+                              : "bg-background text-muted-foreground border-border hover:text-white hover:border-border"
                           }`}
                         >
                           .{tld}
@@ -589,7 +589,7 @@ export default function DomainsPage() {
                   <div className="flex items-center gap-1.5">
                     {!ok && (
                       <button onClick={() => handleVerify(dom.id)} disabled={busy}
-                        className="w-8 h-8 rounded-lg border border-border bg-muted/50 text-muted-foreground flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.checkDns")}>
+                        className="w-8 h-8 rounded-lg border border-border bg-muted/50 text-muted-foreground flex items-center justify-center hover:text-white hover:border-border transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.checkDns")}>
                         {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       </button>
                     )}

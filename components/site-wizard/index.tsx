@@ -592,7 +592,7 @@ export function SiteWizard({
 
   return (
     <div
-      className="relative flex w-screen overflow-hidden bg-[#0d0f14] md:h-screen"
+      className="relative flex w-screen overflow-hidden bg-background md:h-screen"
       style={{ height: "var(--webjoz-app-height, 100dvh)" }}
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
@@ -660,7 +660,7 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={handleStartFresh}
-                className="flex-1 cursor-pointer rounded-lg border border-border py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-white/30 active:scale-95"
+                className="flex-1 cursor-pointer rounded-lg border border-border py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-border active:scale-95"
                 style={{ background: "rgba(255,255,255,0.05)" }}
               >
                 {t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
@@ -688,7 +688,7 @@ export function SiteWizard({
                       type="button"
                       onClick={() => !isLocked && handleConfirmInference(false)}
                       disabled={isLocked}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-border transition-all hover:border-white/30 active:scale-95 disabled:opacity-40"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-border transition-all hover:border-border active:scale-95 disabled:opacity-40"
                       style={{ background: "rgba(255,255,255,0.05)" }}
                     >
                       Bukan
@@ -807,7 +807,7 @@ export function SiteWizard({
                               ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-lg shadow-primary/20"
                               : isLocked
                               ? "border-border/50 bg-white/[0.02] opacity-45 cursor-not-allowed"
-                              : "border-border bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] cursor-pointer active:scale-95"
+                              : "border-border bg-white/[0.03] hover:bg-muted/70 hover:border-border hover:scale-[1.01] cursor-pointer active:scale-95"
                           }`}
                         >
                           {/* Header: Emoji, Label & Selected checkmark / theme tag */}
@@ -838,7 +838,7 @@ export function SiteWizard({
                               {mo.palette.map((color, cIdx) => (
                                 <div
                                   key={cIdx}
-                                  className="size-3 sm:size-3.5 rounded-full border border-white/25 shadow-xs ring-1 ring-black/40"
+                                  className="size-3 sm:size-3.5 rounded-full border border-border shadow-xs ring-1 ring-black/40"
                                   style={{ backgroundColor: color }}
                                   title={color}
                                 />
@@ -1050,7 +1050,7 @@ export function SiteWizard({
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14] transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "preview" || device.mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
             : device.mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
           }`}
@@ -1113,7 +1113,7 @@ export function SiteWizard({
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-[#0d0f14]" ref={previewContainerRef}>
+        <div className="flex-1 overflow-hidden relative bg-background" ref={previewContainerRef}>
           <PreviewCanvas chat={chat} preview={preview} device={device} />
 
           {preview.previewState === "loading" && !device.isMobile && (

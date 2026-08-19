@@ -1052,7 +1052,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.about.textAlign || "left") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-border text-slate-400 hover:border-white/30"
+                      : "border-border text-slate-400 hover:border-border"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1239,7 +1239,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.benefits.textAlign || "center") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-border text-slate-400 hover:border-white/30"
+                      : "border-border text-slate-400 hover:border-border"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1887,7 +1887,7 @@ export default function SectionForms({
                 const n = [...(content.footer?.social_links || []), { platform: "", url: "" }];
                 updateField("footer", "social_links", n);
               }}
-              className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-white/20 rounded-md hover:border-primary/60 transition-colors"
+              className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-border rounded-md hover:border-primary/60 transition-colors"
             >
               + Tambah Media Sosial
             </button>
@@ -2308,7 +2308,7 @@ export default function SectionForms({
 
               {/* Meta tag preview */}
               {gscInput.trim() && (
-                <div className="rounded-md bg-[#0d0f14] border border-border/50 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+                <div className="rounded-md bg-background border border-border/50 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
                   {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
                 </div>
               )}
@@ -2623,7 +2623,7 @@ export default function SectionForms({
                   className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                     (content.gallery?.layout || "grid") === opt.value
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-slate-400 hover:border-white/20"
+                      : "border-border text-slate-400 hover:border-border"
                   }`}
                 >
                   <div className="text-[11px] font-semibold">{opt.label}</div>
@@ -2651,7 +2651,7 @@ export default function SectionForms({
                   type="checkbox"
                   checked={content.gallery?.show_dots ?? true}
                   onChange={(e) => updateField("gallery", "show_dots", e.target.checked)}
-                  className="rounded border-white/20"
+                  className="rounded border-border"
                 />
                 <span className="text-[11px] font-medium text-slate-400">Tampilkan indikator titik</span>
               </label>
@@ -2660,7 +2660,7 @@ export default function SectionForms({
                   type="checkbox"
                   checked={content.gallery?.show_arrows ?? true}
                   onChange={(e) => updateField("gallery", "show_arrows", e.target.checked)}
-                  className="rounded border-white/20"
+                  className="rounded border-border"
                 />
                 <span className="text-[11px] font-medium text-slate-400">Tampilkan tombol navigasi</span>
               </label>
@@ -2811,7 +2811,7 @@ export default function SectionForms({
                       if (isProGated) { onUpgradeRequired?.(); return; }
                       updateDesignTokenLayout?.("floating_button", opt.value);
                     }}
-                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]"} ${isProGated ? "opacity-60" : ""}`}
+                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-white/[0.03] hover:border-border hover:bg-muted/70"} ${isProGated ? "opacity-60" : ""}`}
                   >
                     <span className="text-lg block mb-1">{opt.icon}</span>
                     <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>

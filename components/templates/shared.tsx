@@ -99,7 +99,7 @@ function WaLeadModal({ onSubmitLead, onClose }: {
             className="w-full min-h-10 py-2.5 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 rounded-xl cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #fff)" }}
           >
-            {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
+            {loading ? <span className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
             <span>{loading ? "Mengirim..." : "Kirim Pesanan"}</span>
           </button>
         </form>
@@ -459,7 +459,7 @@ const WAFloatingButton: React.FC<{
             {/* Header */}
             <div className="bg-[#075E54] p-4 flex items-center justify-between text-white">
               <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs border border-white/25">
+                <div className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs border border-border">
                   {brandName.substring(0, 2).toUpperCase()}
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#075E54] animate-pulse" />
                 </div>
@@ -891,7 +891,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       </svg>
                       {/* Avatar */}
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 border border-white/20"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 border border-border"
                         style={{ background: t.avatar_color || accentColor }}
                       >
                         {t.avatar_initials}
@@ -1532,7 +1532,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass }: {
 // ─── SEO Editor Preview ───────────────────────────────────────────────────────
 
 const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string; keywords?: string[]; og_type?: string; twitter_card?: string; robots?: string; canonical_path?: string } }) => (
-  <section className="bg-[#0d0f14] px-5 py-8 border-t border-white/5">
+  <section className="bg-background px-5 py-8 border-t border-white/5">
     <div className="max-w-2xl mx-auto space-y-6">
 
       {/* Info banner */}
@@ -2275,7 +2275,7 @@ export function InlineImage({
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
         disabled={uploading}
-        className={`absolute inset-x-0 bottom-3 mx-auto w-max z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/30 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
+        className={`absolute inset-x-0 bottom-3 mx-auto w-max z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-border hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
           isSelected ? "opacity-100" : "max-md:opacity-100 opacity-0 md:group-hover:opacity-100"
         }`}
       >

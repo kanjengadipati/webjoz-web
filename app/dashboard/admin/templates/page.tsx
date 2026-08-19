@@ -649,7 +649,7 @@ export default function TemplateGalleryPage() {
                         {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
                           <div 
                             key={i} 
-                            className="size-6 rounded-full border border-white/20 shadow-sm transition-transform hover:scale-110" 
+                            className="size-6 rounded-full border border-border shadow-sm transition-transform hover:scale-110" 
                             style={{ background: c }} 
                             title={c} 
                           />
@@ -818,7 +818,7 @@ export default function TemplateGalleryPage() {
                           {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
                             <div 
                               key={i} 
-                              className="size-6 rounded-full border border-white/20 shadow-sm transition-transform hover:scale-110" 
+                              className="size-6 rounded-full border border-border shadow-sm transition-transform hover:scale-110" 
                               style={{ background: c }} 
                               title={c} 
                             />

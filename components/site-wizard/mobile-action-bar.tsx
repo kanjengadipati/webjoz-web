@@ -30,7 +30,7 @@ export function MobileActionBar({
       <button
         type="button"
         onClick={onOpenSheet}
-        className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
+        className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-border px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
       >
         <Plus className="h-3.5 w-3.5 text-slate-400" />
         {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}

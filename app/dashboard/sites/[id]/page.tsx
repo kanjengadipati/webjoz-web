@@ -1238,7 +1238,7 @@ export default function SiteEditorPage() {
   }
 
   return (
-    <div className="flex w-screen h-screen overflow-hidden bg-[#0d0f14] text-slate-100">
+    <div className="flex w-screen h-screen overflow-hidden bg-background text-slate-100">
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
@@ -1297,7 +1297,7 @@ export default function SiteEditorPage() {
                     disabled={designOnlyUndo.length === 0}
                     aria-label={t("dashboard.sitesEditor.undoDesign")}
                     title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
-                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
+                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-slate-400"
                   >
                     <RotateCcw className="h-2.5 w-2.5" />
                   </button>
@@ -1308,7 +1308,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                 disabled={templateSaving || !!pendingDiff}
-                className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
                 aria-expanded={templatePickerOpen}
               >
@@ -1335,7 +1335,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={isTopActive}
@@ -1373,7 +1373,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={active}
@@ -1421,7 +1421,7 @@ export default function SiteEditorPage() {
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
                                 ? "border-primary bg-primary/15"
-                                : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                                : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
                                 }`}
                               role="option"
                               aria-selected={active}
@@ -2123,7 +2123,7 @@ export default function SiteEditorPage() {
 
         {/* ════ RIGHT CANVAS ════ */}
         <div
-          className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-[#0d0f14]"
+          className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background"
           style={{
             // Mobile: float above the bottom sheet drawer
             // Desktop: float just above the sticky publish footer (~56px = 3.5rem)
@@ -2196,7 +2196,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Canvas topbar */}
-          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-[#0d0f14] px-3">
+          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-border bg-white/[0.04] p-0.5">
               <div className="relative group">
@@ -2439,7 +2439,7 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-[#0d0f14] flex items-start justify-center pb-[48vh] md:pb-24"
+          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-background flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
               // Collapse sheet when user taps the preview area on mobile
               const target = e.target as HTMLElement;
@@ -2893,7 +2893,7 @@ export default function SiteEditorPage() {
                     <button type="button"
                       onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                       disabled={templateSaving || !!pendingDiff}
-                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-10 flex-shrink-0">
                         <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
@@ -2912,7 +2912,7 @@ export default function SiteEditorPage() {
                             <button key="top-dynamic-template" type="button"
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
@@ -2930,7 +2930,7 @@ export default function SiteEditorPage() {
                             <button key={template.id} type="button"
                               onClick={() => void handleTemplateChange(template.id)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
@@ -3129,7 +3129,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Desktop sticky publish footer — inside canvas */}
-          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-border bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
+          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-border bg-background/95 backdrop-blur px-6 py-1">
             <SiteSubNav siteId={siteId!} compact />
             <div className="flex items-center gap-3 flex-shrink-0">
               {siteDetails?.status === "published" ? (
@@ -3243,7 +3243,7 @@ export default function SiteEditorPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
+                className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-muted/50"
                 onClick={() => setUpgradePromptOpen(false)}
               >
                 {t("dashboard.sitesEditor.later")}

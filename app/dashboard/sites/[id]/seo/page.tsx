@@ -292,7 +292,7 @@ export default function SeoManagerPage() {
             <p className="text-[12px] text-slate-400">{t("dashboard.sitesSeo.upgradeDesc")}</p>
             <div className="flex gap-2 pt-1">
               <button type="button" onClick={() => setUpgradeOpen(false)}
-                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
+                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-muted/50 transition-colors"
               >{t("dashboard.sitesSeo.later")}</button>
               <Link href="/dashboard/upgrade"
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-1.5 hover:bg-primary/90 transition-colors"
