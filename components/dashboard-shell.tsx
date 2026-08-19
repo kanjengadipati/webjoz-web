@@ -295,8 +295,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     <div className="size-12 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-lg shadow-sm">
                       {userInitial}
                     </div>
-                    {/* Online dot */}
-                    <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-emerald-500 border-2 border-background shadow" />
                   </div>
 
                   <div className="space-y-0.5">
