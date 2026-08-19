@@ -209,7 +209,7 @@ function PaletteStrip({ palette }: { palette: ColorPattern["palette"] }) {
       {(["primary", "accent", "background", "surface", "text"] as const).map((k) => (
         <div
           key={k}
-          className="size-5 rounded-full border border-white/20 shadow-sm shrink-0"
+          className="size-5 rounded-full border border-border shadow-sm shrink-0"
           style={{ background: palette[k] }}
           title={`${k}: ${palette[k]}`}
         />

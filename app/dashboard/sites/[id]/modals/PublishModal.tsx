@@ -77,7 +77,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
-                  : "border-border hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
+                  : "border-border hover:border-border focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
             }`}
           >
             <input
@@ -149,7 +149,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-muted/50"
             onClick={onCancel}
             disabled={loading}
           >

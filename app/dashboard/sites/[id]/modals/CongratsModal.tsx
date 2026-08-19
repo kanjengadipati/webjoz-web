@@ -63,7 +63,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
         {/* Celebration icon */}
         <div className="flex justify-center">
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
-            <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping" />
+            <div className="absolute inset-0 rounded-full border-4 border-border animate-ping" />
             <Rocket
               className="w-10 h-10 text-white animate-bounce"
               style={{ animationDuration: "2.5s" }}
@@ -142,7 +142,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
+              className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-muted/50"
               onClick={onContinueEditing}
             >
               {t("dashboard.sites.continueEditing")}
@@ -151,7 +151,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-muted/50"
             onClick={onClose}
           >
             {t("dashboard.sites.done")}

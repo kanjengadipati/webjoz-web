@@ -58,7 +58,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
               transition-all duration-200 whitespace-nowrap select-none outline-none
               ${isActive
                 ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(var(--primary-rgb,99,102,241)/0.45)] scale-[1.02]"
-                : "bg-white/[0.04] border border-white/[0.07] text-slate-400 hover:text-slate-100 hover:bg-white/[0.09] hover:border-white/[0.14] hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-white/[0.04] border border-white/[0.07] text-slate-400 hover:text-slate-100 hover:bg-white/[0.09] hover:border-border hover:scale-[1.02] active:scale-[0.98]"
               }
             `}
           >

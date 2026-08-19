@@ -88,7 +88,7 @@ export default function IndustryPresetPicker({
             {PALETTE_KEYS.map((key) => (
               <div
                 key={key}
-                className="w-3.5 h-3.5 rounded-sm border border-white/20"
+                className="w-3.5 h-3.5 rounded-sm border border-border"
                 style={{ backgroundColor: aiPalette[key] }}
                 title={key}
               />
@@ -145,7 +145,7 @@ export default function IndustryPresetPicker({
               className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
-                  : "border-border hover:border-white/30 bg-white/5 hover:bg-white/10"
+                  : "border-border hover:border-border bg-white/5 hover:bg-white/10"
               }`}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
@@ -157,7 +157,7 @@ export default function IndustryPresetPicker({
                   {PALETTE_KEYS.map((key) => (
                     <div
                       key={key}
-                      className="w-3.5 h-3.5 rounded-sm border border-white/20"
+                      className="w-3.5 h-3.5 rounded-sm border border-border"
                       style={{ backgroundColor: pattern.palette[key] }}
                       title={key}
                     />

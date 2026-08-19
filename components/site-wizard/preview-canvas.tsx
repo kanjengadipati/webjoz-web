@@ -86,13 +86,13 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   );
 
   return (
-    <div className="h-full flex flex-col overflow-hidden relative bg-[#0d0f14]">
+    <div className="h-full flex flex-col overflow-hidden relative bg-background">
       <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSwitchingTemplate ? "opacity-0 scale-[0.98] pointer-events-none" : "opacity-100 scale-100"}`} style={{
         filter: `blur(${previewBlurPx}px)`,
         transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, transform 0.3s",
       }}>
         {device.previewDevice === "mobile" ? (
-          <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`mobile-${regenCount}-${historyIndex}`}>
+          <div className="flex-1 min-h-0 overflow-auto bg-background p-4" key={`mobile-${regenCount}-${historyIndex}`}>
             <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
               <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
               <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
@@ -102,7 +102,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
             </div>
           </div>
         ) : device.previewDevice === "tablet" ? (
-          <div className="flex-1 min-h-0 overflow-auto bg-[#0d0f14] p-4" key={`tablet-${regenCount}-${historyIndex}`}>
+          <div className="flex-1 min-h-0 overflow-auto bg-background p-4" key={`tablet-${regenCount}-${historyIndex}`}>
             <div className="relative mx-auto my-3 h-[820px] w-[540px] max-w-full flex-shrink-0 rounded-[20px] border-8 border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
               <div className="relative z-10 h-full w-full overflow-hidden rounded-[12px] bg-white">
                 <DevicePreviewFrame device="tablet" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
@@ -110,13 +110,13 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
             </div>
           </div>
         ) : (
-          <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#0d0f14] pb-8" key={`desktop-${regenCount}-${historyIndex}`}>
+          <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-background pb-8" key={`desktop-${regenCount}-${historyIndex}`}>
             <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef}>{templatePreview}</DevicePreviewFrame>
           </div>
         )}
       </div>
       {isSwitchingTemplate && (
-        <div className="absolute inset-0 z-30 overflow-hidden bg-[#0d0f14]/70 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-30 overflow-hidden bg-background/70 backdrop-blur-[2px]">
           <Wireframe
             businessName={chat.businessName}
             businessType={chat.businessType}

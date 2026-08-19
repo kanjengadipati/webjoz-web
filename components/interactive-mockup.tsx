@@ -907,7 +907,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
               transform: flowStep >= STEP_PREVIEW ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(-4px)",
             }}
           >
-            <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-white/20 rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg">
+            <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-border rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
               {domainSlug(showcaseItem.businessName)}.webjoz.com
             </div>

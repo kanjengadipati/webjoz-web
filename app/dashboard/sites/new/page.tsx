@@ -15,7 +15,7 @@ export default function NewSiteWizardPage() {
 
   if (tenantLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-3 bg-[#0d0f14]">
+      <div className="flex flex-col items-center justify-center h-screen gap-3 bg-background">
         <Loader2 className="w-6 h-6 text-primary animate-spin" />
         <p className="text-xs text-slate-500">{t("dashboard.sitesNew.connecting")}</p>
       </div>
@@ -24,7 +24,7 @@ export default function NewSiteWizardPage() {
 
   if (!activeTenantId) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4 bg-[#0d0f14] px-6 text-center">
+      <div className="flex flex-col items-center justify-center h-screen gap-4 bg-background px-6 text-center">
         <Building2 className="w-12 h-12 text-primary/60 mx-auto" />
         <h2 className="text-lg font-bold text-white">{t("dashboard.sitesNew.noWorkspaceTitle")}</h2>
         <p className="text-xs text-slate-500 max-w-xs">
