@@ -73,7 +73,7 @@ export function useActiveTenant() {
           const slug = `workspace-${userId}`;
           const createRes = await request<{ id: number }>("/tenants", {
             method: "POST",
-            body: JSON.stringify({ name: "Workspace Utama", slug }),
+            body: JSON.stringify({ name: "Akun Saya", slug }),
           }, token);
           
           if (createRes.status === "success" && createRes.data?.id) {
