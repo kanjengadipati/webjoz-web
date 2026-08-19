@@ -837,9 +837,45 @@ export default function SitesPage() {
 
       {/* Grid of Site Cards */}
       {loading && sites.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <Loader2 className="w-6 h-6 text-primary animate-spin" />
-          <p className="text-xs text-muted-foreground">{t("dashboard.sites.loadingSites")}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card border border-border/60 rounded-2xl p-[18px] flex flex-col gap-3.5 animate-pulse">
+              {/* Browser Mockup Skeleton */}
+              <div className="w-full rounded-xl overflow-hidden border border-border/50 bg-muted/20">
+                <div className="h-6 px-2.5 bg-muted/50 border-b border-border/40 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-muted-foreground/20" />
+                    <span className="w-2 h-2 rounded-full bg-muted-foreground/20" />
+                    <span className="w-2 h-2 rounded-full bg-muted-foreground/20" />
+                  </div>
+                  <div className="h-3 bg-muted-foreground/15 rounded-full w-20" />
+                  <div className="w-5" />
+                </div>
+                <div className="w-full aspect-[16/9.5] bg-muted/30" />
+              </div>
+              {/* Title & Badge Skeleton */}
+              <div className="flex justify-between items-center gap-2 pt-0.5">
+                <div className="h-5 bg-muted rounded-md w-36" />
+                <div className="h-5 bg-muted rounded-full w-14" />
+              </div>
+              {/* Domain bar skeleton */}
+              <div className="h-9 bg-muted/40 rounded-lg w-full" />
+              {/* Timestamp skeleton */}
+              <div className="h-3.5 bg-muted/30 rounded w-28" />
+              {/* Action buttons skeleton */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="h-9 bg-muted/60 rounded-xl" />
+                <div className="h-9 bg-muted/60 rounded-xl" />
+              </div>
+              {/* Quick links skeleton */}
+              <div className="flex gap-1.5 pt-0.5">
+                <div className="h-6 bg-muted/30 rounded-lg w-12" />
+                <div className="h-6 bg-muted/30 rounded-lg w-14" />
+                <div className="h-6 bg-muted/30 rounded-lg w-10" />
+                <div className="h-6 bg-muted/30 rounded-lg w-16" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : filteredSites.length === 0 ? (
         <div className="bg-card border border-border rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
@@ -864,10 +900,30 @@ export default function SitesPage() {
               const isDraftSubdomain = isTemporarySubdomain(site.subdomain);
 
               return (
-                <div key={site.id} className="bg-card border border-border hover:border-border rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
-                  {/* Preview iframe */}
-                  <div className="w-full aspect-video rounded-lg relative overflow-hidden select-none bg-muted/40">
-                    <IframePreview siteId={site.id} />
+                <div
+                  key={site.id}
+                  className="bg-card border border-border rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)] group relative"
+                >
+                  {/* Browser Mockup Frame */}
+                  <div className="w-full rounded-xl overflow-hidden border border-border/80 bg-muted/30 shadow-sm group-hover:border-primary/30 group-hover:shadow-md transition-all duration-300">
+                    {/* Mockup Titlebar */}
+                    <div className="h-6 px-2.5 bg-muted/60 border-b border-border/60 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-red-400/80" />
+                        <span className="w-2 h-2 rounded-full bg-amber-400/80" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-400/80" />
+                      </div>
+                      <div className="flex-1 max-w-[130px] h-3.5 bg-background/60 rounded-full flex items-center justify-center px-2">
+                        <span className="text-[8.5px] font-mono text-muted-foreground/80 truncate">
+                          {site.subdomain ? `${site.subdomain}.webjoz.com` : "webjoz.com"}
+                        </span>
+                      </div>
+                      <div className="w-5" />
+                    </div>
+                    {/* Preview iframe */}
+                    <div className="w-full aspect-[16/9.5] relative overflow-hidden select-none bg-muted/40">
+                      <IframePreview siteId={site.id} />
+                    </div>
                   </div>
 
                   {/* Header / Info Row */}
