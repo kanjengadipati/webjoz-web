@@ -390,7 +390,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     <CardTitle className="text-2xl font-bold tracking-tighter">{t("dashboard.consoleTitle")}</CardTitle>
                   </div>
                   <CardDescription className="text-xs font-medium opacity-80">
-                    {t("dashboard.adminWorkspace", undefined, { env: ENV_NAME })}
+                    {t("dashboard.adminWorkspace")}
                   </CardDescription>
                 </div>
               </CardHeader>

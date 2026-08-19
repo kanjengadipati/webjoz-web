@@ -89,6 +89,21 @@ export default function DomainsPage() {
   const [buyingDomain,      setBuyingDomain]      = useState<string | null>(null);
   const [purchaseAvailable, setPurchaseAvailable] = useState(true);
 
+  // Purchaser data modal
+  const [showPurchaserModal, setShowPurchaserModal] = useState(false);
+  const [purchaserDomain,    setPurchaserDomain]    = useState("");
+  const [purchaser, setPurchaser] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "ID",
+    zip: "",
+  });
+
   // ────────────────────────────────────────────────────────
   const fetchPurchased = async () => {
     if (!token || !activeTenantId) return;
@@ -179,18 +194,39 @@ export default function DomainsPage() {
   };
 
   const handleBuy = async (domain: string) => {
-    if (!token || !activeTenantId || !siteId) return;
+    setPurchaserDomain(domain);
+    setShowPurchaserModal(true);
+  };
+
+  const confirmBuy = async () => {
+    if (!token || !activeTenantId || !siteId || !purchaserDomain) return;
     try {
-      setBuyingDomain(domain);
+      setBuyingDomain(purchaserDomain);
       await request<PurchasedDomain>("/domain-purchases", {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({ site_id: Number(siteId), domain_name: domain, years: 1 }),
+        body: JSON.stringify({
+          site_id: Number(siteId),
+          domain_name: purchaserDomain,
+          years: 1,
+          purchaser: {
+            name: purchaser.name,
+            company: purchaser.company,
+            email: purchaser.email,
+            phone: purchaser.phone,
+            address: purchaser.address,
+            city: purchaser.city,
+            state: purchaser.state,
+            country: purchaser.country,
+            zip: purchaser.zip,
+          },
+        }),
       }, token);
       pushToast(t("dashboard.domains.buySuccess"), "success");
       setResults([]);
       setSearched(false);
       setBuyName("");
+      setShowPurchaserModal(false);
       fetchPurchased();
       fetchData();
     } catch (err: unknown) {
