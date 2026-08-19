@@ -276,7 +276,7 @@ function PreviewModal({
             </button>
             <button
               onClick={onClose}
-              className="w-full rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white font-medium text-sm py-2.5 transition-all"
+              className="w-full rounded-xl border border-white/10 bg-muted/50 hover:bg-white/[0.08] text-slate-400 hover:text-white font-medium text-sm py-2.5 transition-all"
             >
               Tutup
             </button>
@@ -390,10 +390,10 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
   if (items === null) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse" aria-hidden>
-        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-white/[0.04] border border-white/10 h-72 sm:h-80 lg:h-[340px]" />
+        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-muted/50 border border-white/10 h-72 sm:h-80 lg:h-[340px]" />
         <div className="sm:col-span-2 grid grid-cols-2 gap-4">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-2xl bg-white/[0.04] border border-white/10 h-36 sm:h-40" />
+            <div key={i} className="rounded-2xl bg-muted/50 border border-white/10 h-36 sm:h-40" />
           ))}
         </div>
       </div>
@@ -490,7 +490,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
           <div className="text-center pt-2">
             <button
               onClick={() => setShowAll(true)}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-all border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-border px-5 py-2.5 rounded-full group"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-all border border-white/10 bg-muted/50 hover:bg-white/[0.08] hover:border-border px-5 py-2.5 rounded-full group"
             >
               <svg
                 width="14" height="14" viewBox="0 0 24 24" fill="none"

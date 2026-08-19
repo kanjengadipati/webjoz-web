@@ -124,7 +124,7 @@ export default function ColumnsWithNav({
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--dt-radius)] border border-white/10 bg-white/[0.03] transition-all hover:bg-white/[0.08] hover:border-border"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--dt-radius)] border border-white/10 bg-muted/40 transition-all hover:bg-white/[0.08] hover:border-border"
                         style={{ color: TXT_HIGH }}
                         title={label}
                       >
@@ -142,7 +142,7 @@ export default function ColumnsWithNav({
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/[0.04] text-[11px] font-medium transition-all hover:bg-white/[0.1] hover:border-border cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-muted/50 text-[11px] font-medium transition-all hover:bg-white/[0.1] hover:border-border cursor-pointer"
                 style={{ color: TXT_HIGH }}
               >
                 <ArrowUp className="w-3.5 h-3.5" />

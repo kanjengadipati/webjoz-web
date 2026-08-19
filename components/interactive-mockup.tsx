@@ -828,7 +828,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
           </div>
 
           {/* Input Bar */}
-          <div className="mt-2 pt-1 flex items-center justify-between rounded-full bg-white/[0.04] border border-white/10 p-1 pl-3.5">
+          <div className="mt-2 pt-1 flex items-center justify-between rounded-full bg-muted/50 border border-white/10 p-1 pl-3.5">
             <span className="text-xs text-white/40 font-normal">
               {translations.landing.typeMessage || "Type your message..."}
             </span>

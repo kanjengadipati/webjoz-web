@@ -153,7 +153,7 @@ export default function CustomDomainPage() {
 
           {/* DNS Table */}
           <div className="rounded-xl overflow-hidden border border-border">
-            <div className="grid grid-cols-3 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <div className="grid grid-cols-3 bg-muted/50 px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               <span>Tipe</span>
               <span>Name / Host</span>
               <span>Value / Target</span>
@@ -168,7 +168,7 @@ export default function CustomDomainPage() {
                 <button
                   type="button"
                   onClick={() => handleCopy(CNAME_TARGET)}
-                  className="p-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] text-muted-foreground hover:text-foreground transition-all shrink-0"
+                  className="p-1 rounded-md bg-muted/50 hover:bg-white/[0.08] text-muted-foreground hover:text-foreground transition-all shrink-0"
                   title="Salin"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}

@@ -15,7 +15,7 @@ export const EMOJI_GROUPS = [
 ];
 
 export const MCF_INPUT_BASE =
-  "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
+  "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500";
 
 export const MCF_INPUT_LABEL = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
 
@@ -250,7 +250,7 @@ export function MenuCatalogForm({
               <label className={MCF_INPUT_LABEL}>Judul Section</label>
               {renderFieldActions("title")}
             </div>
-            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. Menu ${sectionTitle}`} className={`${MCF_INPUT_BASE} bg-white/[0.04]`} />
+            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. Menu ${sectionTitle}`} className={`${MCF_INPUT_BASE} bg-muted/50`} />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -305,13 +305,13 @@ export function MenuCatalogForm({
             {expandedCat === catIdx && (
               <div className="p-3 space-y-3">
                 {(cat.items ?? []).length === 0 && (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center text-xs text-slate-500">
+                  <div className="rounded-xl border border-dashed border-white/10 bg-muted/30 p-4 text-center text-xs text-slate-500">
                     Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
                   </div>
                 )}
 
                 {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-muted/30 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
                       <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
@@ -363,7 +363,7 @@ export function MenuCatalogForm({
                         </div>
 
                         {/* Toolbar */}
-                        <div className="flex items-center gap-1.5 bg-white/[0.02] border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
+                        <div className="flex items-center gap-1.5 bg-muted/30 border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
                           <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border border-white/5" title="Tambah List Bulat">
                             <span>•</span> List
                           </button>
@@ -394,7 +394,7 @@ export function MenuCatalogForm({
                                         {group.emojis.map((emoji) => (
                                           <button key={emoji} type="button"
                                             onClick={() => { updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji); setActiveEmojiPicker(null); }}
-                                            className="h-7 w-7 rounded bg-white/[0.03] hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
+                                            className="h-7 w-7 rounded bg-muted/40 hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
                                           >{emoji}</button>
                                         ))}
                                       </div>

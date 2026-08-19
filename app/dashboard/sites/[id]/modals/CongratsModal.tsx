@@ -101,7 +101,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
             <button
               type="button"
               onClick={handleCopy}
-              className="p-2 bg-white/[0.04] border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
+              className="p-2 bg-muted/50 border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
               title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? (

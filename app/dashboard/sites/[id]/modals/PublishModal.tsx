@@ -90,7 +90,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
               className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-foreground outline-none placeholder:text-muted-foreground min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-muted/30 select-none">
               .webjoz.com
             </span>
           </div>
@@ -99,7 +99,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             <div
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${
                 isInputValid
-                  ? "bg-[#3ddc84]/8 text-[#5fe3a0] border border-[#3ddc84]/20"
+                  ? "bg-[#3ddc84]/8 text-emerald-600 dark:text-[#5fe3a0] border border-[#3ddc84]/20"
                   : "bg-red-500/8 text-[#ff8a8a] border border-red-500/20"
               }`}
             >
@@ -120,7 +120,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
         {/* Custom Domain premium upselling banner */}
         <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
+          <div className="w-9 h-9 rounded-lg bg-muted/40 border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">

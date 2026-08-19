@@ -609,7 +609,7 @@ export function SiteWizard({
               type="button"
               onClick={handleBack}
               aria-label="Kembali"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50 text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -806,8 +806,8 @@ export function SiteWizard({
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-lg shadow-primary/20"
                               : isLocked
-                              ? "border-border/50 bg-white/[0.02] opacity-45 cursor-not-allowed"
-                              : "border-border bg-white/[0.03] hover:bg-muted/70 hover:border-border hover:scale-[1.01] cursor-pointer active:scale-95"
+                              ? "border-border/50 bg-muted/30 opacity-45 cursor-not-allowed"
+                              : "border-border bg-muted/40 hover:bg-muted/70 hover:border-border hover:scale-[1.01] cursor-pointer active:scale-95"
                           }`}
                         >
                           {/* Header: Emoji, Label & Selected checkmark / theme tag */}
@@ -891,7 +891,7 @@ export function SiteWizard({
                           key={bt.value}
                           onClick={() => !isLocked && chat.handleSelectType(bt.value)}
                           disabled={isLocked}
-                          className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-white/[0.04] border-white/[0.07]"}`}
+                          className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-muted/50 border-white/[0.07]"}`}
                         >
                           <span className="text-lg">{bt.emoji}</span>
                           <div className="flex items-center gap-2">
@@ -1060,12 +1060,12 @@ export function SiteWizard({
             type="button"
             onClick={() => device.setMobileScreen("chat")}
             aria-label={t("dashboard.wizard.backToChat", "Kembali ke chat")}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50 text-slate-300 transition-all active:scale-95 md:hidden"
           >
             <MessageCircle className="h-4 w-4" />
           </button>
 
-          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-white/[0.04] p-0.5">
+          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
             <button
               type="button"
               onClick={() => device.setPreviewDevice("desktop")}
@@ -1096,7 +1096,7 @@ export function SiteWizard({
             <button
               type="button"
               onClick={preview.handleSwitchTemplate}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-muted/50 transition-all hover:border-primary/40 hover:text-white active:scale-95"
             >
               <RefreshCw size={11} />
               Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})

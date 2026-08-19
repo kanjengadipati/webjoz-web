@@ -168,7 +168,7 @@ function getUnsplashPool(businessType: string): string[] {
 function CollapsibleGroup({ label, defaultOpen = false, children }: { label: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border border-border rounded-md bg-white/[0.02]">
+    <div className="border border-border rounded-md bg-muted/30">
       <button type="button" onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-wide font-semibold text-slate-400 cursor-pointer">
         <span>{label}</span>
         {open ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -415,7 +415,7 @@ function LinkTypeInput({
         <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           Tipe Aksi Tombol
         </label>
-        <div className="flex p-0.5 rounded bg-white/[0.04] border border-border/50">
+        <div className="flex p-0.5 rounded bg-muted/50 border border-border/50">
           <button
             type="button"
             onClick={() => handleTypeChange("whatsapp")}
@@ -700,7 +700,7 @@ export default function SectionForms({
               className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
             <input 
               type="checkbox" 
@@ -808,7 +808,7 @@ export default function SectionForms({
                     }}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium border transition-all ${
                       hidden
-                        ? "border-border/50 bg-white/[0.03] text-slate-600 line-through"
+                        ? "border-border/50 bg-muted/40 text-slate-600 line-through"
                         : "border-primary/20 bg-primary/10 text-primary"
                     }`}
                   >
@@ -1124,7 +1124,7 @@ export default function SectionForms({
               const statKey = `highlight_stat_${n}` as "highlight_stat_1" | "highlight_stat_2" | "highlight_stat_3";
               const stat = (content.about as any)[statKey] as { value?: string; label?: string } | undefined;
               return (
-                <div key={n} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                <div key={n} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Stat {n}</span>
                   <div className="flex gap-2">
                     <div className="flex-1 space-y-0.5">
@@ -1155,7 +1155,7 @@ export default function SectionForms({
           {/* Milestones */}
           <CollapsibleGroup label="Milestones / Timeline" defaultOpen={false}>
             {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (
-              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Milestone {idx + 1}</span>
                   <button type="button" onClick={() => {
@@ -1174,7 +1174,7 @@ export default function SectionForms({
           {/* Team Members */}
           <CollapsibleGroup label="Anggota Tim" defaultOpen={false}>
             {((content.about?.team_members as any[]) || []).map((m: any, idx: number) => (
-              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Anggota {idx + 1}</span>
                   <button type="button" onClick={() => {
@@ -1248,7 +1248,7 @@ export default function SectionForms({
             </div>
           </div>
           {content.benefits.items?.map((item: any, idx: number) => (
-            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
+            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">#{idx + 1}</span>
                 <button 
@@ -1340,7 +1340,7 @@ export default function SectionForms({
               </div>
             </div>
             {((content.benefits?.comparison?.rows as any[]) || []).map((row: any, idx: number) => (
-              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Baris {idx + 1}</span>
                   <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
@@ -1373,7 +1373,7 @@ export default function SectionForms({
             />
           </div>
           {content.faq.items?.map((item: any, idx: number) => (
-            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
+            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">FAQ #{idx + 1}</span>
                 <button 
@@ -1527,7 +1527,7 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Rata Konten</label>
-            <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-white/[0.03] p-1">
+            <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-muted/40 p-1">
               {[
                 { value: "left", label: "Kiri" },
                 { value: "center", label: "Tengah" },
@@ -1621,7 +1621,7 @@ export default function SectionForms({
               className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Formulir Kontak</span>
             <input 
               type="checkbox" 
@@ -1630,7 +1630,7 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Peta Lokasi</span>
             <input 
               type="checkbox" 
@@ -1639,7 +1639,7 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
             <div className="flex gap-1">
               {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
@@ -2185,7 +2185,7 @@ export default function SectionForms({
               />
             ) : (
               <div
-                className="rounded-lg border border-border bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+                className="rounded-lg border border-border bg-muted/30 px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
                 onClick={() => onUpgradeRequired?.()}
               >
                 <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
@@ -2271,7 +2271,7 @@ export default function SectionForms({
           })()}
 
           {/* ── Google Search Console ── */}
-          <div className="rounded-xl border border-border bg-white/[0.02] overflow-hidden">
+          <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
             <div className="p-4 space-y-3">
               {/* Header */}
               <div className="flex items-center justify-between gap-2">
@@ -2295,7 +2295,7 @@ export default function SectionForms({
               </div>
 
               {/* How-to steps */}
-              <div className="rounded-lg bg-white/[0.03] border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
+              <div className="rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
                 <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
                 <ol className="space-y-1 list-decimal list-inside">
                   <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
@@ -2388,7 +2388,7 @@ export default function SectionForms({
             />
           </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
-            <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-white/[0.02]">
+            <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-muted/30">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Testimoni #{idx + 1}</span>
                 <button
@@ -2635,7 +2635,7 @@ export default function SectionForms({
 
           {/* Carousel config (only when carousel selected) */}
           {(content.gallery?.layout || "grid") === "carousel" && (
-            <div className="space-y-3 p-3 rounded-xl border border-border/50 bg-white/[0.02]">
+            <div className="space-y-3 p-3 rounded-xl border border-border/50 bg-muted/30">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Pengaturan Carousel</span>
               <div className="space-y-1">
                 <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kecepatan Putar (ms)</label>
@@ -2683,7 +2683,7 @@ export default function SectionForms({
               </button>
             </div>
             {(content.gallery?.items || []).map((item: any, idx: number) => (
-              <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-white/[0.02] space-y-3">
+              <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-500 font-medium">Foto #{idx + 1}</span>
                   <button
@@ -2811,7 +2811,7 @@ export default function SectionForms({
                       if (isProGated) { onUpgradeRequired?.(); return; }
                       updateDesignTokenLayout?.("floating_button", opt.value);
                     }}
-                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-white/[0.03] hover:border-border hover:bg-muted/70"} ${isProGated ? "opacity-60" : ""}`}
+                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-muted/40 hover:border-border hover:bg-muted/70"} ${isProGated ? "opacity-60" : ""}`}
                   >
                     <span className="text-lg block mb-1">{opt.icon}</span>
                     <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>
@@ -2850,7 +2850,7 @@ export default function SectionForms({
             </div>
           )}
           {designToken?.layout?.floating_button !== "none" && (
-            <div className="rounded-lg border border-border bg-white/[0.03] p-3 text-[11px] text-slate-400 leading-relaxed">
+            <div className="rounded-lg border border-border bg-muted/40 p-3 text-[11px] text-slate-400 leading-relaxed">
               {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
               {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
               {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}

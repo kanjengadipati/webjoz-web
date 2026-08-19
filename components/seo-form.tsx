@@ -480,7 +480,7 @@ export function SeoForm({
           />
         ) : (
           <div
-            className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+            className="rounded-lg border border-white/10 bg-muted/30 px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
             onClick={() => onUpgradeRequired?.()}
           >
             <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
@@ -596,7 +596,7 @@ export function SeoForm({
       })()}
 
       {/* ── Google Search Console ── */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+      <div className="rounded-xl border border-white/10 bg-muted/30 overflow-hidden">
         <div className="p-4 space-y-3">
           {/* Header */}
           <div className="flex items-center justify-between gap-2">
@@ -620,7 +620,7 @@ export function SeoForm({
           </div>
 
           {/* How-to steps */}
-          <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
+          <div className="rounded-lg bg-muted/40 border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
             <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
             <ol className="space-y-1 list-decimal list-inside">
               <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
