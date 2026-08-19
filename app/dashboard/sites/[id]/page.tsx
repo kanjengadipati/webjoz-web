@@ -1264,7 +1264,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Tab Switcher: Konten vs Desain */}
-          <div className="flex border-b border-border p-1 bg-white/[0.02] flex-shrink-0">
+          <div className="flex border-b border-border p-1 bg-muted/30 flex-shrink-0">
             <button
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
@@ -1297,7 +1297,7 @@ export default function SiteEditorPage() {
                     disabled={designOnlyUndo.length === 0}
                     aria-label={t("dashboard.sitesEditor.undoDesign")}
                     title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
-                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-slate-400"
+                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-slate-400"
                   >
                     <RotateCcw className="h-2.5 w-2.5" />
                   </button>
@@ -1308,7 +1308,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                 disabled={templateSaving || !!pendingDiff}
-                className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
                 aria-expanded={templatePickerOpen}
               >
@@ -1335,7 +1335,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
+                          : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={isTopActive}
@@ -1373,7 +1373,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
+                          : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={active}
@@ -1421,7 +1421,7 @@ export default function SiteEditorPage() {
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
                                 ? "border-primary bg-primary/15"
-                                : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"
+                                : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
                                 }`}
                               role="option"
                               aria-selected={active}
@@ -1460,7 +1460,7 @@ export default function SiteEditorPage() {
                               void fetchCustomTemplates(false);
                             }}
                             disabled={loadingTemplates}
-                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-border hover:border-primary/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
+                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-border hover:border-primary/30 rounded-xl hover:bg-muted/30 disabled:opacity-60 flex items-center justify-center gap-1.5"
                           >
                             {loadingTemplates ? (
                               <>
@@ -1574,7 +1574,7 @@ export default function SiteEditorPage() {
                       ? "bg-primary/15"
                       : hiddenSections.includes(key)
                         ? "opacity-40 hover:opacity-60"
-                        : "hover:bg-white/[0.03]"
+                        : "hover:bg-muted/40"
                       }`}
                   >
                     <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
@@ -2135,7 +2135,7 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-white/[0.04] text-slate-300 transition-all active:scale-95"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted/50 text-slate-300 transition-all active:scale-95"
               aria-label={t("dashboard.sitesEditor.back")}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -2198,7 +2198,7 @@ export default function SiteEditorPage() {
           {/* Canvas topbar */}
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
             {/* Device switcher */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-white/[0.04] p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
               <div className="relative group">
                 <button
                   onClick={() => setDevice("desktop")}
@@ -2285,7 +2285,7 @@ export default function SiteEditorPage() {
                 onClick={handleGlobalUndo}
                 aria-label={t("dashboard.sitesEditor.undo")}
                 title={t("dashboard.sitesEditor.undoAllTitle")}
-                className="flex h-6 items-center gap-1 rounded-md border border-border bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                className="flex h-6 items-center gap-1 rounded-md border border-border bg-muted/50 px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <RotateCcw className="h-3 w-3" />
                 {t("dashboard.sitesEditor.undo")}
@@ -2391,7 +2391,7 @@ export default function SiteEditorPage() {
                   </div>
                   <div className="mt-2 grid max-h-40 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
                     {(pendingDiff.rows.length ? pendingDiff.rows : [{ label: t("dashboard.sitesEditor.content"), before: JSON.stringify(pendingDiff.before), after: JSON.stringify(pendingDiff.after) }]).map((row, idx) => (
-                      <div key={`${row.label}-${idx}`} className="rounded-md border border-border bg-white/[0.03] p-2 text-[11px]">
+                      <div key={`${row.label}-${idx}`} className="rounded-md border border-border bg-muted/40 p-2 text-[11px]">
                         <p className="mb-1 font-semibold text-slate-300">{row.label}</p>
                         <div className="grid gap-1">
                           <p className="line-clamp-2 rounded bg-red-400/10 px-2 py-1 text-red-100">
@@ -2652,10 +2652,10 @@ export default function SiteEditorPage() {
             </div>
 
             {/* Consolidated Section Dropdown + Tab Switcher Bar */}
-            <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-border/50 bg-white/[0.02]">
+            <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-border/50 bg-muted/30">
               {/* Active Section Chip / Native Dropdown */}
               <div className="relative flex items-center min-w-0">
-                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-border bg-white/[0.04] text-xs font-semibold text-slate-200 min-w-0">
+                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-border bg-muted/50 text-xs font-semibold text-slate-200 min-w-0">
                   <span
                     className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
                     style={{
@@ -2685,7 +2685,7 @@ export default function SiteEditorPage() {
               </div>
 
               {/* Segmented Konten / Desain Tab Switcher */}
-              <div className="flex items-center rounded-lg p-0.5 bg-white/[0.04] border border-border/50 flex-shrink-0">
+              <div className="flex items-center rounded-lg p-0.5 bg-muted/50 border border-border/50 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setEditorTab("content")}
@@ -2782,7 +2782,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx <= 0 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx - 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 disabled:opacity-30"
                             >
                               <ChevronUp className="w-3.5 h-3.5" />
                             </button>
@@ -2790,7 +2790,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx >= order.length - 1 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx + 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 disabled:opacity-30"
                             >
                               <ChevronDown className="w-3.5 h-3.5" />
                             </button>
@@ -2883,7 +2883,7 @@ export default function SiteEditorPage() {
                       <div className="flex items-center gap-1.5">
                         {designOnlyUndo.length > 0 && (
                           <button type="button" onClick={handleDesignUndo} aria-label={t("dashboard.sitesEditor.undoDesign")}
-                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white">
+                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 hover:text-white">
                             <RotateCcw className="h-2.5 w-2.5" />
                           </button>
                         )}
@@ -2893,7 +2893,7 @@ export default function SiteEditorPage() {
                     <button type="button"
                       onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                       disabled={templateSaving || !!pendingDiff}
-                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-10 flex-shrink-0">
                         <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
@@ -2912,7 +2912,7 @@ export default function SiteEditorPage() {
                             <button key="top-dynamic-template" type="button"
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
@@ -2930,7 +2930,7 @@ export default function SiteEditorPage() {
                             <button key={template.id} type="button"
                               onClick={() => void handleTemplateChange(template.id)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">

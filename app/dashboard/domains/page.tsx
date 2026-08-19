@@ -373,7 +373,7 @@ export default function DomainsPage() {
               <div className="flex flex-col gap-2">
                 {purchased.map(d => (
                   <div key={d.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#3ddc84]/12 text-[#5fe3a0] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0] flex items-center justify-center shrink-0">
                       <Globe className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -382,7 +382,7 @@ export default function DomainsPage() {
                         {t("dashboard.domains.expiresAt")} {new Date(d.expires_at).toLocaleDateString("id-ID")}
                       </p>
                     </div>
-                    <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 bg-[#3ddc84]/12 text-[#5fe3a0]">
+                    <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]">
                       {t("dashboard.domains.active")}
                     </span>
                   </div>
@@ -500,13 +500,13 @@ export default function DomainsPage() {
                   const ok = r.status === "available";
                   const busy = buyingDomain === r.domain;
                   return (
-                    <div key={r.domain} className="bg-white/[0.02] border border-border rounded-xl px-5 py-4 flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
+                    <div key={r.domain} className="bg-muted/30 border border-border rounded-xl px-5 py-4 flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
                         {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-[14px] m-0 text-foreground font-mono truncate">{r.domain}</p>
-                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-[#5fe3a0]" : "text-muted-foreground"}`}>
+                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-emerald-600 dark:text-[#5fe3a0]" : "text-muted-foreground"}`}>
                           {ok ? t("dashboard.domains.available") : t("dashboard.domains.unavailable")}
                         </p>
                       </div>
@@ -564,7 +564,7 @@ export default function DomainsPage() {
               const busy = actionLoading === dom.id;
               return (
                 <div key={dom.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
                     {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -583,7 +583,7 @@ export default function DomainsPage() {
                       {!ok && t("dashboard.domains.waitingPropagation")}
                     </p>
                   </div>
-                  <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
+                  <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
                     {ok ? t("dashboard.domains.active") : t("dashboard.domains.pending")}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -668,14 +668,14 @@ export default function DomainsPage() {
                 className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary placeholder:text-muted-foreground"
               />
               {domainInput.trim() !== "" && (
-                <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
+                <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-emerald-600 dark:text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
                   {inputValid ? t("dashboard.domains.validFormat") : t("dashboard.domains.invalidFormatHint")}
                 </p>
               )}
             </div>
 
             {/* DNS instructions card */}
-            <div className="bg-white/[0.02] border border-border rounded-xl px-5 py-5 space-y-4">
+            <div className="bg-muted/30 border border-border rounded-xl px-5 py-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Server className="w-4 h-4 text-primary" />
                 <span className="text-[13px] font-semibold text-foreground/80">{t("dashboard.domains.dnsInstructions")}</span>
@@ -716,9 +716,9 @@ export default function DomainsPage() {
                           <button
                             type="button"
                             onClick={handleCopy}
-                            className="w-6 h-6 rounded-md border border-border bg-white/[0.04] text-muted-foreground flex items-center justify-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer shrink-0"
+                            className="w-6 h-6 rounded-md border border-border bg-muted/50 text-muted-foreground flex items-center justify-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer shrink-0"
                           >
-                            {copied ? <Check className="w-3 h-3 text-[#5fe3a0]" /> : <Copy className="w-3 h-3" />}
+                            {copied ? <Check className="w-3 h-3 text-emerald-600 dark:text-[#5fe3a0]" /> : <Copy className="w-3 h-3" />}
                           </button>
       {/* Limit Reached Dialog */}
       <Dialog

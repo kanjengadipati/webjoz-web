@@ -1094,7 +1094,7 @@ function MenuCatalogCard({
         ...placeholderStyle,
       }}
     >
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-white/[0.04] shadow-sm">
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-muted/50 shadow-sm">
         {React.createElement(icon, {
           className: placeholderIconClassName || "w-6 h-6",
           style: placeholderIconStyle || { color: "var(--dt-primary)", opacity: 0.9 }

@@ -29,7 +29,7 @@ const EMOJI_GROUPS = [
 
 // ─── Shared input styles ──────────────────────────────────────────────────────
 const inputBase =
-  "w-full px-3 py-2 border border-border rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
+  "w-full px-3 py-2 border border-border rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500";
 const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
 
 // Strip AI-generated literal null strings
@@ -138,7 +138,7 @@ function MenuCatalogForm({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1 space-y-2">
             <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSectionTitle")}</label>
-            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. ${sectionTitle}`} className={`${inputBase} bg-white/[0.04]`} />
+            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. ${sectionTitle}`} className={`${inputBase} bg-muted/50`} />
           </div>
           <div className="space-y-2">
             <label className={inputLabel}>{t("dashboard.sitesKatalog.labelEyebrow")} <span className="text-slate-500 font-normal normal-case">({t("dashboard.sitesKatalog.optional")})</span></label>
@@ -186,13 +186,13 @@ function MenuCatalogForm({
             {expandedCat === catIdx && (
               <div className="p-3 space-y-3">
                 {(cat.items ?? []).length === 0 && (
-                  <div className="rounded-xl border border-dashed border-border bg-white/[0.02] p-4 text-center text-xs text-slate-500">
+                  <div className="rounded-xl border border-dashed border-border bg-muted/30 p-4 text-center text-xs text-slate-500">
                     {t("dashboard.sitesKatalog.noItemsDesc", undefined, { itemLabel })}
                   </div>
                 )}
 
                 {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                  <div key={itemIdx} className="rounded-2xl border border-border bg-white/[0.02] p-3">
+                  <div key={itemIdx} className="rounded-2xl border border-border bg-muted/30 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{t("dashboard.sitesKatalog.itemNumberLabel", undefined, { label: itemLabel, number: String(itemIdx + 1) })}</span>
                       <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
@@ -242,7 +242,7 @@ function MenuCatalogForm({
                         </div>
 
                         {/* Toolbar */}
-                        <div className="flex items-center gap-1.5 bg-white/[0.02] border border-border border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
+                        <div className="flex items-center gap-1.5 bg-muted/30 border border-border border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
                           <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] flex items-center gap-1 border border-border/50">
                             <span>•</span> {t("dashboard.sitesKatalog.bulletList")}
                           </button>
@@ -286,7 +286,7 @@ function MenuCatalogForm({
                           value={item.description ?? ""} rows={3}
                           onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
                           placeholder={`Deskripsi singkat ${itemLabel} ini`}
-                          className="w-full px-3 py-2 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500 resize-y"
+                          className="w-full px-3 py-2 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500 resize-y"
                         />
                       </div>
                     </div>

@@ -137,7 +137,7 @@ export default function PaymentSuccessPage() {
         </div>
 
         {tx && settled && (
-          <div className="bg-white/[0.03] border border-border rounded-2xl p-5 space-y-3 text-left">
+          <div className="bg-muted/40 border border-border rounded-2xl p-5 space-y-3 text-left">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               {t("dashboard.upgradeSuccess.txDetails")}
             </h3>
