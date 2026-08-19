@@ -314,20 +314,20 @@ export default function DashboardOverviewPage() {
     };
 
     return (
-      <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="space-y-8 animate-in fade-in duration-700 w-full min-w-0 max-w-full overflow-hidden">
         {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-card to-background p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group">
+        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-card to-background p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group min-w-0">
           {/* Ambient Lighting Glows */}
           <div className="absolute -right-16 -top-16 size-56 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
           <div className="absolute -left-16 -bottom-16 size-56 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
-            <div className="flex items-start sm:items-center gap-4">
+          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 min-w-0">
+            <div className="flex items-start sm:items-center gap-4 min-w-0">
               {/* Glowing Emerald Icon Badge */}
               <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] text-white">
                 <TrendingUp className="size-6 sm:size-7 stroke-[2.5]" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
                     {t("dashboard.salesOverview.pageTitle")}
@@ -366,57 +366,57 @@ export default function DashboardOverviewPage() {
         </section>
 
         {/* ── Summary cards ────────────────────────────────────────────── */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 min-w-0">
           {[
             { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
             { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-4 text-emerald-500" />, cls: "text-foreground" },
             { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
             { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
           ].map((card) => (
-            <Card key={card.label} className="border-border/40 shadow-sm bg-card">
+            <Card key={card.label} className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-                  {card.label}
+                  <span className="truncate">{card.label}</span>
                   {card.icon}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`text-2xl font-extrabold ${card.cls}`}>{card.value}</div>
-                <p className="text-[11px] text-muted-foreground mt-1">{card.desc}</p>
+                <div className={`text-xl sm:text-2xl font-extrabold truncate ${card.cls}`}>{card.value}</div>
+                <p className="text-[11px] text-muted-foreground mt-1 truncate">{card.desc}</p>
               </CardContent>
             </Card>
           ))}
         </section>
 
         {/* ── Referral code + commission scheme ───────────────────────── */}
-        <section className="grid gap-5 md:grid-cols-2">
+        <section className="grid gap-5 md:grid-cols-2 min-w-0">
           {/* Referral code */}
-          <Card className="border-border/40 shadow-sm bg-card">
+          <Card className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/20">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Share2 className="size-4 text-primary" />
                 {t("dashboard.salesOverview.refCardTitle")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-4">
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
-                <span className="font-mono text-xl font-bold tracking-widest text-primary">
+            <CardContent className="pt-4 space-y-4 min-w-0">
+              <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+                <span className="font-mono text-lg sm:text-xl font-bold tracking-widest text-primary truncate min-w-0">
                   {referralCode || "—"}
                 </span>
                 <button
                   onClick={handleCopyCode}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-3 py-1.5 hover:bg-muted transition cursor-pointer"
+                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-3 py-1.5 hover:bg-muted transition cursor-pointer"
                 >
                   {codeCopied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
                   {codeCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyCode")}
                 </button>
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 min-w-0">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("dashboard.salesOverview.refLinkLabel")}
                 </p>
-                <div className="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
-                  <span className="flex-1 text-xs font-mono text-muted-foreground truncate">{referralUrl || "—"}</span>
+                <div className="flex items-center gap-2 min-w-0 rounded-lg border border-border/40 bg-muted/30 px-3 py-2">
+                  <span className="flex-1 min-w-0 text-xs font-mono text-muted-foreground truncate block">{referralUrl || "—"}</span>
                   <button
                     onClick={handleCopyLink}
                     className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-md border border-border/60 bg-background px-2.5 py-1 hover:bg-muted transition cursor-pointer"
@@ -437,40 +437,40 @@ export default function DashboardOverviewPage() {
           </Card>
 
           {/* Commission scheme */}
-          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm">
+          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden">
             <CardHeader className="pb-3 border-b border-emerald-500/15">
               <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                 <Zap className="size-4" />
                 {t("dashboard.salesOverview.schemeTitle")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-3">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
-                  <div>
+            <CardContent className="pt-4 space-y-3 min-w-0">
+              <div className="space-y-2 min-w-0">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
-                    <p className="text-[11px] text-muted-foreground">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{t1}%</span>
+                  <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
                 </div>
-                <div className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5">
-                  <div>
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tier 2</p>
-                    <p className="text-[11px] text-muted-foreground">{t("dashboard.salesOverview.tier2Desc", undefined, { months: String(months) })}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier2Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-2xl font-extrabold text-muted-foreground">{t2}%</span>
+                  <span className="text-2xl font-extrabold text-muted-foreground shrink-0">{t2}%</span>
                 </div>
               </div>
-              <div className="pt-1 space-y-1.5">
+              <div className="pt-1 space-y-1.5 min-w-0">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 min-w-0">
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Gift className="size-3" />
-                    {t("dashboard.salesOverview.bonusOnboarding")}
+                    <Gift className="size-3 shrink-0" />
+                    <span className="truncate">{t("dashboard.salesOverview.bonusOnboarding")}</span>
                   </div>
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Target className="size-3" />
-                    {t("dashboard.salesOverview.bonusMilestone")}
+                    <Target className="size-3 shrink-0" />
+                    <span className="truncate">{t("dashboard.salesOverview.bonusMilestone")}</span>
                   </div>
                 </div>
               </div>
