@@ -9,7 +9,8 @@ import { request } from "@/lib/api/client";
 import {
   Globe, Loader2, RefreshCw, Edit3, Trash2,
   Check, Copy, Info, CheckCircle2, AlertCircle,
-  Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket
+  Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket,
+  FileText, ShoppingBag, Utensils, Star, Code, Link2
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
@@ -1072,32 +1073,59 @@ export default function SitesPage() {
                     )}
                   </div>
 
-                  {/* Secondary action links */}
-                  <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-none">
-                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                  {/* Secondary action shortcut pills (Flex-wrap with icons - always visible) */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/40">
+                    <Link
+                      href={`/dashboard/sites/${site.id}/blog`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                    >
+                      <FileText className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkBlog")}
                     </Link>
                     {site.has_catalog && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                      <Link
+                        href={`/dashboard/sites/${site.id}/katalog`}
+                        className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                      >
+                        <ShoppingBag className="w-3 h-3 text-muted-foreground/80" />
                         {t("dashboard.sites.linkCatalog")}
                       </Link>
                     )}
                     {site.has_menu && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                      <Link
+                        href={`/dashboard/sites/${site.id}/katalog`}
+                        className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                      >
+                        <Utensils className="w-3 h-3 text-muted-foreground/80" />
                         {t("dashboard.sites.linkMenu")}
                       </Link>
                     )}
-                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                    <Link
+                      href={`/dashboard/sites/${site.id}/seo`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                    >
+                      <Search className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkSeo")}
                     </Link>
-                    <div className="shrink-0 w-px bg-white/[0.06] self-stretch mx-0.5" />
-                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                    <Link
+                      href={`/dashboard/sites/${site.id}/integrations`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                    >
+                      <Code className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkIntegrations")}
                     </Link>
-                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all text-[11px] font-medium">
+                    <Link
+                      href={`/dashboard/sites/${site.id}/testimonials`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                    >
+                      <Star className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkTestimonials")}
                     </Link>
-                    <Link href={`/dashboard/sites/${site.id}/domain`} className="shrink-0 py-1.5 px-3 rounded-lg border border-primary/30 text-primary/80 hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-medium">
+                    <Link
+                      href={`/dashboard/sites/${site.id}/domain`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-primary/35 bg-primary/[0.04] text-primary hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-semibold"
+                    >
+                      <Link2 className="w-3 h-3 text-primary" />
                       {t("dashboard.sites.linkCustomDomain")}
                     </Link>
                   </div>
