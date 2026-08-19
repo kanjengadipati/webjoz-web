@@ -690,6 +690,16 @@ export interface Translations {
       buying: string;
       buySuccess: string;
       buyFailed: string;
+      purchaserTitle: string;
+      purchaserDesc: string;
+      purchaserName: string;
+      purchaserCompany: string;
+      purchaserEmail: string;
+      purchaserPhone: string;
+      purchaserAddress: string;
+      purchaserCity: string;
+      purchaserState: string;
+      purchaserZip: string;
       purchasedTitle: string;
       expiresAt: string;
       purchaseInactive: string;
@@ -2810,6 +2820,16 @@ export const translations: Record<Locale, Translations> = {
         buying: "Memproses pembelian...",
         buySuccess: "Domain berhasil dibeli! DNS sedang diarahkan ke website Anda.",
         buyFailed: "Gagal membeli domain",
+        purchaserTitle: "Data Pendaftaran Domain",
+        purchaserDesc: "Lengkapi data Anda untuk pendaftaran domain. Data ini akan digunakan sebagai data WHOIS domain.",
+        purchaserName: "Nama Lengkap",
+        purchaserCompany: "Perusahaan",
+        purchaserEmail: "Email",
+        purchaserPhone: "Telepon",
+        purchaserAddress: "Alamat",
+        purchaserCity: "Kota",
+        purchaserState: "Provinsi",
+        purchaserZip: "Kode Pos",
         purchasedTitle: "Domain Saya",
         expiresAt: "Berlaku hingga",
         purchaseInactive: "Pembelian domain sedang tidak aktif. Hubungi administrator.",
@@ -4976,6 +4996,16 @@ export const translations: Record<Locale, Translations> = {
         buying: "Processing purchase...",
         buySuccess: "Domain purchased! DNS is being pointed to your website.",
         buyFailed: "Failed to buy domain",
+        purchaserTitle: "Domain Registration Data",
+        purchaserDesc: "Complete your details for domain registration. This data will be used as the domain WHOIS information.",
+        purchaserName: "Full Name",
+        purchaserCompany: "Company",
+        purchaserEmail: "Email",
+        purchaserPhone: "Phone",
+        purchaserAddress: "Address",
+        purchaserCity: "City",
+        purchaserState: "State/Province",
+        purchaserZip: "Postal Code",
         purchasedTitle: "My Domains",
         expiresAt: "Valid until",
         purchaseInactive: "Domain purchase is currently inactive. Contact an administrator.",

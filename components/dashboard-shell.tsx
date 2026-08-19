@@ -248,10 +248,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <div className="flex items-center justify-between pb-3 border-b border-border/40">
               <div className="flex items-center gap-2.5">
                 <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                  {activeTenant?.tenant?.name?.slice(0, 1).toUpperCase() || "W"}
+                  {(() => {
+                    const rawName = activeTenant?.tenant?.name;
+                    const isGeneric = !rawName || rawName === "Workspace Utama" || rawName.toLowerCase().startsWith("workspace");
+                    return isGeneric ? "W" : rawName.slice(0, 1).toUpperCase();
+                  })()}
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-foreground m-0 leading-tight">{activeTenant?.tenant?.name || "Webjoz"}</p>
+                  <p className="font-bold text-sm text-foreground m-0 leading-tight">
+                    {(() => {
+                      const rawName = activeTenant?.tenant?.name;
+                      if (!rawName || rawName === "Workspace Utama" || rawName.toLowerCase().startsWith("workspace")) {
+                        return locale === "id" ? "Akun Saya" : "My Account";
+                      }
+                      return rawName;
+                    })()}
+                  </p>
                   <span className="text-[10px] text-muted-foreground capitalize">{activeTenant?.tenant?.plan || "free"} Plan</span>
                 </div>
               </div>
