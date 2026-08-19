@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
-import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
+import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
 import { ENV_NAME } from "@/lib/config";
 import { DASHBOARD_NAVIGATION } from "@/lib/navigation";
 import { MOTION } from "@/lib/ui-tokens";
@@ -55,14 +55,21 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const authReady = useAuthReady();
   const token = useAuthToken();
+  const storedEmail = useStoredEmail();
   const { t, locale, setLocale } = useI18n();
   const { theme, accent, isMonochrome, toggleAccent, toggleTheme } = useTheme();
   const { pushToast } = useToast();
-  const { hasPermission, role: userRole, loading } = usePermissions();
+  const { hasPermission, role: userRole, profile, loading } = usePermissions();
   const { unreadCount } = useUnreadNotifications();
   const { activeTenant } = useActiveTenant();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isAuthenticated = Boolean(token);
+
+  const userDisplayName = profile?.name 
+    || (profile?.email ? profile.email.split("@")[0] : "") 
+    || (storedEmail ? storedEmail.split("@")[0] : "") 
+    || (locale === "id" ? "Pengguna" : "User");
+  const userInitial = (userDisplayName.slice(0, 1) || "U").toUpperCase();
 
   useEffect(() => {
     if (!authReady || token) return;
@@ -248,21 +255,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <div className="flex items-center justify-between pb-3 border-b border-border/40">
               <div className="flex items-center gap-2.5">
                 <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                  {(() => {
-                    const rawName = activeTenant?.tenant?.name;
-                    const isGeneric = !rawName || rawName === "Workspace Utama" || rawName.toLowerCase().startsWith("workspace");
-                    return isGeneric ? "W" : rawName.slice(0, 1).toUpperCase();
-                  })()}
+                  {userInitial}
                 </div>
                 <div>
                   <p className="font-bold text-sm text-foreground m-0 leading-tight">
-                    {(() => {
-                      const rawName = activeTenant?.tenant?.name;
-                      if (!rawName || rawName === "Workspace Utama" || rawName.toLowerCase().startsWith("workspace")) {
-                        return locale === "id" ? "Akun Saya" : "My Account";
-                      }
-                      return rawName;
-                    })()}
+                    {userDisplayName}
                   </p>
                   <span className="text-[10px] text-muted-foreground capitalize">{activeTenant?.tenant?.plan || "free"} Plan</span>
                 </div>
