@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Sun, Moon, Languages } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -166,7 +166,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation */}
       {!isFullscreenWorkspace && (
         <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label={t("dashboard.mainNav")}>
@@ -183,16 +183,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   aria-label={label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-2 px-1 rounded-xl transition-all",
+                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl",
+                    MOTION.standard,
                     active
-                      ? "text-primary font-bold"
+                      ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {/* Active pill background */}
                   {active && (
                     <span
-                      className="absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15"
+                      className={cn(
+                        "absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15",
+                        MOTION.standard
+                      )}
                       aria-hidden="true"
                     />
                   )}
@@ -201,8 +205,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="relative">
                     <Icon
                       className={cn(
-                        "size-5 shrink-0 transition-transform",
-                        active ? "stroke-[2.5] scale-105" : "stroke-[1.75]"
+                        "size-5 shrink-0",
+                        MOTION.standard,
+                        active ? "stroke-[2.5]" : "stroke-[1.75]"
                       )}
                       aria-hidden="true"
                     />
@@ -215,8 +220,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
                   {/* Label */}
                   <span className={cn(
-                    "text-[10px] font-semibold leading-none tracking-tight truncate w-full text-center",
-                    active ? "text-primary font-bold" : "text-muted-foreground"
+                    "text-[9px] font-semibold leading-none tracking-tight truncate w-full text-center",
+                    active ? "text-primary" : "text-muted-foreground"
                   )}>
                     {label}
                   </span>
@@ -228,6 +233,52 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
+
+            {/* Divider */}
+            <div className="h-8 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+            {/* Accent toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
+              aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+              aria-pressed={!isMonochrome}
+              onClick={toggleAccent}
+            >
+              <div className={cn(
+                "size-3.5 rounded-full border-2 shrink-0",
+                MOTION.slow,
+                accent === "monochrome"
+                  ? "bg-slate-500 border-slate-400"
+                  : "bg-primary border-primary/80 shadow-[0_0_6px_color-mix(in_srgb,var(--primary)_60%,transparent)]"
+              )} aria-hidden="true" />
+            </Button>
+
+            {/* Theme toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
+              aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+              aria-pressed={theme === "dark"}
+              onClick={toggleTheme}
+            >
+              <ThemeIcon mode={theme} />
+            </Button>
+
+            {/* Language toggle */}
+            <div className="flex flex-col items-center justify-center gap-0.5 shrink-0">
+              <button
+                type="button"
+                aria-label="Switch language"
+                onClick={() => setLocale(locale === "id" ? "en" : "id")}
+                className="rounded-full border border-border/50 bg-muted/40 px-2 py-1 text-[9px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
+              >
+                {locale === "id" ? "EN" : "ID"}
+              </button>
+              <span className="text-[7px] text-muted-foreground/60 leading-none">{t("dashboard.language")}</span>
+            </div>
           </div>
         </nav>
       )}
@@ -343,45 +394,37 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <Separator />
 
                 <div className="grid gap-3">
-                  <div className="rounded-2xl border border-border/50 bg-card/80 p-3.5 space-y-3 shadow-sm">
-                    {/* Theme / Appearance Row */}
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-xs font-medium text-muted-foreground/70">{t("dashboard.appearance")}</span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-9 rounded-xl border border-border/50 bg-background/50 hover:bg-primary/5 cursor-pointer"
-                          aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
-                          aria-pressed={!isMonochrome}
-                          onClick={toggleAccent}
-                        >
-                          <div className={cn(
-                            "size-4 rounded-full border-2",
-                            MOTION.slow,
-                            accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
-                          )} aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-9 rounded-xl border border-border/50 bg-background/50 hover:bg-primary/5 cursor-pointer"
-                          aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-                          aria-pressed={theme === "dark"}
-                          onClick={toggleTheme}
-                        >
-                          {theme === "dark" ? <SunIcon size="sm" /> : <MoonIcon size="sm" />}
-                        </Button>
-                      </div>
+                  <div className="rounded-2xl border border-border/40 bg-background/40 p-3">
+                    <div className="mb-3 text-xs font-medium text-muted-foreground/70">{t("dashboard.appearance")}</div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                        aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+                        aria-pressed={!isMonochrome}
+                        onClick={toggleAccent}
+                      >
+                        <div className={cn(
+                          "size-4 rounded-full border-2",
+                          MOTION.slow,
+                          accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
+                        )} aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                        aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+                        aria-pressed={theme === "dark"}
+                        onClick={toggleTheme}
+                      >
+                        <ThemeIcon mode={theme} />
+                      </Button>
                     </div>
-
-                    {/* Language Row */}
-                    <div className="flex items-center justify-between gap-3 pt-2.5 border-t border-border/40">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/85">
-                        <Languages className="size-3.5 text-muted-foreground" />
-                        <span>{t("dashboard.language")}</span>
-                      </div>
-                      <div className="inline-flex items-center rounded-full border border-border bg-background/80 p-0.5 text-[11px] font-semibold shadow-inner">
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="text-xs font-medium text-muted-foreground/70">{t("dashboard.language")}</span>
+                      <div className="inline-flex items-center rounded-full border border-border/60 bg-background/60 p-0.5 text-[11px] font-semibold">
                         {(["id", "en"] as const).map((code) => (
                           <button
                             key={code}
@@ -390,7 +433,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                             aria-pressed={locale === code}
                             onClick={() => setLocale(code)}
                             className={cn(
-                              "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
+                              "rounded-full px-2.5 py-1 transition cursor-pointer",
                               locale === code
                                 ? "bg-primary text-primary-foreground shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
@@ -442,30 +485,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2.5">
-                  {/* Mobile Theme & Language Toggles */}
-                  <div className="flex items-center gap-1.5 lg:hidden">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8 rounded-full border border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground"
-                      aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-                      aria-pressed={theme === "dark"}
-                      onClick={toggleTheme}
-                    >
-                      {theme === "dark" ? <SunIcon size="sm" className="size-3.5 text-amber-400" /> : <MoonIcon size="sm" className="size-3.5" />}
-                    </Button>
-
-                    <button
-                      type="button"
-                      aria-label="Switch language"
-                      onClick={() => setLocale(locale === "id" ? "en" : "id")}
-                      className="h-8 rounded-full border border-border/60 bg-muted/40 px-2.5 text-[10.5px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
-                    >
-                      {locale === "id" ? "EN" : "ID"}
-                    </button>
-                  </div>
-
+                <div className="flex flex-wrap items-center gap-3">
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
