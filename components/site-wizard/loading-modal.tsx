@@ -16,9 +16,10 @@ interface LoadingModalProps {
   sectionSnippet?: string;
   center?: boolean;
   stepElapsed?: number[];
+  streamDone?: boolean;
 }
 
-export function LoadingModal({ loadingStep, progressPercent, businessType, businessName, charCount, sectionSnippet, center, stepElapsed }: LoadingModalProps) {
+export function LoadingModal({ loadingStep, progressPercent, businessType, businessName, charCount, sectionSnippet, center, stepElapsed, streamDone }: LoadingModalProps) {
   const { t, locale } = useI18n();
 
   const formatTime = (secs: number) => {
@@ -73,8 +74,8 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
         {/* Checklist — only current + next 2 on mobile */}
         <div className={center ? "flex flex-wrap gap-x-3 gap-y-1" : ""}>
           {LOADING_CHECKLIST.map(({ label }, idx) => {
-            const done = loadingStep > idx;
-            const active = loadingStep === idx;
+            const done = streamDone ? true : loadingStep > idx;
+            const active = streamDone ? false : loadingStep === idx;
             const translatedLabel = t(`dashboard.wizard.loadingChecklist${idx}`, label);
             // On mobile, hide completed older than current+1 and pending beyond next 2
             if (center && !active && !done && idx > loadingStep + 1) return null;
