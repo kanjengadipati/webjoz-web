@@ -115,7 +115,7 @@ export default function TypographyPairingPicker({
               className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
-                  : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                  : "border-border hover:border-white/30 bg-white/5 hover:bg-white/10"
               }`}
             >
               <p className="text-[10px] font-bold text-slate-200 mb-1 truncate">{pairing.name}</p>
@@ -162,7 +162,7 @@ export default function TypographyPairingPicker({
       </button>
 
       {showManual && (
-        <div className="space-y-2 pl-3 border-l border-white/10">
+        <div className="space-y-2 pl-3 border-l border-border">
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               {t("dashboard.sitesEditor.headingFont")}
@@ -188,7 +188,7 @@ export default function TypographyPairingPicker({
             <select
               value={designToken?.typography?.heading_weight || "700"}
               onChange={(e) => onFieldChange?.("typography", "heading_weight", e.target.value)}
-              className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+              className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
             >
               <option value="400" className="bg-[#111318]">{t("dashboard.sitesEditor.weightRegular")} (400)</option>
               <option value="500" className="bg-[#111318]">{t("dashboard.sitesEditor.weightMedium")} (500)</option>
@@ -204,7 +204,7 @@ export default function TypographyPairingPicker({
             <select
               value={designToken?.typography?.heading_size_hero || "3rem"}
               onChange={(e) => onFieldChange?.("typography", "heading_size_hero", e.target.value)}
-              className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+              className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
             >
               <option value="2rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeSmall")} (2rem)</option>
               <option value="2.5rem" className="bg-[#111318]">{t("dashboard.sitesEditor.sizeMedium")} (2.5rem)</option>

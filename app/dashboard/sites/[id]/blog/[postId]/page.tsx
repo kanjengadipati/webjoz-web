@@ -423,7 +423,7 @@ export default function EditBlogPostPage() {
             />
           </div>
           {/* Noindex toggle (Pro) */}
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.02] px-3 py-2.5">
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-medium text-muted-foreground">{t("dashboard.sitesBlogPost.noindex")}</span>

@@ -53,7 +53,7 @@ export function WizardSuccessModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white/[0.06] text-xs font-semibold text-slate-200 border border-white/10 transition-all hover:bg-white/10 active:scale-98"
+              className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white/[0.06] text-xs font-semibold text-slate-200 border border-border transition-all hover:bg-white/10 active:scale-98"
             >
               <Eye className="h-4 w-4" />
               {t("dashboard.wizard.successModalBtnPreview", "Lihat Preview")}

@@ -575,7 +575,7 @@ function PairingsTab({
           return (
             <Card key={pairing.id} className={`overflow-hidden transition-all flex flex-col ${isHidden ? "opacity-50 border-border/20" : "border-border/40 hover:border-border/70"}`}>
               {/* Preview strip */}
-              <div className="h-20 bg-zinc-950 flex flex-col justify-center px-4 border-b border-white/5">
+              <div className="h-20 bg-zinc-950 flex flex-col justify-center px-4 border-b border-border/50">
                 <p style={{ fontFamily: `'${pairing.heading_font}', sans-serif`, fontWeight: pairing.heading_weight, fontStyle: pairing.heading_style ?? "normal", textTransform: (pairing.heading_transform ?? "none") as any, letterSpacing: pairing.heading_tracking ?? "normal", fontSize: "16px", color: "rgba(255,255,255,0.9)", margin: 0 }}>
                   {pairing.name}
                 </p>
@@ -727,7 +727,7 @@ function PatternsTab({
               {/* Colour strip */}
               <div className="h-20 relative flex items-end p-3 border-b border-border/30"
                 style={{ background: `linear-gradient(135deg, ${pattern.palette.background}, ${pattern.palette.surface})` }}>
-                <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-white/5">
+                <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50">
                   <PaletteStrip palette={pattern.palette} />
                 </div>
                 <div className="absolute top-2 right-2">
@@ -903,7 +903,7 @@ function PresetsTab({
               <div className="h-20 relative flex flex-col justify-end p-3 border-b border-border/30"
                 style={{ background: pattern ? `linear-gradient(135deg, ${pattern.palette.background}, ${pattern.palette.surface})` : "var(--muted)" }}>
                 {pattern && (
-                  <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-white/5 w-fit">
+                  <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50 w-fit">
                     <PaletteStrip palette={pattern.palette} />
                   </div>
                 )}

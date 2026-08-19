@@ -38,7 +38,7 @@ export function BusinessDetailsSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center md:items-end md:justify-center bg-black/60" onClick={onClose}>
-      <div className="rounded-t-2xl md:rounded-2xl bg-[#111318] px-5 pb-8 pt-3 md:pt-5 border-t md:border border-white/10 md:max-w-sm md:w-full md:mx-4 md:mb-6" onClick={(e) => e.stopPropagation()} style={{ boxShadow: "0 -8px 30px rgba(0,0,0,0.5)" }}>
+      <div className="rounded-t-2xl md:rounded-2xl bg-[#111318] px-5 pb-8 pt-3 md:pt-5 border-t md:border border-border md:max-w-sm md:w-full md:mx-4 md:mb-6" onClick={(e) => e.stopPropagation()} style={{ boxShadow: "0 -8px 30px rgba(0,0,0,0.5)" }}>
         <div className="w-8 h-1 rounded-full bg-slate-700 mx-auto mb-4 md:hidden" />
         <p className="text-sm font-semibold text-slate-100 mb-1">{t("dashboard.wizard.businessDetailsTitle", "Lengkapi data bisnis")}</p>
         <p className="text-xs text-slate-500 mb-4 leading-relaxed">{t("dashboard.wizard.businessDetailsSubtitle", "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.")}</p>

@@ -609,7 +609,7 @@ export function SiteWizard({
               type="button"
               onClick={handleBack}
               aria-label="Kembali"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -660,7 +660,7 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={handleStartFresh}
-                className="flex-1 cursor-pointer rounded-lg border border-white/10 py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-white/30 active:scale-95"
+                className="flex-1 cursor-pointer rounded-lg border border-border py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-white/30 active:scale-95"
                 style={{ background: "rgba(255,255,255,0.05)" }}
               >
                 {t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
@@ -688,7 +688,7 @@ export function SiteWizard({
                       type="button"
                       onClick={() => !isLocked && handleConfirmInference(false)}
                       disabled={isLocked}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-white/10 transition-all hover:border-white/30 active:scale-95 disabled:opacity-40"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-border transition-all hover:border-white/30 active:scale-95 disabled:opacity-40"
                       style={{ background: "rgba(255,255,255,0.05)" }}
                     >
                       Bukan
@@ -732,7 +732,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectSubType(st.value)}
                           disabled={isLocked}
-                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white"}`}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-border hover:border-primary/50 hover:text-white"}`}
                           style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
                         >
                           <span>{st.emoji}</span>
@@ -763,7 +763,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && chat.handleSelectLanguage(lang.value)}
                           disabled={isLocked}
-                          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${isSelected ? "text-white border-primary/60" : isLocked ? "text-slate-600 border-white/5 cursor-not-allowed" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white cursor-pointer active:scale-95"}`}
+                          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${isSelected ? "text-white border-primary/60" : isLocked ? "text-slate-600 border-border/50 cursor-not-allowed" : "text-slate-300 border-border hover:border-primary/50 hover:text-white cursor-pointer active:scale-95"}`}
                           style={{ background: isSelected ? "rgba(99,102,241,0.2)" : isLocked ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)" }}
                         >
                           <span className="text-base">{lang.flag}</span>
@@ -806,8 +806,8 @@ export function SiteWizard({
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-lg shadow-primary/20"
                               : isLocked
-                              ? "border-white/5 bg-white/[0.02] opacity-45 cursor-not-allowed"
-                              : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] cursor-pointer active:scale-95"
+                              ? "border-border/50 bg-white/[0.02] opacity-45 cursor-not-allowed"
+                              : "border-border bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] cursor-pointer active:scale-95"
                           }`}
                         >
                           {/* Header: Emoji, Label & Selected checkmark / theme tag */}
@@ -825,14 +825,14 @@ export function SiteWizard({
                                 </svg>
                               </div>
                             ) : (
-                              <span className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 shrink-0 mt-0.5">
+                              <span className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/[0.06] border border-border shrink-0 mt-0.5">
                                 {mo.dark ? "Dark" : "Light"}
                               </span>
                             )}
                           </div>
 
                           {/* Color Palette Swatches & Font Preview */}
-                          <div className="mt-1.5 sm:mt-2 flex items-center justify-between gap-1 pt-1.5 border-t border-white/5">
+                          <div className="mt-1.5 sm:mt-2 flex items-center justify-between gap-1 pt-1.5 border-t border-border/50">
                             {/* 3 Color Swatch Circles */}
                             <div className="flex items-center gap-1 shrink-0">
                               {mo.palette.map((color, cIdx) => (
@@ -846,7 +846,7 @@ export function SiteWizard({
                             </div>
 
                             {/* Font Pill */}
-                            <div className="flex items-center gap-1 rounded bg-white/[0.05] border border-white/10 px-1 sm:px-1.5 py-0.5 text-[8.5px] sm:text-[9.5px] text-slate-300 min-w-0">
+                            <div className="flex items-center gap-1 rounded bg-white/[0.05] border border-border px-1 sm:px-1.5 py-0.5 text-[8.5px] sm:text-[9.5px] text-slate-300 min-w-0">
                               <span className="font-semibold text-white/90">Aa</span>
                               <span className="text-slate-400 truncate max-w-[65px] sm:max-w-[85px]">{mo.font}</span>
                             </div>
@@ -924,7 +924,7 @@ export function SiteWizard({
                               type="button"
                               onClick={() => !isLocked && handleSelectSubType(st.value)}
                               disabled={isLocked}
-                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-white/10 hover:border-primary/50 hover:text-white"}`}
+                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-border hover:border-primary/50 hover:text-white"}`}
                               style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
                             >
                               <span>{st.emoji}</span>
@@ -1013,7 +1013,7 @@ export function SiteWizard({
                   type="button"
                   onClick={chat.startRecording}
                   disabled={chat.isInitialTyping || chat.isAiTyping}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 text-slate-500 transition-all disabled:opacity-30 hover:text-slate-300 shrink-0 active:scale-95"
+                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-500 transition-all disabled:opacity-30 hover:text-slate-300 shrink-0 active:scale-95"
                   title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                 >
                   <Mic className="w-3.5 h-3.5" />
@@ -1060,12 +1060,12 @@ export function SiteWizard({
             type="button"
             onClick={() => device.setMobileScreen("chat")}
             aria-label={t("dashboard.wizard.backToChat", "Kembali ke chat")}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-white/[0.04] text-slate-300 transition-all active:scale-95 md:hidden"
           >
             <MessageCircle className="h-4 w-4" />
           </button>
 
-          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-white/[0.04] p-0.5">
             <button
               type="button"
               onClick={() => device.setPreviewDevice("desktop")}
@@ -1096,7 +1096,7 @@ export function SiteWizard({
             <button
               type="button"
               onClick={preview.handleSwitchTemplate}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-white/10 bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-white/[0.04] transition-all hover:border-primary/40 hover:text-white active:scale-95"
             >
               <RefreshCw size={11} />
               Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})

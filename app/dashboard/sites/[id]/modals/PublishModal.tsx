@@ -60,7 +60,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             <h4 className="text-[13.5px] font-bold text-white leading-snug">
               {t("dashboard.sites.publishOneStep")}
             </h4>
-            <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
+            <p className="text-[11.5px] text-muted-foreground leading-relaxed mt-0.5">
               {t("dashboard.sites.publishReady", undefined, { name: site.name })}
             </p>
           </div>
@@ -68,16 +68,16 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
 
         {/* Subdomain Input Field */}
         <div className="space-y-2">
-          <label className="text-[12px] font-bold text-[#c8c8d4] tracking-wide block">
+          <label className="text-[12px] font-bold text-foreground/80 tracking-wide block">
             {t("dashboard.sites.subdomainLabel")}
           </label>
           <div
-            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${
+            className={`flex items-center bg-background border rounded-xl overflow-hidden transition-all duration-200 ${
               subdomain && !isInputValid
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
-                  : "border-white/10 hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
+                  : "border-border hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
             }`}
           >
             <input
@@ -87,10 +87,10 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
               disabled={loading}
               placeholder={t("dashboard.sites.subdomainPlaceholder")}
               maxLength={30}
-              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
+              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-foreground outline-none placeholder:text-muted-foreground min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-white/[0.02] select-none">
               .webjoz.com
             </span>
           </div>
@@ -112,15 +112,15 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             </div>
           )}
 
-          <p className="text-[11px] text-[#6b6b75] leading-relaxed mx-0.5">
+          <p className="text-[11px] text-muted-foreground leading-relaxed mx-0.5">
             {t("dashboard.sites.subdomainHint")}
           </p>
         </div>
 
         {/* Custom Domain premium upselling banner */}
-        <div className="bg-[#15151c] border border-white/[0.06] hover:border-white/10 rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
+        <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
+          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">
@@ -130,7 +130,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
                 {t("dashboard.pro")}
               </span>
             </h5>
-            <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
+            <p className="text-[11.5px] text-muted-foreground leading-relaxed">
               {t("dashboard.sites.customDomainDescPre")}{" "}
               <Link
                 href="/dashboard/domains"
@@ -149,7 +149,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-sm border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-white/[0.04]"
             onClick={onCancel}
             disabled={loading}
           >
@@ -159,7 +159,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             type="submit"
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
               !isInputValid || loading
-                ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_4px_18px_color-mix(in_srgb,var(--primary)_35%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
             disabled={loading || !isInputValid}

@@ -35,14 +35,14 @@ export default function FontPicker({ value, onChange }: FontPickerProps) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+        className="w-full flex items-center gap-2 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
         style={{ fontFamily: value }}
       >
         <span className="flex-1 text-left truncate">{value}</span>
         <ChevronDown className="w-3 h-3 shrink-0 text-slate-500" />
       </button>
       {open && (
-        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-white/10 rounded-lg max-h-60 overflow-y-auto shadow-xl">
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-border rounded-lg max-h-60 overflow-y-auto shadow-xl">
           {GOOGLE_FONTS_WHITELIST.map((f) => (
             <button
               key={f}

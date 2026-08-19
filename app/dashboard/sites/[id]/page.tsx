@@ -1249,7 +1249,7 @@ export default function SiteEditorPage() {
         >
 
           {/* Site identity */}
-          <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-white/10 px-3">
+          <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
             <button
               onClick={() => router.push("/dashboard/sites")}
               className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
@@ -1264,7 +1264,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Tab Switcher: Konten vs Desain */}
-          <div className="flex border-b border-white/10 p-1 bg-white/[0.02] flex-shrink-0">
+          <div className="flex border-b border-border p-1 bg-white/[0.02] flex-shrink-0">
             <button
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
@@ -1287,7 +1287,7 @@ export default function SiteEditorPage() {
 
           {/* Visual style selector */}
           {editorTab === "design" && (
-            <div ref={templatePickerRef} className="flex-shrink-0 border-b border-white/10 p-2.5">
+            <div ref={templatePickerRef} className="flex-shrink-0 border-b border-border p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{t("dashboard.sitesEditor.styleLabel")}</p>
                 <div className="flex items-center gap-1.5">
@@ -1297,7 +1297,7 @@ export default function SiteEditorPage() {
                     disabled={designOnlyUndo.length === 0}
                     aria-label={t("dashboard.sitesEditor.undoDesign")}
                     title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
-                    className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
+                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/[0.04] disabled:hover:text-slate-400"
                   >
                     <RotateCcw className="h-2.5 w-2.5" />
                   </button>
@@ -1308,7 +1308,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                 disabled={templateSaving || !!pendingDiff}
-                className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
                 aria-expanded={templatePickerOpen}
               >
@@ -1335,7 +1335,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
                           ? "border-primary bg-primary/15"
-                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={isTopActive}
@@ -1373,7 +1373,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
                           ? "border-primary bg-primary/15"
-                          : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                          : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                           }`}
                         role="option"
                         aria-selected={active}
@@ -1398,7 +1398,7 @@ export default function SiteEditorPage() {
                   {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
                   {isSuperadmin && customTemplates.length > 0 && (
                     <>
-                      <div className="border-t border-white/10 my-2.5 pt-2" />
+                      <div className="border-t border-border my-2.5 pt-2" />
                       <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
                         {t("dashboard.sitesEditor.templateLibraryAdmin")}
                       </p>
@@ -1421,7 +1421,7 @@ export default function SiteEditorPage() {
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
                                 ? "border-primary bg-primary/15"
-                                : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
+                                : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"
                                 }`}
                               role="option"
                               aria-selected={active}
@@ -1460,7 +1460,7 @@ export default function SiteEditorPage() {
                               void fetchCustomTemplates(false);
                             }}
                             disabled={loadingTemplates}
-                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-white/10 hover:border-primary/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
+                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-border hover:border-primary/30 rounded-xl hover:bg-white/[0.02] disabled:opacity-60 flex items-center justify-center gap-1.5"
                           >
                             {loadingTemplates ? (
                               <>
@@ -1514,7 +1514,7 @@ export default function SiteEditorPage() {
                           if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
                         }}
                         placeholder="cth: tema kopi vintage hangat..."
-                        className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
+                        className="w-full px-2 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
                         disabled={aiLoading || !!pendingDiff}
                       />
                       <button
@@ -1539,7 +1539,7 @@ export default function SiteEditorPage() {
 
           {/* Section nav — persistent list */}
           {editorTab === "content" && (
-            <div className="flex-shrink-0 border-b border-white/10 hidden md:block">
+            <div className="flex-shrink-0 border-b border-border hidden md:block">
               <div className="px-3 py-1.5">
                 <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("dashboard.sitesEditor.pageSections")}</p>
               </div>
@@ -1619,12 +1619,12 @@ export default function SiteEditorPage() {
 
           {/* ── Field Panel (scrollable) ── */}
           <div
-            className="flex-1 border-t border-white/10 flex flex-col overflow-hidden [&_input]:!border-white/10 [&_textarea]:!border-white/10 [&_select]:!border-white/10 [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
+            className="flex-1 border-t border-border flex flex-col overflow-hidden [&_input]:!border-border [&_textarea]:!border-border [&_select]:!border-border [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
             style={{ minHeight: 0 }}
           >
             {editorTab === "design" ? (
               <>
-                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0">
+                <div className="px-3.5 py-2 border-b border-border flex-shrink-0">
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
                     {t("dashboard.sitesEditor.visualCustomization")}
                   </p>
@@ -1654,13 +1654,13 @@ export default function SiteEditorPage() {
                       }}
                     />
 
-                    <div className="border-t border-white/10 my-2" />
+                    <div className="border-t border-border my-2" />
 
                     {/* Primary Color */}
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.primaryColor")}</label>
                       <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
                             type="color"
                             value={designToken?.palette?.primary || "#4F46E5"}
@@ -1675,7 +1675,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.primary || ""}
                           onChange={(e) => handleColorChange("primary", e.target.value)}
                           onClick={() => colorRefs.current["primary"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#4F46E5"
                         />
                       </div>
@@ -1685,7 +1685,7 @@ export default function SiteEditorPage() {
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.accentColor")}</label>
                       <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
                             type="color"
                             value={designToken?.palette?.accent || "#7C3AED"}
@@ -1700,7 +1700,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.accent || ""}
                           onChange={(e) => handleColorChange("accent", e.target.value)}
                           onClick={() => colorRefs.current["accent"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#7C3AED"
                         />
                       </div>
@@ -1710,7 +1710,7 @@ export default function SiteEditorPage() {
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.backgroundColor")}</label>
                       <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
                             type="color"
                             value={designToken?.palette?.background || "#FAF7F2"}
@@ -1725,7 +1725,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.background || ""}
                           onChange={(e) => handleColorChange("background", e.target.value)}
                           onClick={() => colorRefs.current["background"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#FAF7F2"
                         />
                       </div>
@@ -1735,7 +1735,7 @@ export default function SiteEditorPage() {
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.surfaceColor")}</label>
                       <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
                             type="color"
                             value={designToken?.palette?.surface || "#FFFFFF"}
@@ -1750,7 +1750,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.surface || ""}
                           onChange={(e) => handleColorChange("surface", e.target.value)}
                           onClick={() => colorRefs.current["surface"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#FFFFFF"
                         />
                       </div>
@@ -1760,7 +1760,7 @@ export default function SiteEditorPage() {
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.textColor")}</label>
                       <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
                             type="color"
                             value={designToken?.palette?.text || "#2C2C2A"}
@@ -1775,14 +1775,14 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.text || ""}
                           onChange={(e) => handleColorChange("text", e.target.value)}
                           onClick={() => colorRefs.current["text"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#2C2C2A"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="border-t border-white/10 my-2" />
+                  <div className="border-t border-border my-2" />
 
                   {/* Paket Tampilan */}
                   <IndustryPresetPicker
@@ -1806,7 +1806,7 @@ export default function SiteEditorPage() {
                     }}
                   />
 
-                  <div className="border-t border-white/10 my-2" />
+                  <div className="border-t border-border my-2" />
 
                   {/* Tipografi */}
                   <TypographyPairingPicker
@@ -1837,7 +1837,7 @@ export default function SiteEditorPage() {
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
                   />
 
-                  <div className="border-t border-white/10 my-2" />
+                  <div className="border-t border-border my-2" />
 
                   {/* Tata Letak & Gaya */}
                   <div className="space-y-3">
@@ -1848,7 +1848,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.corner_radius || "soft"}
                         onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="sharp" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSharp")}</option>
                         <option value="soft" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSoft")}</option>
@@ -1861,7 +1861,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.section_spacing || "normal"}
                         onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="compact" className="bg-[#111318]">{t("dashboard.sitesEditor.spacingCompact")}</option>
                         <option value="normal" className="bg-[#111318]">{t("dashboard.sitesEditor.normal")}</option>
@@ -1876,7 +1876,7 @@ export default function SiteEditorPage() {
                       <select
                         value={designToken?.layout?.hero_style || "centered"}
                         onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="centered" className="bg-[#111318]">{t("dashboard.sitesEditor.heroCentered")}</option>
                         <option value="split" className="bg-[#111318]">{t("dashboard.sitesEditor.heroSplit")}</option>
@@ -1892,7 +1892,7 @@ export default function SiteEditorPage() {
               </>
             ) : (
               <>
-                <div className="px-3.5 py-2 border-b border-white/10 flex-shrink-0 flex items-center justify-between gap-2">
+                <div className="px-3.5 py-2 border-b border-border flex-shrink-0 flex items-center justify-between gap-2">
                   <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
                     {t("dashboard.sitesEditor.editLabel", undefined, { label: SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab })}
                   </p>
@@ -1949,7 +1949,7 @@ export default function SiteEditorPage() {
                         <button
                           type="button"
                           onClick={restorePendingDiff}
-                          className="flex-1 rounded-md border border-white/15 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
+                          className="flex-1 rounded-md border border-border py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
                         >
                           {t("dashboard.sitesEditor.revert")}
                         </button>
@@ -2014,12 +2014,12 @@ export default function SiteEditorPage() {
                     const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
                     if (enabledOpts.length <= 1) return null;
                     return (
-                      <div className="pt-3 border-t border-white/10 space-y-1.5">
+                      <div className="pt-3 border-t border-border space-y-1.5">
                         <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.variantOptions")}</p>
                         <select
                           value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
                           onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
-                          className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                          className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
                         >
                           {(() => {
                             const groups: { label?: string; options: typeof enabledOpts }[] = [];
@@ -2049,7 +2049,7 @@ export default function SiteEditorPage() {
 
                 {/* ── Usage Meter ── */}
                 {tenantUsage && (
-                  <div className="border-t border-white/10 px-3.5 py-2.5 space-y-2">
+                  <div className="border-t border-border px-3.5 py-2.5 space-y-2">
                     <div className="flex items-center gap-1.5">
                       <SparkleGenAI className="h-3 w-3 text-primary" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -2131,11 +2131,11 @@ export default function SiteEditorPage() {
             "--floating-bottom-desktop": "5rem",
           } as React.CSSProperties}
         >          {/* Mobile topbar */}
-          <div className="flex md:hidden h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#111318] px-3">
+          <div className="flex md:hidden h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-[#111318] px-3">
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-300 transition-all active:scale-95"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-white/[0.04] text-slate-300 transition-all active:scale-95"
               aria-label={t("dashboard.sitesEditor.back")}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -2196,9 +2196,9 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Canvas topbar */}
-          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-white/10 bg-[#0d0f14] px-3">
+          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-[#0d0f14] px-3">
             {/* Device switcher */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-white/[0.04] p-0.5">
               <div className="relative group">
                 <button
                   onClick={() => setDevice("desktop")}
@@ -2256,7 +2256,7 @@ export default function SiteEditorPage() {
                 }}
                 className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
                   ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                  : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                  : 'border-border bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
                 aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
               >
@@ -2285,7 +2285,7 @@ export default function SiteEditorPage() {
                 onClick={handleGlobalUndo}
                 aria-label={t("dashboard.sitesEditor.undo")}
                 title={t("dashboard.sitesEditor.undoAllTitle")}
-                className="flex h-6 items-center gap-1 rounded-md border border-white/10 bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                className="flex h-6 items-center gap-1 rounded-md border border-border bg-white/[0.04] px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <RotateCcw className="h-3 w-3" />
                 {t("dashboard.sitesEditor.undo")}
@@ -2315,7 +2315,7 @@ export default function SiteEditorPage() {
               href={`/preview/${siteId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
             >
               <Globe className="h-3.5 w-3.5" />
               {t("dashboard.sitesEditor.preview")}
@@ -2391,7 +2391,7 @@ export default function SiteEditorPage() {
                   </div>
                   <div className="mt-2 grid max-h-40 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
                     {(pendingDiff.rows.length ? pendingDiff.rows : [{ label: t("dashboard.sitesEditor.content"), before: JSON.stringify(pendingDiff.before), after: JSON.stringify(pendingDiff.after) }]).map((row, idx) => (
-                      <div key={`${row.label}-${idx}`} className="rounded-md border border-white/10 bg-white/[0.03] p-2 text-[11px]">
+                      <div key={`${row.label}-${idx}`} className="rounded-md border border-border bg-white/[0.03] p-2 text-[11px]">
                         <p className="mb-1 font-semibold text-slate-300">{row.label}</p>
                         <div className="grid gap-1">
                           <p className="line-clamp-2 rounded bg-red-400/10 px-2 py-1 text-red-100">
@@ -2416,7 +2416,7 @@ export default function SiteEditorPage() {
                   <button
                     type="button"
                     onClick={restorePendingDiff}
-                    className="rounded-md border border-white/10 px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5"
+                    className="rounded-md border border-border px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5"
                   >
                     {t("dashboard.sitesEditor.revert")}
                   </button>
@@ -2593,7 +2593,7 @@ export default function SiteEditorPage() {
           {/* Mobile bottom sheet */}
           <div
             data-mobile-sheet
-            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-white/10 rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
+            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
             style={{ maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%" }}
           >
             {/* Drag handle & header bar */}
@@ -2652,10 +2652,10 @@ export default function SiteEditorPage() {
             </div>
 
             {/* Consolidated Section Dropdown + Tab Switcher Bar */}
-            <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-white/5 bg-white/[0.02]">
+            <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-border/50 bg-white/[0.02]">
               {/* Active Section Chip / Native Dropdown */}
               <div className="relative flex items-center min-w-0">
-                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-white/10 bg-white/[0.04] text-xs font-semibold text-slate-200 min-w-0">
+                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-border bg-white/[0.04] text-xs font-semibold text-slate-200 min-w-0">
                   <span
                     className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
                     style={{
@@ -2685,7 +2685,7 @@ export default function SiteEditorPage() {
               </div>
 
               {/* Segmented Konten / Desain Tab Switcher */}
-              <div className="flex items-center rounded-lg p-0.5 bg-white/[0.04] border border-white/5 flex-shrink-0">
+              <div className="flex items-center rounded-lg p-0.5 bg-white/[0.04] border border-border/50 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setEditorTab("content")}
@@ -2722,7 +2722,7 @@ export default function SiteEditorPage() {
                 <>
                   {/* Show/Hide section toggle */}
                   {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
-                    <div className="flex items-center justify-between py-1 border-b border-white/10">
+                    <div className="flex items-center justify-between py-1 border-b border-border">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                         {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
@@ -2771,7 +2771,7 @@ export default function SiteEditorPage() {
 
                   {/* Section reorder — up/down arrows */}
                   {BODY_SECTION_KEYS.includes(activeTab) && (
-                    <div className="flex items-center gap-2 py-1 border-b border-white/10">
+                    <div className="flex items-center gap-2 py-1 border-b border-border">
                       <span className="text-[10px] text-slate-500 flex-1">{t("dashboard.sitesEditor.sectionOrder")}</span>
                       {(() => {
                         const order = getOrderedSections(designToken, content, getHiddenSections()).filter(k => BODY_SECTION_KEYS.includes(k));
@@ -2782,7 +2782,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx <= 0 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx - 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
                             >
                               <ChevronUp className="w-3.5 h-3.5" />
                             </button>
@@ -2790,7 +2790,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx >= order.length - 1 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx + 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 disabled:opacity-30"
                             >
                               <ChevronDown className="w-3.5 h-3.5" />
                             </button>
@@ -2825,12 +2825,12 @@ export default function SiteEditorPage() {
                     const enabledOpts = allVars.filter(opt => getEnabledVariants(activeTab, allVars.map(o => o.value)).includes(opt.value));
                     if (enabledOpts.length <= 1) return null;
                     return (
-                      <div className="pt-3 border-t border-white/10 space-y-1.5">
+                      <div className="pt-3 border-t border-border space-y-1.5">
                         <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.variantOptions")}</p>
                         <select
                           value={designToken?.layout?.section_variants?.[activeTab] || enabledOpts[0].value}
                           onChange={(e) => updateSectionVariant(activeTab, e.target.value)}
-                          className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
+                          className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60"
                         >
                           {(() => {
                             const groups: { label?: string; options: typeof enabledOpts }[] = [];
@@ -2870,7 +2870,7 @@ export default function SiteEditorPage() {
                     }}
                     className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
                       ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                      : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+                      : 'border-border bg-white/5 text-slate-300 hover:bg-white/10'}`}
                   >
                     {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                     {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
@@ -2883,7 +2883,7 @@ export default function SiteEditorPage() {
                       <div className="flex items-center gap-1.5">
                         {designOnlyUndo.length > 0 && (
                           <button type="button" onClick={handleDesignUndo} aria-label={t("dashboard.sitesEditor.undoDesign")}
-                            className="flex h-5 w-5 items-center justify-center rounded border border-white/10 bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white">
+                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white">
                             <RotateCcw className="h-2.5 w-2.5" />
                           </button>
                         )}
@@ -2893,7 +2893,7 @@ export default function SiteEditorPage() {
                     <button type="button"
                       onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                       disabled={templateSaving || !!pendingDiff}
-                      className="flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-white/[0.04] p-1.5 text-left transition hover:border-white/20 hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-10 flex-shrink-0">
                         <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
@@ -2912,7 +2912,7 @@ export default function SiteEditorPage() {
                             <button key="top-dynamic-template" type="button"
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
@@ -2930,7 +2930,7 @@ export default function SiteEditorPage() {
                             <button key={template.id} type="button"
                               onClick={() => void handleTemplateChange(template.id)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07]"}`}>
                               <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
@@ -2964,7 +2964,7 @@ export default function SiteEditorPage() {
                               onChange={(e) => setAiDesignInstructions(e.target.value)}
                               onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign(); }}
                               placeholder="cth: tema kopi vintage hangat..."
-                              className="w-full px-2 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
+                              className="w-full px-2 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
                               disabled={aiLoading || !!pendingDiff} />
                             <button type="button" onClick={() => void handleAiRegenerateDesign()}
                               disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
@@ -2978,7 +2978,7 @@ export default function SiteEditorPage() {
                     )}
                   </div>
 
-                  <div className="border-t border-white/10" />
+                  <div className="border-t border-border" />
 
                   {/* ColorPatternPicker */}
                   <ColorPatternPicker
@@ -3006,7 +3006,7 @@ export default function SiteEditorPage() {
                         <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-16 shrink-0">
                           {colorKey === "primary" ? t("dashboard.sitesEditor.primaryShort") : colorKey === "accent" ? t("dashboard.sitesEditor.accentShort") : colorKey === "background" ? t("dashboard.sitesEditor.backgroundShort") : colorKey === "surface" ? t("dashboard.sitesEditor.surfaceShort") : t("dashboard.sitesEditor.textShort")}
                         </label>
-                        <div className="relative w-7 h-7 rounded-md border border-white/15 overflow-hidden shrink-0">
+                        <div className="relative w-7 h-7 rounded-md border border-border overflow-hidden shrink-0">
                           <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
                             onChange={(e) => handleColorChange(colorKey, e.target.value)}
                             ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
@@ -3016,12 +3016,12 @@ export default function SiteEditorPage() {
                         <input type="text" value={designToken?.palette?.[colorKey] || ""}
                           onChange={(e) => handleColorChange(colorKey, e.target.value)}
                           onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
-                          className="flex-1 h-7 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
+                          className="flex-1 h-7 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
                       </div>
                     ))}
                   </div>
 
-                  <div className="border-t border-white/10" />
+                  <div className="border-t border-border" />
 
                   {/* IndustryPresetPicker */}
                   <IndustryPresetPicker
@@ -3043,7 +3043,7 @@ export default function SiteEditorPage() {
                     }}
                   />
 
-                  <div className="border-t border-white/10" />
+                  <div className="border-t border-border" />
 
                   {/* TypographyPairingPicker */}
                   <TypographyPairingPicker
@@ -3072,24 +3072,24 @@ export default function SiteEditorPage() {
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
                   />
 
-                  <div className="border-t border-white/10" />
+                  <div className="border-t border-border" />
 
                   {/* Tata Letak */}
                   <div className="space-y-2">
                     <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.layoutLabel")}</p>
                     <select value={designToken?.layout?.corner_radius || "soft"}
                       onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
+                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="sharp">{t("dashboard.sitesEditor.cornerSharp")}</option><option value="soft">{t("dashboard.sitesEditor.cornerSoft")}</option><option value="rounded">{t("dashboard.sitesEditor.cornerRounded")}</option>
                     </select>
                     <select value={designToken?.layout?.section_spacing || "normal"}
                       onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
+                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option value="normal">{t("dashboard.sitesEditor.normal")}</option><option value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
                     </select>
                     {isDynamic && <select value={designToken?.layout?.hero_style || "centered"}
                       onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                      className="w-full h-8 px-2 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
+                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="centered" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroCentered")}</option>
                       <option value="split" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroSplit")}</option>
                       <option value="full-bleed" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroFullBleed")}</option>
@@ -3102,7 +3102,7 @@ export default function SiteEditorPage() {
 
             {/* AI Usage meter — mobile drawer */}
             {tenantUsage && (
-              <div className="flex-shrink-0 border-t border-white/10 px-3.5 py-2 bg-[#111318]">
+              <div className="flex-shrink-0 border-t border-border px-3.5 py-2 bg-[#111318]">
                 <div className="flex items-center gap-2.5">
                   <SparkleGenAI className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                   <span className="text-[9px] font-bold uppercase tracking-widest text-primary shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
@@ -3129,7 +3129,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Desktop sticky publish footer — inside canvas */}
-          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
+          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-border bg-[#0d0f14]/95 backdrop-blur px-6 py-1">
             <SiteSubNav siteId={siteId!} compact />
             <div className="flex items-center gap-3 flex-shrink-0">
               {siteDetails?.status === "published" ? (
@@ -3184,7 +3184,7 @@ export default function SiteEditorPage() {
 
         {confirmPublishOpen && siteDetails && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-            <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-2xl space-y-4">
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-[#111318] p-6 shadow-2xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
                   <Rocket className="h-5 w-5 text-emerald-400" />
@@ -3201,7 +3201,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setConfirmPublishOpen(false)}
-                  className="flex-1 rounded-xl border border-white/10 py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+                  className="flex-1 rounded-xl border border-border py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
                 >
                   {t("dashboard.sitesEditor.cancel")}
                 </button>
@@ -3243,7 +3243,7 @@ export default function SiteEditorPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+                className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
                 onClick={() => setUpgradePromptOpen(false)}
               >
                 {t("dashboard.sitesEditor.later")}
@@ -3278,7 +3278,7 @@ export default function SiteEditorPage() {
             onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
           >
             <div
-              className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+              className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -3316,7 +3316,7 @@ export default function SiteEditorPage() {
                   placeholder={siteDetails?.language === "en"
                     ? `e.g. "make it more persuasive and emotional"`
                     : `cth. "buat lebih persuasif dan emosional"`}
-                  className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+                  className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
                 />
                 {/* Quick suggestion chips */}
                 <div className="flex flex-wrap gap-1.5">
@@ -3338,7 +3338,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                  className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+                  className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
                 >
                   {t("dashboard.sitesEditor.cancel")}
                 </button>
