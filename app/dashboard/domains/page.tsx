@@ -49,6 +49,7 @@ interface PurchasedDomain {
   expires_at: string;
   status: string;
   years: number;
+  registrar: string;
 }
 
 const CNAME_TARGET = "sites.webjoz.com";
@@ -144,14 +145,29 @@ export default function DomainsPage() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !activeTenantId || !buyName.trim() || selectedTlds.length === 0) return;
+    let sld = buyName.toLowerCase().trim();
+    let tldsToSearch = [...selectedTlds];
+
+    // Auto-detect full domain (e.g. "syalalapro.net")
+    const dotIdx = sld.lastIndexOf(".");
+    if (dotIdx > 0 && dotIdx < sld.length - 1) {
+      const detectedTld = sld.slice(dotIdx + 1);
+      sld = sld.slice(0, dotIdx);
+      if (!tldsToSearch.includes(detectedTld)) {
+        tldsToSearch = [detectedTld];
+        setSelectedTlds(tldsToSearch);
+      }
+      setBuyName(sld);
+    }
+
+    if (!token || !activeTenantId || !sld || tldsToSearch.length === 0) return;
     try {
       setSearching(true);
       setSearched(false);
       const sr = await request<AvailabilityResult[]>("/domain-purchases/search", {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({ name: buyName.toLowerCase().trim(), tlds: selectedTlds.join(",") }),
+        body: JSON.stringify({ name: sld, tlds: tldsToSearch.join(",") }),
       }, token);
       setResults(sr.data || []);
       setSearched(true);
@@ -385,6 +401,9 @@ export default function DomainsPage() {
                     <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]">
                       {t("dashboard.domains.active")}
                     </span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-muted text-muted-foreground">
+                      {d.registrar === "dna" ? "DNA" : "RC"}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -512,10 +531,17 @@ export default function DomainsPage() {
                       </div>
                       {ok && (
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[14px] font-bold text-foreground">
-                            {formatIDR(r.sell_price_idr)}
-                            <span className="text-[11px] font-medium text-muted-foreground">{t("dashboard.domains.perYear")}</span>
-                          </span>
+                          <div className="text-right">
+                            <span className="text-[14px] font-bold text-foreground block">
+                              {formatIDR(r.sell_price_idr)}
+                              <span className="text-[11px] font-medium text-muted-foreground">{t("dashboard.domains.perYear")}</span>
+                            </span>
+                            {r.sell_price_usd > 0 && (
+                              <span className="text-[11px] text-muted-foreground block">
+                                {"$" + r.sell_price_usd.toFixed(2)} USD (PayPal)
+                              </span>
+                            )}
+                          </div>
                           <button
                             type="button"
                             onClick={() => handleBuy(r.domain)}
