@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
@@ -211,8 +211,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             {/* Center Elevated Menu Button */}
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Menu & Fitur"
+              onClick={() => setMobileMenuOpen(prev => !prev)}
+              aria-label={mobileMenuOpen ? "Tutup Menu" : "Menu & Fitur"}
+              aria-expanded={mobileMenuOpen}
               className="relative flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
             >
               <div className={cn(
@@ -221,7 +222,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   ? "bg-primary text-primary-foreground shadow-[0_0_22px_rgba(0,0,0,0.40)] scale-105"
                   : "bg-primary text-primary-foreground shadow-[0_4px_20px_rgba(0,0,0,0.30)]"
               )}>
-                <LayoutGrid className={cn("size-6 transition-transform duration-200", mobileMenuOpen ? "scale-110 stroke-[2]" : "stroke-[1.75]")} />
+                {mobileMenuOpen
+                  ? <ChevronDown className="size-6 stroke-[2] transition-transform duration-200" />
+                  : <LayoutGrid className="size-6 stroke-[1.75] transition-transform duration-200" />
+                }
               </div>
             </button>
 
