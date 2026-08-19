@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
@@ -8,12 +8,30 @@ import { useRouter } from "next/navigation";
 import {
   Loader2, Trash2, Globe, Clock, RefreshCw,
   Server, Copy, Info, Check, Link2, ExternalLink,
-  AlertCircle, Search, ShoppingCart,
+  AlertCircle, Search, ShoppingCart, MapPin, ChevronDown,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+
+// Common country list for WHOIS registration
+const COUNTRY_LIST = [
+  { code: "ID", name: "Indonesia",         dial: "+62",   flag: "🇮🇩" },
+  { code: "SG", name: "Singapura",         dial: "+65",   flag: "🇸🇬" },
+  { code: "MY", name: "Malaysia",          dial: "+60",   flag: "🇲🇾" },
+  { code: "AU", name: "Australia",         dial: "+61",   flag: "🇦🇺" },
+  { code: "US", name: "United States",     dial: "+1",    flag: "🇺🇸" },
+  { code: "GB", name: "United Kingdom",    dial: "+44",   flag: "🇬🇧" },
+  { code: "DE", name: "Germany",           dial: "+49",   flag: "🇩🇪" },
+  { code: "NL", name: "Netherlands",       dial: "+31",   flag: "🇳🇱" },
+  { code: "JP", name: "Japan",             dial: "+81",   flag: "🇯🇵" },
+  { code: "CN", name: "China",             dial: "+86",   flag: "🇨🇳" },
+  { code: "IN", name: "India",             dial: "+91",   flag: "🇮🇳" },
+  { code: "PH", name: "Philippines",       dial: "+63",   flag: "🇵🇭" },
+  { code: "TH", name: "Thailand",          dial: "+66",   flag: "🇹🇭" },
+  { code: "VN", name: "Vietnam",           dial: "+84",   flag: "🇻🇳" },
+];
 
 interface Domain {
   id: number;
@@ -93,6 +111,9 @@ export default function DomainsPage() {
   // Purchaser data modal
   const [showPurchaserModal, setShowPurchaserModal] = useState(false);
   const [purchaserDomain,    setPurchaserDomain]    = useState("");
+  const [phoneCC,            setPhoneCC]            = useState("+62");
+  const [phoneLocal,         setPhoneLocal]         = useState("");
+  const [zipLoading,         setZipLoading]         = useState(false);
   const [purchaser, setPurchaser] = useState({
     name: "",
     company: "",
@@ -104,6 +125,42 @@ export default function DomainsPage() {
     country: "ID",
     zip: "",
   });
+
+  // When phoneCC or phoneLocal changes, sync purchaser.phone
+  useEffect(() => {
+    const local = phoneLocal.replace(/^0/, ""); // strip leading 0
+    setPurchaser(p => ({ ...p, phone: `${phoneCC}${local}` }));
+  }, [phoneCC, phoneLocal]);
+
+  // When country changes, update phone CC to match
+  const handleCountryChange = (code: string) => {
+    const found = COUNTRY_LIST.find(c => c.code === code);
+    if (found) setPhoneCC(found.dial);
+    setPurchaser(p => ({ ...p, country: code }));
+  };
+
+  // Auto-lookup city + province from Indonesian zip code
+  const lookupZip = useCallback(async (zip: string) => {
+    if (!zip || zip.length < 5 || purchaser.country !== "ID") return;
+    try {
+      setZipLoading(true);
+      const res = await fetch(`https://api.zippopotam.us/id/${zip}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.places && data.places.length > 0) {
+        const place = data.places[0];
+        setPurchaser(p => ({
+          ...p,
+          city:  place["place name"]  || p.city,
+          state: place["state"]       || p.state,
+        }));
+      }
+    } catch {
+      // silent fail — user can fill manually
+    } finally {
+      setZipLoading(false);
+    }
+  }, [purchaser.country]);
 
   // ────────────────────────────────────────────────────────
   const fetchPurchased = async () => {
@@ -902,55 +959,151 @@ export default function DomainsPage() {
           <p className="text-[12px] text-muted-foreground mb-4">{t("dashboard.domains.purchaserDesc")}</p>
 
           <div className="space-y-3">
-            <div>
-              <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserName")} *</label>
-              <input value={purchaser.name} onChange={e => setPurchaser(p => ({ ...p, name: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
-            </div>
-            <div>
-              <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserCompany")}</label>
-              <input value={purchaser.company} onChange={e => setPurchaser(p => ({ ...p, company: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
-            </div>
+            {/* Nama + Perusahaan */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserEmail")} *</label>
-                <input type="email" value={purchaser.email} onChange={e => setPurchaser(p => ({ ...p, email: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
+                <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserName")} *</label>
+                <input
+                  value={purchaser.name}
+                  onChange={e => setPurchaser(p => ({ ...p, name: e.target.value }))}
+                  placeholder="Nama lengkap"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserPhone")} *</label>
-                <input value={purchaser.phone} onChange={e => setPurchaser(p => ({ ...p, phone: e.target.value }))} placeholder="+62812..." className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
+                <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserCompany")}</label>
+                <input
+                  value={purchaser.company}
+                  onChange={e => setPurchaser(p => ({ ...p, company: e.target.value }))}
+                  placeholder="Nama usaha (opsional)"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+                />
               </div>
             </div>
+
+            {/* Email */}
             <div>
-              <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserAddress")} *</label>
-              <input value={purchaser.address} onChange={e => setPurchaser(p => ({ ...p, address: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserEmail")} *</label>
+              <input
+                type="email"
+                value={purchaser.email}
+                onChange={e => setPurchaser(p => ({ ...p, email: e.target.value }))}
+                placeholder="email@domain.com"
+                className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+              />
             </div>
-            <div className="grid grid-cols-3 gap-3">
+
+            {/* Telepon dengan country code */}
+            <div>
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserPhone")} *</label>
+              <div className="flex gap-2">
+                <div className="relative shrink-0">
+                  <select
+                    value={phoneCC}
+                    onChange={e => setPhoneCC(e.target.value)}
+                    className="appearance-none bg-muted/30 border border-border rounded-xl pl-2 pr-7 py-2 text-[13px] text-foreground outline-none focus:border-primary cursor-pointer h-full min-w-[80px]"
+                  >
+                    {COUNTRY_LIST.map(c => (
+                      <option key={c.code} value={c.dial}>{c.flag} {c.dial}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
+                </div>
+                <input
+                  value={phoneLocal}
+                  onChange={e => setPhoneLocal(e.target.value.replace(/[^0-9]/g, ""))}
+                  placeholder="8123456789"
+                  className="flex-1 bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors min-w-0"
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-1">Format: {phoneCC}{phoneLocal || "81234567890"}</p>
+            </div>
+
+            {/* Negara */}
+            <div>
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-1">Negara *</label>
+              <div className="relative">
+                <select
+                  value={purchaser.country}
+                  onChange={e => handleCountryChange(e.target.value)}
+                  className="appearance-none w-full bg-muted/30 border border-border rounded-xl pl-3 pr-8 py-2 text-[13px] text-foreground outline-none focus:border-primary cursor-pointer"
+                >
+                  {COUNTRY_LIST.map(c => (
+                    <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Alamat */}
+            <div>
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserAddress")} *</label>
+              <input
+                value={purchaser.address}
+                onChange={e => setPurchaser(p => ({ ...p, address: e.target.value }))}
+                placeholder="Jl. Nama Jalan No. 1"
+                className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+              />
+            </div>
+
+            {/* Kode Pos → auto city + state */}
+            <div>
+              <label className="block text-[11px] font-semibold text-muted-foreground mb-1">
+                {t("dashboard.domains.purchaserZip")} *
+                {purchaser.country === "ID" && <span className="text-[10px] text-primary ml-1">(otomatis isi kota & provinsi)</span>}
+              </label>
+              <div className="relative">
+                <input
+                  value={purchaser.zip}
+                  onChange={e => setPurchaser(p => ({ ...p, zip: e.target.value.replace(/[^0-9]/g, "") }))}
+                  onBlur={e => lookupZip(e.target.value)}
+                  placeholder="55xxx"
+                  maxLength={6}
+                  className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors pr-8"
+                />
+                {zipLoading && <Loader2 className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-primary animate-spin" />}
+                {!zipLoading && purchaser.city && <MapPin className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-emerald-500" />}
+              </div>
+            </div>
+
+            {/* Kota + Provinsi */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserCity")} *</label>
-                <input value={purchaser.city} onChange={e => setPurchaser(p => ({ ...p, city: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
+                <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserCity")} *</label>
+                <input
+                  value={purchaser.city}
+                  onChange={e => setPurchaser(p => ({ ...p, city: e.target.value }))}
+                  placeholder="Kota / Kabupaten"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+                />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserState")} *</label>
-                <input value={purchaser.state} onChange={e => setPurchaser(p => ({ ...p, state: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
-              </div>
-              <div>
-                <label className="block text-[11px] font-semibold text-primary mb-1">{t("dashboard.domains.purchaserZip")} *</label>
-                <input value={purchaser.zip} onChange={e => setPurchaser(p => ({ ...p, zip: e.target.value }))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary" />
+                <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserState")} *</label>
+                <input
+                  value={purchaser.state}
+                  onChange={e => setPurchaser(p => ({ ...p, state: e.target.value }))}
+                  placeholder="Provinsi"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
+                />
               </div>
             </div>
           </div>
 
           <div className="flex gap-3 mt-5">
-            <button onClick={() => setShowPurchaserModal(false)} className="flex-1 py-2 rounded-xl text-[13px] font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors cursor-pointer">
-              {t("common.cancel")}
+            <button
+              onClick={() => { setShowPurchaserModal(false); setBuyingDomain(null); }}
+              className="flex-1 py-2 rounded-xl text-[13px] font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
+            >
+              Batal
             </button>
             <button
               onClick={confirmBuy}
-              disabled={!purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip || !!buyingDomain}
+              disabled={!purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip || (buyingDomain !== null && buyingDomain !== purchaserDomain)}
               className="flex-1 py-2 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
             >
-              {buyingDomain === purchaserDomain ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
-              {buyingDomain === purchaserDomain ? t("dashboard.domains.buying") : t("dashboard.domains.buyBtn")}
+              {buyingDomain === purchaserDomain && !showPurchaserModal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
+              {t("dashboard.domains.buyBtn")}
             </button>
           </div>
         </Dialog>
