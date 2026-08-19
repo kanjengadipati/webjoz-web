@@ -183,20 +183,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   aria-label={label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl",
-                    MOTION.standard,
+                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-2 px-1 rounded-xl transition-all",
                     active
-                      ? "text-primary"
+                      ? "text-primary font-bold"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {/* Active pill background */}
                   {active && (
                     <span
-                      className={cn(
-                        "absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15",
-                        MOTION.standard
-                      )}
+                      className="absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15"
                       aria-hidden="true"
                     />
                   )}
@@ -205,9 +201,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="relative">
                     <Icon
                       className={cn(
-                        "size-5 shrink-0",
-                        MOTION.standard,
-                        active ? "stroke-[2.5]" : "stroke-[1.75]"
+                        "size-5 shrink-0 transition-transform",
+                        active ? "stroke-[2.5] scale-105" : "stroke-[1.75]"
                       )}
                       aria-hidden="true"
                     />
@@ -220,8 +215,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
                   {/* Label */}
                   <span className={cn(
-                    "text-[9px] font-semibold leading-none tracking-tight truncate w-full text-center",
-                    active ? "text-primary" : "text-muted-foreground"
+                    "text-[10px] font-semibold leading-none tracking-tight truncate w-full text-center",
+                    active ? "text-primary font-bold" : "text-muted-foreground"
                   )}>
                     {label}
                   </span>
@@ -233,34 +228,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
-
-            {/* Divider */}
-            <div className="h-8 w-px bg-border/50 mx-0.5 shrink-0" aria-hidden="true" />
-
-            {/* Theme toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-9 rounded-xl hover:bg-muted/60 shrink-0 text-muted-foreground hover:text-foreground"
-              aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-              aria-pressed={theme === "dark"}
-              onClick={toggleTheme}
-            >
-              {theme === "dark" ? <Sun className="size-4 text-amber-400" /> : <Moon className="size-4" />}
-            </Button>
-
-            {/* Language toggle */}
-            <div className="flex flex-col items-center justify-center gap-0.5 shrink-0">
-              <button
-                type="button"
-                aria-label="Switch language"
-                onClick={() => setLocale(locale === "id" ? "en" : "id")}
-                className="rounded-full border border-border/60 bg-muted/60 px-2 py-1 text-[9.5px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
-              >
-                {locale === "id" ? "EN" : "ID"}
-              </button>
-              <span className="text-[7px] text-muted-foreground/60 leading-none">{t("dashboard.language")}</span>
-            </div>
           </div>
         </nav>
       )}
@@ -380,7 +347,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     {/* Theme / Appearance Row */}
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/85">
-                        <Sun className="size-3.5 text-muted-foreground" />
+                        <SunIcon size="sm" className="size-3.5 text-muted-foreground" />
                         <span>{t("dashboard.appearance")}</span>
                       </div>
                       <div className="inline-flex items-center rounded-full border border-border bg-background/80 p-0.5 text-[11px] font-semibold shadow-inner">
@@ -396,7 +363,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                               : "text-muted-foreground hover:text-foreground"
                           )}
                         >
-                          <Sun className="size-3.5" />
+                          <SunIcon size="sm" className="size-3.5" />
                         </button>
                         <button
                           type="button"
@@ -410,7 +377,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                               : "text-muted-foreground hover:text-foreground"
                           )}
                         >
-                          <Moon className="size-3.5" />
+                          <MoonIcon size="sm" className="size-3.5" />
                         </button>
                       </div>
                     </div>
@@ -482,7 +449,30 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </p>
                   )}
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2.5">
+                  {/* Mobile Theme & Language Toggles */}
+                  <div className="flex items-center gap-1.5 lg:hidden">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 rounded-full border border-border/60 bg-muted/40 text-muted-foreground hover:text-foreground"
+                      aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+                      aria-pressed={theme === "dark"}
+                      onClick={toggleTheme}
+                    >
+                      {theme === "dark" ? <SunIcon size="sm" className="size-3.5 text-amber-400" /> : <MoonIcon size="sm" className="size-3.5" />}
+                    </Button>
+
+                    <button
+                      type="button"
+                      aria-label="Switch language"
+                      onClick={() => setLocale(locale === "id" ? "en" : "id")}
+                      className="h-8 rounded-full border border-border/60 bg-muted/40 px-2.5 text-[10.5px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
+                    >
+                      {locale === "id" ? "EN" : "ID"}
+                    </button>
+                  </div>
+
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
