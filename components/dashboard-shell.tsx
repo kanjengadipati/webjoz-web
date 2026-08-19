@@ -1,10 +1,10 @@
 "use client";
 
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent } from "lucide-react";
+import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -61,6 +61,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const { hasPermission, role: userRole, loading } = usePermissions();
   const { unreadCount } = useUnreadNotifications();
   const { activeTenant } = useActiveTenant();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isAuthenticated = Boolean(token);
 
   useEffect(() => {
@@ -167,120 +168,220 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation (4 Core Tabs + 1 Drawer Menu) */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-4 left-4 right-4 z-50 lg:hidden" aria-label={t("dashboard.mainNav")}>
-          <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-card/95 px-2 py-2 backdrop-blur-xl shadow-2xl shadow-black/20 dark:bg-background/85 dark:border-border/30 dark:shadow-black/40">
-            {filteredNavItems.slice(0, 5).map((item) => {
-              const active = pathname === item.href;
-              const showBadge = item.id === "notifications" && unreadCount > 0;
-              const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
-              const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-label={label}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl",
-                    MOTION.standard,
-                    active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {/* Active pill background */}
-                  {active && (
-                    <span
-                      className={cn(
-                        "absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15",
-                        MOTION.standard
-                      )}
-                      aria-hidden="true"
-                    />
-                  )}
-
-                  {/* Icon */}
-                  <div className="relative">
-                    <Icon
-                      className={cn(
-                        "size-5 shrink-0",
-                        MOTION.standard,
-                        active ? "stroke-[2.5]" : "stroke-[1.75]"
-                      )}
-                      aria-hidden="true"
-                    />
-                    {showBadge && (
-                      <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-md">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
+        <nav className="fixed bottom-4 left-4 right-4 z-40 lg:hidden" aria-label={t("dashboard.mainNav")}>
+          <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-card/95 px-2 py-1.5 backdrop-blur-xl shadow-2xl shadow-black/20 dark:bg-background/90 dark:border-border/40 dark:shadow-black/50">
+            {filteredNavItems
+              .filter((item) => ["overview", "sites", "leads", "notifications"].includes(item.id))
+              .map((item) => {
+                const active = pathname === item.href;
+                const showBadge = item.id === "notifications" && unreadCount > 0;
+                const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
+                const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-label={label}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl transition-all",
+                      active
+                        ? "text-primary font-bold"
+                        : "text-muted-foreground hover:text-foreground"
                     )}
-                  </div>
+                  >
+                    {/* Active pill background */}
+                    {active && (
+                      <span
+                        className="absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15"
+                        aria-hidden="true"
+                      />
+                    )}
 
-                  {/* Label */}
-                  <span className={cn(
-                    "text-[9px] font-semibold leading-none tracking-tight truncate w-full text-center",
-                    active ? "text-primary" : "text-muted-foreground"
-                  )}>
-                    {label}
-                  </span>
-                  {(item as any).premium && !isPremiumPlan && (
-                    <span className="text-[6px] px-1 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none">
-                      {t("dashboard.pro")}
+                    {/* Icon */}
+                    <div className="relative">
+                      <Icon
+                        className={cn(
+                          "size-5 shrink-0 transition-transform",
+                          active ? "stroke-[2.5] scale-105" : "stroke-[1.75]"
+                        )}
+                        aria-hidden="true"
+                      />
+                      {showBadge && (
+                        <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-md">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Label */}
+                    <span className={cn(
+                      "text-[9.5px] font-semibold leading-none tracking-tight truncate w-full text-center",
+                      active ? "text-primary font-bold" : "text-muted-foreground"
+                    )}>
+                      {label}
                     </span>
-                  )}
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
 
-            {/* Divider */}
-            <div className="h-8 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
-
-            {/* Accent toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
-              aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
-              aria-pressed={!isMonochrome}
-              onClick={toggleAccent}
+            {/* 5th Tab: Menu Drawer Toggle */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Menu"
+              className={cn(
+                "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl transition-all cursor-pointer",
+                mobileMenuOpen
+                  ? "text-primary font-bold"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <div className={cn(
-                "size-3.5 rounded-full border-2 shrink-0",
-                MOTION.slow,
-                accent === "monochrome"
-                  ? "bg-slate-500 border-slate-400"
-                  : "bg-primary border-primary/80 shadow-[0_0_6px_color-mix(in_srgb,var(--primary)_60%,transparent)]"
-              )} aria-hidden="true" />
-            </Button>
-
-            {/* Theme toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-10 rounded-xl hover:bg-muted/60 shrink-0"
-              aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-              aria-pressed={theme === "dark"}
-              onClick={toggleTheme}
-            >
-              <ThemeIcon mode={theme} />
-            </Button>
-
-            {/* Language toggle */}
-            <div className="flex flex-col items-center justify-center gap-0.5 shrink-0">
-              <button
-                type="button"
-                aria-label="Switch language"
-                onClick={() => setLocale(locale === "id" ? "en" : "id")}
-                className="rounded-full border border-border/50 bg-muted/40 px-2 py-1 text-[9px] font-bold leading-none cursor-pointer text-muted-foreground hover:text-foreground transition"
-              >
-                {locale === "id" ? "EN" : "ID"}
-              </button>
-              <span className="text-[7px] text-muted-foreground/60 leading-none">{t("dashboard.language")}</span>
-            </div>
+              <div className="relative">
+                <Menu className="size-5 shrink-0 stroke-[1.75]" />
+              </div>
+              <span className="text-[9.5px] font-semibold leading-none tracking-tight truncate w-full text-center">
+                Menu
+              </span>
+            </button>
           </div>
         </nav>
+      )}
+
+      {/* Mobile Drawer Sheet */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Sheet Panel */}
+          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-card border-t border-border rounded-t-3xl p-5 pb-8 shadow-2xl animate-in slide-in-from-bottom duration-300 space-y-5">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-border/40">
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                  {activeTenant?.tenant?.name?.slice(0, 1).toUpperCase() || "W"}
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-foreground m-0 leading-tight">{activeTenant?.tenant?.name || "Webjoz"}</p>
+                  <span className="text-[10px] text-muted-foreground capitalize">{activeTenant?.tenant?.plan || "free"} Plan</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-full bg-muted/60 text-muted-foreground hover:text-foreground transition cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Navigation Groups */}
+            <div className="space-y-4">
+              {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
+                const sectionItems = filteredNavItems.filter(item => item.section === sectionName);
+                if (sectionItems.length === 0) return null;
+
+                return (
+                  <div key={sectionName} className="space-y-1.5">
+                    <h4 className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/70 px-1">
+                      {t(NAV_SECTION_KEYS[sectionName] ?? "", sectionName)}
+                    </h4>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {sectionItems.map((item) => {
+                        const active = pathname === item.href;
+                        const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
+                        const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border",
+                              active
+                                ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                                : "bg-muted/30 border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                            )}
+                          >
+                            <Icon className="size-4 shrink-0" />
+                            <span className="truncate">{label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Settings & Appearance Dock */}
+            <div className="pt-2 border-t border-border/40 space-y-3">
+              <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/60 p-2 shadow-inner">
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                    aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+                    aria-pressed={!isMonochrome}
+                    onClick={toggleAccent}
+                  >
+                    <div className={cn(
+                      "size-4 rounded-full border-2",
+                      MOTION.slow,
+                      accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
+                    )} aria-hidden="true" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                    aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+                    aria-pressed={theme === "dark"}
+                    onClick={toggleTheme}
+                  >
+                    <ThemeIcon mode={theme} />
+                  </Button>
+                </div>
+
+                <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+                <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
+                  {(["id", "en"] as const).map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
+                      aria-pressed={locale === code}
+                      onClick={() => setLocale(code)}
+                      className={cn(
+                        "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
+                        locale === code
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {code === "id" ? "ID" : "EN"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {isAuthenticated && (
+                <Button variant="secondary" className="w-full rounded-xl text-xs font-semibold" onClick={() => void handleLogout()}>
+                  {t("dashboard.logout")}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       <div className={cn(
