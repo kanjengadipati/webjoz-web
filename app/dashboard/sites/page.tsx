@@ -1122,7 +1122,12 @@ export default function SitesPage() {
                       {t("dashboard.sites.linkTestimonials")}
                     </Link>
                     <Link
-                      href={`/dashboard/sites/${site.id}/domain`}
+                      href={(() => {
+                        const customDom = domains.find(d => d.site_id === site.id);
+                        return customDom
+                          ? `/dashboard/domains?domain_id=${customDom.id}`
+                          : `/dashboard/domains?site_id=${site.id}`;
+                      })()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-primary/35 bg-primary/[0.04] text-primary hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-semibold"
                     >
                       <Link2 className="w-3 h-3 text-primary" />

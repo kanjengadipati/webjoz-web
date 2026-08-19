@@ -64,11 +64,12 @@ export default function DomainsPage() {
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
-  const [domains,       setDomains]       = useState<Domain[]>([]);
-  const [sites,         setSites]         = useState<Site[]>([]);
-  const [loading,       setLoading]       = useState(true);
+  const [domains, setDomains] = useState<Domain[]>([]);
+  const [sites, setSites] = useState<Site[]>([]);
+  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  const [currentPlan,   setCurrentPlan]   = useState<any>(null);
+  const [currentPlan, setCurrentPlan] = useState<any>(null);
+  const [highlightDomain, setHighlightDomain] = useState<number | null>(null);
 
   // Form states
   const [siteId,         setSiteId]         = useState("");
@@ -131,10 +132,21 @@ export default function DomainsPage() {
 
       const params  = new URLSearchParams(window.location.search);
       const qSiteId = params.get("site_id");
+      const qDomainId = params.get("domain_id");
       if (qSiteId && list.some(s => s.id.toString() === qSiteId)) {
         setSiteId(qSiteId);
       } else if (list.length > 0) {
         setSiteId(list[0].id.toString());
+      }
+      if (qDomainId) {
+        setHighlightDomain(Number(qDomainId));
+      }
+      // Scroll to highlighted domain after render
+      if (qDomainId && typeof window !== "undefined") {
+        setTimeout(() => {
+          const el = document.querySelector(`[data-domain-id="${qDomainId}"]`);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 500);
       }
     } catch (err: any) {
       pushToast(err.message || t("dashboard.domains.loadFailed"), "error");
@@ -195,6 +207,7 @@ export default function DomainsPage() {
 
   const handleBuy = async (domain: string) => {
     setPurchaserDomain(domain);
+    setBuyingDomain(domain);   // show spinner immediately on click
     setShowPurchaserModal(true);
   };
 
@@ -628,7 +641,7 @@ export default function DomainsPage() {
               const ok   = dom.status === "verified";
               const busy = actionLoading === dom.id;
               return (
-                <div key={dom.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
+                <div key={dom.id} data-domain-id={dom.id} className={`bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-all ${highlightDomain === dom.id ? "ring-2 ring-primary shadow-lg" : ""}`}>
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
                     {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                   </div>
@@ -885,7 +898,7 @@ export default function DomainsPage() {
 
       {/* ── Purchaser Data Modal ─────────────────────────── */}
       {showPurchaserModal && (
-        <Dialog open onOpenChange={open => { if (!open) setShowPurchaserModal(false); }} title={t("dashboard.domains.purchaserTitle")} footer={<></>}>
+        <Dialog open onOpenChange={open => { if (!open) { setShowPurchaserModal(false); setBuyingDomain(null); } }} title={t("dashboard.domains.purchaserTitle")} footer={<></>}>
           <p className="text-[12px] text-muted-foreground mb-4">{t("dashboard.domains.purchaserDesc")}</p>
 
           <div className="space-y-3">
