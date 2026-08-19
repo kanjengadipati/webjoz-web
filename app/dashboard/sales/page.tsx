@@ -104,77 +104,77 @@ export default function SalesReferralPage() {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Share2 className="size-6 text-primary" />
-            {t("dashboard.sales.pageTitle")}
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Share2 className="size-5 sm:size-6 text-primary shrink-0" />
+            <span>{t("dashboard.sales.pageTitle")}</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             {t("dashboard.sales.pageDesc")}
           </p>
         </div>
-        <Link href="/dashboard/sales/commissions">
-          <Button variant="outline" className="gap-2">
+        <Link href="/dashboard/sales/commissions" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto gap-2 rounded-xl text-xs sm:text-sm h-10 cursor-pointer">
             <DollarSign className="size-4 text-emerald-500" />
             {t("dashboard.sales.viewCommissions")}
           </Button>
         </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 min-w-0">
         {/* Card 1: Main Referral Code */}
-        <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Award className="size-5 text-primary" />
-              {t("dashboard.sales.codeCardTitle")}
+        <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between rounded-2xl min-w-0 overflow-hidden">
+          <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
+            <CardTitle className="text-sm sm:text-base font-semibold flex items-center gap-2">
+              <Award className="size-4 sm:size-5 text-primary shrink-0" />
+              <span>{t("dashboard.sales.codeCardTitle")}</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs leading-relaxed">
               {t("dashboard.sales.codeCardDesc")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between">
-              <span className="font-mono text-2xl font-bold tracking-wider text-primary">
+          <CardContent className="p-4 sm:p-6 pt-0 space-y-4 min-w-0">
+            <div className="p-3.5 sm:p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between gap-2 min-w-0">
+              <span className="font-mono text-xl sm:text-2xl font-bold tracking-wider text-primary truncate min-w-0">
                 {referralCode || "—"}
               </span>
-              <Button size="sm" variant="outline" onClick={handleCopyCode} className="gap-1.5 cursor-pointer">
-                {copiedCode ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
-                {copiedCode ? t("dashboard.sales.copied") : t("dashboard.sales.copyCode")}
+              <Button size="sm" variant="outline" onClick={handleCopyCode} className="shrink-0 gap-1.5 rounded-lg text-xs cursor-pointer shadow-sm">
+                {copiedCode ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                <span>{copiedCode ? t("dashboard.sales.copied") : t("dashboard.sales.copyCode")}</span>
               </Button>
             </div>
 
-            <div className="pt-2 border-t border-border/20 flex items-center justify-between text-xs text-muted-foreground">
+            <div className="pt-2 border-t border-border/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-muted-foreground">
               <span>{t("dashboard.sales.updatePrompt")}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setConfirmOpen(true)}
-                className="text-xs text-muted-foreground hover:text-foreground gap-1"
+                className="w-fit text-xs text-muted-foreground hover:text-foreground gap-1 p-0 h-auto font-medium hover:bg-transparent underline underline-offset-4 cursor-pointer"
               >
-                <RefreshCw className="size-3" />
-                {t("dashboard.sales.regenerateCode")}
+                <RefreshCw className="size-3 shrink-0" />
+                <span>{t("dashboard.sales.regenerateCode")}</span>
               </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Card 2: Shareable Link */}
-        <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Share2 className="size-5 text-primary" />
-              {t("dashboard.sales.linkCardTitle")}
+        <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between rounded-2xl min-w-0 overflow-hidden">
+          <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
+            <CardTitle className="text-sm sm:text-base font-semibold flex items-center gap-2">
+              <Share2 className="size-4 sm:size-5 text-primary shrink-0" />
+              <span>{t("dashboard.sales.linkCardTitle")}</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs leading-relaxed">
               {t("dashboard.sales.linkCardDesc")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-3 rounded-xl border border-border/40 bg-muted/30 text-xs font-mono break-all text-muted-foreground flex items-center justify-between gap-2">
-              <span className="truncate">{shareableUrl}</span>
-              <Button size="sm" variant="secondary" onClick={handleCopyLink} className="shrink-0 gap-1.5 cursor-pointer">
-                {copiedLink ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
-                {copiedLink ? t("dashboard.sales.copied") : t("dashboard.sales.copyLink")}
+          <CardContent className="p-4 sm:p-6 pt-0 space-y-4 min-w-0">
+            <div className="p-3 rounded-xl border border-border/40 bg-muted/30 text-xs font-mono text-muted-foreground flex items-center justify-between gap-2 min-w-0">
+              <span className="truncate flex-1 min-w-0">{shareableUrl}</span>
+              <Button size="sm" variant="secondary" onClick={handleCopyLink} className="shrink-0 gap-1.5 rounded-lg text-xs cursor-pointer shadow-sm">
+                {copiedLink ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                <span>{copiedLink ? t("dashboard.sales.copied") : t("dashboard.sales.copyLink")}</span>
               </Button>
             </div>
             <p className="text-xs text-muted-foreground/80 leading-relaxed">
@@ -185,12 +185,12 @@ export default function SalesReferralPage() {
       </div>
 
       {/* Program Info Card */}
-      <Card className="border-emerald-500/20 bg-emerald-500/5 p-6 space-y-3">
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm uppercase tracking-wider">
-          <DollarSign className="size-4" />
-          {t("dashboard.sales.programTitle")}
+      <Card className="border-emerald-500/20 bg-emerald-500/5 p-4 sm:p-6 space-y-3 rounded-2xl min-w-0">
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs sm:text-sm uppercase tracking-wider">
+          <DollarSign className="size-4 shrink-0" />
+          <span>{t("dashboard.sales.programTitle")}</span>
         </div>
-        <ul className="text-xs text-muted-foreground space-y-1.5 list-disc list-inside leading-relaxed">
+        <ul className="text-xs text-muted-foreground space-y-2 list-disc list-inside leading-relaxed">
           <li>{t("dashboard.sales.commRatePrefix")} <strong>20%</strong> {t("dashboard.sales.commRateSuffix")}</li>
           <li>{t("dashboard.sales.commRecurringPrefix")} <strong>recurring</strong> {t("dashboard.sales.commRecurringSuffix")}</li>
           <li>{t("dashboard.sales.commEditorPrefix")} <em>Editor</em> {t("dashboard.sales.commEditorSuffix")}</li>
