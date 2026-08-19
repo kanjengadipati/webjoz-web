@@ -153,7 +153,7 @@ export const LOADING_CHECKLIST = [
   { label: "Optimasi SEO & finalisasi", desc: "Mengatur metadata dan call-to-action kontak" },
 ];
 
-export const LOADING_STEPS_PERCENT = [15, 30, 45, 60, 75, 100];
+export const LOADING_STEPS_PERCENT = [15, 30, 48, 64, 80, 92];
 
 export const SECTION_STEP_MAP: Record<string, number> = {
   header: 0, hero: 0,

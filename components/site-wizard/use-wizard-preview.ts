@@ -101,14 +101,14 @@ export function useWizardPreview() {
   }, [previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
   // Transition to result only when BOTH conditions are true in React's eyes:
-  // - smoothProgress has reached 100% (the progress bar visually hits the end)
-  // - streamDone is true (meaning previewData has already been committed by React)
-  // This ensures the user always sees the progress bar fill up completely and naturally
-  // before transitioning to the final preview layout.
+  // - streamDone is true (meaning onDone event has arrived and previewData is committed)
+  // - smoothProgress has reached 100% (the progress bar visually hits 100%)
   useEffect(() => {
-    if (previewState === "loading" && Math.round(smoothProgress) >= 100 && streamDone && !pendingResultRef.current) {
-      pendingResultRef.current = true;
-      setTimeout(() => setPreviewState("result"), 600);
+    if (previewState === "loading" && streamDone && !pendingResultRef.current) {
+      if (Math.round(smoothProgress) >= 100) {
+        pendingResultRef.current = true;
+        setTimeout(() => setPreviewState("result"), 450);
+      }
     }
   }, [smoothProgress, previewState, streamDone]);
 
@@ -121,17 +121,24 @@ export function useWizardPreview() {
 
     const interval = setInterval(() => {
       setSmoothProgress((prev) => {
-        const target = LOADING_STEPS_PERCENT[loadingStep] ?? 15;
+        const isDone = streamDoneRef.current;
+        const target = isDone ? 100 : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
         if (prev >= target) {
-          return target;
+          if (!isDone && prev < 95 && loadingStep >= 4) {
+            // When waiting for a slow stream response, slowly creep up without hitting 100%
+            return Math.min(95, prev + 0.04);
+          }
+          return isDone ? 100 : prev;
         }
         const diff = target - prev;
-        // Natural easing step: increment proportional to the remaining distance
-        const step = Math.min(0.8, Math.max(0.15, diff * 0.04));
+        // Faster jump to 100% once done, natural easing during in-progress generation
+        const step = isDone
+          ? Math.max(1.5, diff * 0.25)
+          : Math.min(0.8, Math.max(0.15, diff * 0.04));
         const next = prev + step;
         return next >= target ? target : next;
       });
-    }, 50);
+    }, 40);
 
     return () => clearInterval(interval);
   }, [previewState, loadingStep]);
@@ -182,8 +189,8 @@ export function useWizardPreview() {
       const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
       if (currentStep >= targetStep) return;
 
-      // Pacing: minimum 1.5s per step
-      if (now - lastStepTimeRef.current < 1500) return;
+      // Pacing: minimum 1.2s per step when stream is in flight
+      if (!streamDoneRef.current && now - lastStepTimeRef.current < 1200) return;
 
       // Freeze elapsed for the step we're leaving, then advance
       const frozenElapsed = Math.round((now - stepStartTimesRef.current[currentStep]) / 1000);

@@ -108,6 +108,7 @@ export default function DomainsPage() {
   const [results,           setResults]           = useState<AvailabilityResult[]>([]);
   const [searched,          setSearched]          = useState(false);
   const [buyingDomain,      setBuyingDomain]      = useState<string | null>(null);
+  const [selectedDomainResult, setSelectedDomainResult] = useState<AvailabilityResult | null>(null);
   const [purchaseAvailable, setPurchaseAvailable] = useState(true);
 
   // Purchaser data modal
@@ -261,8 +262,9 @@ export default function DomainsPage() {
     }
   };
 
-  const handleBuy = async (domain: string) => {
-    setPurchaserDomain(domain);
+  const handleBuy = async (result: AvailabilityResult) => {
+    setPurchaserDomain(result.domain);
+    setSelectedDomainResult(result);
     setShowPurchaserModal(true);
   };
 
@@ -297,7 +299,7 @@ export default function DomainsPage() {
             reference_type: "domain",
             reference_id: purchaserDomain,
             callback_url: callbackUrl,
-            amount: 0,
+            amount: selectedDomainResult?.sell_price_usd || 0,
             gateway: "paypal",
             currency: "USD",
           }),
@@ -341,7 +343,7 @@ export default function DomainsPage() {
             reference_type: "domain",
             reference_id: purchaserDomain,
             callback_url: callbackUrl,
-            amount: 0,
+            amount: selectedDomainResult?.sell_price_idr || 0,
             gateway: "midtrans",
             currency: "IDR",
           }),
@@ -709,7 +711,7 @@ export default function DomainsPage() {
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleBuy(r.domain)}
+                                onClick={() => handleBuy(r)}
                             disabled={busy || !siteId}
                             className="px-4 py-2.5 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer shadow-sm shrink-0"
                           >

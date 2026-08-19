@@ -1118,13 +1118,13 @@ export function SiteWizard({
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-              <LoadingModal loadingStep={preview.loadingStep} progressPercent={preview.smoothProgress} businessType={chat.businessType} businessName={chat.businessName} charCount={writtenCharCount} sectionSnippet={sectionSnippet} stepElapsed={preview.stepElapsed} />
+              <LoadingModal loadingStep={preview.loadingStep} progressPercent={preview.smoothProgress} businessType={chat.businessType} businessName={chat.businessName} charCount={writtenCharCount} sectionSnippet={sectionSnippet} stepElapsed={preview.stepElapsed} streamDone={preview.streamDone} />
             </div>
           )}
 
           {preview.previewState === "loading" && device.isMobile && (
             <div className="absolute inset-0 z-40 bg-black/10">
-              <LoadingModal loadingStep={preview.loadingStep} progressPercent={preview.smoothProgress} businessType={chat.businessType} businessName={chat.businessName} center stepElapsed={preview.stepElapsed} />
+              <LoadingModal loadingStep={preview.loadingStep} progressPercent={preview.smoothProgress} businessType={chat.businessType} businessName={chat.businessName} center stepElapsed={preview.stepElapsed} streamDone={preview.streamDone} />
             </div>
           )}
 
