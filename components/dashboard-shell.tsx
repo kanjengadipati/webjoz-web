@@ -394,13 +394,14 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <Separator />
 
                 <div className="grid gap-3">
-                  <div className="rounded-2xl border border-border/40 bg-background/40 p-3">
-                    <div className="mb-3 text-xs font-medium text-muted-foreground/70">{t("dashboard.appearance")}</div>
-                    <div className="flex items-center gap-2">
+                  {/* Minimalist Control Dock (Idea 2) */}
+                  <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/50 p-2 shadow-inner">
+                    {/* Left: Accent & Theme toggles */}
+                    <div className="flex items-center gap-1.5">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                        className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
                         aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
                         aria-pressed={!isMonochrome}
                         onClick={toggleAccent}
@@ -411,10 +412,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
                         )} aria-hidden="true" />
                       </Button>
+
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="size-9 rounded-full border border-border/40 bg-background/40 hover:bg-primary/5"
+                        className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
                         aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
                         aria-pressed={theme === "dark"}
                         onClick={toggleTheme}
@@ -422,29 +424,32 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         <ThemeIcon mode={theme} />
                       </Button>
                     </div>
-                    <div className="mt-3 flex items-center justify-between gap-3">
-                      <span className="text-xs font-medium text-muted-foreground/70">{t("dashboard.language")}</span>
-                      <div className="inline-flex items-center rounded-full border border-border/60 bg-background/60 p-0.5 text-[11px] font-semibold">
-                        {(["id", "en"] as const).map((code) => (
-                          <button
-                            key={code}
-                            type="button"
-                            aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
-                            aria-pressed={locale === code}
-                            onClick={() => setLocale(code)}
-                            className={cn(
-                              "rounded-full px-2.5 py-1 transition cursor-pointer",
-                              locale === code
-                                ? "bg-primary text-primary-foreground shadow-sm"
-                                : "text-muted-foreground hover:text-foreground"
-                            )}
-                          >
-                            {code === "id" ? "ID" : "EN"}
-                          </button>
-                        ))}
-                      </div>
+
+                    {/* Divider */}
+                    <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+                    {/* Right: Language Pill */}
+                    <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
+                      {(["id", "en"] as const).map((code) => (
+                        <button
+                          key={code}
+                          type="button"
+                          aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
+                          aria-pressed={locale === code}
+                          onClick={() => setLocale(code)}
+                          className={cn(
+                            "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
+                            locale === code
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          {code === "id" ? "ID" : "EN"}
+                        </button>
+                      ))}
                     </div>
                   </div>
+
                   {isAuthenticated && (
                     <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()}>
                       {t("dashboard.logout")}
