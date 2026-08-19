@@ -390,14 +390,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           aria-pressed={theme === "light"}
                           onClick={() => theme !== "light" && toggleTheme()}
                           className={cn(
-                            "flex items-center gap-1 rounded-full px-2.5 py-1 transition-all cursor-pointer",
+                            "flex items-center justify-center rounded-full px-2.5 py-1 transition-all cursor-pointer",
                             theme === "light"
                               ? "bg-primary text-primary-foreground shadow-sm font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           )}
                         >
-                          <Sun className="size-3" />
-                          <span>{locale === "id" ? "Terang" : "Light"}</span>
+                          <Sun className="size-3.5" />
                         </button>
                         <button
                           type="button"
@@ -405,14 +404,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           aria-pressed={theme === "dark"}
                           onClick={() => theme !== "dark" && toggleTheme()}
                           className={cn(
-                            "flex items-center gap-1 rounded-full px-2.5 py-1 transition-all cursor-pointer",
+                            "flex items-center justify-center rounded-full px-2.5 py-1 transition-all cursor-pointer",
                             theme === "dark"
                               ? "bg-primary text-primary-foreground shadow-sm font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           )}
                         >
-                          <Moon className="size-3" />
-                          <span>{locale === "id" ? "Gelap" : "Dark"}</span>
+                          <Moon className="size-3.5" />
                         </button>
                       </div>
                     </div>
