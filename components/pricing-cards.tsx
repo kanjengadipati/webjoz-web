@@ -63,6 +63,8 @@ interface PricingCardsProps {
   aiRegenLabel?: string;             // e.g. "AI Regenerasi {n}x/bulan"
   aiDesignLabel?: string;            // e.g. "AI Design {n}x/bulan"
   noCustomDomainLabel?: string;      // e.g. "Tidak ada custom domain"
+  customDomainLabel?: string;        // e.g. "Custom Domain"
+  customDomainSubtext?: string;      // e.g. "tidak termasuk domain"
   seoLabel?: string;                 // e.g. "SEO Booster"
   subdomainLabel?: string;           // e.g. "Subdomain .webjoz.app"
   hostingLabel?: string;             // e.g. "Hosting & SSL gratis"
@@ -105,6 +107,8 @@ export function PricingCards({
   aiRegenLabel = "AI Regenerasi {n}x/bulan",
   aiDesignLabel = "AI Design {n}x/bulan",
   noCustomDomainLabel = "Tidak ada custom domain",
+  customDomainLabel = "Custom Domain",
+  customDomainSubtext = "tidak termasuk domain",
   seoLabel = "SEO Booster",
   subdomainLabel = "Subdomain .webjoz.app",
   hostingLabel = "Hosting & SSL gratis",
@@ -164,8 +168,8 @@ export function PricingCards({
             plan.max_ai_generates > 0 && fill(aiGenerateLabel, plan.max_ai_generates),
             plan.max_section_regens > 0 && fill(aiRegenLabel, plan.max_section_regens),
             plan.max_design_regens > 0 && fill(aiDesignLabel, plan.max_design_regens),
-            plan.max_custom_domain > 0
-              ? `${plan.max_custom_domain} Custom Domain`
+            !isFree
+              ? customDomainLabel
               : noCustomDomainLabel,
             seoLabel,
             !isFree && subdomainLabel,
@@ -282,7 +286,8 @@ export function PricingCards({
                 {/* ── Feature list ───────────────────────────────────────── */}
                 <ul className="space-y-2.5 text-sm text-left mb-8">
                   {featureList.map((item) => {
-                    const isNegative = item === noCustomDomainLabel && plan.max_custom_domain === 0;
+                    const isCustomDomain = item === customDomainLabel && !isFree;
+                    const isNegative = item === noCustomDomainLabel && isFree;
                     return (
                       <li key={item} className="flex items-start gap-2">
                         {isNegative ? (
@@ -290,7 +295,14 @@ export function PricingCards({
                         ) : (
                           <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         )}
-                        <span className={isNegative ? "text-muted-foreground/60" : ""}>{item}</span>
+                        <div className="flex flex-col">
+                          <span className={isNegative ? "text-muted-foreground/60" : ""}>{item}</span>
+                          {isCustomDomain && customDomainSubtext && (
+                            <span className="text-[11px] text-muted-foreground/80 font-normal">
+                              ({customDomainSubtext})
+                            </span>
+                          )}
+                        </div>
                       </li>
                     );
                   })}

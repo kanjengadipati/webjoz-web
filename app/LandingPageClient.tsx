@@ -656,6 +656,8 @@ export default function LandingPageClient() {
               aiRegenLabel={t("landing.aiRegen")}
               aiDesignLabel={t("landing.aiDesign")}
               noCustomDomainLabel={t("landing.noCustomDomain")}
+              customDomainLabel={t("landing.customDomainFeature")}
+              customDomainSubtext={t("landing.customDomainSubtext")}
               seoLabel={t("landing.seoBooster")}
               subdomainLabel={t("landing.subdomainFeature")}
               hostingLabel={t("landing.hostingFeature")}

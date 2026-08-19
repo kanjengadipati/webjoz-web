@@ -478,6 +478,9 @@ export default function UpgradePage() {
         monthlyLabel={t("dashboard.upgrade.monthly")}
         yearlyLabel={t("dashboard.upgrade.yearly")}
         currentPlanLabel={t("dashboard.upgrade.currentPlan")}
+        customDomainLabel={t("dashboard.upgrade.customDomainFeature")}
+        customDomainSubtext={t("dashboard.upgrade.customDomainSubtext")}
+        noCustomDomainLabel={t("dashboard.upgrade.noCustomDomain")}
       />
 
       {/* PayPal Popup Modal */}
