@@ -177,7 +177,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       {/* Mobile Bottom Navigation (Full-width sticky bottom, Icon-Only) */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-card/95 dark:bg-background/90 backdrop-blur-2xl border-t border-border/60 py-2 pb-3 shadow-2xl shadow-black/20" aria-label={t("dashboard.mainNav")}>
+        <nav className="fixed bottom-0 inset-x-0 z-60 lg:hidden bg-card/95 dark:bg-background/90 backdrop-blur-2xl border-t border-border/60 py-2 pb-3 shadow-2xl shadow-black/20" aria-label={t("dashboard.mainNav")}>
           <div className="flex items-center justify-around max-w-lg mx-auto px-2">
             {/* Tab 1: Home (Overview) */}
             {(() => {
