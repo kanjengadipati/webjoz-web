@@ -60,7 +60,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
 
   return (
     <div
-      className="h-full overflow-y-auto p-8 transition-colors duration-500"
+      className="h-full overflow-y-auto p-4 sm:p-8 transition-colors duration-500"
       style={{
         background: designToken ? "var(--dt-bg)" : "#0d0f14",
         color: designToken ? "var(--dt-text)" : "#cbd5e1",
@@ -71,7 +71,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
       <div className="w-full max-w-xl lg:max-w-3xl mx-auto">
         {designToken && (
           <div
-            className="flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full w-fit text-[11px] font-medium animate-in fade-in slide-in-from-top-2 duration-500"
+            className="flex items-center gap-2 mb-4 sm:mb-5 px-3 py-1.5 rounded-full w-fit text-[11px] font-medium animate-in fade-in slide-in-from-top-2 duration-500"
             style={{
               background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)",
               border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)",
@@ -87,13 +87,13 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
         )}
 
         <header
-          className="flex justify-between items-center pb-6 mb-10 transition-colors duration-500"
+          className="flex justify-between items-center gap-3 pb-4 sm:pb-6 mb-6 sm:mb-10 transition-colors duration-500"
           style={{ borderBottom: designToken ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.07)" }}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 min-w-0">
             {businessName ? (
               <div
-                className="h-7 px-3 flex items-center rounded-md text-sm font-bold animate-in fade-in slide-in-from-left-2 duration-400"
+                className="py-1 px-3 flex items-center rounded-md text-xs sm:text-sm font-bold truncate max-w-[150px] sm:max-w-none whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-400"
                 style={{
                   background: designToken ? "var(--dt-primary-soft)" : "color-mix(in srgb, var(--primary) 25%, transparent)",
                   border: designToken ? "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" : "1px solid color-mix(in srgb, var(--primary) 40%, transparent)",
@@ -103,12 +103,12 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                 {businessName}
               </div>
             ) : (
-              <div className="h-7 w-28 rounded-md animate-pulse" style={skeletonStrong} />
+              <div className="h-7 w-24 sm:w-28 rounded-md animate-pulse" style={skeletonStrong} />
             )}
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 sm:gap-4 items-center shrink-0">
             {businessType ? (
-              <div className="flex gap-2 items-center animate-in fade-in duration-400">
+              <div className="hidden sm:flex gap-2 items-center animate-in fade-in duration-400">
                 {wireframeStepLabels.map(l => (
                   <span
                     key={l}
@@ -120,18 +120,18 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                 ))}
               </div>
             ) : (
-              <>
+              <div className="hidden sm:flex gap-2 items-center">
                 {WIREFRAME_STEPS.map((_, i) => (
                   <div key={i} className="h-4 w-14 rounded animate-pulse" style={skeletonSoft} />
                 ))}
-              </>
+              </div>
             )}
-            <div className="h-8 w-24 rounded-md animate-pulse" style={skeletonStrong} />
+            <div className="h-7 sm:h-8 w-16 sm:w-24 rounded-md animate-pulse shrink-0" style={skeletonStrong} />
           </div>
         </header>
 
         <section
-          className="relative rounded-2xl overflow-hidden mb-10 transition-all duration-500"
+          className="relative rounded-2xl overflow-hidden mb-6 sm:mb-10 transition-all duration-500"
           style={{
             ...skeletonPanel,
             height: 260,
@@ -143,7 +143,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               : "none",
           }}
         >
-          <div className="absolute inset-0 flex flex-col justify-center px-12 gap-4">
+          <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-12 gap-3 sm:gap-4">
             {businessType ? (
               <div
                 className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400"
@@ -170,7 +170,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
             <div className="space-y-2">
               {businessName ? (
                 <div
-                  className="h-10 px-3 flex items-center rounded-lg font-black text-xl animate-in fade-in slide-in-from-bottom-2 duration-500"
+                  className="min-h-10 py-1 px-3 flex items-center rounded-lg font-black text-lg sm:text-xl truncate leading-tight animate-in fade-in slide-in-from-bottom-2 duration-500"
                   style={{
                     background: designToken ? "var(--dt-surface)" : "rgba(255,255,255,0.06)",
                     color: designToken ? "var(--dt-text)" : "white",

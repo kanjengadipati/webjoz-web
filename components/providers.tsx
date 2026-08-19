@@ -40,6 +40,21 @@ function GoogleOAuthHandler() {
         persistAuthSession("", apiResponse.data.access_token);
         const returnTo = sessionStorage.getItem("webjoz_google_return_to") || "/dashboard";
         sessionStorage.removeItem("webjoz_google_return_to");
+
+        // Smart back: push history state so back button stays in app, not Google
+        window.history.pushState({ smartBack: true }, "", returnTo);
+        window.history.pushState({ smartBack: true }, "", returnTo);
+
+        // Listen for back/forward — keep user inside app
+        const handlePopState = () => {
+          if (!window.location.hash.includes("id_token")) {
+            window.history.pushState({ smartBack: true }, "", window.location.pathname);
+          }
+        };
+        window.addEventListener("popstate", handlePopState);
+        // Cleanup after 10s (enough for user to settle)
+        setTimeout(() => window.removeEventListener("popstate", handlePopState), 10000);
+
         router.replace(returnTo);
       })
       .catch((err: unknown) => {
