@@ -385,28 +385,28 @@ export default function DomainsPage() {
       {/* ═══════════════════════════════════════════════
           TAB SWITCHER — Buy New Domain / Already Own
       ══════════════════════════════════════════════ */}
-      <div className="flex items-center gap-1 bg-card border border-border rounded-2xl p-1.5 w-fit">
+      <div className="grid grid-cols-2 gap-1 bg-card border border-border rounded-2xl p-1.5 w-full sm:w-fit sm:flex sm:items-center">
         {purchaseAvailable && (
           <button
             type="button"
             onClick={() => setTab("buy")}
-            className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-              tab === "buy" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+              tab === "buy" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
             }`}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            {t("dashboard.domains.buyTab")}
+            <ShoppingCart className="w-4 h-4 shrink-0" />
+            <span className="truncate">{t("dashboard.domains.buyTab")}</span>
           </button>
         )}
         <button
           type="button"
           onClick={() => setTab("own")}
-          className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+          className={`w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
           }`}
         >
-          <Globe className="w-3.5 h-3.5" />
-          {t("dashboard.domains.ownTab")}
+          <Globe className="w-4 h-4 shrink-0" />
+          <span className="truncate">{t("dashboard.domains.ownTab")}</span>
         </button>
       </div>
 
@@ -447,7 +447,7 @@ export default function DomainsPage() {
           )}
 
           {/* Search form */}
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-6">
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-6">
             <div>
               <h2 className="text-[16px] font-bold text-foreground flex items-center gap-2 m-0">
                 <Search className="w-4 h-4 text-primary" /> {t("dashboard.domains.buyTitle")}
@@ -508,11 +508,11 @@ export default function DomainsPage() {
                 </div>
 
                 {/* TLD checkboxes */}
-                <div>
-                  <label className="block text-[12px] font-semibold text-primary mb-2">
+                <div className="space-y-2">
+                  <label className="block text-[12px] font-semibold text-primary">
                     {t("dashboard.domains.chooseTlds")}
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-4 sm:flex sm:flex-wrap gap-2">
                     {POPULAR_TLDS.map(tld => {
                       const selected = selectedTlds.includes(tld);
                       return (
@@ -520,10 +520,10 @@ export default function DomainsPage() {
                           key={tld}
                           type="button"
                           onClick={() => toggleTld(tld)}
-                          className={`px-3 py-1.5 rounded-lg text-[12px] font-mono font-semibold border transition-colors cursor-pointer ${
+                          className={`py-2 px-3 rounded-xl text-[12px] font-mono font-semibold border text-center transition-all cursor-pointer ${
                             selected
-                              ? "bg-primary/20 text-primary border-primary/40"
-                              : "bg-background text-muted-foreground border-border hover:text-white hover:border-border"
+                              ? "bg-primary/20 text-primary border-primary/40 shadow-sm"
+                              : "bg-background text-muted-foreground border-border hover:text-foreground hover:border-border/80"
                           }`}
                         >
                           .{tld}
@@ -536,7 +536,7 @@ export default function DomainsPage() {
                 <button
                   type="submit"
                   disabled={searching || !buyName.trim() || selectedTlds.length === 0}
-                  className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`w-full py-3 rounded-xl text-[14px] font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm ${
                     searching || !buyName.trim() || selectedTlds.length === 0
                       ? "bg-muted text-muted-foreground cursor-not-allowed"
                       : "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -550,30 +550,33 @@ export default function DomainsPage() {
 
             {/* Results */}
             {searched && results.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {results.map(r => {
                   const ok = r.status === "available";
                   const busy = buyingDomain === r.domain;
                   return (
-                    <div key={r.domain} className="bg-muted/30 border border-border rounded-xl px-5 py-4 flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
-                        {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                    <div key={r.domain} className="bg-card border border-border rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]" : "bg-amber-400/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]"}`}>
+                          {ok ? <Globe className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-[15px] m-0 text-foreground font-mono truncate">{r.domain}</p>
+                          <p className={`text-[12px] font-medium m-0 mt-0.5 ${ok ? "text-emerald-600 dark:text-[#5fe3a0]" : "text-muted-foreground"}`}>
+                            {ok ? t("dashboard.domains.available") : t("dashboard.domains.unavailable")}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-[14px] m-0 text-foreground font-mono truncate">{r.domain}</p>
-                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-emerald-600 dark:text-[#5fe3a0]" : "text-muted-foreground"}`}>
-                          {ok ? t("dashboard.domains.available") : t("dashboard.domains.unavailable")}
-                        </p>
-                      </div>
+
                       {ok && (
-                        <div className="flex items-center gap-3 shrink-0">
-                          <div className="text-right">
-                            <span className="text-[14px] font-bold text-foreground block">
+                        <div className="flex items-center justify-between sm:justify-end gap-4 pt-3 sm:pt-0 border-t sm:border-t-0 border-border/40 shrink-0">
+                          <div className="text-left sm:text-right">
+                            <span className="text-[15px] font-bold text-foreground block leading-tight">
                               {formatIDR(r.sell_price_idr)}
-                              <span className="text-[11px] font-medium text-muted-foreground">{t("dashboard.domains.perYear")}</span>
+                              <span className="text-[11px] font-normal text-muted-foreground ml-1">{t("dashboard.domains.perYear")}</span>
                             </span>
                             {r.sell_price_usd > 0 && (
-                              <span className="text-[11px] text-muted-foreground block">
+                              <span className="text-[11px] text-muted-foreground block mt-0.5">
                                 {"$" + r.sell_price_usd.toFixed(2)} USD (PayPal)
                               </span>
                             )}
@@ -582,7 +585,7 @@ export default function DomainsPage() {
                             type="button"
                             onClick={() => handleBuy(r.domain)}
                             disabled={busy || !siteId}
-                            className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
+                            className="px-4 py-2.5 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer shadow-sm shrink-0"
                           >
                             {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
                             {busy ? t("dashboard.domains.buying") : t("dashboard.domains.buyBtn")}
