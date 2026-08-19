@@ -175,16 +175,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Bottom Navigation (Ultra-clean Icon-Only Floating Dock) */}
+      {/* Mobile Bottom Navigation (Matched with Landing Page) */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-4 left-0 right-0 z-40 lg:hidden flex justify-center px-4" aria-label={t("dashboard.mainNav")}>
-          <div className="flex items-center justify-around w-full max-w-sm h-14 rounded-full border border-border/70 bg-card/90 px-2 backdrop-blur-2xl shadow-2xl shadow-black/25 dark:bg-background/85 dark:border-border/40 dark:shadow-black/50">
+        <nav className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-card/95 dark:bg-background/90 backdrop-blur-2xl border-t border-border/60 px-2 py-1.5 pb-2.5 shadow-2xl shadow-black/20" aria-label={t("dashboard.mainNav")}>
+          <div className="flex items-center justify-around max-w-lg mx-auto">
             {filteredNavItems
               .filter((item) => ["overview", "sites", "leads", "notifications"].includes(item.id))
               .map((item) => {
                 const active = pathname === item.href;
                 const showBadge = item.id === "notifications" && unreadCount > 0;
-                const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
+                const label = item.id === "notifications" ? "Notif" : t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
                 const Icon = item.id === "overview" ? Home : (NAV_ICON_MAP[item.icon] ?? LayoutDashboard);
                 return (
                   <Link
@@ -193,17 +193,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     aria-label={label}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative flex items-center justify-center h-10 w-12 rounded-full transition-all duration-200",
+                      "relative flex flex-col items-center justify-center gap-0.5 min-w-[54px] py-1 rounded-xl transition-all duration-200",
                       active
-                        ? "bg-primary/15 text-primary shadow-sm"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                        ? "text-primary font-bold"
+                        : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     <div className="relative flex items-center justify-center">
                       <Icon
                         className={cn(
                           "size-5 transition-transform duration-200",
-                          active ? "stroke-[2.25] scale-110" : "stroke-[1.75] scale-100"
+                          active ? "stroke-[2.25] scale-105" : "stroke-[1.75] scale-100"
                         )}
                         aria-hidden="true"
                       />
@@ -213,6 +213,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         </span>
                       )}
                     </div>
+                    <span className="text-[10px] font-semibold leading-none tracking-tight truncate max-w-[64px] text-center mt-0.5">
+                      {label}
+                    </span>
                   </Link>
                 );
               })}
@@ -223,18 +226,23 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Menu & Fitur"
               className={cn(
-                "relative flex items-center justify-center h-10 w-12 rounded-full transition-all duration-200 cursor-pointer",
+                "relative flex flex-col items-center justify-center gap-0.5 min-w-[54px] py-1 rounded-xl transition-all duration-200 cursor-pointer",
                 mobileMenuOpen
-                  ? "bg-primary/15 text-primary shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                  ? "text-primary font-bold"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <LayoutGrid
-                className={cn(
-                  "size-5 transition-transform duration-200",
-                  mobileMenuOpen ? "stroke-[2.25] scale-110" : "stroke-[1.75] scale-100"
-                )}
-              />
+              <div className="relative flex items-center justify-center">
+                <LayoutGrid
+                  className={cn(
+                    "size-5 transition-transform duration-200",
+                    mobileMenuOpen ? "stroke-[2.25] scale-105" : "stroke-[1.75] scale-100"
+                  )}
+                />
+              </div>
+              <span className="text-[10px] font-semibold leading-none tracking-tight truncate max-w-[64px] text-center mt-0.5">
+                Menu
+              </span>
             </button>
           </div>
         </nav>
