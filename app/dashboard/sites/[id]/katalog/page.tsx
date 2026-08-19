@@ -29,7 +29,7 @@ const EMOJI_GROUPS = [
 
 // ─── Shared input styles ──────────────────────────────────────────────────────
 const inputBase =
-  "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
+  "w-full px-3 py-2 border border-border rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500";
 const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
 
 // Strip AI-generated literal null strings
@@ -166,8 +166,8 @@ function MenuCatalogForm({
       {categories.map((cat: any, catIdx: number) => {
         const itemCount = cat.items?.length ?? 0;
         return (
-          <div key={catIdx} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
-            <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-white/10">
+          <div key={catIdx} className="overflow-hidden rounded-2xl border border-border bg-white/[0.025]">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-border">
               <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
               <input
                 type="text" value={cat.name ?? ""} onChange={(e) => updateCategoryName(catIdx, e.target.value)}
@@ -186,13 +186,13 @@ function MenuCatalogForm({
             {expandedCat === catIdx && (
               <div className="p-3 space-y-3">
                 {(cat.items ?? []).length === 0 && (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center text-xs text-slate-500">
+                  <div className="rounded-xl border border-dashed border-border bg-white/[0.02] p-4 text-center text-xs text-slate-500">
                     {t("dashboard.sitesKatalog.noItemsDesc", undefined, { itemLabel })}
                   </div>
                 )}
 
                 {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+                  <div key={itemIdx} className="rounded-2xl border border-border bg-white/[0.02] p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{t("dashboard.sitesKatalog.itemNumberLabel", undefined, { label: itemLabel, number: String(itemIdx + 1) })}</span>
                       <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
@@ -242,24 +242,24 @@ function MenuCatalogForm({
                         </div>
 
                         {/* Toolbar */}
-                        <div className="flex items-center gap-1.5 bg-white/[0.02] border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
-                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] flex items-center gap-1 border border-white/5">
+                        <div className="flex items-center gap-1.5 bg-white/[0.02] border border-border border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
+                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] flex items-center gap-1 border border-border/50">
                             <span>•</span> {t("dashboard.sitesKatalog.bulletList")}
                           </button>
-                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] border border-white/5">
+                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] border border-border/50">
                             1. {t("dashboard.sitesKatalog.numberedList")}
                           </button>
                           <div className="w-px h-3.5 bg-white/10 mx-0.5" />
                           <div className="relative">
                             <button type="button"
                               onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                              className={`px-2 py-1 rounded font-semibold cursor-pointer text-[9px] flex items-center gap-1 border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"}`}
+                              className={`px-2 py-1 rounded font-semibold cursor-pointer text-[9px] flex items-center gap-1 border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-border/50 text-slate-300"}`}
                             >
                               😀 {t("dashboard.sitesKatalog.emojiSymbol")}
                             </button>
                             {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                              <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                                <div className="flex items-center justify-between border-b border-white/5 pb-1">
+                              <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-border bg-[#1e293b] p-3 shadow-2xl space-y-3">
+                                <div className="flex items-center justify-between border-b border-border/50 pb-1">
                                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t("dashboard.sitesKatalog.pickEmojiTitle")}</span>
                                   <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">{t("dashboard.sitesKatalog.close")}</button>
                                 </div>
@@ -286,7 +286,7 @@ function MenuCatalogForm({
                           value={item.description ?? ""} rows={3}
                           onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
                           placeholder={`Deskripsi singkat ${itemLabel} ini`}
-                          className="w-full px-3 py-2 border border-white/10 rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500 resize-y"
+                          className="w-full px-3 py-2 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-white/[0.03] text-slate-100 placeholder-slate-500 resize-y"
                         />
                       </div>
                     </div>
@@ -539,7 +539,7 @@ export default function KatalogManagerPage() {
           onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+            className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start gap-3">
@@ -561,11 +561,11 @@ export default function KatalogManagerPage() {
                 if (e.key === "Escape") { aiPromptModal.resolve(null); setAiPromptModal(null); }
               }}
               placeholder={`cth. "fokus manfaat utama dan buat pembaca tertarik"`}
-              className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 placeholder:text-slate-600"
+              className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 placeholder:text-slate-600"
             />
             <div className="flex gap-2">
               <button type="button" onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-white/10 text-slate-400 text-[13px] font-medium hover:bg-white/[0.04] transition-colors"
+                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] font-medium hover:bg-white/[0.04] transition-colors"
               >{t("dashboard.sitesKatalog.cancel")}</button>
               <button type="button" onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:bg-primary/90 transition-colors"
@@ -582,14 +582,14 @@ export default function KatalogManagerPage() {
           onClick={() => setUpgradePromptOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-4 text-center"
+            className="w-full max-w-sm rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-[14px] font-semibold text-slate-100">{t("dashboard.sitesKatalog.upgradeTitle")}</p>
             <p className="text-[12px] text-slate-400">{t("dashboard.sitesKatalog.upgradeDesc")}</p>
             <div className="flex gap-2">
               <button type="button" onClick={() => setUpgradePromptOpen(false)}
-                className="flex-1 h-10 rounded-xl border border-white/10 text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
+                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-white/[0.04] transition-colors"
               >{t("dashboard.sitesKatalog.later")}</button>
               <Link href="/dashboard/upgrade"
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center hover:bg-primary/90 transition-colors"

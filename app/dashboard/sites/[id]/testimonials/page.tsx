@@ -184,8 +184,8 @@ export default function TestimonialModerationPage() {
       </Card>
 
       {/* Opsi C: Manual Import */}
-      <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+      <div className="rounded-2xl border border-border bg-white/[0.02] overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <div>
             <p className="text-[13px] font-bold text-slate-100">{t("dashboard.sitesTestimonials.manualTitle")}</p>
             <p className="text-[11px] text-slate-500">{t("dashboard.sitesTestimonials.manualDesc")}</p>
@@ -204,11 +204,11 @@ export default function TestimonialModerationPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelName")} <span className="text-red-400">*</span></label>
-                <input type="text" value={manualName} onChange={(e) => setManualName(e.target.value)} placeholder="cth. Budi Santoso" className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
+                <input type="text" value={manualName} onChange={(e) => setManualName(e.target.value)} placeholder="cth. Budi Santoso" className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelRole")}</label>
-                <input type="text" value={manualRole} onChange={(e) => setManualRole(e.target.value)} placeholder="cth. Pelanggan Setia" className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
+                <input type="text" value={manualRole} onChange={(e) => setManualRole(e.target.value)} placeholder="cth. Pelanggan Setia" className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
               </div>
             </div>
 
@@ -225,7 +225,7 @@ export default function TestimonialModerationPage() {
 
             <div className="space-y-1">
               <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelQuote")} <span className="text-red-400">*</span></label>
-              <textarea rows={3} value={manualQuote} onChange={(e) => setManualQuote(e.target.value)} placeholder="Tulis atau salin teks ulasan..." className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-y" />
+              <textarea rows={3} value={manualQuote} onChange={(e) => setManualQuote(e.target.value)} placeholder="Tulis atau salin teks ulasan..." className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-y" />
             </div>
 
             <div className="flex gap-2">

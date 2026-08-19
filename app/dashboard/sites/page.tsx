@@ -63,7 +63,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
           <h2 id="delete-modal-title" className="text-lg font-bold text-foreground">
             {t("dashboard.sites.deleteTitle")}
           </h2>
-          <p className="text-sm text-[#9b9ba5] leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t("dashboard.sites.deleteBody", undefined, { name: siteName })}
           </p>
         </div>
@@ -89,7 +89,7 @@ function DeleteConfirmModal({ siteName, onConfirm, onCancel, loading, isFreePlan
         <div className="flex gap-3 pt-1">
           <Button
             variant="outline"
-            className="flex-1 rounded-xl h-10 text-sm border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-white/[0.04]"
             onClick={onCancel}
             disabled={loading}
           >
@@ -150,7 +150,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
       />
 
       {/* Panel */}
-      <div className="relative z-10 w-full max-w-md bg-[#13131a] border border-white/[0.08] rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
+      <div className="relative z-10 w-full max-w-md bg-[#13131a] border border-border rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
         {!loading && (
           <button
             onClick={onCancel}
@@ -163,14 +163,14 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <h2 className="text-lg font-bold text-foreground">{t("dashboard.sites.renameTitle")}</h2>
-            <p className="text-xs text-[#9b9ba5]">{t("dashboard.sites.renameDesc")}</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.sites.renameDesc")}</p>
           </div>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={loading}
-            className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary/60 placeholder:text-[#6b6b75]"
+            className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary/60 placeholder:text-muted-foreground"
             required
             autoFocus
           />
@@ -178,7 +178,7 @@ function RenameModal({ currentName, onConfirm, onCancel, loading }: RenameModalP
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-xl h-10 text-sm border-white/10 hover:bg-white/[0.04]"
+              className="flex-1 rounded-xl h-10 text-sm border-border hover:bg-white/[0.04]"
               onClick={onCancel}
               disabled={loading}
             >
@@ -249,7 +249,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             <h4 className="text-[13.5px] font-bold text-foreground leading-snug">
               {t("dashboard.sites.publishOneStep")}
             </h4>
-            <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed mt-0.5">
+            <p className="text-[11.5px] text-muted-foreground leading-relaxed mt-0.5">
               {t("dashboard.sites.publishReady", undefined, { name: site.name })}
             </p>
           </div>
@@ -257,15 +257,15 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
 
         {/* Subdomain Input Field */}
         <div className="space-y-2">
-          <label className="text-[12px] font-bold text-[#c8c8d4] tracking-wide block">
+          <label className="text-[12px] font-bold text-foreground/80 tracking-wide block">
             {t("dashboard.sites.subdomainLabel")}
           </label>
           <div
-            className={`flex items-center bg-[#0b0b0d] border rounded-xl overflow-hidden transition-all duration-200 ${subdomain && !isInputValid
+            className={`flex items-center bg-background border rounded-xl overflow-hidden transition-all duration-200 ${subdomain && !isInputValid
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
                 : subdomain && isInputValid
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_color-mix(in_srgb,#3ddc84_15%,transparent)] bg-[#3ddc84]/[0.01]"
-                  : "border-white/10 hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
+                  : "border-border hover:border-white/20 focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
               }`}
           >
             <input
@@ -275,10 +275,10 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               disabled={loading}
               placeholder="namaanda"
               maxLength={30}
-              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none placeholder:text-[#6b6b75] min-w-0 font-medium"
+              className="flex-1 bg-transparent px-4 py-2.5 text-[14px] text-foreground outline-none placeholder:text-muted-foreground min-w-0 font-medium"
               autoFocus
             />
-            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-white/[0.06] bg-white/[0.02] select-none">
+            <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-white/[0.02] select-none">
               .webjoz.com
             </span>
           </div>
@@ -299,22 +299,22 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             </div>
           )}
 
-          <p className="text-[11px] text-[#6b6b75] leading-relaxed mx-0.5">
+          <p className="text-[11px] text-muted-foreground leading-relaxed mx-0.5">
             {t("dashboard.sites.subdomainHint")}
           </p>
         </div>
 
         {/* Custom Domain premium upselling banner */}
-        <div className="bg-[#15151c] border border-white/[0.06] hover:border-white/10 rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
+        <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
+          <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
             <Globe className="w-4.5 h-4.5" />
           </div>
           <div className="space-y-1">
             <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
               {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
             </h5>
-            <p className="text-[11.5px] text-[#9a9aa3] leading-relaxed">
+            <p className="text-[11.5px] text-muted-foreground leading-relaxed">
               {t("dashboard.sites.customDomainDescPre")}{" "}
               <Link
                 href="/dashboard/domains"
@@ -333,7 +333,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-sm border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-white/[0.04]"
             onClick={onCancel}
             disabled={loading}
           >
@@ -342,7 +342,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           <Button
             type="submit"
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${!isInputValid || loading
-                ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
               }`}
             disabled={loading || !isInputValid}
@@ -792,12 +792,12 @@ export default function SitesPage() {
           placeholder={t("dashboard.sites.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#1a1a23] border border-white/[0.08] hover:border-white/15 focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
+          className="w-full bg-[#1a1a23] border border-border hover:border-border focus:border-primary/50 rounded-full py-3.5 pl-12 pr-6 text-[15px] text-[#f5f5f7] outline-none transition-all placeholder:text-[#65656f]"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#9b9ba5] hover:text-white cursor-pointer"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-white cursor-pointer"
           >
             {t("dashboard.sites.reset")}
           </button>
@@ -810,7 +810,7 @@ export default function SitesPage() {
           onClick={() => setCurrentFilter("all")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "all"
               ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
             }`}
         >
           {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countAll}</span>
@@ -819,7 +819,7 @@ export default function SitesPage() {
           onClick={() => setCurrentFilter("draft")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "draft"
               ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
             }`}
         >
           {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countDraft}</span>
@@ -828,7 +828,7 @@ export default function SitesPage() {
           onClick={() => setCurrentFilter("published")}
           className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "published"
               ? "bg-[#f5f5f7] text-[#0a0a0f] border-[#f5f5f7]"
-              : "bg-transparent border-white/[0.08] text-[#9b9ba5] hover:border-white/15 hover:text-[#f5f5f7]"
+              : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-[#f5f5f7]"
             }`}
         >
           {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-[#0a0a0f]/60" : "text-[#65656f]"}`}>{countPublished}</span>
@@ -842,16 +842,16 @@ export default function SitesPage() {
           <p className="text-xs text-muted-foreground">{t("dashboard.sites.loadingSites")}</p>
         </div>
       ) : filteredSites.length === 0 ? (
-        <div className="bg-[#13131a] border border-white/[0.08] rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
-          <div className="w-12 h-12 bg-white/[0.03] border border-white/[0.08] rounded-full flex items-center justify-center text-[#65656f]">
+        <div className="bg-[#13131a] border border-border rounded-2xl py-16 px-6 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
+          <div className="w-12 h-12 bg-white/[0.03] border border-border rounded-full flex items-center justify-center text-[#65656f]">
             <Search className="w-5 h-5" />
           </div>
           <h3 className="font-bold text-lg text-foreground m-0">{t("dashboard.sites.noSitesMatch")}</h3>
-          <p className="text-sm text-[#9b9ba5] m-0 max-w-sm leading-relaxed">
+          <p className="text-sm text-muted-foreground m-0 max-w-sm leading-relaxed">
             {t("dashboard.sites.noSitesMatchDesc")}
           </p>
           {searchQuery && (
-            <Button variant="outline" className="rounded-xl text-xs h-8 border-white/10 hover:bg-white/[0.04] mt-2" onClick={() => setSearchQuery("")}>
+            <Button variant="outline" className="rounded-xl text-xs h-8 border-border hover:bg-white/[0.04] mt-2" onClick={() => setSearchQuery("")}>
               {t("dashboard.sites.clearSearch")}
             </Button>
           )}
@@ -864,7 +864,7 @@ export default function SitesPage() {
               const isDraftSubdomain = isTemporarySubdomain(site.subdomain);
 
               return (
-                <div key={site.id} className="bg-[#13131a] border border-white/[0.08] hover:border-white/[0.14] rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
+                <div key={site.id} className="bg-[#13131a] border border-border hover:border-white/[0.14] rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all group relative">
                   {/* Preview iframe */}
                   <div className="w-full aspect-video rounded-lg relative overflow-hidden select-none bg-[#19191f]">
                     <IframePreview siteId={site.id} />
@@ -880,7 +880,7 @@ export default function SitesPage() {
                       {/* Status badge */}
                       <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${isLive
                           ? "bg-[#34c77b]/12 text-[#34c77b] border border-[#34c77b]/35 flex items-center gap-1"
-                          : "bg-[#1a1a23] text-[#9b9ba5]"
+                          : "bg-[#1a1a23] text-muted-foreground"
                         }`}>
                         {isLive && <span className="w-1.5 h-1.5 rounded-full bg-[#34c77b]" />}
                         {isLive ? t("dashboard.sites.statusLive") : t("dashboard.sites.statusDraft")}
@@ -893,7 +893,7 @@ export default function SitesPage() {
                             e.stopPropagation();
                             setActiveDropdown(activeDropdown === site.id ? null : site.id);
                           }}
-                          className="p-1 rounded-lg text-[#9b9ba5] hover:text-white hover:bg-[#1a1a23] transition-colors cursor-pointer"
+                          className="p-1 rounded-lg text-muted-foreground hover:text-white hover:bg-[#1a1a23] transition-colors cursor-pointer"
                           aria-label={t("dashboard.sites.moreOptions")}
                         >
                           <MoreVertical className="w-4.5 h-4.5" />
@@ -912,7 +912,7 @@ export default function SitesPage() {
                               disabled={actionLoading === site.id}
                               className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
-                              <Copy className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionDuplicate")}
+                              <Copy className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionDuplicate")}
                             </button>
                             <button
                               onClick={() => {
@@ -921,7 +921,7 @@ export default function SitesPage() {
                               }}
                               className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors"
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionRename")}
+                              <Edit3 className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionRename")}
                             </button>
                             {isLive && (
                               <button
@@ -932,7 +932,7 @@ export default function SitesPage() {
                                 disabled={actionLoading === site.id}
                                 className="w-full text-left bg-transparent border-none text-[#f5f5f7] hover:bg-white/[0.06] text-[13.5px] px-2.5 py-2 rounded-md cursor-pointer flex items-center gap-2 transition-colors disabled:opacity-50"
                               >
-                                <EyeOff className="w-3.5 h-3.5 text-[#9b9ba5]" /> {t("dashboard.sites.actionUnpublish")}
+                                <EyeOff className="w-3.5 h-3.5 text-muted-foreground" /> {t("dashboard.sites.actionUnpublish")}
                               </button>
                             )}
                             <button
@@ -968,7 +968,7 @@ export default function SitesPage() {
                     {isLive && !isDraftSubdomain && (
                       <button
                         onClick={() => handleCopyLink(site)}
-                        className={`p-1 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
+                        className={`p-1 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
                         aria-label={t("dashboard.sites.copyLink")}
                       >
                         {copiedId === site.id ? <Check className="w-3.5 h-3.5 text-[#34c77b]" /> : <Copy className="w-3.5 h-3.5" />}
@@ -983,10 +983,10 @@ export default function SitesPage() {
                   </div>
 
                   {/* Primary card actions */}
-                  <div className="flex gap-2 border-t border-white/[0.08] pt-3.5 mt-1">
+                  <div className="flex gap-2 border-t border-border pt-3.5 mt-1">
                     <Link
                       href={`/dashboard/sites/${site.id}`}
-                      className="flex-1 py-2 px-1 rounded-xl border border-white/10 text-foreground hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                      className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-white/[0.04] transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
                     </Link>
@@ -994,7 +994,7 @@ export default function SitesPage() {
                     {isLive ? (
                       <button
                         onClick={() => window.open(getSiteUrl(site), "_blank")}
-                        className="flex-1 py-2 px-1 rounded-xl border border-white/10 bg-[#1a1a23] text-foreground hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        className="flex-1 py-2 px-1 rounded-xl border border-border bg-[#1a1a23] text-foreground hover:bg-white/[0.06] transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> {t("dashboard.sites.viewSite")}
                       </button>
@@ -1018,27 +1018,27 @@ export default function SitesPage() {
 
                   {/* Secondary action links */}
                   <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-none">
-                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/blog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkBlog")}
                     </Link>
                     {site.has_catalog && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                         {t("dashboard.sites.linkCatalog")}
                       </Link>
                     )}
                     {site.has_menu && (
-                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                      <Link href={`/dashboard/sites/${site.id}/katalog`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                         {t("dashboard.sites.linkMenu")}
                       </Link>
                     )}
-                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/seo`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkSeo")}
                     </Link>
                     <div className="shrink-0 w-px bg-white/[0.06] self-stretch mx-0.5" />
-                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/integrations`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkIntegrations")}
                     </Link>
-                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-white/5 text-[#9b9ba5] hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
+                    <Link href={`/dashboard/sites/${site.id}/testimonials`} className="shrink-0 py-1.5 px-3 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all text-[11px] font-medium">
                       {t("dashboard.sites.linkTestimonials")}
                     </Link>
                     <Link href={`/dashboard/sites/${site.id}/domain`} className="shrink-0 py-1.5 px-3 rounded-lg border border-primary/30 text-primary/80 hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-medium">
@@ -1106,16 +1106,16 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
 
         <div className="space-y-2 max-w-sm mx-auto">
           <h3 className="text-xl font-bold text-foreground tracking-tight">{t("dashboard.sites.congratsHeading")}</h3>
-          <p className="text-sm text-[#9b9ba5] leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t("dashboard.sites.congratsBody", undefined, { name: site.name })}
           </p>
         </div>
 
         {/* Clickable Subdomain Link Box */}
-        <div className="bg-[#15151c] border border-white/[0.08] rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
 
-          <div className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-white/10 rounded-xl px-4 py-3">
+          <div className="flex items-center justify-between gap-3 bg-background border border-border rounded-xl px-4 py-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
               <a
@@ -1132,14 +1132,14 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
             <button
               type="button"
               onClick={handleCopy}
-              className="p-2 bg-white/[0.04] border border-white/10 text-[#9b9ba5] hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
+              className="p-2 bg-white/[0.04] border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
               title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? <Check className="w-4 h-4 text-[#3ddc84]" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 
-          <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed m-0 text-left">
+          <p className="text-[11.5px] text-muted-foreground leading-relaxed m-0 text-left">
             {t("dashboard.sites.checkTip")}
           </p>
         </div>
@@ -1149,7 +1149,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
             onClick={onClose}
           >
             {t("dashboard.sites.done")}

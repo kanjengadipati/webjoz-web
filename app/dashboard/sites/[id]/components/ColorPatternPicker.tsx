@@ -104,7 +104,7 @@ export default function ColorPatternPicker({
               className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary"
-                  : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                  : "border-border hover:border-white/30 bg-white/5 hover:bg-white/10"
               }`}
             >
               <p className="text-[10px] font-bold text-slate-200 mb-1.5 truncate">{pattern.name}</p>

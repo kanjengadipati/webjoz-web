@@ -75,16 +75,16 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
           <h3 className="text-xl font-bold text-white tracking-tight">
             {t("dashboard.sites.congratsHeading")}
           </h3>
-          <p className="text-sm text-[#9b9ba5] leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t("dashboard.sites.congratsBody", undefined, { name: site.name })}
           </p>
         </div>
 
         {/* Clickable Subdomain Link Box */}
-        <div className="bg-[#15151c] border border-white/[0.08] rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
 
-          <div className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-white/10 rounded-xl px-4 py-3">
+          <div className="flex items-center justify-between gap-3 bg-background border border-border rounded-xl px-4 py-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
               <a
@@ -101,7 +101,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
             <button
               type="button"
               onClick={handleCopy}
-              className="p-2 bg-white/[0.04] border border-white/10 text-[#9b9ba5] hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
+              className="p-2 bg-white/[0.04] border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
               title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? (
@@ -112,7 +112,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
             </button>
           </div>
 
-          <p className="text-[11.5px] text-[#9b9ba5] leading-relaxed m-0 text-left">
+          <p className="text-[11.5px] text-muted-foreground leading-relaxed m-0 text-left">
             {t("dashboard.sites.checkTip")}
           </p>
         </div>
@@ -122,13 +122,13 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
           <Link
             href={`/dashboard/sites/${siteId}/domain`}
             onClick={onClose}
-            className="flex items-center justify-between gap-3 bg-[#0d0d12] border border-primary/25 hover:border-primary/50 hover:bg-primary/[0.06] rounded-2xl px-5 py-3.5 max-w-md mx-auto w-full transition-all group"
+            className="flex items-center justify-between gap-3 bg-background border border-primary/25 hover:border-primary/50 hover:bg-primary/[0.06] rounded-2xl px-5 py-3.5 max-w-md mx-auto w-full transition-all group"
           >
             <div className="flex flex-col gap-0.5 text-left">
               <span className="text-[13px] font-semibold text-primary group-hover:text-primary/90">
                 {t("dashboard.sites.customDomainLinkLabel")}
               </span>
-              <span className="text-[11px] text-[#9b9ba5] leading-relaxed">
+              <span className="text-[11px] text-muted-foreground leading-relaxed">
                 {t("dashboard.sites.customDomainLinkHint")}
               </span>
             </div>
@@ -142,7 +142,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+              className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
               onClick={onContinueEditing}
             >
               {t("dashboard.sites.continueEditing")}
@@ -151,7 +151,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-xl h-11 text-[13.5px] border-white/10 hover:bg-white/[0.04]"
+            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-white/[0.04]"
             onClick={onClose}
           >
             {t("dashboard.sites.done")}

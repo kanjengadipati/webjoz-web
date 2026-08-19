@@ -38,7 +38,7 @@ interface AvailabilityResult {
   domain: string;
   status: string;
   currency: string;
-  wholesale_price_usd: number;
+  sell_price_usd: number;
   sell_price_idr: number;
 }
 
@@ -278,7 +278,7 @@ export default function DomainsPage() {
           setShowUpsellModal(false);
           proceedAddDomain(domainInput.toLowerCase().trim());
         }}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-white/[0.04] transition-colors cursor-pointer"
       >
         {t("dashboard.domains.continueConnect")}
       </button>
@@ -301,7 +301,7 @@ export default function DomainsPage() {
       <button
         type="button"
         onClick={() => setShowLimitModal(false)}
-        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-[#9a9aa3] border border-white/10 hover:bg-white/[0.04] transition-colors cursor-pointer"
+        className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold bg-transparent text-muted-foreground border border-border hover:bg-white/[0.04] transition-colors cursor-pointer"
       >
         {t("dashboard.domains.close")}
       </button>
@@ -322,24 +322,24 @@ export default function DomainsPage() {
   if (loading && domains.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-3">
-        <Loader2 className="w-5 h-5 text-[#9a9aa3] animate-spin" />
-        <p className="text-[13px] text-[#6b6b75]">{t("dashboard.domains.loading")}</p>      </div>
+        <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+        <p className="text-[13px] text-muted-foreground">{t("dashboard.domains.loading")}</p>      </div>
     );
   }
 
   return (
-    <div className="max-w-3xl text-[#f3f3f4] font-sans space-y-8">
+    <div className="max-w-3xl text-foreground font-sans space-y-8">
 
       {/* ═══════════════════════════════════════════════
           TAB SWITCHER — Buy New Domain / Already Own
       ══════════════════════════════════════════════ */}
-      <div className="flex items-center gap-1 bg-[#15151a] border border-white/[0.08] rounded-2xl p-1.5 w-fit">
+      <div className="flex items-center gap-1 bg-card border border-border rounded-2xl p-1.5 w-fit">
         {purchaseAvailable && (
           <button
             type="button"
             onClick={() => setTab("buy")}
             className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-              tab === "buy" ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+              tab === "buy" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
             }`}
           >
             <ShoppingCart className="w-3.5 h-3.5" />
@@ -350,7 +350,7 @@ export default function DomainsPage() {
           type="button"
           onClick={() => setTab("own")}
           className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-[#9a9aa3] hover:text-white"
+            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
           }`}
         >
           <Globe className="w-3.5 h-3.5" />
@@ -367,18 +367,18 @@ export default function DomainsPage() {
           {/* Purchased domains list */}
           {purchased.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
+              <h2 className="text-[14px] font-bold text-muted-foreground uppercase tracking-wider">
                 {t("dashboard.domains.purchasedTitle")} ({purchased.length})
               </h2>
               <div className="flex flex-col gap-2">
                 {purchased.map(d => (
-                  <div key={d.id} className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-5 py-3.5 flex items-center gap-3">
+                  <div key={d.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-[#3ddc84]/12 text-[#5fe3a0] flex items-center justify-center shrink-0">
                       <Globe className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{d.domain_name}</p>
-                      <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5">
+                      <p className="font-semibold text-[14px] m-0 text-foreground truncate">{d.domain_name}</p>
+                      <p className="text-[12px] text-muted-foreground m-0 mt-0.5">
                         {t("dashboard.domains.expiresAt")} {new Date(d.expires_at).toLocaleDateString("id-ID")}
                       </p>
                     </div>
@@ -392,12 +392,12 @@ export default function DomainsPage() {
           )}
 
           {/* Search form */}
-          <div className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-6">
             <div>
-              <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
+              <h2 className="text-[16px] font-bold text-foreground flex items-center gap-2 m-0">
                 <Search className="w-4 h-4 text-primary" /> {t("dashboard.domains.buyTitle")}
               </h2>
-              <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
+              <p className="text-[13px] text-muted-foreground m-0 mt-1">
                 {t("dashboard.domains.buyDesc")}
               </p>
             </div>
@@ -409,7 +409,7 @@ export default function DomainsPage() {
                   <p className="text-[13px] text-amber-300 font-medium m-0">
                     {t("dashboard.domains.noPublished")}
                   </p>
-                  <p className="text-[12px] text-[#9a9aa3] m-0 leading-relaxed">
+                  <p className="text-[12px] text-muted-foreground m-0 leading-relaxed">
                     {t("dashboard.domains.noPublishedDesc")}{" "}
                     <Link href="/dashboard/sites" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
                       {t("dashboard.domains.myWebsites")}
@@ -428,7 +428,7 @@ export default function DomainsPage() {
                   <select
                     value={siteId}
                     onChange={e => setSiteId(e.target.value)}
-                    className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary cursor-pointer"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary cursor-pointer"
                   >
                     {publishedSites.map(s => (
                       <option key={s.id} value={s.id}>
@@ -448,7 +448,7 @@ export default function DomainsPage() {
                     value={buyName}
                     onChange={e => setBuyName(e.target.value)}
                     placeholder={t("dashboard.domains.searchPlaceholder")}
-                    className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary placeholder:text-[#6b6b75]"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary placeholder:text-muted-foreground"
                   />
                 </div>
 
@@ -468,7 +468,7 @@ export default function DomainsPage() {
                           className={`px-3 py-1.5 rounded-lg text-[12px] font-mono font-semibold border transition-colors cursor-pointer ${
                             selected
                               ? "bg-primary/20 text-primary border-primary/40"
-                              : "bg-[#0b0b0d] text-[#9a9aa3] border-white/15 hover:text-white hover:border-white/30"
+                              : "bg-background text-muted-foreground border-border hover:text-white hover:border-white/30"
                           }`}
                         >
                           .{tld}
@@ -483,7 +483,7 @@ export default function DomainsPage() {
                   disabled={searching || !buyName.trim() || selectedTlds.length === 0}
                   className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
                     searching || !buyName.trim() || selectedTlds.length === 0
-                      ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed"
                       : "bg-primary text-primary-foreground hover:bg-primary/90"
                   }`}
                 >
@@ -500,21 +500,21 @@ export default function DomainsPage() {
                   const ok = r.status === "available";
                   const busy = buyingDomain === r.domain;
                   return (
-                    <div key={r.domain} className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-5 py-4 flex items-center gap-3">
+                    <div key={r.domain} className="bg-white/[0.02] border border-border rounded-xl px-5 py-4 flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
                         {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] font-mono truncate">{r.domain}</p>
-                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-[#5fe3a0]" : "text-[#6b6b75]"}`}>
+                        <p className="font-semibold text-[14px] m-0 text-foreground font-mono truncate">{r.domain}</p>
+                        <p className={`text-[12px] m-0 mt-0.5 ${ok ? "text-[#5fe3a0]" : "text-muted-foreground"}`}>
                           {ok ? t("dashboard.domains.available") : t("dashboard.domains.unavailable")}
                         </p>
                       </div>
                       {ok && (
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[14px] font-bold text-[#f3f3f4]">
+                          <span className="text-[14px] font-bold text-foreground">
                             {formatIDR(r.sell_price_idr)}
-                            <span className="text-[11px] font-medium text-[#6b6b75]">{t("dashboard.domains.perYear")}</span>
+                            <span className="text-[11px] font-medium text-muted-foreground">{t("dashboard.domains.perYear")}</span>
                           </span>
                           <button
                             type="button"
@@ -534,7 +534,7 @@ export default function DomainsPage() {
             )}
 
             {searched && results.length === 0 && (
-              <p className="text-[13px] text-[#6b6b75] m-0">{t("dashboard.domains.noResults")}</p>
+              <p className="text-[13px] text-muted-foreground m-0">{t("dashboard.domains.noResults")}</p>
             )}
           </div>
         </section>
@@ -549,11 +549,11 @@ export default function DomainsPage() {
           SECTION 1 — Connected Custom Domains List
       ══════════════════════════════════════════════ */}      {domains.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-[14px] font-bold text-[#6b6b75] uppercase tracking-wider">
+          <h2 className="text-[14px] font-bold text-muted-foreground uppercase tracking-wider">
             {t("dashboard.domains.connectedTitle", undefined, { count: String(domains.length) })}
           </h2>
           {isPremium && maxDomains > 0 && (
-            <p className="text-[11px] text-[#6b6b75] m-0 mt-0.5" title={t("dashboard.domains.quotaTitle", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}>
+            <p className="text-[11px] text-muted-foreground m-0 mt-0.5" title={t("dashboard.domains.quotaTitle", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}>
               {t("dashboard.domains.quota", undefined, { used: String(domains.length), max: String(maxDomains) })}
             </p>
           )}
@@ -563,18 +563,18 @@ export default function DomainsPage() {
               const ok   = dom.status === "verified";
               const busy = actionLoading === dom.id;
               return (
-                <div key={dom.id} className="bg-[#15151a] border border-white/[0.08] rounded-2xl px-5 py-3.5 flex items-center gap-3">
+                <div key={dom.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[#3ddc84]/12 text-[#5fe3a0]" : "bg-[#f0b429]/12 text-[#f3c451]"}`}>
                     {ok ? <Globe className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-semibold text-[14px] m-0 text-[#f3f3f4] truncate">{dom.domain}</p>
+                      <p className="font-semibold text-[14px] m-0 text-foreground truncate">{dom.domain}</p>
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-primary/20 text-primary">
                         {t("dashboard.domains.customDomainBadge")}
                       </span>
                     </div>
-                    <p className="text-[12px] text-[#6b6b75] m-0 mt-0.5 truncate">
+                    <p className="text-[12px] text-muted-foreground m-0 mt-0.5 truncate">
                       → {site ? (
                         <Link href={`/dashboard/sites/${site.id}`} className="hover:text-primary transition-colors">
                           {site.name}
@@ -589,12 +589,12 @@ export default function DomainsPage() {
                   <div className="flex items-center gap-1.5">
                     {!ok && (
                       <button onClick={() => handleVerify(dom.id)} disabled={busy}
-                        className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.checkDns")}>
+                        className="w-8 h-8 rounded-lg border border-border bg-muted/50 text-muted-foreground flex items-center justify-center hover:text-white hover:border-white/25 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.checkDns")}>
                         {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       </button>
                     )}
                     <button onClick={() => handleDelete(dom.id)} disabled={busy}
-                      className="w-8 h-8 rounded-lg border border-white/10 bg-[#1b1b21] text-[#9a9aa3] flex items-center justify-center hover:text-red-400 hover:border-red-400/40 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.delete")}>
+                      className="w-8 h-8 rounded-lg border border-border bg-muted/50 text-muted-foreground flex items-center justify-center hover:text-red-400 hover:border-red-400/40 transition-colors disabled:opacity-40 cursor-pointer" title={t("dashboard.domains.delete")}>
                       {busy && ok ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                     </button>
                   </div>
@@ -608,12 +608,12 @@ export default function DomainsPage() {
       {/* ═══════════════════════════════════════════════
           SECTION 2 — Custom Domain Form
       ══════════════════════════════════════════════ */}
-      <section className="bg-[#15151a] border border-white/[0.08] rounded-2xl p-6 space-y-6">
+      <section className="bg-card border border-border rounded-2xl p-6 space-y-6">
         <div>
-          <h2 className="text-[16px] font-bold text-[#f3f3f4] flex items-center gap-2 m-0">
+          <h2 className="text-[16px] font-bold text-foreground flex items-center gap-2 m-0">
             <Link2 className="w-4 h-4 text-primary" /> {t("dashboard.domains.connectTitle")}
           </h2>
-          <p className="text-[13px] text-[#6b6b75] m-0 mt-1">
+          <p className="text-[13px] text-muted-foreground m-0 mt-1">
             {t("dashboard.domains.connectDesc")}
           </p>
         </div>
@@ -626,7 +626,7 @@ export default function DomainsPage() {
               <p className="text-[13px] text-amber-300 font-medium m-0">
                 {t("dashboard.domains.noPublished")}
               </p>
-              <p className="text-[12px] text-[#9a9aa3] m-0 leading-relaxed">
+              <p className="text-[12px] text-muted-foreground m-0 leading-relaxed">
                 {t("dashboard.domains.noPublishedDesc")}{" "}
                 <Link href="/dashboard/sites" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
                   {t("dashboard.domains.myWebsites")}
@@ -645,7 +645,7 @@ export default function DomainsPage() {
               <select
                 value={siteId}
                 onChange={e => setSiteId(e.target.value)}
-                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary cursor-pointer"
+                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary cursor-pointer"
               >
                 {publishedSites.map(s => (
                   <option key={s.id} value={s.id}>
@@ -665,7 +665,7 @@ export default function DomainsPage() {
                 value={domainInput}
                 onChange={e => setDomainInput(e.target.value)}
                 placeholder={t("dashboard.domains.domainPlaceholder")}
-                className="w-full bg-[#0b0b0d] border border-white/15 rounded-xl px-4 py-2.5 text-[14px] text-[#f3f3f4] outline-none focus:border-primary placeholder:text-[#6b6b75]"
+                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary placeholder:text-muted-foreground"
               />
               {domainInput.trim() !== "" && (
                 <p className={`text-[11px] mt-1.5 mx-0.5 font-mono ${inputValid ? "text-[#5fe3a0]" : "text-[#ff8a8a]"}`}>
@@ -675,40 +675,40 @@ export default function DomainsPage() {
             </div>
 
             {/* DNS instructions card */}
-            <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl px-5 py-5 space-y-4">
+            <div className="bg-white/[0.02] border border-border rounded-xl px-5 py-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Server className="w-4 h-4 text-primary" />
-                <span className="text-[13px] font-semibold text-[#c8c8d4]">{t("dashboard.domains.dnsInstructions")}</span>
+                <span className="text-[13px] font-semibold text-foreground/80">{t("dashboard.domains.dnsInstructions")}</span>
               </div>
 
-              <div className="space-y-3.5 text-[12px] text-[#9a9aa3] leading-relaxed">
+              <div className="space-y-3.5 text-[12px] text-muted-foreground leading-relaxed">
                 <div className="flex items-start gap-2.5">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">1</span>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-border text-[10px] text-white shrink-0 font-mono font-bold">1</span>
                   <p className="m-0">
                     {t("dashboard.domains.step1")}
                   </p>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">2</span>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-border text-[10px] text-white shrink-0 font-mono font-bold">2</span>
                   <p className="m-0">
                     {t("dashboard.domains.step2")}
                   </p>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">3</span>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-border text-[10px] text-white shrink-0 font-mono font-bold">3</span>
                   <div className="space-y-2 flex-1">
                     <p className="m-0">
                       {t("dashboard.domains.step3")}
                     </p>
-                    <div className="bg-[#0b0b0d] border border-white/5 rounded-xl p-3.5 space-y-2">
-                      <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-[#6b6b75] font-semibold pb-1 border-b border-white/[0.04]">
+                    <div className="bg-background border border-border/50 rounded-xl p-3.5 space-y-2">
+                      <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold pb-1 border-b border-white/[0.04]">
                         <span>{t("dashboard.domains.dnsType")}</span>
                         <span>{t("dashboard.domains.dnsHost")}</span>
                         <span>{t("dashboard.domains.dnsTarget")}</span>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 items-center font-mono text-[12px] text-[#c8c8d4]">
+                      <div className="grid grid-cols-3 gap-2 items-center font-mono text-[12px] text-foreground/80">
                         <span className="text-primary font-semibold">CNAME</span>
                         <span>www</span>
                         <div className="flex items-center gap-1.5 min-w-0">
@@ -716,7 +716,7 @@ export default function DomainsPage() {
                           <button
                             type="button"
                             onClick={handleCopy}
-                            className="w-6 h-6 rounded-md border border-white/10 bg-white/[0.04] text-[#9a9aa3] flex items-center justify-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer shrink-0"
+                            className="w-6 h-6 rounded-md border border-border bg-white/[0.04] text-muted-foreground flex items-center justify-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer shrink-0"
                           >
                             {copied ? <Check className="w-3 h-3 text-[#5fe3a0]" /> : <Copy className="w-3 h-3" />}
                           </button>
@@ -728,10 +728,10 @@ export default function DomainsPage() {
         footer={limitFooter}
       >
         <div className="space-y-4">
-          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+          <p className="text-[14px] leading-relaxed text-muted-foreground m-0">
             {t("dashboard.domains.limitDesc", undefined, { plan: activeTenant?.tenant?.plan === "enterprise" ? "Enterprise" : "Pro", max: String(maxDomains) })}
           </p>
-          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+          <p className="text-[14px] leading-relaxed text-muted-foreground m-0">
             {t("dashboard.domains.limitDesc2")}
           </p>
         </div>
@@ -739,14 +739,14 @@ export default function DomainsPage() {
     </div>
                       </div>
                     </div>
-                    <p className="text-[11px] text-[#6b6b75] m-0 italic">
+                    <p className="text-[11px] text-muted-foreground m-0 italic">
                       {t("dashboard.domains.note")}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white shrink-0 font-mono font-bold">4</span>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/5 border border-border text-[10px] text-white shrink-0 font-mono font-bold">4</span>
                   <p className="m-0">
                     {t("dashboard.domains.step4")}
                   </p>
@@ -765,7 +765,7 @@ export default function DomainsPage() {
               disabled={!inputValid || submitting || !siteId || domainLimitReached}
               className={`w-full py-2.5 rounded-xl text-[14px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
                 !inputValid || submitting || !siteId || domainLimitReached
-                  ? "bg-[#2a2a2a] text-[#6b6b75] cursor-not-allowed"
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
                   : "bg-primary text-primary-foreground hover:bg-primary/90"
               }`}
             >
@@ -790,25 +790,25 @@ export default function DomainsPage() {
         footer={upsellFooter}
       >
         <div className="space-y-4">
-          <p className="text-[14px] leading-relaxed text-[#9a9aa3] m-0">
+          <p className="text-[14px] leading-relaxed text-muted-foreground m-0">
             {t("dashboard.domains.upsellDesc")}
           </p>
-          <div className="bg-[#1b1b21] border border-white/10 rounded-xl p-4 space-y-3">
+          <div className="bg-muted/50 border border-border rounded-xl p-4 space-y-3">
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
-              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+              <p className="text-[13px] text-foreground m-0 leading-relaxed">
                 <strong>{t("dashboard.domains.upsellBranding")}:</strong> {t("dashboard.domains.upsellBrandingDesc")}
               </p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
-              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+              <p className="text-[13px] text-foreground m-0 leading-relaxed">
                 <strong>{t("dashboard.domains.upsellSeo")}:</strong> {t("dashboard.domains.upsellSeoDesc")}
               </p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-emerald-400 font-bold leading-none mt-0.5">✓</span>
-              <p className="text-[13px] text-[#f3f3f4] m-0 leading-relaxed">
+              <p className="text-[13px] text-foreground m-0 leading-relaxed">
                 <strong>{t("dashboard.domains.upsellSsl")}:</strong> {t("dashboard.domains.upsellSslDesc")}
               </p>
             </div>

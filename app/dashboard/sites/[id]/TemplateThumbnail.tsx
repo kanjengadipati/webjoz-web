@@ -29,7 +29,7 @@ export default function TemplateThumbnail({
 
   return (
     <div 
-      className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-white/10"}`}
+      className={`relative ${compact ? "h-10" : "h-16"} w-full overflow-hidden rounded-md border ${active ? "border-white/70" : "border-border"}`}
       style={{ backgroundColor: bgColor }}
     >
       {previewType === "service" && (

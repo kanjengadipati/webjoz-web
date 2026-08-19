@@ -64,14 +64,14 @@ function IconPicker({ value, onChange }: { value?: string; onChange: (name: stri
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-2 px-2 py-1.5 border border-white/10 rounded text-[11px] text-slate-300 hover:bg-white/5 transition-all w-full"
+        className="flex items-center gap-2 px-2 py-1.5 border border-border rounded text-[11px] text-slate-300 hover:bg-white/5 transition-all w-full"
       >
         <SelectedIcon className="w-4 h-4 text-primary shrink-0" />
         <span className="flex-1 text-left truncate">{value || "Pilih icon"}</span>
         <ChevronDown className="w-3 h-3 text-slate-500 shrink-0" />
       </button>
       {open && (
-        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-white/10 rounded-lg p-2 shadow-xl">
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-border rounded-lg p-2 shadow-xl">
           <div className="grid grid-cols-6 gap-1">
             {ICON_OPTIONS.map(({ name, icon: Icon }) => (
               <button
@@ -168,7 +168,7 @@ function getUnsplashPool(businessType: string): string[] {
 function CollapsibleGroup({ label, defaultOpen = false, children }: { label: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border border-white/10 rounded-md bg-white/[0.02]">
+    <div className="border border-border rounded-md bg-white/[0.02]">
       <button type="button" onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-wide font-semibold text-slate-400 cursor-pointer">
         <span>{label}</span>
         {open ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -279,7 +279,7 @@ function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
       type="button"
       onClick={handleClick}
       title="Pilih foto acak dari Unsplash"
-      className="flex items-center gap-1 px-2 h-7 rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-white/10"
+      className="flex items-center gap-1 px-2 h-7 rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
     >
       <RefreshCw className="w-3 h-3" />
       Random foto
@@ -410,12 +410,12 @@ function LinkTypeInput({
   };
 
   return (
-    <div className="space-y-2 pt-2 border-t border-white/5 mt-2">
+    <div className="space-y-2 pt-2 border-t border-border/50 mt-2">
       <div className="flex items-center justify-between">
         <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
           Tipe Aksi Tombol
         </label>
-        <div className="flex p-0.5 rounded bg-white/[0.04] border border-white/5">
+        <div className="flex p-0.5 rounded bg-white/[0.04] border border-border/50">
           <button
             type="button"
             onClick={() => handleTypeChange("whatsapp")}
@@ -700,7 +700,7 @@ export default function SectionForms({
               className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
             <input 
               type="checkbox" 
@@ -732,7 +732,7 @@ export default function SectionForms({
                 <select
                   value={(content.header as any)?.nav_cta_href || ""}
                   onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300"
+                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300"
                 >
                   <option value="">— Otomatis dari teks —</option>
                   <option value="#hero">Hero (Atas)</option>
@@ -759,7 +759,7 @@ export default function SectionForms({
               value={content.header?.tagline || ""}
               onChange={(e) => updateField("header", "tagline", e.target.value)}
               placeholder="cth. Cita Rasa Nusantara"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -808,7 +808,7 @@ export default function SectionForms({
                     }}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium border transition-all ${
                       hidden
-                        ? "border-white/5 bg-white/[0.03] text-slate-600 line-through"
+                        ? "border-border/50 bg-white/[0.03] text-slate-600 line-through"
                         : "border-primary/20 bg-primary/10 text-primary"
                     }`}
                   >
@@ -846,7 +846,7 @@ export default function SectionForms({
               value={content.hero?.eyebrow || ""}
               onChange={(e) => updateField("hero", "eyebrow", e.target.value)}
               placeholder="cth. Tersedia Sekarang"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
           </div>
@@ -883,7 +883,7 @@ export default function SectionForms({
               value={content.hero?.matra || ""}
               onChange={(e) => updateField("hero", "matra", e.target.value)}
               placeholder="cth. Cita Rasa Jogja · Sejak 2010"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
           </div>
@@ -949,7 +949,7 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_text || ""}
               onChange={(e) => updateField("hero", "cta_secondary_text", e.target.value)}
               placeholder="cth. Pelajari Lebih Lanjut"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
           </div>
@@ -965,7 +965,7 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_url || ""}
               onChange={(e) => updateField("hero", "cta_secondary_url", e.target.value)}
               placeholder="cth. #about atau https://..."
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
           </div>
@@ -981,7 +981,7 @@ export default function SectionForms({
               value={content.hero?.badge_text || ""}
               onChange={(e) => updateField("hero", "badge_text", e.target.value)}
               placeholder="cth. Buka 7 Hari · Jam 07.00–22.00"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
           </div>
@@ -997,7 +997,7 @@ export default function SectionForms({
               value={content.hero?.opening_hours || ""}
               onChange={(e) => updateField("hero", "opening_hours", e.target.value)}
               placeholder="cth. Buka Setiap Hari 07.00 – 22.00"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
         </div>
@@ -1010,7 +1010,7 @@ export default function SectionForms({
             Warna Latar Hero
           </label>
           <div className="flex items-center gap-2">
-            <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+            <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
               <input
                 type="color"
                 value={content.hero.background_color || "#FAF7F2"}
@@ -1023,7 +1023,7 @@ export default function SectionForms({
               type="text"
               value={content.hero.background_color || ""}
               onChange={(e) => updateField("hero", "background_color", e.target.value)}
-              className="flex-1 px-2.5 py-1.5 border border-white/10 bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+              className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
               placeholder="Kosongkan untuk pakai warna global"
             />
           </div>
@@ -1052,7 +1052,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.about.textAlign || "left") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-white/10 text-slate-400 hover:border-white/30"
+                      : "border-border text-slate-400 hover:border-white/30"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1070,7 +1070,7 @@ export default function SectionForms({
               value={content.about?.eyebrow || ""}
               onChange={(e) => updateField("about", "eyebrow", e.target.value)}
               placeholder="cth. Tentang Kami"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1124,7 +1124,7 @@ export default function SectionForms({
               const statKey = `highlight_stat_${n}` as "highlight_stat_1" | "highlight_stat_2" | "highlight_stat_3";
               const stat = (content.about as any)[statKey] as { value?: string; label?: string } | undefined;
               return (
-                <div key={n} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+                <div key={n} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Stat {n}</span>
                   <div className="flex gap-2">
                     <div className="flex-1 space-y-0.5">
@@ -1134,7 +1134,7 @@ export default function SectionForms({
                         value={stat?.value || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), value: e.target.value })}
                         placeholder="cth. 500+"
-                        className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
                       />
                     </div>
                     <div className="flex-1 space-y-0.5">
@@ -1144,7 +1144,7 @@ export default function SectionForms({
                         value={stat?.label || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), label: e.target.value })}
                         placeholder="cth. Pelanggan Puas"
-                        className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
                       />
                     </div>
                   </div>
@@ -1155,7 +1155,7 @@ export default function SectionForms({
           {/* Milestones */}
           <CollapsibleGroup label="Milestones / Timeline" defaultOpen={false}>
             {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (
-              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Milestone {idx + 1}</span>
                   <button type="button" onClick={() => {
@@ -1164,9 +1164,9 @@ export default function SectionForms({
                     updateField("about", "milestones", arr);
                   }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none" />
+                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none" />
               </div>
             ))}
             <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: "", title: "", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
@@ -1174,7 +1174,7 @@ export default function SectionForms({
           {/* Team Members */}
           <CollapsibleGroup label="Anggota Tim" defaultOpen={false}>
             {((content.about?.team_members as any[]) || []).map((m: any, idx: number) => (
-              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Anggota {idx + 1}</span>
                   <button type="button" onClick={() => {
@@ -1183,8 +1183,8 @@ export default function SectionForms({
                     updateField("about", "team_members", arr);
                   }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
                 <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
               </div>
             ))}
@@ -1203,7 +1203,7 @@ export default function SectionForms({
               value={content.benefits?.eyebrow || ""}
               onChange={(e) => updateField("benefits", "eyebrow", e.target.value)}
               placeholder="cth. Kenapa Pilih Kami"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1225,7 +1225,7 @@ export default function SectionForms({
               value={content.benefits?.subtitle || ""}
               onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
               placeholder="cth. Berbagai alasan mengapa pelanggan mempercayai kami"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1239,7 +1239,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.benefits.textAlign || "center") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-white/10 text-slate-400 hover:border-white/30"
+                      : "border-border text-slate-400 hover:border-white/30"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1248,7 +1248,7 @@ export default function SectionForms({
             </div>
           </div>
           {content.benefits.items?.map((item: any, idx: number) => (
-            <div key={idx} className="border border-white/10 p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
+            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">#{idx + 1}</span>
                 <button 
@@ -1300,7 +1300,7 @@ export default function SectionForms({
                     value={item.stat || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat = e.target.value; updateField("benefits", "items", n); }}
                     placeholder="50+"
-                    className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
                   />
                 </div>
                 <div className="flex-1 space-y-0.5">
@@ -1310,7 +1310,7 @@ export default function SectionForms({
                     value={item.stat_label || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat_label = e.target.value; updateField("benefits", "items", n); }}
                     placeholder="Proyek Selesai"
-                    className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
                   />
                 </div>
               </div>
@@ -1322,7 +1322,7 @@ export default function SectionForms({
               const n = [...(content.benefits.items || []), { title: "", description: "" }]; 
               updateField("benefits", "items", n); 
             }} 
-            className="w-full text-[12px] py-1.5 border border-white/10 rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
+            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah
           </button>
@@ -1332,23 +1332,23 @@ export default function SectionForms({
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-0.5">
                 <label className="text-[10px] text-slate-500 uppercase">Label Kolom A (Kami)</label>
-                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
               </div>
               <div className="space-y-0.5">
                 <label className="text-[10px] text-slate-500 uppercase">Label Kolom B (Lainnya)</label>
-                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
               </div>
             </div>
             {((content.benefits?.comparison?.rows as any[]) || []).map((row: any, idx: number) => (
-              <div key={idx} className="border border-white/10 rounded-md p-2 space-y-1.5 bg-white/[0.02]">
+              <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-white/[0.02]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Baris {idx + 1}</span>
                   <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-white/10 rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
                 </div>
               </div>
             ))}
@@ -1373,7 +1373,7 @@ export default function SectionForms({
             />
           </div>
           {content.faq.items?.map((item: any, idx: number) => (
-            <div key={idx} className="border border-white/10 p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
+            <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-white/[0.03]">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">FAQ #{idx + 1}</span>
                 <button 
@@ -1418,7 +1418,7 @@ export default function SectionForms({
                   updateField("faq", "items", n); 
                 }} 
                 placeholder="Kategori (opsional, untuk variant sidebar-category)" 
-                className="w-full px-2 py-1 border border-white/10 rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" 
+                className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" 
               />
             </div>
           ))}
@@ -1428,7 +1428,7 @@ export default function SectionForms({
               const n = [...(content.faq.items || []), { question: "", answer: "" }]; 
               updateField("faq", "items", n); 
             }} 
-            className="w-full text-[12px] py-1.5 border border-white/10 rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
+            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah FAQ
           </button>
@@ -1465,7 +1465,7 @@ export default function SectionForms({
               value={content.cta?.eyebrow || ""}
               onChange={(e) => updateField("cta", "eyebrow", e.target.value)}
               placeholder="cth. Mulai Sekarang"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1475,7 +1475,7 @@ export default function SectionForms({
               value={content.cta?.subheadline || ""}
               onChange={(e) => updateField("cta", "subheadline", e.target.value)}
               placeholder="cth. Dapatkan penawaran spesial sebelum kehabisan!"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1485,7 +1485,7 @@ export default function SectionForms({
               value={content.cta?.trust_signal || ""}
               onChange={(e) => updateField("cta", "trust_signal", e.target.value)}
               placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -1527,7 +1527,7 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Rata Konten</label>
-            <div className="grid grid-cols-3 gap-1 rounded-lg border border-white/10 bg-white/[0.03] p-1">
+            <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-white/[0.03] p-1">
               {[
                 { value: "left", label: "Kiri" },
                 { value: "center", label: "Tengah" },
@@ -1621,7 +1621,7 @@ export default function SectionForms({
               className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Formulir Kontak</span>
             <input 
               type="checkbox" 
@@ -1630,7 +1630,7 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Peta Lokasi</span>
             <input 
               type="checkbox" 
@@ -1639,7 +1639,7 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer" 
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.03] p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
             <div className="flex gap-1">
               {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
@@ -1703,7 +1703,7 @@ export default function SectionForms({
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         active
                           ? "bg-primary text-primary-foreground"
-                          : "border border-white/10 text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                          : "border border-border text-slate-400 hover:bg-white/5 hover:text-slate-100"
                       }`}
                     >
                       {opt.label}
@@ -1734,7 +1734,7 @@ export default function SectionForms({
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         active
                           ? "bg-primary text-primary-foreground"
-                          : "border border-white/10 text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                          : "border border-border text-slate-400 hover:bg-white/5 hover:text-slate-100"
                       }`}
                     >
                       {opt.label}
@@ -1987,8 +1987,8 @@ export default function SectionForms({
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Preview Saat Link Dibagikan</p>
 
                 {/* WhatsApp / iMessage style */}
-                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
                     <span className="text-[10px] font-bold text-emerald-400">💬 WhatsApp / iMessage</span>
                   </div>
                   <div className="flex gap-0 overflow-hidden">
@@ -2015,8 +2015,8 @@ export default function SectionForms({
                 </div>
 
                 {/* Facebook style */}
-                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
                     <span className="text-[10px] font-bold text-blue-400">👍 Facebook / LinkedIn</span>
                   </div>
                   <div className="w-full aspect-[1.91/1] bg-[#111318] relative overflow-hidden">
@@ -2041,8 +2041,8 @@ export default function SectionForms({
                 </div>
 
                 {/* Twitter/X style */}
-                <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-white/5">
+                <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
                     <span className="text-[10px] font-bold text-slate-300">𝕏 Twitter / X</span>
                   </div>
                   <div className="relative">
@@ -2185,7 +2185,7 @@ export default function SectionForms({
               />
             ) : (
               <div
-                className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+                className="rounded-lg border border-border bg-white/[0.02] px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
                 onClick={() => onUpgradeRequired?.()}
               >
                 <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
@@ -2227,7 +2227,7 @@ export default function SectionForms({
 
             return (
               <div className="rounded-2xl border border-amber-500/20 bg-black/60 overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
                   <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                     <Search className="w-4 h-4 text-amber-400" />
                     <span>SEO BOOSTER (PRO)</span>
@@ -2271,7 +2271,7 @@ export default function SectionForms({
           })()}
 
           {/* ── Google Search Console ── */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+          <div className="rounded-xl border border-border bg-white/[0.02] overflow-hidden">
             <div className="p-4 space-y-3">
               {/* Header */}
               <div className="flex items-center justify-between gap-2">
@@ -2295,7 +2295,7 @@ export default function SectionForms({
               </div>
 
               {/* How-to steps */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
+              <div className="rounded-lg bg-white/[0.03] border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
                 <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
                 <ol className="space-y-1 list-decimal list-inside">
                   <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
@@ -2308,7 +2308,7 @@ export default function SectionForms({
 
               {/* Meta tag preview */}
               {gscInput.trim() && (
-                <div className="rounded-md bg-[#0d0f14] border border-white/5 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+                <div className="rounded-md bg-[#0d0f14] border border-border/50 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
                   {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
                 </div>
               )}
@@ -2320,7 +2320,7 @@ export default function SectionForms({
                   value={gscInput}
                   onChange={(e) => setGscInput(e.target.value)}
                   placeholder="Tempel kode verifikasi di sini..."
-                  className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                  className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                 />
                 <button
                   type="button"
@@ -2358,7 +2358,7 @@ export default function SectionForms({
               value={content.testimonials?.eyebrow || ""}
               onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)}
               placeholder="cth. Testimoni"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -2371,7 +2371,7 @@ export default function SectionForms({
               value={content.testimonials?.title || ""}
               onChange={(e) => updateField("testimonials", "title", e.target.value)}
               placeholder="cth. Cerita dari Pelanggan Kami"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
             />
           </div>
           <div className="space-y-1">
@@ -2384,11 +2384,11 @@ export default function SectionForms({
               value={content.testimonials?.subtitle || ""}
               onChange={(e) => updateField("testimonials", "subtitle", e.target.value)}
               placeholder="cth. Ulasan dari pelanggan setia kami"
-              className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
-            <div key={idx} className="border border-white/10 p-3 rounded-xl space-y-2.5 bg-white/[0.02]">
+            <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-white/[0.02]">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Testimoni #{idx + 1}</span>
                 <button
@@ -2414,7 +2414,7 @@ export default function SectionForms({
                     updateField("testimonials", "items", n);
                   }}
                   placeholder="Tulis kutipan spesifik dan believable..."
-                  className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-none"
+                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-none"
                 />
               </div>
               {/* Name + Role row */}
@@ -2430,7 +2430,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Budi Santoso"
-                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                   />
                 </div>
                 <div>
@@ -2444,7 +2444,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Pelanggan tetap"
-                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                   />
                 </div>
               </div>
@@ -2462,13 +2462,13 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="BS"
-                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 uppercase"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 uppercase"
                   />
                 </div>
                 <div>
                   <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Warna Avatar</label>
                   <div className="flex items-center gap-2">
-                    <div className="relative w-8 h-8 rounded-md border border-white/15 overflow-hidden flex-shrink-0">
+                    <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                       <input
                         type="color"
                         value={item.avatar_color || "var(--primary)"}
@@ -2490,7 +2490,7 @@ export default function SectionForms({
                         updateField("testimonials", "items", n);
                       }}
                       placeholder="var(--primary)"
-                      className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                      className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                     />
                   </div>
                 </div>
@@ -2508,7 +2508,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. PT Maju Jaya"
-                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                   />
                 </div>
                 <div>
@@ -2522,7 +2522,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="https://..."
-                    className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                   />
                 </div>
               </div>
@@ -2537,7 +2537,7 @@ export default function SectionForms({
                 { quote: "", name: "", role: "", avatar_initials: "", avatar_color: "var(--primary)", company: "", logo_url: "" }
               ]);
             }}
-            className="w-full text-[12px] py-2 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah Testimoni
           </button>
@@ -2623,7 +2623,7 @@ export default function SectionForms({
                   className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                     (content.gallery?.layout || "grid") === opt.value
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-white/10 text-slate-400 hover:border-white/20"
+                      : "border-border text-slate-400 hover:border-white/20"
                   }`}
                 >
                   <div className="text-[11px] font-semibold">{opt.label}</div>
@@ -2635,7 +2635,7 @@ export default function SectionForms({
 
           {/* Carousel config (only when carousel selected) */}
           {(content.gallery?.layout || "grid") === "carousel" && (
-            <div className="space-y-3 p-3 rounded-xl border border-white/5 bg-white/[0.02]">
+            <div className="space-y-3 p-3 rounded-xl border border-border/50 bg-white/[0.02]">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Pengaturan Carousel</span>
               <div className="space-y-1">
                 <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kecepatan Putar (ms)</label>
@@ -2677,13 +2677,13 @@ export default function SectionForms({
                   const next = [...(content.gallery?.items || []), { image_url: "", caption: "", alt_text: "" }];
                   updateField("gallery", "items", next);
                 }}
-                className="text-[12px] py-1.5 px-3 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Foto
               </button>
             </div>
             {(content.gallery?.items || []).map((item: any, idx: number) => (
-              <div key={idx} className="mb-3 p-4 rounded-xl border border-white/5 bg-white/[0.02] space-y-3">
+              <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-white/[0.02] space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-500 font-medium">Foto #{idx + 1}</span>
                   <button
@@ -2713,7 +2713,7 @@ export default function SectionForms({
                     />
                   </div>
                   {item.image_url && (
-                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-border">
                       <img src={item.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     </div>
                   )}
@@ -2750,7 +2750,7 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => updateField("gallery", "items", [{ image_url: "", caption: "", alt_text: "" }])}
-                className="w-full text-[12px] py-2 border border-dashed border-white/10 rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Foto Pertama
               </button>
@@ -2811,7 +2811,7 @@ export default function SectionForms({
                       if (isProGated) { onUpgradeRequired?.(); return; }
                       updateDesignTokenLayout?.("floating_button", opt.value);
                     }}
-                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]"} ${isProGated ? "opacity-60" : ""}`}
+                    className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]"} ${isProGated ? "opacity-60" : ""}`}
                   >
                     <span className="text-lg block mb-1">{opt.icon}</span>
                     <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>
@@ -2827,7 +2827,7 @@ export default function SectionForms({
             )}
           </div>
           {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
-            <div className="space-y-2 pt-2 border-t border-white/10">
+            <div className="space-y-2 pt-2 border-t border-border">
               <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
                 Nomor WhatsApp <span className="text-red-400">*</span>
               </label>
@@ -2843,14 +2843,14 @@ export default function SectionForms({
                   }
                 }}
                 placeholder="cth. 628123456789 atau 08123456789"
-                className="w-full px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
               />
               {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
               <p className="text-[10px] text-slate-600">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
             </div>
           )}
           {designToken?.layout?.floating_button !== "none" && (
-            <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3 text-[11px] text-slate-400 leading-relaxed">
+            <div className="rounded-lg border border-border bg-white/[0.03] p-3 text-[11px] text-slate-400 leading-relaxed">
               {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
               {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
               {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
@@ -2866,7 +2866,7 @@ export default function SectionForms({
           onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111318] shadow-2xl p-6 space-y-5"
+            className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -2895,7 +2895,7 @@ export default function SectionForms({
                 if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
               }}
               placeholder={language === "en" ? 'e.g. "make it more casual and friendly"' : 'cth. "buat lebih kasual dan ramah"'}
-              className="w-full px-4 py-3 border border-white/10 bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+              className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
             />
 
             {/* Image chip — shown only when item has a photo */}
@@ -2909,7 +2909,7 @@ export default function SectionForms({
               >
                 <span className="text-base leading-none">📸</span>
                 <span>{language === "en" ? "Write a description from the product photo" : "Tulis deskripsi dari foto produk"}</span>
-                <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-white/10">
+                <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-border">
                   <img src={fieldPromptModal.imageUrl} alt="" className="w-full h-full object-cover" />
                 </span>
               </button>
@@ -2936,7 +2936,7 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-white/10 text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+                className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
               >
                 Batal
               </button>

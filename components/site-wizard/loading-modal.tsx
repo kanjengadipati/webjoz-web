@@ -101,7 +101,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
 
         {/* Live section snippet */}
         {!center && sectionSnippet && loadingStep >= 1 && (
-          <div className="rounded-2xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white/5 border border-white/10">
+          <div className="rounded-2xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white/5 border border-border">
             <p className="text-[11px] text-slate-400 leading-relaxed italic">
               &ldquo;{sectionSnippet}&rdquo;
             </p>

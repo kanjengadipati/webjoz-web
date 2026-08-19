@@ -645,7 +645,7 @@ export default function TemplateGalleryPage() {
                   {/* Top Color Strip */}
                   <div className="h-28 relative flex items-end p-4 border-b border-border/30" style={{ background: pal ? `linear-gradient(135deg, ${pal.background || "#111"}, ${pal.surface || "#222"})` : "var(--muted)" }}>
                     {pal && (
-                      <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-white/5">
+                      <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-border/50">
                         {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
                           <div 
                             key={i} 
@@ -805,7 +805,7 @@ export default function TemplateGalleryPage() {
                   <Card key={seed.id} className={`overflow-hidden border-border/40 hover:border-border/80 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col h-[520px] relative ${isSelected ? "ring-2 ring-primary/60 border-primary/40" : ""}`}>
                     {/* Top Color Strip */}
                     <div className="h-28 relative flex items-end p-4 border-b border-border/30" style={{ background: pal ? `linear-gradient(135deg, ${pal.background || "#111"}, ${pal.surface || "#222"})` : "var(--muted)" }}>
-                      <label className="absolute top-2 left-2 flex items-center justify-center size-6 rounded-md bg-black/40 backdrop-blur-md border border-white/10 cursor-pointer">
+                      <label className="absolute top-2 left-2 flex items-center justify-center size-6 rounded-md bg-black/40 backdrop-blur-md border border-border cursor-pointer">
                         <input
                           type="checkbox"
                           checked={isSelected}
@@ -814,7 +814,7 @@ export default function TemplateGalleryPage() {
                         />
                       </label>
                       {pal && (
-                        <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-white/5">
+                        <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-border/50">
                           {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
                             <div 
                               key={i} 
@@ -826,7 +826,7 @@ export default function TemplateGalleryPage() {
                         </div>
                       )}
                       {!pal && (
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-sm border border-white/5">
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50">
                           <Palette className="size-4 text-white/60" />
                           <span className="text-[10px] text-white/50 font-semibold">{t("dashboard.adminTemplates.noPalette")}</span>
                         </div>

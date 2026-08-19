@@ -152,13 +152,13 @@ export default function CustomDomainPage() {
           </p>
 
           {/* DNS Table */}
-          <div className="rounded-xl overflow-hidden border border-white/[0.08]">
+          <div className="rounded-xl overflow-hidden border border-border">
             <div className="grid grid-cols-3 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               <span>Tipe</span>
               <span>Name / Host</span>
               <span>Value / Target</span>
             </div>
-            <div className="grid grid-cols-3 px-4 py-3.5 border-t border-white/[0.05] items-center gap-2">
+            <div className="grid grid-cols-3 px-4 py-3.5 border-t border-border/50 items-center gap-2">
               <span className="text-sm font-mono font-bold text-primary">CNAME</span>
               <span className="text-sm font-mono text-foreground/80">
                 {savedDomain ? savedDomain.split(".")[0] : "subdomain-anda"}
