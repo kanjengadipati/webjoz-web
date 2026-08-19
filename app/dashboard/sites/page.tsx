@@ -806,33 +806,33 @@ export default function SitesPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full flex-nowrap">
         <button
           onClick={() => setCurrentFilter("all")}
-          className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "all"
-              ? "bg-foreground text-background border-foreground"
+          className={`shrink-0 text-xs sm:text-[13.5px] px-3.5 sm:px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${currentFilter === "all"
+              ? "bg-foreground text-background border-foreground font-semibold"
               : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-background/60" : "text-muted-foreground"}`}>{countAll}</span>
+          {t("dashboard.sites.filterAll")} <span className={`text-[11px] font-mono ${currentFilter === "all" ? "text-background/70 font-bold" : "text-muted-foreground"}`}>{countAll}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("draft")}
-          className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "draft"
-              ? "bg-foreground text-background border-foreground"
+          className={`shrink-0 text-xs sm:text-[13.5px] px-3.5 sm:px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${currentFilter === "draft"
+              ? "bg-foreground text-background border-foreground font-semibold"
               : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-background/60" : "text-muted-foreground"}`}>{countDraft}</span>
+          {t("dashboard.sites.filterDraft")} <span className={`text-[11px] font-mono ${currentFilter === "draft" ? "text-background/70 font-bold" : "text-muted-foreground"}`}>{countDraft}</span>
         </button>
         <button
           onClick={() => setCurrentFilter("published")}
-          className={`text-[13.5px] px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${currentFilter === "published"
-              ? "bg-foreground text-background border-foreground"
+          className={`shrink-0 text-xs sm:text-[13.5px] px-3.5 sm:px-4 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${currentFilter === "published"
+              ? "bg-foreground text-background border-foreground font-semibold"
               : "bg-transparent border-border text-muted-foreground hover:border-border hover:text-foreground"
             }`}
         >
-          {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-background/60" : "text-muted-foreground"}`}>{countPublished}</span>
+          {t("dashboard.sites.filterPublished")} <span className={`text-[11px] font-mono ${currentFilter === "published" ? "text-background/70 font-bold" : "text-muted-foreground"}`}>{countPublished}</span>
         </button>
       </div>
 
