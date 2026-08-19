@@ -280,37 +280,30 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           />
 
           {/* Sheet Panel */}
-          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-card border-t border-border rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
+          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-background border-t border-border/50 rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
 
-            {/* ── Premium Header ── */}
-            <div className="relative overflow-hidden rounded-t-3xl px-5 pt-5 pb-6">
-              {/* Gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-primary/10 to-transparent" />
-              {/* Subtle dot grid overlay */}
-              <div className="absolute inset-0 opacity-[0.04]" style={{backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)", backgroundSize: "20px 20px"}} />
+            {/* ── Header ── */}
+            <div className="relative overflow-hidden rounded-t-3xl px-5 pt-5 pb-6 border-b border-border/40">
+              {/* Subtle monochrome gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent dark:from-white/[0.03]" />
 
               {/* Content */}
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {/* Avatar with glow */}
+                  {/* Avatar */}
                   <div className="relative">
-                    <div className="size-12 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-bold text-lg shadow-lg shadow-primary/30">
+                    <div className="size-12 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-lg shadow-sm">
                       {userInitial}
                     </div>
                     {/* Online dot */}
-                    <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-emerald-500 border-2 border-card shadow" />
+                    <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-emerald-500 border-2 border-background shadow" />
                   </div>
 
                   <div className="space-y-0.5">
                     <p className="font-bold text-[15px] text-foreground leading-tight">{userDisplayName}</p>
-                    {/* Plan badge */}
-                    <span className={cn(
-                      "inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full",
-                      activeTenant?.tenant?.plan === "pro"
-                        ? "bg-amber-500/20 text-amber-500 border border-amber-500/30"
-                        : "bg-primary/15 text-primary border border-primary/25"
-                    )}>
-                      <span className="size-1.5 rounded-full bg-current inline-block" />
+                    {/* Plan badge — monochrome */}
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground">
+                      <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
                       {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
                     </span>
                   </div>
@@ -318,7 +311,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="size-8 rounded-full bg-background/40 backdrop-blur border border-border/40 text-muted-foreground hover:text-foreground hover:bg-background/70 flex items-center justify-center transition cursor-pointer"
+                  className="size-8 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center transition cursor-pointer"
                   aria-label="Close menu"
                 >
                   <X className="size-3.5" />
