@@ -14,6 +14,7 @@ import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
 import { MIDTRANS_CLIENT_KEY, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
 import PaymentModal from "@/components/payment-modal";
 
@@ -147,26 +148,16 @@ export default function DomainsPage() {
     setPurchaser(p => ({ ...p, country: code }));
   };
 
-  // Auto-lookup city + province from Indonesian zip code
-  const lookupZip = useCallback(async (zip: string) => {
-    if (!zip || zip.length < 5 || purchaser.country !== "ID") return;
-    try {
-      setZipLoading(true);
-      const res = await fetch(`https://api.zippopotam.us/id/${zip}`);
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data.places && data.places.length > 0) {
-        const place = data.places[0];
-        setPurchaser(p => ({
-          ...p,
-          city:  place["place name"]  || p.city,
-          state: place["state"]       || p.state,
-        }));
-      }
-    } catch {
-      // silent fail — user can fill manually
-    } finally {
-      setZipLoading(false);
+  // Auto-lookup city + province from Indonesian zip code (offline-first & instant)
+  const lookupZip = useCallback((zip: string) => {
+    if (!zip || purchaser.country !== "ID") return;
+    const match = lookupIndonesianPostalCode(zip);
+    if (match) {
+      setPurchaser(p => ({
+        ...p,
+        city: match.city || p.city,
+        state: match.state || p.state,
+      }));
     }
   }, [purchaser.country]);
 
@@ -1101,7 +1092,13 @@ export default function DomainsPage() {
               <div className="relative">
                 <input
                   value={purchaser.zip}
-                  onChange={e => setPurchaser(p => ({ ...p, zip: e.target.value.replace(/[^0-9]/g, "") }))}
+                  onChange={e => {
+                    const val = e.target.value.replace(/[^0-9]/g, "");
+                    setPurchaser(p => ({ ...p, zip: val }));
+                    if (val.length >= 3) {
+                      lookupZip(val);
+                    }
+                  }}
                   onBlur={e => lookupZip(e.target.value)}
                   placeholder="55xxx"
                   maxLength={6}
