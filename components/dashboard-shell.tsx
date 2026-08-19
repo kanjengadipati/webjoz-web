@@ -280,28 +280,54 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           />
 
           {/* Sheet Panel */}
-          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-card border-t border-border rounded-t-3xl p-5 pb-8 shadow-2xl animate-in slide-in-from-bottom duration-300 space-y-5">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-border/40">
-              <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                  {userInitial}
+          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-card border-t border-border rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
+
+            {/* ── Premium Header ── */}
+            <div className="relative overflow-hidden rounded-t-3xl px-5 pt-5 pb-6">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-primary/10 to-transparent" />
+              {/* Subtle dot grid overlay */}
+              <div className="absolute inset-0 opacity-[0.04]" style={{backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)", backgroundSize: "20px 20px"}} />
+
+              {/* Content */}
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* Avatar with glow */}
+                  <div className="relative">
+                    <div className="size-12 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-bold text-lg shadow-lg shadow-primary/30">
+                      {userInitial}
+                    </div>
+                    {/* Online dot */}
+                    <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-emerald-500 border-2 border-card shadow" />
+                  </div>
+
+                  <div className="space-y-0.5">
+                    <p className="font-bold text-[15px] text-foreground leading-tight">{userDisplayName}</p>
+                    {/* Plan badge */}
+                    <span className={cn(
+                      "inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full",
+                      activeTenant?.tenant?.plan === "pro"
+                        ? "bg-amber-500/20 text-amber-500 border border-amber-500/30"
+                        : "bg-primary/15 text-primary border border-primary/25"
+                    )}>
+                      <span className="size-1.5 rounded-full bg-current inline-block" />
+                      {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-sm text-foreground m-0 leading-tight">
-                    {userDisplayName}
-                  </p>
-                  <span className="text-[10px] text-muted-foreground capitalize">{activeTenant?.tenant?.plan || "free"} Plan</span>
-                </div>
+
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="size-8 rounded-full bg-background/40 backdrop-blur border border-border/40 text-muted-foreground hover:text-foreground hover:bg-background/70 flex items-center justify-center transition cursor-pointer"
+                  aria-label="Close menu"
+                >
+                  <X className="size-3.5" />
+                </button>
               </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-full bg-muted/60 text-muted-foreground hover:text-foreground transition cursor-pointer"
-                aria-label="Close menu"
-              >
-                <X className="size-4" />
-              </button>
             </div>
+
+            {/* Rest of content with padding */}
+            <div className="px-5 pb-8 pt-4 space-y-5">
 
             {/* Navigation Groups */}
             <div className="space-y-4">
@@ -401,6 +427,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   {t("dashboard.logout")}
                 </Button>
               )}
+            </div>
             </div>
           </div>
         </div>
