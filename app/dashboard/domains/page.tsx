@@ -339,7 +339,7 @@ export default function DomainsPage() {
             type="button"
             onClick={() => setTab("buy")}
             className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-              tab === "buy" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
+              tab === "buy" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <ShoppingCart className="w-3.5 h-3.5" />
@@ -350,7 +350,7 @@ export default function DomainsPage() {
           type="button"
           onClick={() => setTab("own")}
           className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer flex items-center gap-2 ${
-            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-white"
+            tab === "own" || !purchaseAvailable ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           <Globe className="w-3.5 h-3.5" />
@@ -372,7 +372,7 @@ export default function DomainsPage() {
               </h2>
               <div className="flex flex-col gap-2">
                 {purchased.map(d => (
-                  <div key={d.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3">
+                  <div key={d.id} className="bg-card border border-border rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-all duration-200 hover:border-primary/30 hover:shadow-sm">
                     <div className="w-9 h-9 rounded-full bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0] flex items-center justify-center shrink-0">
                       <Globe className="w-4 h-4" />
                     </div>
