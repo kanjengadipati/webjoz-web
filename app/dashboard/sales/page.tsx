@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { fetchMyReferralCode, regenerateMyReferralCode } from "@/lib/api/referral";
+import { getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign } from "lucide-react";
+import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target } from "lucide-react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -17,6 +18,7 @@ export default function SalesReferralPage() {
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [referralCode, setReferralCode] = useState<string>("");
+  const [config, setConfig] = useState<CommissionConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -29,8 +31,12 @@ export default function SalesReferralPage() {
     if (!token) return;
     try {
       setLoading(true);
-      const res = await fetchMyReferralCode(token);
+      const [res, cfgRes] = await Promise.all([
+        fetchMyReferralCode(token),
+        getCommissionConfig(token).catch(() => ({ data: null })),
+      ]);
       setReferralCode(res.data?.referral_code || "");
+      if (cfgRes?.data) setConfig(cfgRes.data);
     } catch (err: any) {
       pushToast(err.message || t("dashboard.sales.loadFailed"), "error");
     } finally {
@@ -166,18 +172,54 @@ export default function SalesReferralPage() {
         </Card>
       </div>
 
-      {/* Program Info Card */}
-      <Card className="border-emerald-500/20 bg-emerald-500/5 p-4 sm:p-6 space-y-3 rounded-2xl min-w-0">
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs sm:text-sm uppercase tracking-wider">
-          <DollarSign className="size-4 shrink-0" />
-          <span>{t("dashboard.sales.programTitle")}</span>
-        </div>
-        <ul className="text-xs text-muted-foreground space-y-2 list-disc list-inside leading-relaxed">
-          <li>{t("dashboard.sales.commRatePrefix")} <strong>20%</strong> {t("dashboard.sales.commRateSuffix")}</li>
-          <li>{t("dashboard.sales.commRecurringPrefix")} <strong>recurring</strong> {t("dashboard.sales.commRecurringSuffix")}</li>
-          <li>{t("dashboard.sales.commEditorPrefix")} <em>Editor</em> {t("dashboard.sales.commEditorSuffix")}</li>
-        </ul>
-      </Card>
+      {/* Commission Scheme Card (Matched with Overview) */}
+      {(() => {
+        const t1 = config ? config.tier1_rate_percent.toFixed(0) : "20";
+        const t2 = config ? config.tier2_rate_percent.toFixed(0) : "10";
+        const months = config?.tier_threshold_months ?? 12;
+
+        return (
+          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden rounded-2xl">
+            <CardHeader className="p-4 pb-3 border-b border-emerald-500/15">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                <Zap className="size-4" />
+                <span>{t("dashboard.salesOverview.schemeTitle")}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-4 space-y-3 min-w-0">
+              <div className="space-y-2 min-w-0">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
+                  </div>
+                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
+                </div>
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tier 2</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier2Desc", undefined, { months: String(months) })}</p>
+                  </div>
+                  <span className="text-xl sm:text-2xl font-extrabold text-muted-foreground shrink-0">{t2}%</span>
+                </div>
+              </div>
+              <div className="pt-1 space-y-1.5 min-w-0">
+                <p className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Gift className="size-3.5 shrink-0 text-amber-500" />
+                    <span className="truncate">{t("dashboard.salesOverview.bonusOnboarding")}</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                    <Target className="size-3.5 shrink-0 text-amber-500" />
+                    <span className="truncate">{t("dashboard.salesOverview.bonusMilestone")}</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })()}
 
       {/* Confirm Dialog for Regenerate */}
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen} title={t("dashboard.sales.dialogTitle")}>
