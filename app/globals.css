@@ -61,6 +61,11 @@
   --ring: oklch(0.98 0 0 / 0.4);
 }
 
+/* Hide Next.js dev overlay indicator from covering mobile dashboard UI */
+nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-overlay], #__next-build-watcher {
+  display: none !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
