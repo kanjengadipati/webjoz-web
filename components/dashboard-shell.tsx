@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken } from "@/lib/auth-store";
@@ -178,7 +178,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 const active = pathname === item.href;
                 const showBadge = item.id === "notifications" && unreadCount > 0;
                 const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
-                const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
+                const Icon = item.id === "overview" ? Home : (NAV_ICON_MAP[item.icon] ?? LayoutDashboard);
                 return (
                   <Link
                     key={item.href}
@@ -210,11 +210,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 );
               })}
 
-            {/* 5th Tab: Settings / Drawer Icon Button */}
+            {/* 5th Tab: Menu Hub Drawer (Uses LayoutGrid/Overview Icon) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              aria-label="Pengaturan & Menu"
+              aria-label="Menu & Fitur"
               className={cn(
                 "relative flex items-center justify-center h-10 w-12 rounded-full transition-all duration-200 cursor-pointer",
                 mobileMenuOpen
@@ -222,10 +222,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
               )}
             >
-              <Settings
+              <LayoutGrid
                 className={cn(
                   "size-5 transition-transform duration-200",
-                  mobileMenuOpen ? "stroke-[2.25] scale-110 rotate-45" : "stroke-[1.75] scale-100"
+                  mobileMenuOpen ? "stroke-[2.25] scale-110" : "stroke-[1.75] scale-100"
                 )}
               />
             </button>
