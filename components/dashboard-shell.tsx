@@ -168,10 +168,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Bottom Navigation (4 Core Tabs + 1 Drawer Menu) */}
+      {/* Mobile Bottom Navigation (Ultra-clean Icon-Only Floating Dock) */}
       {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-4 left-4 right-4 z-40 lg:hidden" aria-label={t("dashboard.mainNav")}>
-          <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-card/95 px-2 py-1.5 backdrop-blur-xl shadow-2xl shadow-black/20 dark:bg-background/90 dark:border-border/40 dark:shadow-black/50">
+        <nav className="fixed bottom-4 left-0 right-0 z-40 lg:hidden flex justify-center px-4" aria-label={t("dashboard.mainNav")}>
+          <div className="flex items-center justify-around w-full max-w-sm h-14 rounded-full border border-border/70 bg-card/90 px-2 backdrop-blur-2xl shadow-2xl shadow-black/25 dark:bg-background/85 dark:border-border/40 dark:shadow-black/50">
             {filteredNavItems
               .filter((item) => ["overview", "sites", "leads", "notifications"].includes(item.id))
               .map((item) => {
@@ -186,26 +186,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     aria-label={label}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl transition-all",
+                      "relative flex items-center justify-center h-10 w-12 rounded-full transition-all duration-200",
                       active
-                        ? "text-primary font-bold"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-primary/15 text-primary shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
                     )}
                   >
-                    {/* Active pill background */}
-                    {active && (
-                      <span
-                        className="absolute inset-0 rounded-xl bg-primary/10 dark:bg-primary/15"
-                        aria-hidden="true"
-                      />
-                    )}
-
-                    {/* Icon */}
-                    <div className="relative">
+                    <div className="relative flex items-center justify-center">
                       <Icon
                         className={cn(
-                          "size-5 shrink-0 transition-transform",
-                          active ? "stroke-[2.5] scale-105" : "stroke-[1.75]"
+                          "size-5 transition-transform duration-200",
+                          active ? "stroke-[2.25] scale-110" : "stroke-[1.75] scale-100"
                         )}
                         aria-hidden="true"
                       />
@@ -215,36 +206,28 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         </span>
                       )}
                     </div>
-
-                    {/* Label */}
-                    <span className={cn(
-                      "text-[9.5px] font-semibold leading-none tracking-tight truncate w-full text-center",
-                      active ? "text-primary font-bold" : "text-muted-foreground"
-                    )}>
-                      {label}
-                    </span>
                   </Link>
                 );
               })}
 
-            {/* 5th Tab: Menu Drawer Toggle */}
+            {/* 5th Tab: Settings / Drawer Icon Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              aria-label="Menu"
+              aria-label="Pengaturan & Menu"
               className={cn(
-                "relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1.5 px-1 rounded-xl transition-all cursor-pointer",
+                "relative flex items-center justify-center h-10 w-12 rounded-full transition-all duration-200 cursor-pointer",
                 mobileMenuOpen
-                  ? "text-primary font-bold"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/15 text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
               )}
             >
-              <div className="relative">
-                <Menu className="size-5 shrink-0 stroke-[1.75]" />
-              </div>
-              <span className="text-[9.5px] font-semibold leading-none tracking-tight truncate w-full text-center">
-                Menu
-              </span>
+              <Settings
+                className={cn(
+                  "size-5 transition-transform duration-200",
+                  mobileMenuOpen ? "stroke-[2.25] scale-110 rotate-45" : "stroke-[1.75] scale-100"
+                )}
+              />
             </button>
           </div>
         </nav>
