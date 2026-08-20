@@ -156,8 +156,11 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                 {(() => {
                   const categoryKeyMap: Record<string, string> = {
                     "Kuliner": "kuliner",
+                    "Toko": "tokoUmkm",
                     "Toko & UMKM": "tokoUmkm",
+                    "Layanan & Reservasi": "jasaBooking",
                     "Jasa & Booking": "jasaBooking",
+                    "Kreatif & Profesional": "portofolioKreator",
                     "Portofolio & Kreator": "portofolioKreator",
                     "Company": "company",
                   };

@@ -413,7 +413,7 @@ const DESC_HINTS: DescHintEntry[] = [
 
   // ── TOKO & UMKM / RETAIL & SMALL BUSINESS ──
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Fashion & Pakaian",
     keywords: [
       // ID
@@ -427,7 +427,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Elektronik",
     keywords: [
       // ID
@@ -440,7 +440,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Produk Lokal Handmade",
     keywords: [
       // ID
@@ -452,7 +452,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Toko Online",
     keywords: [
       // ID
@@ -464,7 +464,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Minimarket",
     keywords: [
       // ID
@@ -475,7 +475,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Toko & UMKM",
+    type: "Toko",
     subType: "Perabot & Furnitur",
     keywords: [
       // ID
@@ -488,7 +488,7 @@ const DESC_HINTS: DescHintEntry[] = [
 
   // ── JASA & BOOKING / SERVICE ──
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Salon & Kecantikan",
     keywords: [
       // ID
@@ -501,7 +501,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Barbershop",
     keywords: [
       // ID
@@ -512,7 +512,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Laundry",
     keywords: [
       // ID
@@ -523,7 +523,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Otomotif & Bengkel",
     keywords: [
       // ID
@@ -536,7 +536,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Klinik & Kesehatan",
     keywords: [
       // ID
@@ -549,7 +549,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Jasa & Booking",
+    type: "Layanan & Reservasi",
     subType: "Event & Wedding Organizer",
     keywords: [
       // ID
@@ -563,7 +563,7 @@ const DESC_HINTS: DescHintEntry[] = [
 
   // ── PORTOFOLIO & KREATOR / CREATIVE & PROFESSIONAL ──
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Konsultan",
     keywords: [
       // ID
@@ -575,7 +575,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Fotografer",
     keywords: [
       // ID
@@ -587,7 +587,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Videografer",
     keywords: [
       // ID
@@ -599,7 +599,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Desainer",
     keywords: [
       // ID — hanya visual/graphic designer, bukan web developer
@@ -615,7 +615,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Developer & IT",
     keywords: [
       // ID — web/app developer, software house, IT services
@@ -633,7 +633,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Portofolio & Kreator",
+    type: "Kreatif & Profesional",
     subType: "Digital & Marketing Agency",
     keywords: [
       // ID
@@ -889,6 +889,13 @@ const INSIGHT_POOL: Record<string, string[]> = {
     "Integrasi WhatsApp order memudahkan pelanggan pesan langsung.",
     "Tampilan mobile-friendly penting karena 70% pengguna kuliner dari smartphone.",
   ],
+  Toko: [
+    "Website dengan katalog produk rapi meningkatkan rata-rata belanja 2x lipat.",
+    "Toko online dengan navigasi jelas punya bounce rate 25% lebih rendah.",
+    "Foto produk profesional membuat tingkat klik naik hingga 50%.",
+    "Deskripsi produk yang detail mengurangi pertanyaan berulang dari pembeli.",
+    "Integrasi WhatsApp memudahkan pelanggan menanyakan stok barang.",
+  ],
   "Toko & UMKM": [
     "Website dengan katalog produk rapi meningkatkan rata-rata belanja 2x lipat.",
     "Toko online dengan navigasi jelas punya bounce rate 25% lebih rendah.",
@@ -896,12 +903,26 @@ const INSIGHT_POOL: Record<string, string[]> = {
     "Deskripsi produk yang detail mengurangi pertanyaan berulang dari pembeli.",
     "Integrasi WhatsApp memudahkan pelanggan menanyakan stok barang.",
   ],
+  "Layanan & Reservasi": [
+    "Form booking & kontak yang simpel bikin calon pelanggan lebih cepat reservasi.",
+    "Daftar layanan & harga yang jelas meningkatkan konversi pemesanan 2x lipat.",
+    "Testimoni pelanggan nyata membuat calon klien lebih yakin untuk booking.",
+    "Integrasi WhatsApp booking memudahkan pelanggan reservasi langsung.",
+    "Tampilan mobile-friendly sangat penting karena mayoritas pelanggan booking lewat HP.",
+  ],
   "Jasa & Booking": [
     "Form booking & kontak yang simpel bikin calon pelanggan lebih cepat reservasi.",
     "Daftar layanan & harga yang jelas meningkatkan konversi pemesanan 2x lipat.",
     "Testimoni pelanggan nyata membuat calon klien lebih yakin untuk booking.",
     "Integrasi WhatsApp booking memudahkan pelanggan reservasi langsung.",
     "Tampilan mobile-friendly sangat penting karena mayoritas pelanggan booking lewat HP.",
+  ],
+  "Kreatif & Profesional": [
+    "Website dengan galeri portofolio berkualitas tinggi meningkatkan kepercayaan calon klien 3x.",
+    "Studi kasus nyata lebih meyakinkan daripada sekadar daftar pengalaman kerja.",
+    "Tampilan portofolio yang bersih dan rapi membuat karya Anda terlihat jauh lebih premium.",
+    "Testimoni klien sebelumnya membuat calon klien baru mantap merekrut Anda.",
+    "Call-to-action kontak yang jelas mempercepat calon klien menghubungi Anda untuk proyek baru.",
   ],
   "Portofolio & Kreator": [
     "Website dengan galeri portofolio berkualitas tinggi meningkatkan kepercayaan calon klien 3x.",

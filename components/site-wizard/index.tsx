@@ -918,8 +918,11 @@ export function SiteWizard({
                       const isSelected = chat.businessType === bt.value;
                       const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                         "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
+                        "Toko": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
                         "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
+                        "Layanan & Reservasi": { label: "jasaBooking", desc: "jasaBookingDesc" },
                         "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
+                        "Kreatif & Profesional": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                         "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                         "Company": { label: "company", desc: "companyDesc" },
                       };
@@ -928,9 +931,11 @@ export function SiteWizard({
 
                       const categoryIconMap: Record<string, React.ReactNode> = {
                         "Kuliner": <UtensilsCrossed className="w-3.5 h-3.5" />,
-                        "Toko & UMKM": <ShoppingBag className="w-3.5 h-3.5" />,
                         "Toko": <ShoppingBag className="w-3.5 h-3.5" />,
+                        "Toko & UMKM": <ShoppingBag className="w-3.5 h-3.5" />,
+                        "Layanan & Reservasi": <Calendar className="w-3.5 h-3.5" />,
                         "Jasa & Booking": <Calendar className="w-3.5 h-3.5" />,
+                        "Kreatif & Profesional": <Palette className="w-3.5 h-3.5" />,
                         "Portofolio & Kreator": <Palette className="w-3.5 h-3.5" />,
                         "Company": <Building2 className="w-3.5 h-3.5" />,
                       };

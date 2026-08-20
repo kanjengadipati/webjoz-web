@@ -60,8 +60,22 @@ export function prefillForLibraryBusinessType(
 ): { businessType: string; businessSubType: string } {
   const bt = (businessType || "").trim();
   const lower = bt.toLowerCase();
-  if (bt === "Kuliner" || bt === "Toko & UMKM" || bt === "Jasa & Booking" || bt === "Portofolio & Kreator" || bt === "Company" || bt === "Jasa") {
-    return { businessType: bt === "Jasa" ? "Jasa & Booking" : bt, businessSubType: "" };
+  if (
+    bt === "Kuliner" ||
+    bt === "Toko" ||
+    bt === "Toko & UMKM" ||
+    bt === "Layanan & Reservasi" ||
+    bt === "Jasa & Booking" ||
+    bt === "Kreatif & Profesional" ||
+    bt === "Portofolio & Kreator" ||
+    bt === "Company" ||
+    bt === "Jasa"
+  ) {
+    let canonical = bt;
+    if (bt === "Jasa" || bt === "Jasa & Booking") canonical = "Layanan & Reservasi";
+    if (bt === "Portofolio & Kreator") canonical = "Kreatif & Profesional";
+    if (bt === "Toko & UMKM") canonical = "Toko";
+    return { businessType: canonical, businessSubType: "" };
   }
   if (
     /kafe|kopi|coffee|cafe|kuliner|restoran|makanan|minuman|boba|bubble|bakery|kue|pastry|warung|snack|roti|teh|jus/.test(
@@ -75,14 +89,14 @@ export function prefillForLibraryBusinessType(
       lower
     )
   ) {
-    return { businessType: "Toko & UMKM", businessSubType: bt };
+    return { businessType: "Toko", businessSubType: bt };
   }
   if (
-    /portofolio|kreator|portfolio|fotografer|videografer|desainer|designer|agency|agensi|konsultan/.test(
+    /kreatif|profesional|developer|software|coding|portofolio|kreator|portfolio|fotografer|videografer|desainer|designer|agency|agensi|konsultan/.test(
       lower
     )
   ) {
-    return { businessType: "Portofolio & Kreator", businessSubType: bt };
+    return { businessType: "Kreatif & Profesional", businessSubType: bt };
   }
-  return { businessType: "Jasa & Booking", businessSubType: bt };
+  return { businessType: "Layanan & Reservasi", businessSubType: bt };
 }
