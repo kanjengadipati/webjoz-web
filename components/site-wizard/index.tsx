@@ -652,6 +652,28 @@ export function SiteWizard({
               </div>
             </div>
           </div>
+
+          {/* Step Progress Bar */}
+          {chat.chatStage !== "done" && (() => {
+            const stageOrder = ["name", "description", "type", "language", "mood"] as const;
+            const currentIdx = stageOrder.indexOf(chat.chatStage as typeof stageOrder[number]);
+            const stepNum = currentIdx < 0 ? 1 : currentIdx + 1;
+            const totalSteps = stageOrder.length;
+            const progressPct = Math.round((stepNum / totalSteps) * 100);
+            return (
+              <div className="flex items-center gap-3 pb-3">
+                <div className="flex-1 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+                    style={{ width: `${progressPct}%` }}
+                  />
+                </div>
+                <span className="text-[10px] font-semibold text-slate-400 tabular-nums shrink-0">
+                  {String(stepNum).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
+                </span>
+              </div>
+            );
+          })()}
         </div>
 
         {resumeDraft && (
