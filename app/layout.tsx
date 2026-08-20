@@ -66,9 +66,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  // This makes the viewport shrink when the virtual keyboard opens on mobile,
-  // so layout content is pushed up rather than sitting behind the keyboard.
-  interactiveWidget: "resizes-content",
   viewportFit: "cover",
 };
 
