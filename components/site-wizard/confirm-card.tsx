@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Wand2, Loader2 } from "lucide-react";
+import { Wand2, Loader2, Building2, Calendar, Palette, ShoppingBag, UtensilsCrossed, Tag, Sparkles } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import { BUSINESS_TYPES, SUB_TYPES } from "./constants";
 import type { ChatStage, PreviewState } from "./types";
@@ -128,13 +128,22 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                     "Company": { label: "company", desc: "companyDesc" },
                   };
+                  const categoryIconMap: Record<string, React.ReactNode> = {
+                    "Kuliner": <UtensilsCrossed className="w-3 h-3" />,
+                    "Toko & UMKM": <ShoppingBag className="w-3 h-3" />,
+                    "Toko": <ShoppingBag className="w-3 h-3" />,
+                    "Jasa & Booking": <Calendar className="w-3 h-3" />,
+                    "Portofolio & Kreator": <Palette className="w-3 h-3" />,
+                    "Company": <Building2 className="w-3 h-3" />,
+                  };
                   const keys = categoryKeyMap[bt.value];
                   const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
                   return (
                     <button key={bt.value} type="button" onClick={() => { props.onSetBusinessType(bt.value); props.onSetBusinessSubType(""); props.onSetDescription(""); props.onSetHasUnsavedEdits(true); }}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all"
                       style={businessType === bt.value ? chipActive : chipDefault}>
-                      {bt.emoji} {translatedLabel}
+                      {categoryIconMap[bt.value] || <Sparkles className="w-3 h-3" />}
+                      <span>{translatedLabel}</span>
                     </button>
                   );
                 })}
@@ -148,9 +157,10 @@ export function ConfirmCard(props: ConfirmCardProps) {
                       props.onSetDescription("");
                       props.onSetHasUnsavedEdits(true);
                     }}
-                      className="text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
+                      className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
                       style={businessSubType === st.value ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
-                      {st.emoji} {t(`dashboard.wizard.subtypes.${st.value}`, st.label)}
+                      <Tag className="w-2.5 h-2.5" />
+                      <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                     </button>
                   ))}
                 </div>
@@ -161,8 +171,6 @@ export function ConfirmCard(props: ConfirmCardProps) {
               <span className="text-[10px] font-semibold text-slate-500 shrink-0 w-14">{t("dashboard.wizard.confirmCardLabelType", "Jenis")}</span>
               <span className="text-[12px] text-white flex-1 truncate">
                 {(() => {
-                  const typeEmoji = BUSINESS_TYPES.find(bt => bt.value === businessType)?.emoji ?? "";
-                  const subEmoji = businessSubType ? (SUB_TYPES[businessType]?.find(s => s.value === businessSubType)?.emoji ?? "") : "";
                   const categoryKeyMap: Record<string, string> = {
                     "Kuliner": "kuliner",
                     "Toko & UMKM": "tokoUmkm",
@@ -174,7 +182,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                   const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;
                   const translatedSubType = businessSubType ? t(`dashboard.wizard.subtypes.${businessSubType}`, businessSubType) : "";
                   const label = [translatedType, translatedSubType].filter(Boolean).join(" › ");
-                  return <>{typeEmoji && <span className="mr-1">{subEmoji || typeEmoji}</span>}{label}</>;
+                  return <span>{label}</span>;
                 })()}
               </span>
               <button type="button" onClick={() => props.onSetEditingField("type")} className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={editBtn}>{t("dashboard.wizard.confirmCardBtnChange", "Ubah")}</button>

@@ -1056,46 +1056,6 @@ export function SiteWizard({
             );
           })}
 
-          {chat.chatStage === "name" && !chat.isInitialTyping && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-2 mt-2 max-w-[95%]">
-              <p className="text-[11px] font-semibold text-slate-400 px-0.5">
-                {t("dashboard.wizard.starterTitle", "Coba salah satu")}
-              </p>
-              <div className="flex flex-col gap-2">
-                {[
-                  { name: "Mamabo Coffee", icon: <Coffee className="w-4 h-4" />, desc: isIndonesian ? "Kafe & Kedai Kopi" : "Cafe & Coffee Shop" },
-                  { name: isIndonesian ? "Toko Fashion" : "Fashion Store", icon: <ShoppingBag className="w-4 h-4" />, desc: isIndonesian ? "Pakaian & Aksesoris" : "Apparel & Boutique" },
-                  { name: isIndonesian ? "Jasa Fotografi" : "Photography Studio", icon: <Camera className="w-4 h-4" />, desc: isIndonesian ? "Foto Studio & Wisuda" : "Photo & Creative Studio" },
-                ].map((starter) => (
-                  <button
-                    key={starter.name}
-                    type="button"
-                    onClick={() => chat.handleSelectStarter(starter.name)}
-                    className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/[0.08] bg-[#16191E]/80 hover:bg-white/[0.07] hover:border-white/20 text-left transition-all active:scale-[0.98] cursor-pointer group shadow-sm"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0 text-slate-300 group-hover:scale-105 group-hover:border-white/20 transition-all">
-                        {starter.icon}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-white group-hover:text-white transition-colors truncate">
-                          {starter.name}
-                        </p>
-                        <p className="text-[10px] text-slate-400 truncate">{starter.desc}</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors shrink-0" />
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-3 pt-2 text-[11px] text-slate-500 font-medium">
-                <div className="h-px flex-1 bg-white/[0.08]" />
-                <span>{t("dashboard.wizard.starterOrType", "atau ketik sendiri")}</span>
-                <div className="h-px flex-1 bg-white/[0.08]" />
-              </div>
-            </div>
-          )}
-
           {chat.isProcessingAudio && (
             <AudioProcessingCard businessName={chat.businessName} />
           )}
