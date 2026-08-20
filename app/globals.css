@@ -219,9 +219,13 @@ html.webjoz-wizard-active,
 body.webjoz-wizard-active {
   height: var(--webjoz-app-height, 100dvh);
   min-height: var(--webjoz-app-height, 100dvh);
+  max-height: var(--webjoz-app-height, 100dvh);
   overflow: hidden;
   overscroll-behavior: none;
   background: #0d0f14;
+  /* Prevent iOS rubber-band bounce from causing layout jumps */
+  position: fixed;
+  width: 100%;
 }
 
 /* Hide scrollbar on mobile */

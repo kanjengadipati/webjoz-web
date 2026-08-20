@@ -13,6 +13,9 @@ import {
   ChevronRight,
   Clock,
   Coffee,
+  Cpu,
+  Crown,
+  Leaf,
   Loader2,
   Mic,
   MessageCircle,
@@ -28,6 +31,7 @@ import {
   Tablet,
   Tag,
   UtensilsCrossed,
+  Zap,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
@@ -383,6 +387,10 @@ export function SiteWizard({
       preview.setRegenCount(0);
       preview.setHasUnsavedEdits(false);
       generate.didGenerateRef.current = true;
+      // Clear any preset design token from the gallery — the user explicitly
+      // chose a mood in the wizard, so the AI should generate a fresh token
+      // based on the selected mood without being constrained by a gallery preset.
+      initialDesignTokenRef.current = null;
       void handleGenerate(name, type, overrides);
     });
   };
@@ -717,7 +725,7 @@ export function SiteWizard({
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-4 py-5 pb-28 md:pb-8 space-y-4">
+        <div className={`flex-1 overflow-y-auto px-4 py-5 space-y-4 ${device.isMobile ? (device.mobileScreen === "preview" ? "pb-28" : "pb-6") : "md:pb-8"}`}>
           {chat.messages.map((m) => {
             if (m.widget === "inference-confirm") {
               const isLocked = !chat.awaitingInferenceConfirm;
@@ -828,7 +836,7 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
@@ -842,6 +850,8 @@ export function SiteWizard({
                       };
                       const moodKey = moodKeyMap[mo.value];
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
+                      // Split suitableFor into individual tags
+                      const tags = mo.suitableFor ? mo.suitableFor.split(",").map((s) => s.trim()) : [];
 
                       return (
                         <button
@@ -849,68 +859,53 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative overflow-hidden rounded-xl border p-2 sm:p-2.5 text-left transition-all duration-200 ${
+                          className={`group relative flex flex-col items-center rounded-2xl border p-3 sm:p-4 text-center transition-all duration-200 focus:outline-none ${
                             isSelected
-                              ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-lg shadow-primary/20"
+                              ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg shadow-primary/15"
                               : isLocked
                               ? "border-border/50 bg-muted/30 opacity-45 cursor-not-allowed"
-                              : "border-border bg-muted/40 hover:bg-muted/70 hover:border-border hover:scale-[1.01] cursor-pointer active:scale-95"
+                              : "border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 hover:scale-[1.02] cursor-pointer active:scale-[0.97]"
                           }`}
+                          style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
                         >
-                          {/* Header: Emoji, Label & Selected checkmark / theme tag */}
-                          <div className="flex items-start justify-between gap-1.5 min-h-[22px]">
-                            <div className="flex items-start gap-1.5 min-w-0 flex-1">
-                              <span className="text-xs sm:text-sm shrink-0 mt-0.5">{mo.emoji}</span>
-                              <span className="text-[11px] sm:text-xs font-bold text-white leading-snug break-words">
-                                {translatedMoodLabel}
-                              </span>
-                            </div>
-                            {isSelected ? (
-                              <div className="size-4 sm:size-4.5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                                <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              </div>
-                            ) : (
-                              <span className="text-[8px] sm:text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/[0.06] border border-border shrink-0 mt-0.5">
-                                {mo.dark ? "Dark" : "Light"}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Color Palette Swatches & Font Preview */}
-                          <div className="mt-1.5 sm:mt-2 flex items-center justify-between gap-1 pt-1.5 border-t border-border/50">
-                            {/* 3 Color Swatch Circles */}
-                            <div className="flex items-center gap-1 shrink-0">
-                              {mo.palette.map((color, cIdx) => (
-                                <div
-                                  key={cIdx}
-                                  className="size-3 sm:size-3.5 rounded-full border border-border shadow-xs ring-1 ring-black/40"
-                                  style={{ backgroundColor: color }}
-                                  title={color}
-                                />
-                              ))}
-                            </div>
-
-                            {/* Font Pill */}
-                            <div className="flex items-center gap-1 rounded bg-white/[0.05] border border-border px-1 sm:px-1.5 py-0.5 text-[8.5px] sm:text-[9.5px] text-slate-300 min-w-0">
-                              <span className="font-semibold text-white/90">Aa</span>
-                              <span className="text-slate-400 truncate max-w-[65px] sm:max-w-[85px]">{mo.font}</span>
-                            </div>
-                          </div>
-
-                          {/* Business Relevance / Suitable For */}
-                          {mo.suitableFor && (
-                            <div className="mt-1 sm:mt-1.5 text-[8.5px] sm:text-[9.5px] text-slate-400 leading-tight truncate">
-                              <span className="text-slate-500 font-medium">Cocok: </span>
-                              {mo.suitableFor}
+                          {/* Selected checkmark badge — top right */}
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
                             </div>
                           )}
+
+                          {/* Premium Icon Container */}
+                          {(() => {
+                            const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
+                              "clean-modern":  { icon: <Monitor className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
+                              "warm-earthy":   { icon: <Leaf    className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
+                              "bold-vibrant":  { icon: <Palette className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
+                              "dark-premium":  { icon: <Crown   className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
+                              "bold-dark":     { icon: <Zap     className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
+                              "retro":         { icon: <Clock   className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
+                              "futuristic":    { icon: <Cpu     className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
+                            };
+                            const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
+                            return (
+                              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2.5 sm:mb-3 shadow-lg ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
+                                {cfg.icon}
+                              </div>
+                            );
+                          })()}
+
+                          {/* Title */}
+                          <span className="text-[12px] sm:text-[13px] font-bold text-white leading-snug mb-1">
+                            {translatedMoodLabel}
+                          </span>
+
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual (palet warna & font) yang cocok untuk website Anda")}</p>
+                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual yang cocok untuk brand Anda")}</p>
                 </div>
               );
             }
@@ -1095,7 +1090,10 @@ export function SiteWizard({
 
         {/* Chat Input */}
         {chat.chatStage !== "type" && chat.chatStage !== "language" && chat.chatStage !== "mood" && chat.chatStage !== "done" && (
-          <div className="shrink-0 px-4 pb-12 pt-2 md:py-3 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <div
+            className={`shrink-0 px-4 pt-2 md:py-3 relative transition-all duration-150 ${device.isKeyboardOpen ? "pb-2" : "pb-6"}`}
+            style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+          >
             {chat.isRecording ? (
               <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-[#141e19] border border-emerald-500/30 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between gap-3">

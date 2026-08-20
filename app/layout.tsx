@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -59,6 +59,17 @@ export const metadata: Metadata = {
       en: siteUrl("/en"),
     },
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // This makes the viewport shrink when the virtual keyboard opens on mobile,
+  // so layout content is pushed up rather than sitting behind the keyboard.
+  interactiveWidget: "resizes-content",
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
