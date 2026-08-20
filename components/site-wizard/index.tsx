@@ -677,34 +677,36 @@ export function SiteWizard({
         </div>
 
         {resumeDraft && (
-          <div className="mx-4 mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-3.5 shadow-xl backdrop-blur-md animate-in fade-in flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="mx-3 sm:mx-4 mt-2.5 sm:mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-2.5 sm:p-3.5 shadow-xl backdrop-blur-md animate-in fade-in flex items-center justify-between gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-slate-300">
                 <Clock className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-medium text-slate-400">
-                  {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")}
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] sm:text-[11px] font-medium text-slate-400 leading-tight">
+                  {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")} · <span className="text-slate-500">{resumeSavedText}</span>
                 </p>
-                <p className="text-xs font-bold text-white truncate">
-                  {resumeDraft.businessName ? `${resumeDraft.businessName} · ` : ""}{resumeSavedText}
+                <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-tight mt-0.5">
+                  {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <button
                 type="button"
                 onClick={handleResume}
-                className="cursor-pointer rounded-xl bg-white px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-sm transition-all hover:bg-slate-100 active:scale-95"
+                className="cursor-pointer rounded-xl bg-white px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-sm transition-all hover:bg-slate-100 active:scale-95 whitespace-nowrap"
               >
                 {t("dashboard.wizard.resumeContinue", "Lanjutkan")}
               </button>
               <button
                 type="button"
                 onClick={handleStartFresh}
-                className="cursor-pointer rounded-lg px-2 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
+                title={t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
+                className="cursor-pointer rounded-lg p-1.5 sm:px-2 sm:py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200 hover:bg-white/5 active:scale-95"
               >
-                {t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
+                <span className="hidden sm:inline">{t("dashboard.wizard.resumeStartFresh", "Mulai baru")}</span>
+                <span className="sm:hidden text-slate-400 font-bold text-sm leading-none px-1">✕</span>
               </button>
             </div>
           </div>
