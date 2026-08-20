@@ -7,25 +7,30 @@ export async function suggestSubdomains(businessName: string) {
   });
 }
 
-export async function refineTranscript(transcript: string, businessName?: string, language?: string) {
-  return request<{ refined_text: string }>("/ai/public/refine-transcript", {
+export type ProcessBusinessDescriptionResult = {
+  refined_text: string;
+  type?: string;
+  sub_type?: string;
+  confidence?: string;
+};
+
+export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
+  return request<ProcessBusinessDescriptionResult>("/ai/public/process-business-description", {
     method: "POST",
     body: JSON.stringify({
-      transcript,
+      raw_text: rawText,
       business_name: businessName || "",
       language: language || "id",
     }),
   });
 }
 
-export async function classifyBusiness(businessName: string, description: string) {
-  return request<{ type: string; sub_type: string; confidence: string }>("/ai/public/classify-business", {
-    method: "POST",
-    body: JSON.stringify({
-      business_name: businessName || "",
-      description: description || "",
-    }),
-  });
-}
+// Backwards compatibility alias
+export const refineTranscript = (transcript: string, businessName?: string, language?: string) =>
+  processBusinessDescription(transcript, businessName, language);
+
+export const classifyBusiness = (businessName: string, description: string) =>
+  processBusinessDescription(description, businessName);
+
 
 
