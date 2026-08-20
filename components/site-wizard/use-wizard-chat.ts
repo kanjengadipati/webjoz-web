@@ -551,6 +551,22 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
   };
 
+  const handleSelectStarter = (sampleName: string) => {
+    if (isInitialTyping) return;
+    const capitalized = capitalizeWords(sampleName.trim());
+    setInputValue("");
+    setBusinessName(capitalized);
+    setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: sampleName }]);
+    const hint = suggestTypeFromName(capitalized);
+    setSuggestedHint(hint);
+
+    setTimeout(() => {
+      typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
+        setChatStage("description");
+      });
+    }, 400);
+  };
+
   const processDescriptionSubmission = async (
     rawVal: string,
     preInferred?: { type?: string; subType?: string } | null
@@ -785,6 +801,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     siteLanguageRef,
     // Handlers
     handleSendText,
+    handleSelectStarter,
     handleSelectType,
     handleSelectSubType,
     handleSelectLanguage,
