@@ -155,7 +155,11 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               >
                 {(() => {
                   const categoryKeyMap: Record<string, string> = {
-                    "Kuliner": "kuliner", "Toko & UMKM": "tokoUmkm", "Jasa": "jasa", "Company": "company",
+                    "Kuliner": "kuliner",
+                    "Toko & UMKM": "tokoUmkm",
+                    "Jasa & Booking": "jasaBooking",
+                    "Portofolio & Kreator": "portofolioKreator",
+                    "Company": "company",
                   };
                   const typeKey = categoryKeyMap[businessType];
                   const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;

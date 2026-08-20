@@ -89,19 +89,19 @@ export const AI_LOADING_STEPS = [
 ];
 
 export const BUSINESS_TYPES: BusinessTypeItem[] = [
-  { value: "Kuliner", emoji: "🍜", label: "Kuliner", desc: "Restoran & Cafe" },
-  { value: "Toko & UMKM", emoji: "🛍️", label: "Toko & UMKM", desc: "Toko & UMKM" },
-  { value: "Jasa", emoji: "💼", label: "Jasa", desc: "Agency" },
-  { value: "Company", emoji: "🏢", label: "Company", desc: "Corporate" },
+  { value: "Kuliner", emoji: "🍽️", label: "Kuliner", desc: "Restoran, Warung, Cafe & Catering" },
+  { value: "Toko & UMKM", emoji: "🛒", label: "Toko", desc: "Retail & Produk Fisik" },
+  { value: "Jasa & Booking", emoji: "📅", label: "Jasa & Booking", desc: "Salon, Bengkel, Klinik, dll" },
+  { value: "Portofolio & Kreator", emoji: "🎨", label: "Portofolio & Kreator", desc: "Fotografer, Desainer, Agency, dll" },
+  { value: "Company", emoji: "🏢", label: "Company Profile", desc: "Properti, Hotel, Pendidikan, Travel" },
 ];
 
 export const SUB_TYPES: Record<string, SubTypeItem[]> = {
   "Kuliner": [
-    { value: "Restoran", emoji: "🍛", label: "Restoran" },
+    { value: "Restoran & Warung Makan", emoji: "🍛", label: "Restoran & Warung Makan" },
     { value: "Kafe", emoji: "☕", label: "Kafe" },
     { value: "Bakery & Pastry", emoji: "🥐", label: "Bakery" },
     { value: "Catering", emoji: "🍱", label: "Catering" },
-    { value: "Warung Makan", emoji: "🥘", label: "Warung Makan" },
     { value: "Minuman & Bubble Tea", emoji: "🧋", label: "Minuman" },
   ],
   "Toko & UMKM": [
@@ -112,14 +112,20 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Minimarket", emoji: "🏪", label: "Minimarket" },
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
   ],
-  "Jasa": [
+  "Jasa & Booking": [
     { value: "Salon & Kecantikan", emoji: "💄", label: "Salon" },
     { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
     { value: "Laundry", emoji: "🧺", label: "Laundry" },
     { value: "Otomotif & Bengkel", emoji: "🔧", label: "Bengkel" },
     { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik" },
-    { value: "Konsultan", emoji: "📊", label: "Konsultan" },
+    { value: "Event & Wedding Organizer", emoji: "🎉", label: "Event Organizer" },
+  ],
+  "Portofolio & Kreator": [
     { value: "Fotografer", emoji: "📷", label: "Fotografer" },
+    { value: "Videografer", emoji: "🎥", label: "Videografer" },
+    { value: "Desainer", emoji: "🎨", label: "Desainer" },
+    { value: "Digital & Marketing Agency", emoji: "📈", label: "Digital Agency" },
+    { value: "Konsultan", emoji: "📊", label: "Konsultan" },
   ],
   "Company": [
     { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
@@ -128,6 +134,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Travel & Wisata", emoji: "✈️", label: "Travel" },
     { value: "Hotel & Penginapan", emoji: "🏨", label: "Hotel" },
     { value: "Manufaktur", emoji: "🏭", label: "Manufaktur" },
+    { value: "Yayasan & Organisasi Nonprofit", emoji: "🤝", label: "Yayasan" },
   ],
 };
 
@@ -193,23 +200,32 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "kopi": { type: "Kuliner", subType: "Kafe" },
   "kafe": { type: "Kuliner", subType: "Kafe" },
   "cafe": { type: "Kuliner", subType: "Kafe" },
-  "restoran": { type: "Kuliner", subType: "Restoran" },
-  "warung": { type: "Kuliner", subType: "Warung Makan" },
+  "restoran": { type: "Kuliner", subType: "Restoran & Warung Makan" },
+  "warung": { type: "Kuliner", subType: "Restoran & Warung Makan" },
   "bakery": { type: "Kuliner", subType: "Bakery & Pastry" },
   "roti": { type: "Kuliner", subType: "Bakery & Pastry" },
-  "klinik": { type: "Jasa", subType: "Klinik & Kesehatan" },
-  "dokter": { type: "Jasa", subType: "Klinik & Kesehatan" },
-  "salon": { type: "Jasa", subType: "Salon & Kecantikan" },
-  "barbershop": { type: "Jasa", subType: "Barbershop" },
+  "klinik": { type: "Jasa & Booking", subType: "Klinik & Kesehatan" },
+  "dokter": { type: "Jasa & Booking", subType: "Klinik & Kesehatan" },
+  "salon": { type: "Jasa & Booking", subType: "Salon & Kecantikan" },
+  "barbershop": { type: "Jasa & Booking", subType: "Barbershop" },
   "travel": { type: "Company", subType: "Travel & Wisata" },
   "hotel": { type: "Company", subType: "Hotel & Penginapan" },
   "toko": { type: "Toko & UMKM", subType: "Toko Online" },
   "toko online": { type: "Toko & UMKM", subType: "Toko Online" },
   "fashion": { type: "Toko & UMKM", subType: "Fashion & Pakaian" },
-  "bengkel": { type: "Jasa", subType: "Otomotif & Bengkel" },
-  "laundry": { type: "Jasa", subType: "Laundry" },
-  "konsultan": { type: "Jasa", subType: "Konsultan" },
-  "fotogra": { type: "Jasa", subType: "Fotografer" }, // partial to catch fotografer/photographer
+  "bengkel": { type: "Jasa & Booking", subType: "Otomotif & Bengkel" },
+  "laundry": { type: "Jasa & Booking", subType: "Laundry" },
+  "konsultan": { type: "Portofolio & Kreator", subType: "Konsultan" },
+  "fotogra": { type: "Portofolio & Kreator", subType: "Fotografer" }, // partial to catch fotografer/photographer
   "minuman": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
   "bubble": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
+  "video": { type: "Portofolio & Kreator", subType: "Videografer" },
+  "desain": { type: "Portofolio & Kreator", subType: "Desainer" },
+  "design": { type: "Portofolio & Kreator", subType: "Desainer" },
+  "agency": { type: "Portofolio & Kreator", subType: "Digital & Marketing Agency" },
+  "digital marketing": { type: "Portofolio & Kreator", subType: "Digital & Marketing Agency" },
+  "wedding organizer": { type: "Jasa & Booking", subType: "Event & Wedding Organizer" },
+  "wo ": { type: "Jasa & Booking", subType: "Event & Wedding Organizer" },
+  "event organizer": { type: "Jasa & Booking", subType: "Event & Wedding Organizer" },
+  "yayasan": { type: "Company", subType: "Yayasan & Organisasi Nonprofit" },
 };

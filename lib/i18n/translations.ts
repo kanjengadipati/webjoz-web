@@ -2094,13 +2094,16 @@ export interface Translations {
       labelWhatsapp: string;
       labelServiceArea: string;
       labelMood: string;
+      disambiguateJasaPortofolio: string;
       categories: {
         kuliner: string;
         kulinerDesc: string;
         tokoUmkm: string;
         tokoUmkmDesc: string;
-        jasa: string;
-        jasaDesc: string;
+        jasaBooking: string;
+        jasaBookingDesc: string;
+        portofolioKreator: string;
+        portofolioKreatorDesc: string;
         company: string;
         companyDesc: string;
       };
@@ -4245,15 +4248,18 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "Nomor WhatsApp",
         labelServiceArea: "Wilayah Layanan",
         labelMood: "Gaya & Suasana Website (Mood)",
+        disambiguateJasaPortofolio: "Bingung Jasa & Booking vs Portofolio & Kreator? Kalau pelanggan Anda perlu booking jadwal/reservasi → pilih Jasa & Booking. Kalau mereka perlu lihat contoh hasil kerja dulu sebelum order → pilih Portofolio & Kreator.",
         categories: {
           kuliner: "Kuliner",
-          kulinerDesc: "Restoran & Cafe",
-          tokoUmkm: "Toko & UMKM",
-          tokoUmkmDesc: "Toko & UMKM",
-          jasa: "Jasa",
-          jasaDesc: "Agency",
-          company: "Company",
-          companyDesc: "Corporate",
+          kulinerDesc: "Restoran, Warung, Cafe & Catering",
+          tokoUmkm: "Toko",
+          tokoUmkmDesc: "Retail & Produk Fisik",
+          jasaBooking: "Jasa & Booking",
+          jasaBookingDesc: "Salon, Bengkel, Klinik, dll",
+          portofolioKreator: "Portofolio & Kreator",
+          portofolioKreatorDesc: "Fotografer, Desainer, Agency, dll",
+          company: "Company Profile",
+          companyDesc: "Properti, Hotel, Pendidikan, Travel",
         },
         moods: {
           modernClean: "Modern & Bersih",
@@ -6426,15 +6432,18 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "WhatsApp Number",
         labelServiceArea: "Service Area",
         labelMood: "Website Style & Vibe (Mood)",
+        disambiguateJasaPortofolio: "Not sure whether to pick Services & Booking or Portfolio & Creator? If your customers need to book a schedule/reservation → choose Services & Booking. If they need to see your work first before ordering → choose Portfolio & Creator.",
         categories: {
           kuliner: "Culinary",
-          kulinerDesc: "Restaurant & Cafe",
-          tokoUmkm: "Store & MSME",
-          tokoUmkmDesc: "Store & MSME",
-          jasa: "Services",
-          jasaDesc: "Agency",
-          company: "Company",
-          companyDesc: "Corporate",
+          kulinerDesc: "Restaurant, Warung, Cafe & Catering",
+          tokoUmkm: "Store",
+          tokoUmkmDesc: "Retail & Physical Products",
+          jasaBooking: "Services & Booking",
+          jasaBookingDesc: "Salon, Auto Shop, Clinic, etc.",
+          portofolioKreator: "Portfolio & Creator",
+          portofolioKreatorDesc: "Photographer, Designer, Agency, etc.",
+          company: "Company Profile",
+          companyDesc: "Property, Hotel, Education, Travel",
         },
         moods: {
           modernClean: "Modern & Clean",
