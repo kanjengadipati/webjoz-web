@@ -18,3 +18,14 @@ export async function refineTranscript(transcript: string, businessName?: string
   });
 }
 
+export async function classifyBusiness(businessName: string, description: string) {
+  return request<{ type: string; sub_type: string; confidence: string }>("/ai/public/classify-business", {
+    method: "POST",
+    body: JSON.stringify({
+      business_name: businessName || "",
+      description: description || "",
+    }),
+  });
+}
+
+
