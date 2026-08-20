@@ -653,12 +653,17 @@ export function SiteWizard({
             </div>
           </div>
 
-          {/* Step Progress Bar */}
+          {/* Step Progress Bar — 4 Unified Logical Steps */}
           {chat.chatStage !== "done" && (() => {
-            const stageOrder = ["name", "description", "type", "language", "mood"] as const;
-            const currentIdx = stageOrder.indexOf(chat.chatStage as typeof stageOrder[number]);
-            const stepNum = currentIdx < 0 ? 1 : currentIdx + 1;
-            const totalSteps = stageOrder.length;
+            const stepMap: Record<string, number> = {
+              name: 1,
+              description: 2,
+              type: 2,
+              language: 3,
+              mood: 4,
+            };
+            const totalSteps = 4;
+            const stepNum = stepMap[chat.chatStage] || 1;
             const progressPct = Math.round((stepNum / totalSteps) * 100);
             return (
               <div className="flex items-center gap-3 pb-3">
@@ -677,38 +682,38 @@ export function SiteWizard({
         </div>
 
         {resumeDraft && (
-          <div className="mx-3 sm:mx-4 mt-2.5 sm:mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-2.5 sm:p-3.5 shadow-xl backdrop-blur-md animate-in fade-in flex items-center justify-between gap-2.5 sm:gap-3">
-            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-              <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-slate-300">
-                <Clock className="w-4 h-4" />
+          <div className="relative mx-3 sm:mx-4 mt-2.5 sm:mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-3 sm:p-3.5 shadow-xl backdrop-blur-md animate-in fade-in group">
+            <button
+              type="button"
+              onClick={handleResume}
+              className="w-full flex items-center justify-between gap-3 text-left cursor-pointer pr-6"
+            >
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0 text-primary transition-transform group-hover:scale-105">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] sm:text-[11px] font-medium text-slate-400 leading-tight">
+                    {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")} · <span className="text-slate-500">{resumeSavedText}</span>
+                  </p>
+                  <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-tight mt-0.5">
+                    {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] sm:text-[11px] font-medium text-slate-400 leading-tight">
-                  {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")} · <span className="text-slate-500">{resumeSavedText}</span>
-                </p>
-                <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-tight mt-0.5">
-                  {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
-                </p>
+              <div className="flex items-center gap-1 shrink-0 text-xs font-semibold text-primary group-hover:translate-x-0.5 transition-transform">
+                <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </div>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={handleResume}
-                className="cursor-pointer rounded-xl bg-white px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-sm transition-all hover:bg-slate-100 active:scale-95 whitespace-nowrap"
-              >
-                {t("dashboard.wizard.resumeContinue", "Lanjutkan")}
-              </button>
-              <button
-                type="button"
-                onClick={handleStartFresh}
-                title={t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
-                className="cursor-pointer rounded-lg p-1.5 sm:px-2 sm:py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200 hover:bg-white/5 active:scale-95"
-              >
-                <span className="hidden sm:inline">{t("dashboard.wizard.resumeStartFresh", "Mulai baru")}</span>
-                <span className="sm:hidden text-slate-400 font-bold text-sm leading-none px-1">✕</span>
-              </button>
-            </div>
+            </button>
+            <button
+              type="button"
+              onClick={handleStartFresh}
+              title={t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
+              className="absolute top-2.5 right-2.5 p-1 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-colors cursor-pointer"
+            >
+              <span className="text-xs font-bold leading-none">✕</span>
+            </button>
           </div>
         )}
 
