@@ -480,32 +480,36 @@ const DESC_HINTS: DescHintEntry[] = [
   {
     type: "Portofolio & Kreator",
     subType: "Konsultan",
-    keywords: ["konsultan", "konsultasi", "advisor", "pembinaan", "pelatihan", "training", "coaching", "mentor", "legal", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit"],
-    weight: 3,
+    keywords: ["konsultan", "konsultasi", "advisor", "pembinaan", "pelatihan", "training", "coaching", "mentor", "legal", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit", "konsultan it"],
+    weight: 4,
   },
   {
     type: "Portofolio & Kreator",
     subType: "Fotografer",
     keywords: ["fotografer", "photography", "photo", "foto", "studio foto", "photo studio", "prewedding", "wedding photography", "shoot", "foto produk", "foto wisuda", "foto maternity"],
-    weight: 3,
+    weight: 4,
   },
   {
     type: "Portofolio & Kreator",
     subType: "Videografer",
     keywords: ["videografer", "videografi", "video", "sinematik", "cinematic", "shooting", "video shooting", "drone", "video klip", "dokumentasi video", "company video"],
-    weight: 3,
+    weight: 4,
   },
   {
     type: "Portofolio & Kreator",
     subType: "Desainer",
-    keywords: ["desainer", "designer", "desain grafis", "ui/ux", "illustrator", "ilustrasi", "logo maker", "desain logo", "graphic design", "3d artist", "animator", "freelance desainer"],
-    weight: 3,
+    keywords: [
+      "website", "web", "pembuatan website", "jasa pembuatan website", "web developer", "web development", "bikin website", "buat website", "jasa web",
+      "desainer", "designer", "desain grafis", "ui/ux", "ui ux", "desain web", "landing page", "illustrator", "ilustrasi", "logo maker", "desain logo",
+      "graphic design", "3d artist", "animator", "freelance desainer", "software", "aplikasi", "software house", "programmer", "coding", "it", "jasa it", "developer"
+    ],
+    weight: 4,
   },
   {
     type: "Portofolio & Kreator",
     subType: "Digital & Marketing Agency",
-    keywords: ["agensi", "agency", "iklan", "marketing", "branding", "digital", "media sosial", "content writer", "kreatif", "social media agency", "seo", "ads", "digital marketing", "content creator", "influencer management"],
-    weight: 3,
+    keywords: ["agensi", "agency", "iklan", "marketing", "branding", "digital", "media sosial", "sosmed", "content writer", "kreatif", "social media agency", "seo", "ads", "digital marketing", "content creator", "influencer management", "jasa digital"],
+    weight: 4,
   },
 
   // ── COMPANY PROFILE ──
@@ -556,10 +560,10 @@ const DESC_HINTS: DescHintEntry[] = [
 // Broader type-only keywords (weight 2 for general category signals)
 const DESC_TYPE_HINTS: { type: string; keywords: string[]; weight: number }[] = [
   { type: "Kuliner", keywords: ["kuliner", "makanan", "minuman", "makan", "minum", "jual makanan", "bisnis kuliner", "usaha makanan", "makanan ringan", "kulineran", "f&b", "food", "resto", "kafe", "warung"], weight: 2 },
-  { type: "Jasa & Booking", keywords: ["jasa", "layanan", "service", "bantuan", "profesional", "bidang jasa", "penyedia jasa", "booking", "reservasi", "tukang", "bengkel", "salon", "laundry"], weight: 2 },
-  { type: "Portofolio & Kreator", keywords: ["portofolio", "kreator", "portfolio", "showcase", "karya", "desain", "freelance", "kreatif", "agency", "fotografi", "videografi", "konsultan"], weight: 2 },
+  { type: "Jasa & Booking", keywords: ["booking", "reservasi", "salon", "barber", "laundry", "bengkel", "klinik", "servis fisik", "pangkas"], weight: 2 },
+  { type: "Portofolio & Kreator", keywords: ["portofolio", "kreator", "portfolio", "showcase", "karya", "desain", "freelance", "kreatif", "agency", "fotografi", "videografi", "konsultan", "pembuatan website", "bikin website", "web", "software", "digital", "programmer", "it"], weight: 2 },
   { type: "Toko & UMKM", keywords: ["toko", "umkm", "jual", "dagang", "ritel", "eceran", "usaha kecil", "bisnis rumahan", "toko online", "olshop", "jualan", "produk", "jual beli", "barang", "perikanan", "pertanian", "peternakan"], weight: 2 },
-  { type: "Company", keywords: ["company", "korporasi", "perusahaan", "corporation", "pt", "cv", "bisnis besar", "perusahaan jasa", "perusahaan industri", "holding", "institusi"], weight: 2 },
+  { type: "Company", keywords: ["company", "korporasi", "perusahaan", "corporation", "pt", "cv", "bisnis besar", "perusahaan industri", "holding", "institusi"], weight: 2 },
 ];
 
 export function inferTypeFromDescription(desc: string): InferenceResult {
