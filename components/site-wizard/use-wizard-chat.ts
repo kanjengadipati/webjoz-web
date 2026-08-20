@@ -49,10 +49,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
   // ── Voice Input (STT) ──
   const [isRecording, setIsRecording] = useState(false);
+  const [isMicConnecting, setIsMicConnecting] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [isProcessingAudio, setIsProcessingAudio] = useState(false);
   const recognitionRef = useRef<any>(null);
   const recordingTimerRef = useRef<any>(null);
+  const fallbackTimerRef = useRef<any>(null);
   const recordedTranscriptRef = useRef<string>("");
   const isManualStopRef = useRef(false);
 
@@ -64,21 +66,46 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
+    markMicHintAsSeen();
     isManualStopRef.current = false;
     recordedTranscriptRef.current = "";
     setRecordingDuration(0);
 
-    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-    recordingTimerRef.current = setInterval(() => {
-      setRecordingDuration((prev) => prev + 1);
-    }, 1000);
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
 
     const recognition = new SpeechRecognition();
     recognition.lang = locale === "id" ? "id-ID" : "en-US";
     recognition.interimResults = true;
     recognition.continuous = true;
 
+    // Triggered when audio stream is established and server is ready to listen
+    const handleAudioReady = () => {
+      setIsMicConnecting(false);
+      if (!recordingTimerRef.current) {
+        recordingTimerRef.current = setInterval(() => {
+          setRecordingDuration((prev) => prev + 1);
+        }, 1000);
+      }
+    };
+
+    recognition.onaudiostart = handleAudioReady;
+    recognition.onsoundstart = handleAudioReady;
+    recognition.onspeechstart = handleAudioReady;
+
+    // Fallback: if browser doesn't fire onaudiostart within 1000ms, start ticking anyway
+    fallbackTimerRef.current = setTimeout(() => {
+      handleAudioReady();
+    }, 1000);
+
     recognition.onresult = (event: any) => {
+      handleAudioReady();
       let transcript = "";
       for (let i = 0; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript;
@@ -89,28 +116,51 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     };
 
     recognition.onend = () => {
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+      setIsMicConnecting(false);
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
     recognition.onerror = () => {
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+      setIsMicConnecting(false);
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
     recognitionRef.current = recognition;
     setIsRecording(true);
+    setIsMicConnecting(true);
     try {
       recognition.start();
     } catch (e) {
       console.warn("Speech recognition already active or failed to start", e);
+      setIsMicConnecting(false);
     }
   };
 
   const stopRecording = async () => {
     isManualStopRef.current = true;
+    setIsMicConnecting(false);
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
     if (recordingTimerRef.current) {
       clearInterval(recordingTimerRef.current);
       recordingTimerRef.current = null;
@@ -661,6 +711,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setTypeWasInferred,
     // Voice Input
     isRecording,
+    isMicConnecting,
     recordingDuration,
     isProcessingAudio,
     startRecording,

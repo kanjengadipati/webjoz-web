@@ -2062,6 +2062,7 @@ export interface Translations {
       placeholderArea: string;
       sttStopRecording: string;
       sttStartRecording: string;
+      sttConnecting: string;
       micHintTitle: string;
       micHintDesc: string;
       sttPromptGuide: string;
@@ -4229,6 +4230,7 @@ export const translations: Record<Locale, Translations> = {
         placeholderArea: "cth. Jogja, Jabodetabek, seluruh Indonesia",
         sttStopRecording: "Berhenti merekam",
         sttStartRecording: "Bicara dengan mic",
+        sttConnecting: "Menyiapkan mic...",
         micHintTitle: "Bicara lebih cepat dengan AI",
         micHintDesc: "Tekan tombol mic untuk menjelaskan bisnis Anda.",
         sttPromptGuide: "Ceritakan bisnis Anda...",
@@ -6426,6 +6428,7 @@ export const translations: Record<Locale, Translations> = {
         placeholderArea: "e.g. Yogyakarta, Jakarta, all of Indonesia",
         sttStopRecording: "Stop recording",
         sttStartRecording: "Speak with mic",
+        sttConnecting: "Connecting mic...",
         micHintTitle: "Speak faster with AI",
         micHintDesc: "Press the mic button to describe your business.",
         sttPromptGuide: "Tell us about your business...",

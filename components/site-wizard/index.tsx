@@ -7,6 +7,7 @@ import { request } from "@/lib/api/client";
 import {
   ArrowRight,
   ChevronLeft,
+  Loader2,
   Mic,
   MessageCircle,
   Monitor,
@@ -1047,21 +1048,32 @@ export function SiteWizard({
                 <div className="flex items-center justify-between gap-3">
                   {/* Status & Timer */}
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="flex h-2.5 w-2.5 relative">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                    </span>
-                    <span className="text-xs font-semibold text-emerald-300 hidden sm:inline">
-                      {t("dashboard.wizard.sttListening", "Mendengarkan...")}
-                    </span>
-                    <span className="text-xs font-mono font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
-                      {Math.floor(chat.recordingDuration / 60).toString().padStart(2, "0")}:{(chat.recordingDuration % 60).toString().padStart(2, "0")}
-                    </span>
+                    {chat.isMicConnecting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin shrink-0" />
+                        <span className="text-xs font-semibold text-amber-300">
+                          {t("dashboard.wizard.sttConnecting", "Menyiapkan mic...")}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="flex h-2.5 w-2.5 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                        </span>
+                        <span className="text-xs font-semibold text-emerald-300 hidden sm:inline">
+                          {t("dashboard.wizard.sttListening", "Mendengarkan...")}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
+                          {Math.floor(chat.recordingDuration / 60).toString().padStart(2, "0")}:{(chat.recordingDuration % 60).toString().padStart(2, "0")}
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   {/* Waveform Visualizer */}
                   <div className="flex-1 flex justify-center min-w-0">
-                    <AudioWaveform isRecording={chat.isRecording} />
+                    <AudioWaveform isRecording={chat.isRecording} isConnecting={chat.isMicConnecting} />
                   </div>
 
                   {/* Round Stop Button */}
