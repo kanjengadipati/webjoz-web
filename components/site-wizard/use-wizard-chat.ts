@@ -8,7 +8,7 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, i
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
-import { refineTranscript, classifyBusiness } from "@/lib/api/ai";
+import { refineTranscript, classifyBusiness, processBusinessDescription } from "@/lib/api/ai";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
@@ -56,6 +56,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const recordingTimerRef = useRef<any>(null);
   const fallbackTimerRef = useRef<any>(null);
   const recordedTranscriptRef = useRef<string>("");
+  const sttInferredResultRef = useRef<{ type?: string; subType?: string } | null>(null);
   const isManualStopRef = useRef(false);
 
   const startRecording = () => {
@@ -183,13 +184,22 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
 
     let refinedText = rawTranscript;
+    sttInferredResultRef.current = null;
     try {
       const [res] = await Promise.all([
         refineTranscript(rawTranscript, businessNameRef.current, locale),
         minDelay,
       ]);
-      if (res && res.data && res.data.refined_text) {
-        refinedText = res.data.refined_text;
+      if (res && res.data) {
+        if (res.data.refined_text) {
+          refinedText = res.data.refined_text;
+        }
+        if (res.data.type && res.data.sub_type) {
+          sttInferredResultRef.current = {
+            type: res.data.type,
+            subType: res.data.sub_type,
+          };
+        }
       }
     } catch (err) {
       console.warn("Refine transcript failed, using raw transcript", err);
@@ -437,9 +447,14 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     onGenerate: (name: string, type: string, overrides: any) => void
   ) => {
     setAwaitingInferenceConfirm(false);
-    if (confirmed && inferenceResult?.type && inferenceResult?.subType) {
-      setBusinessType(inferenceResult.type);
-      setBusinessSubType(inferenceResult.subType);
+    // Use businessType/businessSubType (already set by processDescriptionSubmission)
+    // rather than inferenceResult which may be stale due to React closure
+    const confirmedType = businessType || inferenceResult?.type || "";
+    const confirmedSubType = businessSubType || inferenceResult?.subType || "";
+
+    if (confirmed && confirmedType && confirmedSubType) {
+      setBusinessType(confirmedType);
+      setBusinessSubType(confirmedSubType);
       setMessages((prev) => [
         ...prev,
         { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
@@ -452,7 +467,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         ]);
       }, 500);
     } else {
-      const inferredType = inferenceResult?.type || "";
+      const inferredType = confirmedType;
       if (inferredType) setBusinessType(inferredType);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
@@ -535,7 +550,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
   };
 
-  const processDescriptionSubmission = async (rawVal: string) => {
+  const processDescriptionSubmission = async (
+    rawVal: string,
+    preInferred?: { type?: string; subType?: string } | null
+  ) => {
     const val = rawVal.trim();
     const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
     if (isSkip) {
@@ -563,13 +581,22 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       if (detected) setServiceArea(detected);
     }
 
-    let result = inferTypeFromDescription(val);
+    let result: InferenceResult;
+    if (preInferred?.type && preInferred?.subType) {
+      result = {
+        type: preInferred.type,
+        subType: preInferred.subType,
+        confidence: "high",
+      };
+    } else {
+      result = inferTypeFromDescription(val);
+    }
 
-    // If local keyword match didn't yield a high confidence match with both type & subType,
+    // If local keyword match didn't yield both type & subType,
     // call the fast lightweight AI classifier fallback
-    if (result.confidence !== "high" || !result.subType) {
+    if (!result.type || !result.subType) {
       try {
-        const aiRes = await classifyBusiness(businessNameRef.current, val);
+        const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data && aiRes.data.type && aiRes.data.sub_type) {
           result = {
             type: aiRes.data.type,
@@ -584,7 +611,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    if (result.confidence === "high" && result.type && result.subType) {
+    if (result.type && result.subType) {
       setBusinessType(result.type);
       setBusinessSubType(result.subType);
       setTypeWasInferred(true);
@@ -601,7 +628,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
-    if (result.confidence === "medium" && result.type) {
+    if (result.type) {
       setBusinessType(result.type);
       setTypeWasInferred(true);
       setTimeout(() => {
@@ -634,7 +661,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm"));
 
     if (confirmed) {
-      processDescriptionSubmission(transcriptText);
+      processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
     } else {
       setInputValue(transcriptText);
       setChatStage("description");
