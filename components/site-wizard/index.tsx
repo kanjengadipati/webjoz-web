@@ -1042,8 +1042,6 @@ export function SiteWizard({
         {/* Chat Input */}
         {chat.chatStage !== "type" && chat.chatStage !== "language" && chat.chatStage !== "mood" && chat.chatStage !== "done" && (
           <div className="shrink-0 px-4 pb-12 pt-2 md:py-3 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <MicOnboardingHint visible={chat.chatStage === "description" && !chat.isRecording && !chat.isProcessingAudio} />
-
             {chat.isRecording ? (
               <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-[#141e19] border border-emerald-500/30 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between gap-3">
@@ -1118,15 +1116,18 @@ export function SiteWizard({
                   className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
                 />
                 {chat.chatStage === "description" && (
-                  <button
-                    type="button"
-                    onClick={chat.startRecording}
-                    disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
-                    className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
-                    title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
-                  >
-                    <Mic className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="relative shrink-0 flex items-center">
+                    <MicOnboardingHint visible={!chat.isRecording && !chat.isProcessingAudio} />
+                    <button
+                      type="button"
+                      onClick={chat.startRecording}
+                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
+                      className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
+                      title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
+                    >
+                      <Mic className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 )}
                 <button
                   type="submit"
