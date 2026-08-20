@@ -15,12 +15,14 @@ export type ProcessBusinessDescriptionResult = {
 };
 
 export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
+  // Normalize locale to 2-char ISO code: "id-ID" → "id", "en-US" → "en"
+  const lang = (language || "id").split(/[-_]/)[0].toLowerCase();
   return request<ProcessBusinessDescriptionResult>("/ai/public/process-business-description", {
     method: "POST",
     body: JSON.stringify({
       raw_text: rawText,
       business_name: businessName || "",
-      language: language || "id",
+      language: lang,
     }),
   });
 }
