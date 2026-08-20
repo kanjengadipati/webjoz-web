@@ -165,6 +165,40 @@ nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-overlay], #__next-build-wat
   }
 }
 
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.4s ease-out;
+}
+
+@keyframes mic-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+  }
+}
+
+.animate-mic-pulse {
+  animation: mic-pulse 2s ease-in-out infinite;
+}
+
 * {
   box-sizing: border-box;
   border-color: var(--border);

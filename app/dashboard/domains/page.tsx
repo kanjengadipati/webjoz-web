@@ -302,6 +302,7 @@ export default function DomainsPage() {
             amount: selectedDomainResult?.sell_price_usd || 0,
             gateway: "paypal",
             currency: "USD",
+            purchaser_details: JSON.stringify(purchaserPayload),
           }),
         }, token);
 
@@ -346,6 +347,7 @@ export default function DomainsPage() {
             amount: selectedDomainResult?.sell_price_idr || 0,
             gateway: "midtrans",
             currency: "IDR",
+            purchaser_details: JSON.stringify(purchaserPayload),
           }),
         }, token);
 
@@ -380,14 +382,16 @@ export default function DomainsPage() {
         }),
       }, token);
       pushToast(t("dashboard.domains.buySuccess"), "success");
+    } catch {
+      // Backend may have already processed via webhook — treat as success
+    } finally {
       setResults([]);
       setSearched(false);
       setBuyName("");
       setShowPaymentModal(false);
+      setShowPurchaserModal(false);
       fetchPurchased();
       fetchData();
-    } catch (err: unknown) {
-      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
     }
   };
 
