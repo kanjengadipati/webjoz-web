@@ -964,10 +964,6 @@ export function SiteWizard({
                     })}
                   </div>
 
-                  <p className="text-[10px] text-slate-500 px-0.5 mt-1 leading-relaxed">
-                    {t("dashboard.wizard.disambiguateJasaPortofolio")}
-                  </p>
-
                   {subTypes && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>

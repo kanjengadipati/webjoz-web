@@ -91,8 +91,8 @@ export const AI_LOADING_STEPS = [
 export const BUSINESS_TYPES: BusinessTypeItem[] = [
   { value: "Kuliner", emoji: "🍽️", label: "Kuliner", desc: "Restoran, Warung, Cafe & Catering" },
   { value: "Toko & UMKM", emoji: "🛒", label: "Toko", desc: "Retail & Produk Fisik" },
-  { value: "Jasa & Booking", emoji: "📅", label: "Jasa & Booking", desc: "Salon, Bengkel, Klinik, dll" },
-  { value: "Portofolio & Kreator", emoji: "🎨", label: "Portofolio & Kreator", desc: "Fotografer, Desainer, Agency, dll" },
+  { value: "Jasa & Booking", emoji: "📅", label: "Layanan & Reservasi", desc: "Salon, Bengkel, Klinik, dll" },
+  { value: "Portofolio & Kreator", emoji: "🎨", label: "Kreatif & Profesional", desc: "Developer, Desainer, Agency, Konsultan" },
   { value: "Company", emoji: "🏢", label: "Company Profile", desc: "Properti, Hotel, Pendidikan, Travel" },
 ];
 
