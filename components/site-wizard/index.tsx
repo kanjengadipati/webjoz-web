@@ -6,17 +6,28 @@ import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
   ArrowRight,
+  Building2,
+  Calendar,
+  Camera,
   ChevronLeft,
+  ChevronRight,
+  Clock,
+  Coffee,
   Loader2,
   Mic,
   MessageCircle,
   Monitor,
+  Palette,
   Pencil,
   Plus,
   RefreshCw,
+  ShoppingBag,
   Smartphone,
+  Sparkles,
   Square,
   Tablet,
+  Tag,
+  UtensilsCrossed,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
@@ -66,7 +77,7 @@ export function SiteWizard({
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
 
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
@@ -644,29 +655,32 @@ export function SiteWizard({
         </div>
 
         {resumeDraft && (
-          <div className="mx-4 mt-3 shrink-0 space-y-2.5 rounded-xl border border-primary/30 bg-primary/10 p-3 animate-in fade-in">
-            <div className="flex items-start gap-2">
-              <SparkleGenAI className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-white">{t("dashboard.wizard.resumePrompt", "Lanjutkan sesi sebelumnya?")}</p>
-                <p className="mt-0.5 truncate text-[10px] text-slate-400">
+          <div className="mx-4 mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-3.5 shadow-xl backdrop-blur-md animate-in fade-in flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-slate-300">
+                <Clock className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium text-slate-400">
+                  {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")}
+                </p>
+                <p className="text-xs font-bold text-white truncate">
                   {resumeDraft.businessName ? `${resumeDraft.businessName} · ` : ""}{resumeSavedText}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={handleResume}
-                className="flex-1 cursor-pointer rounded-lg bg-primary py-2 text-[11px] font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-95"
+                className="cursor-pointer rounded-xl bg-white px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-sm transition-all hover:bg-slate-100 active:scale-95"
               >
                 {t("dashboard.wizard.resumeContinue", "Lanjutkan")}
               </button>
               <button
                 type="button"
                 onClick={handleStartFresh}
-                className="flex-1 cursor-pointer rounded-lg border border-border py-2 text-[11px] font-medium text-slate-300 transition-all hover:border-border active:scale-95"
-                style={{ background: "rgba(255,255,255,0.05)" }}
+                className="cursor-pointer rounded-lg px-2 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
               >
                 {t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
               </button>
@@ -737,12 +751,11 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectSubType(st.value)}
                           disabled={isLocked}
-                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-border hover:border-primary/50 hover:text-white"}`}
-                          style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
-                          <span>{st.emoji}</span>
+                          <Tag className={`w-3 h-3 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                           <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
-                          {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
+                          {isSubSelected && <span className="text-primary text-[10px]">✓</span>}
                         </button>
                       );
                     })}
@@ -892,21 +905,32 @@ export function SiteWizard({
                       const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
                       const translatedDesc = keys ? t(`dashboard.wizard.categories.${keys.desc}`, bt.desc) : bt.desc;
 
+                      const categoryIconMap: Record<string, React.ReactNode> = {
+                        "Kuliner": <UtensilsCrossed className="w-4 h-4" />,
+                        "Toko & UMKM": <ShoppingBag className="w-4 h-4" />,
+                        "Toko": <ShoppingBag className="w-4 h-4" />,
+                        "Jasa & Booking": <Calendar className="w-4 h-4" />,
+                        "Portofolio & Kreator": <Palette className="w-4 h-4" />,
+                        "Company": <Building2 className="w-4 h-4" />,
+                      };
+
                       return (
                         <button
                           key={bt.value}
                           onClick={() => !isLocked && chat.handleSelectType(bt.value)}
                           disabled={isLocked}
-                          className={`flex flex-col items-start gap-1 p-3 border rounded-xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-primary/50 active:scale-[0.97] cursor-pointer bg-muted/50 border-white/[0.07]"}`}
+                          className={`group flex flex-col items-start gap-1 p-3 border rounded-2xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-white/20 hover:bg-white/[0.07] active:scale-[0.97] cursor-pointer bg-[#16191E]/80 border-white/[0.08]"}`}
                         >
-                          <span className="text-lg">{bt.emoji}</span>
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-0.5 transition-all ${isSelected ? "bg-primary/20 text-primary border border-primary/30" : "bg-white/[0.05] border border-white/[0.08] text-slate-300 group-hover:text-white group-hover:border-white/20"}`}>
+                            {categoryIconMap[bt.value] || <Sparkles className="w-4 h-4" />}
+                          </div>
                           <div className="flex items-center gap-2">
                             <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{translatedLabel}</span>
                             {chat.suggestedHint?.type === bt.value && (
                               <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">{t("dashboard.wizard.suggestedBadge", "✨ Disarankan")}</span>
                             )}
                           </div>
-                          <span className="text-[10px] text-slate-500">{translatedDesc}</span>
+                          <span className="text-[10px] text-slate-400">{translatedDesc}</span>
                           {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">{t("dashboard.wizard.typeSelectedChooseSub", "✓ Dipilih — pilih jenis di bawah")}</span>}
                           {isSelected && chat.businessSubType && (
                             <span className="text-[9px] font-bold text-emerald-400 mt-0.5">
@@ -934,15 +958,14 @@ export function SiteWizard({
                               type="button"
                               onClick={() => !isLocked && handleSelectSubType(st.value)}
                               disabled={isLocked}
-                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-emerald-500/60" : "text-slate-300 border-border hover:border-primary/50 hover:text-white"}`}
-                              style={isSubSelected ? { background: "rgba(16,185,129,0.2)" } : { background: "rgba(255,255,255,0.05)" }}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
-                              <span>{st.emoji}</span>
+                              <Tag className={`w-3 h-3 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                               <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                               {chat.suggestedHint?.subType === st.value && (
                                 <span className="text-[10px] text-amber-300">✨</span>
                               )}
-                              {isSubSelected && <span className="text-emerald-400 text-[10px]">✓</span>}
+                              {isSubSelected && <span className="text-primary text-[10px]">✓</span>}
                             </button>
                           );
                         })}
@@ -1032,6 +1055,46 @@ export function SiteWizard({
               </div>
             );
           })}
+
+          {chat.chatStage === "name" && !chat.isInitialTyping && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-2 mt-2 max-w-[95%]">
+              <p className="text-[11px] font-semibold text-slate-400 px-0.5">
+                {t("dashboard.wizard.starterTitle", "Coba salah satu")}
+              </p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { name: "Mamabo Coffee", icon: <Coffee className="w-4 h-4" />, desc: isIndonesian ? "Kafe & Kedai Kopi" : "Cafe & Coffee Shop" },
+                  { name: isIndonesian ? "Toko Fashion" : "Fashion Store", icon: <ShoppingBag className="w-4 h-4" />, desc: isIndonesian ? "Pakaian & Aksesoris" : "Apparel & Boutique" },
+                  { name: isIndonesian ? "Jasa Fotografi" : "Photography Studio", icon: <Camera className="w-4 h-4" />, desc: isIndonesian ? "Foto Studio & Wisuda" : "Photo & Creative Studio" },
+                ].map((starter) => (
+                  <button
+                    key={starter.name}
+                    type="button"
+                    onClick={() => chat.handleSelectStarter(starter.name)}
+                    className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/[0.08] bg-[#16191E]/80 hover:bg-white/[0.07] hover:border-white/20 text-left transition-all active:scale-[0.98] cursor-pointer group shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0 text-slate-300 group-hover:scale-105 group-hover:border-white/20 transition-all">
+                        {starter.icon}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-white group-hover:text-white transition-colors truncate">
+                          {starter.name}
+                        </p>
+                        <p className="text-[10px] text-slate-400 truncate">{starter.desc}</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors shrink-0" />
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 pt-2 text-[11px] text-slate-500 font-medium">
+                <div className="h-px flex-1 bg-white/[0.08]" />
+                <span>{t("dashboard.wizard.starterOrType", "atau ketik sendiri")}</span>
+                <div className="h-px flex-1 bg-white/[0.08]" />
+              </div>
+            </div>
+          )}
 
           {chat.isProcessingAudio && (
             <AudioProcessingCard businessName={chat.businessName} />

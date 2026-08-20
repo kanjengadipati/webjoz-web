@@ -2141,9 +2141,12 @@ export interface Translations {
       };
       subtypes: Record<string, string>;
       resumePrompt: string;
+      resumeLastSession: string;
       resumeSavedLabel: string;
       resumeContinue: string;
       resumeStartFresh: string;
+      starterTitle: string;
+      starterOrType: string;
       timeJustNow: string;
       timeMinutesAgo: string;
       timeHoursAgo: string;
@@ -4341,9 +4344,12 @@ export const translations: Record<Locale, Translations> = {
           "Manufaktur": "Manufaktur",
         },
         resumePrompt: "Lanjutkan sesi sebelumnya?",
+        resumeLastSession: "Sesi terakhir",
         resumeSavedLabel: "Tersimpan {time}",
         resumeContinue: "Lanjutkan",
         resumeStartFresh: "Mulai baru",
+        starterTitle: "Coba salah satu",
+        starterOrType: "atau ketik sendiri",
         timeJustNow: "baru saja",
         timeMinutesAgo: "{count} menit lalu",
         timeHoursAgo: "{count} jam lalu",
@@ -6539,9 +6545,12 @@ export const translations: Record<Locale, Translations> = {
           "Manufaktur": "Manufacturing",
         },
         resumePrompt: "Resume your previous session?",
+        resumeLastSession: "Last session",
         resumeSavedLabel: "Saved {time}",
-        resumeContinue: "Resume",
-        resumeStartFresh: "Start over",
+        resumeContinue: "Continue",
+        resumeStartFresh: "Start fresh",
+        starterTitle: "Try one of these",
+        starterOrType: "or type your own",
         timeJustNow: "just now",
         timeMinutesAgo: "{count} min ago",
         timeHoursAgo: "{count} hr ago",
