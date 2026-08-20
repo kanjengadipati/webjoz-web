@@ -587,6 +587,17 @@ export function SiteWizard({
       if (device.isMobileRef.current) {
         device.setMobileScreen("preview");
       }
+    } else if (resumeDraft.chat.chatStage === "done") {
+      // Generation was interrupted — restart it
+      runGenerate(
+        resumeDraft.chat.businessName,
+        resumeDraft.chat.businessType,
+        {
+          businessSubType: resumeDraft.chat.businessSubType,
+          mood: resumeDraft.chat.mood,
+          language: resumeDraft.chat.siteLanguage ?? "id",
+        }
+      );
     }
     setResumeDraft(null);
   };
@@ -616,8 +627,8 @@ export function SiteWizard({
 
   return (
     <div
-      className="relative flex w-screen overflow-hidden bg-background md:h-screen"
-      style={{ height: "var(--webjoz-app-height, 100dvh)" }}
+      className="fixed inset-0 md:relative flex w-screen overflow-hidden bg-background md:h-screen"
+      style={{ height: "var(--webjoz-app-height, 100dvh)", top: "var(--webjoz-app-top, 0px)" }}
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
@@ -836,7 +847,7 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
@@ -859,7 +870,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative flex flex-col items-center rounded-2xl border p-3 sm:p-4 text-center transition-all duration-200 focus:outline-none ${
+                          className={`group relative flex flex-col items-center rounded-xl border px-2 py-2.5 sm:px-2.5 sm:py-3 text-center transition-all duration-200 focus:outline-none ${
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg shadow-primary/15"
                               : isLocked
@@ -870,8 +881,8 @@ export function SiteWizard({
                         >
                           {/* Selected checkmark badge — top right */}
                           {isSelected && (
-                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
-                              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
+                              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12" />
                               </svg>
                             </div>
@@ -880,24 +891,24 @@ export function SiteWizard({
                           {/* Premium Icon Container */}
                           {(() => {
                             const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
-                              "clean-modern":  { icon: <Monitor className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
-                              "warm-earthy":   { icon: <Leaf    className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
-                              "bold-vibrant":  { icon: <Palette className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
-                              "dark-premium":  { icon: <Crown   className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
-                              "bold-dark":     { icon: <Zap     className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
-                              "retro":         { icon: <Clock   className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
-                              "futuristic":    { icon: <Cpu     className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
+                              "clean-modern":  { icon: <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
+                              "warm-earthy":   { icon: <Leaf    className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
+                              "bold-vibrant":  { icon: <Palette className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
+                              "dark-premium":  { icon: <Crown   className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
+                              "bold-dark":     { icon: <Zap     className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
+                              "retro":         { icon: <Clock   className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
+                              "futuristic":    { icon: <Cpu     className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
                             };
-                            const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
+                            const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
                             return (
-                              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2.5 sm:mb-3 shadow-lg ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
+                              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center mb-1.5 shadow-lg ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
                                 {cfg.icon}
                               </div>
                             );
                           })()}
 
                           {/* Title */}
-                          <span className="text-[12px] sm:text-[13px] font-bold text-white leading-snug mb-1">
+                          <span className="text-[11px] sm:text-[12px] font-bold text-white leading-tight">
                             {translatedMoodLabel}
                           </span>
 
@@ -1166,6 +1177,12 @@ export function SiteWizard({
                 <input
                   ref={chat.inputRef}
                   type="text"
+                  onFocus={() => {
+                    setTimeout(() => {
+                      window.scrollTo(0, 0);
+                      chat.chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    }, 120);
+                  }}
                   value={chat.inputValue}
                   onChange={(e) => chat.setInputValue(e.target.value)}
                   placeholder={

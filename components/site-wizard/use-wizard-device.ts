@@ -33,15 +33,40 @@ export function useWizardDevice() {
     if (typeof window === "undefined") return;
 
     const setAppHeight = () => {
-      const vvHeight = window.visualViewport?.height || window.innerHeight;
-      document.documentElement.style.setProperty("--webjoz-app-height", `${vvHeight}px`);
-      // Track keyboard state (iOS: visualViewport shrinks when keyboard opens)
-      const keyboardOpen = detectKeyboardOpen();
+      const vv = window.visualViewport;
+      const height = vv?.height || window.innerHeight;
+      const offsetTop = vv?.offsetTop || 0;
+
+      document.documentElement.style.setProperty("--webjoz-app-height", `${height}px`);
+      document.documentElement.style.setProperty("--webjoz-app-top", `${offsetTop}px`);
+
+      const keyboardOpen = typeof window !== "undefined" && vv ? vv.height < window.innerHeight * 0.85 : false;
       setIsKeyboardOpen(keyboardOpen);
+
+      // Snap window scroll back to (0, 0) immediately to prevent layout viewport offset
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo(0, 0);
+      }
+      if (document.body.scrollTop !== 0) {
+        document.body.scrollTop = 0;
+      }
+      if (document.documentElement.scrollTop !== 0) {
+        document.documentElement.scrollTop = 0;
+      }
+    };
+
+    const handleWindowScroll = () => {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo(0, 0);
+      }
+      if (document.body.scrollTop !== 0) {
+        document.body.scrollTop = 0;
+      }
     };
 
     setAppHeight();
     window.addEventListener("resize", setAppHeight);
+    window.addEventListener("scroll", handleWindowScroll, { passive: true });
     window.visualViewport?.addEventListener("resize", setAppHeight);
     window.visualViewport?.addEventListener("scroll", setAppHeight);
 
@@ -56,9 +81,11 @@ export function useWizardDevice() {
     return () => {
       mq.removeEventListener("change", handler);
       window.removeEventListener("resize", setAppHeight);
+      window.removeEventListener("scroll", handleWindowScroll);
       window.visualViewport?.removeEventListener("resize", setAppHeight);
       window.visualViewport?.removeEventListener("scroll", setAppHeight);
       document.documentElement.style.removeProperty("--webjoz-app-height");
+      document.documentElement.style.removeProperty("--webjoz-app-top");
     };
   }, []);
 
