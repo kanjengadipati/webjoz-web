@@ -4145,7 +4145,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Halo! Saya AI assistant Anda. Mari buat website bisnis Anda dalam 1 menit! Siapa nama usaha atau brand Anda?",
+        initialMessage: "Halo! Saya AI assistant Anda. Mari buat website bisnis Anda dalam 1 menit! Siapa nama bisnis atau brand Anda?",
         nameAckVariants: [
           "Baik, nama bisnis telah dicatat.",
           "Nama bisnis berhasil disimpan.",
