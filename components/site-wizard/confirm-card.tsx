@@ -123,16 +123,21 @@ export function ConfirmCard(props: ConfirmCardProps) {
                 {BUSINESS_TYPES.map(bt => {
                   const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                     "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
+                    "Toko": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
                     "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
+                    "Layanan & Reservasi": { label: "jasaBooking", desc: "jasaBookingDesc" },
                     "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
+                    "Kreatif & Profesional": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                     "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                     "Company": { label: "company", desc: "companyDesc" },
                   };
                   const categoryIconMap: Record<string, React.ReactNode> = {
                     "Kuliner": <UtensilsCrossed className="w-3 h-3" />,
-                    "Toko & UMKM": <ShoppingBag className="w-3 h-3" />,
                     "Toko": <ShoppingBag className="w-3 h-3" />,
+                    "Toko & UMKM": <ShoppingBag className="w-3 h-3" />,
+                    "Layanan & Reservasi": <Calendar className="w-3 h-3" />,
                     "Jasa & Booking": <Calendar className="w-3 h-3" />,
+                    "Kreatif & Profesional": <Palette className="w-3 h-3" />,
                     "Portofolio & Kreator": <Palette className="w-3 h-3" />,
                     "Company": <Building2 className="w-3 h-3" />,
                   };
@@ -173,8 +178,11 @@ export function ConfirmCard(props: ConfirmCardProps) {
                 {(() => {
                   const categoryKeyMap: Record<string, string> = {
                     "Kuliner": "kuliner",
+                    "Toko": "tokoUmkm",
                     "Toko & UMKM": "tokoUmkm",
+                    "Layanan & Reservasi": "jasaBooking",
                     "Jasa & Booking": "jasaBooking",
+                    "Kreatif & Profesional": "portofolioKreator",
                     "Portofolio & Kreator": "portofolioKreator",
                     "Company": "company",
                   };
