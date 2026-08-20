@@ -582,7 +582,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       if (detected) setServiceArea(detected);
     }
 
-    let result: InferenceResult;
+    let result: InferenceResult = { confidence: "low" };
+
     if (preInferred?.type && preInferred?.subType) {
       result = {
         type: preInferred.type,
@@ -590,12 +591,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         confidence: "high",
       };
     } else {
-      result = inferTypeFromDescription(val);
-    }
-
-    // If local keyword match didn't yield both type & subType,
-    // call the fast lightweight AI classifier fallback
-    if (!result.type || !result.subType) {
+      // 1. Primary: Call AI Classifier Server (understands context & semantics)
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data && aiRes.data.type && aiRes.data.sub_type) {
@@ -606,7 +602,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
           };
         }
       } catch (err) {
-        console.warn("AI classification fallback failed, using local inference result", err);
+        console.warn("Primary AI classification failed, falling back to local dictionary", err);
+      }
+
+      // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
+      if (!result.type || !result.subType) {
+        const localResult = inferTypeFromDescription(val);
+        if (localResult.type) {
+          result = localResult;
+        }
       }
     }
 

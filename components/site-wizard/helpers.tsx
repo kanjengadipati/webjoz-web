@@ -444,13 +444,10 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Produk Lokal Handmade",
     keywords: [
       // ID
-      "kerajinan", "souvenir", "oleh-oleh", "kriya", "tenun", "anyam", "lokal", "produk lokal", "kerajinan tangan",
-      "gerabah", "rotan", "kulit", "cendera mata", "perikanan", "ikan", "udang", "tambak", "budidaya",
-      "peternakan", "ternak", "pertanian", "tani", "sayur", "buah", "bibit", "tanaman", "tanaman hias", "bunga",
-      "organik", "madu", "herbal", "jamu tradisional", "keripik", "snack lokal", "camilan", "frozen food", "sambal botol",
+      "kerajinan", "souvenir", "oleh-oleh", "kriya", "tenun", "anyam", "produk lokal", "kerajinan tangan",
+      "gerabah", "rotan", "kulit handmade", "cendera mata", "batik tulis", "ukiran",
       // EN
-      "handmade", "craft", "artisan", "local product", "handicraft", "pottery", "weaving", "florist", "flower shop",
-      "organic", "farm", "farming", "agriculture", "fishery", "honey", "herb", "snack", "frozen food",
+      "handmade", "craft", "artisan", "local craft", "handicraft", "pottery", "weaving", "handcrafted",
     ],
     weight: 3,
   },
