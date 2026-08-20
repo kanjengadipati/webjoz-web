@@ -124,7 +124,8 @@ export function ConfirmCard(props: ConfirmCardProps) {
                   const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                     "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
                     "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
-                    "Jasa": { label: "jasa", desc: "jasaDesc" },
+                    "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
+                    "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                     "Company": { label: "company", desc: "companyDesc" },
                   };
                   const keys = categoryKeyMap[bt.value];
@@ -163,7 +164,11 @@ export function ConfirmCard(props: ConfirmCardProps) {
                   const typeEmoji = BUSINESS_TYPES.find(bt => bt.value === businessType)?.emoji ?? "";
                   const subEmoji = businessSubType ? (SUB_TYPES[businessType]?.find(s => s.value === businessSubType)?.emoji ?? "") : "";
                   const categoryKeyMap: Record<string, string> = {
-                    "Kuliner": "kuliner", "Toko & UMKM": "tokoUmkm", "Jasa": "jasa", "Company": "company",
+                    "Kuliner": "kuliner",
+                    "Toko & UMKM": "tokoUmkm",
+                    "Jasa & Booking": "jasaBooking",
+                    "Portofolio & Kreator": "portofolioKreator",
+                    "Company": "company",
                   };
                   const typeKey = categoryKeyMap[businessType];
                   const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;

@@ -3,15 +3,15 @@
 
 export const TEMPLATE_PREFILL_MAP: Record<string, { businessType: string; businessSubType: string }> = {
   TEMPLATE_KULINER01: { businessType: "Kuliner", businessSubType: "Kafe" },
-  TEMPLATE_JASA02:    { businessType: "Jasa", businessSubType: "Konsultan" },
+  TEMPLATE_JASA02:    { businessType: "Portofolio & Kreator", businessSubType: "Konsultan" },
   TEMPLATE_PRODUK03:  { businessType: "Toko & UMKM", businessSubType: "Fashion & Pakaian" },
   TEMPLATE_COLORFUL:  { businessType: "Kuliner", businessSubType: "Minuman & Bubble Tea" },
-  TEMPLATE_ELEGANT:   { businessType: "Jasa", businessSubType: "Salon & Kecantikan" },
+  TEMPLATE_ELEGANT:   { businessType: "Jasa & Booking", businessSubType: "Salon & Kecantikan" },
   TEMPLATE_NATURAL:   { businessType: "Toko & UMKM", businessSubType: "Produk Lokal Handmade" },
-  TEMPLATE_MINIMALIST:{ businessType: "Jasa", businessSubType: "Konsultan" },
-  TEMPLATE_BOLD:      { businessType: "Jasa", businessSubType: "Otomotif & Bengkel" },
+  TEMPLATE_MINIMALIST:{ businessType: "Portofolio & Kreator", businessSubType: "Konsultan" },
+  TEMPLATE_BOLD:      { businessType: "Jasa & Booking", businessSubType: "Otomotif & Bengkel" },
   TEMPLATE_FUTURISTIC:{ businessType: "Toko & UMKM", businessSubType: "Elektronik" },
-  TEMPLATE_DYNAMIC:   { businessType: "Jasa", businessSubType: "Klinik & Kesehatan" },
+  TEMPLATE_DYNAMIC:   { businessType: "Jasa & Booking", businessSubType: "Klinik & Kesehatan" },
 };
 
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];

@@ -60,8 +60,8 @@ export function prefillForLibraryBusinessType(
 ): { businessType: string; businessSubType: string } {
   const bt = (businessType || "").trim();
   const lower = bt.toLowerCase();
-  if (bt === "Kuliner" || bt === "Toko & UMKM" || bt === "Jasa" || bt === "Company") {
-    return { businessType: bt, businessSubType: "" };
+  if (bt === "Kuliner" || bt === "Toko & UMKM" || bt === "Jasa & Booking" || bt === "Portofolio & Kreator" || bt === "Company" || bt === "Jasa") {
+    return { businessType: bt === "Jasa" ? "Jasa & Booking" : bt, businessSubType: "" };
   }
   if (
     /kafe|kopi|coffee|cafe|kuliner|restoran|makanan|minuman|boba|bubble|bakery|kue|pastry|warung|snack|roti|teh|jus/.test(
@@ -77,5 +77,12 @@ export function prefillForLibraryBusinessType(
   ) {
     return { businessType: "Toko & UMKM", businessSubType: bt };
   }
-  return { businessType: "Jasa", businessSubType: bt };
+  if (
+    /portofolio|kreator|portfolio|fotografer|videografer|desainer|designer|agency|agensi|konsultan/.test(
+      lower
+    )
+  ) {
+    return { businessType: "Portofolio & Kreator", businessSubType: bt };
+  }
+  return { businessType: "Jasa & Booking", businessSubType: bt };
 }

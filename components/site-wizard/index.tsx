@@ -879,7 +879,8 @@ export function SiteWizard({
                       const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                         "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
                         "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
-                        "Jasa": { label: "jasa", desc: "jasaDesc" },
+                        "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
+                        "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                         "Company": { label: "company", desc: "companyDesc" },
                       };
                       const keys = categoryKeyMap[bt.value];
@@ -911,6 +912,10 @@ export function SiteWizard({
                       );
                     })}
                   </div>
+
+                  <p className="text-[10px] text-slate-500 px-0.5 mt-1 leading-relaxed">
+                    {t("dashboard.wizard.disambiguateJasaPortofolio")}
+                  </p>
 
                   {subTypes && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
