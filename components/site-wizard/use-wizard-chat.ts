@@ -636,6 +636,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (result.type) {
       setBusinessType(result.type);
       setTypeWasInferred(true);
+      setChatStage("type");
       setTimeout(() => {
         const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: result.type ?? "" });
         typeMessage(medMsg, () => {
@@ -643,22 +644,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
             ...prev,
             { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
           ]);
-          setChatStage("type");
         });
-      }, 500);
+      }, 300);
       return;
     }
 
     setInferenceResult({ confidence: "low" } as InferenceResult);
+    setChatStage("type");
     setTimeout(() => {
       typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
         setMessages((prev) => [
           ...prev,
           { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
         ]);
-        setChatStage("type");
       });
-    }, 500);
+    }, 300);
   };
 
   const handleConfirmSttReview = (confirmed: boolean, transcriptText: string) => {

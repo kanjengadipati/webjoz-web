@@ -704,7 +704,7 @@ export function SiteWizard({
             }
 
             if (m.widget === "subtype-chips") {
-              const isLocked = chat.chatStage !== "type";
+              const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
               const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : [];
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
@@ -874,7 +874,7 @@ export function SiteWizard({
             }
 
             if (m.widget === "type-chips") {
-              const isLocked = chat.chatStage !== "type";
+              const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
               const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : null;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
