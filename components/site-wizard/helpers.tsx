@@ -602,16 +602,35 @@ const DESC_HINTS: DescHintEntry[] = [
     type: "Portofolio & Kreator",
     subType: "Desainer",
     keywords: [
-      // ID
-      "pembuatan website", "jasa pembuatan website", "desainer", "desain grafis", "ui/ux", "ui ux", "desain web",
-      "illustrator", "ilustrasi", "logo maker", "desain logo", "3d artist", "animator", "freelance desainer",
-      "aplikasi", "software house", "programmer", "jasa it",
+      // ID — hanya visual/graphic designer, bukan web developer
+      "desainer", "desain grafis", "ui/ux", "ui ux", "illustrator", "ilustrasi",
+      "logo maker", "desain logo", "3d artist", "animator", "freelance desainer",
+      "desainer grafis", "motion graphic", "visual artist", "branding identity",
+      "tipografi", "poster", "infografis", "packaging design",
       // EN
-      "website", "web", "web developer", "web development", "web design", "designer", "graphic design", "logo design",
-      "landing page", "ui design", "ux design", "software", "app development", "mobile app", "developer", "coding",
-      "programming", "it services", "digital design", "3d design", "animation", "freelance",
+      "designer", "graphic design", "logo design", "ui design", "ux design",
+      "visual design", "brand identity", "illustration", "motion design",
+      "3d design", "animation", "typography", "print design", "digital art",
     ],
     weight: 4,
+  },
+  {
+    type: "Portofolio & Kreator",
+    subType: "Developer & IT",
+    keywords: [
+      // ID — web/app developer, software house, IT services
+      "pembuatan website", "jasa pembuatan website", "jasa website", "jasa web",
+      "developer", "pengembang", "programmer", "software house", "software",
+      "aplikasi", "jasa it", "jasa aplikasi", "coding", "pemrograman",
+      "jasa coding", "web development", "mobile app", "fullstack", "backend", "frontend",
+      "teknologi informasi", "sistem informasi", "it solution", "it consultant",
+      // EN
+      "website", "web", "web developer", "web development", "web design",
+      "landing page", "software", "app development", "mobile app", "developer",
+      "coding", "programming", "it services", "tech", "technology",
+      "saas", "platform", "api", "database", "cloud", "devops",
+    ],
+    weight: 5,
   },
   {
     type: "Portofolio & Kreator",
