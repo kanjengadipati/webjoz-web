@@ -2062,6 +2062,18 @@ export interface Translations {
       placeholderArea: string;
       sttStopRecording: string;
       sttStartRecording: string;
+      micHintTitle: string;
+      micHintDesc: string;
+      sttPromptGuide: string;
+      sttBtnDone: string;
+      sttBtnCancel: string;
+      sttProcessingTitle: string;
+      sttProcessingSubtitle: string;
+      sttReviewTitle: string;
+      sttReviewPrompt: string;
+      sttBtnEdit: string;
+      sttBtnConfirm: string;
+      micReadyHint: string;
       backToChat: string;
       generationFailed: string;
       generationErrorMessage: string;
@@ -2087,6 +2099,7 @@ export interface Translations {
       statusPreparingAi: string;
       nameConfirmPlaceholder: string;
       descPlaceholder: string;
+      descPlaceholderWithMic: string;
       labelBusinessName: string;
       labelBusinessType: string;
       labelBusinessSubType: string;
@@ -4216,6 +4229,18 @@ export const translations: Record<Locale, Translations> = {
         placeholderArea: "cth. Jogja, Jabodetabek, seluruh Indonesia",
         sttStopRecording: "Berhenti merekam",
         sttStartRecording: "Bicara dengan mic",
+        micHintTitle: "Bicara lebih cepat dengan AI",
+        micHintDesc: "Tekan tombol mic untuk menjelaskan bisnis Anda.",
+        sttPromptGuide: "Ceritakan bisnis Anda...",
+        sttBtnDone: "Selesai",
+        sttBtnCancel: "Batal",
+        sttProcessingTitle: "Memproses suara Anda...",
+        sttProcessingSubtitle: "Membuat draft informasi bisnis...",
+        sttReviewTitle: "Berikut yang saya dengar dari Anda:",
+        sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
+        sttBtnEdit: "Edit",
+        sttBtnConfirm: "Ya, lanjutkan",
+        micReadyHint: "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
         backToChat: "Kembali ke chat",
         generationFailed: "Generate belum berhasil",
         generationErrorMessage: "Terjadi kesalahan saat membuat preview.",
@@ -4241,6 +4266,7 @@ export const translations: Record<Locale, Translations> = {
         statusPreparingAi: "Menyiapkan AI...",
         nameConfirmPlaceholder: "Ketik 'ya' untuk lanjut, atau nama yang benar...",
         descPlaceholder: "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar",
+        descPlaceholderWithMic: "Ceritakan tentang bisnis Anda, atau klik mic 🎤",
         labelBusinessName: "Nama Bisnis",
         labelBusinessType: "Jenis Bisnis",
         labelBusinessSubType: "Sub Jenis Bisnis",
@@ -6399,7 +6425,19 @@ export const translations: Record<Locale, Translations> = {
         placeholderPhone: "e.g. 081234567890",
         placeholderArea: "e.g. Yogyakarta, Jakarta, all of Indonesia",
         sttStopRecording: "Stop recording",
-        sttStartRecording: "Speak into the microphone",
+        sttStartRecording: "Speak with mic",
+        micHintTitle: "Speak faster with AI",
+        micHintDesc: "Press the mic button to describe your business.",
+        sttPromptGuide: "Tell us about your business...",
+        sttBtnDone: "Done",
+        sttBtnCancel: "Cancel",
+        sttProcessingTitle: "Processing your voice...",
+        sttProcessingSubtitle: "Drafting business information...",
+        sttReviewTitle: "Here is what I heard from you:",
+        sttReviewPrompt: "Does this look correct? You can edit before we continue.",
+        sttBtnEdit: "Edit",
+        sttBtnConfirm: "Yes, continue",
+        micReadyHint: "Click the mic icon to explain your business by voice",
         backToChat: "Back to chat",
         generationFailed: "Generation failed",
         generationErrorMessage: "An error occurred while generating the preview.",
@@ -6425,6 +6463,7 @@ export const translations: Record<Locale, Translations> = {
         statusPreparingAi: "Preparing AI...",
         nameConfirmPlaceholder: "Type 'yes' to continue, or enter correct name...",
         descPlaceholder: "Example: Selling specialty coffee in Jogja, serving bulk orders",
+        descPlaceholderWithMic: "Tell us about your business, or click the mic 🎤",
         labelBusinessName: "Business Name",
         labelBusinessType: "Business Type",
         labelBusinessSubType: "Sub Business Type",

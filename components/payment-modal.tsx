@@ -17,8 +17,10 @@ const PaymentModal = ({ snapToken, clientKey, onClose, onPaymentSuccess }: Payme
   useEffect(() => {
     if (typeof window !== "undefined" && !snap) {
       const midtransScript = document.createElement("script");
-      midtransScript.src = "https://demo.stripe.com/js/button.js"; // placeholder - real URL below
-      midtransScript.src = "https://app.sandbox.midtrans.com/midtrans-js/0.8.0/snap-modal.js";
+      midtransScript.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+      if (clientKey) {
+        midtransScript.setAttribute("data-client-key", clientKey);
+      }
       midtransScript.async = true;
       midtransScript.onload = () => {
         if ((window as any).snap) {

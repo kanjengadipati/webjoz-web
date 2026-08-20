@@ -8,6 +8,8 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, i
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
+import { refineTranscript } from "@/lib/api/ai";
+import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
@@ -47,7 +49,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
   // ── Voice Input (STT) ──
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [isProcessingAudio, setIsProcessingAudio] = useState(false);
   const recognitionRef = useRef<any>(null);
+  const recordingTimerRef = useRef<any>(null);
+  const recordedTranscriptRef = useRef<string>("");
+  const isManualStopRef = useRef(false);
 
   const startRecording = () => {
     if (typeof window === "undefined") return;
@@ -57,38 +64,118 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
+    isManualStopRef.current = false;
+    recordedTranscriptRef.current = "";
+    setRecordingDuration(0);
+
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    recordingTimerRef.current = setInterval(() => {
+      setRecordingDuration((prev) => prev + 1);
+    }, 1000);
+
     const recognition = new SpeechRecognition();
     recognition.lang = locale === "id" ? "id-ID" : "en-US";
     recognition.interimResults = true;
-    recognition.continuous = false;
+    recognition.continuous = true;
 
     recognition.onresult = (event: any) => {
       let transcript = "";
       for (let i = 0; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript;
       }
-      setInputValue(transcript);
+      if (transcript.trim()) {
+        recordedTranscriptRef.current = transcript;
+      }
     };
 
     recognition.onend = () => {
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
     recognition.onerror = () => {
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
     recognitionRef.current = recognition;
     setIsRecording(true);
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (e) {
+      console.warn("Speech recognition already active or failed to start", e);
+    }
   };
 
-  const stopRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
+  const stopRecording = async () => {
+    isManualStopRef.current = true;
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
     }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+
+    const rawTranscript = recordedTranscriptRef.current.trim();
+    if (!rawTranscript) {
+      return;
+    }
+
+    // AI Refine Processing State (Step 6)
+    setIsProcessingAudio(true);
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
+
+    let refinedText = rawTranscript;
+    try {
+      const [res] = await Promise.all([
+        refineTranscript(rawTranscript, businessNameRef.current, locale),
+        minDelay,
+      ]);
+      if (res && res.data && res.data.refined_text) {
+        refinedText = res.data.refined_text;
+      }
+    } catch (err) {
+      console.warn("Refine transcript failed, using raw transcript", err);
+      await minDelay;
+    } finally {
+      setIsProcessingAudio(false);
+    }
+
+    // Step 7: Display Voice Result Review Bubble
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `stt-review-${Date.now()}`,
+        sender: "ai",
+        text: "",
+        widget: "stt-review-confirm" as const,
+        sttTranscript: refinedText,
+      },
+    ]);
+  };
+
+  const cancelRecording = () => {
+    isManualStopRef.current = true;
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    recordedTranscriptRef.current = "";
+    setIsRecording(false);
+    setRecordingDuration(0);
   };
 
   const hasAskedNameConfirmRef = useRef(false);
@@ -394,65 +481,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
 
     if (chatStage === "description") {
-      const isSkip = !val.trim() || val.toLowerCase().trim() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase().trim() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
-      if (isSkip) {
-        setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
-        setInferenceResult({ confidence: "low" } as InferenceResult);
-        setTimeout(() => {
-          typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-            ]);
-            setChatStage("type");
-          });
-        }, 500);
-        return;
-      }
+      processDescriptionSubmission(val);
+    }
+  };
 
-      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
-
-      setDescription(val);
-
-      // Extract location from description and pre-fill service area if not yet set
-      if (!serviceArea) {
-        const detected = extractLocationFromDescription(val);
-        if (detected) setServiceArea(detected);
-      }
-
-      const result = inferTypeFromDescription(val);
-      setInferenceResult(result);
-
-      if (result.confidence === "high" && result.type && result.subType) {
-        setAwaitingInferenceConfirm(true);
-        const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { type: result.type ?? "", subType: result.subType ?? "" });
-        setTimeout(() => {
-          typeMessage(confirmMsg, () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
-            ]);
-          });
-        }, 500);
-        return;
-      }
-
-      if (result.confidence === "medium" && result.type) {
-        setBusinessType(result.type);
-        setTypeWasInferred(true);
-        setTimeout(() => {
-          const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: result.type ?? "" });
-          typeMessage(medMsg, () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
-            ]);
-            setChatStage("type");
-          });
-        }, 500);
-        return;
-      }
-
+  const processDescriptionSubmission = (rawVal: string) => {
+    const val = rawVal.trim();
+    const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
+    if (isSkip) {
+      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
         typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
@@ -463,6 +500,76 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
           setChatStage("type");
         });
       }, 500);
+      return;
+    }
+
+    setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+
+    setDescription(val);
+
+    // Extract location from description and pre-fill service area if not yet set
+    if (!serviceArea) {
+      const detected = extractLocationFromDescription(val);
+      if (detected) setServiceArea(detected);
+    }
+
+    const result = inferTypeFromDescription(val);
+    setInferenceResult(result);
+
+    if (result.confidence === "high" && result.type && result.subType) {
+      setAwaitingInferenceConfirm(true);
+      const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { type: result.type ?? "", subType: result.subType ?? "" });
+      setTimeout(() => {
+        typeMessage(confirmMsg, () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
+          ]);
+        });
+      }, 500);
+      return;
+    }
+
+    if (result.confidence === "medium" && result.type) {
+      setBusinessType(result.type);
+      setTypeWasInferred(true);
+      setTimeout(() => {
+        const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: result.type ?? "" });
+        typeMessage(medMsg, () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
+          ]);
+          setChatStage("type");
+        });
+      }, 500);
+      return;
+    }
+
+    setInferenceResult({ confidence: "low" } as InferenceResult);
+    setTimeout(() => {
+      typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+        ]);
+        setChatStage("type");
+      });
+    }, 500);
+  };
+
+  const handleConfirmSttReview = (confirmed: boolean, transcriptText: string) => {
+    // Dismiss the stt-review-confirm widget
+    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm"));
+
+    if (confirmed) {
+      processDescriptionSubmission(transcriptText);
+    } else {
+      setInputValue(transcriptText);
+      setChatStage("description");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 80);
     }
   };
 
@@ -554,8 +661,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setTypeWasInferred,
     // Voice Input
     isRecording,
+    recordingDuration,
+    isProcessingAudio,
     startRecording,
     stopRecording,
+    cancelRecording,
+    handleConfirmSttReview,
     // Refs
     inputRef,
     chatEndRef,
