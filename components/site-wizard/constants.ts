@@ -112,6 +112,14 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Minimarket", emoji: "🏪", label: "Minimarket" },
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
   ],
+  "Toko": [
+    { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
+    { value: "Elektronik", emoji: "📱", label: "Elektronik" },
+    { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
+    { value: "Toko Online", emoji: "🛒", label: "Toko Online" },
+    { value: "Minimarket", emoji: "🏪", label: "Minimarket" },
+    { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
+  ],
   "Jasa & Booking": [
     { value: "Salon & Kecantikan", emoji: "💄", label: "Salon" },
     { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
