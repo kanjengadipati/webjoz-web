@@ -18,7 +18,7 @@ import {
   Square,
   Tablet,
 } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
 import { MicOnboardingHint } from "./mic-onboarding-hint";
 import { AudioProcessingCard } from "./audio-processing-card";
@@ -622,7 +622,7 @@ export function SiteWizard({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0 text-primary-foreground">
-                    <SparkleIcon className="w-[27px] h-[27px]" />
+                    <SparkleGenAI className="w-[27px] h-[27px]" />
                   </div>
                   <span className="font-bold text-white text-[17px] leading-tight">Webjoz AI Assistant</span>
                 </div>
@@ -646,7 +646,7 @@ export function SiteWizard({
         {resumeDraft && (
           <div className="mx-4 mt-3 shrink-0 space-y-2.5 rounded-xl border border-primary/30 bg-primary/10 p-3 animate-in fade-in">
             <div className="flex items-start gap-2">
-              <SparkleIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <SparkleGenAI className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-bold text-white">{t("dashboard.wizard.resumePrompt", "Lanjutkan sesi sebelumnya?")}</p>
                 <p className="mt-0.5 truncate text-[10px] text-slate-400">
@@ -969,7 +969,7 @@ export function SiteWizard({
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                   <div className="flex gap-2.5 justify-start">
                     <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
-                      <SparkleIcon className="w-[21px] h-[21px]" />
+                      <SparkleGenAI className="w-[21px] h-[21px]" />
                     </div>
                     <div className="max-w-[90%] space-y-2.5">
                       <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#131f1a] border border-emerald-500/30 text-slate-200 shadow-xl">
@@ -1017,7 +1017,7 @@ export function SiteWizard({
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
                   <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
-                    <SparkleIcon className="w-[21px] h-[21px]" />
+                    <SparkleGenAI className="w-[21px] h-[21px]" />
                   </div>
                 )}
                 <div

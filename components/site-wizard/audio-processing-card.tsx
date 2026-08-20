@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles } from "lucide-react";
+import { SparkleGenAI } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 
 interface AudioProcessingCardProps {
@@ -14,7 +14,7 @@ export function AudioProcessingCard({ businessName }: AudioProcessingCardProps) 
   return (
     <div className="rounded-2xl border border-emerald-500/30 bg-[#121b17]/90 p-5 shadow-2xl animate-in fade-in zoom-in-95 duration-400 max-w-sm mx-auto my-3 text-center backdrop-blur-md">
       <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto mb-3 shadow-[0_0_20px_rgba(16,185,129,0.25)] animate-pulse">
-        <Sparkles className="w-6 h-6 text-emerald-300" />
+        <SparkleGenAI className="w-6 h-6 text-emerald-300" />
       </div>
 
       <h4 className="text-sm font-bold text-white mb-1">
