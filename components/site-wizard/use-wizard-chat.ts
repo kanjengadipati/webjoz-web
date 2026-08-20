@@ -610,12 +610,24 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       // 1. Primary: Call AI Classifier Server (understands context & semantics)
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
-        if (aiRes && aiRes.data && aiRes.data.type && aiRes.data.sub_type) {
-          result = {
-            type: aiRes.data.type,
-            subType: aiRes.data.sub_type,
-            confidence: "high",
-          };
+        if (aiRes && aiRes.data) {
+          if (aiRes.data.refined_text && aiRes.data.refined_text.trim()) {
+            const refined = aiRes.data.refined_text.trim();
+            setDescription(refined);
+            descriptionRef.current = refined;
+            // Also attempt to detect location from refined text if not already found
+            if (!serviceArea) {
+              const detected = extractLocationFromDescription(refined);
+              if (detected) setServiceArea(detected);
+            }
+          }
+          if (aiRes.data.type && aiRes.data.sub_type) {
+            result = {
+              type: aiRes.data.type,
+              subType: aiRes.data.sub_type,
+              confidence: "high",
+            };
+          }
         }
       } catch (err) {
         console.warn("Primary AI classification failed, falling back to local dictionary", err);
