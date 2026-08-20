@@ -4,9 +4,10 @@ import React from "react";
 
 interface AudioWaveformProps {
   isRecording: boolean;
+  isConnecting?: boolean;
 }
 
-export function AudioWaveform({ isRecording }: AudioWaveformProps) {
+export function AudioWaveform({ isRecording, isConnecting }: AudioWaveformProps) {
   // 24 animated bars with varying heights and staggered animation delays
   const bars = [
     { height: "h-2", delay: "0ms" },
@@ -40,13 +41,17 @@ export function AudioWaveform({ isRecording }: AudioWaveformProps) {
       {bars.map((bar, index) => (
         <span
           key={index}
-          className={`w-[3px] rounded-full bg-emerald-400/90 transition-all duration-300 ${
-            isRecording ? "animate-pulse" : "opacity-30"
-          } ${bar.height}`}
+          className={`w-[3px] rounded-full transition-all duration-300 ${
+            isConnecting
+              ? "bg-amber-400/60 animate-pulse h-2"
+              : isRecording
+                ? `bg-emerald-400/90 animate-pulse ${bar.height}`
+                : "bg-emerald-400/20 opacity-30 h-1.5"
+          }`}
           style={{
-            animationDuration: isRecording ? `${600 + (index % 5) * 150}ms` : "0ms",
+            animationDuration: isConnecting ? "1200ms" : isRecording ? `${600 + (index % 5) * 150}ms` : "0ms",
             animationDelay: bar.delay,
-            transform: isRecording ? undefined : "scaleY(0.4)",
+            transform: !isRecording && !isConnecting ? "scaleY(0.4)" : undefined,
           }}
         />
       ))}
