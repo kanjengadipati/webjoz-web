@@ -467,11 +467,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         ]);
       }, 500);
     } else {
-      const inferredType = confirmedType;
-      if (inferredType) setBusinessType(inferredType);
+      setBusinessType("");
+      setBusinessSubType("");
+      setTypeWasInferred(false);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
-        typeMessage(t("dashboard.wizard.chooseMoreAppropriate", "Baik, silakan pilih yang lebih tepat:"), () => {
+        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
           setMessages((prev) => [
             ...prev,
             { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
@@ -616,7 +617,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setBusinessSubType(result.subType);
       setTypeWasInferred(true);
       setAwaitingInferenceConfirm(true);
-      const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { type: result.type ?? "", subType: result.subType ?? "" });
+      const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { subType: result.subType ?? result.type ?? "" });
       setTimeout(() => {
         typeMessage(confirmMsg, () => {
           setMessages((prev) => [
