@@ -132,6 +132,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Fotografer", emoji: "📷", label: "Fotografer" },
     { value: "Videografer", emoji: "🎥", label: "Videografer" },
     { value: "Desainer", emoji: "🎨", label: "Desainer" },
+    { value: "Developer & IT", emoji: "💻", label: "Developer & IT" },
     { value: "Digital & Marketing Agency", emoji: "📈", label: "Digital Agency" },
     { value: "Konsultan", emoji: "📊", label: "Konsultan" },
   ],
