@@ -8,7 +8,7 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, i
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
-import { refineTranscript } from "@/lib/api/ai";
+import { refineTranscript, classifyBusiness } from "@/lib/api/ai";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
@@ -535,7 +535,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
   };
 
-  const processDescriptionSubmission = (rawVal: string) => {
+  const processDescriptionSubmission = async (rawVal: string) => {
     const val = rawVal.trim();
     const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
     if (isSkip) {
@@ -563,10 +563,31 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       if (detected) setServiceArea(detected);
     }
 
-    const result = inferTypeFromDescription(val);
+    let result = inferTypeFromDescription(val);
+
+    // If local keyword match didn't yield a high confidence match with both type & subType,
+    // call the fast lightweight AI classifier fallback
+    if (result.confidence !== "high" || !result.subType) {
+      try {
+        const aiRes = await classifyBusiness(businessNameRef.current, val);
+        if (aiRes && aiRes.data && aiRes.data.type && aiRes.data.sub_type) {
+          result = {
+            type: aiRes.data.type,
+            subType: aiRes.data.sub_type,
+            confidence: "high",
+          };
+        }
+      } catch (err) {
+        console.warn("AI classification fallback failed, using local inference result", err);
+      }
+    }
+
     setInferenceResult(result);
 
     if (result.confidence === "high" && result.type && result.subType) {
+      setBusinessType(result.type);
+      setBusinessSubType(result.subType);
+      setTypeWasInferred(true);
       setAwaitingInferenceConfirm(true);
       const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { type: result.type ?? "", subType: result.subType ?? "" });
       setTimeout(() => {
