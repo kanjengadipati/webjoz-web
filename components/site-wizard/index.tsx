@@ -912,8 +912,8 @@ export function SiteWizard({
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
               const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : null;
               return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {BUSINESS_TYPES.map((bt) => {
                       const isSelected = chat.businessType === bt.value;
                       const categoryKeyMap: Record<string, { label: string; desc: string }> = {
@@ -925,39 +925,39 @@ export function SiteWizard({
                       };
                       const keys = categoryKeyMap[bt.value];
                       const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
-                      const translatedDesc = keys ? t(`dashboard.wizard.categories.${keys.desc}`, bt.desc) : bt.desc;
 
                       const categoryIconMap: Record<string, React.ReactNode> = {
-                        "Kuliner": <UtensilsCrossed className="w-4 h-4" />,
-                        "Toko & UMKM": <ShoppingBag className="w-4 h-4" />,
-                        "Toko": <ShoppingBag className="w-4 h-4" />,
-                        "Jasa & Booking": <Calendar className="w-4 h-4" />,
-                        "Portofolio & Kreator": <Palette className="w-4 h-4" />,
-                        "Company": <Building2 className="w-4 h-4" />,
+                        "Kuliner": <UtensilsCrossed className="w-3.5 h-3.5" />,
+                        "Toko & UMKM": <ShoppingBag className="w-3.5 h-3.5" />,
+                        "Toko": <ShoppingBag className="w-3.5 h-3.5" />,
+                        "Jasa & Booking": <Calendar className="w-3.5 h-3.5" />,
+                        "Portofolio & Kreator": <Palette className="w-3.5 h-3.5" />,
+                        "Company": <Building2 className="w-3.5 h-3.5" />,
                       };
 
                       return (
                         <button
                           key={bt.value}
+                          type="button"
                           onClick={() => !isLocked && chat.handleSelectType(bt.value)}
                           disabled={isLocked}
-                          className={`group flex flex-col items-start gap-1 p-3 border rounded-2xl text-left transition-all ${isSelected ? "border-primary/70 bg-primary/15" : isLocked ? "opacity-30 cursor-default" : "hover:border-white/20 hover:bg-white/[0.07] active:scale-[0.97] cursor-pointer bg-[#16191E]/80 border-white/[0.08]"}`}
+                          className={`group flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer active:scale-95 ${
+                            isSelected
+                              ? "border-primary bg-primary/20 text-white shadow-xs shadow-primary/20 ring-1 ring-primary/40"
+                              : isLocked
+                              ? "opacity-35 cursor-default border-white/[0.06] bg-white/[0.02] text-slate-400"
+                              : "border-white/[0.08] bg-[#16191E]/90 text-slate-300 hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                          }`}
                         >
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-0.5 transition-all ${isSelected ? "bg-primary/20 text-primary border border-primary/30" : "bg-white/[0.05] border border-white/[0.08] text-slate-300 group-hover:text-white group-hover:border-white/20"}`}>
-                            {categoryIconMap[bt.value] || <Sparkles className="w-4 h-4" />}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold ${isSelected ? "text-primary" : "text-slate-200"}`}>{translatedLabel}</span>
-                            {chat.suggestedHint?.type === bt.value && (
-                              <span className="text-[10px] font-semibold text-amber-300 bg-amber-800/20 px-2 py-0.5 rounded-full">{t("dashboard.wizard.suggestedBadge", "✨ Disarankan")}</span>
-                            )}
-                          </div>
-                          <span className="text-[10px] text-slate-400">{translatedDesc}</span>
-                          {isSelected && !chat.businessSubType && <span className="text-[9px] font-bold text-primary mt-0.5">{t("dashboard.wizard.typeSelectedChooseSub", "✓ Dipilih — pilih jenis di bawah")}</span>}
-                          {isSelected && chat.businessSubType && (
-                            <span className="text-[9px] font-bold text-emerald-400 mt-0.5">
-                              ✓ {t(`dashboard.wizard.subtypes.${chat.businessSubType}`, chat.businessSubType)}
-                            </span>
+                          <span className={`transition-colors shrink-0 ${isSelected ? "text-primary" : "text-slate-400 group-hover:text-white"}`}>
+                            {categoryIconMap[bt.value] || <Sparkles className="w-3.5 h-3.5" />}
+                          </span>
+                          <span>{translatedLabel}</span>
+                          {chat.suggestedHint?.type === bt.value && !isSelected && (
+                            <span className="text-[9px] font-bold text-amber-300 bg-amber-800/30 px-1.5 py-0.5 rounded-full">✨ Disarankan</span>
+                          )}
+                          {isSelected && (
+                            <span className="text-primary text-xs font-bold shrink-0">✓</span>
                           )}
                         </button>
                       );
