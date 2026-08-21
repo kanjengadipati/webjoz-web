@@ -139,6 +139,10 @@ export default function UpgradePage() {
 
     try {
       const currency = paymentGateway === "paypal" ? "USD" : "IDR";
+      const amount = billingCycle === "yearly"
+        ? (paymentGateway === "paypal" ? (plan.price_yearly_usd || (plan.price_yearly ? plan.price_yearly / 16000 : plan.price_monthly * 12 / 16000)) : (plan.price_yearly || plan.price_monthly * 12))
+        : (paymentGateway === "paypal" ? (plan.price_monthly_usd || plan.price_monthly / 16000) : plan.price_monthly);
+
       const res = await request<PromoValidationResponse>(
         "/promos/validate",
         {
@@ -146,9 +150,7 @@ export default function UpgradePage() {
           body: JSON.stringify({
             code: code.trim(),
             plan_slug: plan.slug,
-            amount: paymentGateway === "paypal" 
-              ? (plan.price_monthly_usd || plan.price_monthly / 16000)
-              : plan.price_monthly,
+            amount: amount,
             currency: currency,
             cycle: billingCycle,
             tenant_id: activeTenant?.tenant.id,
@@ -160,10 +162,10 @@ export default function UpgradePage() {
       const result = res.data;
       setPromoValidation(result);
       if (!result.valid) {
-        setPromoError(result.message);
+        setPromoError(result.message || "Kode promo tidak valid");
       }
     } catch (err: any) {
-      setPromoError(err.message || "Failed to validate promo code");
+      setPromoError(err.message || "Gagal memvalidasi kode promo");
       setPromoValidation(null);
     } finally {
       setPromoLoading(false);
@@ -428,8 +430,8 @@ export default function UpgradePage() {
           <button
             onClick={() => {
               if (plans.length > 0 && !paying) {
-                const selectedPlan = plans.find(p => p.slug !== currentPlan) || plans[0];
-                validatePromoCode(promoCode, selectedPlan);
+                const targetPlan = plans.find(p => p.slug !== "free" && p.slug !== "starter") || plans.find(p => p.slug !== "free") || plans[0];
+                validatePromoCode(promoCode, targetPlan);
               }
             }}
             disabled={!promoCode.trim() || promoLoading || paying !== null}
