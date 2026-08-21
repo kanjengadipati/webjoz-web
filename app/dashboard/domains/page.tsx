@@ -17,6 +17,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
 import { MIDTRANS_CLIENT_KEY, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
 import PaymentModal from "@/components/payment-modal";
+import type { Profile } from "@/lib/types";
 
 // Common country list for WHOIS registration
 const COUNTRY_LIST = [
@@ -124,6 +125,7 @@ export default function DomainsPage() {
   const [snapReady,           setSnapReady]           = useState(false);
   const [paypalModal,         setPaypalModal]         = useState(false);
   const [paypalPendingOrderID,setPaypalPendingOrderID] = useState<string | null>(null);
+  const [userProfile,         setUserProfile]         = useState<Profile | null>(null);
   const [purchaser, setPurchaser] = useState({
     name: "",
     company: "",
@@ -135,6 +137,67 @@ export default function DomainsPage() {
     country: "ID",
     zip: "",
   });
+
+  const populatePurchaserData = useCallback((profile?: Profile | null, tenantName?: string) => {
+    let saved: any = {};
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("webjoz_saved_domain_purchaser");
+        if (raw) saved = JSON.parse(raw);
+      } catch {}
+    }
+
+    const name = profile?.name || saved.name || "";
+    const email = profile?.email || saved.email || "";
+    const company = tenantName || saved.company || "";
+    const rawPhone = profile?.phone_number || saved.phone || "";
+    const address = saved.address || "";
+    const city = saved.city || "";
+    const state = saved.state || "";
+    const country = saved.country || "ID";
+    const zip = saved.zip || "";
+
+    // Parse phone CC and local number
+    let cc = "+62";
+    let local = "";
+    if (rawPhone) {
+      if (rawPhone.startsWith("+62")) {
+        cc = "+62";
+        local = rawPhone.slice(3);
+      } else if (rawPhone.startsWith("62")) {
+        cc = "+62";
+        local = rawPhone.slice(2);
+      } else if (rawPhone.startsWith("0")) {
+        cc = "+62";
+        local = rawPhone.slice(1);
+      } else if (rawPhone.startsWith("+")) {
+        const matched = COUNTRY_LIST.find(c => rawPhone.startsWith(c.dial));
+        if (matched) {
+          cc = matched.dial;
+          local = rawPhone.slice(matched.dial.length);
+        } else {
+          local = rawPhone;
+        }
+      } else {
+        local = rawPhone;
+      }
+    }
+
+    setPhoneCC(cc);
+    setPhoneLocal(local);
+
+    setPurchaser({
+      name,
+      company,
+      email,
+      phone: rawPhone ? (rawPhone.startsWith("+") ? rawPhone : `${cc}${local}`) : "",
+      address,
+      city,
+      state,
+      country,
+      zip,
+    });
+  }, []);
 
   // When phoneCC or phoneLocal changes, sync purchaser.phone
   useEffect(() => {
@@ -177,15 +240,23 @@ export default function DomainsPage() {
     if (!token || !activeTenantId) return;
     try {
       setLoading(true);
-      const [dr, sr, pr] = await Promise.all([
+      const [dr, sr, pr, profileRes] = await Promise.all([
         request<Domain[]>("/domains", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
         request<Site[]>  ("/sites",   { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
         request<any>("/plans/active", { headers: { "X-Tenant-ID": activeTenantId.toString() } }, token),
+        request<Profile>("/auth/profile", {}, token).catch(() => ({ data: null })),
       ]);
       setDomains(dr.data || []);
       const list = sr.data || [];
       setSites(list);
       setCurrentPlan(pr.data || null);
+
+      if (profileRes?.data) {
+        setUserProfile(profileRes.data);
+        populatePurchaserData(profileRes.data, activeTenant?.tenant?.name);
+      } else {
+        populatePurchaserData(null, activeTenant?.tenant?.name);
+      }
 
       const params  = new URLSearchParams(window.location.search);
       const qSiteId = params.get("site_id");
@@ -265,6 +336,9 @@ export default function DomainsPage() {
   const handleBuy = async (result: AvailabilityResult) => {
     setPurchaserDomain(result.domain);
     setSelectedDomainResult(result);
+    if (!purchaser.name || !purchaser.email) {
+      populatePurchaserData(userProfile, activeTenant?.tenant?.name);
+    }
     setShowPurchaserModal(true);
   };
 
@@ -287,6 +361,13 @@ export default function DomainsPage() {
         country: purchaser.country,
         zip: purchaser.zip,
       };
+
+      // Persist purchaser details for future domain purchases
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("webjoz_saved_domain_purchaser", JSON.stringify(purchaserPayload));
+        } catch {}
+      }
 
       if (paymentGateway === "paypal") {
         // PayPal flow
