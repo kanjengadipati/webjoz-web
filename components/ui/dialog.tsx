@@ -12,7 +12,7 @@ export function Dialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title: string;
+  title: string | ReactNode;
   children: ReactNode;
   footer?: ReactNode;
 }) {

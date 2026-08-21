@@ -50,7 +50,9 @@ import {
   snapshotHasProgress,
   toResumePreview,
   WizardResumeSnapshot,
+  savePendingUpgradeDraft,
 } from "./wizard-persistence";
+import { WizardUpgradeModal } from "./wizard-upgrade-modal";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
@@ -104,6 +106,7 @@ export function SiteWizard({
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Client-only clock to avoid hydration mismatch with new Date()
   const [clock, setClock] = useState(() => new Date());
@@ -480,14 +483,22 @@ export function SiteWizard({
       router.push(`/dashboard/sites/${siteId}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
-        pushToast("Batas situs tercapai", "error", {
-          message: "Anda sudah mencapai jumlah situs maksimal untuk paket saat ini. Upgrade untuk membuat situs baru.",
-          actionLabel: "Lihat Paket",
-          actionHref: "/dashboard/upgrade",
-          autoClose: false,
+        // Save pending upgrade draft snapshot to localStorage so it's 100% recoverable
+        savePendingUpgradeDraft({
+          businessName: chat.businessName,
+          businessType: chat.businessType,
+          businessSubType: chat.businessSubType,
+          description: chat.description,
+          whatsapp: chat.whatsapp,
+          serviceArea: chat.serviceArea,
+          mood: chat.mood,
+          templateId: preview.previewData?.template_id || "TEMPLATE_DYNAMIC",
+          previewContent: preview.previewData?.content,
+          previewDesignToken: preview.previewData?.design_token,
+          savedAt: Date.now(),
         });
-        isSavingRef.current = false; // allow retry after navigation
-        router.push("/dashboard/upgrade");
+        isSavingRef.current = false;
+        setShowUpgradeModal(true);
         return;
       }
       isSavingRef.current = false; // allow retry on generic error
@@ -1383,6 +1394,13 @@ export function SiteWizard({
         onClose={() => setSheetOpen(false)}
         chat={chat}
         onSave={handleDetailsSheetSave}
+      />
+
+      <WizardUpgradeModal
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        businessName={chat.businessName}
+        onUpgradeSuccess={handleGoToEditor}
       />
     </div>
   );

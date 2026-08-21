@@ -84,7 +84,7 @@ function PublicWizardContent() {
     // Clean up the URL immediately so refresh doesn't re-trigger
     window.history.replaceState(null, "", "/create");
 
-    const raw = localStorage.getItem(PENDING_KEY);
+    const raw = localStorage.getItem(PENDING_KEY) || localStorage.getItem("webjoz_pending_upgrade_site");
     if (!raw) {
       // No pending wizard data (e.g. magic link opened in different browser/device).
       router.replace("/dashboard/sites");

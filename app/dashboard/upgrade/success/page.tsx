@@ -1,14 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Loader2, Check, X, ArrowLeft, Zap } from "lucide-react";
+import { Loader2, Check, X, ArrowLeft, Zap, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
+import { useToast } from "@/components/toast-provider";
+import { loadPendingUpgradeDraft, clearPendingUpgradeDraft, PendingUpgradeSiteDraft } from "@/components/site-wizard/wizard-persistence";
+import { buildFullContent } from "@/lib/build-full-content";
 
 interface Transaction {
   id: number;
@@ -25,7 +28,9 @@ const SETTLEMENT_STATUSES = new Set(["settlement", "capture"]);
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = useAuthToken();
+  const { pushToast } = useToast();
   const { activeTenant, refresh: refreshTenant } = useActiveTenant();
   const { t, locale } = useI18n();
 
@@ -35,9 +40,78 @@ export default function PaymentSuccessPage() {
   const [settled, setSettled] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState("");
+  const [pendingDraft, setPendingDraft] = useState<PendingUpgradeSiteDraft | null>(null);
+  const [isSavingSite, setIsSavingSite] = useState(false);
   const settledRef = useRef(false);
   const tenantRef = useRef(activeTenant);
   tenantRef.current = activeTenant;
+
+  useEffect(() => {
+    const draft = loadPendingUpgradeDraft();
+    if (draft && draft.businessName) {
+      setPendingDraft(draft);
+    }
+  }, []);
+
+  const handleSavePendingSite = async () => {
+    if (!token || !activeTenant || !pendingDraft) return;
+    try {
+      setIsSavingSite(true);
+      const subdomain =
+        pendingDraft.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
+        "-" +
+        Math.floor(Math.random() * 9000 + 1000);
+
+      // 1. Create site in active tenant
+      const siteRes = await request<any>(
+        "/sites",
+        {
+          method: "POST",
+          headers: { "X-Tenant-ID": activeTenant.tenant.id.toString() },
+          body: JSON.stringify({
+            name: pendingDraft.businessName,
+            template_id: pendingDraft.templateId || "TEMPLATE_DYNAMIC",
+            subdomain,
+          }),
+        },
+        token
+      );
+
+      const siteId = siteRes.data.id;
+
+      // 2. Save enriched content
+      if (pendingDraft.previewContent) {
+        const enriched = buildFullContent(
+          { content: pendingDraft.previewContent, design_token: pendingDraft.previewDesignToken },
+          pendingDraft.businessName,
+          pendingDraft.businessSubType || pendingDraft.businessType,
+          pendingDraft.description || "",
+          pendingDraft.whatsapp || ""
+        );
+
+        await request(
+          `/sites/${siteId}/content`,
+          {
+            method: "PUT",
+            headers: { "X-Tenant-ID": activeTenant.tenant.id.toString() },
+            body: JSON.stringify({
+              content: enriched,
+              design_token: pendingDraft.previewDesignToken || {},
+            }),
+          },
+          token
+        );
+      }
+
+      // 3. Clear draft and navigate to editor
+      clearPendingUpgradeDraft();
+      pushToast("Website berhasil disimpan ke paket Pro Anda!", "success");
+      router.push(`/dashboard/sites/${siteId}`);
+    } catch (err: any) {
+      pushToast(err.message || "Gagal menyimpan website otomatis. Silakan coba lagi.", "error");
+      setIsSavingSite(false);
+    }
+  };
 
   // Poll transaction until settlement
   useEffect(() => {
@@ -173,6 +247,35 @@ export default function PaymentSuccessPage() {
 
         {settled && (
           <div className="flex flex-col gap-3">
+            {pendingDraft && (
+              <div className="rounded-2xl border-2 border-amber-500/50 bg-gradient-to-b from-amber-500/15 via-amber-500/5 to-transparent p-5 text-left space-y-3 shadow-lg">
+                <div className="flex items-center gap-2 text-amber-400">
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                  <h3 className="font-bold text-sm sm:text-base text-white">
+                    Website "{pendingDraft.businessName}" Siap Disimpan!
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Website yang Anda buat di wizard tadi siap disimpan ke paket Pro Anda yang baru. Klik tombol di bawah untuk langsung membuka Editor.
+                </p>
+                <Button
+                  onClick={handleSavePendingSite}
+                  disabled={isSavingSite}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-500/25 transition-all text-sm"
+                >
+                  {isSavingSite ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Menyimpan Website...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-4 h-4 mr-1.5 fill-black" /> Simpan & Buka di Editor &rarr;
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
             <Link
               href="/dashboard"
               onClick={(e) => {
@@ -181,7 +284,7 @@ export default function PaymentSuccessPage() {
                 window.location.href = "/dashboard";
               }}
             >
-              <Button className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
+              <Button variant={pendingDraft ? "secondary" : "default"} className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
                 <Zap className="size-4 mr-2" /> {t("dashboard.upgradeSuccess.goToDashboard")}
               </Button>
             </Link>
