@@ -684,7 +684,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Company",
+    type: "Layanan & Reservasi",
     subType: "Travel & Wisata",
     keywords: [
       // ID
@@ -696,7 +696,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 3,
   },
   {
-    type: "Company",
+    type: "Layanan & Reservasi",
     subType: "Hotel & Penginapan",
     keywords: [
       // ID
