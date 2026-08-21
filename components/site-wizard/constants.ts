@@ -5,7 +5,7 @@ export const PENDING_KEY = "webjoz_pending_wizard_data";
 export const MOOD_OPTIONS: MoodItem[] = [
   {
     value: "clean-modern",
-    emoji: "✨",
+    emoji: "🖥️",
     label: "Modern & Bersih",
     desc: "Bersih, rapi, dan profesional",
     palette: ["#FFFFFF", "#2563EB", "#0F172A"],
@@ -35,7 +35,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
   {
     value: "dark-premium",
-    emoji: "🌙",
+    emoji: "👑",
     label: "Elegan & Mewah",
     desc: "Gelap, mewah, dan eksklusif",
     palette: ["#0D0D0B", "#D4AF37", "#F5F0E8"],
@@ -55,7 +55,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
   {
     value: "retro",
-    emoji: "📼",
+    emoji: "⏰",
     label: "Klasik & Retro",
     desc: "Klasik, nostalgia, dan berkarakter",
     palette: ["#EFE6D5", "#8B4513", "#D97706"],
@@ -121,7 +121,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
   ],
   "Layanan & Reservasi": [
-    { value: "Hotel & Penginapan", emoji: "🏨", label: "Hotel" },
+    { value: "Hotel & Penginapan", emoji: "🏨", label: "Penginapan" },
     { value: "Travel & Wisata", emoji: "✈️", label: "Travel" },
     { value: "Salon & Kecantikan", emoji: "💄", label: "Salon" },
     { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
@@ -131,7 +131,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Laundry", emoji: "🧺", label: "Laundry" },
   ],
   "Jasa & Booking": [
-    { value: "Hotel & Penginapan", emoji: "🏨", label: "Hotel" },
+    { value: "Hotel & Penginapan", emoji: "🏨", label: "Penginapan" },
     { value: "Travel & Wisata", emoji: "✈️", label: "Travel" },
     { value: "Salon & Kecantikan", emoji: "💄", label: "Salon" },
     { value: "Barbershop", emoji: "✂️", label: "Barbershop" },

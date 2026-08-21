@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
   ArrowRight,
+  Bot,
   Building2,
   Calendar,
   Camera,
@@ -876,7 +877,7 @@ export function SiteWizard({
                         "dark-premium":  { icon: <Crown   className="w-4 h-4" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
                         "bold-dark":     { icon: <Zap     className="w-4 h-4" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
                         "retro":         { icon: <Clock   className="w-4 h-4" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
-                        "futuristic":    { icon: <Cpu     className="w-4 h-4" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
+                        "futuristic":    { icon: <Bot     className="w-4 h-4" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
                       };
                       const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
 
