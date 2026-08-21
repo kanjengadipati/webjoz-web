@@ -22,6 +22,7 @@ import {
   LayoutDashboard, DollarSign, Award, Clock, Sparkles, Share2,
   Copy, Check, ArrowRight, Gift, Target,
 } from "lucide-react";
+import { UsageMeter } from "@/components/dashboard/usage-meter";
 import type { Profile } from "@/lib/types";
 
 interface PlatformStats {
@@ -658,7 +659,7 @@ export default function DashboardOverviewPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
           <div>
             <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl">
-              {t("dashboard.welcome", undefined, { name: profile ? `, ${profile.name.split(" ")[0]}` : "" })}
+              {t("dashboard.welcome", undefined, { name: profile?.name ? `, ${profile.name.split(" ")[0]}` : "" })}
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
               {t("dashboard.welcomeDesc")}
@@ -691,70 +692,27 @@ export default function DashboardOverviewPage() {
         <StatCard label={t("dashboard.statHealth")} value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub={t("dashboard.allSystemsNormal")} />
       </section>
 
-      {currentPlan && (
+      {currentPlan && tenantUsage && (
         <section>
           <h3 className="text-lg font-bold tracking-tight mb-4 flex items-center gap-2">
             <Database className="size-4 text-primary" />
             {t("dashboard.usageMeter")}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterWebsites")}</span>
-                <span className="text-sm font-bold">{metrics.totalSites} / {currentPlan.max_sites <= 0 ? "∞" : currentPlan.max_sites}</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{
-                    width: currentPlan.max_sites <= 0 ? "100%" : `${Math.min((metrics.totalSites / currentPlan.max_sites) * 100, 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterAiGenerate")}</span>
-                <span className="text-sm font-bold">{tenantUsage?.usage.generate_count ?? 0} / {currentPlan.max_ai_generates <= 0 ? "∞" : currentPlan.max_ai_generates}</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-amber-500 transition-all duration-500"
-                  style={{
-                    width: currentPlan.max_ai_generates <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.generate_count ?? 0) / currentPlan.max_ai_generates) * 100, 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterSectionRegen")}</span>
-                <span className="text-sm font-bold">{tenantUsage?.usage.section_regen_count ?? 0} / {currentPlan.max_section_regens <= 0 ? "∞" : currentPlan.max_section_regens}</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-violet-500 transition-all duration-500"
-                  style={{
-                    width: currentPlan.max_section_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.section_regen_count ?? 0) / currentPlan.max_section_regens) * 100, 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className="bg-card rounded-3xl border border-border/60 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-muted-foreground">{t("dashboard.meterDesignRegen")}</span>
-                <span className="text-sm font-bold">{tenantUsage?.usage.design_regen_count ?? 0} / {currentPlan.max_design_regens <= 0 ? "∞" : currentPlan.max_design_regens}</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-cyan-500 transition-all duration-500"
-                  style={{
-                    width: currentPlan.max_design_regens <= 0 ? "100%" : `${Math.min(((tenantUsage?.usage.design_regen_count ?? 0) / currentPlan.max_design_regens) * 100, 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          <UsageMeter
+            usage={{
+              sites: metrics.totalSites,
+              generates: tenantUsage.usage.generate_count ?? 0,
+              sectionRegens: tenantUsage.usage.section_regen_count ?? 0,
+              designRegens: tenantUsage.usage.design_regen_count ?? 0,
+            }}
+            limits={{
+              maxSites: currentPlan.max_sites,
+              maxGenerates: currentPlan.max_ai_generates,
+              maxSectionRegens: currentPlan.max_section_regens,
+              maxDesignRegens: currentPlan.max_design_regens,
+            }}
+            siteCount={metrics.totalSites}
+          />
         </section>
       )}
 

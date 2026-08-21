@@ -6,6 +6,7 @@ const DASHBOARD_PAGES = [
   { path: "/dashboard/sites", name: "Sites" },
   { path: "/dashboard/domains", name: "Domains" },
   { path: "/dashboard/leads", name: "Leads" },
+  { path: "/dashboard/usage", name: "Usage" },
   { path: "/dashboard/analytics", name: "Analytics" },
   { path: "/dashboard/upgrade", name: "Upgrade" },
   { path: "/dashboard/settings", name: "Settings" },

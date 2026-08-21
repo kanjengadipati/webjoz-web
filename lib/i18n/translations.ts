@@ -67,6 +67,8 @@ export interface Translations {
     footerTerms: string;
     footerRefund: string;
     footerContact: string;
+    footerHelp: string;
+    footerChangelog: string;
     footerLogin: string;
     footerBlog: string;
     footerHome: string;
@@ -376,6 +378,11 @@ export interface Translations {
     meterAiGenerate: string;
     meterSectionRegen: string;
     meterDesignRegen: string;
+    limitReached: string;
+    nearLimit: string;
+    unlimited: string;
+    unlimitedUsage: string;
+    remaining: string;
     recentActivity: string;
     leadNew: string;
     siteUpdated: string;
@@ -385,6 +392,22 @@ export interface Translations {
     insightNoTraffic: string;
     insightLeads: string;
     insightCreateSite: string;
+    loadFailed: string;
+    usage: {
+      currentPlan: string;
+      planDescription: string;
+      planLimits: string;
+      allPlans: string;
+      feature: string;
+      price: string;
+      free: string;
+      resetMonthly: string;
+      currentPeriod: string;
+      teamMembers: string;
+      customDomains: string;
+      limitWarning: string;
+      limitReachedDesc: string;
+    };
     admin: {
       platformOverview: string;
       platformStats: string;
@@ -444,6 +467,7 @@ export interface Translations {
       salesReferral: string;
       salesCommissions: string;
       team: string;
+      usage: string;
       upgrade: string;
       settings: string;
     };
@@ -2223,6 +2247,8 @@ export const translations: Record<Locale, Translations> = {
       footerTerms: "Syarat & Ketentuan",
       footerRefund: "Kebijakan Refund",
       footerContact: "Hubungi Kami",
+      footerHelp: "Pusat Bantuan",
+      footerChangelog: "Changelog",
       footerLogin: "Login",
       footerBlog: "Blog",
       footerHome: "Beranda",
@@ -2531,6 +2557,12 @@ export const translations: Record<Locale, Translations> = {
       meterAiGenerate: "AI Generate",
       meterSectionRegen: "Regen Section",
       meterDesignRegen: "Regen Desain",
+      limitReached: "Habis",
+      nearLimit: "Hampir Habis",
+      unlimited: "Tak Terbatas",
+      unlimitedUsage: "Penggunaan tanpa batas pada paket ini.",
+      remaining: "{count} tersisa bulan ini",
+      loadFailed: "Gagal memuat data pemakaian.",
       recentActivity: "Aktivitas Terbaru",
       leadNew: "Lead baru: {name}",
       siteUpdated: "Website \"{name}\" diupdate",
@@ -2540,6 +2572,21 @@ export const translations: Record<Locale, Translations> = {
       insightNoTraffic: "📉 Belum ada traffic signifikan minggu ini.",
       insightLeads: "🔥 Anda memiliki {count} prospek baru!",
       insightCreateSite: "✨ Buat website pertama Anda dengan AI Builder!",
+      usage: {
+        currentPlan: "Paket Aktif",
+        planDescription: "Detail pemakaian dan batas paket Anda saat ini.",
+        planLimits: "Batas Paket",
+        allPlans: "Perbandingan Semua Paket",
+        feature: "Fitur",
+        price: "Harga",
+        free: "Gratis",
+        resetMonthly: "Pemakaian di-reset setiap awal bulan",
+        currentPeriod: "Periode: {month}",
+        teamMembers: "Anggota Tim",
+        customDomains: "Custom Domain",
+        limitWarning: "Anda telah mencapai batas pemakaian paket.",
+        limitReachedDesc: "Upgrade paket untuk melanjutkan.",
+      },
       admin: {
         platformOverview: "Platform Overview",
         platformStats: "{tenants} klien · {users} pengguna · {sites} website di seluruh platform",
@@ -2599,6 +2646,7 @@ export const translations: Record<Locale, Translations> = {
         salesReferral: "Kode Referral",
         salesCommissions: "Komisi Saya",
         team: "Tim",
+        usage: "Pemakaian",
         upgrade: "Upgrade Paket",
         settings: "Pengaturan",
       },
@@ -4340,7 +4388,7 @@ export const translations: Record<Locale, Translations> = {
           "Konstruksi": "Konstruksi",
           "Pendidikan & Kursus": "Pendidikan",
           "Travel & Wisata": "Travel",
-          "Hotel & Penginapan": "Hotel",
+          "Hotel & Penginapan": "Penginapan",
           "Manufaktur": "Manufaktur",
         },
         resumePrompt: "Lanjutkan sesi sebelumnya?",
@@ -4424,6 +4472,8 @@ export const translations: Record<Locale, Translations> = {
       footerTerms: "Terms & Conditions",
       footerRefund: "Refund Policy",
       footerContact: "Contact Us",
+      footerHelp: "Help Center",
+      footerChangelog: "Changelog",
       footerLogin: "Login",
       footerBlog: "Blog",
       footerHome: "Home",
@@ -4732,6 +4782,12 @@ export const translations: Record<Locale, Translations> = {
       meterAiGenerate: "AI Generate",
       meterSectionRegen: "Section Regen",
       meterDesignRegen: "Design Regen",
+      limitReached: "Limit Reached",
+      nearLimit: "Near Limit",
+      unlimited: "Unlimited",
+      unlimitedUsage: "Unlimited usage on this plan.",
+      remaining: "{count} remaining this month",
+      loadFailed: "Failed to load usage data.",
       recentActivity: "Recent Activity",
       leadNew: "New lead: {name}",
       siteUpdated: "Website \"{name}\" updated",
@@ -4741,6 +4797,21 @@ export const translations: Record<Locale, Translations> = {
       insightNoTraffic: "📉 No significant traffic this week yet.",
       insightLeads: "🔥 You have {count} new prospects!",
       insightCreateSite: "✨ Create your first website with AI Builder!",
+      usage: {
+        currentPlan: "Current Plan",
+        planDescription: "Your current plan details and usage limits.",
+        planLimits: "Plan Limits",
+        allPlans: "Compare All Plans",
+        feature: "Feature",
+        price: "Price",
+        free: "Free",
+        resetMonthly: "Usage resets at the beginning of each month",
+        currentPeriod: "Period: {month}",
+        teamMembers: "Team Members",
+        customDomains: "Custom Domains",
+        limitWarning: "You have reached your plan usage limit.",
+        limitReachedDesc: "Upgrade your plan to continue.",
+      },
       admin: {
         platformOverview: "Platform Overview",
         platformStats: "{tenants} tenants · {users} users · {sites} sites across the platform",
@@ -4800,6 +4871,7 @@ export const translations: Record<Locale, Translations> = {
         salesReferral: "Referral Code",
         salesCommissions: "My Commissions",
         team: "Team",
+        usage: "Usage",
         upgrade: "Upgrade Plan",
         settings: "Settings",
       },

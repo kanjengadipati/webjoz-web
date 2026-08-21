@@ -46,7 +46,7 @@ async function saveAuthState(browser: any, token: string, email: string, storage
   await context.close();
 }
 
-async function createMockAuthState(email: string, storageFile: string) {
+async function createMockAuthState(email: string, storageFile: string, token = "mock-token-e2e") {
   // No API available — create a mock storageState so authed tests work with mocked routes
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
   const mockState = {
@@ -54,7 +54,7 @@ async function createMockAuthState(email: string, storageFile: string) {
     origins: [{
       origin: process.env.BASE_URL || "http://localhost:3000",
       localStorage: [
-        { name: "webjoz_access_token", value: "mock-token-e2e" },
+        { name: "webjoz_access_token", value: token },
         { name: "webjoz_email", value: email },
       ],
     }],
@@ -81,5 +81,5 @@ setup("authenticate as admin", async ({ request, browser }) => {
       return;
     }
   } catch {}
-  await createMockAuthState(ADMIN_EMAIL, adminStorageFile);
+  await createMockAuthState(ADMIN_EMAIL, adminStorageFile, "mock-admin-token-e2e");
 });

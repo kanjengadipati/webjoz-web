@@ -49,6 +49,7 @@ export function usePermissions() {
     hasPermission,
     permissions: profile?.permissions || [],
     role: profile?.role || "user",
+    isModerator: profile?.role === "admin" || profile?.role === "superadmin",
     loading,
   };
 }

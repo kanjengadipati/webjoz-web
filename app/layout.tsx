@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { Locale } from "@/lib/i18n/translations";
 import { LOCALE_STORAGE_KEY } from "@/lib/i18n/context";
 import { Providers } from "@/components/providers";
+import { SupportWidget } from "@/components/support-widget";
 import { SITE_URL, siteUrl } from "@/lib/site-config";
 import "./globals.css";
 
@@ -87,6 +88,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </div>
         </Providers>
         <Analytics />
+        <SupportWidget />
       </body>
     </html>
   );

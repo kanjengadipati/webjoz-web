@@ -4,6 +4,7 @@ import { mockAllRoutes } from "../../api-mocks";
 test.describe("Forgot/Reset Password", () => {
   test.beforeEach(async ({ page }) => {
     mockAllRoutes(page);
+    await page.goto("/login");
     await page.evaluate(() => localStorage.clear());
   });
 

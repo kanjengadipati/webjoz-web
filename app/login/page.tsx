@@ -78,6 +78,10 @@ export default function LoginPage() {
     if (!authReady) return;
     if (!token) return;
 
+    // Clear stale redirect/wizard state from previous sessions
+    localStorage.removeItem("webjoz_login_redirect");
+    localStorage.removeItem("webjoz_pending_wizard_data");
+
     const params = new URLSearchParams(window.location.search);
     // Do not auto-redirect if we are in the middle of verifying a magic token
     if (params.get("magic_token")) return;
@@ -98,14 +102,13 @@ export default function LoginPage() {
 
   function finishLogin(email: string, accessToken: string) {
     persistAuthSession(email, accessToken);
+    // Clear redirect/wizard state from previous sessions so regular login always goes to dashboard
+    localStorage.removeItem("webjoz_login_redirect");
+    localStorage.removeItem("webjoz_pending_wizard_data");
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
     const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
-    const savedRedirect = localStorage.getItem("webjoz_login_redirect");
-    localStorage.removeItem("webjoz_login_redirect");
     if (redirectParam) {
       router.push(redirectParam);
-    } else if (savedRedirect) {
-      router.push(savedRedirect);
     } else if (pendingWizard) {
       router.push("/create?action=save");
     } else {

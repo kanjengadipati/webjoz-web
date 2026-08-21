@@ -5,6 +5,7 @@ import { TEST_DATA } from "../../fixtures/test-data";
 test.describe("Registration Flow", () => {
   test.beforeEach(async ({ page }) => {
     mockAllRoutes(page);
+    await page.goto("/register");
     await page.evaluate(() => localStorage.clear());
   });
 

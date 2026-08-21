@@ -162,13 +162,6 @@ export function useWizardPreview() {
 
       const now = Date.now();
 
-      // 1. Safety timeout
-      if (now - startTime > 180000) {
-        pendingResultRef.current = true;
-        setTimeout(() => setPreviewState("result"), 600);
-        return;
-      }
-
       const currentStep = loadingStepRef.current;
 
       // 2. Update ticking timer for the active step — only once per second (floor check)
