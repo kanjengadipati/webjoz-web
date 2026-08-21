@@ -99,6 +99,45 @@ export function snapshotHasProgress(snapshot: WizardResumeSnapshot | null): bool
   );
 }
 
+export const WIZARD_PENDING_UPGRADE_KEY = "webjoz_pending_upgrade_site";
+
+export interface PendingUpgradeSiteDraft {
+  businessName: string;
+  businessType: string;
+  businessSubType?: string;
+  description?: string;
+  whatsapp?: string;
+  serviceArea?: string;
+  mood?: string;
+  templateId?: string;
+  previewContent?: Record<string, any>;
+  previewDesignToken?: Record<string, any>;
+  savedAt: number;
+}
+
+export function savePendingUpgradeDraft(draft: PendingUpgradeSiteDraft): void {
+  try {
+    window.localStorage.setItem(WIZARD_PENDING_UPGRADE_KEY, JSON.stringify(draft));
+  } catch {}
+}
+
+export function loadPendingUpgradeDraft(): PendingUpgradeSiteDraft | null {
+  try {
+    const raw = window.localStorage.getItem(WIZARD_PENDING_UPGRADE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as PendingUpgradeSiteDraft;
+  } catch {
+    return null;
+  }
+}
+
+export function clearPendingUpgradeDraft(): void {
+  try {
+    window.localStorage.removeItem(WIZARD_PENDING_UPGRADE_KEY);
+  } catch {}
+}
+
+
 export function toResumePreview(preview: PreviewData): WizardResumePreview {
   return {
     templateId: preview.template_id,
