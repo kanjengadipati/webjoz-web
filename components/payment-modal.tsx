@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { MIDTRANS_SNAP_BASE_URL } from "@/lib/config";
 
 interface PaymentModalProps {
   snapToken: string;
@@ -17,7 +18,7 @@ const PaymentModal = ({ snapToken, clientKey, onClose, onPaymentSuccess }: Payme
   useEffect(() => {
     if (typeof window !== "undefined" && !snap) {
       const midtransScript = document.createElement("script");
-      midtransScript.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+      midtransScript.src = `${MIDTRANS_SNAP_BASE_URL}/snap/snap.js`;
       if (clientKey) {
         midtransScript.setAttribute("data-client-key", clientKey);
       }
