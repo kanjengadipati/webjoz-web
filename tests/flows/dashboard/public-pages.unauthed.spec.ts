@@ -47,4 +47,22 @@ test.describe("Unauthenticated - Public Pages", () => {
     await page.waitForLoadState("networkidle");
     await expect(page.locator("body")).toContainText(/privacy|privasi|data/i);
   });
+
+  test("contact page loads", async ({ page }) => {
+    await page.goto("/contact");
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("body")).toContainText(/hubungi|kontak|email|whatsapp/i);
+  });
+
+  test("help center page loads", async ({ page }) => {
+    await page.goto("/help");
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("body")).toContainText(/bantuan|help|faq|pertanyaan/i);
+  });
+
+  test("changelog page loads", async ({ page }) => {
+    await page.goto("/changelog");
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("body")).toContainText(/changelog|baru|pembaruan|update/i);
+  });
 });

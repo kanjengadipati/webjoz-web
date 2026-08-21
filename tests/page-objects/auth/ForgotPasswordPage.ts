@@ -11,7 +11,7 @@ export class ForgotPasswordPage {
     this.page = page;
     this.emailInput = page.locator("#email");
     this.submitButton = page.locator("button[type=submit]");
-    this.successMessage = page.locator("[class*=emerald]");
+    this.successMessage = page.locator("div.border-emerald-500\\/30");
     this.errorMessage = page.locator("[class*=rose-500]");
   }
 

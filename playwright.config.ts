@@ -31,11 +31,13 @@ export default defineConfig({
     },
     {
       name: "chromium",
+      testMatch: /^(?!.*\.admin\.)(?!.*\.unauthed\.).*\.spec\.ts$/,
       use: { ...devices["Desktop Chrome"], storageState: "tests/.auth/user.json" },
       dependencies: ["setup"],
     },
     {
       name: "mobile-chrome",
+      testMatch: /^(?!.*\.admin\.)(?!.*\.unauthed\.).*\.spec\.ts$/,
       use: { ...devices["Pixel 7"], storageState: "tests/.auth/user.json" },
       dependencies: ["setup"],
     },

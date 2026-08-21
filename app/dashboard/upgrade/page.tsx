@@ -194,7 +194,7 @@ export default function UpgradePage() {
           },
           onApprove: async (data: any) => {
             try {
-              await request(`/payments/${paypalPendingOrderID}/capture-paypal`, {
+              await request(`/payments/paypal/capture/${paypalPendingOrderID}`, {
                 method: "POST",
                 headers: { "X-Tenant-ID": activeTenant!.tenant.id.toString() },
               }, token!);

@@ -89,6 +89,8 @@ export default function ContactPage() {
 
         {/* Links to legal pages */}
         <div className="mt-8 flex flex-wrap gap-4 text-xs text-muted-foreground">
+          <Link href="/help" className="hover:text-foreground transition">Pusat Bantuan</Link>
+          <Link href="/changelog" className="hover:text-foreground transition">Changelog</Link>
           <Link href="/privacy-policy" className="hover:text-foreground transition">Kebijakan Privasi</Link>
           <Link href="/terms" className="hover:text-foreground transition">Syarat &amp; Ketentuan</Link>
           <Link href="/refund-policy" className="hover:text-foreground transition">Kebijakan Refund</Link>

@@ -22,11 +22,15 @@ export function mockAuthRoutes(page: Page) {
   });
 
   page.route("**/auth/verify-otp", async (route) => {
-    const body = route.request().postDataJSON();
-    if (body?.otp === "123456") {
+    try {
+      const body = route.request().postDataJSON();
+      if (body?.otp === "123456") {
+        await route.fulfill({ status: 200, json: { status: "success", data: { access_token: "mock-otp-token-e2e" } } });
+      } else {
+        await route.fulfill({ status: 400, json: { status: "error", message: "Invalid or expired OTP" } });
+      }
+    } catch {
       await route.fulfill({ status: 200, json: { status: "success", data: { access_token: "mock-otp-token-e2e" } } });
-    } else {
-      await route.fulfill({ status: 400, json: { status: "error", message: "Invalid or expired OTP" } });
     }
   });
 

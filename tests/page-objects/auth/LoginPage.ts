@@ -33,7 +33,9 @@ export class LoginPage {
   }
 
   async loginWithPassword(email: string, password: string) {
+    await this.switchToPassword.waitFor({ state: "visible", timeout: 10000 });
     await this.switchToPassword.click();
+    await this.loginEmail.waitFor({ state: "visible" });
     await this.loginEmail.fill(email);
     await this.loginPassword.fill(password);
     await this.submitButton.click();

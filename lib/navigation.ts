@@ -17,6 +17,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "sales-referral", href: "/dashboard/sales", label: "Kode Referral", permission: "sales:manage-referral", icon: "share", section: "Sales & Referral", groupStart: false },
   { id: "sales-commissions", href: "/dashboard/sales/commissions", label: "Komisi Saya", permission: "commission:read_own", icon: "dollar", section: "Sales & Referral", groupStart: false },
   { id: "team", href: "/dashboard/team", label: "Tim", permission: "", icon: "users", section: "Website Builder", groupStart: false },
+  { id: "usage", href: "/dashboard/usage", label: "Pemakaian", permission: "", icon: "gauge", section: "Website Builder", groupStart: false },
   { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },
   { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;

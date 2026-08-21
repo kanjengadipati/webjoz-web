@@ -85,7 +85,7 @@ export default function SessionsPage() {
     setState(SectionState.LOADING);
     try {
       const response = await fetchSessions(token);
-      setSessions(response.data);
+      setSessions(Array.isArray(response.data) ? response.data : []);
       setState(SectionState.SUCCESS);
     } catch (error) {
       setState(SectionState.ERROR);

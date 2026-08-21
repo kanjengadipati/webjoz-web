@@ -735,6 +735,8 @@ export default function LandingPageClient() {
             </div>
           </div>
           <div className="border-t border-white/5 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
+            <Link href="/help" className="hover:text-white transition">{t("landing.footerHelp")}</Link>
+            <Link href="/changelog" className="hover:text-white transition">{t("landing.footerChangelog")}</Link>
             <Link href="/privacy-policy" className="hover:text-white transition">{t("landing.footerPrivacy")}</Link>
             <Link href="/terms" className="hover:text-white transition">{t("landing.footerTerms")}</Link>
             <Link href="/refund-policy" className="hover:text-white transition">{t("landing.footerRefund")}</Link>
