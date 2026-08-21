@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/refs */
 "use client";
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -103,6 +103,13 @@ export function SiteWizard({
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+
+  // Client-only clock to avoid hydration mismatch with new Date()
+  const [clock, setClock] = useState(() => new Date());
+  React.useEffect(() => {
+    const id = setInterval(() => setClock(new Date()), 30000);
+    return () => clearInterval(id);
+  }, []);
   const isSavingRef = React.useRef(false);
   // Hitung auto-retry karena kualitas rendah (per generasi pengguna).
   const qualityRetryCountRef = React.useRef(0);
@@ -847,7 +854,7 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
@@ -861,8 +868,17 @@ export function SiteWizard({
                       };
                       const moodKey = moodKeyMap[mo.value];
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
-                      // Split suitableFor into individual tags
-                      const tags = mo.suitableFor ? mo.suitableFor.split(",").map((s) => s.trim()) : [];
+
+                      const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
+                        "clean-modern":  { icon: <Monitor className="w-4 h-4" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
+                        "warm-earthy":   { icon: <Leaf    className="w-4 h-4" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
+                        "bold-vibrant":  { icon: <Palette className="w-4 h-4" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
+                        "dark-premium":  { icon: <Crown   className="w-4 h-4" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
+                        "bold-dark":     { icon: <Zap     className="w-4 h-4" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
+                        "retro":         { icon: <Clock   className="w-4 h-4" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
+                        "futuristic":    { icon: <Cpu     className="w-4 h-4" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
+                      };
+                      const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
 
                       return (
                         <button
@@ -870,48 +886,34 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative flex flex-col items-center rounded-xl border px-2 py-2.5 sm:px-2.5 sm:py-3 text-center transition-all duration-200 focus:outline-none ${
+                          className={`group relative flex items-center justify-between rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
                             isSelected
-                              ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg shadow-primary/15"
+                              ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md shadow-primary/15"
                               : isLocked
                               ? "border-border/50 bg-muted/30 opacity-45 cursor-not-allowed"
-                              : "border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 hover:scale-[1.02] cursor-pointer active:scale-[0.97]"
+                              : "border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 cursor-pointer active:scale-[0.98]"
                           }`}
                           style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
                         >
-                          {/* Selected checkmark badge — top right */}
-                          {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
-                              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
-                            </div>
-                          )}
-
-                          {/* Premium Icon Container */}
-                          {(() => {
-                            const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
-                              "clean-modern":  { icon: <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
-                              "warm-earthy":   { icon: <Leaf    className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
-                              "bold-vibrant":  { icon: <Palette className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
-                              "dark-premium":  { icon: <Crown   className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
-                              "bold-dark":     { icon: <Zap     className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
-                              "retro":         { icon: <Clock   className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
-                              "futuristic":    { icon: <Cpu     className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
-                            };
-                            const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
-                            return (
-                              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center mb-1.5 shadow-lg ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
-                                {cfg.icon}
-                              </div>
-                            );
-                          })()}
-
-                          {/* Title */}
-                          <span className="text-[11px] sm:text-[12px] font-bold text-white leading-tight">
+                          {/* Nama kiri */}
+                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug pr-2">
                             {translatedMoodLabel}
                           </span>
 
+                          {/* Icon kanan */}
+                          <div className="relative shrink-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
+                              {cfg.icon}
+                            </div>
+                            {/* Selected checkmark badge */}
+                            {isSelected && (
+                              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
+                                <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
                         </button>
                       );
                     })}
@@ -1233,8 +1235,8 @@ export function SiteWizard({
               {preview.previewState === "wireframe" && chat.chatStage === "done" && t("dashboard.wizard.statusPreparingAi", "Menyiapkan AI...")}
             </span>
           </span>
-          <span className="text-[11px] text-slate-500">
-            {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+          <span className="text-[11px] text-slate-500" suppressHydrationWarning>
+            {clock.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
           </span>
         </div>
       </div>
