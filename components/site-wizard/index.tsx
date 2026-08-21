@@ -886,7 +886,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative flex items-center justify-between rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
+                          className={`group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md shadow-primary/15"
                               : isLocked
@@ -895,25 +895,24 @@ export function SiteWizard({
                           }`}
                           style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
                         >
-                          {/* Nama kiri */}
-                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug pr-2">
+                          {/* Icon kiri */}
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
+                            {cfg.icon}
+                          </div>
+
+                          {/* Nama kanan */}
+                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1">
                             {translatedMoodLabel}
                           </span>
 
-                          {/* Icon kanan */}
-                          <div className="relative shrink-0">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
-                              {cfg.icon}
+                          {/* Checkmark kanan saat terpilih */}
+                          {isSelected && (
+                            <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-md shadow-primary/40">
+                              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
                             </div>
-                            {/* Selected checkmark badge */}
-                            {isSelected && (
-                              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center shadow-md shadow-primary/40">
-                                <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
+                          )}
                         </button>
                       );
                     })}
