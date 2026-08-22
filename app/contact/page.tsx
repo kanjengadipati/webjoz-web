@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Hubungi Kami | Webjoz",
@@ -46,14 +47,14 @@ export default function ContactPage() {
 
           {/* WhatsApp */}
           <a
-            href="https://wa.me/6285111221044"
+            href={getWhatsAppUrl("Halo Webjoz, saya ingin bertanya seputar platform.")}
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6 hover:border-border transition-colors group"
           >
             <div className="text-2xl">💬</div>
             <h2 className="font-semibold text-foreground">WhatsApp</h2>
-            <p className="text-sm text-muted-foreground">+62 851-1122-1044</p>
+            <p className="text-sm text-muted-foreground">{formatPhoneNumber(WHATSAPP_CS_NUMBER)}</p>
             <span className="text-xs text-primary group-hover:underline mt-1">Chat sekarang →</span>
           </a>
 
