@@ -39,22 +39,22 @@ export function AuthShell({
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-10 sm:pb-10 lg:px-10">
-      {/* Mobile Top Bar (Logo + Bantuan + Language Switcher) */}
-      <div className="flex items-center justify-between w-full max-w-md mx-auto mb-2 lg:hidden">
+      {/* Mobile Top Bar Header with Separator Line */}
+      <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3.5 mb-6 border-b border-white/10 lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo2.png"
             alt="Webjoz logo"
             width={100}
             height={60}
-            className="h-8 w-auto object-contain"
+            className="h-7 w-auto object-contain rounded-md"
             priority
           />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/help"
-            className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors px-1.5 py-1"
+            className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors px-1 py-1"
             title={t("landing.navHelp")}
           >
             <svg className="size-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,6 +64,7 @@ export function AuthShell({
             </svg>
             <span>{t("landing.navHelp")}</span>
           </Link>
+          <div className="h-3 w-px bg-white/15" />
           <LanguageSwitcher />
         </div>
       </div>
