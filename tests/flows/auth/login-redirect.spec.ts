@@ -1,7 +1,7 @@
 import { test, expect } from "../../fixtures/base";
 
 test("regular password login redirects to /dashboard after fix", async ({ page, loginPage }) => {
-  await loginPage.goto("/login");
+  await loginPage.goto();
   await loginPage.loginWithPassword("test-e2e@webjoz.com", "TestPassword123!");
 
   await page.waitForURL("/dashboard", { timeout: 15000 });
@@ -26,7 +26,7 @@ test("login clears stale redirect state", async ({ page }) => {
 
   await page.goto("/login");
   // Need to re-get page handle after navigation
-  const loginPage = new (await import("../page-objects/auth/LoginPage")).LoginPage(page);
+  const loginPage = new (await import("../../page-objects/auth/LoginPage")).LoginPage(page);
   await loginPage.loginWithPassword("test-e2e@webjoz.com", "TestPassword123!");
 
   await page.waitForURL("/dashboard", { timeout: 15000 });
