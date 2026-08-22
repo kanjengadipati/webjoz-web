@@ -14,6 +14,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
+import { getWhatsAppUrl } from "@/lib/site-config";
 
 const LandingTemplateShowcase = dynamic(
   () =>
@@ -246,7 +247,7 @@ export default function LandingPageClient() {
               "@type": "ContactPoint",
               "contactType": "customer support",
               "availableLanguage": "Indonesian",
-              "url": "https://wa.me/6285111221044"
+              "url": getWhatsAppUrl()
             },
             "sameAs": [
               "https://www.webjoz.com"
@@ -692,7 +693,7 @@ export default function LandingPageClient() {
                 {t("landing.ctaBannerCta")}
               </Button>
               <a
-                href="https://wa.me/6285111221044?text=Halo%20Webjoz%2C%20saya%20ingin%20tahu%20lebih%20lanjut."
+                href={getWhatsAppUrl("Halo Webjoz, saya ingin tahu lebih lanjut.")}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -705,7 +706,7 @@ export default function LandingPageClient() {
             <p className="mt-6 text-sm text-slate-400">
               {t("landing.ctaBannerHelper")}{" "}
               <a
-                href="https://wa.me/6285111221044"
+                href={getWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-amber-400 underline-offset-4 hover:underline font-semibold"

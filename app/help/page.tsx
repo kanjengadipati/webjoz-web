@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, ChevronDown, ChevronRight, HelpCircle, MessageCircle, Mail, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getWhatsAppUrl } from "@/lib/site-config";
 
 interface FAQItem {
   q: string;
@@ -317,7 +318,7 @@ export default function HelpCenterPage() {
               Email Kami
             </a>
             <a
-              href="https://wa.me/6281234567890?text=Halo%20Webjoz%2C%20saya%20butuh%20bantuan"
+              href={getWhatsAppUrl("Halo Webjoz, saya butuh bantuan")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:opacity-90 transition"

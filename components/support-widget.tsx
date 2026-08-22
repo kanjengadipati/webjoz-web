@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/site-config";
 
 declare global {
   interface Window {
@@ -17,15 +18,13 @@ export function SupportWidget() {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_CS_NUMBER || "62895392765355";
-  const cleanPhone = rawPhone.replace(/\D/g, "");
   const isEnglish = pathname?.startsWith("/en");
 
   const defaultMsg = isEnglish
     ? "Hello Webjoz Support, I need assistance with creating my website."
     : "Halo CS Webjoz, saya butuh bantuan terkait pembuatan website di Webjoz.";
 
-  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(defaultMsg)}`;
+  const waUrl = getWhatsAppUrl(defaultMsg);
 
   useEffect(() => {
     const websiteId = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID;
