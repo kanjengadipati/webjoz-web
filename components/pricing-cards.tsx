@@ -71,6 +71,22 @@ interface PricingCardsProps {
   // ── CTA label ─────────────────────────────────────────────────────────────
   currentPlanLabel?: string;
   choosePlanLabel?: string;
+  downgradePlanLabel?: string;
+}
+
+const PLAN_TIER_RANK: Record<string, number> = {
+  free: 0,
+  starter: 10,
+  pro: 20,
+  enterprise: 30,
+  agency: 40,
+};
+
+export function getPlanRank(plan: PlanItem): number {
+  if (plan.slug && PLAN_TIER_RANK[plan.slug.toLowerCase()] !== undefined) {
+    return PLAN_TIER_RANK[plan.slug.toLowerCase()];
+  }
+  return plan.price_monthly || 0;
 }
 
 /** Replace {n} or {value} placeholder in a label string. */
@@ -114,6 +130,7 @@ export function PricingCards({
   hostingLabel = "Hosting & SSL gratis",
   currentPlanLabel = "Paket Saat Ini",
   choosePlanLabel = "Pilih {plan} ({cycle})",
+  downgradePlanLabel = "Downgrade",
 }: PricingCardsProps) {
   if (loading) {
     return (
@@ -143,6 +160,15 @@ export function PricingCards({
           const isPro = plan.slug === "pro";
           const isCurrent = currentPlanSlug === plan.slug;
           const isYearly = billingCycle === "yearly";
+
+          const currentPlanItem = plans.find((p) => p.slug.toLowerCase() === currentPlanSlug?.toLowerCase());
+          const currentRank = currentPlanItem
+            ? getPlanRank(currentPlanItem)
+            : currentPlanSlug
+            ? (PLAN_TIER_RANK[currentPlanSlug.toLowerCase()] ?? 0)
+            : 0;
+          const planRank = getPlanRank(plan);
+          const isDowngrade = !isCurrent && currentRank > planRank && currentRank > 0;
 
           // ── Price calculation ──────────────────────────────────────────────
           const isUSD = currency === "USD";
@@ -311,9 +337,17 @@ export function PricingCards({
 
               {/* ── CTA button ─────────────────────────────────────────────── */}
               {isCurrent ? (
-                <span className="block w-full py-2.5 rounded-full text-sm font-semibold text-center bg-primary/10 text-primary border border-primary/20">
+                <span className="block w-full py-2.5 rounded-full text-sm font-semibold text-center bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/25">
                   {currentPlanLabel}
                 </span>
+              ) : isDowngrade ? (
+                <Button
+                  disabled
+                  variant="outline"
+                  className="w-full rounded-full font-medium text-xs bg-muted/20 text-muted-foreground/50 border-border/40 cursor-not-allowed opacity-60"
+                >
+                  {isFree ? freePlanButtonLabel : downgradePlanLabel}
+                </Button>
               ) : (
                 <Button
                   onClick={() => onSelectPlan(plan)}
