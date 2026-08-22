@@ -8,7 +8,7 @@ export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.webjoz.com";
 
 export const WHATSAPP_CS_NUMBER =
-  process.env.NEXT_PUBLIC_WHATSAPP_CS_NUMBER ?? "62895392765355";
+  process.env.NEXT_PUBLIC_WHATSAPP_CS_NUMBER ?? "6285111221044";
 
 export const siteUrl = (path = "/") => `${SITE_URL}${path}`;
 
