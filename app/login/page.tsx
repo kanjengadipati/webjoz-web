@@ -334,18 +334,18 @@ export default function LoginPage() {
                   <span>{t("auth.loginWhatsappHint")}</span>
                 </div>
 
-                <button
+                <Button
                   type="submit"
                   disabled={state === "loading"}
-                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-sm transition disabled:opacity-50 shadow-sm shadow-[#25D366]/20"
+                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg font-semibold shadow-md"
                 >
-                  <WhatsAppIcon size="md" className="fill-current text-white" />
+                  <WhatsAppIcon size="md" className="fill-current" />
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
                     <>{t("auth.loginSendCodeWhatsapp")}</>
                   )}
-                </button>
+                </Button>
               </form>
 
               <div className="relative flex items-center my-5">
@@ -412,17 +412,18 @@ export default function LoginPage() {
                   <span>{t("auth.loginEmailHint")}</span>
                 </div>
 
-                <button
+                <Button
                   type="submit"
                   disabled={state === "loading"}
-                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg border border-border bg-background hover:bg-muted font-semibold text-foreground text-sm transition disabled:opacity-50 shadow-sm"
+                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg font-semibold shadow-md"
                 >
+                  <MailIcon size="md" />
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
                     <>{t("auth.loginSendCode")}</>
                   )}
-                </button>
+                </Button>
               </form>
             </>
           ) : (
@@ -448,6 +449,7 @@ export default function LoginPage() {
                     value={passwordEmail}
                     onChange={(event) => {
                       setPasswordEmail(event.target.value);
+                      setPasswordlessFieldErrors((current) => ({ ...current, email: undefined }));
                       setErrorMessage("");
                     }}
                     placeholder="nama@email.com"
@@ -455,11 +457,9 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <Label htmlFor="login-password">{t("auth.loginPasswordLabel")}</Label>
-                    <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:opacity-80">
-                      {t("auth.loginForgotPassword")}
-                    </Link>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="login-password">{t("auth.loginPasswordField")}</Label>
+                    <Link href="/forgot-password" className="text-xs text-primary hover:underline">{t("auth.loginForgotPassword")}</Link>
                   </div>
                   <div className="relative">
                     <Input
@@ -487,8 +487,12 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </div>
-                <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg">
-                  {state === "loading" ? <LoginLoadingIndicator label={t("auth.loginLoginLoading")} /> : t("auth.loginSubmitPassword")}
+                <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg font-semibold shadow-md">
+                  {state === "loading" ? (
+                    <LoginLoadingIndicator label={t("auth.loginSigningIn")} />
+                  ) : (
+                    <>{t("auth.loginPasswordButton")}</>
+                  )}
                 </Button>
               </form>
             </>
