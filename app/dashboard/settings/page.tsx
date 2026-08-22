@@ -8,6 +8,7 @@ import { Can } from "@/components/can";
 import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
+import { LinkAccountCard } from "@/components/dashboard/link-account-card";
 import { fetchAuditLogs, fetchInvestigationDetail, fetchInvestigationHistory, investigateLogs } from "@/lib/api";
 import { fetchSessions, logoutAllSessions, revokeOtherSessions, revokeSession, revokeTrustedDevice } from "@/lib/api";
 import { deleteUser, fetchUsers, updateUser } from "@/lib/api";
@@ -177,6 +178,7 @@ function ProfileTab() {
   }
 
   return (
+    <>
     <Card>
       <CardHeader className="border-b border-border/60">
         <SectionTitle eyebrow={t("dashboard.settings.profileEyebrow")} title={t("dashboard.settings.profileTitle")} />
@@ -206,6 +208,8 @@ function ProfileTab() {
         )}
       </CardContent>
     </Card>
+    <LinkAccountCard />
+    </>
   );
 }
 

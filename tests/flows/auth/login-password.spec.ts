@@ -4,9 +4,9 @@ import { mockAllRoutes } from "../../api-mocks";
 test.describe("Password Login", () => {
   test.beforeEach(async ({ page }) => {
     mockAllRoutes(page);
+    await page.addInitScript(() => localStorage.clear());
     await page.goto("/login");
-    await page.evaluate(() => localStorage.clear());
-    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
   });
 
   test("login page loads with auth method options", async ({ loginPage }) => {

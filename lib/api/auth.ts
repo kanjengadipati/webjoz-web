@@ -127,3 +127,43 @@ export async function socialLogin(provider: string, token: string) {
     body: JSON.stringify({ provider, token }),
   });
 }
+
+export type LinkedMethods = {
+  email: string;
+  phone_number?: string;
+  has_google: boolean;
+  has_password: boolean;
+  is_synthetic_email: boolean;
+};
+
+export async function getLinkedMethods() {
+  return request<LinkedMethods>("/auth/linked-methods", { method: "GET" });
+}
+
+export async function setPassword(password: string) {
+  return request<null>("/auth/set-password", {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+}
+
+export async function linkGoogle(idToken: string) {
+  return request<null>("/auth/link/google", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken }),
+  });
+}
+
+export async function unlinkGoogle(password: string) {
+  return request<null>("/auth/link/google", {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  });
+}
+
+export async function updateEmail(email: string) {
+  return request<null>("/auth/email", {
+    method: "PUT",
+    body: JSON.stringify({ email }),
+  });
+}
