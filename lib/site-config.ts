@@ -17,11 +17,25 @@ export const tenantSiteUrl = (subdomain: string) =>
 
 export const formatPhoneNumber = (phone = WHATSAPP_CS_NUMBER) => {
   const digits = phone.replace(/\D/g, "");
-  if (digits.startsWith("62")) {
-    const rest = digits.slice(2);
-    if (rest.length <= 3) return `+62 ${rest}`;
-    if (rest.length <= 7) return `+62 ${rest.slice(0, 3)}-${rest.slice(3)}`;
-    return `+62 ${rest.slice(0, 3)}-${rest.slice(3, 7)}-${rest.slice(7)}`;
+  const countryCodes: Record<string, string> = {
+    "+62": "Indonesia",
+    "+60": "Malaysia",
+    "+65": "Singapura",
+    "+66": "Thailand",
+    "+63": "Filipina",
+    "+84": "Vietnam",
+    "+91": "India",
+    "+86": "China",
+    "+81": "Jepang",
+    "+82": "Korea Selatan",
+  };
+  const countryCode = Object.keys(countryCodes).find((code) => digits.startsWith(code));
+  if (countryCode) {
+    const countryName = countryCodes[countryCode];
+    const rest = digits.slice(countryCode.length);
+    if (rest.length <= 3) return `+${countryCode} ${rest} (${countryName})`;
+    if (rest.length <= 7) return `+${countryCode} ${rest.slice(0, 3)}-${rest.slice(3)} (${countryName})`;
+    return `+${countryCode} ${rest.slice(0, 3)}-${rest.slice(3, 7)}-${rest.slice(7)} (${countryName})`;
   }
   return phone;
 };
