@@ -23,6 +23,7 @@ import {
   Copy, Check, ArrowRight, Gift, Target,
 } from "lucide-react";
 import { UsageMeter } from "@/components/dashboard/usage-meter";
+import { EmailPromptBanner } from "@/components/dashboard/email-prompt-banner";
 import type { Profile } from "@/lib/types";
 
 interface PlatformStats {
@@ -316,6 +317,7 @@ export default function DashboardOverviewPage() {
 
     return (
       <div className="space-y-8 animate-in fade-in duration-700 w-full min-w-0 max-w-full overflow-hidden">
+        <EmailPromptBanner />
         {/* ── Hero header ─────────────────────────────────────────────── */}
         <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-card to-background p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group min-w-0">
           {/* Ambient Lighting Glows */}
