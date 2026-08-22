@@ -154,6 +154,8 @@ export function SiteWizard({
       // menandai konten sebagai mock_fallback saat ada grup yang jatuh ke mock.
       // Kalau konten masih AI murni tapi skornya rendah, auto-retry sekali —
       // tanpa ini, hasil jelek (mis. score 44) tetap ditampilkan.
+      // Gunakan refs (bukan state) untuk menjaga closure protection yang konsisten
+      // dengan seluruh file ini (L243: refs dipakai untuk mencegah stale closure).
       if (
         generationSource !== 2 &&
         qualityScore < QUALITY_GATE_THRESHOLD &&
@@ -161,7 +163,11 @@ export function SiteWizard({
       ) {
         qualityRetryCountRef.current += 1;
         console.info(`[quality_gate] client auto-retry #${qualityRetryCountRef.current} score=${qualityScore}`);
-        void runGenerate();
+        void runGenerate(
+          chat.businessNameRef.current,
+          chat.businessTypeRef.current,
+          { mood: chat.moodRef.current, businessSubType: chat.businessSubTypeRef.current }
+        );
         return;
       }
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
@@ -315,18 +321,20 @@ export function SiteWizard({
   };
 
   // runGenerate menjalankan stream tanpa mereset qualityRetryCountRef — dipakai
-  // oleh auto-retry kualitas. handleGenerate (wrapper) mereset counter dulu,
-  // jadi setiap inisiasi baru dari user punya jatah retry segar.
+  // oleh auto-retry kualitas. Setiap parameter default sekarang membaca dari ref
+  // (chat.xxxRef.current) sebagai pengaman closure protection yang konsisten seluruh
+  // file ini (L243), bukan dari state plain agar tidak terjebak nilai lama saat
+  // onDone auto-retry menjalankan fungsi dengan argumen ref.
   const runGenerate = async (
-    bName = chat.businessName,
-    bType = chat.businessType,
+    bName = chat.businessNameRef.current,
+    bType = chat.businessTypeRef.current,
     overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
   ) => {
-    const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubType;
-    const nextWhatsapp = overrides.whatsapp ?? chat.whatsapp;
-    const nextServiceArea = overrides.serviceArea ?? chat.serviceArea;
+    const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubTypeRef.current;
+    const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
+    const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
     const nextDescription = overrides.description ?? chat.descriptionRef.current;
-    const nextMood = overrides.mood ?? chat.mood;
+    const nextMood = overrides.mood ?? chat.moodRef.current;
     const nextLanguage = overrides.language ?? chat.siteLanguageRef.current ?? chat.siteLanguage ?? "id";
 
     preview.setStreamedSections({});
