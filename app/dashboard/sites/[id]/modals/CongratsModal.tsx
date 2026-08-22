@@ -120,7 +120,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
         {/* Custom Domain CTA */}
         {siteId && (
           <Link
-            href={`/dashboard/sites/${siteId}/domain`}
+            href={`/dashboard/domains?site_id=${siteId}`}
             onClick={onClose}
             className="flex items-center justify-between gap-3 bg-background border border-primary/25 hover:border-primary/50 hover:bg-primary/[0.06] rounded-2xl px-5 py-3.5 max-w-md mx-auto w-full transition-all group"
           >
