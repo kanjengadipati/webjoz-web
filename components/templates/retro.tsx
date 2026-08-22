@@ -29,7 +29,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
     loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
   const sectionOrder = (() => {
-    const base: string[] = ["hero", "about", "testimonials", "benefits", "faq", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "testimonials", "benefits", "faq", "cta", "contact"];
     const order = [...base];
     if (menu && !order.includes("menu")) order.splice(order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length, 0, "menu");
     if (catalog && !order.includes("catalog")) order.splice(order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length, 0, "catalog");

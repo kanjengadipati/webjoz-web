@@ -31,8 +31,10 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
 
   const sectionOrder = (() => {
-    const base: string[] = ["hero", "about", "menu", "catalog", "testimonials", "benefits", "faq", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "about", "menu", "catalog", "testimonials", "benefits", "faq", "cta", "contact"];
     const order = [...base];
+    if (menu    && !order.includes("menu"))    order.splice(order.indexOf("hero") >= 0 ? order.indexOf("hero") + 1 : 1, 0, "menu");
+    if (catalog && !order.includes("catalog")) order.splice(order.indexOf("hero") >= 0 ? order.indexOf("hero") + 1 : 1, 0, "catalog");
     if (gallery && !order.includes("gallery")) {
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "gallery");
