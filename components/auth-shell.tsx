@@ -134,7 +134,7 @@ export function AuthShell({
           </CardHeader>
           <CardContent className="px-5 pt-5 sm:px-6 sm:pt-6">
             {children}
-            <div className="mt-5 text-sm text-muted-foreground sm:mt-6">
+            <div className="hidden sm:block mt-5 text-sm text-muted-foreground sm:mt-6">
               {footer || <Link href="/" className="font-medium text-primary hover:opacity-80">{isEn ? "← Back to Home" : "← Kembali ke Beranda"}</Link>}
             </div>
           </CardContent>
