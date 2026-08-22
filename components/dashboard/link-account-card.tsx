@@ -32,11 +32,11 @@ export function LinkAccountCard({ className }: { className?: string }) {
       setMethods(res.data);
       setEmailValue(res.data.email || "");
     } catch {
-      pushToast("Failed to load account methods", "error");
+      pushToast(t("dashboard.linkAccount.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
-  }, [pushToast]);
+  }, [pushToast, t]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -46,20 +46,20 @@ export function LinkAccountCard({ className }: { className?: string }) {
     setSaving(true);
     try {
       await setPassword(newPassword);
-      pushToast("Password set successfully", "success");
+      pushToast(t("dashboard.linkAccount.passwordSetSuccess"), "success");
       setNewPassword("");
       await load();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to set password";
+      const msg = err instanceof Error ? err.message : t("dashboard.linkAccount.passwordSetFailed");
       pushToast(msg, "error");
     } finally {
       setSaving(false);
     }
-  }, [newPassword, load, pushToast]);
+  }, [newPassword, load, pushToast, t]);
 
   const handleLinkGoogle = useCallback(async () => {
     if (!window.google) {
-      pushToast("Google Sign-In is not loaded", "error");
+      pushToast(t("dashboard.linkAccount.googleNotLoaded"), "error");
       return;
     }
     setGoogleLoading(true);
@@ -73,10 +73,10 @@ export function LinkAccountCard({ className }: { className?: string }) {
           }
           try {
             await linkGoogle(response.credential);
-            pushToast("Google account linked", "success");
+            pushToast(t("dashboard.linkAccount.googleLinked"), "success");
             await load();
           } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : "Failed to link Google";
+            const msg = err instanceof Error ? err.message : t("dashboard.linkAccount.googleLinkFailed");
             pushToast(msg, "error");
           } finally {
             setGoogleLoading(false);
@@ -90,28 +90,28 @@ export function LinkAccountCard({ className }: { className?: string }) {
       }
     } catch {
       setGoogleLoading(false);
-      pushToast("Failed to initialize Google Sign-In", "error");
+      pushToast(t("dashboard.linkAccount.googleInitFailed"), "error");
     }
-  }, [load, pushToast]);
+  }, [load, pushToast, t]);
 
   const handleUnlinkGoogle = useCallback(async () => {
     if (!password) {
-      pushToast("Enter your password to confirm", "error");
+      pushToast(t("dashboard.linkAccount.enterPassword"), "error");
       return;
     }
     setSaving(true);
     try {
       await unlinkGoogle(password);
-      pushToast("Google account unlinked", "success");
+      pushToast(t("dashboard.linkAccount.googleUnlinked"), "success");
       setPasswordValue("");
       await load();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to unlink";
+      const msg = err instanceof Error ? err.message : t("dashboard.linkAccount.googleUnlinkFailed");
       pushToast(msg, "error");
     } finally {
       setSaving(false);
     }
-  }, [password, load, pushToast]);
+  }, [password, load, pushToast, t]);
 
   const handleUpdateEmail = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,15 +119,15 @@ export function LinkAccountCard({ className }: { className?: string }) {
     setSaving(true);
     try {
       await updateEmail(email);
-      pushToast("Email updated", "success");
+      pushToast(t("dashboard.linkAccount.emailUpdated"), "success");
       await load();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to update email";
+      const msg = err instanceof Error ? err.message : t("dashboard.linkAccount.emailUpdateFailed");
       pushToast(msg, "error");
     } finally {
       setSaving(false);
     }
-  }, [email, methods, load, pushToast]);
+  }, [email, methods, load, pushToast, t]);
 
   if (loading) {
     return (
@@ -146,28 +146,28 @@ export function LinkAccountCard({ className }: { className?: string }) {
   return (
     <Card className={className}>
       <CardContent className="p-6 space-y-6">
-        <h3 className="text-lg font-semibold">Linked Accounts</h3>
+        <h3 className="text-lg font-semibold">{t("dashboard.linkAccount.title")}</h3>
 
         {/* Email */}
         <div className="space-y-2">
-          <Label>Email</Label>
+          <Label>{t("dashboard.linkAccount.emailLabel")}</Label>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{methods.email}</span>
             {methods.is_synthetic_email && (
-              <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">System-generated</span>
+              <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">{t("dashboard.linkAccount.systemGenerated")}</span>
             )}
           </div>
           {methods.is_synthetic_email && (
             <form onSubmit={handleUpdateEmail} className="flex gap-2">
               <Input
                 type="email"
-                placeholder="your-real-email@example.com"
+                placeholder={t("dashboard.linkAccount.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmailValue(e.target.value)}
                 className="flex-1"
               />
               <Button type="submit" disabled={saving || !email || email === methods.email} size="sm">
-                Update
+                {t("dashboard.linkAccount.update")}
               </Button>
             </form>
           )}
@@ -176,27 +176,27 @@ export function LinkAccountCard({ className }: { className?: string }) {
         {/* Phone */}
         {methods.phone_number && (
           <div className="space-y-2">
-            <Label>Phone (WhatsApp)</Label>
+            <Label>{t("dashboard.linkAccount.phoneLabel")}</Label>
             <span className="text-sm text-muted-foreground">{methods.phone_number}</span>
           </div>
         )}
 
         {/* Password */}
         <div className="space-y-2">
-          <Label>Password</Label>
+          <Label>{t("dashboard.linkAccount.passwordLabel")}</Label>
           {methods.has_password ? (
-            <span className="text-sm text-green-600">Set</span>
+            <span className="text-sm text-green-600">{t("dashboard.linkAccount.passwordSet")}</span>
           ) : (
             <form onSubmit={handleSetPassword} className="flex gap-2">
               <Input
                 type="password"
-                placeholder="Min. 8 characters"
+                placeholder={t("dashboard.linkAccount.minChars")}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="flex-1"
               />
               <Button type="submit" disabled={saving || newPassword.length < 8} size="sm">
-                Set Password
+                {t("dashboard.linkAccount.setPassword")}
               </Button>
             </form>
           )}
@@ -204,25 +204,25 @@ export function LinkAccountCard({ className }: { className?: string }) {
 
         {/* Google */}
         <div className="space-y-2">
-          <Label>Google</Label>
+          <Label>{t("dashboard.linkAccount.googleLabel")}</Label>
           {methods.has_google ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-green-600">Linked</span>
+              <span className="text-sm text-green-600">{t("dashboard.linkAccount.linkedStatus")}</span>
               {methods.has_password ? (
                 <>
                   <Input
                     type="password"
-                    placeholder="Confirm password"
+                    placeholder={t("dashboard.linkAccount.confirmPassword")}
                     value={password}
                     onChange={(e) => setPasswordValue(e.target.value)}
                     className="w-48"
                   />
                   <Button variant="destructive" size="sm" onClick={handleUnlinkGoogle} disabled={saving || !password}>
-                    Unlink
+                    {t("dashboard.linkAccount.unlink")}
                   </Button>
                 </>
               ) : (
-                <span className="text-xs text-muted-foreground">Set a password first to unlink</span>
+                <span className="text-xs text-muted-foreground">{t("dashboard.linkAccount.needPasswordToUnlink")}</span>
               )}
             </div>
           ) : (
@@ -230,7 +230,7 @@ export function LinkAccountCard({ className }: { className?: string }) {
               <>
                 <div id="google-link-btn" />
                 <Button variant="outline" size="sm" onClick={handleLinkGoogle} disabled={googleLoading}>
-                  {googleLoading ? "Linking..." : "Link Google Account"}
+                  {googleLoading ? t("dashboard.linkAccount.linking") : t("dashboard.linkAccount.linkGoogle")}
                 </Button>
               </>
             )

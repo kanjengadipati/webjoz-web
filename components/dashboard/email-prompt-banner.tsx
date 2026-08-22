@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { getLinkedMethods, updateEmail } from "@/lib/api/auth";
+import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 const DISMISS_KEY = "webjoz_email_prompt_dismissed";
@@ -22,6 +23,7 @@ function wasDismissedRecently(): boolean {
 }
 
 export function EmailPromptBanner({ className }: { className?: string }) {
+  const { t } = useI18n();
   const { pushToast } = useToast();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -50,15 +52,15 @@ export function EmailPromptBanner({ className }: { className?: string }) {
     setSaving(true);
     try {
       await updateEmail(email);
-      pushToast("Email updated", "success");
+      pushToast(t("dashboard.emailPrompt.emailUpdated"), "success");
       setVisible(false);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to update email";
+      const msg = err instanceof Error ? err.message : t("dashboard.emailPrompt.emailUpdateFailed");
       pushToast(msg, "error");
     } finally {
       setSaving(false);
     }
-  }, [email, pushToast]);
+  }, [email, pushToast, t]);
 
   if (!visible) return null;
 
@@ -69,10 +71,10 @@ export function EmailPromptBanner({ className }: { className?: string }) {
     )}>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-amber-900">
-          Add your email to receive invoices and important notifications
+          {t("dashboard.emailPrompt.title")}
         </p>
         <p className="text-xs text-amber-700 mt-1">
-          Your account currently uses a system-generated email. Add a real email to receive payments and updates.
+          {t("dashboard.emailPrompt.description")}
         </p>
       </div>
       <form onSubmit={handleSubmit} className="flex gap-2 shrink-0">
@@ -84,10 +86,10 @@ export function EmailPromptBanner({ className }: { className?: string }) {
           className="text-sm rounded-md border border-amber-300 px-3 py-1.5 w-56 focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
         <Button type="submit" size="sm" disabled={saving || !email}>
-          Save
+          {t("dashboard.emailPrompt.save")}
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={handleDismiss}>
-          Dismiss
+          {t("dashboard.emailPrompt.dismiss")}
         </Button>
       </form>
     </div>

@@ -2177,6 +2177,45 @@ export interface Translations {
       timeHoursAgo: string;
       timeDaysAgo: string;
     };
+    linkAccount: {
+      title: string;
+      emailLabel: string;
+      systemGenerated: string;
+      emailPlaceholder: string;
+      update: string;
+      phoneLabel: string;
+      passwordLabel: string;
+      passwordSet: string;
+      minChars: string;
+      setPassword: string;
+      confirmPassword: string;
+      googleLabel: string;
+      linkedStatus: string;
+      unlink: string;
+      needPasswordToUnlink: string;
+      linking: string;
+      linkGoogle: string;
+      emailUpdated: string;
+      emailUpdateFailed: string;
+      passwordSetSuccess: string;
+      passwordSetFailed: string;
+      googleNotLoaded: string;
+      googleInitFailed: string;
+      googleLinked: string;
+      googleLinkFailed: string;
+      enterPassword: string;
+      googleUnlinked: string;
+      googleUnlinkFailed: string;
+      loadFailed: string;
+    };
+    emailPrompt: {
+      title: string;
+      description: string;
+      save: string;
+      dismiss: string;
+      emailUpdated: string;
+      emailUpdateFailed: string;
+    };
   };
 }
 
@@ -4405,6 +4444,45 @@ export const translations: Record<Locale, Translations> = {
         timeHoursAgo: "{count} jam lalu",
         timeDaysAgo: "{count} hari lalu",
       },
+      linkAccount: {
+        title: "Akun Tertaut",
+        emailLabel: "Email",
+        systemGenerated: "Dibuat sistem",
+        emailPlaceholder: "email-nyata-anda@contoh.com",
+        update: "Perbarui",
+        phoneLabel: "Telepon (WhatsApp)",
+        passwordLabel: "Kata Sandi",
+        passwordSet: "Diatur",
+        minChars: "Min. 8 karakter",
+        setPassword: "Atur Kata Sandi",
+        confirmPassword: "Konfirmasi kata sandi",
+        googleLabel: "Google",
+        linkedStatus: "Tertaut",
+        unlink: "Putuskan",
+        needPasswordToUnlink: "Atur kata sandi terlebih dahulu untuk memutuskan",
+        linking: "Menautkan...",
+        linkGoogle: "Tautkan Akun Google",
+        emailUpdated: "Email berhasil diperbarui",
+        emailUpdateFailed: "Gagal memperbarui email",
+        passwordSetSuccess: "Kata sandi berhasil diatur",
+        passwordSetFailed: "Gagal mengatur kata sandi",
+        googleNotLoaded: "Google Sign-In belum dimuat",
+        googleInitFailed: "Gagal menginisialisasi Google Sign-In",
+        googleLinked: "Akun Google berhasil ditautkan",
+        googleLinkFailed: "Gagal menautkan Google",
+        enterPassword: "Masukkan kata sandi untuk mengonfirmasi",
+        googleUnlinked: "Akun Google berhasil diputuskan",
+        googleUnlinkFailed: "Gagal memutuskan Google",
+        loadFailed: "Gagal memuat metode akun",
+      },
+      emailPrompt: {
+        title: "Tambahkan email Anda untuk menerima faktur dan notifikasi penting",
+        description: "Akun Anda saat ini menggunakan email yang dibuat sistem. Tambahkan email nyata untuk menerima pembayaran dan pembaruan.",
+        save: "Simpan",
+        dismiss: "Tutup",
+        emailUpdated: "Email berhasil diperbarui",
+        emailUpdateFailed: "Gagal memperbarui email",
+      },
     },
   },
   en: {
@@ -6630,6 +6708,45 @@ export const translations: Record<Locale, Translations> = {
         timeMinutesAgo: "{count} min ago",
         timeHoursAgo: "{count} hr ago",
         timeDaysAgo: "{count} days ago",
+      },
+      linkAccount: {
+        title: "Linked Accounts",
+        emailLabel: "Email",
+        systemGenerated: "System-generated",
+        emailPlaceholder: "your-real-email@example.com",
+        update: "Update",
+        phoneLabel: "Phone (WhatsApp)",
+        passwordLabel: "Password",
+        passwordSet: "Set",
+        minChars: "Min. 8 characters",
+        setPassword: "Set Password",
+        confirmPassword: "Confirm password",
+        googleLabel: "Google",
+        linkedStatus: "Linked",
+        unlink: "Unlink",
+        needPasswordToUnlink: "Set a password first to unlink",
+        linking: "Linking...",
+        linkGoogle: "Link Google Account",
+        emailUpdated: "Email updated",
+        emailUpdateFailed: "Failed to update email",
+        passwordSetSuccess: "Password set successfully",
+        passwordSetFailed: "Failed to set password",
+        googleNotLoaded: "Google Sign-In is not loaded",
+        googleInitFailed: "Failed to initialize Google Sign-In",
+        googleLinked: "Google account linked",
+        googleLinkFailed: "Failed to link Google",
+        enterPassword: "Enter your password to confirm",
+        googleUnlinked: "Google account unlinked",
+        googleUnlinkFailed: "Failed to unlink",
+        loadFailed: "Failed to load account methods",
+      },
+      emailPrompt: {
+        title: "Add your email to receive invoices and important notifications",
+        description: "Your account currently uses a system-generated email. Add a real email to receive payments and updates.",
+        save: "Save",
+        dismiss: "Dismiss",
+        emailUpdated: "Email updated",
+        emailUpdateFailed: "Failed to update email",
       },
     },
   },
