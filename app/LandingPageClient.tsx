@@ -365,6 +365,11 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
             {/* Top pill badge */}
+            {/* PR Test Banner */}
+            <div className="sm:inline-block w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-6 py-3 mb-6 text-center text-sm text-amber-300">
+              <span className="font-medium">⚠️ PR Test Mode</span>
+              <span className="ml-2">This is a test page for PRD validation — features may be limited.</span>
+            </div>
             <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/90 shadow-sm">
               <SparkleIcon className="w-3.5 h-3.5 text-white" />
               <span>{t("landing.badge")}</span>
