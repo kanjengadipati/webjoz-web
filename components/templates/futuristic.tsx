@@ -29,7 +29,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     loadGoogleFont(dt?.typography?.heading_font, dt?.typography?.body_font);
   }, [dt?.typography?.heading_font, dt?.typography?.body_font]);
   const sectionOrder = (() => {
-    const base: string[] = ["hero", "catalog", "benefits", "about", "testimonials", "faq", "cta", "contact"];
+    const base: string[] = dt?.layout?.section_order ?? ["hero", "catalog", "benefits", "about", "testimonials", "faq", "cta", "contact"];
     const order = [...base];
     if (menu && !order.includes("menu")) order.splice(order.indexOf("benefits") >= 0 ? order.indexOf("benefits") : order.length, 0, "menu");
     if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");

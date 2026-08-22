@@ -40,7 +40,6 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
     if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
-    if (!order.includes("blog")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "blog");
     return order;
   })();
 
