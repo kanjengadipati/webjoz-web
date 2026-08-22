@@ -103,6 +103,7 @@ export interface Translations {
     navHowItWorks: string;
     navFeatures: string;
     navPricing: string;
+    navHelp: string;
     navDashboard: string;
     navLogin: string;
     navCreateNew: string;
@@ -2283,6 +2284,7 @@ export const translations: Record<Locale, Translations> = {
       navHowItWorks: "Cara Kerja",
       navFeatures: "Fitur",
       navPricing: "Harga",
+      navHelp: "Bantuan",
       navDashboard: "Dashboard",
       navLogin: "Login",
       navCreateNew: "Buat Website Baru",
@@ -4508,6 +4510,7 @@ export const translations: Record<Locale, Translations> = {
       navHowItWorks: "How It Works",
       navFeatures: "Features",
       navPricing: "Pricing",
+      navHelp: "Help",
       navDashboard: "Dashboard",
       navLogin: "Login",
       navCreateNew: "Create New Website",
