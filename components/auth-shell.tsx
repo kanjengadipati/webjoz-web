@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import { LogIn, UserPlus, KeyRound, HelpCircle } from "lucide-react";
+import { Home, LogIn, UserPlus, KeyRound } from "lucide-react";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useI18n } from "@/lib/i18n/context";
@@ -39,7 +39,7 @@ export function AuthShell({
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-10 sm:pb-10 lg:px-10">
-      {/* Mobile Top Bar (Logo + Language Switcher) */}
+      {/* Mobile Top Bar (Logo + Bantuan + Language Switcher) */}
       <div className="flex items-center justify-between w-full max-w-md mx-auto mb-2 lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -51,11 +51,37 @@ export function AuthShell({
             priority
           />
         </Link>
-        <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/help"
+            className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors px-1.5 py-1"
+            title={t("landing.navHelp")}
+          >
+            <svg className="size-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <path d="M12 17h.01" />
+            </svg>
+            <span>{t("landing.navHelp")}</span>
+          </Link>
+          <LanguageSwitcher />
+        </div>
       </div>
 
-      {/* Desktop Language Switcher */}
-      <div className="hidden lg:block absolute top-6 right-6 z-10">
+      {/* Desktop Top Actions (Bantuan + Language Switcher) */}
+      <div className="hidden lg:flex items-center gap-3 absolute top-6 right-6 z-10">
+        <Link
+          href="/help"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
+          title={t("landing.navHelp")}
+        >
+          <svg className="size-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <path d="M12 17h.01" />
+          </svg>
+          <span>{t("landing.navHelp")}</span>
+        </Link>
         <LanguageSwitcher />
       </div>
 
@@ -115,10 +141,19 @@ export function AuthShell({
         </Card>
       </div>
 
-      {/* ── Auth Dedicated Sticky Bottom Navigation Bar ────────────────────────────── */}
+      {/* ── Mobile Sticky Bottom Navigation Bar (Beranda di paling kiri) ────────────────────────────── */}
       <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-3 py-2 pb-3">
         <div className="flex items-center justify-around max-w-md mx-auto">
-          {/* 1. Login */}
+          {/* 1. Beranda (Paling Kiri) */}
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl text-white/55 hover:text-white hover:bg-white/5"
+          >
+            <Home className="size-4.5" />
+            <span>{t("landing.bottomNavHome")}</span>
+          </Link>
+
+          {/* 2. Masuk / Login */}
           <Link
             href="/login"
             className={cn(
@@ -132,7 +167,7 @@ export function AuthShell({
             <span>{isEn ? "Login" : "Masuk"}</span>
           </Link>
 
-          {/* 2. Register */}
+          {/* 3. Daftar */}
           <Link
             href="/register"
             className={cn(
@@ -146,7 +181,7 @@ export function AuthShell({
             <span>{isEn ? "Sign Up" : "Daftar"}</span>
           </Link>
 
-          {/* 3. Forgot Password */}
+          {/* 4. Lupa Password */}
           <Link
             href="/forgot-password"
             className={cn(
@@ -158,20 +193,6 @@ export function AuthShell({
           >
             <KeyRound className="size-4.5" />
             <span>{isEn ? "Forgot Pwd" : "Lupa Sandi"}</span>
-          </Link>
-
-          {/* 4. Help */}
-          <Link
-            href="/help"
-            className={cn(
-              "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl",
-              pathname === "/help"
-                ? "text-white font-bold bg-white/10 shadow-inner"
-                : "text-white/55 hover:text-white hover:bg-white/5"
-            )}
-          >
-            <HelpCircle className="size-4.5" />
-            <span>{t("landing.navHelp")}</span>
           </Link>
         </div>
       </nav>
