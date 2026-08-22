@@ -15,7 +15,7 @@ type AuthShellProps = {
   title: string;
   description: string;
   stats?: Array<{ label: string; value: string; helper?: string }>;
-  cardEyebrow: string;
+  cardEyebrow?: string;
   cardTitle: string;
   cardDescription: string;
   children: ReactNode;
@@ -128,7 +128,7 @@ export function AuthShell({
 
         <Card className="bg-card/90 backdrop-blur shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 border-border/70">
           <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8 px-5 py-5 sm:px-6">
-            <CardDescription>{cardEyebrow}</CardDescription>
+            {cardEyebrow && <CardDescription className="text-xs uppercase tracking-wider font-semibold text-primary/80 mb-0.5">{cardEyebrow}</CardDescription>}
             <CardTitle>{cardTitle}</CardTitle>
             <CardDescription>{cardDescription}</CardDescription>
           </CardHeader>

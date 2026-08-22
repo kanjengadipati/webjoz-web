@@ -620,7 +620,6 @@ export default function LoginPage() {
         { label: t("auth.loginStats1Label"), value: t("auth.loginStats1Value"), helper: t("auth.loginStats1Helper") },
         { label: t("auth.loginStats2Label"), value: t("auth.loginStats2Value"), helper: t("auth.loginStats2Helper") },
       ]}
-      cardEyebrow={t("auth.loginCardEyebrow")}
       cardTitle={t("auth.loginCardTitle")}
       cardDescription={t("auth.loginCardDesc")}
       footer={
