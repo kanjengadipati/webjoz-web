@@ -117,8 +117,8 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
           </p>
         </div>
 
-        {/* Custom Domain CTA */}
-        {siteId && (
+        {/* Custom Domain CTA - only active when site is live */}
+        {siteId && site.subdomain && !site.subdomain.startsWith("draft-") && (
           <Link
             href={`/dashboard/domains?site_id=${siteId}`}
             onClick={onClose}

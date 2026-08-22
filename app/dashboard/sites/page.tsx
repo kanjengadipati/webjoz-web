@@ -305,29 +305,31 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </p>
         </div>
 
-        {/* Custom Domain premium upselling banner */}
-        <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
-          <div className="w-9 h-9 rounded-lg bg-muted/40 border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
-            <Globe className="w-4.5 h-4.5" />
+        {/* Custom Domain banner - only shown if site is already live on a subdomain */}
+        {site.subdomain && !site.subdomain.startsWith("draft-") && (
+          <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
+            <div className="w-9 h-9 rounded-lg bg-muted/40 border border-border flex items-center justify-center shrink-0 text-primary group-hover:text-white transition-colors">
+              <Globe className="w-4.5 h-4.5" />
+            </div>
+            <div className="space-y-1">
+              <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
+                {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
+              </h5>
+              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
+                {t("dashboard.sites.customDomainDescPre")}{" "}
+                <Link
+                  href="/dashboard/domains"
+                  className="text-primary font-semibold hover:text-foreground underline underline-offset-2 transition-colors"
+                  onClick={onCancel}
+                >
+                  {t("dashboard.sites.customDomainLink")}
+                </Link>{" "}
+                {t("dashboard.sites.customDomainDescPost")}
+              </p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
-              {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
-            </h5>
-            <p className="text-[11.5px] text-muted-foreground leading-relaxed">
-              {t("dashboard.sites.customDomainDescPre")}{" "}
-              <Link
-                href="/dashboard/domains"
-                className="text-primary font-semibold hover:text-foreground underline underline-offset-2 transition-colors"
-                onClick={onCancel}
-              >
-                {t("dashboard.sites.customDomainLink")}
-              </Link>{" "}
-              {t("dashboard.sites.customDomainDescPost")}
-            </p>
-          </div>
-        </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3 pt-1">
