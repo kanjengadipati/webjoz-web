@@ -42,7 +42,6 @@ export default function ForgotPasswordPage() {
         { label: t("auth.forgotStat1Label"), value: t("auth.forgotStat1Value"), helper: t("auth.forgotStat1Helper") },
         { label: t("auth.forgotStat2Label"), value: t("auth.forgotStat2Value"), helper: t("auth.forgotStat2Helper") },
       ]}
-      cardEyebrow={t("auth.forgotCardEyebrow")}
       cardTitle={t("auth.forgotCardTitle")}
       cardDescription={t("auth.forgotCardDesc")}
       footer={

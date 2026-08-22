@@ -68,7 +68,6 @@ export default function ResetPasswordPage() {
         { label: t("auth.resetStat1Label"), value: t("auth.resetStat1Value"), helper: t("auth.resetStat1Helper") },
         { label: t("auth.resetStat2Label"), value: t("auth.resetStat2Value"), helper: t("auth.resetStat2Helper") },
       ]}
-      cardEyebrow={t("auth.resetCardEyebrow")}
       cardTitle={t("auth.resetCardTitle")}
       cardDescription={token ? t("auth.resetCardDesc") : t("auth.resetCardDescNoToken")}
       footer={

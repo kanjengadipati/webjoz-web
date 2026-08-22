@@ -38,9 +38,9 @@ export function AuthShell({
   const isEn = locale === "en";
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-10 sm:pb-10 lg:px-10">
+    <main className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-8 sm:pb-8 lg:px-10">
       {/* Mobile Top Bar Header with Separator Line */}
-      <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3.5 mb-6 border-b border-white/10 lg:hidden">
+      <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3 mb-2 border-b border-white/10 lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo2.png"
@@ -89,7 +89,8 @@ export function AuthShell({
       {/* Radial top glow — matches the home hero */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-md items-center gap-8 sm:min-h-[calc(100vh-5rem)] lg:max-w-6xl lg:grid-cols-[1fr_0.9fr]">
+      {/* Center Main Content Container */}
+      <div className="flex-1 flex flex-col justify-center my-auto w-full max-w-md mx-auto lg:max-w-6xl lg:grid lg:grid-cols-[1fr_0.9fr] lg:gap-8 lg:items-center">
         <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
           {/* Badge — same pulsing primary style as home hero */}
           <div className="flex items-center gap-3">
