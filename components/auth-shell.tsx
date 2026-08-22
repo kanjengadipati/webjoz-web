@@ -45,9 +45,9 @@ export function AuthShell({
           <Image
             src="/logo2.png"
             alt="Webjoz logo"
-            width={90}
-            height={50}
-            className="h-6 w-auto object-contain"
+            width={100}
+            height={60}
+            className="h-8 w-auto object-contain"
             priority
           />
         </Link>
