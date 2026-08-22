@@ -320,6 +320,7 @@ export default function LoginPage() {
                 <PhoneNumberInput
                   id="passwordless-phone"
                   value={passwordlessPhone}
+                  placeholder={t("auth.loginPhonePlaceholder")}
                   onChange={(value) => {
                     setPasswordlessPhone(value);
                     setPasswordlessFieldErrors((current) => ({ ...current, phone: undefined }));

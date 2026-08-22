@@ -177,6 +177,10 @@ export interface Translations {
     loginPasswordLabel: string;
     loginForgotPassword: string;
     loginPasswordPlaceholder: string;
+    loginPhonePlaceholder: string;
+    loginPasswordField: string;
+    loginSigningIn: string;
+    loginPasswordButton: string;
     loginHidePassword: string;
     loginShowPassword: string;
     loginLoginLoading: string;
@@ -2396,6 +2400,10 @@ export const translations: Record<Locale, Translations> = {
       loginPasswordLabel: "Password",
       loginForgotPassword: "Lupa password?",
       loginPasswordPlaceholder: "Password akun",
+      loginPhonePlaceholder: "Nomor WhatsApp kamu",
+      loginPasswordField: "Password",
+      loginSigningIn: "Sedang masuk...",
+      loginPasswordButton: "Masuk dengan password",
       loginHidePassword: "Sembunyikan password",
       loginShowPassword: "Tampilkan password",
       loginLoginLoading: "Login",
@@ -4660,6 +4668,10 @@ export const translations: Record<Locale, Translations> = {
       loginPasswordLabel: "Password",
       loginForgotPassword: "Forgot password?",
       loginPasswordPlaceholder: "Account password",
+      loginPhonePlaceholder: "Your WhatsApp number",
+      loginPasswordField: "Password",
+      loginSigningIn: "Signing in...",
+      loginPasswordButton: "Sign in with password",
       loginHidePassword: "Hide password",
       loginShowPassword: "Show password",
       loginLoginLoading: "Logging in",
