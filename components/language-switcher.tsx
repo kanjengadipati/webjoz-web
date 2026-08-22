@@ -1,20 +1,36 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useI18n();
+  const pathname = usePathname() || "/";
+  const router = useRouter();
 
   const toggleLanguage = () => {
     const nextLocale = locale === "id" ? "en" : "id";
     setLocale(nextLocale);
+
     try {
       document.cookie = `webjoz_locale=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
       localStorage.setItem("webjoz_locale", nextLocale);
     } catch {}
-    if (typeof window !== "undefined") {
-      window.location.href = nextLocale === "en" ? "/en" : "/";
+
+    // If on landing root or explicit /en routes, navigate correctly
+    if (pathname === "/" && nextLocale === "en") {
+      router.push("/en");
+    } else if (pathname === "/en" && nextLocale === "id") {
+      router.push("/");
+    } else if (pathname.startsWith("/en/")) {
+      if (nextLocale === "id") {
+        router.push(pathname.replace(/^\/en/, "") || "/");
+      }
+    } else if (nextLocale === "en" && (pathname === "/privacy-policy" || pathname === "/terms" || pathname === "/refund-policy")) {
+      router.push(`/en${pathname}`);
     }
+    // For all other pages (/login, /register, /help, /dashboard, /forgot-password, etc.),
+    // setLocale() reactively updates the UI in-place WITHOUT redirecting the user away!
   };
 
   return (
