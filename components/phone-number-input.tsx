@@ -47,10 +47,11 @@ type PhoneNumberInputProps = {
   optional?: boolean;
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
   error?: string;
 };
 
-export function PhoneNumberInput({ id, label, optional, value, onChange, error }: PhoneNumberInputProps) {
+export function PhoneNumberInput({ id, label, optional, value, onChange, placeholder, error }: PhoneNumberInputProps) {
   const phone = splitPhoneNumber(value);
 
   return (
@@ -80,7 +81,7 @@ export function PhoneNumberInput({ id, label, optional, value, onChange, error }
           inputMode="tel"
           value={phone.localNumber}
           onChange={(event) => onChange(buildPhoneNumber(phone.countryCode, event.target.value))}
-          placeholder="Nomor WhatsApp kamu"
+          placeholder={placeholder || "Nomor WhatsApp kamu"}
           className="flex-1 bg-transparent border-none outline-none focus:ring-0 py-1 text-base placeholder:text-muted-foreground/60"
         />
       </div>
