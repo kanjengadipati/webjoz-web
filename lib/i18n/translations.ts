@@ -2676,7 +2676,7 @@ export const translations: Record<Locale, Translations> = {
         sectionWebsiteBuilder: "Website Builder",
         sectionSalesReferral: "Sales & Referral",
         sectionSystem: "Sistem",
-        overview: "Ringkasan",
+        overview: "Beranda",
         notifications: "Notifikasi",
         plans: "Manajemen Paket",
         promos: "Kode Promo",
