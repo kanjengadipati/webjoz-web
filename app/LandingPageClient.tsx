@@ -295,23 +295,23 @@ export default function LandingPageClient() {
             />
           </Link>
 
-          {/* ── Desktop Center Nav Links ── */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* ── Desktop Center Nav Links (Glass Capsule Pill) ── */}
+          <nav className="hidden md:flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
             <a
               href="#how-it-works"
-              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
             >
               {t("landing.navHowItWorks")}
             </a>
             <a
               href="#features"
-              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
             >
               {t("landing.navFeatures")}
             </a>
             <a
               href="#pricing"
-              className="px-3 py-1.5 rounded-full text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200 font-medium"
+              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
             >
               {t("landing.navPricing")}
             </a>
