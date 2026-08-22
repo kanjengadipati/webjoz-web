@@ -295,63 +295,63 @@ export default function LandingPageClient() {
             />
           </Link>
 
-          {/* ── Desktop Center Nav Links (Glass Capsule Pill) ── */}
-          <nav className="hidden md:flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+          {/* ── Desktop Center Nav Links (Clean & Simple) ── */}
+          <nav className="hidden md:flex items-center gap-6">
             <a
               href="#how-it-works"
-              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
+              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
             >
               {t("landing.navHowItWorks")}
             </a>
             <a
               href="#features"
-              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
+              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
             >
               {t("landing.navFeatures")}
             </a>
             <a
               href="#pricing"
-              className="px-4 py-1.5 rounded-full text-xs font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
+              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
             >
               {t("landing.navPricing")}
             </a>
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-4">
             <LanguageSwitcher />
 
             {/* Pusat Bantuan Header Link */}
             <Link
               href="/help"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white transition-colors px-1 py-1"
               title={t("landing.navHelp")}
             >
-              <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="size-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                 <path d="M12 17h.01"/>
               </svg>
-              <span className="hidden sm:inline">{t("landing.navHelp")}</span>
+              <span>{t("landing.navHelp")}</span>
             </Link>
 
             {authReady && (
               isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="hidden sm:block rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10"
+                  className="hidden sm:inline-block text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
                 >
                   {t("landing.navDashboard")}
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:border-white/30"
+                  className="hidden sm:inline-block text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
                 >
                   {t("landing.navLogin")}
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="hidden sm:inline-flex rounded-full bg-white text-black font-bold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
+            <Button onClick={() => startWizard()} className="inline-flex rounded-xl bg-white text-black font-semibold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
               {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
             </Button>
           </div>
