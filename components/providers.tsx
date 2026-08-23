@@ -6,7 +6,7 @@ import { useAccentPreference, useThemePreference, persistAuthSession } from "@/l
 import { ToastProvider } from "@/components/toast-provider";
 import type { Locale } from "@/lib/i18n/translations";
 import { I18nProvider } from "@/lib/i18n/context";
-import { socialLogin } from "@/lib/api";
+import { socialLogin, linkGoogle } from "@/lib/api/auth";
 
 function GoogleOAuthHandler() {
   const router = useRouter();
@@ -34,11 +34,27 @@ function GoogleOAuthHandler() {
       window.history.replaceState(null, "", cleanUrl);
     }
 
-    // Exchange id_token with backend
+    const isLinkMode = sessionStorage.getItem("webjoz_google_link_mode") === "true";
+    const returnTo = sessionStorage.getItem("webjoz_google_return_to") || "/dashboard";
+
+    if (isLinkMode) {
+      sessionStorage.removeItem("webjoz_google_link_mode");
+      sessionStorage.removeItem("webjoz_google_return_to");
+      linkGoogle(idToken)
+        .then(() => {
+          router.replace(returnTo);
+        })
+        .catch((err: unknown) => {
+          console.error("Link Google failed:", err);
+          router.replace("/dashboard/settings?error=link_google_failed");
+        });
+      return;
+    }
+
+    // Exchange id_token with backend (Normal Login)
     socialLogin("google", idToken)
       .then((apiResponse) => {
         persistAuthSession("", apiResponse.data.access_token);
-        const returnTo = sessionStorage.getItem("webjoz_google_return_to") || "/dashboard";
         sessionStorage.removeItem("webjoz_google_return_to");
 
         // Smart back: push history state so back button stays in app, not Google

@@ -25,7 +25,6 @@ export function LinkAccountCard({ className }: { className?: string }) {
   const [password, setPasswordValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [email, setEmailValue] = useState("");
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
@@ -62,42 +61,30 @@ export function LinkAccountCard({ className }: { className?: string }) {
     }
   }, [newPassword, token, load, pushToast, t]);
 
-  const handleLinkGoogle = useCallback(async () => {
-    if (!window.google) {
-      pushToast(t("dashboard.linkAccount.googleNotLoaded"), "error");
+  const handleLinkGoogle = useCallback(() => {
+    if (!GOOGLE_CLIENT_ID) {
+      pushToast("Google Client ID is missing. Please check your .env file.", "error");
       return;
     }
-    setGoogleLoading(true);
-    try {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: async (response: { credential?: string }) => {
-          if (!response.credential) {
-            setGoogleLoading(false);
-            return;
-          }
-          try {
-            await linkGoogle(response.credential, token || undefined);
-            pushToast(t("dashboard.linkAccount.googleLinked"), "success");
-            await load();
-          } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : t("dashboard.linkAccount.googleLinkFailed");
-            pushToast(msg, "error");
-          } finally {
-            setGoogleLoading(false);
-          }
-        },
-      });
-      const container = document.getElementById("google-link-btn");
-      if (container) {
-        window.google.accounts.id.renderButton(container, { theme: "outline", size: "large", text: "continue_with" });
-        container.querySelector<HTMLElement>("button")?.click();
-      }
-    } catch {
-      setGoogleLoading(false);
-      pushToast(t("dashboard.linkAccount.googleInitFailed"), "error");
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("webjoz_google_link_mode", "true");
+      sessionStorage.setItem("webjoz_google_return_to", "/dashboard/settings");
     }
-  }, [token, load, pushToast, t]);
+
+    const redirectUri = window.location.origin;
+    const nonce = Math.random().toString(36).substring(2);
+    const googleAuthUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth` +
+      `?client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=id_token` +
+      `&scope=openid%20email%20profile` +
+      `&nonce=${nonce}` +
+      `&prompt=consent`;
+
+    window.location.href = googleAuthUrl;
+  }, [pushToast]);
 
   const handleUnlinkGoogle = useCallback(async () => {
     if (!password) {
@@ -239,12 +226,9 @@ export function LinkAccountCard({ className }: { className?: string }) {
             </div>
           ) : (
             SOCIAL_ACTIVE_PROVIDERS.includes("google") && (
-              <>
-                <div id="google-link-btn" />
-                <Button variant="outline" size="sm" onClick={handleLinkGoogle} disabled={googleLoading}>
-                  {googleLoading ? t("dashboard.linkAccount.linking") : t("dashboard.linkAccount.linkGoogle")}
-                </Button>
-              </>
+              <Button variant="outline" size="sm" onClick={handleLinkGoogle}>
+                {t("dashboard.linkAccount.linkGoogle")}
+              </Button>
             )
           )}
         </div>
