@@ -238,7 +238,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ gallery: g, dt }} render={(data) => {
               const { gallery: gg } = data;
-              return <GallerySection gallery={gg} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
+              return gg ? <GallerySection gallery={gg} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> : null;
             }} />
           </MemoPreviewSectionWrapper>
         );

@@ -6,12 +6,16 @@ import FaqClassic from "./classic";
 import FaqSimple from "./simple";
 import FaqColumns from "./columns";
 import FaqSidebarCategory from "./sidebar-category";
+import FaqTwoColumnGrid from "./two-column-grid";
+import FaqChatBubbleStyle from "./chat-bubble-style";
 
 const variants: Record<string, ComponentType<any>> = {
   accordion: FaqClassic,
   simple: FaqSimple,
   columns: FaqColumns,
   "sidebar-category": FaqSidebarCategory,
+  "two-column-grid": FaqTwoColumnGrid,
+  "chat-bubble-style": FaqChatBubbleStyle,
 };
 
 export default function FaqSection({
