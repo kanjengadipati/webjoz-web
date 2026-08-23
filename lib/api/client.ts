@@ -4,7 +4,7 @@ import {
   API_TIMEOUT_MS,
   TOKEN_STORAGE_KEY,
 } from "@/lib/config";
-import { setStoredValue } from "@/lib/storage";
+import { readStorageValue, setStoredValue } from "@/lib/storage";
 import type { ApiEnvelope, ApiSuccessResponse, LoginResponse } from "@/lib/types";
 
 const MAX_AUTH_RETRIES = 1;
@@ -97,12 +97,13 @@ export async function request<T>(
   retryCount = 0,
   timeoutMs?: number,
 ): Promise<ApiSuccessResponse<T>> {
+  const authToken = token || (typeof window !== "undefined" ? readStorageValue(TOKEN_STORAGE_KEY, "") : "");
   const headers = new Headers(init?.headers || {});
   if (!(init?.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+  if (authToken) {
+    headers.set("Authorization", `Bearer ${authToken}`);
   }
 
   const method = init?.method || "GET";
@@ -121,7 +122,7 @@ export async function request<T>(
     console.warn(`[API] ${method} ${path} -> ${response.status}`);
   }
 
-  if (response.status === 401 && canRetry && token && retryCount < MAX_AUTH_RETRIES) {
+  if (response.status === 401 && canRetry && retryCount < MAX_AUTH_RETRIES && path !== "/auth/refresh") {
     try {
       const body = await refreshAccessToken();
       if (body.data.access_token) {

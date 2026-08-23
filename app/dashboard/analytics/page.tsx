@@ -41,11 +41,12 @@ interface AnalyticsData {
   pageviews_by_referrer: ReferrerStat[];
 }
 
-function formatDuration(seconds: number): string {
-  if (!seconds || seconds <= 0) return "0d";
+function formatDuration(seconds: number, locale: string): string {
+  const secUnit = locale === "id" ? "d" : "s";
+  if (!seconds || seconds <= 0) return `0${secUnit}`;
   const m = Math.floor(seconds / 60);
   const s = Math.round(seconds % 60);
-  return m > 0 ? `${m}m ${s}d` : `${s}d`;
+  return m > 0 ? `${m}m ${s}${secUnit}` : `${s}${secUnit}`;
 }
 
 interface Site {
@@ -140,6 +141,10 @@ export default function AnalyticsPage() {
   const handleManualDate = (type: "from" | "to", value: string) => {
     const nextFrom = type === "from" ? value : fromStr;
     const nextTo = type === "to" ? value : toStr;
+    if (new Date(nextFrom).getTime() > new Date(nextTo).getTime()) {
+      pushToast(t("dashboard.analytics.invalidDateRange"), "error");
+      return;
+    }
     const diffMs = new Date(nextTo).getTime() - new Date(nextFrom).getTime();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     if (diffDays > maxDays) {
@@ -150,6 +155,32 @@ export default function AnalyticsPage() {
     if (type === "from") setFromStr(value);
     else setToStr(value);
   };
+
+  const continuousChartData = React.useMemo(() => {
+    if (!data?.pageviews_by_date) return [];
+    const statMap = new Map<string, number>();
+    for (const item of data.pageviews_by_date) {
+      statMap.set(item.date, item.count);
+    }
+    const result: PageViewStat[] = [];
+    const start = new Date(fromStr);
+    const end = new Date(toStr);
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) {
+      return data.pageviews_by_date;
+    }
+    const curr = new Date(start);
+    let iter = 0;
+    while (curr <= end && iter < 366) {
+      const dStr = fmt(curr);
+      result.push({
+        date: dStr,
+        count: statMap.get(dStr) || 0,
+      });
+      curr.setDate(curr.getDate() + 1);
+      iter++;
+    }
+    return result;
+  }, [data?.pageviews_by_date, fromStr, toStr]);
 
   if (loading && !data) {
     return (
@@ -199,13 +230,13 @@ export default function AnalyticsPage() {
             </linearGradient>
           </defs>
 
-          <line x1={paddingLeft} y1={paddingTop} x2={width - paddingRight} y2={paddingTop} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
-          <line x1={paddingLeft} y1={paddingTop + graphHeight / 2} x2={width - paddingRight} y2={paddingTop + graphHeight / 2} className="stroke-slate-200" strokeWidth="1" strokeDasharray="4" />
-          <line x1={paddingLeft} y1={paddingTop + graphHeight} x2={width - paddingRight} y2={paddingTop + graphHeight} className="stroke-slate-300" strokeWidth="1" />
+          <line x1={paddingLeft} y1={paddingTop} x2={width - paddingRight} y2={paddingTop} className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="1" strokeDasharray="4" />
+          <line x1={paddingLeft} y1={paddingTop + graphHeight / 2} x2={width - paddingRight} y2={paddingTop + graphHeight / 2} className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="1" strokeDasharray="4" />
+          <line x1={paddingLeft} y1={paddingTop + graphHeight} x2={width - paddingRight} y2={paddingTop + graphHeight} className="stroke-slate-300 dark:stroke-slate-700" strokeWidth="1" />
 
-          <text x={paddingLeft - 12} y={paddingTop + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{maxCount}</text>
-          <text x={paddingLeft - 12} y={paddingTop + graphHeight / 2 + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">{Math.round(maxCount / 2)}</text>
-          <text x={paddingLeft - 12} y={paddingTop + graphHeight + 4} textAnchor="end" className="fill-slate-400 text-[10px] font-mono">0</text>
+          <text x={paddingLeft - 12} y={paddingTop + 4} textAnchor="end" className="fill-slate-400 dark:fill-slate-500 text-[10px] font-mono">{maxCount}</text>
+          <text x={paddingLeft - 12} y={paddingTop + graphHeight / 2 + 4} textAnchor="end" className="fill-slate-400 dark:fill-slate-500 text-[10px] font-mono">{Math.round(maxCount / 2)}</text>
+          <text x={paddingLeft - 12} y={paddingTop + graphHeight + 4} textAnchor="end" className="fill-slate-400 dark:fill-slate-500 text-[10px] font-mono">0</text>
 
           {areaD && <path d={areaD} fill="url(#chartGradient)" />}
 
@@ -226,6 +257,15 @@ export default function AnalyticsPage() {
             const tooltipId = `pv-tooltip-${idx}`;
             return (
               <g key={idx} className="group/point">
+                {/* Mobile touch hit area */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={20}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  onClick={() => setActivePoint((cur) => (cur === idx ? null : idx))}
+                />
                 <circle
                   cx={p.x}
                   cy={p.y}
@@ -233,7 +273,7 @@ export default function AnalyticsPage() {
                   fill="var(--primary)"
                   stroke="#fff"
                   strokeWidth="1.5"
-                  className="transition-all"
+                  className="transition-all pointer-events-none sm:pointer-events-auto"
                   tabIndex={0}
                   role="button"
                   aria-describedby={tooltipId}
@@ -241,6 +281,7 @@ export default function AnalyticsPage() {
                   onBlur={() => setActivePoint((cur) => (cur === idx ? null : cur))}
                   onMouseEnter={() => setActivePoint(idx)}
                   onMouseLeave={() => setActivePoint((cur) => (cur === idx ? null : cur))}
+                  onClick={() => setActivePoint((cur) => (cur === idx ? null : idx))}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -271,7 +312,7 @@ export default function AnalyticsPage() {
             let shortDate = p.label;
             try { shortDate = new Date(p.label).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { day: "numeric", month: "short" }); } catch {}
             return (
-              <text key={idx} x={p.x} y={paddingTop + graphHeight + 20} textAnchor="middle" className="fill-slate-400 text-[10px] font-mono font-medium">{shortDate}</text>
+              <text key={idx} x={p.x} y={paddingTop + graphHeight + 20} textAnchor="middle" className="fill-slate-400 dark:fill-slate-500 text-[10px] font-mono font-medium">{shortDate}</text>
             );
           })}
         </svg>
@@ -284,16 +325,16 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div aria-live="polite" className="sr-only">
-        {activePoint !== null ? t("dashboard.analytics.srActivePoint", undefined, { date: data?.pageviews_by_date?.[activePoint]?.date || '', count: String(data?.pageviews_by_date?.[activePoint]?.count || 0) }) : ''}
+        {activePoint !== null ? t("dashboard.analytics.srActivePoint", undefined, { date: continuousChartData[activePoint]?.date || '', count: String(continuousChartData[activePoint]?.count || 0) }) : ''}
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <Globe className="w-4 h-4 text-slate-500" />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Globe className="w-4 h-4 text-slate-500 shrink-0" />
           <select
             value={selectedSiteId}
             onChange={(e) => setSelectedSiteId(e.target.value)}
-            className="px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
+            className="w-full sm:w-auto px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
             aria-label={t("dashboard.analytics.selectSite")}
           >
             <option value="all">{t("dashboard.leads.allWebsites")}</option>
@@ -339,7 +380,7 @@ export default function AnalyticsPage() {
           <CardContent className="space-y-1">
             <div className="text-3xl font-black text-foreground">{data?.total_pageviews || 0}</div>
             {comp ? (
-              <div className={`text-[10px] font-bold flex items-center gap-1 ${comp.up ? "text-green-600" : "text-red-500"}`}>
+              <div className={`text-[10px] font-bold flex items-center gap-1 ${comp.up ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"}`}>
                 <TrendingUp className={`w-3.5 h-3.5 ${comp.up ? "" : "rotate-180"}`} />
                 {comp.up ? t("dashboard.analytics.up") : t("dashboard.analytics.down")} {comp.pct}% {t("dashboard.analytics.fromPrevPeriod")}
               </div>
@@ -364,7 +405,7 @@ export default function AnalyticsPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider text-slate-500">{t("dashboard.analytics.statAvgDuration")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="text-3xl font-black text-foreground">{formatDuration(data?.avg_session_seconds ?? 0)}</div>
+            <div className="text-3xl font-black text-foreground">{formatDuration(data?.avg_session_seconds ?? 0, locale)}</div>
             <div className="text-[10px] text-slate-400">{t("dashboard.analytics.durationNote")}</div>
           </CardContent>
         </Card>
@@ -385,13 +426,13 @@ export default function AnalyticsPage() {
               <CardDescription className="text-xs">{t("dashboard.analytics.dailyVisitsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            {renderLineChart(data?.pageviews_by_date || [])}
+            {renderLineChart(continuousChartData)}
           </CardContent>
         </Card>
 
         <div className="space-y-6">
           <Card className="border-border/40 shadow-sm">
-            <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
+            <CardHeader className="p-4 bg-muted/40 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <MousePointerClick className="w-4 h-4 text-primary" />
                 {t("dashboard.analytics.leadsIn")}
@@ -410,7 +451,7 @@ export default function AnalyticsPage() {
           </Card>
 
           <Card className="border-border/40 shadow-sm">
-            <CardHeader className="p-4 bg-slate-50/50 border-b border-border/40">
+            <CardHeader className="p-4 bg-muted/40 border-b border-border/40">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5">
                 <ArrowUpRight className="w-4 h-4 text-primary" />
                 {t("dashboard.analytics.trafficSources")}
@@ -424,7 +465,7 @@ export default function AnalyticsPage() {
                     return data.pageviews_by_referrer.map((r, idx) => (
                       <div key={idx} className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-semibold text-slate-600">{r.referrer}</span>
+                          <span className="font-semibold text-foreground">{r.referrer}</span>
                           <span className="font-bold">{r.count} PVs</span>
                         </div>
                         <div className="h-1.5 rounded-full bg-muted/40 overflow-hidden">
@@ -455,7 +496,7 @@ export default function AnalyticsPage() {
               {t("dashboard.analytics.later")}
             </Button>
             <Button onClick={() => {
-              window.open("/dashboard/settings/billing", "_blank");
+              window.open("/dashboard/upgrade", "_blank");
               setShowUpsell(false);
             }}>
               <Sparkles className="w-4 h-4" />
@@ -465,13 +506,13 @@ export default function AnalyticsPage() {
         }
       >
         <div className="space-y-4 text-sm">
-          <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50">
             <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
               <X className="w-3 h-3 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-amber-800">{t("dashboard.analytics.free7Days")}</p>
-              <p className="text-amber-700 mt-1">
+              <p className="font-semibold text-amber-800 dark:text-amber-300">{t("dashboard.analytics.free7Days")}</p>
+              <p className="text-amber-700 dark:text-amber-400 mt-1">
                 {t("dashboard.analytics.free7DaysDesc")}
                 {pendingRange && (
                   <> {t("dashboard.analytics.selectedRange", undefined, { from: pendingRange.from, to: pendingRange.to })}</>
@@ -480,13 +521,13 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50">
             <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
               <Sparkles className="w-3 h-3 text-primary-foreground" />
             </div>
             <div>
-              <p className="font-semibold text-blue-800">{t("dashboard.analytics.proUpgrade")}</p>
-              <p className="text-blue-700 mt-1">
+              <p className="font-semibold text-blue-800 dark:text-blue-300">{t("dashboard.analytics.proUpgrade")}</p>
+              <p className="text-blue-700 dark:text-blue-400 mt-1">
                 {t("dashboard.analytics.proUpgradeDesc")}
               </p>
             </div>

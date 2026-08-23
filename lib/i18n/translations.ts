@@ -646,6 +646,7 @@ export interface Translations {
       selectedRange: string;
       proUpgrade: string;
       proUpgradeDesc: string;
+      invalidDateRange: string;
     };
     domains: {
       loadFailed: string;
@@ -2869,6 +2870,7 @@ export const translations: Record<Locale, Translations> = {
         selectedRange: "Kamu memilih rentang {from} s/d {to}.",
         proUpgrade: "Upgrade ke Pro",
         proUpgradeDesc: "Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.",
+        invalidDateRange: "Tanggal awal tidak boleh lebih dari tanggal akhir.",
       },
       domains: {
         loadFailed: "Gagal memuat data domain",
@@ -5137,6 +5139,7 @@ export const translations: Record<Locale, Translations> = {
         selectedRange: "You selected the range {from} to {to}.",
         proUpgrade: "Upgrade to Pro",
         proUpgradeDesc: "With the Pro plan, you can access up to 90 days of analytics, plus exclusive features like custom domains and unlimited AI content writer.",
+        invalidDateRange: "Start date cannot be after end date.",
       },
       domains: {
         loadFailed: "Failed to load domain data",

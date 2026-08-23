@@ -34,7 +34,7 @@ interface UsageResponse {
 }
 
 export default function UsagePage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { pushToast } = useToast();
   const token = useAuthToken();
   const { activeTenant } = useActiveTenant();
@@ -119,6 +119,8 @@ export default function UsagePage() {
     }
     return items;
   }, [currentPlan, siteCount, usage, t]);
+
+  const monthSuffix = locale === "id" ? "/bln" : "/mo";
 
   if (loading) {
     return (
@@ -237,7 +239,7 @@ export default function UsagePage() {
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="size-3.5" />
-                <span>{t("dashboard.usage.currentPeriod", undefined, { month: new Date().toLocaleDateString("id-ID", { month: "long", year: "numeric" }) })}</span>
+                <span>{t("dashboard.usage.currentPeriod", undefined, { month: new Date().toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { month: "long", year: "numeric" }) })}</span>
               </div>
             </div>
           </CardContent>
@@ -280,19 +282,19 @@ export default function UsagePage() {
                     planSlugs={plans.map((p) => p.slug)}
                   />
                   <PlanCompareRow
-                    label={t("dashboard.meterAiGenerate") + "/mo"}
+                    label={t("dashboard.meterAiGenerate") + monthSuffix}
                     values={plans.map((p) => p.max_ai_generates)}
                     currentSlug={currentPlanSlug}
                     planSlugs={plans.map((p) => p.slug)}
                   />
                   <PlanCompareRow
-                    label={t("dashboard.meterSectionRegen") + "/mo"}
+                    label={t("dashboard.meterSectionRegen") + monthSuffix}
                     values={plans.map((p) => p.max_section_regens)}
                     currentSlug={currentPlanSlug}
                     planSlugs={plans.map((p) => p.slug)}
                   />
                   <PlanCompareRow
-                    label={t("dashboard.meterDesignRegen") + "/mo"}
+                    label={t("dashboard.meterDesignRegen") + monthSuffix}
                     values={plans.map((p) => p.max_design_regens)}
                     currentSlug={currentPlanSlug}
                     planSlugs={plans.map((p) => p.slug)}
@@ -318,7 +320,7 @@ export default function UsagePage() {
                       >
                         {plan.price_monthly === 0
                           ? t("dashboard.usage.free")
-                          : `Rp ${(plan.price_monthly / 1000).toFixed(0)}rb/mo`}
+                          : `Rp ${(plan.price_monthly / 1000).toFixed(0)}rb${monthSuffix}`}
                       </td>
                     ))}
                   </tr>
