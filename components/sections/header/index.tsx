@@ -5,11 +5,15 @@ import type { HeaderVariantProps } from "./types";
 import LeftLogoInlineNav from "./left-logo-inline-nav";
 import CenteredLogo from "./centered-logo";
 import TransparentOverlay from "./transparent-overlay";
+import LogoWithCtaButton from "./logo-with-cta-button";
+import StackedLogoTagline from "./stacked-logo-tagline";
 
 const variants: Record<string, ComponentType<HeaderVariantProps>> = {
   "left-logo-inline-nav": LeftLogoInlineNav,
   "centered-logo": CenteredLogo,
   "transparent-overlay": TransparentOverlay,
+  "logo-with-cta-button": LogoWithCtaButton,
+  "stacked-logo-tagline": StackedLogoTagline,
 };
 
 export default function HeaderSection(props: HeaderVariantProps) {

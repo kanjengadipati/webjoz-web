@@ -94,13 +94,13 @@ export interface DesignToken {
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
       cta?: "banner" | "card" | "centered" | "split-image";
-      faq?: "accordion" | "simple" | "columns" | "sidebar-category";
-      gallery?: "grid" | "masonry" | "carousel";
+      faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
+      gallery?: "grid" | "masonry" | "carousel" | "lightbox-story";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
       contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
-      header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay";
-      footer?: "minimal-band" | "columns-with-social" | "columns-with-nav";
+      header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay" | "logo-with-cta-button" | "stacked-logo-tagline";
+      footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band";
     };
     section_order?: string[];
     hidden_sections?: string[];
@@ -246,7 +246,7 @@ export interface TemplateProps {
       title: string;
       eyebrow?: string;
       items: GalleryItem[];
-      layout?: "grid" | "masonry" | "carousel";
+      layout?: "grid" | "masonry" | "carousel" | "lightbox-story";
       autoplay_speed?: number;
       show_dots?: boolean;
       show_arrows?: boolean;

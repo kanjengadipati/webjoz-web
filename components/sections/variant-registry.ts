@@ -43,11 +43,14 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "simple", label: "Sederhana", description: "Semua Q&A tampil terbuka tanpa interaksi." },
     { value: "columns", label: "Kolom", description: "2 kolom Q&A berdampingan." },
     { value: "sidebar-category", label: "Kategori Sidebar", description: "Filter Q&A per kategori (membutuhkan category)." },
+    { value: "two-column-grid", label: "Grid 2 Kolom", description: "Q&A dalam kartu grid 2 kolom, semua terbuka." },
+    { value: "chat-bubble-style", label: "Gaya Chat", description: "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri." },
   ],
   gallery: [
     { value: "grid", label: "Grid", description: "Foto dalam kotak seragam tersusun rapi." },
     { value: "masonry", label: "Masonry", description: "Tinggi foto bervariasi seperti Pinterest." },
     { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
+    { value: "lightbox-story", label: "Story Lightbox", description: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita." },
   ],
   menu: [
     { value: "grid", label: "Grid", group: "Dasar", description: "Kartu produk dalam grid dengan foto." },
@@ -87,11 +90,14 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "left-logo-inline-nav", label: "Logo Kiri + Nav Inline", description: "Logo di kiri, navigasi sejajar di kanan, CTA tombol." },
     { value: "centered-logo", label: "Logo Tengah", description: "Logo di tengah, navigasi di bawahnya, CTA tombol." },
     { value: "transparent-overlay", label: "Transparan (Hero Overlay)", description: "Transparan di atas hero, solid setelah scroll." },
+    { value: "logo-with-cta-button", label: "Logo + CTA Tombol", description: "Logo kiri, nav tengah, tombol CTA warna solid di kanan." },
+    { value: "stacked-logo-tagline", label: "Logo + Tagline Tumpuk", description: "Logo dan tagline vertikal di tengah, nav tipis di bawah." },
   ],
   footer: [
     { value: "minimal-band", label: "Band Minimal", description: "Brand + tagline + copyright dalam satu baris gelap bersih." },
     { value: "columns-with-nav", label: "Kolom + Navigasi Cepat", description: "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas." },
     { value: "columns-with-social", label: "Kolom + Media Sosial", description: "Multi-kolom dengan tautan akun media sosial bisnis." },
+    { value: "dark-contrast-band", label: "Band Gelap Kontras", description: "Footer gelap solid dengan aksen warna primary, kontras kuat." },
   ],
   blog: [
     { value: "grid", label: "Grid", description: "Kartu dalam 3 kolom rapi." },
