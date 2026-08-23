@@ -178,38 +178,38 @@ function ProfileTab() {
   }
 
   return (
-    <>
-    <Card>
-      <CardHeader className="border-b border-border/60">
-        <SectionTitle eyebrow={t("dashboard.settings.profileEyebrow")} title={t("dashboard.settings.profileTitle")} />
-      </CardHeader>
-      <CardContent className="pt-6">
-        {profile ? (
-          <form className="space-y-4" onSubmit={handleProfileUpdate}>
-            <div className="space-y-2">
-              <Label>{t("dashboard.settings.email")}</Label>
-              <Input value={profile.email} readOnly className="bg-muted/60 text-muted-foreground" />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("dashboard.settings.name")}</Label>
-              <Input value={name} onChange={(event) => setName(event.target.value)} />
-            </div>
-            <PhoneNumberInput
-              id="settings-phone-number"
-              optional
-              value={phoneNumber}
-              onChange={(value) => { setPhoneNumber(value); setPhoneError(""); }}
-              error={phoneError}
-            />
-            <Button type="submit">{t("dashboard.settings.saveProfile")}</Button>
-          </form>
-        ) : (
-          <EmptyState text={t("dashboard.settings.profileEmpty")} />
-        )}
-      </CardContent>
-    </Card>
-    <LinkAccountCard />
-    </>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="border-b border-border/60">
+          <SectionTitle eyebrow={t("dashboard.settings.profileEyebrow")} title={t("dashboard.settings.profileTitle")} />
+        </CardHeader>
+        <CardContent className="pt-6">
+          {profile ? (
+            <form className="space-y-4" onSubmit={handleProfileUpdate}>
+              <div className="space-y-2">
+                <Label>{t("dashboard.settings.email")}</Label>
+                <Input value={profile.email} readOnly className="bg-muted/60 text-muted-foreground" />
+              </div>
+              <div className="space-y-2">
+                <Label>{t("dashboard.settings.name")}</Label>
+                <Input value={name} onChange={(event) => setName(event.target.value)} />
+              </div>
+              <PhoneNumberInput
+                id="settings-phone-number"
+                optional
+                value={phoneNumber}
+                onChange={(value) => { setPhoneNumber(value); setPhoneError(""); }}
+                error={phoneError}
+              />
+              <Button type="submit">{t("dashboard.settings.saveProfile")}</Button>
+            </form>
+          ) : (
+            <EmptyState text={t("dashboard.settings.profileEmpty")} />
+          )}
+        </CardContent>
+      </Card>
+      <LinkAccountCard />
+    </div>
   );
 }
 

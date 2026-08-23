@@ -136,34 +136,34 @@ export type LinkedMethods = {
   is_synthetic_email: boolean;
 };
 
-export async function getLinkedMethods() {
-  return request<LinkedMethods>("/auth/linked-methods", { method: "GET" });
+export async function getLinkedMethods(token?: string) {
+  return request<LinkedMethods>("/auth/linked-methods", { method: "GET" }, token);
 }
 
-export async function setPassword(password: string) {
+export async function setPassword(password: string, token?: string) {
   return request<null>("/auth/set-password", {
     method: "POST",
     body: JSON.stringify({ password }),
-  });
+  }, token);
 }
 
-export async function linkGoogle(idToken: string) {
+export async function linkGoogle(idToken: string, token?: string) {
   return request<null>("/auth/link/google", {
     method: "POST",
     body: JSON.stringify({ id_token: idToken }),
-  });
+  }, token);
 }
 
-export async function unlinkGoogle(password: string) {
+export async function unlinkGoogle(password: string, token?: string) {
   return request<null>("/auth/link/google", {
     method: "DELETE",
     body: JSON.stringify({ password }),
-  });
+  }, token);
 }
 
-export async function updateEmail(email: string) {
+export async function updateEmail(email: string, token?: string) {
   return request<null>("/auth/email", {
     method: "PUT",
     body: JSON.stringify({ email }),
-  });
+  }, token);
 }
