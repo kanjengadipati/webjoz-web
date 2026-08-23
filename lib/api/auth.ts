@@ -140,10 +140,10 @@ export async function getLinkedMethods(token?: string) {
   return request<LinkedMethods>("/auth/linked-methods", { method: "GET" }, token);
 }
 
-export async function setPassword(password: string, token?: string) {
+export async function setPassword(password: string, token?: string, currentPassword?: string) {
   return request<null>("/auth/set-password", {
     method: "POST",
-    body: JSON.stringify({ password }),
+    body: JSON.stringify({ password, current_password: currentPassword || "" }),
   }, token);
 }
 

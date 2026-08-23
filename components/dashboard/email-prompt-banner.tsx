@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
+import { useAuthToken } from "@/lib/auth-store";
 import { getLinkedMethods, updateEmail } from "@/lib/api/auth";
 import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ function wasDismissedRecently(): boolean {
 }
 
 export function EmailPromptBanner({ className }: { className?: string }) {
+  const token = useAuthToken();
   const { t } = useI18n();
   const { pushToast } = useToast();
   const [visible, setVisible] = useState(false);
@@ -31,7 +33,7 @@ export function EmailPromptBanner({ className }: { className?: string }) {
 
   useEffect(() => {
     if (wasDismissedRecently()) return;
-    getLinkedMethods()
+    getLinkedMethods(token || undefined)
       .then((res) => {
         if (res.data.is_synthetic_email) {
           setVisible(true);
@@ -39,7 +41,7 @@ export function EmailPromptBanner({ className }: { className?: string }) {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [token]);
 
   const handleDismiss = useCallback(() => {
     localStorage.setItem(DISMISS_KEY, new Date().toISOString());
@@ -51,7 +53,7 @@ export function EmailPromptBanner({ className }: { className?: string }) {
     if (!email) return;
     setSaving(true);
     try {
-      await updateEmail(email);
+      await updateEmail(email, token || undefined);
       pushToast(t("dashboard.emailPrompt.emailUpdated"), "success");
       setVisible(false);
     } catch (err: unknown) {
@@ -60,7 +62,7 @@ export function EmailPromptBanner({ className }: { className?: string }) {
     } finally {
       setSaving(false);
     }
-  }, [email, pushToast, t]);
+  }, [email, token, pushToast, t]);
 
   if (!visible) return null;
 

@@ -2204,14 +2204,14 @@ export interface Translations {
       emailUpdateFailed: string;
       passwordSetSuccess: string;
       passwordSetFailed: string;
-      googleNotLoaded: string;
-      googleInitFailed: string;
+      googleClientMissing: string;
       googleLinked: string;
       googleLinkFailed: string;
       enterPassword: string;
       googleUnlinked: string;
       googleUnlinkFailed: string;
       loadFailed: string;
+      currentPassword: string;
     };
     emailPrompt: {
       title: string;
@@ -4475,14 +4475,14 @@ export const translations: Record<Locale, Translations> = {
         emailUpdateFailed: "Gagal memperbarui email",
         passwordSetSuccess: "Kata sandi berhasil diatur",
         passwordSetFailed: "Gagal mengatur kata sandi",
-        googleNotLoaded: "Google Sign-In belum dimuat",
-        googleInitFailed: "Gagal menginisialisasi Google Sign-In",
+        googleClientMissing: "Google Client ID tidak dikonfigurasi",
         googleLinked: "Akun Google berhasil ditautkan",
-        googleLinkFailed: "Gagal menautkan Google",
+        googleLinkFailed: "Gagal menautkan Google. Silakan coba lagi.",
         enterPassword: "Masukkan kata sandi untuk mengonfirmasi",
         googleUnlinked: "Akun Google berhasil diputuskan",
         googleUnlinkFailed: "Gagal memutuskan Google",
         loadFailed: "Gagal memuat metode akun",
+        currentPassword: "Kata sandi saat ini",
       },
       emailPrompt: {
         title: "Tambahkan email Anda untuk menerima faktur dan notifikasi penting",
@@ -6744,14 +6744,14 @@ export const translations: Record<Locale, Translations> = {
         emailUpdateFailed: "Failed to update email",
         passwordSetSuccess: "Password set successfully",
         passwordSetFailed: "Failed to set password",
-        googleNotLoaded: "Google Sign-In is not loaded",
-        googleInitFailed: "Failed to initialize Google Sign-In",
+        googleClientMissing: "Google Client ID is not configured",
         googleLinked: "Google account linked",
         googleLinkFailed: "Failed to link Google",
         enterPassword: "Enter your password to confirm",
         googleUnlinked: "Google account unlinked",
         googleUnlinkFailed: "Failed to unlink",
         loadFailed: "Failed to load account methods",
+        currentPassword: "Current password",
       },
       emailPrompt: {
         title: "Add your email to receive invoices and important notifications",
