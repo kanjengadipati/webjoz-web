@@ -15,9 +15,25 @@ import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
-import { MIDTRANS_CLIENT_KEY, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
-import PaymentModal from "@/components/payment-modal";
+import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
 import type { Profile } from "@/lib/types";
+
+function loadSnapScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof window !== "undefined" && (window as any).snap) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `${MIDTRANS_SNAP_BASE_URL}/snap/snap.js`;
+    if (MIDTRANS_CLIENT_KEY) {
+      script.setAttribute("data-client-key", MIDTRANS_CLIENT_KEY);
+    }
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Gagal memuat Midtrans Snap"));
+    document.body.appendChild(script);
+  });
+}
 
 // Common country list for WHOIS registration
 const COUNTRY_LIST = [
@@ -119,9 +135,7 @@ export default function DomainsPage() {
   const [phoneLocal,         setPhoneLocal]         = useState("");
   const [zipLoading,         setZipLoading]         = useState(false);
   const [isConfirming,       setIsConfirming]       = useState(false);
-  const [showPaymentModal,    setShowPaymentModal]    = useState(false);
   const [paymentGateway,      setPaymentGateway]      = useState<"midtrans" | "paypal">("midtrans");
-  const [paymentOrder,        setPaymentOrder]        = useState<any>(null);
   const [snapReady,           setSnapReady]           = useState(false);
   const [paypalModal,         setPaypalModal]         = useState(false);
   const [paypalPendingOrderID,setPaypalPendingOrderID] = useState<string | null>(null);
@@ -137,6 +151,13 @@ export default function DomainsPage() {
     country: "ID",
     zip: "",
   });
+
+  useEffect(() => {
+    if (!MIDTRANS_CLIENT_KEY) return;
+    loadSnapScript()
+      .then(() => setSnapReady(true))
+      .catch(() => {});
+  }, []);
 
   const populatePurchaserData = useCallback((profile?: Profile | null, tenantName?: string) => {
     let saved: any = {};
@@ -363,7 +384,6 @@ export default function DomainsPage() {
     try {
       setIsConfirming(true);
       setBuyingDomain(purchaserDomain);
-      setPaymentOrder(null);
 
       // Build purchaser payload
       const purchaserPayload = {
@@ -432,6 +452,13 @@ export default function DomainsPage() {
 
       } else {
         // Midtrans flow
+        if (!snapReady) {
+          try {
+            await loadSnapScript();
+            setSnapReady(true);
+          } catch {}
+        }
+
         const callbackUrl = `${window.location.origin}/dashboard/domains?payment=midtrans&domain=${encodeURIComponent(purchaserDomain)}`;
         const res = await request<any>("/payments", {
           method: "POST",
@@ -448,14 +475,36 @@ export default function DomainsPage() {
           }),
         }, token);
 
-        if (!res.data?.snap_token) {
+        const payment = res.data;
+        if (!payment?.snap_token && !payment?.snap_redirect_url) {
           pushToast("Midtrans payment creation failed", "error");
           return;
         }
 
-        setPaymentOrder(res.data);
         setShowPurchaserModal(false);
-        setShowPaymentModal(true);
+
+        if (typeof window !== "undefined" && (window as any).snap && payment.snap_token) {
+          (window as any).snap.pay(payment.snap_token, {
+            onSuccess: async () => {
+              pushToast(t("dashboard.domains.paymentSuccess"), "success");
+              await completePurchase(purchaserPayload);
+            },
+            onPending: () => {
+              pushToast(t("dashboard.domains.paymentPending") || "Menunggu pembayaran...", "info");
+            },
+            onError: () => {
+              pushToast(t("dashboard.domains.paymentFailed") || "Pembayaran gagal", "error");
+            },
+            onClose: () => {
+              pushToast(t("dashboard.domains.paymentCancelled") || "Pembayaran dibatalkan", "info");
+            },
+          });
+        } else if (payment.snap_redirect_url) {
+          pushToast("Mengarahkan ke pembayaran...", "info");
+          window.location.href = payment.snap_redirect_url;
+        } else {
+          pushToast("Gagal membuka pembayaran", "error");
+        }
       }
     } catch (err: unknown) {
       pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
@@ -479,13 +528,12 @@ export default function DomainsPage() {
         }),
       }, token);
       pushToast(t("dashboard.domains.buySuccess"), "success");
-    } catch {
-      // Backend may have already processed via webhook — treat as success
+    } catch (err: unknown) {
+      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
     } finally {
       setResults([]);
       setSearched(false);
       setBuyName("");
-      setShowPaymentModal(false);
       setShowPurchaserModal(false);
       fetchPurchased();
       fetchData();
@@ -1287,24 +1335,6 @@ export default function DomainsPage() {
             </button>
           </div>
         </Dialog>
-      )}
-
-      {/* ── Payment Modal (Midtrans) ──────────────────────────── */}
-      {showPaymentModal && paymentOrder && (
-        <PaymentModal
-          snapToken={paymentOrder.snap_token}
-          clientKey={MIDTRANS_CLIENT_KEY}
-          onClose={() => setShowPaymentModal(false)}
-          onPaymentSuccess={() => {
-            setShowPaymentModal(false);
-            setPaymentOrder(null);
-            pushToast(t("dashboard.domains.paymentSuccess"), "success");
-            setTimeout(() => {
-              fetchPurchased();
-              fetchData();
-            }, 1000);
-          }}
-        />
       )}
     </div>
   );
