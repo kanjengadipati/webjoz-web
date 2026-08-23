@@ -42,6 +42,7 @@ function GoogleOAuthHandler() {
       sessionStorage.removeItem("webjoz_google_return_to");
       linkGoogle(idToken)
         .then(() => {
+          sessionStorage.setItem("webjoz_google_link_success", "true");
           router.replace(returnTo);
         })
         .catch((err: unknown) => {
