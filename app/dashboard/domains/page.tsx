@@ -303,16 +303,32 @@ export default function DomainsPage() {
     let sld = buyName.toLowerCase().trim();
     let tldsToSearch = [...selectedTlds];
 
-    // Auto-detect full domain (e.g. "syalalapro.net")
-    const dotIdx = sld.lastIndexOf(".");
-    if (dotIdx > 0 && dotIdx < sld.length - 1) {
-      const detectedTld = sld.slice(dotIdx + 1);
-      sld = sld.slice(0, dotIdx);
-      if (!tldsToSearch.includes(detectedTld)) {
-        tldsToSearch = [detectedTld];
-        setSelectedTlds(tldsToSearch);
+    // Auto-detect full domain (e.g. "syalalapro.net" or "kopirempah.co.id")
+    let matchedCompound = false;
+    for (const tld of POPULAR_TLDS) {
+      if (sld.endsWith(`.${tld}`)) {
+        sld = sld.slice(0, -(tld.length + 1));
+        if (!tldsToSearch.includes(tld)) {
+          tldsToSearch = [tld];
+          setSelectedTlds(tldsToSearch);
+        }
+        setBuyName(sld);
+        matchedCompound = true;
+        break;
       }
-      setBuyName(sld);
+    }
+
+    if (!matchedCompound) {
+      const dotIdx = sld.lastIndexOf(".");
+      if (dotIdx > 0 && dotIdx < sld.length - 1) {
+        const detectedTld = sld.slice(dotIdx + 1);
+        sld = sld.slice(0, dotIdx);
+        if (!tldsToSearch.includes(detectedTld)) {
+          tldsToSearch = [detectedTld];
+          setSelectedTlds(tldsToSearch);
+        }
+        setBuyName(sld);
+      }
     }
 
     if (!token || !activeTenantId || !sld || tldsToSearch.length === 0) return;
