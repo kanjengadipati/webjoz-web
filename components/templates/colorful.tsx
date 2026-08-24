@@ -400,7 +400,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"}>
-    <div style={{ ...cssVars, background: bg, color: "var(--dt-text)", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ ...cssVars, background: bg, color: "var(--dt-text)", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
       <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
       </MemoPreviewSectionWrapper>
