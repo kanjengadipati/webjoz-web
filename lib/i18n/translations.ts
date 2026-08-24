@@ -2108,6 +2108,8 @@ export interface Translations {
       sttReviewPrompt: string;
       sttBtnEdit: string;
       sttBtnConfirm: string;
+      textReviewTitle: string;
+      textReviewPrompt: string;
       micReadyHint: string;
       backToChat: string;
       generationFailed: string;
@@ -4352,6 +4354,8 @@ export const translations: Record<Locale, Translations> = {
         sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Ya, lanjutkan",
+        textReviewTitle: "Saya poles deskripsi Anda:",
+        textReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         micReadyHint: "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
         backToChat: "Kembali ke chat",
         generationFailed: "Generate belum berhasil",
@@ -6625,6 +6629,8 @@ export const translations: Record<Locale, Translations> = {
         sttReviewPrompt: "Does this look correct? You can edit before we continue.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Yes, continue",
+        textReviewTitle: "I polished your description:",
+        textReviewPrompt: "Does this look correct? You can edit before we continue.",
         micReadyHint: "Click the mic icon to explain your business by voice",
         backToChat: "Back to chat",
         generationFailed: "Generation failed",

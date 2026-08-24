@@ -1089,6 +1089,52 @@ export function SiteWizard({
               );
             }
 
+            if (m.widget === "text-review-confirm") {
+              const transcript = m.sttTranscript || "";
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+                  <div className="flex gap-2.5 justify-start">
+                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
+                      <SparkleGenAI className="w-[21px] h-[21px]" />
+                    </div>
+                    <div className="max-w-[90%] space-y-2.5">
+                      <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#131f1a] border border-emerald-500/30 text-slate-200 shadow-xl">
+                        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
+                          <Sparkles className="w-4 h-4" />
+                          <span>{t("dashboard.wizard.textReviewTitle", "Saya poles deskripsi Anda:")}</span>
+                        </div>
+
+                        <div className="rounded-xl bg-black/30 border border-emerald-500/20 p-3 text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed italic">
+                          &ldquo;{transcript}&rdquo;
+                        </div>
+
+                        <p className="text-xs text-slate-300">
+                          {t("dashboard.wizard.textReviewPrompt", "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.")}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => chat.handleConfirmSttReview(false, transcript)}
+                          className="flex-1 px-4 py-2 rounded-xl text-xs font-bold border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 transition-all active:scale-95 text-center cursor-pointer"
+                        >
+                          {t("dashboard.wizard.sttBtnEdit", "Edit")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => chat.handleConfirmSttReview(true, transcript)}
+                          className="flex-1 px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all active:scale-95 text-center cursor-pointer"
+                        >
+                          {t("dashboard.wizard.sttBtnConfirm", "Ya, lanjutkan")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             const messageText = m.id === "init" && chat.chatStage === "name"
               ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
               : m.text;
