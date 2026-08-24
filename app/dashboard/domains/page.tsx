@@ -496,7 +496,7 @@ export default function DomainsPage() {
         if (typeof window !== "undefined" && (window as any).snap && payment.snap_token) {
           (window as any).snap.pay(payment.snap_token, {
             onSuccess: async () => {
-              pushToast(t("dashboard.domains.paymentSuccess") || "Pembayaran berhasil!", "success");
+              // Seamless single flow: direct transition into domain registration progress & success modal
               await completePurchase(purchaserPayload, purchaserDomain, siteId);
             },
             onPending: () => {
@@ -558,7 +558,6 @@ export default function DomainsPage() {
         expiresAt: res.data?.expires_at,
       });
       setShowSuccessModal(true);
-      pushToast(t("dashboard.domains.buySuccess") || "Domain berhasil didaftarkan!", "success");
       setResults([]);
       setSearched(false);
       setBuyName("");
