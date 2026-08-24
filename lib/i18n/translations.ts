@@ -735,6 +735,10 @@ export interface Translations {
       purchasedTitle: string;
       expiresAt: string;
       purchaseInactive: string;
+      paymentSuccess: string;
+      paymentPending: string;
+      paymentFailed: string;
+      paymentCancelled: string;
     };
     settings: {
       tabProfile: string;
@@ -2959,6 +2963,10 @@ export const translations: Record<Locale, Translations> = {
         purchasedTitle: "Domain Saya",
         expiresAt: "Berlaku hingga",
         purchaseInactive: "Pembelian domain sedang tidak aktif. Hubungi administrator.",
+        paymentSuccess: "Pembayaran berhasil! Domain Anda sedang didaftarkan.",
+        paymentPending: "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
+        paymentFailed: "Pembayaran gagal, silakan coba lagi.",
+        paymentCancelled: "Pembayaran dibatalkan.",
       },
       settings: {
         tabProfile: "Profil",
@@ -5228,6 +5236,10 @@ export const translations: Record<Locale, Translations> = {
         purchasedTitle: "My Domains",
         expiresAt: "Valid until",
         purchaseInactive: "Domain purchase is currently inactive. Contact an administrator.",
+        paymentSuccess: "Payment successful! Your domain is being registered.",
+        paymentPending: "Waiting for payment... Please complete it on the Midtrans page.",
+        paymentFailed: "Payment failed, please try again.",
+        paymentCancelled: "Payment cancelled.",
       },
       settings: {
         tabProfile: "Profile",

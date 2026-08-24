@@ -500,17 +500,17 @@ export default function DomainsPage() {
               await completePurchase(purchaserPayload, purchaserDomain, siteId);
             },
             onPending: () => {
-              pushToast(t("dashboard.domains.paymentPending") || "Menunggu pembayaran...", "info");
+              pushToast(t("dashboard.domains.paymentPending"), "info");
               setIsConfirming(false);
               setBuyingDomain(null);
             },
             onError: () => {
-              pushToast(t("dashboard.domains.paymentFailed") || "Pembayaran gagal", "error");
+              pushToast(t("dashboard.domains.paymentFailed"), "error");
               setIsConfirming(false);
               setBuyingDomain(null);
             },
             onClose: () => {
-              pushToast(t("dashboard.domains.paymentCancelled") || "Pembayaran dibatalkan", "info");
+              pushToast(t("dashboard.domains.paymentCancelled"), "info");
               setIsConfirming(false);
               setBuyingDomain(null);
             },
