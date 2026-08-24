@@ -9,6 +9,7 @@ import {
   Loader2, Trash2, Globe, Clock, RefreshCw,
   Server, Copy, Info, Check, Link2, ExternalLink,
   AlertCircle, Search, ShoppingCart, MapPin, ChevronDown,
+  CheckCircle2, Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
@@ -135,6 +136,15 @@ export default function DomainsPage() {
   const [phoneLocal,         setPhoneLocal]         = useState("");
   const [zipLoading,         setZipLoading]         = useState(false);
   const [isConfirming,       setIsConfirming]       = useState(false);
+  const [isRegistering,      setIsRegistering]      = useState(false);
+  const [registeringDomain,  setRegisteringDomain]  = useState("");
+  const [showSuccessModal,   setShowSuccessModal]   = useState(false);
+  const [purchasedSuccessData, setPurchasedSuccessData] = useState<{
+    domain: string;
+    siteName: string;
+    subdomain: string;
+    expiresAt?: string;
+  } | null>(null);
   const [paymentGateway,      setPaymentGateway]      = useState<"midtrans" | "paypal">("midtrans");
   const [snapReady,           setSnapReady]           = useState(false);
   const [paypalModal,         setPaypalModal]         = useState(false);
@@ -442,7 +452,7 @@ export default function DomainsPage() {
             if (checkRes.data?.status === "success" || checkRes.data?.status === "settlement") {
               clearInterval(checkInterval);
               popup?.close();
-              await completePurchase(purchaserPayload);
+              await completePurchase(purchaserPayload, purchaserDomain, siteId);
             }
           } catch {}
         }, 3000);
@@ -486,17 +496,23 @@ export default function DomainsPage() {
         if (typeof window !== "undefined" && (window as any).snap && payment.snap_token) {
           (window as any).snap.pay(payment.snap_token, {
             onSuccess: async () => {
-              pushToast(t("dashboard.domains.paymentSuccess"), "success");
-              await completePurchase(purchaserPayload);
+              pushToast(t("dashboard.domains.paymentSuccess") || "Pembayaran berhasil!", "success");
+              await completePurchase(purchaserPayload, purchaserDomain, siteId);
             },
             onPending: () => {
               pushToast(t("dashboard.domains.paymentPending") || "Menunggu pembayaran...", "info");
+              setIsConfirming(false);
+              setBuyingDomain(null);
             },
             onError: () => {
               pushToast(t("dashboard.domains.paymentFailed") || "Pembayaran gagal", "error");
+              setIsConfirming(false);
+              setBuyingDomain(null);
             },
             onClose: () => {
               pushToast(t("dashboard.domains.paymentCancelled") || "Pembayaran dibatalkan", "info");
+              setIsConfirming(false);
+              setBuyingDomain(null);
             },
           });
         } else if (payment.snap_redirect_url) {
@@ -508,35 +524,53 @@ export default function DomainsPage() {
       }
     } catch (err: unknown) {
       pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
-    } finally {
       setIsConfirming(false);
       setBuyingDomain(null);
     }
   };
 
-  const completePurchase = async (purchaserPayload: any) => {
-    if (!token || !activeTenantId || !siteId || !purchaserDomain) return;
+  const completePurchase = async (purchaserPayload: any, domainToUse?: string, siteIdToUse?: string) => {
+    const finalDomain = domainToUse || purchaserDomain;
+    const finalSiteId = siteIdToUse || siteId;
+    if (!token || !activeTenantId || !finalSiteId || !finalDomain) return;
+
     try {
-      await request<PurchasedDomain>("/domain-purchases", {
+      setIsRegistering(true);
+      setRegisteringDomain(finalDomain);
+      setShowPurchaserModal(false);
+
+      const res = await request<PurchasedDomain>("/domain-purchases", {
         method: "POST",
         headers: { "X-Tenant-ID": activeTenantId.toString() },
         body: JSON.stringify({
-          site_id: Number(siteId),
-          domain_name: purchaserDomain,
+          site_id: Number(finalSiteId),
+          domain_name: finalDomain,
           years: 1,
           purchaser: purchaserPayload,
         }),
       }, token);
-      pushToast(t("dashboard.domains.buySuccess"), "success");
-    } catch (err: unknown) {
-      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
-    } finally {
+
+      const matchedSite = sites.find(s => s.id.toString() === finalSiteId.toString());
+      setPurchasedSuccessData({
+        domain: finalDomain,
+        siteName: matchedSite?.name || "Website Anda",
+        subdomain: matchedSite?.subdomain || "",
+        expiresAt: res.data?.expires_at,
+      });
+      setShowSuccessModal(true);
+      pushToast(t("dashboard.domains.buySuccess") || "Domain berhasil didaftarkan!", "success");
       setResults([]);
       setSearched(false);
       setBuyName("");
-      setShowPurchaserModal(false);
-      fetchPurchased();
-      fetchData();
+      setTab("buy");
+      await fetchPurchased();
+      await fetchData();
+    } catch (err: unknown) {
+      pushToast((err as Error).message || t("dashboard.domains.buyFailed"), "error");
+    } finally {
+      setIsRegistering(false);
+      setIsConfirming(false);
+      setBuyingDomain(null);
     }
   };
 
@@ -1333,6 +1367,124 @@ export default function DomainsPage() {
               {isConfirming ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
               {isConfirming ? t("dashboard.domains.buying") : t("dashboard.domains.buyBtn")}
             </button>
+          </div>
+        </Dialog>
+      )}
+
+      {/* ═══════════════════════════════════════════════
+          REGISTRATION PROGRESS MODAL
+      ══════════════════════════════════════════════ */}
+      {isRegistering && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative mx-auto w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-2xl bg-primary/20 animate-ping opacity-30" />
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-foreground">Mendaftarkan Domain...</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Sedang menghubungkan DNS dan mengaktifkan sertifikat SSL untuk{" "}
+                <span className="font-semibold text-foreground underline underline-offset-2">{registeringDomain}</span>.
+              </p>
+            </div>
+            <div className="p-3 bg-muted/30 border border-border rounded-2xl text-xs text-muted-foreground flex items-center justify-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span>Mohon jangan menutup atau merefresh halaman ini.</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════
+          PURCHASE SUCCESS CELEBRATION MODAL
+      ══════════════════════════════════════════════ */}
+      {showSuccessModal && purchasedSuccessData && (
+        <Dialog
+          open={showSuccessModal}
+          onOpenChange={(isOpen) => {
+            setShowSuccessModal(isOpen);
+            if (!isOpen) setPurchasedSuccessData(null);
+          }}
+          title={
+            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+              <Sparkles className="w-4 h-4" />
+              <span>Registrasi Berhasil</span>
+            </div>
+          }
+        >
+          <div className="relative p-6 sm:p-8 text-center space-y-6">
+            {/* Background Glow */}
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Icon */}
+            <div className="relative mx-auto w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+
+            {/* Title */}
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mb-1">
+                <Sparkles className="w-3.5 h-3.5" /> Pembelian & Registrasi Berhasil
+              </div>
+              <h2 className="text-xl font-bold text-foreground tracking-tight">
+                Selamat! Domain Anda Siap Digunakan
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Domain telah berhasil didaftarkan dan diarahkan ke website Anda secara otomatis.
+              </p>
+            </div>
+
+            {/* Domain Details Card */}
+            <div className="bg-muted/30 border border-border rounded-2xl p-4 text-left space-y-3.5">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-xs text-muted-foreground font-medium">Domain Aktif</span>
+                <span className="text-sm font-bold text-primary flex items-center gap-1.5 font-mono">
+                  <Globe className="w-4 h-4 text-primary" />
+                  {purchasedSuccessData.domain}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-xs text-muted-foreground font-medium">Website Terhubung</span>
+                <span className="text-xs font-semibold text-foreground truncate max-w-[200px]">
+                  {purchasedSuccessData.siteName}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-xs text-muted-foreground font-medium">Status Koneksi</span>
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5" /> DNS & SSL Otomatis
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground font-medium">Masa Berlaku</span>
+                <span className="text-xs font-semibold text-foreground">
+                  1 Tahun (Auto-Renew Aktif)
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+              <a
+                href={`https://${purchasedSuccessData.domain}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <ExternalLink className="w-4 h-4" /> Buka Website
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setPurchasedSuccessData(null);
+                }}
+                className="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-muted/40 border border-border text-foreground hover:bg-muted transition-colors cursor-pointer"
+              >
+                Selesai
+              </button>
+            </div>
           </div>
         </Dialog>
       )}
