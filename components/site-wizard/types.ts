@@ -17,7 +17,7 @@ export type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips" | "mood-chips" | "language-chips" | "stt-review-confirm";
+  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips" | "mood-chips" | "language-chips" | "stt-review-confirm" | "text-review-confirm";
   sttTranscript?: string;
 };
 

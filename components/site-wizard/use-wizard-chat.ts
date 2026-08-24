@@ -620,6 +620,28 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
               const detected = extractLocationFromDescription(refined);
               if (detected) setServiceArea(detected);
             }
+
+            // Show a review bubble when AI meaningfully polished the text — let user
+            // see, confirm or edit before we proceed to type inference.
+            // "Meaningful" = lowercased+stripped versions differ (not just casing/spacing).
+            const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ").trim();
+            if (normalize(refined) !== normalize(val)) {
+              // Store inferred type so handleConfirmSttReview can pass it through
+              sttInferredResultRef.current = (aiRes.data.type && aiRes.data.sub_type)
+                ? { type: aiRes.data.type, subType: aiRes.data.sub_type }
+                : null;
+              setMessages((prev) => [
+                ...prev,
+                {
+                  id: `text-review-${Date.now()}`,
+                  sender: "ai",
+                  text: "",
+                  widget: "text-review-confirm" as const,
+                  sttTranscript: refined,
+                },
+              ]);
+              return;
+            }
           }
           if (aiRes.data.type && aiRes.data.sub_type) {
             result = {
@@ -690,8 +712,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   };
 
   const handleConfirmSttReview = (confirmed: boolean, transcriptText: string) => {
-    // Dismiss the stt-review-confirm widget
-    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm"));
+    // Dismiss both voice and text review widgets
+    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm" && m.widget !== "text-review-confirm"));
 
     if (confirmed) {
       processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
