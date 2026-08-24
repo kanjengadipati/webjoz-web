@@ -91,7 +91,7 @@ export interface DesignToken {
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
-      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table";
+      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
       cta?: "banner" | "card" | "centered" | "split-image";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
