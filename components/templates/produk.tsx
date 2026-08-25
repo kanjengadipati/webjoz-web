@@ -1,19 +1,23 @@
 "use client";
 
 import React from "react";
-import { Globe, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { Globe, ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
-  MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, ctaHref,
-  ContactSection, BenefitsSection, InlineText, InlineImage,
+  DynamicIcon, CartProvider, CartFab, WAFloatingButton, BackToTop,
+  SeoEditorPreview, ctaHref, InlineText, InlineImage,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import HeroBentoGrid from "../sections/hero/bento-grid";
+import BenefitsSectionInner from "../sections/benefits";
+import TestimonialsSectionInner from "../sections/testimonials";
+import FaqSectionInner from "../sections/faq";
+import ContactSectionInner from "../sections/contact";
+import MenuSectionInner from "../sections/menu";
+import CatalogSectionInner from "../sections/catalog";
 import { BlogPostsSection } from "./blog-section";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -23,7 +27,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
   isEditorMode = false, arrivedSections, isPremium = false, language
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, catalog, testimonials, gallery, blog, blog_layout } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, catalog, testimonials, gallery, blog, blog_layout } = content;
   const dt = design_token ?? null;
   const cssVars = buildCssVars(dt);
 
@@ -134,69 +138,24 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     ),
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={benefits} render={(benefits) => (
-          <BenefitsSection
-            benefits={benefits}
-            wrapperClass="bg-slate-900/30 border-y border-slate-900 px-6 py-[var(--dt-spacing)]"
-            eyebrowClass="font-extrabold tracking-wider uppercase text-xs"
-            eyebrowStyle={{ color: "var(--dt-primary)" }}
-            titleClass="text-3xl md:text-4xl font-bold tracking-tight text-white"
-            cardClass="bg-slate-900 border border-slate-800 hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] transition-all duration-300 group"
-            iconContainerClass="w-12 h-12 rounded-[var(--dt-radius)] flex items-center justify-center mb-6 border"
-            iconContainerStyle={{ background: "color-mix(in srgb, var(--dt-primary) 15%, #0f172a)", color: "var(--dt-primary)", borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)" }}
-            iconClass="w-5 h-5"
-            cardTitleClass="text-xl font-bold text-white mb-3"
-            cardDescClass="text-slate-300 text-sm leading-relaxed"
-            accentColor="var(--dt-primary)"
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "benefits"}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+        <MemoSectionContent content={benefits} render={(b) => (
+          <BenefitsSectionInner benefits={b} design_token={dt} language={language} />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={faq} render={(faq) => (
-          <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-16" id="faq">
-            <div className="text-center space-y-2">
-              <span className="font-extrabold tracking-wider uppercase text-xs text-[var(--dt-primary)] block">Pusat Bantuan</span>
-              <InlineText
-                section="faq"
-                fieldKey="title"
-                value={faq.title}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={activeSection === "faq"}
-                as="h2"
-                className="text-3xl font-extrabold tracking-tight"
-                style={headingVars}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </div>
-            <div className="space-y-4">
-              {faq.items?.map((item, idx) => (
-                <FaqAccordion
-                  key={idx}
-                  item={item}
-                  isDark={true}
-                  onUpdateItem={(index, field, value) => {
-                    const nextItems = [...(faq.items || [])];
-                    nextItems[index] = { ...nextItems[index], [field]: value };
-                    onUpdateField?.("faq", "items", nextItems);
-                  }}
-                  section="faq"
-                  isEditorMode={isEditorMode}
-                  isSelected={activeSection === "faq"}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              ))}
-            </div>
-          </section>
+        <MemoSectionContent content={faq} render={(f) => (
+          <FaqSectionInner
+            faq={f}
+            design_token={dt}
+            language={language}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "faq"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -249,36 +208,18 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
-            title={data.contact.title}
-            address={data.contact.address}
-            phone={data.contact.phone}
-            email={data.contact.email}
-            mapsUrl={data.contact.maps_url}
-            align={data.contact.align}
-            showLeadForm={data.contact.show_lead_form}
-            showMap={data.contact.show_map}
-            mapTileStyle={data.contact.map_tile_style}
+          <ContactSectionInner
+            contact={data.contact}
+            design_token={dt}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}
             leadError={data.leadError}
-            wrapperClass="px-6 py-[var(--dt-spacing)] border-t border-slate-900"
-            wrapperStyle={{ background: "#0f172a" }}
-            titleClass="text-3xl font-extrabold tracking-tight text-white"
-            accentColor={dt?.palette?.primary ?? "#22d3ee"}
-            textClass="text-slate-300"
-            leadCardClass="bg-slate-900 p-8 rounded-[var(--dt-radius-lg)] border border-slate-800 shadow-xl backdrop-blur-sm"
-            leadTitleClass="text-lg font-bold text-white"
-            leadTitleText={language === 'en' ? 'Contact Us Directly' : 'Hubungi Kami Langsung'}
-            leadFormBtnClass="bg-gradient-to-r from-[var(--dt-primary)] to-[var(--dt-accent)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)]"
-            leadFormInputClass="w-full px-4 py-2.5 bg-slate-950/50 border border-slate-800 focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm text-slate-100 transition-all"
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={activeSection === "contact"}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
-            formPosition={data.contact.form_position ?? "right"}
             language={language}
           />
         )} />
@@ -286,87 +227,20 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
-          testimonials={testimonials}
-          wrapperClass="bg-slate-950 border-y border-slate-800 py-[var(--dt-spacing)] px-6"
-          titleClass="text-white font-extrabold tracking-tight"
-          eyebrowClass="text-[var(--dt-primary)]"
-          cardClass="bg-slate-900 border border-slate-800"
-          quoteClass="text-slate-300"
-          nameClass="text-white"
-          roleClass="text-slate-500"
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={activeSection === "testimonials"}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
+        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    menu: menu ? (
+      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={menu} render={(m) => (
+          <MenuSectionInner menu={m} design_token={dt} />
+        )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={catalog} render={(catalogData) => (
-          <section className="relative px-5 sm:px-6 py-[var(--dt-spacing)] border-y border-slate-800 overflow-hidden" id="catalog" style={{ background: "linear-gradient(180deg, #0f172a, #0f172a, rgba(15,23,42,0.9))", backgroundImage: "radial-gradient(circle at top right, color-mix(in srgb, var(--dt-primary) 15%, transparent), transparent 35%), radial-gradient(circle at bottom left, color-mix(in srgb, var(--dt-accent) 12%, transparent), transparent 30%)" }}>
-            <div className="max-w-7xl mx-auto space-y-12 relative">
-              <div className="text-center space-y-3">
-                <span className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em]" style={{ borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>Koleksi Produk</span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white max-w-3xl mx-auto leading-tight" style={headingVars}>{catalogData.title}</h2>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--dt-primary) 50%, transparent))` }} />
-                  <span className="w-2 h-2 rotate-45" style={{ background: "var(--dt-primary)", boxShadow: "0 0 8px color-mix(in srgb, var(--dt-primary) 50%, transparent)" }} />
-                  <span className="h-px w-12" style={{ background: `linear-gradient(90deg, color-mix(in srgb, var(--dt-primary) 50%, transparent), transparent)` }} />
-                </div>
-              </div>
-              {catalogData.categories?.map((cat, catIdx) => (
-                <div key={catIdx} className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--dt-primary) 30%, transparent))` }} />
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--dt-primary)", boxShadow: "0 0 6px color-mix(in srgb, var(--dt-primary) 60%, transparent)" }} />
-                    <h3 className="px-4 py-2 rounded-full text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap" style={{ background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", color: "var(--dt-primary)" }}>{cat.name}</h3>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--dt-primary)", boxShadow: "0 0 6px color-mix(in srgb, var(--dt-primary) 60%, transparent)" }} />
-                    <span className="h-px flex-1" style={{ background: `linear-gradient(90deg, color-mix(in srgb, var(--dt-primary) 30%, transparent), transparent)` }} />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    {cat.items?.map((item, itemIdx) => {
-                      const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
-                      return (
-                        <MenuCatalogCard
-                          key={itemIdx}
-                          itemId={itemId}
-                          itemName={item.name}
-                          itemPrice={item.price}
-                          itemDescription={item.description}
-                          category={cat.name}
-                          image_url={item.image_url}
-                          image_credit={item.image_credit}
-                          badge={item.badge}
-                          icon={ImageIcon}
-                          className="group rounded-[var(--dt-radius-lg)] overflow-hidden transition-all duration-300 hover:shadow-xl"
-                          style={{ background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.8)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}
-                          imageClassName="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
-                          placeholderClassName="w-full h-56 flex items-center justify-center"
-                          placeholderStyle={{ background: "linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8))" }}
-                          placeholderIconClassName="w-12 h-12"
-                          placeholderIconStyle={{ color: "color-mix(in srgb, var(--dt-primary) 25%, transparent)" }}
-                          contentClassName="p-5 space-y-3 flex flex-col flex-1"
-                          headerClassName="flex items-start justify-between gap-3"
-                          titleClassName="font-bold text-white text-sm leading-tight group-hover:text-[var(--dt-primary)] transition-colors"
-                          descriptionClassName="text-sm leading-relaxed flex-1"
-                          descriptionStyle={{ color: "rgba(148,163,184,0.8)" }}
-                          priceClassName="font-black text-sm whitespace-nowrap"
-                          priceStyle={{ color: "var(--dt-primary)" }}
-                          badgeClassName="text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap"
-                          badgeStyle={{ color: "var(--dt-cta-text)", background: "var(--dt-primary)" }}
-                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-[var(--dt-radius)] text-xs font-black transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-1"
-                          buttonStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+        <MemoSectionContent content={catalog} render={(c) => (
+          <CatalogSectionInner catalog={c} design_token={dt} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,

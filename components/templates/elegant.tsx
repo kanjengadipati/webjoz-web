@@ -1,19 +1,23 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
-  MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, ctaHref,
-  ContactSection, BenefitsSection,
+  CartProvider, CartFab, WAFloatingButton, BackToTop,
+  SeoEditorPreview, ctaHref,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
 import HeroMinimalistElegant from "../sections/hero/minimalist-elegant";
+import BenefitsSectionInner from "../sections/benefits";
+import TestimonialsSectionInner from "../sections/testimonials";
+import FaqSectionInner from "../sections/faq";
+import ContactSectionInner from "../sections/contact";
+import MenuSectionInner from "../sections/menu";
+import CatalogSectionInner from "../sections/catalog";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -110,193 +114,42 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSection
-            benefits={b}
-            variant="grid"
-            wrapperClass="py-20 px-6"
-            wrapperStyle={{ background: darkBg }}
-            eyebrowClass="text-[10px] uppercase tracking-widest font-bold block"
-            eyebrowStyle={{ color: gold }}
-            titleClass="text-2xl md:text-3xl font-bold"
-            titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
-            cardClass="p-6 rounded border space-y-3 transition-all hover:brightness-110"
-            cardStyle={{ background: darkCard, borderColor: `${gold}20` }}
-            iconContainerClass="w-10 h-10 rounded flex items-center justify-center"
-            iconContainerStyle={{ background: `${gold}15` }}
-            iconClass="w-5 h-5"
-            statClass="text-2xl font-bold"
-            statStyle={{ color: gold, fontFamily: "var(--dt-heading-font)" }}
-            statLabelClass="text-sm ml-1"
-            statLabelStyle={{ color: textMuted }}
-            cardTitleClass="text-sm font-bold"
-            cardTitleStyle={{ color: "#f5e6c0" }}
-            cardDescClass="text-xs leading-relaxed font-light"
-            cardDescStyle={{ color: "rgba(245,230,192,0.45)" }}
-            accentColor={gold}
-          />
+          <BenefitsSectionInner benefits={b} design_token={dt} language={language} />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
-          testimonials={testimonials}
-          designVariant="elegant"
-          wrapperClass="py-20 px-6"
-          wrapperStyle={{ background: darkSurface, borderTop: `1px solid ${gold}15` }}
-          eyebrowClass=""
-          eyebrowStyle={{ color: gold }}
-          titleClass=""
-          titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
-          cardClass=""
-          cardStyle={{ background: darkCard, border: `1px solid ${gold}20`, borderRadius: "16px" }}
-          quoteClass="font-serif italic"
-          quoteStyle={{ color: "rgba(245,230,192,0.75)" }}
-          nameClass=""
-          nameStyle={{ color: "#f5e6c0" }}
-          roleClass=""
-          roleStyle={{ color: "rgba(245,230,192,0.5)" }}
-          accentColor={gold}
-        />
+        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} />
       </MemoPreviewSectionWrapper>
     ) : null,
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <section id="menu" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="text-center space-y-3">
-                <span className="text-[10px] uppercase tracking-[0.28em]   block" style={{ color: gold }}>Menu Pilihan</span>
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{m.title}</h2>
-                <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
-              </div>
-              {m.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
-                    <h3 className="text-xs uppercase tracking-[0.22em]  " style={{ color: gold }}>{cat.name}</h3>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
-                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    {cat.items?.map((item, ii) => (
-                      <MenuCatalogCard
-                        key={ii}
-                        itemId={`menu-${ci}-${ii}`}
-                        itemName={item.name}
-                        itemPrice={item.price}
-                        itemDescription={item.description}
-                        category={cat.name}
-                        image_url={item.image_url}
-                        image_credit={item.image_credit}
-                        icon={Utensils}
-                        className="group transition-all duration-300 hover:translate-y-[-2px]"
-                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem", boxShadow: "0 4px 24px rgba(0,0,0,0.2)" }}
-                        imageClassName="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
-                        imageStyle={{ borderRadius: "12px" }}
-                        placeholderStyle={{ height: "10rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
-                        placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
-                        contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
-                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
-                        titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
-                        descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
-                        priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.85rem", fontWeight: 700 }}
-                        buttonClassName="w-full flex items-center justify-center gap-1.5"
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <MenuSectionInner menu={m} design_token={dt} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <section id="catalog" className="py-20 px-6 border-y overflow-hidden" style={{ background: `linear-gradient(180deg, ${darkSurface}, ${darkBg})`, borderColor: `${gold}15` }}>
-            <div className="max-w-5xl mx-auto space-y-12">
-              <div className="text-center space-y-3">
-                <span className="text-[10px] uppercase tracking-[0.28em]   block" style={{ color: gold }}>Koleksi Eksklusif</span>
-                <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{c.title}</h2>
-                <div style={{ width: "3rem", height: "2px", background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, margin: "0 auto" }} />
-              </div>
-              {c.categories?.map((cat, ci) => (
-                <div key={ci} className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
-                    <h3 className="text-xs uppercase tracking-[0.22em]  " style={{ color: gold }}>{cat.name}</h3>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: gold }} />
-                    <span className="flex-1 h-px" style={{ background: `${gold}20` }} />
-                  </div>
-                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
-                    {cat.items?.map((item, ii) => (
-                      <MenuCatalogCard
-                        key={ii}
-                        itemId={`cat-${ci}-${ii}`}
-                        itemName={item.name}
-                        itemPrice={item.price}
-                        itemDescription={item.description}
-                        category={cat.name}
-                        image_url={item.image_url}
-                        image_credit={item.image_credit}
-                        badge={item.badge}
-                        icon={ImageIcon}
-                        className="group transition-all duration-300 hover:translate-y-[-2px]"
-                        style={{ background: darkCard, border: `1px solid ${gold}15`, borderRadius: "16px", padding: "1rem", boxShadow: "0 4px 24px rgba(0,0,0,0.2)" }}
-                        imageClassName="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
-                        imageStyle={{ borderRadius: "12px" }}
-                        placeholderStyle={{ height: "11rem", borderRadius: "12px", background: `${gold}0d`, display: "flex", alignItems: "center", justifyContent: "center" }}
-                        placeholderIconStyle={{ width: 34, height: 34, color: gold, opacity: 0.65 }}
-                        contentStyle={{ padding: "1rem 0.25rem 0", display: "flex", flexDirection: "column", gap: "0.5rem" }}
-                        headerStyle={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.75rem" }}
-                        titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", fontSize: "0.95rem", margin: 0, lineHeight: 1.35 }}
-                        descriptionStyle={{ color: textMuted, fontSize: "0.75rem", lineHeight: 1.5, margin: 0, flex: 1 }}
-                        priceStyle={{ color: gold, fontFamily: "var(--dt-heading-font)", fontSize: "0.9rem", fontWeight: 700 }}
-                        badgeStyle={{ color: ctaText, background: gold, borderRadius: "999px", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}
-                        buttonClassName="w-full flex items-center justify-center gap-1.5"
-                        buttonStyle={{ padding: "0.55rem 1rem", background: gold, color: ctaText, borderRadius: "999px", border: "none", fontWeight: 800, fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer" }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <CatalogSectionInner catalog={c} design_token={dt} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(f) => (
-          <section className="py-20 px-6 max-w-3xl mx-auto space-y-10" id="faq">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold" style={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)", ...headingVars }}>{f.title}</h2>
-            </div>
-            <div className="space-y-3">
-              {f.items?.map((item, idx) => (
-                <FaqAccordion
-                  key={idx}
-                  item={item}
-                  isDark={true}
-                  onUpdateItem={(index, field, value) => {
-                    const nextItems = [...(f.items || [])];
-                    nextItems[index] = { ...nextItems[index], [field]: value };
-                    onUpdateField?.("faq", "items", nextItems);
-                  }}
-                  section="faq"
-                  isEditorMode={isEditorMode}
-                  isSelected={activeSection === "faq"}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              ))}
-            </div>
-          </section>
+          <FaqSectionInner
+            faq={f}
+            design_token={dt}
+            language={language}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "faq"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -320,36 +173,18 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
-            title={data.contact.title || "Hubungi Kami"}
-            address={data.contact.address}
-            phone={data.contact.phone}
-            email={data.contact.email}
-            showLeadForm={data.contact.show_lead_form}
-            showMap={data.contact.show_map}
-            mapTileStyle={data.contact.map_tile_style}
-            align={data.contact.align}
+          <ContactSectionInner
+            contact={data.contact}
+            design_token={dt}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}
             leadError={data.leadError}
-            wrapperClass="py-24 px-6"
-            wrapperStyle={{ background: darkBg }}
-            titleClass="text-2xl md:text-3xl font-bold"
-            titleStyle={{ color: "#f5e6c0", fontFamily: "var(--dt-heading-font)" }}
-            accentColor={gold}
-            textClass="text-sm"
-            textStyle={{ color: "rgba(245,230,192,0.6)" }}
-            mapsUrl={data.contact.maps_url}
-            leadCardClass="mt-8 p-8 rounded"
-            leadCardStyle={{ background: darkCard, border: `1px solid ${gold}20` }}
-            leadTitleClass="text-sm font-bold   text-center uppercase tracking-widest"
-            leadTitleStyle={{ color: gold }}
-            leadTitleText={language === 'en' ? 'Send Message' : 'Kirim Pesan'}
-            leadFormBtnClass="w-full font-bold text-[11px] uppercase tracking-widest hover:brightness-110 transition-all"
-            leadFormBtnStyle={{ background: gold }}
-            leadFormInputClass="w-full px-3 py-2.5 text-sm   outline-none focus:ring-1 bg-[#1a1a17] border border-amber-500/20 text-amber-100 placeholder-neutral-600"
-            formPosition={data.contact.form_position ?? "right"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "contact"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
             language={language}
           />
         )} />
