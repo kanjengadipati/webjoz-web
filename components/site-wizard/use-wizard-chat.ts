@@ -11,6 +11,24 @@ import { useI18n } from "@/lib/i18n/context";
 import { refineTranscript, classifyBusiness, processBusinessDescription } from "@/lib/api/ai";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
+/** Guard: reject server-prompt leaks or implausible text before showing review widget. */
+function isPlausibleRefined(s: string): boolean {
+  if (!s || s.trim().length < 5) return false;
+  const lower = s.toLowerCase();
+  const signals = [
+    "the user wants to classify", "the user wants to",
+    "i need to refine", "i need to",
+    "the task is to",
+    "classify the business", "refine the description",
+    "1-2 natural, polished", "polished sentences in",
+    "bahasa indonesia and classify",
+    "from the provided taxonomy", "must be in bahasa indonesia",
+    "must be in english", "into one 'type'",
+    "refined_text", "sub_type", "taxonomy",
+  ];
+  return !signals.some((sig) => lower.includes(sig));
+}
+
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
   const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
@@ -627,84 +645,48 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     } else {
       // 1. Primary: Call AI Classifier Server (understands context & semantics)
       setIsProcessingDescription(true);
+      let aiClassification: { type: string; subType: string } | null = null;
+      let refinedText = "";
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data) {
           if (aiRes.data.refined_text && aiRes.data.refined_text.trim()) {
-            const refined = aiRes.data.refined_text.trim();
-            setDescription(refined);
-            descriptionRef.current = refined;
-            // Also attempt to detect location from refined text if not already found
-            if (!serviceArea) {
-              const detected = extractLocationFromDescription(refined);
-              if (detected) setServiceArea(detected);
-            }
-
-            // Guard: never show a review bubble if the server leaked its own
-            // system-prompt / reasoning instead of a real business description.
-            const isPlausibleRefined = (s: string): boolean => {
-              if (!s || s.trim().length < 5) return false;
-              const lower = s.toLowerCase();
-              const signals = [
-                "the user wants to classify", "the user wants to",
-                "i need to refine", "i need to",
-                "the task is to",
-                "classify the business", "refine the description",
-                "1-2 natural, polished", "polished sentences in",
-                "bahasa indonesia and classify",
-                "from the provided taxonomy", "must be in bahasa indonesia",
-                "must be in english", "into one 'type'",
-                "refined_text", "sub_type", "taxonomy",
-              ];
-              return !signals.some((sig) => lower.includes(sig));
-            };
-
-            // Show a review bubble when AI refined the text — let user
-            // see, confirm or edit before we proceed to type inference.
-            const plausible = isPlausibleRefined(refined);
-            if (!plausible) {
-              console.debug("[wizard] isPlausibleRefined rejected:", { len: refined.length, snippet: refined.slice(0, 80) });
-            }
-            if (refined && plausible) {
-              // Store inferred type so handleConfirmSttReview can pass it through
-              sttInferredResultRef.current = (aiRes.data.type && aiRes.data.sub_type)
-                ? { type: aiRes.data.type, subType: aiRes.data.sub_type }
-                : null;
-              setMessages((prev) => [
-                ...prev,
-                {
-                  id: `text-review-${Date.now()}`,
-                  sender: "ai",
-                  text: "",
-                  widget: "text-review-confirm" as const,
-                  sttTranscript: refined,
-                },
-              ]);
-              setIsProcessingDescription(false);
-              return;
+            const candidate = aiRes.data.refined_text.trim();
+            if (isPlausibleRefined(candidate)) {
+              refinedText = candidate;
+              setDescription(candidate);
+              descriptionRef.current = candidate;
+              if (!serviceArea) {
+                const detected = extractLocationFromDescription(candidate);
+                if (detected) setServiceArea(detected);
+              }
             }
           }
           if (aiRes.data.type && aiRes.data.sub_type) {
-            result = {
-              type: aiRes.data.type,
-              subType: aiRes.data.sub_type,
-              confidence: "high",
-            };
+            aiClassification = { type: aiRes.data.type, subType: aiRes.data.sub_type };
           }
         }
       } catch (err) {
-        console.warn("Primary AI classification failed, falling back to local dictionary", err);
+        console.warn("[wizard] AI classification failed, using raw text for review", err);
       } finally {
         setIsProcessingDescription(false);
       }
 
-      // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
-      if (!result.type || !result.subType) {
-        const localResult = inferTypeFromDescription(val);
-        if (localResult.type) {
-          result = localResult;
-        }
-      }
+      // Always show the review widget — use refined text when available, raw as fallback.
+      // This matches the STT (voice) flow which always shows review regardless.
+      const reviewText = refinedText || val;
+      sttInferredResultRef.current = aiClassification;
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `text-review-${Date.now()}`,
+          sender: "ai",
+          text: "",
+          widget: "text-review-confirm" as const,
+          sttTranscript: reviewText,
+        },
+      ]);
+      return;
     }
 
     setInferenceResult(result);
@@ -759,7 +741,53 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm" && m.widget !== "text-review-confirm"));
 
     if (confirmed) {
-      processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
+      if (sttInferredResultRef.current?.type && sttInferredResultRef.current?.subType) {
+        // AI classification available — re-run with preInferred to skip API
+        processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
+      } else {
+        // AI classification unavailable — do local inference directly
+        const localResult = inferTypeFromDescription(transcriptText);
+        setInferenceResult(localResult);
+        if (localResult.type && localResult.subType) {
+          setBusinessType(localResult.type);
+          setBusinessSubType(localResult.subType);
+          setTypeWasInferred(true);
+          setAwaitingInferenceConfirm(true);
+          const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { subType: localResult.subType ?? localResult.type ?? "" });
+          setTimeout(() => {
+            typeMessage(confirmMsg, () => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
+              ]);
+            });
+          }, 500);
+        } else if (localResult.type) {
+          setBusinessType(localResult.type);
+          setTypeWasInferred(true);
+          setChatStage("type");
+          setTimeout(() => {
+            const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: localResult.type ?? "" });
+            typeMessage(medMsg, () => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
+              ]);
+            });
+          }, 300);
+        } else {
+          setInferenceResult({ confidence: "low" } as InferenceResult);
+          setChatStage("type");
+          setTimeout(() => {
+            typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+              ]);
+            });
+          }, 300);
+        }
+      }
     } else {
       setInputValue(transcriptText);
       setChatStage("description");
