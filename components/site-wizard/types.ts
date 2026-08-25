@@ -17,8 +17,10 @@ export type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips" | "mood-chips" | "language-chips" | "stt-review-confirm" | "text-review-confirm";
+  widget?: "type-chips" | "detail-inputs" | "inference-confirm" | "subtype-chips" | "mood-chips" | "language-chips" | "stt-review-confirm" | "name-confirm";
   sttTranscript?: string;
+  /** Mood value yang dipilih user — dipakai untuk render SVG icon di bubble */
+  moodValue?: string;
 };
 
 export type PreviewData = {
