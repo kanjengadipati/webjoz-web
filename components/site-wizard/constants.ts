@@ -236,7 +236,7 @@ export const NAME_ACK_VARIANTS = [
   "Baik, nama bisnis terdaftar."
 ];
 
-export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Tekan Enter untuk lanjut jika ingin skip.";
+export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Misalnya: produk/jasa apa yang ditawarkan, untuk siapa, dan di mana lokasinya. Tekan Enter untuk lanjut jika ingin skip.";
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
