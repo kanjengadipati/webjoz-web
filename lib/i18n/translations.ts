@@ -2104,15 +2104,13 @@ export interface Translations {
       sttBtnCancel: string;
       sttProcessingTitle: string;
       sttProcessingSubtitle: string;
-      descProcessingTitle: string;
-      descProcessingSubtitle: string;
       sttReviewTitle: string;
       sttReviewPrompt: string;
       sttBtnEdit: string;
       sttBtnConfirm: string;
-      textReviewTitle: string;
-      textReviewPrompt: string;
       micReadyHint: string;
+      micPermissionDenied: string;
+      sttNoVoiceDetected: string;
       backToChat: string;
       generationFailed: string;
       generationErrorMessage: string;
@@ -4273,7 +4271,7 @@ export const translations: Record<Locale, Translations> = {
           "Apakah itu nama sebenarnya? Ketik 'ya' untuk lanjut, atau masukkan nama lain jika ingin diganti.",
           "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Ketik 'ya' untuk lanjut, atau masukkan nama baru."
         ],
-        descriptionPrompt: "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Tekan Enter untuk lanjut jika ingin skip.",
+        descriptionPrompt: "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Misalnya: produk/jasa apa yang ditawarkan, untuk siapa, dan di mana lokasinya. Tekan Enter untuk lanjut jika ingin skip.",
         descriptionSkipKeyword: "lewat",
         descriptionInferenceHigh: "Saya lihat jenis bisnis atau brand Anda adalah **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Saya lihat bidang usaha Anda adalah {type}. Bisa pilih yang lebih spesifik?",
@@ -4352,15 +4350,13 @@ export const translations: Record<Locale, Translations> = {
         sttBtnCancel: "Batal",
         sttProcessingTitle: "Memproses suara Anda...",
         sttProcessingSubtitle: "Membuat draft informasi bisnis...",
-        descProcessingTitle: "Menganalisis deskripsi Anda...",
-        descProcessingSubtitle: "Memoles teks dan mendeteksi jenis bisnis...",
         sttReviewTitle: "Berikut yang saya dengar dari Anda:",
         sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Ya, lanjutkan",
-        textReviewTitle: "Saya poles deskripsi Anda:",
-        textReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         micReadyHint: "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
+        micPermissionDenied: "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda.",
+        sttNoVoiceDetected: "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi bisnis Anda secara langsung.",
         backToChat: "Kembali ke chat",
         generationFailed: "Generate belum berhasil",
         generationErrorMessage: "Terjadi kesalahan saat membuat preview.",
@@ -6566,7 +6562,7 @@ export const translations: Record<Locale, Translations> = {
           "Is that the real name? Type 'yes' to continue, or enter another name to change it.",
           "That name looks like a test — make sure it's what you want. Type 'yes' to continue, or enter a new name."
         ],
-        descriptionPrompt: "Tell us briefly about your business — 1-2 sentences is enough. Press Enter or click Next to skip.",
+        descriptionPrompt: "Tell us briefly about your business — 1-2 sentences is enough. For example: what products/services you offer, who it's for, and where you're located. Press Enter or click Next to skip.",
         descriptionSkipKeyword: "skip",
         descriptionInferenceHigh: "I see your business or brand is in **{subType}**. Shall we create the website directly?",
         descriptionInferenceMedium: "I see your business field is {type}. Could you pick a more specific category?",
@@ -6645,15 +6641,13 @@ export const translations: Record<Locale, Translations> = {
         sttBtnCancel: "Cancel",
         sttProcessingTitle: "Processing your voice...",
         sttProcessingSubtitle: "Drafting business information...",
-        descProcessingTitle: "Analysing your description...",
-        descProcessingSubtitle: "Polishing text and detecting business type...",
         sttReviewTitle: "Here is what I heard from you:",
         sttReviewPrompt: "Does this look correct? You can edit before we continue.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Yes, continue",
-        textReviewTitle: "I polished your description:",
-        textReviewPrompt: "Does this look correct? You can edit before we continue.",
         micReadyHint: "Click the mic icon to explain your business by voice",
+        micPermissionDenied: "Microphone permission is required to record voice. Please allow microphone access in your browser.",
+        sttNoVoiceDetected: "No voice detected. Please try speaking again or type your business description directly.",
         backToChat: "Back to chat",
         generationFailed: "Generation failed",
         generationErrorMessage: "An error occurred while generating the preview.",
