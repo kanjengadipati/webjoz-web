@@ -8,6 +8,7 @@ import BenefitsChecklist from "./checklist";
 import BenefitsComparisonTable from "./comparison-table";
 import BenefitsFeaturedGrid from "./featured-grid";
 import BenefitsIconRow from "./icon-row";
+import BenefitsBentoGrid from "./bento-grid";
 
 type BenefitVariantProps = {
   benefits: TemplateProps["content"]["benefits"];
@@ -27,6 +28,7 @@ const variants: Record<string, ComponentType<BenefitVariantProps>> = {
   "comparison-table": BenefitsComparisonTable,
   "featured-grid": BenefitsFeaturedGrid,
   "icon-row": BenefitsIconRow,
+  "bento-grid": BenefitsBentoGrid,
 };
 
 export default function BenefitsSection({

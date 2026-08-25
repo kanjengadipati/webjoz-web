@@ -217,6 +217,7 @@ export interface TemplateProps {
       phone: string;
       email: string;
       maps_url?: string | null;
+      opening_hours?: string;
       align?: "left" | "center" | "right" | null;
       form_position?: "right" | "left" | "stack" | null;
       map_layout?: "inline" | "full" | null;

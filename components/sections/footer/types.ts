@@ -10,6 +10,9 @@ export interface FooterVariantProps {
   design_token?: DesignToken | null;
   brand_name?: string;
   hasBlog?: boolean;
+  contactAddress?: string;
+  contactMapsUrl?: string;
+  contactOpeningHours?: string;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;

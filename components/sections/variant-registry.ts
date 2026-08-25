@@ -23,6 +23,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "stat-grid", label: "Grid Statistik", description: "Grid dengan angka/statistik di tiap item." },
     { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
     { value: "comparison-table", label: "Tabel Perbandingan", description: "Perbandingan A vs B dalam tabel (membutuhkan comparison)." },
+    { value: "bento-grid", label: "Bento Grid", description: "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis." },
   ],
   testimonials: [
     { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
@@ -98,6 +99,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "columns-with-nav", label: "Kolom + Navigasi Cepat", description: "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas." },
     { value: "columns-with-social", label: "Kolom + Media Sosial", description: "Multi-kolom dengan tautan akun media sosial bisnis." },
     { value: "dark-contrast-band", label: "Band Gelap Kontras", description: "Footer gelap solid dengan aksen warna primary, kontras kuat." },
+    { value: "location-and-hours", label: "Lokasi & Jam", description: "Brand + alamat peta + jam operasional dalam grid bersih." },
   ],
   blog: [
     { value: "grid", label: "Grid", description: "Kartu dalam 3 kolom rapi." },
