@@ -4,15 +4,18 @@ import React from "react";
 import { Utensils, ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  DynamicIcon, LeadForm, TestimonialsSection,
-  MenuCatalogCard, CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, FaqAccordion, ctaHref,
-  ContactSection, BenefitsSection, InlineText, InlineImage,
+  DynamicIcon, CartProvider, CartFab, WAFloatingButton, BackToTop,
+  SeoEditorPreview, ctaHref, InlineText, InlineImage,
 } from "./shared";
 import GallerySection from "../sections/gallery";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import HeroSplit from "../sections/hero/split";
+import BenefitsSectionInner from "../sections/benefits";
+import TestimonialsSectionInner from "../sections/testimonials";
+import FaqSectionInner from "../sections/faq";
+import ContactSectionInner from "../sections/contact";
+import MenuSectionInner from "../sections/menu";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
@@ -133,66 +136,24 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     ),
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={benefits} render={(benefits) => (
-          <BenefitsSection
-            benefits={benefits}
-            wrapperClass="bg-[var(--dt-primary-soft)] px-5 sm:px-6 py-[var(--dt-spacing)] border-y border-[var(--dt-border)]"
-            eyebrowClass="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs"
-            titleClass="text-3xl md:text-4xl font-bold text-[var(--dt-text)]"
-            cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)] hover:border-[var(--dt-primary)] p-8 rounded-[var(--dt-radius-lg)] shadow-sm hover:shadow-md transition-all duration-300 group"
-            iconContainerClass="w-12 h-12 bg-[var(--dt-primary-soft-strong)] text-[var(--dt-primary)] rounded-[var(--dt-radius)] flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform"
-            iconClass="w-6 h-6"
-            cardTitleClass="text-xl font-bold text-[var(--dt-text)] mb-3"
-            cardDescClass="text-[var(--dt-text-muted)] text-sm leading-relaxed"
-            accentColor="var(--dt-primary)"
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "benefits"}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+        <MemoSectionContent content={benefits} render={(b) => (
+          <BenefitsSectionInner benefits={b} design_token={dt} language={language} />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     faq: (
       <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={faq} render={(faq) => (
-          <section className="px-6 py-[var(--dt-spacing)] max-w-4xl mx-auto space-y-12" id="faq">
-            <div className="text-center space-y-2">
-              <span className="text-[var(--dt-primary)] font-bold tracking-wider uppercase text-xs block">{language === 'en' ? 'Questions' : 'Pertanyaan'}</span>
-              <InlineText
-                section="faq"
-                fieldKey="title"
-                value={faq.title}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={activeSection === "faq"}
-                as="h2"
-                className="text-3xl font-bold text-[var(--dt-text)]"
-                style={headingVars}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </div>
-            <div className="space-y-4">
-              {faq.items?.map((item, idx) => (
-                <FaqAccordion
-                  key={idx}
-                  item={item}
-                  onUpdateItem={(index, field, value) => {
-                    const nextItems = [...(faq.items || [])];
-                    nextItems[index] = { ...nextItems[index], [field]: value };
-                    onUpdateField?.("faq", "items", nextItems);
-                  }}
-                  section="faq"
-                  isEditorMode={isEditorMode}
-                  isSelected={activeSection === "faq"}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              ))}
-            </div>
-          </section>
+        <MemoSectionContent content={faq} render={(f) => (
+          <FaqSectionInner
+            faq={f}
+            design_token={dt}
+            language={language}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "faq"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
@@ -245,37 +206,18 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     contact: (
       <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ contact, onSubmitLead, leadSubmitting, leadSuccess, leadError }} render={(data) => (
-          <ContactSection
-            title={data.contact.title}
-            address={data.contact.address}
-            phone={data.contact.phone}
-            email={data.contact.email}
-            mapsUrl={data.contact.maps_url}
-            align={data.contact.align}
-            showLeadForm={data.contact.show_lead_form}
-            showMap={data.contact.show_map}
-            mapTileStyle={data.contact.map_tile_style}
+          <ContactSectionInner
+            contact={data.contact}
+            design_token={dt}
             onSubmitLead={data.onSubmitLead}
             leadSubmitting={data.leadSubmitting}
             leadSuccess={data.leadSuccess}
             leadError={data.leadError}
-            wrapperClass="px-6 py-[var(--dt-spacing)] border-t border-[var(--dt-border)]"
-            wrapperStyle={{ background: "var(--dt-primary-soft)" }}
-            titleClass="text-3xl font-bold text-[var(--dt-text)]"
-            accentColor={dt?.palette?.primary ?? "#b45309"}
-            textClass="text-[var(--dt-text-muted)]"
-            leadCardClass="bg-[var(--dt-surface)] p-8 rounded-[var(--dt-radius-lg)] border border-[var(--dt-border)] shadow-sm"
-            leadTitleClass="text-lg font-bold text-[var(--dt-text)]"
-            leadTitleText={language === 'en' ? 'Contact Us / Reservation' : 'Hubungi Kami / Reservasi'}
-            leadFormBtnClass="bg-[var(--dt-primary)] hover:bg-[var(--dt-primary-hover)] text-[var(--dt-cta-text)] rounded-[var(--dt-radius)] shadow-sm hover:shadow"
-            leadFormInputClass="w-full px-4 py-2.5 bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] focus:border-[var(--dt-primary)] focus:ring-1 focus:ring-[var(--dt-primary)] rounded-[var(--dt-radius)] outline-none text-sm transition-all"
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={activeSection === "contact"}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
-            formPosition={data.contact.form_position ?? "right"}
-            mapLayout={data.contact.map_layout ?? "inline"}
             language={language}
           />
         )} />
@@ -283,85 +225,13 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSection
-          testimonials={testimonials}
-          wrapperClass="bg-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] py-[var(--dt-spacing)] px-5 sm:px-6"
-          titleClass="text-[var(--dt-text)]"
-          eyebrowClass="text-[var(--dt-primary)]"
-          cardClass="bg-[var(--dt-surface)] border border-[var(--dt-border)]"
-          quoteClass="text-[var(--dt-text-muted)]"
-          nameClass="text-[var(--dt-text)]"
-          roleClass="text-[var(--dt-text-muted)]"
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={activeSection === "testimonials"}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
+        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} />
       </MemoPreviewSectionWrapper>
     ) : null,
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <MemoSectionContent content={menu} render={(menuData) => (
-          <section className="relative px-5 sm:px-6 py-[var(--dt-spacing)] bg-gradient-to-b from-[var(--dt-surface)] via-[var(--dt-surface)] to-[var(--dt-primary-soft)] border-y border-[var(--dt-border)] overflow-hidden" id="menu">
-            <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-[var(--dt-primary-soft)] blur-3xl pointer-events-none" />
-            <div className="max-w-6xl mx-auto space-y-10 relative">
-              <div className="text-center space-y-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-[var(--dt-border)] bg-[var(--dt-primary-soft)] px-4 py-1.5 text-xs font-black uppercase tracking-[0.25em] text-[var(--dt-primary)]">Pilihan Menu</span>
-                <InlineText
-                  section="menu"
-                  fieldKey="title"
-                  value={menuData.title}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={activeSection === "menu"}
-                  as="h2"
-                  className="text-3xl md:text-5xl font-bold text-[var(--dt-text)] max-w-3xl mx-auto leading-tight"
-                  style={headingVars}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              </div>
-              {menuData.categories?.map((cat, catIdx) => (
-                <div key={catIdx} className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span className="h-px flex-1 bg-[var(--dt-border)]" />
-                    <h3 className="px-4 py-2 rounded-full bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] text-[var(--dt-text)] text-sm font-bold  whitespace-nowrap">{cat.name}</h3>
-                    <span className="h-px flex-1 bg-[var(--dt-border)]" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {cat.items?.map((item, itemIdx) => {
-                      const itemId = `${cat.name}__${item.name}__${catIdx}_${itemIdx}`;
-                      return (
-                        <MenuCatalogCard
-                          key={itemIdx}
-                          itemId={itemId}
-                          itemName={item.name}
-                          itemPrice={item.price}
-                          itemDescription={item.description}
-                          category={cat.name}
-                          image_url={item.image_url}
-                          image_credit={item.image_credit}
-                          icon={Utensils}
-                          className="group rounded-[var(--dt-radius-lg)] overflow-hidden bg-[var(--dt-surface)] border border-[var(--dt-border)] shadow-sm hover:shadow-lg hover:border-[var(--dt-primary)] transition-all duration-300"
-                          imageClassName="w-full h-52 object-cover"
-                          placeholderClassName="w-full h-52 bg-gradient-to-br from-[var(--dt-primary-soft-strong)] to-[var(--dt-primary-soft)] flex items-center justify-center"
-                          placeholderIconClassName="w-12 h-12 text-[var(--dt-primary-soft-strong)]"
-                          contentClassName="p-5 space-y-3 flex flex-col flex-1"
-                          headerClassName="flex items-start justify-between gap-3"
-                          titleClassName=" font-bold text-[var(--dt-text)] text-base leading-tight"
-                          descriptionClassName="text-[var(--dt-text-muted)] text-sm leading-relaxed flex-1"
-                          priceClassName="text-xs font-bold text-[var(--dt-primary)] bg-[var(--dt-primary-soft)] border border-[var(--dt-border)] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
-                          buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-[var(--dt-radius)] text-xs font-bold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-1"
-                          buttonStyle={{ background: "var(--dt-primary)", color: "var(--dt-cta-text)" }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+        <MemoSectionContent content={menu} render={(m) => (
+          <MenuSectionInner menu={m} design_token={dt} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
