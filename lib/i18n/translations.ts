@@ -2135,6 +2135,9 @@ export interface Translations {
       statusPreviewReady: string;
       statusPreparingAi: string;
       nameConfirmPlaceholder: string;
+      nameConfirmYes: string;
+      nameConfirmChange: string;
+      nameChangePrompt: string;
       descPlaceholder: string;
       descPlaceholderWithMic: string;
       labelBusinessName: string;
@@ -4267,9 +4270,9 @@ export const translations: Record<Locale, Translations> = {
           "Baik, nama bisnis terdaftar."
         ],
         nameConfirmVariants: [
-          "Itu nama bisnis aslinya, atau masih nama sementara? Kalau sudah pas, ketik lagi untuk lanjut, atau ganti nama yang Anda mau pakai 😊",
-          "Apakah itu nama sebenarnya? Ketik 'ya' untuk lanjut, atau masukkan nama lain jika ingin diganti.",
-          "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Ketik 'ya' untuk lanjut, atau masukkan nama baru."
+          "Itu nama bisnis aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
+          "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
+          "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
         ],
         descriptionPrompt: "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Misalnya: produk/jasa apa yang ditawarkan, untuk siapa, dan di mana lokasinya. Tekan Enter untuk lanjut jika ingin skip.",
         descriptionSkipKeyword: "lewat",
@@ -4380,7 +4383,10 @@ export const translations: Record<Locale, Translations> = {
         statusAiGenerating: "AI sedang generate...",
         statusPreviewReady: "Preview siap ✓",
         statusPreparingAi: "Menyiapkan AI...",
-        nameConfirmPlaceholder: "Ketik 'ya' untuk lanjut, atau nama yang benar...",
+        nameConfirmPlaceholder: "Pilih opsi di atas atau ketik nama bisnis...",
+        nameConfirmYes: "Ya",
+        nameConfirmChange: "Ganti",
+        nameChangePrompt: "Baik, silakan ketik nama bisnis yang ingin Anda gunakan:",
         descPlaceholder: "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar",
         descPlaceholderWithMic: "Ceritakan tentang bisnis Anda, atau klik mic 🎤",
         labelBusinessName: "Nama Bisnis",
@@ -6558,9 +6564,9 @@ export const translations: Record<Locale, Translations> = {
           "Great, business name saved."
         ],
         nameConfirmVariants: [
-          "Is that your actual business name, or a temporary one? If it's ready, type it again to continue, or enter the name you want to use 😊",
-          "Is that the real name? Type 'yes' to continue, or enter another name to change it.",
-          "That name looks like a test — make sure it's what you want. Type 'yes' to continue, or enter a new name."
+          "Is that your official business name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
+          "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
+          "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'."
         ],
         descriptionPrompt: "Tell us briefly about your business — 1-2 sentences is enough. For example: what products/services you offer, who it's for, and where you're located. Press Enter or click Next to skip.",
         descriptionSkipKeyword: "skip",
@@ -6671,7 +6677,10 @@ export const translations: Record<Locale, Translations> = {
         statusAiGenerating: "AI generating...",
         statusPreviewReady: "Preview ready ✓",
         statusPreparingAi: "Preparing AI...",
-        nameConfirmPlaceholder: "Type 'yes' to continue, or enter correct name...",
+        nameConfirmPlaceholder: "Choose an option above or type a new name...",
+        nameConfirmYes: "Yes",
+        nameConfirmChange: "Change",
+        nameChangePrompt: "Sure, please type the business name you'd like to use:",
         descPlaceholder: "Example: Selling specialty coffee in Jogja, serving bulk orders",
         descPlaceholderWithMic: "Tell us about your business, or click the mic 🎤",
         labelBusinessName: "Business Name",
