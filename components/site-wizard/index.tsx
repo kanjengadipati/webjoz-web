@@ -958,6 +958,7 @@ export function SiteWizard({
                         "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
                         "Kreatif & Profesional": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                         "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
+                        "Company Profile": { label: "company", desc: "companyDesc" },
                         "Company": { label: "company", desc: "companyDesc" },
                       };
                       const keys = categoryKeyMap[bt.value];
@@ -971,6 +972,7 @@ export function SiteWizard({
                         "Jasa & Booking": <Calendar className="w-3.5 h-3.5" />,
                         "Kreatif & Profesional": <Palette className="w-3.5 h-3.5" />,
                         "Portofolio & Kreator": <Palette className="w-3.5 h-3.5" />,
+                        "Company Profile": <Building2 className="w-3.5 h-3.5" />,
                         "Company": <Building2 className="w-3.5 h-3.5" />,
                       };
 
