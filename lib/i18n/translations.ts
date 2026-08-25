@@ -2104,6 +2104,8 @@ export interface Translations {
       sttBtnCancel: string;
       sttProcessingTitle: string;
       sttProcessingSubtitle: string;
+      descProcessingTitle: string;
+      descProcessingSubtitle: string;
       sttReviewTitle: string;
       sttReviewPrompt: string;
       sttBtnEdit: string;
@@ -4350,6 +4352,8 @@ export const translations: Record<Locale, Translations> = {
         sttBtnCancel: "Batal",
         sttProcessingTitle: "Memproses suara Anda...",
         sttProcessingSubtitle: "Membuat draft informasi bisnis...",
+        descProcessingTitle: "Menganalisis deskripsi Anda...",
+        descProcessingSubtitle: "Memoles teks dan mendeteksi jenis bisnis...",
         sttReviewTitle: "Berikut yang saya dengar dari Anda:",
         sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         sttBtnEdit: "Edit",
@@ -6625,6 +6629,8 @@ export const translations: Record<Locale, Translations> = {
         sttBtnCancel: "Cancel",
         sttProcessingTitle: "Processing your voice...",
         sttProcessingSubtitle: "Drafting business information...",
+        descProcessingTitle: "Analysing your description...",
+        descProcessingSubtitle: "Polishing text and detecting business type...",
         sttReviewTitle: "Here is what I heard from you:",
         sttReviewPrompt: "Does this look correct? You can edit before we continue.",
         sttBtnEdit: "Edit",

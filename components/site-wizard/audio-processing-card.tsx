@@ -6,10 +6,19 @@ import { useI18n } from "@/lib/i18n/context";
 
 interface AudioProcessingCardProps {
   businessName?: string;
+  variant?: "audio" | "text";
 }
 
-export function AudioProcessingCard({ businessName }: AudioProcessingCardProps) {
+export function AudioProcessingCard({ businessName, variant = "audio" }: AudioProcessingCardProps) {
   const { t } = useI18n();
+
+  const title = variant === "text"
+    ? t("dashboard.wizard.descProcessingTitle", "Menganalisis deskripsi Anda...")
+    : t("dashboard.wizard.sttProcessingTitle", "Memproses suara Anda...");
+
+  const subtitle = variant === "text"
+    ? t("dashboard.wizard.descProcessingSubtitle", "Memoles teks dan mendeteksi jenis bisnis...")
+    : t("dashboard.wizard.sttProcessingSubtitle", "Membuat draft informasi bisnis...");
 
   return (
     <div className="rounded-2xl border border-emerald-500/30 bg-[#121b17]/90 p-5 shadow-2xl animate-in fade-in zoom-in-95 duration-400 max-w-sm mx-auto my-3 text-center backdrop-blur-md">
@@ -18,11 +27,11 @@ export function AudioProcessingCard({ businessName }: AudioProcessingCardProps) 
       </div>
 
       <h4 className="text-sm font-bold text-white mb-1">
-        {t("dashboard.wizard.sttProcessingTitle", "Memproses suara Anda...")}
+        {title}
       </h4>
 
       <p className="text-xs text-slate-400 mb-4">
-        {t("dashboard.wizard.sttProcessingSubtitle", "Membuat draft informasi bisnis...")}
+        {subtitle}
       </p>
 
       {/* 3 Step Dot Progress Bar */}
