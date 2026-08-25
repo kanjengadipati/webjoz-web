@@ -243,9 +243,9 @@ export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah
 export const DESCRIPTION_INFERENCE_NONE = "Baik, silakan pilih jenis bisnis Anda:";
 
 export const NAME_CONFIRM_VARIANTS = [
-  "Itu nama bisnis aslinya, atau masih nama sementara? Kalau sudah pas, ketik lagi untuk lanjut, atau ganti nama yang Anda mau pakai 😊",
-  "Apakah itu nama sebenarnya? Ketik 'ya' untuk lanjut, atau masukkan nama lain jika ingin diganti.",
-  "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Ketik 'ya' untuk lanjut, atau masukkan nama baru."
+  "Itu nama bisnis aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
+  "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
+  "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
 ];
 
 // Mapping keyword -> suggested type/subtype

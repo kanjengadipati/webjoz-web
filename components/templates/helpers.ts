@@ -16,20 +16,49 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     rounded: "20px",
   };
 
-  const isDarkColor = (hex: string) => {
-    const clean = (hex || "").replace("#", "").trim();
-    if (clean.length === 3) {
-      const r = parseInt(clean[0] + clean[0], 16);
-      const g = parseInt(clean[1] + clean[1], 16);
-      const b = parseInt(clean[2] + clean[2], 16);
+  const isDarkColor = (color: string) => {
+    const c = (color || "").trim();
+
+    // hex 3: #rgb
+    const hex3 = c.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+    if (hex3) {
+      const r = parseInt(hex3[1] + hex3[1], 16);
+      const g = parseInt(hex3[2] + hex3[2], 16);
+      const b = parseInt(hex3[3] + hex3[3], 16);
       return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
     }
-    if (clean.length === 6) {
-      const r = parseInt(clean.substring(0, 2), 16);
-      const g = parseInt(clean.substring(2, 4), 16);
-      const b = parseInt(clean.substring(4, 6), 16);
+
+    // hex 6: #rrggbb  or  hex 8: #rrggbbaa (ignore alpha)
+    const hex6 = c.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i);
+    if (hex6) {
+      const r = parseInt(hex6[1], 16);
+      const g = parseInt(hex6[2], 16);
+      const b = parseInt(hex6[3], 16);
       return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
     }
+
+    // rgb / rgba: rgb(r, g, b)
+    const rgb = c.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (rgb) {
+      const r = parseInt(rgb[1]);
+      const g = parseInt(rgb[2]);
+      const b = parseInt(rgb[3]);
+      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+    }
+
+    // hsl / hsla: hsl(h, s%, l%)  — use lightness < 40% as dark heuristic
+    const hsl = c.match(/^hsla?\(\s*[\d.]+\s*,\s*[\d.]+%?\s*,\s*([\d.]+)%/i);
+    if (hsl) {
+      return parseFloat(hsl[1]) < 40;
+    }
+
+    // oklch(L C H) — L ranges 0–1; < 0.4 is dark
+    const oklch = c.match(/^oklch\(\s*([\d.]+)/i);
+    if (oklch) {
+      return parseFloat(oklch[1]) < 0.4;
+    }
+
+    // Unknown format → assume light (non-dark) to keep white text readable
     return false;
   };
 
@@ -84,9 +113,11 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
   const effPrimary = lightenIfDark(primaryColor, isPrimaryDark);
   const effAccent = lightenIfDark(accentColor, isAccentDark);
 
-  // All contrast checks use ORIGINAL colors (color-mix can't be measured in JS)
-  const primaryFg = isPrimaryDark ? "#ffffff" : "#1e293b";
-  const ctaText = isPrimaryDark ? "#ffffff" : "#1e293b";
+  // When dark-mode lightening is applied, the effective primary becomes a
+  // light color — so foreground must switch to dark text, not white.
+  const effPrimaryIsLight = themeMode === 'dark' && isPrimaryDark;
+  const primaryFg = effPrimaryIsLight ? "#1e293b" : (isPrimaryDark ? "#ffffff" : "#1e293b");
+  const ctaText = effPrimaryIsLight ? "#1e293b" : (isPrimaryDark ? "#ffffff" : "#1e293b");
   const ctaBtnBg = "#ffffff";
   const ctaBtnText = isPrimaryDark ? primaryColor : "#1e293b";
 
