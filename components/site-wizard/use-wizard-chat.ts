@@ -244,17 +244,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setIsProcessingAudio(false);
     }
 
-    // Step 7: Display Voice Result Review Bubble
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `stt-review-${Date.now()}`,
-        sender: "ai",
-        text: "",
-        widget: "stt-review-confirm" as const,
-        sttTranscript: refinedText,
-      },
-    ]);
+    // Proceed directly with refined text — no confirmation bubble.
+    // The refined description is passed as the user's input; the AI type
+    // inference result (if available) is passed as preInferred to skip
+    // a redundant second API call.
+    processDescriptionSubmission(refinedText, sttInferredResultRef.current);
   };
 
   const cancelRecording = () => {
@@ -667,26 +661,43 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
           }
         }
       } catch (err) {
-        console.warn("[wizard] AI classification failed, using raw text for review", err);
+        console.warn("[wizard] AI classification failed, using local fallback", err);
       } finally {
         setIsProcessingDescription(false);
       }
 
-      // Always show the review widget — use refined text when available, raw as fallback.
-      // This matches the STT (voice) flow which always shows review regardless.
-      const reviewText = refinedText || val;
-      sttInferredResultRef.current = aiClassification;
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `text-review-${Date.now()}`,
-          sender: "ai",
-          text: "",
-          widget: "text-review-confirm" as const,
-          sttTranscript: reviewText,
-        },
-      ]);
-      return;
+      // Show the AI-polished result for user to review/edit before proceeding.
+      // Only show when refined text is meaningfully different from raw input.
+      // The inferred type is cached in sttInferredResultRef so handleConfirmSttReview
+      // can pass it through without a redundant second API call.
+      const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ").trim();
+      if (refinedText && normalize(refinedText) !== normalize(val)) {
+        sttInferredResultRef.current = aiClassification;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `text-review-${Date.now()}`,
+            sender: "ai",
+            text: "",
+            widget: "text-review-confirm" as const,
+            sttTranscript: refinedText,
+          },
+        ]);
+        return;
+      }
+
+      // Refined text is identical to raw — proceed directly to type inference.
+      if (aiClassification) {
+        result = { type: aiClassification.type, subType: aiClassification.subType, confidence: "high" };
+      }
+
+      // Fallback: local dictionary when AI is offline / timed out / returned no type
+      if (!result.type || !result.subType) {
+        const localResult = inferTypeFromDescription(refinedText || val);
+        if (localResult.type) {
+          result = localResult;
+        }
+      }
     }
 
     setInferenceResult(result);
