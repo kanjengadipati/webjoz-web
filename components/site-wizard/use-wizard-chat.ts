@@ -643,12 +643,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
             // Guard: never show a review bubble if the server leaked its own
             // system-prompt / reasoning instead of a real business description.
             const isPlausibleRefined = (s: string): boolean => {
-              if (s.length > 250) return false;
+              if (!s || s.trim().length < 5) return false;
               const lower = s.toLowerCase();
               const signals = [
-                "the user wants to", "i need to", "the task is to",
+                "the user wants to classify", "the user wants to",
+                "i need to refine", "i need to",
+                "the task is to",
                 "classify the business", "refine the description",
                 "1-2 natural, polished", "polished sentences in",
+                "bahasa indonesia and classify",
                 "from the provided taxonomy", "must be in bahasa indonesia",
                 "must be in english", "into one 'type'",
                 "refined_text", "sub_type", "taxonomy",
@@ -658,7 +661,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
             // Show a review bubble when AI refined the text — let user
             // see, confirm or edit before we proceed to type inference.
-            if (refined && isPlausibleRefined(refined)) {
+            const plausible = isPlausibleRefined(refined);
+            if (!plausible) {
+              console.debug("[wizard] isPlausibleRefined rejected:", { len: refined.length, snippet: refined.slice(0, 80) });
+            }
+            if (refined && plausible) {
               // Store inferred type so handleConfirmSttReview can pass it through
               sttInferredResultRef.current = (aiRes.data.type && aiRes.data.sub_type)
                 ? { type: aiRes.data.type, subType: aiRes.data.sub_type }
