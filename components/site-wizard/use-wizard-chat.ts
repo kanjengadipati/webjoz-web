@@ -193,7 +193,24 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       ]);
       if (res && res.data) {
         if (res.data.refined_text) {
-          refinedText = res.data.refined_text;
+          const candidate = res.data.refined_text.trim();
+          // Guard: reject server response if it looks like a leaked system-prompt/reasoning
+          const isPlausibleSTT = (s: string): boolean => {
+            if (s.length > 250) return false;
+            const lower = s.toLowerCase();
+            const signals = [
+              "the user wants to", "i need to", "the task is to",
+              "classify the business", "refine the description",
+              "1-2 natural, polished", "polished sentences in",
+              "from the provided taxonomy", "must be in bahasa indonesia",
+              "must be in english", "into one 'type'",
+              "refined_text", "sub_type", "taxonomy",
+            ];
+            return !signals.some((sig) => lower.includes(sig));
+          };
+          if (isPlausibleSTT(candidate)) {
+            refinedText = candidate;
+          }
         }
         if (res.data.type && res.data.sub_type) {
           sttInferredResultRef.current = {
@@ -623,11 +640,27 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
               if (detected) setServiceArea(detected);
             }
 
+            // Guard: never show a review bubble if the server leaked its own
+            // system-prompt / reasoning instead of a real business description.
+            const isPlausibleRefined = (s: string): boolean => {
+              if (s.length > 250) return false;
+              const lower = s.toLowerCase();
+              const signals = [
+                "the user wants to", "i need to", "the task is to",
+                "classify the business", "refine the description",
+                "1-2 natural, polished", "polished sentences in",
+                "from the provided taxonomy", "must be in bahasa indonesia",
+                "must be in english", "into one 'type'",
+                "refined_text", "sub_type", "taxonomy",
+              ];
+              return !signals.some((sig) => lower.includes(sig));
+            };
+
             // Show a review bubble when AI meaningfully polished the text — let user
             // see, confirm or edit before we proceed to type inference.
             // "Meaningful" = lowercased+stripped versions differ (not just casing/spacing).
             const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ").trim();
-            if (normalize(refined) !== normalize(val)) {
+            if (normalize(refined) !== normalize(val) && isPlausibleRefined(refined)) {
               // Store inferred type so handleConfirmSttReview can pass it through
               sttInferredResultRef.current = (aiRes.data.type && aiRes.data.sub_type)
                 ? { type: aiRes.data.type, subType: aiRes.data.sub_type }
