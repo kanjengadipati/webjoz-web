@@ -749,18 +749,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         if (aiRes && aiRes.data) {
           if (aiRes.data.refined_text && aiRes.data.refined_text.trim()) {
             const refined = aiRes.data.refined_text.trim();
-            setDescription(refined);
-            descriptionRef.current = refined;
-            // Also attempt to detect location from refined text if not already found
-            if (!serviceArea) {
-              const detected = extractLocationFromDescription(refined);
-              if (detected) setServiceArea(detected);
+            const isMeta = /(?:requesting a json|the user is|the business name is|the raw input is|```json)/i.test(refined);
+            if (!isMeta) {
+              setDescription(refined);
+              descriptionRef.current = refined;
+              // Also attempt to detect location from refined text if not already found
+              if (!serviceArea) {
+                const detected = extractLocationFromDescription(refined);
+                if (detected) setServiceArea(detected);
+              }
             }
           }
-          if (aiRes.data.type && aiRes.data.sub_type) {
+          if (aiRes.data.type && aiRes.data.type.trim() && aiRes.data.sub_type && aiRes.data.sub_type.trim()) {
             result = {
-              type: aiRes.data.type,
-              subType: aiRes.data.sub_type,
+              type: aiRes.data.type.trim(),
+              subType: aiRes.data.sub_type.trim(),
               confidence: "high",
             };
           }
@@ -780,7 +783,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    if (result.type && result.subType) {
+    if (result.type && result.type.trim() && result.subType && result.subType.trim()) {
       setBusinessType(result.type);
       setBusinessSubType(result.subType);
       setTypeWasInferred(true);
@@ -797,7 +800,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
-    if (result.type) {
+    if (result.type && result.type.trim()) {
       setBusinessType(result.type);
       setTypeWasInferred(true);
       setChatStage("type");
