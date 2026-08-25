@@ -6,12 +6,14 @@ import MinimalBand from "./minimal-band";
 import ColumnsWithSocial from "./columns-with-social";
 import ColumnsWithNav from "./columns-with-nav";
 import DarkContrastBand from "./dark-contrast-band";
+import LocationAndHours from "./location-and-hours";
 
 const variants: Record<string, ComponentType<FooterVariantProps>> = {
   "minimal-band": MinimalBand,
   "columns-with-social": ColumnsWithSocial,
   "columns-with-nav": ColumnsWithNav,
   "dark-contrast-band": DarkContrastBand,
+  "location-and-hours": LocationAndHours,
 };
 
 export default function FooterSection(props: FooterVariantProps) {
