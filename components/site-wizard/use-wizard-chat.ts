@@ -322,9 +322,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     let refinedText = rawTranscript;
     let inferredResult: { type?: string; subType?: string } | null = null;
+    const voiceLang = sttLang === "en-US" ? "en" : "id";
     try {
       const [res] = await Promise.all([
-        refineTranscript(rawTranscript, businessNameRef.current, locale),
+        refineTranscript(rawTranscript, businessNameRef.current, voiceLang),
         minDelay,
       ]);
       if (res && res.data) {
