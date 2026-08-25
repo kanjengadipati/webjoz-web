@@ -32,6 +32,7 @@ import {
   Tablet,
   Tag,
   UtensilsCrossed,
+  X,
   Zap,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
@@ -255,6 +256,14 @@ export function SiteWizard({
   React.useEffect(() => {
     return () => { cancelStreamRef.current(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-scroll STT live transcript to the right/latest spoken words
+  const transcriptScrollRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (transcriptScrollRef.current) {
+      transcriptScrollRef.current.scrollLeft = transcriptScrollRef.current.scrollWidth;
+    }
+  }, [chat.interimTranscript]);
 
   // Reset success modal whenever a new generation begins
   React.useEffect(() => {
@@ -728,43 +737,76 @@ export function SiteWizard({
         </div>
 
         {resumeDraft && (
-          <div className="relative mx-3 sm:mx-4 mt-2.5 sm:mt-3 shrink-0 rounded-2xl border border-white/[0.08] bg-[#16191E]/95 p-3 sm:p-3.5 shadow-xl backdrop-blur-md animate-in fade-in group">
-            <button
-              type="button"
-              onClick={handleResume}
-              className="w-full flex items-center justify-between gap-3 text-left cursor-pointer pr-6"
-            >
+          <div className="mx-3.5 sm:mx-4 mt-2.5 sm:mt-3 shrink-0 rounded-2xl border border-white/[0.09] bg-[#16191F]/95 p-3 sm:p-3.5 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0 text-primary transition-transform group-hover:scale-105">
+                <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0 text-primary">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] sm:text-[11px] font-medium text-slate-400 leading-tight">
-                    {t("dashboard.wizard.resumeLastSession", "Sesi terakhir")} · <span className="text-slate-500">{resumeSavedText}</span>
-                  </p>
-                  <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-tight mt-0.5">
+                  <div className="flex items-center gap-1.5 leading-tight">
+                    <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">
+                      {t("dashboard.wizard.resumeLastSession", "Draft Tersimpan")}
+                    </span>
+                    <span className="text-[10px] text-slate-500">· {resumeSavedText}</span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-snug mt-0.5">
                     {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1 shrink-0 text-xs font-semibold text-primary group-hover:translate-x-0.5 transition-transform">
-                <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleResume}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:brightness-110 active:scale-95 transition-all shadow-xs cursor-pointer"
+                >
+                  <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStartFresh}
+                  title={t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
+                  className="w-7 h-7 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
-            </button>
-            <button
-              type="button"
-              onClick={handleStartFresh}
-              title={t("dashboard.wizard.resumeStartFresh", "Mulai baru")}
-              className="absolute top-2.5 right-2.5 p-1 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-colors cursor-pointer"
-            >
-              <span className="text-xs font-bold leading-none">✕</span>
-            </button>
+            </div>
           </div>
         )}
 
         <div className={`flex-1 overflow-y-auto px-4 py-5 space-y-4 ${device.isMobile ? (device.mobileScreen === "preview" ? "pb-28" : "pb-6") : "md:pb-8"}`}>
           {chat.messages.map((m) => {
+            if (m.widget === "name-confirm") {
+              const isLocked = !chat.awaitingNameConfirm;
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => !isLocked && chat.handleConfirmName(true)}
+                      disabled={isLocked}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40 cursor-pointer shadow-xs"
+                    >
+                      <span>✓ {t("dashboard.wizard.nameConfirmYes", "Ya")}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => !isLocked && chat.handleConfirmName(false)}
+                      disabled={isLocked}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-slate-300 border border-white/10 transition-all hover:border-white/20 hover:text-white hover:bg-white/5 active:scale-95 disabled:opacity-40 cursor-pointer"
+                      style={{ background: "rgba(255,255,255,0.05)" }}
+                    >
+                      <span>✎ {t("dashboard.wizard.nameConfirmChange", "Ganti")}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+
             if (m.widget === "inference-confirm") {
               const isLocked = !chat.awaitingInferenceConfirm;
               return (
@@ -1045,7 +1087,7 @@ export function SiteWizard({
               );
             }
 
-            if (m.widget === "text-review-confirm") {
+            if (m.widget === "stt-review-confirm") {
               const transcript = m.sttTranscript || "";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
@@ -1056,14 +1098,14 @@ export function SiteWizard({
                     <div className="max-w-[90%] space-y-2.5">
                       <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#131f1a] border border-emerald-500/30 text-slate-200 shadow-xl">
                         <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
-                          <Sparkles className="w-4 h-4" />
-                          <span>{t("dashboard.wizard.textReviewTitle", "Saya poles deskripsi Anda:")}</span>
+                          <Mic className="w-4 h-4" />
+                          <span>{t("dashboard.wizard.sttReviewTitle", "Berikut yang saya dengar dari Anda:")}</span>
                         </div>
                         <div className="rounded-xl bg-black/30 border border-emerald-500/20 p-3 text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed italic">
                           &ldquo;{transcript}&rdquo;
                         </div>
                         <p className="text-xs text-slate-300">
-                          {t("dashboard.wizard.textReviewPrompt", "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.")}
+                          {t("dashboard.wizard.sttReviewPrompt", "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.")}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -1092,6 +1134,18 @@ export function SiteWizard({
               ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
               : m.text;
 
+            // Mood icon mapping — warna solid supaya kontras di atas bubble putih (bg-primary)
+            const moodIconMapMsg: Record<string, { icon: React.ReactNode; bg: string; text: string }> = {
+              "clean-modern": { icon: <Monitor className="w-3.5 h-3.5" />, bg: "bg-blue-500",   text: "text-white" },
+              "warm-earthy":  { icon: <Leaf    className="w-3.5 h-3.5" />, bg: "bg-green-600",  text: "text-white" },
+              "bold-vibrant": { icon: <Palette className="w-3.5 h-3.5" />, bg: "bg-orange-500", text: "text-white" },
+              "dark-premium": { icon: <Crown   className="w-3.5 h-3.5" />, bg: "bg-yellow-500", text: "text-white" },
+              "bold-dark":    { icon: <Zap     className="w-3.5 h-3.5" />, bg: "bg-red-500",    text: "text-white" },
+              "retro":        { icon: <Clock   className="w-3.5 h-3.5" />, bg: "bg-amber-600",  text: "text-white" },
+              "futuristic":   { icon: <Bot     className="w-3.5 h-3.5" />, bg: "bg-cyan-500",   text: "text-white" },
+            };
+            const moodCfgMsg = m.moodValue ? moodIconMapMsg[m.moodValue] : null;
+
             return (
               <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                 {m.sender === "ai" && (
@@ -1103,7 +1157,16 @@ export function SiteWizard({
                   className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
                   style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
-                  {formatText(messageText, m.sender === "user")}
+                  {moodCfgMsg ? (
+                    <span className="flex items-center gap-2">
+                      <span className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${moodCfgMsg.bg} ${moodCfgMsg.text}`}>
+                        {moodCfgMsg.icon}
+                      </span>
+                      {formatText(messageText.replace(/^\S+\s/, ""), true)}
+                    </span>
+                  ) : (
+                    formatText(messageText, m.sender === "user")
+                  )}
                   {m.id === "init" && chat.isInitialTyping && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
                   )}
@@ -1114,10 +1177,6 @@ export function SiteWizard({
 
           {chat.isProcessingAudio && (
             <AudioProcessingCard businessName={chat.businessName} />
-          )}
-
-          {chat.isProcessingDescription && (
-            <AudioProcessingCard businessName={chat.businessName} variant="text" />
           )}
 
           <div ref={chat.chatEndRef} />
@@ -1159,25 +1218,54 @@ export function SiteWizard({
 
                   {/* Waveform Visualizer */}
                   <div className="flex-1 flex justify-center min-w-0">
-                    <AudioWaveform isRecording={chat.isRecording} isConnecting={chat.isMicConnecting} />
+                    <AudioWaveform
+                      isRecording={chat.isRecording}
+                      isConnecting={chat.isMicConnecting}
+                      isSpeaking={chat.isSpeaking}
+                      audioLevel={chat.audioLevel}
+                    />
                   </div>
 
-                  {/* Round Stop Button */}
-                  <button
-                    type="button"
-                    onClick={chat.stopRecording}
-                    className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-900 shadow-md hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
-                    title={t("dashboard.wizard.sttBtnDone", "Selesai")}
-                  >
-                    <Square className="w-3.5 h-3.5 fill-slate-900" />
-                  </button>
+                  {/* Language Toggle & Round Stop Button */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={chat.toggleSttLang}
+                      className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border border-emerald-500/30 bg-white/5 hover:bg-white/10 text-emerald-300 transition-all active:scale-95 cursor-pointer shadow-xs"
+                      title={chat.sttLang === "id-ID" ? "Bahasa: Indonesia (Klik untuk ganti ke English)" : "Language: English (Click to switch to Bahasa Indonesia)"}
+                    >
+                      {chat.sttLang === "id-ID" ? "🇮🇩 ID" : "🇬🇧 EN"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={chat.stopRecording}
+                      className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-900 shadow-md hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
+                      title={t("dashboard.wizard.sttBtnDone", "Selesai")}
+                    >
+                      <Square className="w-3.5 h-3.5 fill-slate-900" />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Bottom Action Row: Guide text + Selesai & Batal */}
-                <div className="flex items-center justify-between pt-1 border-t border-emerald-500/10">
-                  <span className="text-[11px] text-slate-400 truncate pr-2">
-                    {t("dashboard.wizard.sttPromptGuide", "Ceritakan bisnis Anda...")}
-                  </span>
+                {/* Bottom Action Row: Live Transcript (auto-scrolling to newest speech) + Selesai & Batal */}
+                <div className="flex items-center justify-between pt-1 border-t border-emerald-500/10 gap-2">
+                  <div
+                    ref={transcriptScrollRef}
+                    className="text-[11px] text-slate-300 flex-1 font-medium overflow-x-auto whitespace-nowrap scroll-smooth flex items-center min-w-0 pr-1"
+                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                  >
+                    {chat.interimTranscript ? (
+                      <span className="text-emerald-300 italic flex items-center gap-1">
+                        &ldquo;{chat.interimTranscript}&rdquo;
+                        {chat.isRecording && (
+                          <span className="inline-block w-1.5 h-3 bg-emerald-400 rounded-xs animate-pulse shrink-0 align-middle" />
+                        )}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 shrink-0">{t("dashboard.wizard.sttPromptGuide", "Ceritakan bisnis Anda...")}</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       type="button"
@@ -1216,7 +1304,7 @@ export function SiteWizard({
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription}
+                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
                   className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
                 />
                 {chat.chatStage === "description" && (
@@ -1225,7 +1313,7 @@ export function SiteWizard({
                     <button
                       type="button"
                       onClick={chat.startRecording}
-                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription}
+                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
                       className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                       title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                     >
@@ -1235,7 +1323,7 @@ export function SiteWizard({
                 )}
                 <button
                   type="submit"
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription || (chat.chatStage === "name" && !chat.inputValue.trim())}
+                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0 cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />

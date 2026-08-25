@@ -11,24 +11,6 @@ import { useI18n } from "@/lib/i18n/context";
 import { refineTranscript, classifyBusiness, processBusinessDescription } from "@/lib/api/ai";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
-/** Guard: reject server-prompt leaks or implausible text before showing review widget. */
-function isPlausibleRefined(s: string): boolean {
-  if (!s || s.trim().length < 5) return false;
-  const lower = s.toLowerCase();
-  const signals = [
-    "the user wants to classify", "the user wants to",
-    "i need to refine", "i need to",
-    "the task is to",
-    "classify the business", "refine the description",
-    "1-2 natural, polished", "polished sentences in",
-    "bahasa indonesia and classify",
-    "from the provided taxonomy", "must be in bahasa indonesia",
-    "must be in english", "into one 'type'",
-    "refined_text", "sub_type", "taxonomy",
-  ];
-  return !signals.some((sig) => lower.includes(sig));
-}
-
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
   const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
@@ -68,15 +50,61 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   // ── Voice Input (STT) ──
   const [isRecording, setIsRecording] = useState(false);
   const [isMicConnecting, setIsMicConnecting] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
   const [recordingDuration, setRecordingDuration] = useState(0);
+  const [sttLang, setSttLang] = useState<"id-ID" | "en-US">("id-ID");
+  const [interimTranscript, setInterimTranscript] = useState("");
   const [isProcessingAudio, setIsProcessingAudio] = useState(false);
-  const [isProcessingDescription, setIsProcessingDescription] = useState(false);
   const recognitionRef = useRef<any>(null);
   const recordingTimerRef = useRef<any>(null);
   const fallbackTimerRef = useRef<any>(null);
+  const silenceTimerRef = useRef<any>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animFrameRef = useRef<number | null>(null);
   const recordedTranscriptRef = useRef<string>("");
   const sttInferredResultRef = useRef<{ type?: string; subType?: string } | null>(null);
   const isManualStopRef = useRef(false);
+
+  const cleanupAudioStream = () => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (audioContextRef.current) {
+      try {
+        audioContextRef.current.close().catch(() => {});
+      } catch {}
+      audioContextRef.current = null;
+    }
+    analyserRef.current = null;
+    if (mediaStreamRef.current) {
+      try {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      } catch {}
+      mediaStreamRef.current = null;
+    }
+    setIsSpeaking(false);
+    setAudioLevel(0);
+  };
+
+  const toggleSttLang = () => {
+    setSttLang((prev) => {
+      const next = prev === "id-ID" ? "en-US" : "id-ID";
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.lang = next;
+        } catch {}
+      }
+      return next;
+    });
+  };
 
   const startRecording = () => {
     if (typeof window === "undefined") return;
@@ -89,7 +117,9 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     markMicHintAsSeen();
     isManualStopRef.current = false;
     recordedTranscriptRef.current = "";
+    setInterimTranscript("");
     setRecordingDuration(0);
+    cleanupAudioStream();
 
     if (recordingTimerRef.current) {
       clearInterval(recordingTimerRef.current);
@@ -100,8 +130,47 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       fallbackTimerRef.current = null;
     }
 
+    // Try starting Web Audio API analyser to measure real-time mic volume
+    if (navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          mediaStreamRef.current = stream;
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            const audioCtx = new AudioContextClass();
+            audioContextRef.current = audioCtx;
+            const source = audioCtx.createMediaStreamSource(stream);
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            analyser.smoothingTimeConstant = 0.4;
+            source.connect(analyser);
+            analyserRef.current = analyser;
+
+            const checkVolume = () => {
+              if (!analyserRef.current) return;
+              const dataArray = new Uint8Array(analyser.frequencyBinCount);
+              analyser.getByteFrequencyData(dataArray);
+              let sum = 0;
+              for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+              }
+              const avg = sum / dataArray.length;
+              const speaking = avg > 12;
+              setIsSpeaking(speaking);
+              setAudioLevel(Math.min(1, avg / 60));
+              animFrameRef.current = requestAnimationFrame(checkVolume);
+            };
+            animFrameRef.current = requestAnimationFrame(checkVolume);
+          }
+        })
+        .catch((err) => {
+          console.log("AudioContext fallback to speech recognition events", err);
+        });
+    }
+
     const recognition = new SpeechRecognition();
-    recognition.lang = locale === "id" ? "id-ID" : "en-US";
+    recognition.lang = sttLang;
     recognition.interimResults = true;
     recognition.continuous = true;
 
@@ -115,9 +184,39 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       }
     };
 
-    recognition.onaudiostart = handleAudioReady;
-    recognition.onsoundstart = handleAudioReady;
-    recognition.onspeechstart = handleAudioReady;
+    const handleSpeechDetected = () => {
+      setIsSpeaking(true);
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+      }
+      silenceTimerRef.current = setTimeout(() => {
+        if (!analyserRef.current) {
+          setIsSpeaking(false);
+        }
+      }, 1000);
+    };
+
+    recognition.onaudiostart = () => {
+      handleAudioReady();
+    };
+    recognition.onsoundstart = () => {
+      handleAudioReady();
+      handleSpeechDetected();
+    };
+    recognition.onspeechstart = () => {
+      handleAudioReady();
+      handleSpeechDetected();
+    };
+    recognition.onsoundend = () => {
+      if (!analyserRef.current) {
+        setIsSpeaking(false);
+      }
+    };
+    recognition.onspeechend = () => {
+      if (!analyserRef.current) {
+        setIsSpeaking(false);
+      }
+    };
 
     // Fallback: if browser doesn't fire onaudiostart within 1000ms, start ticking anyway
     fallbackTimerRef.current = setTimeout(() => {
@@ -126,16 +225,19 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     recognition.onresult = (event: any) => {
       handleAudioReady();
+      handleSpeechDetected();
       let transcript = "";
       for (let i = 0; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript;
       }
       if (transcript.trim()) {
-        recordedTranscriptRef.current = transcript;
+        recordedTranscriptRef.current = transcript.trim();
+        setInterimTranscript(transcript.trim());
       }
     };
 
     recognition.onend = () => {
+      cleanupAudioStream();
       if (fallbackTimerRef.current) {
         clearTimeout(fallbackTimerRef.current);
         fallbackTimerRef.current = null;
@@ -147,9 +249,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setIsMicConnecting(false);
       setIsRecording(false);
       recognitionRef.current = null;
+
+      // Auto-submit if browser ended recording and speech was captured
+      if (!isManualStopRef.current && recordedTranscriptRef.current.trim()) {
+        stopRecording();
+      }
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: any) => {
+      cleanupAudioStream();
       if (fallbackTimerRef.current) {
         clearTimeout(fallbackTimerRef.current);
         fallbackTimerRef.current = null;
@@ -161,6 +269,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setIsMicConnecting(false);
       setIsRecording(false);
       recognitionRef.current = null;
+
+      if (event?.error === "not-allowed" || event?.error === "service-not-allowed") {
+        alert(t("dashboard.wizard.micPermissionDenied", "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda."));
+      }
     };
 
     recognitionRef.current = recognition;
@@ -177,6 +289,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const stopRecording = async () => {
     isManualStopRef.current = true;
     setIsMicConnecting(false);
+    cleanupAudioStream();
     if (fallbackTimerRef.current) {
       clearTimeout(fallbackTimerRef.current);
       fallbackTimerRef.current = null;
@@ -193,17 +306,22 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
     setIsRecording(false);
 
-    const rawTranscript = recordedTranscriptRef.current.trim();
+    const rawTranscript = (recordedTranscriptRef.current || interimTranscript).trim();
     if (!rawTranscript) {
+      alert(t("dashboard.wizard.sttNoVoiceDetected", "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi Anda secara langsung."));
+      setTimeout(() => inputRef.current?.focus(), 80);
       return;
     }
 
-    // AI Refine Processing State (Step 6)
+    setInterimTranscript("");
+    recordedTranscriptRef.current = "";
+
+    // AI Refine Processing State
     setIsProcessingAudio(true);
     const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
 
     let refinedText = rawTranscript;
-    sttInferredResultRef.current = null;
+    let inferredResult: { type?: string; subType?: string } | null = null;
     try {
       const [res] = await Promise.all([
         refineTranscript(rawTranscript, businessNameRef.current, locale),
@@ -211,27 +329,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       ]);
       if (res && res.data) {
         if (res.data.refined_text) {
-          const candidate = res.data.refined_text.trim();
-          // Guard: reject server response if it looks like a leaked system-prompt/reasoning
-          const isPlausibleSTT = (s: string): boolean => {
-            if (s.length > 250) return false;
-            const lower = s.toLowerCase();
-            const signals = [
-              "the user wants to", "i need to", "the task is to",
-              "classify the business", "refine the description",
-              "1-2 natural, polished", "polished sentences in",
-              "from the provided taxonomy", "must be in bahasa indonesia",
-              "must be in english", "into one 'type'",
-              "refined_text", "sub_type", "taxonomy",
-            ];
-            return !signals.some((sig) => lower.includes(sig));
-          };
-          if (isPlausibleSTT(candidate)) {
-            refinedText = candidate;
-          }
+          refinedText = res.data.refined_text;
         }
         if (res.data.type && res.data.sub_type) {
-          sttInferredResultRef.current = {
+          inferredResult = {
             type: res.data.type,
             subType: res.data.sub_type,
           };
@@ -244,15 +345,13 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setIsProcessingAudio(false);
     }
 
-    // Proceed directly with refined text — no confirmation bubble.
-    // The refined description is passed as the user's input; the AI type
-    // inference result (if available) is passed as preInferred to skip
-    // a redundant second API call.
-    processDescriptionSubmission(refinedText, sttInferredResultRef.current);
+    // Directly submit the spoken description into chat & classification flow
+    processDescriptionSubmission(refinedText || rawTranscript, inferredResult);
   };
 
   const cancelRecording = () => {
     isManualStopRef.current = true;
+    cleanupAudioStream();
     if (recordingTimerRef.current) {
       clearInterval(recordingTimerRef.current);
       recordingTimerRef.current = null;
@@ -264,6 +363,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       recognitionRef.current = null;
     }
     recordedTranscriptRef.current = "";
+    setInterimTranscript("");
     setIsRecording(false);
     setRecordingDuration(0);
   };
@@ -463,7 +563,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: "user", text: displayText },
+      { id: Date.now().toString(), sender: "user", text: displayText, moodValue: selectedMood },
       { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda...") },
     ]);
 
@@ -551,7 +651,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         hasAskedNameConfirmRef.current = true;
         setAwaitingNameConfirm(true);
         setTimeout(() => {
-          typeMessage(pickVariant(nameConfirmVariants), () => { });
+          typeMessage(pickVariant(nameConfirmVariants), () => {
+            setMessages((prev) => [
+              ...prev,
+              { id: `widget-name-confirm-${Date.now()}`, sender: "ai", text: "", widget: "name-confirm" as const },
+            ]);
+          });
         }, 500);
         return;
       }
@@ -638,62 +743,34 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       };
     } else {
       // 1. Primary: Call AI Classifier Server (understands context & semantics)
-      setIsProcessingDescription(true);
-      let aiClassification: { type: string; subType: string } | null = null;
-      let refinedText = "";
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data) {
           if (aiRes.data.refined_text && aiRes.data.refined_text.trim()) {
-            const candidate = aiRes.data.refined_text.trim();
-            if (isPlausibleRefined(candidate)) {
-              refinedText = candidate;
-              setDescription(candidate);
-              descriptionRef.current = candidate;
-              if (!serviceArea) {
-                const detected = extractLocationFromDescription(candidate);
-                if (detected) setServiceArea(detected);
-              }
+            const refined = aiRes.data.refined_text.trim();
+            setDescription(refined);
+            descriptionRef.current = refined;
+            // Also attempt to detect location from refined text if not already found
+            if (!serviceArea) {
+              const detected = extractLocationFromDescription(refined);
+              if (detected) setServiceArea(detected);
             }
           }
           if (aiRes.data.type && aiRes.data.sub_type) {
-            aiClassification = { type: aiRes.data.type, subType: aiRes.data.sub_type };
+            result = {
+              type: aiRes.data.type,
+              subType: aiRes.data.sub_type,
+              confidence: "high",
+            };
           }
         }
       } catch (err) {
-        console.warn("[wizard] AI classification failed, using local fallback", err);
-      } finally {
-        setIsProcessingDescription(false);
+        console.warn("Primary AI classification failed, falling back to local dictionary", err);
       }
 
-      // Show the AI-polished result for user to review/edit before proceeding.
-      // Only show when refined text is meaningfully different from raw input.
-      // The inferred type is cached in sttInferredResultRef so handleConfirmSttReview
-      // can pass it through without a redundant second API call.
-      const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ").trim();
-      if (refinedText && normalize(refinedText) !== normalize(val)) {
-        sttInferredResultRef.current = aiClassification;
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `text-review-${Date.now()}`,
-            sender: "ai",
-            text: "",
-            widget: "text-review-confirm" as const,
-            sttTranscript: refinedText,
-          },
-        ]);
-        return;
-      }
-
-      // Refined text is identical to raw — proceed directly to type inference.
-      if (aiClassification) {
-        result = { type: aiClassification.type, subType: aiClassification.subType, confidence: "high" };
-      }
-
-      // Fallback: local dictionary when AI is offline / timed out / returned no type
+      // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
       if (!result.type || !result.subType) {
-        const localResult = inferTypeFromDescription(refinedText || val);
+        const localResult = inferTypeFromDescription(val);
         if (localResult.type) {
           result = localResult;
         }
@@ -748,63 +825,46 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   };
 
   const handleConfirmSttReview = (confirmed: boolean, transcriptText: string) => {
-    // Dismiss both voice and text review widgets
-    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm" && m.widget !== "text-review-confirm"));
+    // Dismiss the stt-review-confirm widget
+    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm"));
 
     if (confirmed) {
-      if (sttInferredResultRef.current?.type && sttInferredResultRef.current?.subType) {
-        // AI classification available — re-run with preInferred to skip API
-        processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
-      } else {
-        // AI classification unavailable — do local inference directly
-        const localResult = inferTypeFromDescription(transcriptText);
-        setInferenceResult(localResult);
-        if (localResult.type && localResult.subType) {
-          setBusinessType(localResult.type);
-          setBusinessSubType(localResult.subType);
-          setTypeWasInferred(true);
-          setAwaitingInferenceConfirm(true);
-          const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { subType: localResult.subType ?? localResult.type ?? "" });
-          setTimeout(() => {
-            typeMessage(confirmMsg, () => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
-              ]);
-            });
-          }, 500);
-        } else if (localResult.type) {
-          setBusinessType(localResult.type);
-          setTypeWasInferred(true);
-          setChatStage("type");
-          setTimeout(() => {
-            const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: localResult.type ?? "" });
-            typeMessage(medMsg, () => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
-              ]);
-            });
-          }, 300);
-        } else {
-          setInferenceResult({ confidence: "low" } as InferenceResult);
-          setChatStage("type");
-          setTimeout(() => {
-            typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-              ]);
-            });
-          }, 300);
-        }
-      }
+      processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
     } else {
       setInputValue(transcriptText);
       setChatStage("description");
       setTimeout(() => {
         inputRef.current?.focus();
       }, 80);
+    }
+  };
+
+  const handleConfirmName = (confirmed: boolean) => {
+    setAwaitingNameConfirm(false);
+    setMessages((prev) => prev.filter((m) => m.widget !== "name-confirm"));
+
+    if (confirmed) {
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.nameConfirmYes", "Ya") },
+      ]);
+      setTimeout(() => {
+        typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
+          setChatStage("description");
+        });
+      }, 400);
+    } else {
+      setBusinessName("");
+      businessNameRef.current = "";
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.nameConfirmChange", "Ganti") },
+      ]);
+      setTimeout(() => {
+        typeMessage(t("dashboard.wizard.nameChangePrompt", "Baik, silakan ketik nama bisnis yang ingin Anda gunakan:"), () => {
+          setTimeout(() => inputRef.current?.focus(), 80);
+        });
+      }, 400);
     }
   };
 
@@ -897,9 +957,14 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     // Voice Input
     isRecording,
     isMicConnecting,
+    isSpeaking,
+    audioLevel,
     recordingDuration,
+    sttLang,
+    setSttLang,
+    toggleSttLang,
+    interimTranscript,
     isProcessingAudio,
-    isProcessingDescription,
     startRecording,
     stopRecording,
     cancelRecording,
@@ -924,6 +989,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     handleSelectLanguage,
     handleSelectMood,
     handleConfirmInference,
+    handleConfirmName,
     typeMessage,
     // Utilities
     syncChatRefs,
