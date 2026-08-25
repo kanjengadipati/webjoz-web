@@ -783,9 +783,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    if (result.type && result.type.trim() && result.subType && result.subType.trim()) {
-      setBusinessType(result.type);
-      setBusinessSubType(result.subType);
+    // Only prompt direct inference confirmation if confidence is HIGH and both type & subType are strongly identified
+    if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
+      setBusinessType(result.type.trim());
+      setBusinessSubType(result.subType.trim());
       setTypeWasInferred(true);
       setAwaitingInferenceConfirm(true);
       const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { subType: result.subType ?? result.type ?? "" });
@@ -800,22 +801,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
-    if (result.type && result.type.trim()) {
-      setBusinessType(result.type);
-      setTypeWasInferred(true);
-      setChatStage("type");
-      setTimeout(() => {
-        const medMsg = t("dashboard.wizard.descriptionInferenceMedium", undefined, { type: result.type ?? "" });
-        typeMessage(medMsg, () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
-          ]);
-        });
-      }, 300);
-      return;
-    }
-
+    // When confidence is low or medium (no exact subtype match): show native category selection directly
+    setBusinessType("");
+    setBusinessSubType("");
+    setTypeWasInferred(false);
     setInferenceResult({ confidence: "low" } as InferenceResult);
     setChatStage("type");
     setTimeout(() => {
