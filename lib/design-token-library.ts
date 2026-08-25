@@ -68,6 +68,7 @@ export function prefillForLibraryBusinessType(
     bt === "Jasa & Booking" ||
     bt === "Kreatif & Profesional" ||
     bt === "Portofolio & Kreator" ||
+    bt === "Company Profile" ||
     bt === "Company" ||
     bt === "Jasa"
   ) {
@@ -75,6 +76,7 @@ export function prefillForLibraryBusinessType(
     if (bt === "Jasa" || bt === "Jasa & Booking") canonical = "Layanan & Reservasi";
     if (bt === "Portofolio & Kreator") canonical = "Kreatif & Profesional";
     if (bt === "Toko & UMKM") canonical = "Toko";
+    if (bt === "Company") canonical = "Company Profile";
     return { businessType: canonical, businessSubType: "" };
   }
   if (

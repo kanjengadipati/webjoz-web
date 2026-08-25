@@ -403,10 +403,34 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Minuman & Bubble Tea",
     keywords: [
       // ID
-      "minuman", "bubble", "boba", "es teh", "jus", "minuman kekinian", "kedai es", "minuman segar", "kedai teh", "jamu",
+      "minuman", "bubble", "boba", "es teh", "jus", "minuman kekinian", "kedai es", "minuman segar", "kedai teh",
       // EN
       "juice", "smoothie", "thai tea", "milk tea", "bubble tea", "boba tea", "gelato", "ice cream", "shaken", "beverage",
       "drinks", "lemonade", "tea shop", "juice bar", "smoothie bar",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Kuliner",
+    subType: "Makanan Rumahan & Frozen Food",
+    keywords: [
+      // ID
+      "frozen food", "makanan beku", "makanan rumahan", "masakan rumah", "sambal kemasan", "lauk pauk", "cloud kitchen",
+      "ghost kitchen", "cemilan", "snack kiloan", "jastip makanan", "nugget homemade", "dimsum beku", "kue basah",
+      // EN
+      "frozen food", "home cooked", "homemade food", "packaged meals", "ready to eat", "meal packs",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Kuliner",
+    subType: "Herbal & Jamu",
+    keywords: [
+      // ID
+      "jamu", "herbal", "madu", "madu murni", "suplemen herbal", "minuman herbal", "jamu tradisional", "empon-empon",
+      "kunyit asam", "beras kencur", "propolis", "habbatussauda", "rempah",
+      // EN
+      "herbal", "herbs", "honey", "raw honey", "natural supplements", "herbal drinks", "traditional herbal",
     ],
     weight: 3,
   },
@@ -441,6 +465,18 @@ const DESC_HINTS: DescHintEntry[] = [
   },
   {
     type: "Toko",
+    subType: "Kecantikan & Kosmetik",
+    keywords: [
+      // ID
+      "kosmetik", "skincare", "parfum", "makeup", "toko kosmetik", "toko skincare", "perawatan wajah", "lipstik",
+      "body lotion", "sunscreen", "serum wajah", "parfum refill", "wewangian", "toko kecantikan",
+      // EN
+      "cosmetics", "skincare store", "perfume", "fragrance", "beauty products", "makeup store", "beauty shop",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Toko",
     subType: "Produk Lokal Handmade",
     keywords: [
       // ID
@@ -465,10 +501,11 @@ const DESC_HINTS: DescHintEntry[] = [
   },
   {
     type: "Toko",
-    subType: "Minimarket",
+    subType: "Minimarket & Sembako",
     keywords: [
       // ID
       "minimarket", "sembako", "kelontong", "toko kelontong", "bahan pokok", "toko sembako", "warung sembako", "kebutuhan harian",
+      "beras", "minyak goreng", "gula", "toko kelontong modern",
       // EN
       "grocery", "grocery store", "convenience store", "supermarket", "general store", "daily needs",
     ],
@@ -485,15 +522,76 @@ const DESC_HINTS: DescHintEntry[] = [
     ],
     weight: 3,
   },
+  {
+    type: "Toko",
+    subType: "Otomotif & Sparepart",
+    keywords: [
+      // ID
+      "toko ban", "sparepart", "sukucadang", "sparepart motor", "sparepart mobil", "variasi motor", "aksesoris mobil",
+      "oli motor", "oli mobil", "aki motor", "aki mobil", "helm", "velg", "knalpot", "audio mobil",
+      // EN
+      "auto parts", "spare parts", "car accessories", "motorcycle parts", "tires", "car battery", "engine oil",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Toko",
+    subType: "Pertanian & Peternakan",
+    keywords: [
+      // ID
+      "pakan ternak", "bibit tanaman", "pupuk", "bibit ikan", "toko tani", "pertanian", "peternakan", "unggas", "ayam potong",
+      "ikan hias", "aquarium", "pakan burung", "alat pertanian", "hidroponik", "hasil tani", "agribisnis umkm",
+      // EN
+      "agriculture supply", "farming store", "animal feed", "seeds", "fertilizer", "poultry supply", "farm shop",
+    ],
+    weight: 3,
+  },
 
-  // ── JASA & BOOKING / SERVICE ──
+  // ── LAYANAN & RESERVASI / SERVICE & BOOKING ──
+  {
+    type: "Layanan & Reservasi",
+    subType: "Rental Mobil & Kendaraan",
+    keywords: [
+      // ID
+      "rental mobil", "sewa mobil", "rental motor", "sewa motor", "rental kendaraan", "sewa bus", "elf pariwisata",
+      "antar jemput bandara", "drop bandara", "sewa supir", "driver lepas kunci", "sewa truk", "car rental indonesia",
+      // EN
+      "car rental", "vehicle rental", "motorcycle rental", "bike rental", "car hire", "airport transfer", "van rental",
+    ],
+    weight: 4,
+  },
+  {
+    type: "Layanan & Reservasi",
+    subType: "Travel & Wisata",
+    keywords: [
+      // ID
+      "wisata", "liburan", "paket wisata", "tiket", "pariwisata", "jalan-jalan", "opentrip", "umroh", "haji", "tour travel",
+      "biro perjalanan", "guide wisata", "destinasi wisata", "trip pulau",
+      // EN
+      "travel", "tour", "tourism", "holiday", "vacation", "trip", "adventure", "travel agency", "tour guide",
+      "backpacker", "pilgrimage",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Layanan & Reservasi",
+    subType: "Hotel & Penginapan",
+    keywords: [
+      // ID
+      "penginapan", "villa", "pondok wisata", "glamping", "losmen", "kost", "homestay", "resort",
+      // EN
+      "hotel", "guest house", "guesthouse", "homestay", "resort", "lodge", "hostel", "inn", "bed and breakfast",
+      "accommodation", "stay", "room rental",
+    ],
+    weight: 3,
+  },
   {
     type: "Layanan & Reservasi",
     subType: "Salon & Kecantikan",
     keywords: [
       // ID
-      "salon", "kecantikan", "rias", "spa", "manicure", "pedicure", "skincare", "perawatan", "facial", "creambath",
-      "nail art", "eyelash", "mua", "rias pengantin", "pijat",
+      "salon", "kecantikan", "rias", "spa", "manicure", "pedicure", "perawatan wajah", "facial", "creambath",
+      "nail art", "eyelash", "mua", "rias pengantin", "pijat", "massage", "refleksi",
       // EN
       "beauty", "beauty salon", "hair salon", "makeup", "massage", "reflexology", "nail salon", "waxing", "threading",
       "aesthetic clinic", "beauty treatment", "lash extension", "brow",
@@ -516,7 +614,7 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Laundry",
     keywords: [
       // ID
-      "laundry", "cuci", "setrika", "laundry kiloan", "binatu", "cuci sepatu", "cuci karpet", "cuci helm", "cuci sofa",
+      "laundry", "cuci", "setrika", "laundry kiloan", "binatu", "cuci sepatu", "cuci karpet", "cuci helm", "cuci sofa", "dry clean",
       // EN
       "dry clean", "dry cleaning", "washing service", "laundry service", "ironing",
     ],
@@ -527,11 +625,11 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Otomotif & Bengkel",
     keywords: [
       // ID
-      "bengkel", "otomotif", "mobil", "motor", "servis", "tambal ban", "cuci motor", "cuci mobil", "spooring", "ganti oli",
-      "salon mobil", "variasi motor", "ac mobil", "body repair", "cat mobil", "tune up",
+      "bengkel", "servis mobil", "servis motor", "tambal ban", "cuci motor", "cuci mobil", "spooring", "ganti oli",
+      "salon mobil", "body repair", "cat mobil", "tune up", "servis ac mobil", "bengkel resmi",
       // EN
       "car wash", "auto repair", "car repair", "auto shop", "mechanic", "detailing", "car service", "oil change",
-      "tire", "automotive", "vehicle", "motorcycle repair",
+      "tire repair", "automotive repair", "vehicle service", "motorcycle repair",
     ],
     weight: 3,
   },
@@ -550,24 +648,60 @@ const DESC_HINTS: DescHintEntry[] = [
   },
   {
     type: "Layanan & Reservasi",
+    subType: "Gym & Olahraga",
+    keywords: [
+      // ID
+      "gym", "fitness", "fitness center", "studio yoga", "pilates", "senam", "zumba", "lapangan futsal",
+      "lapangan badminton", "kolam renang", "martial arts", "muay thai", "boxing", "personal trainer",
+      // EN
+      "gym", "fitness", "workout", "yoga studio", "pilates", "sports center", "futsal court", "badminton court", "swimming pool",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Layanan & Reservasi",
     subType: "Event & Wedding Organizer",
     keywords: [
       // ID
-      "wedding organizer", "event organizer", "acara", "resepsi", "sewa tenda", "dekorasi pernikahan", "sound system", "mc pernikahan",
+      "wedding organizer", "event organizer", "acara", "resepsi", "sewa tenda", "dekorasi pernikahan", "sound system", "mc pernikahan", "paket nikah",
       // EN
       "event planner", "event planning", "party planner", "wedding planner", "wedding", "event", "party",
-      "decoration", "tent rental", "venue", "entertainment",
+      "decoration", "tent rental", "venue", "entertainment organizer",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Layanan & Reservasi",
+    subType: "Jasa Rumah & Kebersihan",
+    keywords: [
+      // ID
+      "cleaning service", "cuci ac", "servis ac", "sedot wc", "jasa bersih", "bersih rumah", "pest control", "anti rayap",
+      "tukang ledeng", "tukang listrik", "renovasi rumah kecil", "jasa taman",
+      // EN
+      "cleaning service", "home cleaning", "ac repair", "plumbing", "electrician", "pest control", "handyman", "gardening service",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Layanan & Reservasi",
+    subType: "Pendidikan & Kursus",
+    keywords: [
+      // ID
+      "kursus", "bimbingan belajar", "bimbel", "les", "privat", "les privat", "kursus bahasa", "kursus mengemudi",
+      "kursus musik", "kursus renang", "kursus coding", "daycare", "paud", "pelatihan kerja",
+      // EN
+      "course", "tutoring", "tutor", "learning center", "training center", "music lesson", "language course", "driving school",
     ],
     weight: 3,
   },
 
-  // ── PORTOFOLIO & KREATOR / CREATIVE & PROFESSIONAL ──
+  // ── KREATIF & PROFESIONAL ──
   {
     type: "Kreatif & Profesional",
     subType: "Konsultan",
     keywords: [
       // ID
-      "konsultan", "konsultasi", "pembinaan", "pelatihan", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit", "konsultan it",
+      "konsultan", "konsultasi", "pembinaan", "pelatihan", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit", "konsultan it", "konsultan hukum", "notaris",
       // EN
       "consultant", "consulting", "advisor", "advisory", "coaching", "mentor", "mentoring", "training", "legal", "accounting",
       "finance", "tax", "business consulting", "management consulting", "it consulting",
@@ -644,91 +778,88 @@ const DESC_HINTS: DescHintEntry[] = [
     ],
     weight: 4,
   },
-
-  // ── COMPANY / CORPORATE ──
   {
-    type: "Company",
+    type: "Kreatif & Profesional",
+    subType: "Musisi & Entertainer",
+    keywords: [
+      // ID
+      "musisi", "band", "penyanyi", "dj", "mc panggung", "entertainment", "akustik", "wedding band",
+      "grup musik", "komposer", "rekaman", "studio musik", "stand up comedy",
+      // EN
+      "musician", "band", "singer", "dj", "host", "entertainer", "live music", "acoustic", "music production",
+    ],
+    weight: 4,
+  },
+
+  // ── COMPANY PROFILE / CORPORATE & INSTITUTION ──
+  {
+    type: "Company Profile",
     subType: "Properti & Real Estate",
     keywords: [
       // ID
       "properti", "rumah", "apartemen", "tanah", "perumahan", "agent properti", "jual rumah", "sewa rumah",
-      "kost", "kontrakan", "kavling", "ruko", "villa properti",
+      "kontrakan", "kavling", "ruko", "villa properti", "developer properti",
       // EN
       "real estate", "property", "housing", "apartment", "house", "land", "rent", "lease", "realty", "condo", "commercial property",
     ],
     weight: 3,
   },
   {
-    type: "Company",
-    subType: "Konstruksi",
+    type: "Company Profile",
+    subType: "Konstruksi & Kontraktor",
     keywords: [
       // ID
       "konstruksi", "kontraktor", "bangunan", "pembangunan", "arsitek", "desain interior", "renovasi", "bangun rumah",
-      "baja ringan", "las", "kanopi", "tukang bangunan", "arsitektur",
+      "baja ringan", "las", "kanopi", "tukang bangunan", "arsitektur", "general contractor",
       // EN
       "construction", "contractor", "building", "architecture", "interior design", "renovation", "civil", "structural",
     ],
     weight: 3,
   },
   {
-    type: "Company",
-    subType: "Pendidikan & Kursus",
-    keywords: [
-      // ID
-      "pendidikan", "sekolah", "kursus", "bimbingan belajar", "bimbel", "les", "privat", "pelatihan", "akademi",
-      "kursus bahasa", "kursus mengemudi", "kursus coding", "tk", "paud", "daycare", "les privat",
-      // EN
-      "education", "school", "course", "tutoring", "tutor", "learning center", "training center", "academy",
-      "language course", "e-learning", "online course", "workshop", "seminar", "certification",
-    ],
-    weight: 3,
-  },
-  {
-    type: "Layanan & Reservasi",
-    subType: "Travel & Wisata",
-    keywords: [
-      // ID
-      "wisata", "liburan", "paket wisata", "tiket", "pariwisata", "jalan-jalan", "sewa mobil", "rental mobil", "opentrip", "umroh", "haji",
-      // EN
-      "travel", "tour", "tourism", "holiday", "vacation", "trip", "adventure", "travel agency", "tour guide",
-      "car rental", "bike rental", "backpacker", "pilgrimage",
-    ],
-    weight: 3,
-  },
-  {
-    type: "Layanan & Reservasi",
-    subType: "Hotel & Penginapan",
-    keywords: [
-      // ID
-      "penginapan", "villa", "pondok wisata", "glamping", "losmen",
-      // EN
-      "hotel", "guest house", "guesthouse", "homestay", "resort", "lodge", "hostel", "inn", "bed and breakfast",
-      "accommodation", "stay", "room rental",
-    ],
-    weight: 3,
-  },
-  {
-    type: "Company",
-    subType: "Manufaktur",
+    type: "Company Profile",
+    subType: "Manufaktur & Pabrik",
     keywords: [
       // ID
       "manufaktur", "pabrik", "produksi", "industri", "fabrikasi", "perakitan", "pengolahan", "distributor", "supplier",
-      "produsen", "gudang", "logistik", "ekspedisi", "cargo", "percetakan", "cetak", "packaging", "kemasan",
+      "produsen", "percetakan", "cetak", "packaging", "kemasan industri",
       // EN
-      "manufacturing", "factory", "production", "industrial", "fabrication", "assembly", "warehouse",
-      "logistics", "distribution", "printing", "supply chain", "import", "export",
+      "manufacturing", "factory", "production", "industrial", "fabrication", "assembly", "printing",
     ],
     weight: 3,
   },
   {
-    type: "Company",
+    type: "Company Profile",
+    subType: "Logistik & Ekspedisi",
+    keywords: [
+      // ID
+      "logistik", "ekspedisi", "cargo", "kargo", "pengiriman barang", "gudang", "pergudangan", "sewa truk",
+      "kontainer", "freight forwarding", "distribusi barang", "supply chain",
+      // EN
+      "logistics", "cargo", "freight", "warehousing", "shipping", "distribution", "supply chain",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Company Profile",
     subType: "Yayasan & Organisasi Nonprofit",
     keywords: [
       // ID
-      "yayasan", "organisasi", "donasi", "amal", "panti", "sosial", "komunitas", "lembaga", "pesantren", "masjid", "gereja", "lsm",
+      "yayasan", "organisasi", "donasi", "amal", "panti", "sosial", "komunitas", "lembaga", "lsm", "ormas", "lembaga zakat",
       // EN
       "nonprofit", "non-profit", "ngo", "foundation", "charity", "donation", "community", "association", "organization",
-      "church", "mosque", "temple", "volunteer",
+    ],
+    weight: 3,
+  },
+  {
+    type: "Company Profile",
+    subType: "Institusi Pendidikan & Pesantren",
+    keywords: [
+      // ID
+      "sekolah", "pesantren", "pondok pesantren", "universitas", "kampus", "institusi pendidikan", "yayasan pendidikan",
+      "madrasah", "smk", "sma", "smp", "sd", "akademi",
+      // EN
+      "school", "university", "college", "boarding school", "educational institution", "academy", "campus",
     ],
     weight: 3,
   },
@@ -747,43 +878,43 @@ const DESC_TYPE_HINTS: { type: string; keywords: string[]; weight: number }[] = 
     weight: 2,
   },
   {
-    type: "Jasa & Booking",
+    type: "Toko",
     keywords: [
       // ID
-      "booking", "reservasi", "salon", "barber", "laundry", "bengkel", "klinik", "servis fisik", "pangkas",
-      // EN
-      "service", "appointment", "booking service", "repair", "cleaning", "grooming service",
-    ],
-    weight: 2,
-  },
-  {
-    type: "Portofolio & Kreator",
-    keywords: [
-      // ID
-      "portofolio", "kreator", "karya", "desain", "freelance", "kreatif", "fotografi", "videografi", "konsultan",
-      "pembuatan website", "bikin website", "web", "software", "programmer", "it", "digital",
-      // EN
-      "portfolio", "showcase", "creator", "creative", "agency", "professional services", "consulting", "freelancer",
-    ],
-    weight: 2,
-  },
-  {
-    type: "Toko & UMKM",
-    keywords: [
-      // ID
-      "toko", "umkm", "jual", "dagang", "ritel", "eceran", "usaha kecil", "bisnis rumahan", "olshop", "jualan", "barang", "perikanan", "pertanian", "peternakan",
+      "toko", "umkm", "jual", "dagang", "ritel", "eceran", "usaha kecil", "bisnis rumahan", "olshop", "jualan", "barang", "produk",
       // EN
       "store", "retail", "shop", "sell", "selling", "trade", "goods", "product", "small business", "home business",
     ],
     weight: 2,
   },
   {
-    type: "Company",
+    type: "Layanan & Reservasi",
     keywords: [
       // ID
-      "korporasi", "perusahaan", "pt", "cv", "bisnis besar", "holding", "institusi",
+      "layanan", "booking", "reservasi", "salon", "barber", "laundry", "bengkel", "klinik", "servis fisik", "pangkas", "rental", "sewa", "jasa",
       // EN
-      "company", "corporation", "corporate", "enterprise", "institution", "firm", "business",
+      "service", "appointment", "booking service", "repair", "cleaning", "grooming service", "rental",
+    ],
+    weight: 2,
+  },
+  {
+    type: "Kreatif & Profesional",
+    keywords: [
+      // ID
+      "portofolio", "kreator", "karya", "desain", "freelance", "kreatif", "fotografi", "videografi", "konsultan",
+      "pembuatan website", "bikin website", "web", "software", "programmer", "it", "digital", "agensi",
+      // EN
+      "portfolio", "showcase", "creator", "creative", "agency", "professional services", "consulting", "freelancer",
+    ],
+    weight: 2,
+  },
+  {
+    type: "Company Profile",
+    keywords: [
+      // ID
+      "company profile", "perusahaan", "pt", "cv", "korporasi", "bisnis besar", "holding", "institusi", "lembaga", "yayasan", "kontraktor", "pabrik",
+      // EN
+      "company profile", "company", "corporation", "corporate", "enterprise", "institution", "firm", "business",
     ],
     weight: 2,
   },

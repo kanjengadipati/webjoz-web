@@ -129,6 +129,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
                     "Kreatif & Profesional": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
                     "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
+                    "Company Profile": { label: "company", desc: "companyDesc" },
                     "Company": { label: "company", desc: "companyDesc" },
                   };
                   const categoryIconMap: Record<string, React.ReactNode> = {
@@ -139,6 +140,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     "Jasa & Booking": <Calendar className="w-3 h-3" />,
                     "Kreatif & Profesional": <Palette className="w-3 h-3" />,
                     "Portofolio & Kreator": <Palette className="w-3 h-3" />,
+                    "Company Profile": <Building2 className="w-3 h-3" />,
                     "Company": <Building2 className="w-3 h-3" />,
                   };
                   const keys = categoryKeyMap[bt.value];
@@ -184,6 +186,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     "Jasa & Booking": "jasaBooking",
                     "Kreatif & Profesional": "portofolioKreator",
                     "Portofolio & Kreator": "portofolioKreator",
+                    "Company Profile": "company",
                     "Company": "company",
                   };
                   const typeKey = categoryKeyMap[businessType];

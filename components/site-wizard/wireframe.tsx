@@ -162,6 +162,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                     "Jasa & Booking": "jasaBooking",
                     "Kreatif & Profesional": "portofolioKreator",
                     "Portofolio & Kreator": "portofolioKreator",
+                    "Company Profile": "company",
                     "Company": "company",
                   };
                   const typeKey = categoryKeyMap[businessType];
