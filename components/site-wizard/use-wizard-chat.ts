@@ -656,11 +656,9 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
               return !signals.some((sig) => lower.includes(sig));
             };
 
-            // Show a review bubble when AI meaningfully polished the text — let user
+            // Show a review bubble when AI refined the text — let user
             // see, confirm or edit before we proceed to type inference.
-            // "Meaningful" = lowercased+stripped versions differ (not just casing/spacing).
-            const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ").trim();
-            if (normalize(refined) !== normalize(val) && isPlausibleRefined(refined)) {
+            if (refined && isPlausibleRefined(refined)) {
               // Store inferred type so handleConfirmSttReview can pass it through
               sttInferredResultRef.current = (aiRes.data.type && aiRes.data.sub_type)
                 ? { type: aiRes.data.type, subType: aiRes.data.sub_type }
