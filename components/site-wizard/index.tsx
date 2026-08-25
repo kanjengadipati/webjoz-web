@@ -1163,6 +1163,10 @@ export function SiteWizard({
             <AudioProcessingCard businessName={chat.businessName} />
           )}
 
+          {chat.isProcessingDescription && (
+            <AudioProcessingCard businessName={chat.businessName} variant="text" />
+          )}
+
           <div ref={chat.chatEndRef} />
         </div>
 
@@ -1259,7 +1263,7 @@ export function SiteWizard({
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
+                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription}
                   className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
                 />
                 {chat.chatStage === "description" && (
@@ -1268,7 +1272,7 @@ export function SiteWizard({
                     <button
                       type="button"
                       onClick={chat.startRecording}
-                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio}
+                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription}
                       className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                       title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                     >
@@ -1278,7 +1282,7 @@ export function SiteWizard({
                 )}
                 <button
                   type="submit"
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
+                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isProcessingAudio || chat.isProcessingDescription || (chat.chatStage === "name" && !chat.inputValue.trim())}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0 cursor-pointer"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />

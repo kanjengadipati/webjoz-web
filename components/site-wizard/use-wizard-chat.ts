@@ -52,6 +52,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [isMicConnecting, setIsMicConnecting] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [isProcessingAudio, setIsProcessingAudio] = useState(false);
+  const [isProcessingDescription, setIsProcessingDescription] = useState(false);
   const recognitionRef = useRef<any>(null);
   const recordingTimerRef = useRef<any>(null);
   const fallbackTimerRef = useRef<any>(null);
@@ -608,6 +609,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       };
     } else {
       // 1. Primary: Call AI Classifier Server (understands context & semantics)
+      setIsProcessingDescription(true);
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data) {
@@ -640,6 +642,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
                   sttTranscript: refined,
                 },
               ]);
+              setIsProcessingDescription(false);
               return;
             }
           }
@@ -653,6 +656,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         }
       } catch (err) {
         console.warn("Primary AI classification failed, falling back to local dictionary", err);
+      } finally {
+        setIsProcessingDescription(false);
       }
 
       // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
@@ -817,6 +822,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     isMicConnecting,
     recordingDuration,
     isProcessingAudio,
+    isProcessingDescription,
     startRecording,
     stopRecording,
     cancelRecording,
