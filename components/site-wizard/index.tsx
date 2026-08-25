@@ -6,32 +6,59 @@ import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
   ArrowRight,
+  Axe,
   Bot,
+  Box,
+  Briefcase,
   Building2,
+  Bus,
   Calendar,
   Camera,
+  Car,
   ChevronLeft,
   ChevronRight,
   Clock,
+  Code2,
   Coffee,
   Cpu,
   Crown,
+  Dumbbell,
+  Factory,
+  Flower2,
+  GalleryHorizontal,
+  GraduationCap,
+  HandHeart,
+  Home,
+  Hotel,
   Leaf,
   Loader2,
   Mic,
+  Mic2,
   MessageCircle,
   Monitor,
+  Music2,
+  Package,
   Palette,
   Pencil,
+  PencilRuler,
   Plus,
   RefreshCw,
+  Scissors,
   ShoppingBag,
+  ShoppingCart,
+  Shirt,
   Smartphone,
   Sparkles,
   Square,
+  Stethoscope,
+  Store,
   Tablet,
   Tag,
+  Truck,
   UtensilsCrossed,
+  Waves,
+  Wheat,
+  Wrench,
   X,
   Zap,
 } from "lucide-react";
@@ -72,6 +99,56 @@ export { type SiteWizardProps };
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
 const QUALITY_GATE_THRESHOLD = 70;
 const MAX_QUALITY_RETRIES = 1;
+
+/** Monochrome icon per sub-type for chip labels */
+const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
+  // Kuliner
+  "Restoran & Warung Makan": UtensilsCrossed,
+  "Kafe":                    Coffee,
+  "Bakery & Pastry":         GalleryHorizontal,
+  "Catering":                Package,
+  "Minuman & Bubble Tea":    Waves,
+  "Makanan Rumahan & Frozen Food": Box,
+  "Herbal & Jamu":           Leaf,
+  // Layanan & Reservasi
+  "Rental Mobil & Kendaraan": Car,
+  "Travel & Wisata":          Bus,
+  "Hotel & Penginapan":       Hotel,
+  "Salon & Kecantikan":       Flower2,
+  "Barbershop":               Scissors,
+  "Klinik & Kesehatan":       Stethoscope,
+  "Gym & Olahraga":           Dumbbell,
+  "Event & Wedding Organizer": Calendar,
+  "Otomotif & Bengkel":       Wrench,
+  "Laundry":                  Shirt,
+  "Jasa Rumah & Kebersihan":  Home,
+  "Pendidikan & Kursus":      GraduationCap,
+  // Toko
+  "Fashion & Pakaian":        Shirt,
+  "Elektronik":               Smartphone,
+  "Kecantikan & Kosmetik":    Sparkles,
+  "Produk Lokal Handmade":    PencilRuler,
+  "Toko Online":              ShoppingCart,
+  "Minimarket & Sembako":     Store,
+  "Perabot & Furnitur":       Axe,
+  "Otomotif & Sparepart":     Wrench,
+  "Pertanian & Peternakan":   Wheat,
+  // Kreatif & Profesional
+  "Fotografer":               Camera,
+  "Videografer":              Monitor,
+  "Desainer":                 Palette,
+  "Developer & IT":           Code2,
+  "Digital & Marketing Agency": Zap,
+  "Konsultan":                Briefcase,
+  "Musisi & Entertainer":     Music2,
+  // Company Profile
+  "Properti & Real Estate":   Home,
+  "Konstruksi & Kontraktor":  Building2,
+  "Manufaktur & Pabrik":      Factory,
+  "Logistik & Ekspedisi":     Truck,
+  "Yayasan & Organisasi Nonprofit": HandHeart,
+  "Institusi Pendidikan & Pesantren": GraduationCap,
+};
 
 export function SiteWizard({
   mode,
@@ -862,6 +939,7 @@ export function SiteWizard({
                   <div className="flex flex-wrap gap-1.5">
                     {subTypes.map((st) => {
                       const isSubSelected = chat.businessSubType === st.value;
+                      const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
                       return (
                         <button
                           key={st.value}
@@ -870,7 +948,7 @@ export function SiteWizard({
                           disabled={isLocked}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
-                          <Tag className={`w-3 h-3 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
+                          <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                           <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                           {isSubSelected && <span className="text-primary text-[10px]">✓</span>}
                         </button>
@@ -1053,6 +1131,7 @@ export function SiteWizard({
                       <div className="flex flex-wrap gap-1.5">
                         {subTypes.map((st) => {
                           const isSubSelected = chat.businessSubType === st.value;
+                          const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
                           return (
                             <button
                               key={st.value}
@@ -1061,7 +1140,7 @@ export function SiteWizard({
                               disabled={isLocked}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
-                              <Tag className={`w-3 h-3 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
+                              <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                               <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
                               {chat.suggestedHint?.subType === st.value && (
                                 <span className="text-[10px] text-amber-300">✨</span>
