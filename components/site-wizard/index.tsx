@@ -805,11 +805,11 @@ export function SiteWizard({
     actionHintsShownRef.current = true;
     try {
       if (!localStorage.getItem("wiz_action_hints_seen")) {
-        // Lengkapi Data hint
+        // Tunggu sampai success toast selesai (~6 detik) baru tampilkan hint
         setTimeout(() => {
           setShowLengkapiHint(true);
           setTimeout(() => setShowLengkapiHint(false), 5000);
-        }, 800);
+        }, 6500);
         localStorage.setItem("wiz_action_hints_seen", "1");
       }
       // Rekomendasi hint — hanya kalau ada lebih dari 1 template
