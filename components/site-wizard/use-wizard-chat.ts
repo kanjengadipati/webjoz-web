@@ -942,6 +942,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     suggestedHint,
     inferenceResult,
     awaitingInferenceConfirm,
+    setAwaitingInferenceConfirm,
     typeWasInferred,
     setTypeWasInferred,
     // Voice Input

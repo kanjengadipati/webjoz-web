@@ -2122,6 +2122,7 @@ export interface Translations {
       btnEditPublish: string;
       btnConfirmYes: string;
       btnChangeCategory: string;
+      inferenceHint: string;
       notThisType: string;
       moreSpecific: string;
       chooseMoodHint: string;
@@ -4373,6 +4374,7 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publikasikan",
         btnConfirmYes: "Ya, lanjut",
         btnChangeCategory: "Ganti kategori",
+        inferenceHint: "Klik untuk lanjut, atau pilih kategori lain",
         notThisType: "Bukan ini? Pilih jenis bisnis lain",
         moreSpecific: "Lebih spesifik:",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
@@ -6669,6 +6671,7 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publish",
         btnConfirmYes: "Yes, continue",
         btnChangeCategory: "Change category",
+        inferenceHint: "Tap to continue, or choose a different category",
         notThisType: "Not this? Choose another business type",
         moreSpecific: "More specific:",
         chooseMoodHint: "Choose a mood that fits your brand",
