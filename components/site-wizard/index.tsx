@@ -239,6 +239,7 @@ export function SiteWizard({
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
+  const rekomendasiHintShownRef = React.useRef(false);
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
@@ -818,7 +819,6 @@ export function SiteWizard({
   }, [preview.previewState]);
 
   // Rekomendasi hint — effect terpisah supaya tidak bergantung timing templatePool
-  const rekomendasiHintShownRef = React.useRef(false);
   React.useEffect(() => {
     if (preview.previewState !== "result") return;
     if (preview.templatePool.length <= 1) return;
