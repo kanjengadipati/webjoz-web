@@ -46,6 +46,183 @@ Rebranded across **15 files**: brand text, domain (`app.webjoz.com`, `sites.webj
 - `web/components/templates/{kuliner,jasa,produk,elegant,natural,colorful,minimalist,bold,dynamic}.tsx` — each template
 - `web/components/site-wizard.tsx` — IIFE bug fix
 
+# Project Overview
+
+**Webjoz** — AI-powered website builder for Indonesian UMKM. Users interact with a conversational wizard that generates complete business websites via AI.
+
+| Layer | Tech | Version |
+|---|---|---|
+| **API** | Go + Gin | 1.25 |
+| **Frontend** | Next.js (App Router) | 16.2.4 |
+| **Database** | PostgreSQL | via GORM |
+| **ORM** | GORM | 1.30 |
+| **UI** | Tailwind CSS | v4 |
+| **Auth** | JWT (HS256) + Refresh Token | |
+
+## Monorepo Structure
+
+```
+giwangan-web-gen/
+├── api/          → git@github.com:kanjengadipati/webjoz-api.git
+├── web/          → git@github.com:kanjengadipati/webjoz-web.git
+├── scratch/      → temp files, not versioned
+└── *.md          → engineering specs & reviews
+```
+
+**Note:** Parent directory is NOT a git repo. `api/` and `web/` have independent git repos.
+
+## API Module Structure (26 modules)
+
+Each module follows: `handler.go` → `service.go` → `repository.go` → `model.go` → `dto.go` → `routes.go` → `module.go`
+
+```
+api/internal/modules/
+├── aisite/       → AI site generation
+├── analytics/    → Usage analytics
+├── auth/         → Login, register, OTP
+├── blog/         → Blog posts
+├── domain/       → Custom domain management
+├── lead/         → Lead capture
+├── payment/      → Midtrans + PayPal
+├── plan/         → Subscription plans
+├── site/         → Website CRUD, publish
+├── tenant/       → Multi-tenant workspaces
+├── testimoni/    → Testimonials
+└── ... (26 total)
+```
+
+## Build Commands
+
+### API (`api/`)
+```bash
+make test              # Run Go test suite
+make fmt               # Format Go code
+make check             # Format + test
+make migrate-up        # Apply migrations
+make seed              # Seed database
+go run ./cmd/api       # Start API server
+```
+
+### Frontend (`web/`)
+```bash
+npm run dev            # Start dev server (Turbopack)
+npm run build          # Production build
+npm run lint           # ESLint
+npm run test:e2e       # Playwright E2E tests
+```
+
+## Key Patterns
+
+### Auth Flow
+1. Login → JWT access token (15min) + refresh token (HttpOnly cookie)
+2. Frontend auto-refreshes on 401 via `lib/api/client.ts`
+3. Refresh token rotates on each use (family-based detection)
+
+### RBAC
+- Roles: `superadmin`, `admin`, `user`
+- Tenant roles: `owner`, `admin`, `editor`, `viewer`
+- Permissions checked via `middleware.CheckTenantPermission()`
+
+### AI Generation Flow
+1. Wizard collects business info
+2. API calls primary provider (Groq)
+3. On failure → fallback Gemini → fallback OpenRouter → mock content
+4. Response includes prompt versioning for debugging
+
+### Error Response Format
+```json
+{
+  "status": "error",
+  "message": "Human readable message",
+  "code": "ERR_ERROR_CODE",
+  "errors": [...]
+}
+```
+
+## Coding Conventions
+
+### Go (API)
+- Imports: `pleco-api/internal/...`
+- Env vars: `SNAKE_CASE` via `config.GetEnv()`
+- JSON: `camelCase`
+- Tests: `go test -race -count=1 ./...`
+
+### TypeScript (Web)
+- Path alias: `@/*` → `./*`
+- Components: Functional + hooks, `"use client"` for client
+- Styling: Tailwind utility classes, dark theme default
+- Files: `kebab-case.tsx`, `PascalCase` for components
+- State: React hooks + localStorage
+
+## Testing
+
+### API
+- Unit: `testify` + `go-sqlmock`
+- Integration: Newman (Postman collections)
+- Run: `make test` or `make postman-all`
+
+### Frontend
+- E2E: Playwright (4 projects: chromium, mobile, unauthed, admin)
+- Locale: `id-ID`, timezone: `Asia/Jakarta`
+- Run: `npm run test:e2e`
+
+## Important Files Reference
+
+| File | Purpose |
+|---|---|
+| `api/internal/config/app.go` | All env vars, AI config, fallback chain |
+| `api/internal/ai/service.go` | AI provider orchestration |
+| `api/internal/ai/gemini_provider.go` | Gemini API implementation |
+| `api/internal/middleware/auth_middleware.go` | JWT validation |
+| `api/internal/httpx/response.go` | Response helpers |
+| `web/lib/api/client.ts` | Frontend API client with auto-refresh |
+| `web/lib/config.ts` | Frontend configuration |
+| `web/components/templates/` | All website templates |
+| `web/components/site-wizard/` | AI wizard UI |
+
+# Deployment Architecture
+
+| Component | Platform | Tier | Cost |
+|---|---|---|---|
+| **Frontend (web/)** | Vercel | Hobby | $0 |
+| **API (api/)** | Oracle Cloud (OCI) | Always Free | $0 |
+| **Database** | PostgreSQL on OCI | Always Free | $0 |
+| **AI (Primary)** | Groq | Free | $0 |
+| **AI (Fallback 1)** | Gemini 3.5 Flash | Free Tier | $0 |
+| **AI (Fallback 2)** | OpenRouter | Free | $0 |
+| **Email** | Brevo (SMTP) | Free | $0 |
+| **Domain** | ResellerClub | Paid | ~$10/yr |
+
+## Environment Variables
+
+### Production API (OCI)
+```
+AI_PROVIDER=openai
+AI_MODEL=openai/gpt-oss-120b
+AI_BASE_URL=https://api.groq.com/openai/v1
+AI_API_KEY=gsk_xxx
+
+AI_FALLBACK_PROVIDER=gemini
+AI_FALLBACK_MODEL=gemini-3.5-flash
+AI_FALLBACK_API_KEY=xxx
+
+AI_FALLBACK_2_PROVIDER=openai
+AI_FALLBACK_2_BASE_URL=https://openrouter.ai/api/v1
+AI_FALLBACK_2_MODEL=openai/gpt-oss-20b:free
+AI_FALLBACK_2_API_KEY=sk-or-xxx
+```
+
+### Frontend (Vercel)
+```
+NEXT_PUBLIC_API_URL=https://api.webjoz.com
+```
+
+## Notes
+- OCI Always Free tier: 4 OCPUs, 24GB RAM, 200GB storage
+- Vercel Hobby: 100GB bandwidth, serverless functions
+- All AI providers use free tiers — no billing required
+- If AI usage exceeds free limits, implement mock content fallback (already in code)
+
 <!-- BEGIN:git-safety-rules -->
 # Git Safety Rules
 
