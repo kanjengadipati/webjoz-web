@@ -921,25 +921,63 @@ export function SiteWizard({
 
             if (m.widget === "inference-confirm") {
               const isLocked = !chat.awaitingInferenceConfirm;
+              // Ambil semua subtype dari kategori yang diinfer
+              const inferredType = chat.businessType;
+              const inferredSubType = chat.businessSubType;
+              const availableSubTypes = inferredType ? (SUB_TYPES[inferredType] ?? []) : [];
+
               return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-                  <div className="flex gap-2 mt-2">
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+                  <div className="flex flex-wrap gap-1.5">
+                    {availableSubTypes.map((st) => {
+                      const isSelected = inferredSubType === st.value;
+                      const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+                      return (
+                        <button
+                          key={st.value}
+                          type="button"
+                          onClick={() => {
+                            if (isLocked) return;
+                            if (isSelected) {
+                              // Klik ulang pilihan yang sama → konfirmasi langsung
+                              handleConfirmInference(true);
+                            } else {
+                              // Pindah ke subtype lain dalam kategori yang sama
+                              chat.setBusinessSubType(st.value);
+                            }
+                          }}
+                          disabled={isLocked}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 ${
+                            isSelected
+                              ? "border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30"
+                              : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08] cursor-pointer"
+                          }`}
+                        >
+                          <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
+                          <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
+                          {isSelected && <span className="text-primary text-[10px]">✓</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {/* Tombol konfirmasi & ganti kategori */}
+                  <div className="flex gap-2 pt-0.5">
                     <button
                       type="button"
                       onClick={() => !isLocked && handleConfirmInference(true)}
-                      disabled={isLocked}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40"
+                      disabled={isLocked || !inferredSubType}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40"
                     >
-                      Ya, lanjut
+                      {t("dashboard.wizard.btnConfirmYes", "Ya, lanjut")}
                     </button>
                     <button
                       type="button"
                       onClick={() => !isLocked && handleConfirmInference(false)}
                       disabled={isLocked}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-medium text-slate-300 border border-border transition-all hover:border-border active:scale-95 disabled:opacity-40"
-                      style={{ background: "rgba(255,255,255,0.05)" }}
+                      className="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 border border-border transition-all hover:text-slate-200 active:scale-95 disabled:opacity-40 whitespace-nowrap"
+                      style={{ background: "rgba(255,255,255,0.04)" }}
                     >
-                      Bukan
+                      {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
                     </button>
                   </div>
                 </div>

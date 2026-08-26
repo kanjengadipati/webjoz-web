@@ -2120,6 +2120,8 @@ export interface Translations {
       btnLater: string;
       btnCompleteData: string;
       btnEditPublish: string;
+      btnConfirmYes: string;
+      btnChangeCategory: string;
       notThisType: string;
       moreSpecific: string;
       chooseMoodHint: string;
@@ -4369,6 +4371,8 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
+        btnConfirmYes: "Ya, lanjut",
+        btnChangeCategory: "Ganti kategori",
         notThisType: "Bukan ini? Pilih jenis bisnis lain",
         moreSpecific: "Lebih spesifik:",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
@@ -6663,6 +6667,8 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",
+        btnConfirmYes: "Yes, continue",
+        btnChangeCategory: "Change category",
         notThisType: "Not this? Choose another business type",
         moreSpecific: "More specific:",
         chooseMoodHint: "Choose a mood that fits your brand",
