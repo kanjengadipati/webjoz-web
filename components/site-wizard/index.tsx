@@ -366,7 +366,7 @@ export function SiteWizard({
             sender: "ai",
             text: t(
               "dashboard.wizard.websiteReady",
-              "🎉 Website Anda telah selesai dibuat! Silakan lihat pratinjau website Anda di samping atau klik tombol di bawah untuk lanjut."
+              "🎉 Website Anda siap! Pratinjau tersedia di sebelah kanan. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda."
             ),
           },
         ];
