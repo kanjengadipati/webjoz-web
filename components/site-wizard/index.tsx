@@ -808,7 +808,7 @@ export function SiteWizard({
         // Tunggu sampai success toast selesai (~6 detik) baru tampilkan hint
         setTimeout(() => {
           setShowLengkapiHint(true);
-          setTimeout(() => setShowLengkapiHint(false), 5000);
+          setTimeout(() => setShowLengkapiHint(false), 10000);
         }, 6500);
         localStorage.setItem("wiz_action_hints_seen", "1");
       }
