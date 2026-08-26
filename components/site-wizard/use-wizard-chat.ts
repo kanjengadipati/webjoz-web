@@ -789,14 +789,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setBusinessSubType(result.subType.trim());
       setTypeWasInferred(true);
       setAwaitingInferenceConfirm(true);
-      const confirmMsg = t("dashboard.wizard.descriptionInferenceHigh", undefined, { subType: result.subType ?? result.type ?? "" });
       setTimeout(() => {
-        typeMessage(confirmMsg, () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
-          ]);
-        });
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
+        ]);
       }, 500);
       return;
     }
