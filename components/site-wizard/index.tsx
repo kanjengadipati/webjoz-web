@@ -420,7 +420,7 @@ export function SiteWizard({
             sender: "ai",
             text: t(
               "dashboard.wizard.websiteReady",
-              "🎉 Website Anda siap! Pratinjau tersedia di sebelah kanan. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda."
+              "Selamat! Website Anda siap. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda."
             ),
           },
         ];
