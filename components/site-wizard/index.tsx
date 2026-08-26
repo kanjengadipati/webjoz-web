@@ -151,72 +151,24 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
 };
 
 // ── InferenceConfirmWidget ───────────────────────────────────────────────────
-// Menampilkan chip subtype hasil deteksi AI dengan auto-confirm countdown.
-// Chip terpilih tampil pertama; user bisa pindah chip — countdown reset.
-// Setelah 3 detik tanpa interaksi, otomatis lanjut.
-
-const AUTOCONFIRM_SECONDS = 3;
+// Chip subtype hasil deteksi AI — klik chip langsung confirm & lanjut.
+// Chip tetap aktif (tidak di-lock setelah dipilih).
 
 function InferenceConfirmWidget({
   isLocked,
   orderedSubTypes,
   selectedSubType,
-  onSelectSubType,
-  onConfirm,
+  onConfirmWithSubType,
   onChangeCategory,
   t,
 }: {
   isLocked: boolean;
   orderedSubTypes: { value: string; label: string; emoji: string }[];
   selectedSubType: string;
-  onSelectSubType: (v: string) => void;
-  onConfirm: () => void;
+  onConfirmWithSubType: (subType: string) => void;
   onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
-  const [countdown, setCountdown] = useState(AUTOCONFIRM_SECONDS);
-  const countdownRef = useRef(AUTOCONFIRM_SECONDS);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const confirmedRef = useRef(false);
-
-  const resetCountdown = () => {
-    countdownRef.current = AUTOCONFIRM_SECONDS;
-    setCountdown(AUTOCONFIRM_SECONDS);
-  };
-
-  useEffect(() => {
-    if (isLocked) return;
-    timerRef.current = setInterval(() => {
-      countdownRef.current -= 1;
-      setCountdown(countdownRef.current);
-      if (countdownRef.current <= 0) {
-        if (timerRef.current) clearInterval(timerRef.current);
-        if (!confirmedRef.current) {
-          confirmedRef.current = true;
-          onConfirm();
-        }
-      }
-    }, 1000);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLocked]);
-
-  const handleSelectChip = (value: string) => {
-    if (isLocked) return;
-    onSelectSubType(value);
-    resetCountdown();
-  };
-
-  const handleChangeCategory = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    confirmedRef.current = true;
-    onChangeCategory();
-  };
-
-  const progress = ((AUTOCONFIRM_SECONDS - countdown) / AUTOCONFIRM_SECONDS) * 100;
-
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
       <div className="flex flex-wrap gap-1.5">
@@ -227,12 +179,12 @@ function InferenceConfirmWidget({
             <button
               key={st.value}
               type="button"
-              onClick={() => handleSelectChip(st.value)}
+              onClick={() => { if (!isLocked) onConfirmWithSubType(st.value); }}
               disabled={isLocked}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 cursor-pointer ${
                 isSelected
                   ? "border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30"
-                  : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08] cursor-pointer"
+                  : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"
               }`}
             >
               <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
@@ -242,40 +194,15 @@ function InferenceConfirmWidget({
           );
         })}
       </div>
-
-      {/* Bottom row: progress bar auto-confirm + tombol ganti kategori */}
-      <div className="flex items-center gap-2 pt-0.5">
-        {/* Progress bar + countdown — klik untuk confirm sekarang */}
+      <div className="flex items-center justify-between gap-2 px-0.5">
+        <p className="text-[10px] text-slate-500 leading-snug">
+          {t("dashboard.wizard.inferenceHint", "Klik untuk lanjut, atau pilih kategori yang berbeda")}
+        </p>
         <button
           type="button"
-          onClick={() => {
-            if (isLocked || confirmedRef.current) return;
-            if (timerRef.current) clearInterval(timerRef.current);
-            confirmedRef.current = true;
-            onConfirm();
-          }}
+          onClick={onChangeCategory}
           disabled={isLocked}
-          className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/20 transition-all active:scale-95 disabled:opacity-40 overflow-hidden relative group"
-        >
-          {/* Animated fill */}
-          <div
-            className="absolute inset-0 bg-primary/20 rounded-xl transition-none origin-left"
-            style={{ transform: `scaleX(${progress / 100})`, transitionDuration: "900ms", transitionProperty: "transform", transitionTimingFunction: "linear" }}
-          />
-          <span className="relative text-xs font-bold text-white z-10">
-            {t("dashboard.wizard.btnConfirmYes", "Ya, lanjut")}
-          </span>
-          <span className="relative ml-auto text-[10px] font-mono text-primary z-10 tabular-nums">
-            {countdown}s
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleChangeCategory}
-          disabled={isLocked}
-          className="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 border border-border transition-all hover:text-slate-200 active:scale-95 disabled:opacity-40 whitespace-nowrap"
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          className="text-[10px] text-slate-400 hover:text-slate-200 underline underline-offset-2 transition-colors shrink-0 disabled:opacity-40"
         >
           {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
         </button>
@@ -1073,8 +1000,22 @@ export function SiteWizard({
                   isLocked={isLocked}
                   orderedSubTypes={orderedSubTypes}
                   selectedSubType={inferredSubType}
-                  onSelectSubType={(v) => chat.setBusinessSubType(v)}
-                  onConfirm={() => handleConfirmInference(true)}
+                  onConfirmWithSubType={(subType) => {
+                    chat.setBusinessSubType(subType);
+                    // Panggil confirm dengan subType eksplisit supaya tidak tergantung state async
+                    chat.setAwaitingInferenceConfirm(false);
+                    chat.setMessages((prev) => [
+                      ...prev,
+                      { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
+                    ]);
+                    chat.setChatStage("language");
+                    setTimeout(() => {
+                      chat.setMessages((prev) => [
+                        ...prev,
+                        { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
+                      ]);
+                    }, 400);
+                  }}
                   onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
                 />
