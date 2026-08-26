@@ -176,6 +176,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     // Triggered when audio stream is established and server is ready to listen
     const handleAudioReady = () => {
+      setIsRecording(true);  // permission granted & audio stream aktif — baru tampilkan UI recording
       setIsMicConnecting(false);
       if (!recordingTimerRef.current) {
         recordingTimerRef.current = setInterval(() => {
@@ -276,8 +277,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     };
 
     recognitionRef.current = recognition;
-    setIsRecording(true);
-    setIsMicConnecting(true);
+    setIsMicConnecting(true);  // hanya tampilkan "menyiapkan mic..." sampai permission granted
     try {
       recognition.start();
     } catch (e) {
