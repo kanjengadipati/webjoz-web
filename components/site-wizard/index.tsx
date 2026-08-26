@@ -159,14 +159,12 @@ function InferenceConfirmWidget({
   orderedSubTypes,
   selectedSubType,
   onConfirmWithSubType,
-  onChangeCategory,
   t,
 }: {
   isLocked: boolean;
   orderedSubTypes: { value: string; label: string; emoji: string }[];
   selectedSubType: string;
   onConfirmWithSubType: (subType: string) => void;
-  onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
   return (
@@ -198,14 +196,6 @@ function InferenceConfirmWidget({
         <p className="text-[10px] text-slate-500 leading-snug">
           {t("dashboard.wizard.inferenceHint", "Klik untuk lanjut, atau pilih kategori yang berbeda")}
         </p>
-        <button
-          type="button"
-          onClick={onChangeCategory}
-          disabled={isLocked}
-          className="text-[10px] text-slate-400 hover:text-slate-200 underline underline-offset-2 transition-colors shrink-0 disabled:opacity-40"
-        >
-          {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
-        </button>
       </div>
     </div>
   );
@@ -1002,7 +992,6 @@ export function SiteWizard({
                   selectedSubType={inferredSubType}
                   onConfirmWithSubType={(subType) => {
                     chat.setBusinessSubType(subType);
-                    // Panggil confirm dengan subType eksplisit supaya tidak tergantung state async
                     chat.setAwaitingInferenceConfirm(false);
                     chat.setMessages((prev) => [
                       ...prev,
@@ -1016,7 +1005,6 @@ export function SiteWizard({
                       ]);
                     }, 400);
                   }}
-                  onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
                 />
               );
