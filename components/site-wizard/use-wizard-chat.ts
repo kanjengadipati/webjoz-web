@@ -532,7 +532,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setChatStage("mood");
     setTimeout(() => {
-      typeMessage(t("dashboard.wizard.selectMoodPrompt", "Pilih suasana (mood) yang cocok untuk website Anda:"), () => {
+      typeMessage(t("dashboard.wizard.selectMoodPrompt", "Website Anda nanti mau tampil seperti apa?"), () => {
         setMessages((prev) => [
           ...prev,
           { id: `widget-mood-chips-${Date.now()}`, sender: "ai", text: "", widget: "mood-chips" as const },
