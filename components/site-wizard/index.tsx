@@ -192,7 +192,6 @@ export function SiteWizard({
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
-  const [showEditHint, setShowEditHint] = useState(false);
   const actionHintsShownRef = React.useRef(false);
 
   // Client-only clock to avoid hydration mismatch with new Date()
@@ -747,26 +746,31 @@ export function SiteWizard({
     return t("dashboard.wizard.timeDaysAgo", "{count} hari lalu", { count: String(days) });
   };
 
-  // One-time edu tooltips for action buttons — muncul sekali saat result pertama kali tampil
+  // One-time edu tooltips untuk action buttons + rekomendasi hint
+  // — muncul sekali saat result pertama kali tampil
   React.useEffect(() => {
     if (preview.previewState !== "result") return;
     if (actionHintsShownRef.current) return;
     actionHintsShownRef.current = true;
     try {
       if (!localStorage.getItem("wiz_action_hints_seen")) {
-        // Lengkapi Data hint muncul duluan
+        // Lengkapi Data hint
         setTimeout(() => {
           setShowLengkapiHint(true);
           setTimeout(() => setShowLengkapiHint(false), 5000);
         }, 800);
-        // Edit hint muncul sedikit lebih lambat supaya tidak berebutan
-        setTimeout(() => {
-          setShowEditHint(true);
-          setTimeout(() => setShowEditHint(false), 5000);
-        }, 1400);
         localStorage.setItem("wiz_action_hints_seen", "1");
       }
+      // Rekomendasi hint — hanya kalau ada lebih dari 1 template
+      if (!localStorage.getItem("wiz_rekomendasi_hint_seen") && preview.templatePool.length > 1) {
+        setTimeout(() => {
+          setShowRekomendasiHint(true);
+          setTimeout(() => setShowRekomendasiHint(false), 6000);
+        }, 1200);
+        localStorage.setItem("wiz_rekomendasi_hint_seen", "1");
+      }
     } catch { /* localStorage unavailable */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preview.previewState]);
 
   return (
@@ -1505,23 +1509,9 @@ export function SiteWizard({
             </button>
           </div>
 
-          {preview.templatePool.length > 1 && preview.previewState === "result" && (() => {
-            // Show one-time hint tooltip on first result
-            if (!rekomendasiHintShownRef.current) {
-              rekomendasiHintShownRef.current = true;
-              try {
-                if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
-                  setTimeout(() => {
-                    setShowRekomendasiHint(true);
-                    setTimeout(() => setShowRekomendasiHint(false), 6000);
-                  }, 1200);
-                  localStorage.setItem("wiz_rekomendasi_hint_seen", "1");
-                }
-              } catch { /* localStorage unavailable */ }
-            }
-            return (
-              <div className="relative shrink-0">
-                {showRekomendasiHint && (
+          {preview.templatePool.length > 1 && preview.previewState === "result" && (
+            <div className="relative shrink-0">
+              {showRekomendasiHint && (
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
                     <div className="relative bg-[#1a2236] border border-primary/40 rounded-xl px-3 py-2 shadow-lg shadow-primary/10 whitespace-nowrap">
                       <p className="text-[11px] font-semibold text-white leading-tight">
@@ -1547,8 +1537,7 @@ export function SiteWizard({
                   Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
                 </button>
               </div>
-            );
-          })()}
+            )}
 
           <div className="flex-1 min-w-0">
             {preview.previewState === "loading" && (
