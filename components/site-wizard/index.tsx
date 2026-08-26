@@ -239,7 +239,6 @@ export function SiteWizard({
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
-  const rekomendasiHintShownRef = React.useRef(false);
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
@@ -808,21 +807,35 @@ export function SiteWizard({
         // Tunggu sampai success toast selesai (~6 detik) baru tampilkan hint
         setTimeout(() => {
           setShowLengkapiHint(true);
-          setTimeout(() => setShowLengkapiHint(false), 10000);
+          setTimeout(() => {
+            setShowLengkapiHint(false);
+            try { localStorage.setItem("wiz_action_hints_seen", "1"); } catch { /* noop */ }
+          }, 10000);
         }, 6500);
-        localStorage.setItem("wiz_action_hints_seen", "1");
-      }
-      // Rekomendasi hint — hanya kalau ada lebih dari 1 template
-      if (!localStorage.getItem("wiz_rekomendasi_hint_seen") && preview.templatePool.length > 1) {
-        setTimeout(() => {
-          setShowRekomendasiHint(true);
-          setTimeout(() => setShowRekomendasiHint(false), 6000);
-        }, 1200);
-        localStorage.setItem("wiz_rekomendasi_hint_seen", "1");
       }
     } catch { /* localStorage unavailable */ }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preview.previewState]);
+
+  // Rekomendasi hint — effect terpisah supaya tidak bergantung timing templatePool
+  const rekomendasiHintShownRef = React.useRef(false);
+  React.useEffect(() => {
+    if (preview.previewState !== "result") return;
+    if (preview.templatePool.length <= 1) return;
+    if (rekomendasiHintShownRef.current) return;
+    rekomendasiHintShownRef.current = true;
+    try {
+      if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
+        setTimeout(() => {
+          setShowRekomendasiHint(true);
+          setTimeout(() => {
+            setShowRekomendasiHint(false);
+            try { localStorage.setItem("wiz_rekomendasi_hint_seen", "1"); } catch { /* noop */ }
+          }, 6000);
+        }, 1200);
+      }
+    } catch { /* localStorage unavailable */ }
+  }, [preview.previewState, preview.templatePool.length]);
 
   return (
     <div
