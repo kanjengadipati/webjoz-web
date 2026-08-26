@@ -971,7 +971,8 @@ export function SiteWizard({
             }
 
             if (m.widget === "inference-confirm") {
-              const isLocked = !chat.awaitingInferenceConfirm;
+              // Lock hanya setelah user memilih bahasa (stage language → mood → done)
+              const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
               const inferredType = chat.businessType;
               const inferredSubType = chat.businessSubType;
               const availableSubTypes = inferredType ? (SUB_TYPES[inferredType] ?? []) : [];
