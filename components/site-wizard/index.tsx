@@ -992,6 +992,10 @@ export function SiteWizard({
                   orderedSubTypes={orderedSubTypes}
                   selectedSubType={inferredSubType}
                   onConfirmWithSubType={(subType) => {
+                    // Cancel auto-confirm timer jika ada, lalu inject language
+                    if (chat.inferenceAutoConfirmRef.current) {
+                      chat.inferenceAutoConfirmRef.current = null;
+                    }
                     chat.setBusinessSubType(subType);
                     chat.setAwaitingInferenceConfirm(false);
                     chat.setMessages((prev) => [

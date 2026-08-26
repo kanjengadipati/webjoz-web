@@ -44,6 +44,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
+  // Callback untuk auto-confirm inference chip — user bisa override sebelum timeout
+  const inferenceAutoConfirmRef = useRef<((subType: string) => void) | null>(null);
   // ID pesan bubble user yang berisi nama bisnis — dipakai untuk tombol "Ubah nama"
   const [nameMessageId, setNameMessageId] = useState<string>("");
 
@@ -783,18 +785,48 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    // Only prompt direct inference confirmation if confidence is HIGH and both type & subType are strongly identified
+    // Confidence HIGH: langsung lanjut ke language — tampilkan chip subtype sebentar
+    // lalu inject language prompt otomatis tanpa perlu klik user
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
-      setBusinessType(result.type.trim());
-      setBusinessSubType(result.subType.trim());
+      const confirmedType = result.type.trim();
+      const confirmedSubType = result.subType.trim();
+      setBusinessType(confirmedType);
+      setBusinessSubType(confirmedSubType);
       setTypeWasInferred(true);
-      setAwaitingInferenceConfirm(true);
+      setAwaitingInferenceConfirm(false);
+
+      const doInjectLanguage = (subType: string) => {
+        setBusinessSubType(subType);
+        setMessages((prev) => [
+          ...prev,
+          { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
+        ]);
+        setChatStage("language");
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
+          ]);
+        }, 400);
+      };
+
+      // Expose callback via ref supaya chip widget bisa override subtype sebelum language inject
+      inferenceAutoConfirmRef.current = doInjectLanguage;
+
+      // Inject chip dulu supaya user bisa lihat / ubah pilihan
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
           { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
         ]);
-      }, 500);
+        // Auto-inject language setelah 1.5s jika user tidak klik chip lain
+        setTimeout(() => {
+          if (inferenceAutoConfirmRef.current) {
+            inferenceAutoConfirmRef.current(confirmedSubType);
+            inferenceAutoConfirmRef.current = null;
+          }
+        }, 1500);
+      }, 400);
       return;
     }
 
@@ -945,6 +977,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setAwaitingInferenceConfirm,
     typeWasInferred,
     setTypeWasInferred,
+    inferenceAutoConfirmRef,
     // Voice Input
     isRecording,
     isMicConnecting,
