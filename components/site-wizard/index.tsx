@@ -15,6 +15,7 @@ import {
   Calendar,
   Camera,
   Car,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -155,6 +156,8 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
 // Chip subtype hasil deteksi AI — klik chip langsung confirm & lanjut.
 // Chip tetap aktif (tidak di-lock setelah dipilih).
 
+const INFERENCE_CHIP_LIMIT = 5;
+
 function InferenceConfirmWidget({
   isLocked,
   orderedSubTypes,
@@ -168,10 +171,18 @@ function InferenceConfirmWidget({
   onConfirmWithSubType: (subType: string) => void;
   t: (key: string, fallback?: string) => string;
 }) {
+  const [showAll, setShowAll] = useState(false);
+
+  // Selalu tampilkan chip terpilih + chip populer hingga limit
+  const visibleChips = showAll
+    ? orderedSubTypes
+    : orderedSubTypes.slice(0, INFERENCE_CHIP_LIMIT);
+  const hiddenCount = orderedSubTypes.length - INFERENCE_CHIP_LIMIT;
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
       <div className="flex flex-wrap gap-1.5">
-        {orderedSubTypes.map((st) => {
+        {visibleChips.map((st) => {
           const isSelected = selectedSubType === st.value;
           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
           return (
@@ -192,6 +203,16 @@ function InferenceConfirmWidget({
             </button>
           );
         })}
+        {!showAll && hiddenCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowAll(true)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-400 hover:text-white hover:border-white/20 transition-all cursor-pointer"
+          >
+            <ChevronDown className="w-3 h-3" />
+            +{hiddenCount} lainnya
+          </button>
+        )}
       </div>
       <div className="flex items-center justify-between gap-2 px-0.5">
         <p className="text-[10px] text-slate-500 leading-snug">
