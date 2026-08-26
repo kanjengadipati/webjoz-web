@@ -150,6 +150,140 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Institusi Pendidikan & Pesantren": GraduationCap,
 };
 
+// ── InferenceConfirmWidget ───────────────────────────────────────────────────
+// Menampilkan chip subtype hasil deteksi AI dengan auto-confirm countdown.
+// Chip terpilih tampil pertama; user bisa pindah chip — countdown reset.
+// Setelah 3 detik tanpa interaksi, otomatis lanjut.
+
+const AUTOCONFIRM_SECONDS = 3;
+
+function InferenceConfirmWidget({
+  isLocked,
+  orderedSubTypes,
+  selectedSubType,
+  onSelectSubType,
+  onConfirm,
+  onChangeCategory,
+  t,
+}: {
+  isLocked: boolean;
+  orderedSubTypes: { value: string; label: string; emoji: string }[];
+  selectedSubType: string;
+  onSelectSubType: (v: string) => void;
+  onConfirm: () => void;
+  onChangeCategory: () => void;
+  t: (key: string, fallback?: string) => string;
+}) {
+  const [countdown, setCountdown] = useState(AUTOCONFIRM_SECONDS);
+  const countdownRef = useRef(AUTOCONFIRM_SECONDS);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const confirmedRef = useRef(false);
+
+  const resetCountdown = () => {
+    countdownRef.current = AUTOCONFIRM_SECONDS;
+    setCountdown(AUTOCONFIRM_SECONDS);
+  };
+
+  useEffect(() => {
+    if (isLocked) return;
+    timerRef.current = setInterval(() => {
+      countdownRef.current -= 1;
+      setCountdown(countdownRef.current);
+      if (countdownRef.current <= 0) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        if (!confirmedRef.current) {
+          confirmedRef.current = true;
+          onConfirm();
+        }
+      }
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLocked]);
+
+  const handleSelectChip = (value: string) => {
+    if (isLocked) return;
+    onSelectSubType(value);
+    resetCountdown();
+  };
+
+  const handleChangeCategory = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    confirmedRef.current = true;
+    onChangeCategory();
+  };
+
+  const progress = ((AUTOCONFIRM_SECONDS - countdown) / AUTOCONFIRM_SECONDS) * 100;
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+      <div className="flex flex-wrap gap-1.5">
+        {orderedSubTypes.map((st) => {
+          const isSelected = selectedSubType === st.value;
+          const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+          return (
+            <button
+              key={st.value}
+              type="button"
+              onClick={() => handleSelectChip(st.value)}
+              disabled={isLocked}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 ${
+                isSelected
+                  ? "border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30"
+                  : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08] cursor-pointer"
+              }`}
+            >
+              <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
+              <span>{t(`dashboard.wizard.subtypes.${st.value}`) || st.label}</span>
+              {isSelected && <span className="text-primary text-[10px]">✓</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Bottom row: progress bar auto-confirm + tombol ganti kategori */}
+      <div className="flex items-center gap-2 pt-0.5">
+        {/* Progress bar + countdown — klik untuk confirm sekarang */}
+        <button
+          type="button"
+          onClick={() => {
+            if (isLocked || confirmedRef.current) return;
+            if (timerRef.current) clearInterval(timerRef.current);
+            confirmedRef.current = true;
+            onConfirm();
+          }}
+          disabled={isLocked}
+          className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/20 transition-all active:scale-95 disabled:opacity-40 overflow-hidden relative group"
+        >
+          {/* Animated fill */}
+          <div
+            className="absolute inset-0 bg-primary/20 rounded-xl transition-none origin-left"
+            style={{ transform: `scaleX(${progress / 100})`, transitionDuration: "900ms", transitionProperty: "transform", transitionTimingFunction: "linear" }}
+          />
+          <span className="relative text-xs font-bold text-white z-10">
+            {t("dashboard.wizard.btnConfirmYes", "Ya, lanjut")}
+          </span>
+          <span className="relative ml-auto text-[10px] font-mono text-primary z-10 tabular-nums">
+            {countdown}s
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleChangeCategory}
+          disabled={isLocked}
+          className="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 border border-border transition-all hover:text-slate-200 active:scale-95 disabled:opacity-40 whitespace-nowrap"
+          style={{ background: "rgba(255,255,255,0.04)" }}
+        >
+          {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function SiteWizard({
   mode,
   token,
@@ -921,66 +1055,29 @@ export function SiteWizard({
 
             if (m.widget === "inference-confirm") {
               const isLocked = !chat.awaitingInferenceConfirm;
-              // Ambil semua subtype dari kategori yang diinfer
               const inferredType = chat.businessType;
               const inferredSubType = chat.businessSubType;
               const availableSubTypes = inferredType ? (SUB_TYPES[inferredType] ?? []) : [];
 
+              // Reorder: chip terpilih tampil pertama
+              const orderedSubTypes = inferredSubType
+                ? [
+                    ...availableSubTypes.filter((s) => s.value === inferredSubType),
+                    ...availableSubTypes.filter((s) => s.value !== inferredSubType),
+                  ]
+                : availableSubTypes;
+
               return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="flex flex-wrap gap-1.5">
-                    {availableSubTypes.map((st) => {
-                      const isSelected = inferredSubType === st.value;
-                      const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                      return (
-                        <button
-                          key={st.value}
-                          type="button"
-                          onClick={() => {
-                            if (isLocked) return;
-                            if (isSelected) {
-                              // Klik ulang pilihan yang sama → konfirmasi langsung
-                              handleConfirmInference(true);
-                            } else {
-                              // Pindah ke subtype lain dalam kategori yang sama
-                              chat.setBusinessSubType(st.value);
-                            }
-                          }}
-                          disabled={isLocked}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 ${
-                            isSelected
-                              ? "border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30"
-                              : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08] cursor-pointer"
-                          }`}
-                        >
-                          <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
-                          <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
-                          {isSelected && <span className="text-primary text-[10px]">✓</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {/* Tombol konfirmasi & ganti kategori */}
-                  <div className="flex gap-2 pt-0.5">
-                    <button
-                      type="button"
-                      onClick={() => !isLocked && handleConfirmInference(true)}
-                      disabled={isLocked || !inferredSubType}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40"
-                    >
-                      {t("dashboard.wizard.btnConfirmYes", "Ya, lanjut")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => !isLocked && handleConfirmInference(false)}
-                      disabled={isLocked}
-                      className="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 border border-border transition-all hover:text-slate-200 active:scale-95 disabled:opacity-40 whitespace-nowrap"
-                      style={{ background: "rgba(255,255,255,0.04)" }}
-                    >
-                      {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
-                    </button>
-                  </div>
-                </div>
+                <InferenceConfirmWidget
+                  key={m.id}
+                  isLocked={isLocked}
+                  orderedSubTypes={orderedSubTypes}
+                  selectedSubType={inferredSubType}
+                  onSelectSubType={(v) => chat.setBusinessSubType(v)}
+                  onConfirm={() => handleConfirmInference(true)}
+                  onChangeCategory={() => handleConfirmInference(false)}
+                  t={t}
+                />
               );
             }
 
