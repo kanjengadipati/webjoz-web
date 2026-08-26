@@ -186,6 +186,10 @@ export function SiteWizard({
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+  // One-time onboarding hint for "Coba rekomendasi lain" button
+  const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
+  const rekomendasiHintShownRef = React.useRef(false);
+
   // Client-only clock to avoid hydration mismatch with new Date()
   const [clock, setClock] = useState(() => new Date());
   React.useEffect(() => {
@@ -1474,16 +1478,50 @@ export function SiteWizard({
             </button>
           </div>
 
-          {preview.templatePool.length > 1 && preview.previewState === "result" && (
-            <button
-              type="button"
-              onClick={preview.handleSwitchTemplate}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-muted/50 transition-all hover:border-primary/40 hover:text-white active:scale-95"
-            >
-              <RefreshCw size={11} />
-              Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
-            </button>
-          )}
+          {preview.templatePool.length > 1 && preview.previewState === "result" && (() => {
+            // Show one-time hint tooltip on first result
+            if (!rekomendasiHintShownRef.current) {
+              rekomendasiHintShownRef.current = true;
+              try {
+                if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
+                  setTimeout(() => {
+                    setShowRekomendasiHint(true);
+                    setTimeout(() => setShowRekomendasiHint(false), 6000);
+                  }, 1200);
+                  localStorage.setItem("wiz_rekomendasi_hint_seen", "1");
+                }
+              } catch { /* localStorage unavailable */ }
+            }
+            return (
+              <div className="relative shrink-0">
+                {showRekomendasiHint && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
+                    <div className="relative bg-[#1a2236] border border-primary/40 rounded-xl px-3 py-2 shadow-lg shadow-primary/10 whitespace-nowrap">
+                      <p className="text-[11px] font-semibold text-white leading-tight">
+                        💡 Ada {preview.templatePool.length} rekomendasi desain!
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Klik untuk lihat pilihan lain</p>
+                      {/* Arrow */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(99,102,241,0.4)" }}
+                      />
+                    </div>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowRekomendasiHint(false);
+                    preview.handleSwitchTemplate();
+                  }}
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-muted/50 transition-all hover:border-primary/40 hover:text-white active:scale-95"
+                >
+                  <RefreshCw size={11} />
+                  Coba rekomendasi lain ({preview.templatePoolIndex + 1}/{preview.templatePool.length})
+                </button>
+              </div>
+            );
+          })()}
 
           <div className="flex-1 min-w-0">
             {preview.previewState === "loading" && (
