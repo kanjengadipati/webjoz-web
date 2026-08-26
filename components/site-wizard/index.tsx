@@ -41,6 +41,7 @@ import {
   Palette,
   Pencil,
   PencilRuler,
+  Phone,
   Plus,
   RefreshCw,
   Scissors,
@@ -239,7 +240,6 @@ export function SiteWizard({
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
-  const rekomendasiHintShownRef = React.useRef(false);
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
@@ -822,8 +822,6 @@ export function SiteWizard({
   React.useEffect(() => {
     if (preview.previewState !== "result") return;
     if (preview.templatePool.length <= 1) return;
-    if (rekomendasiHintShownRef.current) return;
-    rekomendasiHintShownRef.current = true;
     try {
       if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
         setTimeout(() => {
@@ -1594,16 +1592,25 @@ export function SiteWizard({
           {preview.templatePool.length > 1 && preview.previewState === "result" && (
             <div className="relative shrink-0">
               {showRekomendasiHint && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
-                    <div className="relative bg-[#1a2236] border border-primary/40 rounded-xl px-3 py-2 shadow-lg shadow-primary/10 whitespace-nowrap">
-                      <p className="text-[11px] font-semibold text-white leading-tight">
-                        💡 Ada {preview.templatePool.length} rekomendasi desain!
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Klik untuk lihat pilihan lain</p>
-                      {/* Arrow */}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(99,102,241,0.4)" }}
-                      />
+                  <div className="absolute bottom-full left-0 mb-3 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-300 w-[240px]">
+                    <div className="relative bg-[#162520] border border-emerald-500/40 text-emerald-100 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                      <button
+                        type="button"
+                        onClick={() => setShowRekomendasiHint(false)}
+                        className="absolute top-2.5 right-2.5 text-emerald-400/60 hover:text-emerald-200 transition-colors p-0.5 rounded cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                          <RefreshCw className="w-3.5 h-3.5 text-emerald-300" />
+                        </div>
+                        <div className="space-y-1 pr-3">
+                          <p className="text-xs font-bold text-emerald-300 leading-tight">Ada {preview.templatePool.length} rekomendasi desain!</p>
+                          <p className="text-[11px] text-emerald-200/80 leading-snug">Klik untuk lihat pilihan tampilan lain.</p>
+                        </div>
+                      </div>
+                      <div className="absolute -bottom-1.5 left-[28px] w-3 h-3 bg-[#162520] border-r border-b border-emerald-500/40 transform rotate-45" />
                     </div>
                   </div>
                 )}
@@ -1652,13 +1659,25 @@ export function SiteWizard({
               {/* Lengkapi Data */}
               <div className="relative">
                 {showLengkapiHint && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
-                    <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3.5 py-2.5 shadow-lg whitespace-nowrap max-w-[220px] text-center">
-                      <p className="text-[11px] font-semibold text-white leading-snug">📋 Tambah nomor WA & area</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">Supaya tombol kontak di website aktif</p>
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
-                      />
+                  <div className="absolute bottom-full right-0 mb-3 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-300 w-[240px]">
+                    <div className="relative bg-[#162520] border border-emerald-500/40 text-emerald-100 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                      <button
+                        type="button"
+                        onClick={() => setShowLengkapiHint(false)}
+                        className="absolute top-2.5 right-2.5 text-emerald-400/60 hover:text-emerald-200 transition-colors p-0.5 rounded cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                          <Phone className="w-3.5 h-3.5 text-emerald-300" />
+                        </div>
+                        <div className="space-y-1 pr-3">
+                          <p className="text-xs font-bold text-emerald-300 leading-tight">Lengkapi data kontak</p>
+                          <p className="text-[11px] text-emerald-200/80 leading-snug">Tambah nomor WA supaya tombol kontak di website aktif.</p>
+                        </div>
+                      </div>
+                      <div className="absolute -bottom-1.5 right-[28px] w-3 h-3 bg-[#162520] border-r border-b border-emerald-500/40 transform rotate-45" />
                     </div>
                   </div>
                 )}
