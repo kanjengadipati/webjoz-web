@@ -1340,7 +1340,7 @@ export function SiteWizard({
             className={`shrink-0 px-4 pt-2 md:py-3 relative transition-all duration-150 ${device.isKeyboardOpen ? "pb-2" : "pb-6"}`}
             style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
           >
-            {chat.isRecording ? (
+            {(chat.isRecording || chat.isMicConnecting) ? (
               <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-[#141e19] border border-emerald-500/30 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between gap-3">
                   {/* Status & Timer */}
