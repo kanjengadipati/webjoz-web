@@ -190,6 +190,11 @@ export function SiteWizard({
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
   const rekomendasiHintShownRef = React.useRef(false);
 
+  // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
+  const [showLengkapiHint, setShowLengkapiHint] = useState(false);
+  const [showEditHint, setShowEditHint] = useState(false);
+  const actionHintsShownRef = React.useRef(false);
+
   // Client-only clock to avoid hydration mismatch with new Date()
   const [clock, setClock] = useState(() => new Date());
   React.useEffect(() => {
@@ -741,6 +746,28 @@ export function SiteWizard({
     const days = Math.floor(hours / 24);
     return t("dashboard.wizard.timeDaysAgo", "{count} hari lalu", { count: String(days) });
   };
+
+  // One-time edu tooltips for action buttons — muncul sekali saat result pertama kali tampil
+  React.useEffect(() => {
+    if (preview.previewState !== "result") return;
+    if (actionHintsShownRef.current) return;
+    actionHintsShownRef.current = true;
+    try {
+      if (!localStorage.getItem("wiz_action_hints_seen")) {
+        // Lengkapi Data hint muncul duluan
+        setTimeout(() => {
+          setShowLengkapiHint(true);
+          setTimeout(() => setShowLengkapiHint(false), 5000);
+        }, 800);
+        // Edit hint muncul sedikit lebih lambat supaya tidak berebutan
+        setTimeout(() => {
+          setShowEditHint(true);
+          setTimeout(() => setShowEditHint(false), 5000);
+        }, 1400);
+        localStorage.setItem("wiz_action_hints_seen", "1");
+      }
+    } catch { /* localStorage unavailable */ }
+  }, [preview.previewState]);
 
   return (
     <div
@@ -1549,24 +1576,55 @@ export function SiteWizard({
           )}
 
           {preview.previewState === "result" && (
-            <div className="hidden md:flex absolute bottom-6 right-6 z-40 gap-2">
-              <button
-                type="button"
-                onClick={() => setSheetOpen(true)}
-                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
-              >
-                <Plus className="h-4 w-4" />
-                Lengkapi Data
-              </button>
-              <button
-                type="button"
-                onClick={handleGoToEditor}
-                className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
-              >
-                <Pencil className="h-4 w-4" />
-                Edit &amp; Publikasikan
-                <ArrowRight className="h-4 w-4" />
-              </button>
+            <div className="hidden md:flex absolute bottom-6 right-6 z-40 gap-2 items-end">
+
+              {/* Lengkapi Data */}
+              <div className="relative">
+                {showLengkapiHint && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
+                    <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3.5 py-2.5 shadow-lg whitespace-nowrap max-w-[220px] text-center">
+                      <p className="text-[11px] font-semibold text-white leading-snug">📋 Tambah nomor WA & area</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">Supaya tombol kontak di website aktif</p>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
+                      />
+                    </div>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
+                  className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
+                >
+                  <Plus className="h-4 w-4" />
+                  Lengkapi Data
+                </button>
+              </div>
+
+              {/* Edit & Publikasikan */}
+              <div className="relative">
+                {showEditHint && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
+                    <div className="relative bg-primary/90 border border-primary/60 rounded-xl px-3.5 py-2.5 shadow-lg shadow-primary/20 whitespace-nowrap max-w-[240px] text-center">
+                      <p className="text-[11px] font-semibold text-white leading-snug">✏️ Edit konten & Publish</p>
+                      <p className="text-[10px] text-primary-foreground/80 mt-0.5 leading-snug">Klik untuk kustomisasi & terbitkan website</p>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(99,102,241,0.6)" }}
+                      />
+                    </div>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setShowEditHint(false); handleGoToEditor(); }}
+                  className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit &amp; Publikasikan
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+
             </div>
           )}
 
@@ -1601,8 +1659,10 @@ export function SiteWizard({
       <MobileActionBar
         preview={preview}
         device={device}
-        onOpenSheet={() => setSheetOpen(true)}
-        onGoToEditor={handleGoToEditor}
+        onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
+        onGoToEditor={() => { setShowEditHint(false); handleGoToEditor(); }}
+        showLengkapiHint={showLengkapiHint}
+        showEditHint={showEditHint}
       />
 
       <BusinessDetailsSheet
