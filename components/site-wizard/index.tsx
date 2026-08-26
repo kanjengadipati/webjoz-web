@@ -1602,28 +1602,15 @@ export function SiteWizard({
               </div>
 
               {/* Edit & Publikasikan */}
-              <div className="relative">
-                {showEditHint && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
-                    <div className="relative bg-primary/90 border border-primary/60 rounded-xl px-3.5 py-2.5 shadow-lg shadow-primary/20 whitespace-nowrap max-w-[240px] text-center">
-                      <p className="text-[11px] font-semibold text-white leading-snug">✏️ Edit konten & Publish</p>
-                      <p className="text-[10px] text-primary-foreground/80 mt-0.5 leading-snug">Klik untuk kustomisasi & terbitkan website</p>
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-                        style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(99,102,241,0.6)" }}
-                      />
-                    </div>
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => { setShowEditHint(false); handleGoToEditor(); }}
-                  className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Edit &amp; Publikasikan
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleGoToEditor}
+                className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
+              >
+                <Pencil className="h-4 w-4" />
+                Edit &amp; Publikasikan
+                <ArrowRight className="h-4 w-4" />
+              </button>
 
             </div>
           )}
@@ -1660,9 +1647,8 @@ export function SiteWizard({
         preview={preview}
         device={device}
         onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
-        onGoToEditor={() => { setShowEditHint(false); handleGoToEditor(); }}
+        onGoToEditor={handleGoToEditor}
         showLengkapiHint={showLengkapiHint}
-        showEditHint={showEditHint}
       />
 
       <BusinessDetailsSheet
