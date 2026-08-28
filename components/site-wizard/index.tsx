@@ -214,11 +214,6 @@ function InferenceConfirmWidget({
           </button>
         )}
       </div>
-      <div className="flex items-center justify-between gap-2 px-0.5">
-        <p className="text-[10px] text-slate-500 leading-snug">
-          {t("dashboard.wizard.inferenceHint", "Klik untuk lanjut, atau pilih kategori yang berbeda")}
-        </p>
-      </div>
     </div>
   );
 }
