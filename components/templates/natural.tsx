@@ -10,7 +10,7 @@ import {
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
-import HeroNaturalOrganic from "../sections/hero/natural-organic";
+import HeroSection from "../sections/hero";
 import BenefitsSectionInner from "../sections/benefits";
 import TestimonialsSectionInner from "../sections/testimonials";
 import FaqSectionInner from "../sections/faq";
@@ -58,12 +58,12 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <HeroNaturalOrganic
-            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
-            design_token={dt}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "hero"}
-          />
+      <HeroSection
+        hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+        design_token={dt}
+        isEditorMode={isEditorMode}
+        isSelected={activeSection === "hero"}
+      />
         )} />
       </MemoPreviewSectionWrapper>
     ),

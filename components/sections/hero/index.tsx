@@ -41,14 +41,16 @@ export default function HeroSection({
   const heroStyle = design_token?.layout?.hero_style ?? "centered";
   const Renderer = variants[heroStyle] ?? HeroCentered;
   return (
-    <Renderer
-      hero={hero}
-      design_token={design_token}
-      onUpdateField={onUpdateField}
-      isEditorMode={isEditorMode}
-      isSelected={isSelected}
-      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-      onEditingStateChange={onEditingStateChange}
-    />
+    <div style={{ containerType: "inline-size", width: "100%" }}>
+      <Renderer
+        hero={hero}
+        design_token={design_token}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
+    </div>
   );
 }

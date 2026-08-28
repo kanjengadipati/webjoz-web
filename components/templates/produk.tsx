@@ -11,7 +11,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
-import HeroBentoGrid from "../sections/hero/bento-grid";
+import HeroSection from "../sections/hero";
 import BenefitsSectionInner from "../sections/benefits";
 import TestimonialsSectionInner from "../sections/testimonials";
 import FaqSectionInner from "../sections/faq";
@@ -53,15 +53,15 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <HeroBentoGrid
-            hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
-            design_token={dt}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "hero"}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+      <HeroSection
+        hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
+        design_token={dt}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={activeSection === "hero"}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
         )} />
       </MemoPreviewSectionWrapper>
     ),

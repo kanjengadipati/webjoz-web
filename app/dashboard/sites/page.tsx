@@ -376,6 +376,26 @@ interface IframePreviewProps {
 function IframePreview({ siteId }: IframePreviewProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.25);
+  const [previewToken, setPreviewToken] = useState<string | null>(null);
+  const token = useAuthToken();
+  const { activeTenantId } = useActiveTenant();
+
+  useEffect(() => {
+    if (!token || !activeTenantId) return;
+    const fetchToken = async () => {
+      try {
+        const res = await request<{ token: string }>(`/sites/${siteId}/preview-token`, {
+          headers: { "X-Tenant-ID": activeTenantId.toString() },
+        }, token);
+        if (res.status === "success" && res.data?.token) {
+          setPreviewToken(res.data.token);
+        }
+      } catch {
+        // Silently fail — iframe will show 404 for draft sites without token
+      }
+    };
+    fetchToken();
+  }, [siteId, token, activeTenantId]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -389,10 +409,14 @@ function IframePreview({ siteId }: IframePreviewProps) {
     return () => observer.disconnect();
   }, []);
 
+  const previewSrc = previewToken
+    ? `/preview/${siteId}?preview_token=${encodeURIComponent(previewToken)}`
+    : `/preview/${siteId}`;
+
   return (
     <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-background">
       <iframe
-        src={`/preview/${siteId}`}
+        src={previewSrc}
         loading="lazy"
         className="absolute top-0 left-0 border-0 pointer-events-none origin-top-left"
         style={{

@@ -4,11 +4,16 @@ interface PageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    preview_token?: string;
+  }>;
 }
 
-export default async function PreviewPage({ params }: PageProps) {
+export default async function PreviewPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
+  const resolvedSearch = await searchParams;
   const siteId = parseInt(resolvedParams.id, 10);
+  const previewToken = typeof resolvedSearch.preview_token === "string" ? resolvedSearch.preview_token : undefined;
 
   if (isNaN(siteId)) {
     return (
@@ -18,5 +23,5 @@ export default async function PreviewPage({ params }: PageProps) {
     );
   }
 
-  return <PublicSite siteId={siteId} />;
+  return <PublicSite siteId={siteId} previewToken={previewToken} />;
 }

@@ -11,7 +11,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
-import HeroMinimal from "../sections/hero/minimal";
+import HeroSection from "../sections/hero";
 import PhotoCredit from "../sections/PhotoCredit";
 import BenefitsSectionInner from "../sections/benefits";
 import TestimonialsSectionInner from "../sections/testimonials";
@@ -56,12 +56,12 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
-          <HeroMinimal
-            hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
-            design_token={dt}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "hero"}
-          />
+      <HeroSection
+        hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+        design_token={dt}
+        isEditorMode={isEditorMode}
+        isSelected={activeSection === "hero"}
+      />
         )} />
       </MemoPreviewSectionWrapper>
     ),
