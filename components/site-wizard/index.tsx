@@ -163,12 +163,14 @@ function InferenceConfirmWidget({
   orderedSubTypes,
   selectedSubType,
   onConfirmWithSubType,
+  onChangeCategory,
   t,
 }: {
   isLocked: boolean;
   orderedSubTypes: { value: string; label: string; emoji: string }[];
   selectedSubType: string;
   onConfirmWithSubType: (subType: string) => void;
+  onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
   const [showAll, setShowAll] = useState(false);
@@ -214,6 +216,15 @@ function InferenceConfirmWidget({
           </button>
         )}
       </div>
+      {!isLocked && (
+        <button
+          type="button"
+          onClick={onChangeCategory}
+          className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
+        >
+          Bukan kategori ini? Pilih kategori lain
+        </button>
+      )}
     </div>
   );
 }
@@ -1033,6 +1044,7 @@ export function SiteWizard({
                       chat.setBusinessSubType(subType);
                     }
                   }}
+                  onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
                 />
               );
