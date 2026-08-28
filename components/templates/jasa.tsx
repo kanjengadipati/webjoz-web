@@ -18,7 +18,7 @@ import CatalogSectionInner from "../sections/catalog";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
-import HeroSplitEditorial from "../sections/hero/split-editorial";
+import HeroSection from "../sections/hero";
 import { BlogPostsSection } from "./blog-section";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
@@ -68,15 +68,15 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     hero: (
       <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(hero) => (
-          <HeroSplitEditorial
-            hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
-            design_token={dt}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={activeSection === "hero"}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+      <HeroSection
+        hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
+        design_token={dt}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={activeSection === "hero"}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
         )} />
       </MemoPreviewSectionWrapper>
     ),

@@ -9,6 +9,7 @@ interface PublicSiteProps {
   subdomain?: string;
   host?: string;
   siteId?: number;
+  previewToken?: string;
 }
 
 const stripRegeneratedMarkers = (value: any): any => {
@@ -26,7 +27,7 @@ const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps) {
+export default function PublicSite({ subdomain, host, siteId, previewToken }: PublicSiteProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [siteData, setSiteData] = useState<any>(null);
@@ -68,7 +69,7 @@ export default function PublicSite({ subdomain, host, siteId }: PublicSiteProps)
       try {
         setLoading(true);
         const endpoint = siteId 
-          ? `${API_BASE_URL}/public/sites?site_id=${siteId}`
+          ? `${API_BASE_URL}/public/sites?site_id=${siteId}${previewToken ? `&preview_token=${previewToken}` : ""}`
           : `${API_BASE_URL}/public/sites?host=${targetHost}`;
           
         const res = await fetch(endpoint);
