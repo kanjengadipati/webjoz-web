@@ -163,6 +163,7 @@ function InferenceConfirmWidget({
   orderedSubTypes,
   selectedSubType,
   onConfirmWithSubType,
+  onUnlockChips,
   onChangeCategory,
   t,
 }: {
@@ -170,16 +171,25 @@ function InferenceConfirmWidget({
   orderedSubTypes: { value: string; label: string; emoji: string }[];
   selectedSubType: string;
   onConfirmWithSubType: (subType: string) => void;
+  onUnlockChips?: () => void;
   onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
   const [showAll, setShowAll] = useState(false);
+  // Chips start locked — user must click "Ganti kategori" to enable them
+  const [chipEnabled, setChipEnabled] = useState(false);
 
-  // Selalu tampilkan chip terpilih + chip populer hingga limit
   const visibleChips = showAll
     ? orderedSubTypes
     : orderedSubTypes.slice(0, INFERENCE_CHIP_LIMIT);
   const hiddenCount = orderedSubTypes.length - INFERENCE_CHIP_LIMIT;
+
+  const effectivelyLocked = isLocked || !chipEnabled;
+
+  const handleEnableChips = () => {
+    setChipEnabled(true);
+    onUnlockChips?.();
+  };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
@@ -191,12 +201,12 @@ function InferenceConfirmWidget({
             <button
               key={st.value}
               type="button"
-              onClick={() => { if (!isLocked) onConfirmWithSubType(st.value); }}
-              disabled={isLocked}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 disabled:opacity-40 cursor-pointer ${
+              onClick={() => { if (!effectivelyLocked) onConfirmWithSubType(st.value); }}
+              disabled={effectivelyLocked}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 cursor-pointer ${
                 isSelected
-                  ? "border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30"
-                  : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"
+                  ? `border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30 ${effectivelyLocked ? "opacity-80" : ""}`
+                  : `text-slate-300 border-white/[0.08] bg-white/[0.04] ${effectivelyLocked ? "opacity-35 cursor-default" : "hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`
               }`}
             >
               <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
@@ -205,7 +215,7 @@ function InferenceConfirmWidget({
             </button>
           );
         })}
-        {!showAll && hiddenCount > 0 && (
+        {!showAll && hiddenCount > 0 && chipEnabled && (
           <button
             type="button"
             onClick={() => setShowAll(true)}
@@ -217,13 +227,23 @@ function InferenceConfirmWidget({
         )}
       </div>
       {!isLocked && (
-        <button
-          type="button"
-          onClick={onChangeCategory}
-          className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
-        >
-          Bukan kategori ini? Pilih kategori lain
-        </button>
+        chipEnabled ? (
+          <button
+            type="button"
+            onClick={onChangeCategory}
+            className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
+          >
+            Pilih jenis bisnis lain
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleEnableChips}
+            className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
+          >
+            Ganti kategori
+          </button>
+        )
       )}
     </div>
   );
@@ -1043,6 +1063,9 @@ export function SiteWizard({
                       // update subType if language stage not yet started.
                       chat.setBusinessSubType(subType);
                     }
+                  }}
+                  onUnlockChips={() => {
+                    chat.inferenceAutoConfirmRef.current = null;
                   }}
                   onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
