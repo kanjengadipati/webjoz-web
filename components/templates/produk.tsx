@@ -262,14 +262,20 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   return (
     <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
     <div className="bg-slate-950 text-slate-100 overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)", containerType: "inline-size" }}>
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
-      </MemoPreviewSectionWrapper>
+      {(() => {
+        const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)
+          .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
+          .filter((key) => !arrivedSections || arrivedSections.includes(key));
+        return (
+          <>
+            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
+            </MemoPreviewSectionWrapper>
 
-      {filterEmptySections(sectionOrder, content, isEditorMode)
-        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-        .filter((key) => !arrivedSections || arrivedSections.includes(key))
-        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+            {renderedSectionOrder.map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+          </>
+        );
+      })()}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} hasBlog={!!(blog?.posts?.length)} contactAddress={contact?.address} contactMapsUrl={contact?.maps_url ?? undefined} contactOpeningHours={contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
