@@ -39,6 +39,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [siteLanguage, setSiteLanguage] = useState<"id" | "en" | null>(null);
 
   const [isAiTyping, setIsAiTyping] = useState(false);
+  const [isAnalyzingDescription, setIsAnalyzingDescription] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
   const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
@@ -745,6 +746,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         confidence: "high",
       };
     } else {
+      setIsAnalyzingDescription(true);
       // 1. Primary: Call AI Classifier Server (understands context & semantics)
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
@@ -772,6 +774,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         }
       } catch (err) {
         console.warn("Primary AI classification failed, falling back to local dictionary", err);
+      } finally {
+        setIsAnalyzingDescription(false);
       }
 
       // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
@@ -969,6 +973,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     siteLanguage,
     setSiteLanguage,
     isAiTyping,
+    isAnalyzingDescription,
     isInitialTyping,
     awaitingNameConfirm,
     suggestedHint,

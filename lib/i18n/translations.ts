@@ -2030,6 +2030,7 @@ export interface Translations {
       descriptionInferenceHigh: string;
       descriptionInferenceMedium: string;
       descriptionInferenceNone: string;
+      analyzingDescription: string;
       selectMoodPrompt: string;
       selectLanguagePrompt: string;
       preparingWebsite: string;
@@ -4282,6 +4283,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceHigh: "Saya lihat jenis bisnis atau brand Anda adalah **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Saya lihat bidang usaha Anda adalah {type}. Bisa pilih yang lebih spesifik?",
         descriptionInferenceNone: "Baik, silakan pilih jenis bisnis Anda:",
+        analyzingDescription: "Menganalisis bidang bisnis Anda...",
         selectMoodPrompt: "Website Anda nanti mau tampil seperti apa?",
         selectLanguagePrompt: "Dalam bahasa apa website ini akan dibuat?",
         preparingWebsite: "Baik, AI sedang menyiapkan website Anda...",
@@ -6579,6 +6581,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceHigh: "I see your business or brand is in **{subType}**. Shall we create the website directly?",
         descriptionInferenceMedium: "I see your business field is {type}. Could you pick a more specific category?",
         descriptionInferenceNone: "Alright, please select your business type:",
+        analyzingDescription: "Analyzing your business description...",
         selectMoodPrompt: "How do you want your website to look?",
         selectLanguagePrompt: "What language should this website be in?",
         preparingWebsite: "Great! AI is preparing your website...",
