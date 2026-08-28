@@ -69,6 +69,30 @@ export default function SiteEditorPage() {
 
   const siteId = params.id ? Number(params.id) : null;
 
+  const [previewToken, setPreviewToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!siteId || !token || !activeTenantId) return;
+    const fetchPreviewToken = async () => {
+      try {
+        const res = await request<{ token: string }>(`/sites/${siteId}/preview-token`, {
+          headers: { "X-Tenant-ID": activeTenantId.toString() },
+        }, token);
+        if (res.status === "success" && res.data?.token) {
+          setPreviewToken(res.data.token);
+        }
+      } catch {
+        // Silently fail — link tetap mengarah ke /preview/[id] tanpa token,
+        // backend akan menolak untuk draft tapi tidak crash apa pun.
+      }
+    };
+    fetchPreviewToken();
+  }, [siteId, token, activeTenantId]);
+
+  const previewHref = previewToken
+    ? `/preview/${siteId}?preview_token=${encodeURIComponent(previewToken)}`
+    : `/preview/${siteId}`;
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [templateSaving, setTemplateSaving] = useState(false);
@@ -2312,7 +2336,7 @@ export default function SiteEditorPage() {
 
             {/* Preview link — opens draft content */}
             <a
-              href={`/preview/${siteId}`}
+              href={previewHref}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
