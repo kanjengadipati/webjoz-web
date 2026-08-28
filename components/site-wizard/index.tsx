@@ -1024,23 +1024,19 @@ export function SiteWizard({
                   orderedSubTypes={orderedSubTypes}
                   selectedSubType={inferredSubType}
                   onConfirmWithSubType={(subType) => {
-                    // Cancel auto-confirm timer jika ada, lalu inject language
-                    if (chat.inferenceAutoConfirmRef.current) {
-                      chat.inferenceAutoConfirmRef.current = null;
-                    }
-                    chat.setBusinessSubType(subType);
+                    // Route through the canonical doInjectLanguage stored in the ref.
+                    // This ensures exactly ONE language prompt is ever appended,
+                    // regardless of how many chips the user taps before confirming.
+                    const doInject = chat.inferenceAutoConfirmRef.current;
+                    chat.inferenceAutoConfirmRef.current = null; // cancel auto-timer
                     chat.setAwaitingInferenceConfirm(false);
-                    chat.setMessages((prev) => [
-                      ...prev,
-                      { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
-                    ]);
-                    chat.setChatStage("language");
-                    setTimeout(() => {
-                      chat.setMessages((prev) => [
-                        ...prev,
-                        { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
-                      ]);
-                    }, 400);
+                    if (doInject) {
+                      doInject(subType);
+                    } else {
+                      // Fallback: ref already consumed (auto-timer fired) — only
+                      // update subType if language stage not yet started.
+                      chat.setBusinessSubType(subType);
+                    }
                   }}
                   t={t}
                 />
