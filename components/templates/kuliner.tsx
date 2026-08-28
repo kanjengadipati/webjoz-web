@@ -253,14 +253,20 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       className="selection:bg-[var(--dt-primary-soft-strong)] selection:text-[var(--dt-text)] overflow-x-hidden min-h-screen"
       style={{ ...cssVars, background: "var(--dt-bg)", color: "var(--dt-text)", fontFamily: "var(--dt-body-font)", containerType: "inline-size" }}
     >
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
-      </MemoPreviewSectionWrapper>
+      {(() => {
+        const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)
+          .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
+          .filter((key) => !arrivedSections || arrivedSections.includes(key));
+        return (
+          <>
+            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
+            </MemoPreviewSectionWrapper>
 
-      {filterEmptySections(sectionOrder, content, isEditorMode)
-        .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
-        .filter((key) => !arrivedSections || arrivedSections.includes(key))
-        .map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+            {renderedSectionOrder.map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
+          </>
+        );
+      })()}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} contactAddress={contact?.address} contactMapsUrl={contact?.maps_url ?? undefined} contactOpeningHours={contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />

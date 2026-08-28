@@ -256,30 +256,37 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 
   return (
     <div style={rootStyle}>
-      <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <HeaderSection header={header} design_token={dt} sectionOrder={sectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
-      </MemoPreviewSectionWrapper>
+      {(() => {
+        const renderedSections = resolvedSections
+          .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
+          .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type));
+        const renderedSectionOrder = renderedSections.map((sec) => sec.type);
+        return (
+          <>
+            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
+            </MemoPreviewSectionWrapper>
 
-      {resolvedSections
-        .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
-        .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type))
-        .map((sec) => {
-          const arrivedIndex = arrivedSections?.indexOf(sec.type) ?? -1;
-          const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
-          return (
-            <div
-              key={sec.type}
-              className={isStreaming ? "animate-slide-up" : ""}
-              style={isStreaming ? {
-                animationDelay: `${arrivedIndex * 60}ms`,
-                opacity: 0,
-                animationFillMode: "forwards",
-              } : undefined}
-            >
-              {renderSectionFromContent(sec)}
-            </div>
-          );
-        })}
+            {renderedSections.map((sec) => {
+              const arrivedIndex = arrivedSections?.indexOf(sec.type) ?? -1;
+              const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+              return (
+                <div
+                  key={sec.type}
+                  className={isStreaming ? "animate-slide-up" : ""}
+                  style={isStreaming ? {
+                    animationDelay: `${arrivedIndex * 60}ms`,
+                    opacity: 0,
+                    animationFillMode: "forwards",
+                  } : undefined}
+                >
+                  {renderSectionFromContent(sec)}
+                </div>
+              );
+            })}
+          </>
+        );
+      })()}
 
       <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />

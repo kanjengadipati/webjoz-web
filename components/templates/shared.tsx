@@ -151,7 +151,7 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 
 // ─── Nav Menu ─────────────────────────────────────────────────────────────────
 
-const NAV_SKIP = new Set(["header", "hero", "footer", "seo"]);
+const NAV_SKIP = new Set(["header", "hero", "footer", "seo", "cta"]);
 
 const NAV_LABELS_ID: Record<string, string> = {
   about: "Tentang",
