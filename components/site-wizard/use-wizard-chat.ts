@@ -727,7 +727,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
-    setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+    const userMsgId = Date.now().toString();
+    setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
 
     setDescription(val);
 
@@ -757,6 +758,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
             if (!isMeta) {
               setDescription(refined);
               descriptionRef.current = refined;
+              // Directly override the user's message bubble with the refined text (matching voice flow)
+              setMessages((prev) =>
+                prev.map((m) => (m.id === userMsgId ? { ...m, text: refined } : m))
+              );
               // Also attempt to detect location from refined text if not already found
               if (!serviceArea) {
                 const detected = extractLocationFromDescription(refined);
@@ -789,12 +794,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    const refinedSummary = descriptionRef.current || val;
-    const isMeaningfullyDifferent = !preInferred && refinedSummary.trim().toLowerCase() !== val.trim().toLowerCase();
-    const introText = t("dashboard.wizard.descriptionRefinedIntro", "Siap! Deskripsi bisnis Anda:");
-    const ackMessage = isMeaningfullyDifferent ? `${introText}\n"${refinedSummary}"` : null;
-
-    // Confidence HIGH: langsung lanjut ke language — tampilkan ringkasan (jika beda) + chip subtype sebentar
+    // Confidence HIGH: langsung lanjut ke language — tampilkan chip subtype sebentar
     // lalu inject language prompt otomatis tanpa perlu klik user
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
       const confirmedType = result.type.trim();
@@ -822,11 +822,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       // Expose callback via ref supaya chip widget bisa override subtype sebelum language inject
       inferenceAutoConfirmRef.current = doInjectLanguage;
 
-      // Inject bubble konfirmasi teks refine (jika ada) + chip supaya user bisa lihat / ubah pilihan
+      // Inject chip dulu supaya user bisa lihat / ubah pilihan
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
-          ...(ackMessage ? [{ id: `ai-desc-${Date.now()}`, sender: "ai" as const, text: ackMessage }] : []),
           { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
         ]);
         // Auto-inject language setelah 2s jika user tidak klik chip lain
@@ -840,25 +839,19 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
-    // When confidence is low or medium (no exact subtype match): show native category selection
+    // When confidence is low or medium (no exact subtype match): show native category selection directly
     setBusinessType("");
     setBusinessSubType("");
     setTypeWasInferred(false);
     setInferenceResult({ confidence: "low" } as InferenceResult);
     setChatStage("type");
     setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        ...(ackMessage ? [{ id: `ai-desc-${Date.now()}`, sender: "ai" as const, text: ackMessage }] : []),
-      ]);
-      setTimeout(() => {
-        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-          ]);
-        });
-      }, 300);
+      typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+        ]);
+      });
     }, 300);
   };
 
