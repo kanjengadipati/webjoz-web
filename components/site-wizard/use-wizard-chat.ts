@@ -753,7 +753,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         if (aiRes && aiRes.data) {
           if (aiRes.data.refined_text && aiRes.data.refined_text.trim()) {
             const refined = aiRes.data.refined_text.trim();
-            const isMeta = /(?:requesting a json|the user is|the business name is|the raw input is|```json)/i.test(refined);
+            const isMeta = /(?:requesting a json|the user is|the business name is|the raw input is|the refined text|refined text should|should describe|should be classified|under the business name|to sell special|to provide special|classified under|in polished|```json)/i.test(refined);
             if (!isMeta) {
               setDescription(refined);
               descriptionRef.current = refined;
