@@ -789,7 +789,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    // Confidence HIGH: langsung lanjut ke language — tampilkan chip subtype sebentar
+    const refinedSummary = descriptionRef.current || val;
+    const introText = t("dashboard.wizard.descriptionRefinedIntro", "Siap! Deskripsi bisnis Anda:");
+    const ackMessage = `${introText}\n"${refinedSummary}"`;
+
+    // Confidence HIGH: langsung lanjut ke language — tampilkan ringkasan + chip subtype sebentar
     // lalu inject language prompt otomatis tanpa perlu klik user
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
       const confirmedType = result.type.trim();
@@ -817,36 +821,43 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       // Expose callback via ref supaya chip widget bisa override subtype sebelum language inject
       inferenceAutoConfirmRef.current = doInjectLanguage;
 
-      // Inject chip dulu supaya user bisa lihat / ubah pilihan
+      // Inject bubble konfirmasi teks refine + chip supaya user bisa lihat / ubah pilihan
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
+          { id: `ai-desc-${Date.now()}`, sender: "ai", text: ackMessage },
           { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
         ]);
-        // Auto-inject language setelah 1.5s jika user tidak klik chip lain
+        // Auto-inject language setelah 2.2s jika user tidak klik chip lain
         setTimeout(() => {
           if (inferenceAutoConfirmRef.current) {
             inferenceAutoConfirmRef.current(confirmedSubType);
             inferenceAutoConfirmRef.current = null;
           }
-        }, 1500);
-      }, 400);
+        }, 2200);
+      }, 300);
       return;
     }
 
-    // When confidence is low or medium (no exact subtype match): show native category selection directly
+    // When confidence is low or medium (no exact subtype match): show refined description + native category selection
     setBusinessType("");
     setBusinessSubType("");
     setTypeWasInferred(false);
     setInferenceResult({ confidence: "low" } as InferenceResult);
     setChatStage("type");
     setTimeout(() => {
-      typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-        setMessages((prev) => [
-          ...prev,
-          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-        ]);
-      });
+      setMessages((prev) => [
+        ...prev,
+        { id: `ai-desc-${Date.now()}`, sender: "ai", text: ackMessage },
+      ]);
+      setTimeout(() => {
+        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+          ]);
+        });
+      }, 400);
     }, 300);
   };
 
