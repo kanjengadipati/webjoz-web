@@ -72,7 +72,7 @@ import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
-import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool } from "./helpers";
+import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
 import {
   loadWizardSnapshot,
   saveWizardSnapshot,
@@ -261,7 +261,7 @@ export function SiteWizard({
 }: SiteWizardProps) {
   const router = useRouter();
   const { pushToast } = useToast();
-  const { t, isIndonesian } = useI18n();
+  const { t, locale, isIndonesian } = useI18n();
 
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
@@ -1557,7 +1557,7 @@ export function SiteWizard({
                   placeholder={
                     chat.isRecording ? t("dashboard.wizard.sttListening", "Mendengarkan...") :
                       chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
-                        chat.chatStage === "description" ? t("dashboard.wizard.descPlaceholder", "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar") :
+                        chat.chatStage === "description" ? getDynamicDescriptionPlaceholder(chat.suggestedHint, locale) :
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
