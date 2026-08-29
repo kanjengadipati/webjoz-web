@@ -340,6 +340,172 @@ export function suggestTypeFromName(name: string): { type?: string; subType?: st
   return null;
 }
 
+/**
+ * [STEP 1: AUTO-GENERATE DESCRIPTION FROM DESCRIPTIVE NAME]
+ * Auto-generates a rich, contextual business description from a descriptive business name
+ * when the user skips or provides an empty description.
+ *
+ * Example:
+ * - "Kafe Kopi Kenangan Jogja" -> "Menyajikan aneka sajian kopi spesial pilihan..."
+ * - "Bengkel Mobil Sentosa"    -> "Melayani jasa perawatan berkala, servis mesin..."
+ */
+export function generateDescriptionFromBusinessName(
+  businessName: string,
+  hint?: { type?: string; subType?: string } | null,
+  locale: string = "id"
+): string {
+  const name = businessName.trim();
+  if (!name) return locale === "en" ? "High quality products and services." : "Produk dan layanan berkualitas terpercaya.";
+
+  const subType = hint?.subType;
+  const isEn = locale === "en";
+
+  if (isEn) {
+    switch (subType) {
+      case "Kafe":
+        return `Serving specialty coffee, delicious treats, and a cozy atmosphere at ${name}.`;
+      case "Restoran & Warung Makan":
+        return `Offering authentic, high-quality dishes and exceptional dining experiences at ${name}.`;
+      case "Bakery & Pastry":
+        return `Freshly baked artisanal breads, cakes, and pastries crafted daily at ${name}.`;
+      case "Catering":
+        return `Professional catering services for events, weddings, and special occasions by ${name}.`;
+      case "Minuman & Bubble Tea":
+        return `Refreshing drinks, specialty teas, and delicious beverages crafted by ${name}.`;
+      case "Otomotif & Bengkel":
+        return `Professional automotive repair, periodic maintenance, and vehicle services by ${name}.`;
+      case "Rental Mobil & Kendaraan":
+        return `Reliable vehicle rental and transport solutions with well-maintained fleet at ${name}.`;
+      case "Hotel & Penginapan":
+        return `Comfortable accommodations with modern amenities and scenic hospitality at ${name}.`;
+      case "Travel & Wisata":
+        return `Curated tour packages, travel planning, and unforgettable holiday experiences with ${name}.`;
+      case "Klinik & Kesehatan":
+        return `Trusted medical care, health consultations, and professional clinical services by ${name}.`;
+      case "Salon & Kecantikan":
+        return `Premium hair, skin, and beauty treatments tailored for your style at ${name}.`;
+      case "Barbershop":
+        return `Modern haircuts, precision styling, and gentleman grooming services at ${name}.`;
+      case "Gym & Olahraga":
+        return `Complete fitness facilities, workout equipment, and personal coaching at ${name}.`;
+      case "Fotografer":
+        return `Capturing timeless moments with professional photography services by ${name}.`;
+      case "Videografer":
+        return `Cinematic video production, event coverage, and creative storytelling by ${name}.`;
+      case "Desainer":
+        return `Creative graphic design, branding, and visual identity solutions by ${name}.`;
+      case "Developer & IT":
+        return `Modern digital solutions, website creation, and software development by ${name}.`;
+      case "Digital & Marketing Agency":
+        return `Strategic digital marketing, social media campaigns, and brand growth solutions by ${name}.`;
+      case "Laundry":
+        return `Fast, clean, and fragrant laundry care with premium garment washing at ${name}.`;
+      case "Jasa Rumah & Kebersihan":
+        return `Professional home cleaning, repair, and property maintenance services by ${name}.`;
+      default:
+        return `Providing premium quality products and trusted professional services at ${name}.`;
+    }
+  }
+
+  // Bahasa Indonesia
+  switch (subType) {
+    case "Kafe":
+      return `Menyajikan aneka sajian kopi spesial pilihan, camilan lezat, dan tempat nongkrong nyaman bersama ${name}.`;
+    case "Restoran & Warung Makan":
+      return `Menyajikan aneka hidangan lezat dan berkualitas dengan cita rasa autentik khas ${name}.`;
+    case "Bakery & Pastry":
+      return `Memproduksi aneka roti, kue, dan pastry lezat segar setiap hari bersama ${name}.`;
+    case "Catering":
+      return `Melayani jasa katering prasmanan, nasi kotak, dan paket acara berkualitas bersama ${name}.`;
+    case "Minuman & Bubble Tea":
+      return `Menyajikan aneka minuman segar kekinian dengan aneka pilihan rasa favorit di ${name}.`;
+    case "Otomotif & Bengkel":
+      return `Melayani jasa perawatan berkala, servis mesin, dan perbaikan kendaraan terpercaya di ${name}.`;
+    case "Rental Mobil & Kendaraan":
+      return `Jasa rental dan sewa kendaraan terpercaya dengan armada bersih, nyaman, dan harga terjangkau di ${name}.`;
+    case "Hotel & Penginapan":
+      return `Penginapan nyaman dengan fasilitas lengkap, pelayanan ramah, dan lokasi strategis di ${name}.`;
+    case "Travel & Wisata":
+      return `Penyedia paket wisata menarik, open trip, dan perjalanan liburan seru terpercaya bersama ${name}.`;
+    case "Klinik & Kesehatan":
+      return `Layanan kesehatan terpercaya dengan tenaga medis profesional dan fasilitas modern di ${name}.`;
+    case "Salon & Kecantikan":
+      return `Layanan perawatan rambut, wajah, dan kecantikan profesional untuk penampilan terbaik Anda di ${name}.`;
+    case "Barbershop":
+      return `Potong rambut pria kekinian, grooming, dan styling profesional dengan suasana nyaman di ${name}.`;
+    case "Gym & Olahraga":
+      return `Pusat kebugaran lengkap dengan peralatan modern dan bimbingan instruktur profesional di ${name}.`;
+    case "Fotografer":
+      return `Jasa fotografi profesional untuk mengabadikan momen berharga, wedding, wisuda, dan produk bersama ${name}.`;
+    case "Videografer":
+      return `Produksi video sinematik, liputan acara, dan konten visual kreatif profesional bersama ${name}.`;
+    case "Desainer":
+      return `Layanan desain grafis, pembuatan logo, dan identitas visual kreatif untuk brand Anda di ${name}.`;
+    case "Developer & IT":
+      return `Solusi teknologi digital, pembuatan website, dan pengembangan aplikasi profesional bersama ${name}.`;
+    case "Digital & Marketing Agency":
+      return `Layanan digital marketing, optimasi media sosial, dan strategi promosi bisnis terpercaya bersama ${name}.`;
+    case "Laundry":
+      return `Jasa laundry cepat, bersih, wangi, dan higienis dengan perawatan pakaian terbaik di ${name}.`;
+    case "Jasa Rumah & Kebersihan":
+      return `Layanan kebersihan rumah, kantor, dan perawatan fasilitas profesional terpercaya bersama ${name}.`;
+    default:
+      return `Menyediakan produk dan layanan berkualitas tinggi yang terpercaya untuk pelanggan setia ${name}.`;
+  }
+}
+
+/**
+ * [STEP 3: DYNAMIC PLACEHOLDER BASED ON DETECTED BUSINESS TYPE]
+ * Returns a contextual chat input placeholder based on the inferred business type.
+ */
+export function getDynamicDescriptionPlaceholder(
+  hint?: { type?: string; subType?: string } | null,
+  locale: string = "id"
+): string {
+  const isEn = locale === "en";
+  const subType = hint?.subType;
+
+  if (isEn) {
+    switch (subType) {
+      case "Kafe":
+        return "Example: Specialty pour-over coffee, iced latte, pastries, cozy seating (Press Enter to skip)";
+      case "Restoran & Warung Makan":
+        return "Example: Authentic family recipes, grilled dishes, dine-in & takeaway (Press Enter to skip)";
+      case "Otomotif & Bengkel":
+        return "Example: Periodic engine tune-up, oil change, 24-hour emergency service (Press Enter to skip)";
+      case "Rental Mobil & Kendaraan":
+        return "Example: Self-drive or with chauffeur, daily & monthly car rental (Press Enter to skip)";
+      case "Fotografer":
+        return "Example: Wedding & pre-wedding photo sessions, graduation, studio portraits (Press Enter to skip)";
+      case "Klinik & Kesehatan":
+        return "Example: General dental check-up, teeth scaling, aesthetic orthodontic care (Press Enter to skip)";
+      case "Laundry":
+        return "Example: Kiloan wash, 3-hour express service, free pickup and delivery (Press Enter to skip)";
+      default:
+        return "Tell us briefly about your business (Press Enter to skip)...";
+    }
+  }
+
+  switch (subType) {
+    case "Kafe":
+      return "Contoh: Jual aneka kopi manual brew, espresso, tempat nongkrong asik (Tekan Enter untuk lewati)";
+    case "Restoran & Warung Makan":
+      return "Contoh: Menu masakan khas Nusantara, paket hemat makan siang, melayani delivery (Tekan Enter untuk lewati)";
+    case "Otomotif & Bengkel":
+      return "Contoh: Melayani servis rutin, ganti oli, tune up mesin, dan panggilan darurat (Tekan Enter untuk lewati)";
+    case "Rental Mobil & Kendaraan":
+      return "Contoh: Sewa mobil lepas kunci atau dengan sopir, harian/bulanan murah (Tekan Enter untuk lewati)";
+    case "Fotografer":
+      return "Contoh: Jasa foto pernikahan, prewedding, wisuda, dan foto katalog produk (Tekan Enter untuk lewati)";
+    case "Klinik & Kesehatan":
+      return "Contoh: Melayani pemeriksaan gigi umum, scaling, behel, dan perawatan estetik (Tekan Enter untuk lewati)";
+    case "Laundry":
+      return "Contoh: Cuci komplit kiloan, express 3 jam, dan gratis antar jemput (Tekan Enter untuk lewati)";
+    default:
+      return "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar (Tekan Enter untuk lewati)";
+  }
+}
+
 interface DescHintEntry {
   type: string;
   subType?: string;

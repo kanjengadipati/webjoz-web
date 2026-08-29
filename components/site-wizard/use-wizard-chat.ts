@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, MOOD_OPTIONS } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
-import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription } from "./helpers";
+import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
@@ -711,8 +711,25 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     preInferred?: { type?: string; subType?: string } | null
   ) => {
     const val = rawVal.trim();
-    const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat");
+    const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat").toLowerCase() || val.toLowerCase() === "skip";
+    
+    // [STEP 1: HANDLING SKIP / EMPTY INPUT]
+    // If the user skips, check if the business name itself is descriptive (e.g. "Kafe Kopi Kenangan", "Bengkel Mobil Sentosa")
     if (isSkip) {
+      const nameHint = suggestedHint || suggestTypeFromName(businessName);
+      
+      // If the business name has a clear category hint, auto-generate a rich description and proceed with high confidence!
+      if (nameHint?.type && nameHint?.subType) {
+        const autoDesc = generateDescriptionFromBusinessName(businessName, nameHint, locale);
+        const detectedLoc = extractLocationFromDescription(businessName);
+        if (detectedLoc && !serviceArea) {
+          setServiceArea(detectedLoc);
+        }
+        processDescriptionSubmission(autoDesc, { type: nameHint.type, subType: nameHint.subType });
+        return;
+      }
+
+      // Fallback for non-descriptive business names (e.g. "Abc", "Delta") -> show manual category chips
       setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {
@@ -727,12 +744,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       return;
     }
 
+    // =========================================================================
+    // STEP 2: DISPLAY USER MESSAGE & ATTEMPT LOCATION EXTRACTION
+    // Render the user message bubble and extract geographic location if mentioned.
+    // =========================================================================
     const userMsgId = Date.now().toString();
     setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
 
     setDescription(val);
 
-    // Extract location from description and pre-fill service area if not yet set
     if (!serviceArea) {
       const detected = extractLocationFromDescription(val);
       if (detected) setServiceArea(detected);
@@ -740,6 +760,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     let result: InferenceResult = { confidence: "low" };
 
+    // =========================================================================
+    // STEP 3: TAXONOMY CLASSIFICATION & COPYWRITING REFINEMENT
+    // Option A: If pre-inferred (e.g. from descriptive name or voice STT), use it directly.
+    // Option B: Call backend AI service to refine grammar and classify category.
+    // Option C: If AI fails / offline / 429, fall back to local regex & keyword dictionary.
+    // =========================================================================
     if (preInferred?.type && preInferred?.subType) {
       result = {
         type: preInferred.type,
@@ -748,7 +774,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       };
     } else {
       setIsAnalyzingDescription(true);
-      // 1. Primary: Call AI Classifier Server (understands context & semantics)
+      // 3A. Primary: Call AI Classifier Server (understands context & semantics)
       try {
         const aiRes = await processBusinessDescription(val, businessNameRef.current, locale);
         if (aiRes && aiRes.data) {
@@ -783,7 +809,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         setIsAnalyzingDescription(false);
       }
 
-      // 2. Fallback: If AI didn't return both type & subType (offline / timeout / token exhausted)
+      // 3B. Fallback: Local dictionary matching if AI was unavailable
       if (!result.type || !result.subType) {
         const localResult = inferTypeFromDescription(val);
         if (localResult.type) {
@@ -794,8 +820,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     setInferenceResult(result);
 
-    // Confidence HIGH: langsung lanjut ke language — tampilkan chip subtype sebentar
-    // lalu inject language prompt otomatis tanpa perlu klik user
+    // =========================================================================
+    // STEP 4: ROUTING & AUTO-ADVANCE
+    // If confidence is HIGH: show category chips for 2s, then auto-advance to language.
+    // If confidence is LOW: present manual category selection chips.
+    // =========================================================================
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
       const confirmedType = result.type.trim();
       const confirmedSubType = result.subType.trim();
