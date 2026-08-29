@@ -1417,18 +1417,17 @@ export function SiteWizard({
           })}
 
           {chat.isAnalyzingDescription && (
-            <div className="flex gap-2.5 justify-start animate-in fade-in duration-300">
+            <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
               <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
                 <SparkleGenAI className="w-[21px] h-[21px]" />
               </div>
               <div
-                className="rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-sm leading-relaxed text-slate-200 flex items-center gap-2"
+                className="rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5"
                 style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" }}
               >
-                <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />
-                <span className="text-xs text-slate-300">
-                  {t("dashboard.wizard.analyzingDescription", "Menganalisis bidang bisnis Anda...")}
-                </span>
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
               </div>
             </div>
           )}
