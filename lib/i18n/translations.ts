@@ -2035,6 +2035,9 @@ export interface Translations {
       selectMoodPrompt: string;
       selectLanguagePrompt: string;
       preparingWebsite: string;
+      preparingTheme: string;
+      preparingComponents: string;
+      preparingOpening: string;
       websiteReady: string;
       confirmCardTitle: string;
       confirmCardLabelName: string;
@@ -4289,6 +4292,9 @@ export const translations: Record<Locale, Translations> = {
         selectMoodPrompt: "Website Anda nanti mau tampil seperti apa?",
         selectLanguagePrompt: "Dalam bahasa apa website ini akan dibuat?",
         preparingWebsite: "Baik, AI sedang menyiapkan website Anda...",
+        preparingTheme: "Meracik tema & karakter visual...",
+        preparingComponents: "Menyusun layout & komponen website...",
+        preparingOpening: "Membuka tampilan website...",
         websiteReady: "Selamat! Website Anda siap. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda.",
         confirmCardTitle: "Hampir jadi — cek dan lengkapi",
         confirmCardLabelName: "Nama",
@@ -6588,6 +6594,9 @@ export const translations: Record<Locale, Translations> = {
         selectMoodPrompt: "How do you want your website to look?",
         selectLanguagePrompt: "What language should this website be in?",
         preparingWebsite: "Great! AI is preparing your website...",
+        preparingTheme: "Crafting visual theme & identity...",
+        preparingComponents: "Assembling layout & website components...",
+        preparingOpening: "Opening website preview...",
         websiteReady: "Congratulations! Your website is ready. Use the Edit button to customize content, then click Publish to go live.",
         confirmCardTitle: "Almost done — review and complete",
         confirmCardLabelName: "Name",

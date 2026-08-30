@@ -249,6 +249,54 @@ function InferenceConfirmWidget({
   );
 }
 
+function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => string }) {
+  const [progress, setProgress] = useState(18);
+  const [stageIndex, setStageIndex] = useState(0);
+
+  const stages = [
+    { key: "dashboard.wizard.preparingTheme", fallback: "Meracik tema & karakter visual..." },
+    { key: "dashboard.wizard.preparingComponents", fallback: "Menyusun layout & komponen website..." },
+    { key: "dashboard.wizard.preparingOpening", fallback: "Membuka tampilan website..." },
+  ];
+
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      setProgress(58);
+      setStageIndex(1);
+    }, 600);
+
+    const t2 = setTimeout(() => {
+      setProgress(96);
+      setStageIndex(2);
+    }, 1200);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  return (
+    <div className="mt-3 p-3 rounded-xl bg-black/40 border border-primary/20 shadow-inner space-y-2.5 animate-in fade-in zoom-in-95 duration-300">
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-2 text-primary font-medium truncate">
+          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-primary" />
+          <span className="truncate text-slate-200 text-[11px] sm:text-xs">
+            {t(stages[stageIndex].key, stages[stageIndex].fallback)}
+          </span>
+        </div>
+        <span className="text-[10px] font-mono text-primary/80 font-bold shrink-0">{progress}%</span>
+      </div>
+      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary via-emerald-400 to-primary transition-all duration-500 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function SiteWizard({
   mode,
   token,
@@ -266,6 +314,10 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  // Mobile transition delay ref to avoid jarring instant screen cuts
+  const mobileTransitionTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const pendingMobileScreenRef = React.useRef<"preview" | "loading" | null>(null);
 
   // Design token dari galeri landing page — disimpan di ref agar tetap dipakai
   // pada semua generasi (dan tersedia di runGenerate yang closure-bound).
@@ -409,8 +461,12 @@ export function SiteWizard({
       );
       if (device.isMobileRef.current) {
         device.setPreviewDevice("mobile");
-        if (generate.didGenerateRef.current) {
-          device.setMobileScreen("preview");
+        if (mobileTransitionTimerRef.current) {
+          pendingMobileScreenRef.current = "preview";
+        } else {
+          if (generate.didGenerateRef.current) {
+            device.setMobileScreen("preview");
+          }
         }
         return;
       }
@@ -420,6 +476,11 @@ export function SiteWizard({
       device.setMobilePreviewOpen(true);
     },
     onError: (message) => {
+      if (mobileTransitionTimerRef.current) {
+        clearTimeout(mobileTransitionTimerRef.current);
+        mobileTransitionTimerRef.current = null;
+      }
+      pendingMobileScreenRef.current = null;
       const lower = (message || "").toLowerCase();
       if (lower.includes("too many") || lower.includes("429") || lower.includes("rate limit")) {
         generate.setTooManyRequests(true);
@@ -437,7 +498,12 @@ export function SiteWizard({
   const cancelStreamRef = React.useRef(generate.cancelStream);
   cancelStreamRef.current = generate.cancelStream;
   React.useEffect(() => {
-    return () => { cancelStreamRef.current(); };
+    return () => {
+      cancelStreamRef.current();
+      if (mobileTransitionTimerRef.current) {
+        clearTimeout(mobileTransitionTimerRef.current);
+      }
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-scroll STT live transcript to the right/latest spoken words
@@ -540,7 +606,21 @@ export function SiteWizard({
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
     generate.didGenerateRef.current = true;
-    device.setMobileScreen("loading");
+
+    if (device.isMobileRef.current) {
+      if (mobileTransitionTimerRef.current) {
+        clearTimeout(mobileTransitionTimerRef.current);
+      }
+      pendingMobileScreenRef.current = "loading";
+      mobileTransitionTimerRef.current = setTimeout(() => {
+        const target = pendingMobileScreenRef.current || "loading";
+        device.setMobileScreen(target);
+        pendingMobileScreenRef.current = null;
+        mobileTransitionTimerRef.current = null;
+      }, 1800);
+    } else {
+      device.setMobileScreen("loading");
+    }
 
     chat.syncChatRefs({
       businessName: bName,
@@ -1410,6 +1490,9 @@ export function SiteWizard({
                   )}
                   {m.id === "init" && chat.isInitialTyping && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                  )}
+                  {m.isPreparing && (
+                    <PreparingWebsiteLoader t={t} />
                   )}
                 </div>
               </div>
