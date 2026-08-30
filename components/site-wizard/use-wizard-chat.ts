@@ -568,7 +568,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: displayText, moodValue: selectedMood },
-      { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda...") },
+      { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda..."), isPreparing: true },
     ]);
 
     setChatStage("done");
