@@ -97,14 +97,14 @@ export const BUSINESS_TYPES: BusinessTypeItem[] = [
 
 export const SUB_TYPES: Record<string, SubTypeItem[]> = {
   "Kuliner": [
-    { value: "Restoran & Warung Makan", emoji: "🍛", label: "Restoran & Warung Makan" },
+    { value: "Restoran & Warung Makan", emoji: "🍛", label: "Restoran" },
     { value: "Kafe", emoji: "☕", label: "Kafe" },
     { value: "Bakery & Pastry", emoji: "🥐", label: "Bakery" },
     { value: "Catering", emoji: "🍱", label: "Catering" },
     { value: "Minuman & Bubble Tea", emoji: "🧋", label: "Minuman" },
     { value: "Makanan Rumahan & Frozen Food", emoji: "🍲", label: "Makanan Rumahan" },
-    { value: "Kuliner Kaki Lima & Angkringan", emoji: "🍢", label: "Kaki Lima & Angkringan" },
-    { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar & Kuliner Tradisional" },
+    { value: "Kuliner Kaki Lima & Angkringan", emoji: "🍢", label: "Kaki Lima" },
+    { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar" },
     { value: "Herbal & Jamu", emoji: "🌿", label: "Herbal & Jamu" },
   ],
   "Toko": [
