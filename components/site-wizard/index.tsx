@@ -1500,7 +1500,7 @@ export function SiteWizard({
                   {m.id === "init" && chat.isInitialTyping && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
                   )}
-                  {m.isPreparing && (
+                  {m.isPreparing && device.mobileScreen === "chat" && (
                     <PreparingWebsiteLoader t={t} />
                   )}
                 </div>
