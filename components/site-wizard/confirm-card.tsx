@@ -171,7 +171,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                         className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all duration-200 max-w-full"
                         style={isSubSelected ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
                         <Tag className="w-2.5 h-2.5 shrink-0" />
-                        <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[125px] sm:max-w-[150px] truncate hover:max-w-none"}`}>
+                        <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[85px] sm:max-w-[100px] truncate hover:max-w-none"}`}>
                           {labelText}
                         </span>
                       </button>
