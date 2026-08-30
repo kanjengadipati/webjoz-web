@@ -216,7 +216,7 @@ function InferenceConfirmWidget({
               }`}
             >
               <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
-              <span className={`transition-all duration-200 text-left ${isSelected ? "max-w-none" : "max-w-[95px] sm:max-w-[110px] truncate"}`}>
+              <span className="text-left">
                 {labelText}
               </span>
               {isSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
@@ -1237,7 +1237,7 @@ export function SiteWizard({
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
                           <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                          <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[95px] sm:max-w-[110px] truncate"}`}>
+                          <span className="text-left">
                             {labelText}
                           </span>
                           {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
@@ -1433,7 +1433,7 @@ export function SiteWizard({
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
                               <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                              <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[95px] sm:max-w-[110px] truncate"}`}>
+                              <span className="text-left">
                                 {labelText}
                               </span>
                               {chat.suggestedHint?.subType === st.value && (
