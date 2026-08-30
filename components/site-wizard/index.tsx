@@ -252,6 +252,8 @@ function InferenceConfirmWidget({
 function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => string }) {
   const [progress, setProgress] = useState(18);
   const [stageIndex, setStageIndex] = useState(0);
+  const [fading, setFading] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   const stages = [
     { key: "dashboard.wizard.preparingTheme", fallback: "Meracik tema & karakter visual..." },
@@ -274,15 +276,32 @@ function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => s
       setProgress(100);
     }, 1600);
 
+    // Fade out 300ms after hitting 100%
+    const t4 = setTimeout(() => {
+      setFading(true);
+    }, 1900);
+
+    // Fully unmount after fade animation
+    const t5 = setTimeout(() => {
+      setHidden(true);
+    }, 2250);
+
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(t5);
     };
   }, []);
 
+  if (hidden) return null;
+
   return (
-    <div className="mt-3 p-3 rounded-xl bg-black/40 border border-primary/20 shadow-inner space-y-2.5 animate-in fade-in zoom-in-95 duration-300">
+    <div
+      className="mt-3 p-3 rounded-xl bg-black/40 border border-primary/20 shadow-inner space-y-2.5 animate-in fade-in zoom-in-95 duration-300"
+      style={{ opacity: fading ? 0 : 1, transition: fading ? "opacity 350ms ease-out" : undefined }}
+    >
       <div className="flex items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-2 text-primary font-medium truncate">
           <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-primary" />
