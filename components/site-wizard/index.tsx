@@ -18,6 +18,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ClipboardCheck,
   Clock,
   Code2,
   Coffee,
@@ -45,6 +46,7 @@ import {
   Phone,
   Plus,
   RefreshCw,
+  Scale,
   Scissors,
   ShoppingBag,
   ShoppingCart,
@@ -130,6 +132,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Laundry":                  Shirt,
   "Jasa Rumah & Kebersihan":  Home,
   "Pendidikan & Kursus":      GraduationCap,
+  "Biro Jasa & Perizinan":    ClipboardCheck,
   // Toko
   "Fashion & Pakaian":        Shirt,
   "Elektronik":               Smartphone,
@@ -148,6 +151,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Developer & IT":           Code2,
   "Digital & Marketing Agency": Zap,
   "Konsultan":                Briefcase,
+  "Notaris & PPAT":           Scale,
   "Musisi & Entertainer":     Music2,
   // Company Profile
   "Properti & Real Estate":   Home,
