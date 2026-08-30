@@ -30,7 +30,7 @@ export default function GalleryGrid({
           {...(!isEditorMode ? { type: "button" as const } : {})}
           onClick={() => setLightboxIndex(idx)}
           className="group relative overflow-hidden bg-cover bg-center shadow-sm hover:shadow-lg transition-all duration-300 text-left cursor-pointer p-0 border-0 w-full"
-          style={{ borderRadius: radius, aspectRatio: "4 / 3" }}
+          style={{ borderRadius: radius, aspectRatio: "4 / 3", background: "var(--dt-surface, #f1f5f9)" }}
         >
           {item.image_url && (
             <img
@@ -41,6 +41,13 @@ export default function GalleryGrid({
             />
           )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+          {item.video_url && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-black/60 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ring-2 ring-white/20">
+                <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7 ml-1"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          )}
           {(item.caption || isEditorMode) && (
             <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300`}>
               {isEditorMode ? (

@@ -22,15 +22,18 @@ import MenuSectionInner from "../sections/menu";
 import CatalogSectionInner from "../sections/catalog";
 import TestimonialsSectionInner from "../sections/testimonials";
 import GallerySection from "../sections/gallery";
+import StatsSectionInner from "../sections/stats";
+import PartnersSectionInner from "../sections/partners";
+import PricingSectionInner from "../sections/pricing";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 
 // Phase 3: Dual-schema support — normalize flat content to sections[] format
 // Phase 4: Layout engine defaults
 const ENGINE_ORDER: Record<string, string[]> = {
-  default: ["hero", "about", "benefits", "gallery", "cta", "faq", "contact"],
-  storytelling: ["hero", "about", "testimonials", "gallery", "faq", "cta", "contact"],
-  showcase: ["hero", "benefits", "catalog", "menu", "gallery", "testimonials", "cta", "contact"],
+  default: ["hero", "about", "benefits", "stats", "gallery", "partners", "pricing", "cta", "faq", "contact"],
+  storytelling: ["hero", "about", "stats", "testimonials", "gallery", "partners", "faq", "cta", "contact"],
+  showcase: ["hero", "benefits", "stats", "catalog", "menu", "gallery", "partners", "pricing", "testimonials", "cta", "contact"],
   minimal: ["hero", "contact"],
 };
 
@@ -41,7 +44,7 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 
   const engine = dt?.layout?.engine || "default";
   const baseOrder: string[] = dt?.layout?.section_order ?? ENGINE_ORDER[engine] ?? ENGINE_ORDER.default;
-  const extras = (["menu", "catalog", "testimonials", "gallery", "blog"] as const).filter(
+  const extras = (["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "blog"] as const).filter(
     (key) => content[key] && !baseOrder.includes(key)
   );
   const order = (() => {
@@ -97,7 +100,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       hero: "Hero", about: "Tentang", benefits: "Keunggulan",
       faq: "FAQ", cta: "CTA", contact: "Kontak",
       testimonials: "Testimoni", menu: "Menu", catalog: "Katalog",
-      gallery: "Galeri", blog: "Blog",
+      gallery: "Galeri", stats: "Statistik", partners: "Mitra / Klien",
+      pricing: "Paket & Harga", blog: "Blog",
     };
     const label = labelMap[key] || key;
 
@@ -239,6 +243,72 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             <MemoSectionContent content={{ gallery: g, dt }} render={(data) => {
               const { gallery: gg } = data;
               return gg ? <GallerySection gallery={gg} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> : null;
+            }} />
+          </MemoPreviewSectionWrapper>
+        );
+      }
+      case "stats": {
+        const s = sec.data as TemplateProps["content"]["stats"];
+        return (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ stats: s, dt }} render={(data) => {
+              const { stats: ss } = data;
+              return (
+                <StatsSectionInner
+                  stats={ss}
+                  design_token={dt}
+                  language={language}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "stats"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
+            }} />
+          </MemoPreviewSectionWrapper>
+        );
+      }
+      case "partners": {
+        const p = sec.data as TemplateProps["content"]["partners"];
+        return (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ partners: p, dt }} render={(data) => {
+              const { partners: pp } = data;
+              return (
+                <PartnersSectionInner
+                  partners={pp}
+                  design_token={dt}
+                  language={language}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "partners"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
+            }} />
+          </MemoPreviewSectionWrapper>
+        );
+      }
+      case "pricing": {
+        const pr = sec.data as TemplateProps["content"]["pricing"];
+        return (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ pricing: pr, dt }} render={(data) => {
+              const { pricing: ppr } = data;
+              return (
+                <PricingSectionInner
+                  pricing={ppr}
+                  design_token={dt}
+                  language={language}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "pricing"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
             }} />
           </MemoPreviewSectionWrapper>
         );

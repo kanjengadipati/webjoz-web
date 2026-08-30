@@ -1053,6 +1053,7 @@ interface MenuCatalogCardProps {
   badgeStyle?: React.CSSProperties;
   buttonClassName?: string;
   buttonStyle?: React.CSSProperties;
+  features?: string[] | null;
 }
 
 function MenuCatalogCard({
@@ -1061,7 +1062,7 @@ function MenuCatalogCard({
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
-  badgeStyle, buttonClassName, buttonStyle,
+  badgeStyle, buttonClassName, buttonStyle, features,
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -1167,6 +1168,16 @@ function MenuCatalogCard({
       <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
         {descriptionElement}
+        {features && features.length > 0 && (
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {features.map((f, fi) => (
+              <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="mt-auto pt-3">
           <AddToCartButton
             itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}

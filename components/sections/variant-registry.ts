@@ -53,6 +53,21 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
     { value: "lightbox-story", label: "Story Lightbox", description: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita." },
   ],
+  stats: [
+    { value: "counter-row", label: "Baris Metrik", description: "Baris metrik horizontal dengan pembatas rapi dan angka besar." },
+    { value: "card-grid", label: "Grid Kartu", description: "Kartu statistik melayang dengan ikon dan efek glow aksen." },
+    { value: "minimal-split", label: "Split Minimalis", description: "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan." },
+  ],
+  partners: [
+    { value: "logo-wall", label: "Grid Logo / Brand", description: "Grid logo/brand mitra dengan efek grayscale dan hover berwarna." },
+    { value: "marquee", label: "Ticker Berjalan", description: "Banner logo/nama brand berjalan otomatis tanpa henti (infinite loop)." },
+    { value: "pill-grid", label: "Grid Pill Interaktif", description: "Koleksi badge/pill brand modern dengan inisial dan tag kategori." },
+  ],
+  pricing: [
+    { value: "cards", label: "Kartu Paket", description: "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi." },
+    { value: "horizontal-rows", label: "Baris Horizontal", description: "Daftar paket horizontal dengan fitur di kiri dan harga/tombol di kanan." },
+    { value: "comparison-table", label: "Tabel Perbandingan", description: "Tabel perbandingan fitur lengkap antar paket layanan." },
+  ],
   menu: [
     { value: "grid", label: "Grid", group: "Dasar", description: "Kartu produk dalam grid dengan foto." },
     { value: "compact", label: "Ringkas", group: "Dasar", description: "List kompak nama + harga tanpa foto besar." },

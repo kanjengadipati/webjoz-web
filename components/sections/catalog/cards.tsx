@@ -29,7 +29,7 @@ export default function CatalogCards({ catalog }: CatalogVariantProps) {
             <h3 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}>{cat.name}</h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2rem" }}>
               {cat.items?.map((item, itemIdx) => (
-                <MenuCatalogCard
+              <MenuCatalogCard
                   key={itemIdx}
                   itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
                   itemName={item.name}
@@ -38,6 +38,7 @@ export default function CatalogCards({ catalog }: CatalogVariantProps) {
                   category={cat.name}
                   image_url={item.image_url}
                   badge={item.badge}
+                  features={item.features}
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}

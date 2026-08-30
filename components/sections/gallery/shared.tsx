@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText } from "../../templates/shared";
@@ -147,13 +147,38 @@ export function Lightbox({ items, index, onClose }: { items: GalleryItem[]; inde
         className="relative max-w-[90vw] max-h-[85vh] flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        {item.image_url && (
+        {item.video_url ? (() => {
+          const embedUrl = getVideoEmbedUrl(item.video_url);
+          const isRaw = embedUrl && /\.(mp4|webm|ogg|mov)/i.test(embedUrl);
+          if (!embedUrl) return null;
+          if (isRaw) {
+            return (
+              <video
+                src={embedUrl}
+                controls
+                autoPlay
+                className="max-w-full max-h-[75vh] rounded-lg shadow-2xl bg-black"
+                style={{ minWidth: "min(640px, 90vw)", minHeight: "min(360px, 50vh)" }}
+              />
+            );
+          }
+          return (
+            <iframe
+              src={embedUrl}
+              title={item.caption || "Video"}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              className="rounded-lg shadow-2xl bg-black"
+              style={{ width: "min(840px, 90vw)", height: "min(473px, 60vh)", border: "none" }}
+            />
+          );
+        })() : item.image_url ? (
           <img
             src={item.image_url}
             alt={item.alt_text || item.caption || "Gallery image"}
             className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
           />
-        )}
+        ) : null}
         {item.caption && (
           <p className="mt-3 text-white/80 text-sm text-center max-w-lg">{item.caption}</p>
         )}
@@ -165,3 +190,16 @@ export function Lightbox({ items, index, onClose }: { items: GalleryItem[]; inde
     </div>
   );
 }
+
+export function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/|youtube\.com\/shorts\/)?([\w-]{11})$/);
+  const ytFull = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{11})/);
+  if (ytFull) return `https://www.youtube.com/embed/${ytFull[1]}?autoplay=1&rel=0`;
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+  if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)) return url;
+  return null;
+}
+
+export { Play };

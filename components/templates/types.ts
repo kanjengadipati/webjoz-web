@@ -37,6 +37,8 @@ export interface MenuItem {
   price?: string;
   image_url?: string | null;
   image_credit?: ImageCredit | null;
+  tags?: string[] | null;
+  delivery_platforms?: { name: string; url: string }[] | null;
 }
 
 export interface MenuCategory {
@@ -49,6 +51,7 @@ export interface CatalogItem {
   description?: string;
   price?: string;
   badge?: string | null;
+  features?: string[] | null;
   image_url?: string | null;
   image_credit?: ImageCredit | null;
 }
@@ -59,10 +62,37 @@ export interface CatalogCategory {
 }
 
 export interface GalleryItem {
-  image_url: string;
+  image_url?: string | null;
+  video_url?: string | null;
   caption?: string;
   alt_text?: string;
   image_credit?: ImageCredit | null;
+}
+
+export interface StatItem {
+  value: string;
+  label: string;
+  description?: string;
+  icon?: string;
+}
+
+export interface PartnerItem {
+  name: string;
+  logo_url?: string | null;
+  url?: string | null;
+  category?: string | null;
+}
+
+export interface PricingPlan {
+  name: string;
+  price: string;
+  period?: string;
+  description?: string;
+  features: string[];
+  cta_text?: string;
+  cta_url?: string;
+  is_featured?: boolean;
+  badge?: string | null;
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
@@ -98,6 +128,9 @@ export interface DesignToken {
       gallery?: "grid" | "masonry" | "carousel" | "lightbox-story";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
+      stats?: "counter-row" | "card-grid" | "minimal-split";
+      partners?: "logo-wall" | "marquee" | "pill-grid";
+      pricing?: "cards" | "horizontal-rows" | "comparison-table";
       contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
       header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay" | "logo-with-cta-button" | "stacked-logo-tagline";
       footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band";
@@ -251,6 +284,24 @@ export interface TemplateProps {
       autoplay_speed?: number;
       show_dots?: boolean;
       show_arrows?: boolean;
+    };
+    stats?: {
+      title?: string;
+      eyebrow?: string;
+      subtitle?: string;
+      items: StatItem[];
+    };
+    partners?: {
+      title?: string;
+      eyebrow?: string;
+      subtitle?: string;
+      items: PartnerItem[];
+    };
+    pricing?: {
+      title: string;
+      eyebrow?: string;
+      subtitle?: string;
+      plans: PricingPlan[];
     };
     seo?: {
       title?: string;
