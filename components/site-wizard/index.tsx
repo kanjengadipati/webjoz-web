@@ -266,13 +266,18 @@ function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => s
     }, 600);
 
     const t2 = setTimeout(() => {
-      setProgress(96);
+      setProgress(90);
       setStageIndex(2);
     }, 1200);
+
+    const t3 = setTimeout(() => {
+      setProgress(100);
+    }, 1600);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
+      clearTimeout(t3);
     };
   }, []);
 
