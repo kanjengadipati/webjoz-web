@@ -4476,6 +4476,7 @@ export const translations: Record<Locale, Translations> = {
           "Jasa Rumah & Kebersihan": "Jasa Rumah & Kebersihan",
           "Pendidikan & Kursus": "Les & Kursus",
           // Kreatif & Profesional
+          "Konten Kreator": "Konten Kreator",
           "Fotografer": "Fotografer",
           "Videografer": "Videografer",
           "Desainer": "Desainer",
@@ -6778,6 +6779,7 @@ export const translations: Record<Locale, Translations> = {
           "Jasa Rumah & Kebersihan": "Home Care & Cleaning",
           "Pendidikan & Kursus": "Tutoring & Courses",
           // Creative & Professional
+          "Konten Kreator": "Content Creator",
           "Fotografer": "Photography",
           "Videografer": "Videography",
           "Desainer": "Design",
