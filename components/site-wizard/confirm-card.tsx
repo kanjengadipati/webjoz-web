@@ -157,19 +157,26 @@ export function ConfirmCard(props: ConfirmCardProps) {
               </div>
               {businessType && SUB_TYPES[businessType] && (
                 <div className="flex flex-wrap gap-1">
-                  {SUB_TYPES[businessType].map(st => (
-                    <button key={st.value} type="button" onClick={() => {
-                      const nextSubType = st.value === businessSubType ? "" : st.value;
-                      props.onSetBusinessSubType(nextSubType);
-                      props.onSetDescription("");
-                      props.onSetHasUnsavedEdits(true);
-                    }}
-                      className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all"
-                      style={businessSubType === st.value ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
-                      <Tag className="w-2.5 h-2.5" />
-                      <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
-                    </button>
-                  ))}
+                  {SUB_TYPES[businessType].map(st => {
+                    const isSubSelected = businessSubType === st.value;
+                    const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+                    return (
+                      <button key={st.value} type="button" onClick={() => {
+                        const nextSubType = isSubSelected ? "" : st.value;
+                        props.onSetBusinessSubType(nextSubType);
+                        props.onSetDescription("");
+                        props.onSetHasUnsavedEdits(true);
+                      }}
+                        title={labelText}
+                        className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all duration-200 max-w-full"
+                        style={isSubSelected ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
+                        <Tag className="w-2.5 h-2.5 shrink-0" />
+                        <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[125px] sm:max-w-[150px] truncate hover:max-w-none"}`}>
+                          {labelText}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>

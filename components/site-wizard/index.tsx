@@ -201,21 +201,25 @@ function InferenceConfirmWidget({
         {visibleChips.map((st) => {
           const isSelected = selectedSubType === st.value;
           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+          const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
           return (
             <button
               key={st.value}
               type="button"
+              title={labelText}
               onClick={() => { if (!effectivelyLocked) onConfirmWithSubType(st.value); }}
               disabled={effectivelyLocked}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all active:scale-95 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 active:scale-95 cursor-pointer max-w-full ${
                 isSelected
                   ? `border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30 ${effectivelyLocked ? "opacity-80" : ""}`
                   : `text-slate-300 border-white/[0.08] bg-white/[0.04] ${effectivelyLocked ? "opacity-35 cursor-default" : "hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`
               }`}
             >
               <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
-              <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
-              {isSelected && <span className="text-primary text-[10px]">✓</span>}
+              <span className={`transition-all duration-200 text-left ${isSelected ? "max-w-none" : "max-w-[135px] sm:max-w-[170px] truncate hover:max-w-none"}`}>
+                {labelText}
+              </span>
+              {isSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
             </button>
           );
         })}
@@ -1222,17 +1226,21 @@ export function SiteWizard({
                     {subTypes.map((st) => {
                       const isSubSelected = chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+                      const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
                       return (
                         <button
                           key={st.value}
                           type="button"
+                          title={labelText}
                           onClick={() => !isLocked && handleSelectSubType(st.value)}
                           disabled={isLocked}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
                           <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                          <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
-                          {isSubSelected && <span className="text-primary text-[10px]">✓</span>}
+                          <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[135px] sm:max-w-[170px] truncate hover:max-w-none"}`}>
+                            {labelText}
+                          </span>
+                          {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                         </button>
                       );
                     })}
@@ -1414,20 +1422,24 @@ export function SiteWizard({
                         {subTypes.map((st) => {
                           const isSubSelected = chat.businessSubType === st.value;
                           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+                          const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
                           return (
                             <button
                               key={st.value}
                               type="button"
+                              title={labelText}
                               onClick={() => !isLocked && handleSelectSubType(st.value)}
                               disabled={isLocked}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer active:scale-95 ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
                               <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                              <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
+                              <span className={`transition-all duration-200 text-left ${isSubSelected ? "max-w-none" : "max-w-[135px] sm:max-w-[170px] truncate hover:max-w-none"}`}>
+                                {labelText}
+                              </span>
                               {chat.suggestedHint?.subType === st.value && (
-                                <span className="text-[10px] text-amber-300">✨</span>
+                                <span className="text-[10px] text-amber-300 shrink-0">✨</span>
                               )}
-                              {isSubSelected && <span className="text-primary text-[10px]">✓</span>}
+                              {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                             </button>
                           );
                         })}
