@@ -4478,6 +4478,7 @@ export const translations: Record<Locale, Translations> = {
           "Laundry": "Laundry",
           "Jasa Rumah & Kebersihan": "Jasa Rumah & Kebersihan",
           "Pendidikan & Kursus": "Les & Kursus",
+          "Biro Jasa & Perizinan": "Biro Jasa",
           // Kreatif & Profesional
           "Konten Kreator": "Konten Kreator",
           "Fotografer": "Fotografer",
@@ -4486,6 +4487,7 @@ export const translations: Record<Locale, Translations> = {
           "Developer & IT": "Developer & IT",
           "Digital & Marketing Agency": "Digital Agency",
           "Konsultan": "Konsultan",
+          "Notaris & PPAT": "Notaris & PPAT",
           "Musisi & Entertainer": "Musisi & Hiburan",
           // Company Profile
           "Properti & Real Estate": "Properti",
@@ -6784,6 +6786,7 @@ export const translations: Record<Locale, Translations> = {
           "Laundry": "Laundry",
           "Jasa Rumah & Kebersihan": "Home Care & Cleaning",
           "Pendidikan & Kursus": "Tutoring & Courses",
+          "Biro Jasa & Perizinan": "Licensing & Permit Agency",
           // Creative & Professional
           "Konten Kreator": "Content Creator",
           "Fotografer": "Photography",
@@ -6792,6 +6795,7 @@ export const translations: Record<Locale, Translations> = {
           "Developer & IT": "Developer & IT",
           "Digital & Marketing Agency": "Digital & Marketing Agency",
           "Konsultan": "Consulting",
+          "Notaris & PPAT": "Notary & Land Deeds",
           "Musisi & Entertainer": "Music & Entertainment",
           // Company Profile
           "Properti & Real Estate": "Property & Real Estate",
