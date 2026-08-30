@@ -2786,6 +2786,496 @@ export default function SectionForms({
         </>
       )}
 
+      {/* STATS FORM */}
+      {activeTab === "stats" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
+            <p className="font-semibold text-primary">📈 Section Statistik & Pencapaian</p>
+            <p className="mt-1 text-primary/80">
+              Tampilkan angka pencapaian, jumlah subscriber, kepuasan klien, atau metrik kunci untuk membangun kredibilitas instan.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow (Label Atas)</label>
+              <input
+                type="text"
+                value={content.stats?.eyebrow || ""}
+                onChange={(e) => updateField("stats", "eyebrow", e.target.value)}
+                placeholder="cth. DALAM ANGKA"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <input
+                type="text"
+                value={content.stats?.title || ""}
+                onChange={(e) => updateField("stats", "title", e.target.value)}
+                placeholder="cth. Pencapaian yang Berbicara"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <input
+                type="text"
+                value={content.stats?.subtitle || ""}
+                onChange={(e) => updateField("stats", "subtitle", e.target.value)}
+                placeholder="cth. Hasil nyata dari dedikasi dan kerja keras kami"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Angka / Metrik</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const items = [...(content.stats?.items || []), { value: "100+", label: "Metrik Baru", description: "", icon: "TrendingUp" }];
+                  updateField("stats", "items", items);
+                }}
+                className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Metrik
+              </button>
+            </div>
+
+            {(content.stats?.items || []).map((item: any, idx: number) => (
+              <div key={idx} className="p-3 border border-border rounded-xl space-y-2.5 bg-muted/40">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-slate-500">Metrik #{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const items = (content.stats?.items || []).filter((_: any, i: number) => i !== idx);
+                      updateField("stats", "items", items);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-3 h-3" /> Hapus
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Angka / Value</label>
+                    <input
+                      type="text"
+                      value={item.value || ""}
+                      onChange={(e) => {
+                        const items = [...(content.stats?.items || [])];
+                        items[idx] = { ...items[idx], value: e.target.value };
+                        updateField("stats", "items", items);
+                      }}
+                      placeholder="cth. 1.2M atau 98%"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Label</label>
+                    <input
+                      type="text"
+                      value={item.label || ""}
+                      onChange={(e) => {
+                        const items = [...(content.stats?.items || [])];
+                        items[idx] = { ...items[idx], label: e.target.value };
+                        updateField("stats", "items", items);
+                      }}
+                      placeholder="cth. Subscribers"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 items-center">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Ikon</label>
+                    <IconPicker
+                      value={item.icon || "TrendingUp"}
+                      onChange={(iconName) => {
+                        const items = [...(content.stats?.items || [])];
+                        items[idx] = { ...items[idx], icon: iconName };
+                        updateField("stats", "items", items);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Keterangan (Opsional)</label>
+                    <input
+                      type="text"
+                      value={item.description || ""}
+                      onChange={(e) => {
+                        const items = [...(content.stats?.items || [])];
+                        items[idx] = { ...items[idx], description: e.target.value };
+                        updateField("stats", "items", items);
+                      }}
+                      placeholder="cth. Aktif di 3 platform"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PARTNERS FORM */}
+      {activeTab === "partners" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
+            <p className="font-semibold text-primary">🤝 Section Mitra & Klien</p>
+            <p className="mt-1 text-primary/80">
+              Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+              <input
+                type="text"
+                value={content.partners?.eyebrow || ""}
+                onChange={(e) => updateField("partners", "eyebrow", e.target.value)}
+                placeholder="cth. DIPERCAYA OLEH"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <input
+                type="text"
+                value={content.partners?.title || ""}
+                onChange={(e) => updateField("partners", "title", e.target.value)}
+                placeholder="cth. Brand yang Telah Berkolaborasi"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <input
+                type="text"
+                value={content.partners?.subtitle || ""}
+                onChange={(e) => updateField("partners", "subtitle", e.target.value)}
+                placeholder="cth. Lebih dari 50+ brand telah mempercayai karya kami"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Mitra / Brand</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const items = [...(content.partners?.items || []), { name: "Nama Brand", category: "", url: null, logo_url: null }];
+                  updateField("partners", "items", items);
+                }}
+                className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Mitra
+              </button>
+            </div>
+
+            {(content.partners?.items || []).map((partner: any, idx: number) => (
+              <div key={idx} className="p-3 border border-border rounded-xl space-y-2 bg-muted/40">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-slate-500">Mitra #{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const items = (content.partners?.items || []).filter((_: any, i: number) => i !== idx);
+                      updateField("partners", "items", items);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-3 h-3" /> Hapus
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Nama Brand / Mitra</label>
+                    <input
+                      type="text"
+                      value={partner.name || ""}
+                      onChange={(e) => {
+                        const items = [...(content.partners?.items || [])];
+                        items[idx] = { ...items[idx], name: e.target.value };
+                        updateField("partners", "items", items);
+                      }}
+                      placeholder="cth. Tokopedia"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Kategori / Industri</label>
+                    <input
+                      type="text"
+                      value={partner.category || ""}
+                      onChange={(e) => {
+                        const items = [...(content.partners?.items || [])];
+                        items[idx] = { ...items[idx], category: e.target.value };
+                        updateField("partners", "items", items);
+                      }}
+                      placeholder="cth. E-Commerce"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-400 mb-0.5 block">Tautan Website (Opsional)</label>
+                  <input
+                    type="text"
+                    value={partner.url || ""}
+                    onChange={(e) => {
+                      const items = [...(content.partners?.items || [])];
+                      items[idx] = { ...items[idx], url: e.target.value || null };
+                      updateField("partners", "items", items);
+                    }}
+                    placeholder="https://example.com"
+                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PRICING FORM */}
+      {activeTab === "pricing" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
+            <p className="font-semibold text-primary">💳 Section Paket Harga & Rate Card</p>
+            <p className="mt-1 text-primary/80">
+              Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+              <input
+                type="text"
+                value={content.pricing?.eyebrow || ""}
+                onChange={(e) => updateField("pricing", "eyebrow", e.target.value)}
+                placeholder="cth. RATE CARD / PILIHAN PAKET"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <input
+                type="text"
+                value={content.pricing?.title || ""}
+                onChange={(e) => updateField("pricing", "title", e.target.value)}
+                placeholder="cth. Paket Kolaborasi & Jasa"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <input
+                type="text"
+                value={content.pricing?.subtitle || ""}
+                onChange={(e) => updateField("pricing", "subtitle", e.target.value)}
+                placeholder="cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda"
+                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Paket</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const plans = [...(content.pricing?.plans || []), {
+                    name: "Paket Baru",
+                    price: "Rp 1.000.000",
+                    period: "/proyek",
+                    description: "Deskripsi paket",
+                    features: ["Fitur 1", "Fitur 2"],
+                    cta_text: "Pilih Paket",
+                    cta_url: "#contact",
+                    is_featured: false,
+                    badge: null,
+                  }];
+                  updateField("pricing", "plans", plans);
+                }}
+                className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Paket
+              </button>
+            </div>
+
+            {(content.pricing?.plans || []).map((plan: any, idx: number) => (
+              <div key={idx} className="p-3.5 border border-border rounded-xl space-y-3 bg-muted/40">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-slate-300">Paket #{idx + 1}: {plan.name || "Tanpa Nama"}</span>
+                    {plan.is_featured && <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-extrabold">FEATURED</span>}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const plans = (content.pricing?.plans || []).filter((_: any, i: number) => i !== idx);
+                      updateField("pricing", "plans", plans);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-3 h-3" /> Hapus
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Nama Paket</label>
+                    <input
+                      type="text"
+                      value={plan.name || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], name: e.target.value };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="cth. Basic / Pro"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Badge (cth. Terpopuler)</label>
+                    <input
+                      type="text"
+                      value={plan.badge || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], badge: e.target.value || null };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="cth. Paling Populer"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Harga</label>
+                    <input
+                      type="text"
+                      value={plan.price || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], price: e.target.value };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="cth. Rp 2.500.000"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 font-semibold text-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Periode / Satuan</label>
+                    <input
+                      type="text"
+                      value={plan.period || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], period: e.target.value };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="cth. /bulan atau /video"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-slate-400 mb-0.5 block">Deskripsi Singkat</label>
+                  <input
+                    type="text"
+                    value={plan.description || ""}
+                    onChange={(e) => {
+                      const plans = [...(content.pricing?.plans || [])];
+                      plans[idx] = { ...plans[idx], description: e.target.value };
+                      updateField("pricing", "plans", plans);
+                    }}
+                    placeholder="cth. Cocok untuk kampanye brand skala menengah"
+                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                  />
+                </div>
+
+                {/* Features list */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-slate-400 block">Daftar Fitur / Fasilitas (1 baris per fitur)</label>
+                  <textarea
+                    rows={3}
+                    value={(plan.features || []).join("\n")}
+                    onChange={(e) => {
+                      const lines = e.target.value.split("\n").filter((l) => l.trim().length > 0);
+                      const plans = [...(content.pricing?.plans || [])];
+                      plans[idx] = { ...plans[idx], features: lines };
+                      updateField("pricing", "plans", plans);
+                    }}
+                    placeholder="1 Video TikTok/Reels&#10;Termasuk Hak Cipta 3 Bulan&#10;2x Revisi Video"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none font-mono"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">Teks Tombol CTA</label>
+                    <input
+                      type="text"
+                      value={plan.cta_text || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], cta_text: e.target.value };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="cth. Pilih Paket"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 mb-0.5 block">URL Tombol CTA</label>
+                    <input
+                      type="text"
+                      value={plan.cta_url || ""}
+                      onChange={(e) => {
+                        const plans = [...(content.pricing?.plans || [])];
+                        plans[idx] = { ...plans[idx], cta_url: e.target.value };
+                        updateField("pricing", "plans", plans);
+                      }}
+                      placeholder="#contact"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    />
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-2 cursor-pointer pt-1">
+                  <input
+                    type="checkbox"
+                    checked={!!plan.is_featured}
+                    onChange={(e) => {
+                      const plans = [...(content.pricing?.plans || [])];
+                      plans[idx] = { ...plans[idx], is_featured: e.target.checked };
+                      updateField("pricing", "plans", plans);
+                    }}
+                    className="rounded text-primary focus:ring-0"
+                  />
+                  <span className="text-[11px] text-slate-300">Tandai sebagai paket unggulan (Highlight / Featured)</span>
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── FLOATING BUTTON FORM ── */}
       {activeTab === "floating" && (
         <div className="space-y-4">

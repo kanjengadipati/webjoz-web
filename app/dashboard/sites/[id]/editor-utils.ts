@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -18,30 +18,33 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "testimonials", "menu", "catalog", "gallery", "blog", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "partners", "pricing", "blog", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
 // (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "testimonials", "gallery", "blog", "faq"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "blog", "faq"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
-  header:       { label: "Header",       icon: Layout },
-  hero:         { label: "Hero",         icon: Layout },
-  about:        { label: "Tentang",      icon: User },
-  benefits:     { label: "Keunggulan",   icon: Award },
-  testimonials: { label: "Testimoni",    icon: Star },
-  menu:         { label: "Menu",         icon: UtensilsCrossed },
-  catalog:      { label: "Katalog",      icon: ShoppingBag },
-  gallery:      { label: "Galeri",       icon: Camera },
-  blog:         { label: "Blog",         icon: BookOpen },
-  faq:          { label: "FAQ",          icon: HelpCircle },
-  cta:          { label: "CTA",          icon: SparkleIcon },
-  contact:      { label: "Kontak",       icon: Mail },
-  footer:       { label: "Footer",       icon: BookOpen },
-  seo:          { label: "SEO",          icon: Globe },
-  floating:     { label: "Tombol Aksi",  icon: MessageCircle },
+  header:       { label: "Header",          icon: Layout },
+  hero:         { label: "Hero",            icon: Layout },
+  about:        { label: "Tentang",         icon: User },
+  benefits:     { label: "Keunggulan",      icon: Award },
+  stats:        { label: "Statistik",       icon: TrendingUp },
+  testimonials: { label: "Testimoni",       icon: Star },
+  menu:         { label: "Menu",            icon: UtensilsCrossed },
+  catalog:      { label: "Katalog",         icon: ShoppingBag },
+  gallery:      { label: "Galeri",          icon: Camera },
+  partners:     { label: "Mitra / Klien",   icon: Handshake },
+  pricing:      { label: "Paket & Harga",   icon: CreditCard },
+  blog:         { label: "Blog",            icon: BookOpen },
+  faq:          { label: "FAQ",             icon: HelpCircle },
+  cta:          { label: "CTA",             icon: SparkleIcon },
+  contact:      { label: "Kontak",          icon: Mail },
+  footer:       { label: "Footer",          icon: BookOpen },
+  seo:          { label: "SEO",             icon: Globe },
+  floating:     { label: "Tombol Aksi",     icon: MessageCircle },
 };
 
 export const AI_SUGGESTIONS: Record<string, string[]> = {
@@ -49,13 +52,16 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   hero:         ["Buat hero lebih emosional dan menggugah", "Tekankan masalah utama pelanggan", "Buat CTA lebih spesifik dan mendesak"],
   about:        ["Jadikan cerita bisnis lebih hangat", "Tambahkan detail konkret: tahun, lokasi, bahan", "Buat narasi lebih personal dan manusiawi"],
   benefits:     ["Ubah benefit menjadi hasil nyata", "Tambahkan angka/stat jika memungkinkan", "Buat tiap poin lebih singkat dan tajam"],
+  stats:        ["Tonjolkan angka pencapaian tertinggi", "Buat label metrik lebih meyakinkan", "Sesuaikan angka dengan skala bisnis"],
   testimonials: ["Buat kutipan lebih spesifik dan believable", "Tambahkan detail nyata di setiap testimoni", "Variasikan profil pemberi testimoni"],
   menu:         ["Buat nama menu lebih menggugah selera", "Tambahkan deskripsi yang membuat lapar", "Perbarui harga semua item menu"],
   catalog:      ["Buat nama produk lebih menarik", "Tambahkan badge Best Seller untuk produk terlaris", "Perbarui harga dan deskripsi produk"],
+  gallery:      ["Tambahkan foto suasana dan interior", "Gunakan foto asli untuk membangun kepercayaan", "Pilih foto dengan pencahayaan yang baik"],
+  partners:     ["Tambahkan brand mitra ternama", "Tuliskan kategori partner yang relevan", "Urutkan mitra paling bergengsi di awal"],
+  pricing:      ["Beri badge Populer pada paket terbaik", "Perjelas daftar fitur di tiap paket", "Buat CTA tiap tier lebih persuasif"],
   faq:          ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
   cta:          ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Tambahkan trust signal yang mengurangi friction"],
   contact:      ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
-  gallery:      ["Tambahkan foto suasana dan interior", "Gunakan foto asli untuk membangun kepercayaan", "Pilih foto dengan pencahayaan yang baik"],
   footer:       ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
 };
@@ -65,13 +71,16 @@ export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
   hero:         ["Make the hero more emotional and evocative", "Emphasize the customer's main problem", "Make the CTA more specific and urgent"],
   about:        ["Make the business story warmer", "Add concrete details: year, location, materials", "Make the narrative more personal and human"],
   benefits:     ["Turn benefits into real outcomes", "Add numbers/stats where possible", "Make each point shorter and sharper"],
+  stats:        ["Highlight the most impressive metrics", "Make stat labels more compelling", "Scale stats to match business level"],
   testimonials: ["Make quotes more specific and believable", "Add real detail to every testimonial", "Vary the profile of testimonial givers"],
   menu:         ["Make menu names more appetizing", "Add descriptions that make people hungry", "Update the price of all menu items"],
   catalog:      ["Make product names more appealing", "Add a Best Seller badge for top products", "Update product prices and descriptions"],
+  gallery:      ["Add ambiance and interior photos", "Use real photos to build trust", "Choose photos with good lighting"],
+  partners:     ["Add notable partner brands", "Include relevant partner categories", "Put top prestigious brands first"],
+  pricing:      ["Add a Popular badge to the best tier", "Clarify features included in each plan", "Make plan CTA buttons more persuasive"],
   faq:          ["Answer objections before purchase", "Make answers friendlier and more reassuring", "Add pricing or ordering process info"],
   cta:          ["Make the CTA stronger for conversion", "Write a headline that closes doubts", "Add trust signals that reduce friction"],
   contact:      ["Complete contact info to look more trustworthy", "Make visiting instructions clearer", "Write contact copy in a friendly tone"],
-  gallery:      ["Add ambiance and interior photos", "Use real photos to build trust", "Choose photos with good lighting"],
   footer:       ["Make the footer tagline more memorable", "Tighten the copyright and tagline", "Match the footer tone with the brand"],
   seo:          ["Make the SEO title more selling", "Include city and main service", "Make the meta description more click-worthy", "Generate SEO keywords", "Suggest OG type and Twitter card"],
 };
