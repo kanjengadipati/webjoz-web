@@ -585,12 +585,45 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Makanan Rumahan & Frozen Food",
     keywords: [
       // ID
-      "frozen food", "makanan beku", "makanan rumahan", "masakan rumah", "sambal kemasan", "lauk pauk", "cloud kitchen",
-      "ghost kitchen", "cemilan", "snack kiloan", "jastip makanan", "nugget homemade", "dimsum beku", "kue basah",
+      "makanan rumahan", "masakan rumah", "dapur rumahan", "lauk pauk", "sambal kemasan", "cloud kitchen",
+      "ghost kitchen", "cemilan", "snack kiloan", "jastip makanan", "catering rumahan", "meal prep",
       // EN
-      "frozen food", "home cooked", "homemade food", "packaged meals", "ready to eat", "meal packs",
+      "home cooked", "homemade food", "packaged meals", "ready to eat", "meal packs",
     ],
-    weight: 3,
+    weight: 4,
+  },
+  {
+    type: "Kuliner",
+    subType: "Frozen Food Homemade",
+    keywords: [
+      // ID
+      "frozen food", "makanan beku", "nugget homemade", "dimsum beku", "siomay beku", "bakso beku", "risol beku", "empanada beku", "frozen",
+      // EN
+      "frozen food", "frozen meals", "frozen snacks",
+    ],
+    weight: 4,
+  },
+  {
+    type: "Kuliner",
+    subType: "Kuliner Kaki Lima & Angkringan",
+    keywords: [
+      // ID
+      "angkringan", "kaki lima", "street food", "nasi kucing", "wedangan", "sate taichan", "taichan", "seblak", "lesehan", "gerobak", "street food jogja",
+      // EN
+      "street food", "food stall", "night market food",
+    ],
+    weight: 4,
+  },
+  {
+    type: "Kuliner",
+    subType: "Jajanan Pasar & Kuliner Tradisional",
+    keywords: [
+      // ID
+      "jajanan pasar", "kuliner tradisional", "kue basah", "jenang", "lupis", "getuk", "lemper", "cenil", "klepon", "snack box kue", "kue tradisional", "pasaran",
+      // EN
+      "traditional snacks", "traditional delicacies", "market snacks",
+    ],
+    weight: 4,
   },
   {
     type: "Kuliner",
@@ -602,7 +635,7 @@ const DESC_HINTS: DescHintEntry[] = [
       // EN
       "herbal", "herbs", "honey", "raw honey", "natural supplements", "herbal drinks", "traditional herbal",
     ],
-    weight: 3,
+    weight: 4,
   },
 
   // ── TOKO & UMKM / RETAIL & SMALL BUSINESS ──
@@ -864,6 +897,19 @@ const DESC_HINTS: DescHintEntry[] = [
     ],
     weight: 3,
   },
+  {
+    type: "Layanan & Reservasi",
+    subType: "Biro Jasa & Perizinan",
+    keywords: [
+      // ID
+      "biro jasa", "pbg", "persetujuan bangunan gedung", "imb", "simbg", "izin bangunan", "izin mendirikan bangunan",
+      "jasa pengurusan", "pengurusan pbg", "pengurusan izin", "izin usaha", "perizinan", "perijinan", "legalitas usaha",
+      "stnk", "bpkb", "samsat", "perpanjangan stnk", "paspor", "nib", "oss", "sertifikat tanah", "urus izin", "urus surat", "balik nama",
+      // EN
+      "permits", "licensing", "permit agency", "building permit", "document service", "license consultant",
+    ],
+    weight: 5,
+  },
 
   // ── KREATIF & PROFESIONAL ──
   {
@@ -871,12 +917,24 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Konsultan",
     keywords: [
       // ID
-      "konsultan", "konsultasi", "pembinaan", "pelatihan", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit", "konsultan it", "konsultan hukum", "notaris",
+      "konsultan", "konsultasi", "pembinaan", "pelatihan", "pajak", "akuntansi", "keuangan", "bisnis konsultan", "audit", "konsultan it", "konsultan hukum", "penasehat bisnis",
       // EN
       "consultant", "consulting", "advisor", "advisory", "coaching", "mentor", "mentoring", "training", "legal", "accounting",
       "finance", "tax", "business consulting", "management consulting", "it consulting",
     ],
     weight: 4,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Notaris & PPAT",
+    keywords: [
+      // ID
+      "notaris", "ppat", "pejabat pembuat akta tanah", "akta notaris", "akta tanah", "akta jual beli", "ajb", "hibah tanah",
+      "hak tanggungan", "kantor notaris", "kantor ppat", "kantor hukum", "advokat", "pengacara", "legalitas hukum", "perjanjian legal", "legalisasi",
+      // EN
+      "notary", "land deeds", "law firm", "attorney", "lawyer", "legal counsel", "deed",
+    ],
+    weight: 5,
   },
   {
     type: "Kreatif & Profesional",
