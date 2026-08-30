@@ -35,7 +35,6 @@ import {
   Loader2,
   Mic,
   Mic2,
-  MessageCircle,
   Monitor,
   Music2,
   Package,
@@ -1727,15 +1726,6 @@ export function SiteWizard({
           }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-          <button
-            type="button"
-            onClick={() => device.setMobileScreen("chat")}
-            aria-label={t("dashboard.wizard.backToChat", "Kembali ke chat")}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50 text-slate-300 transition-all active:scale-95 md:hidden"
-          >
-            <MessageCircle className="h-4 w-4" />
-          </button>
-
           <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
             <button
               type="button"
