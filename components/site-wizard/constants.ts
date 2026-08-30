@@ -104,7 +104,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Minuman & Bubble Tea", emoji: "🧋", label: "Minuman" },
     { value: "Makanan Rumahan & Frozen Food", emoji: "🍲", label: "Makanan Rumahan" },
     { value: "Kuliner Kaki Lima & Angkringan", emoji: "🍢", label: "Kaki Lima & Angkringan" },
-    { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar" },
+    { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar & Kuliner Tradisional" },
     { value: "Herbal & Jamu", emoji: "🌿", label: "Herbal & Jamu" },
   ],
   "Toko": [

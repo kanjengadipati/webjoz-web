@@ -4452,7 +4452,7 @@ export const translations: Record<Locale, Translations> = {
           "Minuman & Bubble Tea": "Minuman",
           "Makanan Rumahan & Frozen Food": "Makanan Rumahan & Frozen Food",
           "Kuliner Kaki Lima & Angkringan": "Kaki Lima & Angkringan",
-          "Jajanan Pasar & Kuliner Tradisional": "Jajanan Pasar",
+          "Jajanan Pasar & Kuliner Tradisional": "Jajanan Pasar & Kuliner Tradisional",
           "Herbal & Jamu": "Herbal & Jamu",
           // Toko
           "Fashion & Pakaian": "Fashion",
