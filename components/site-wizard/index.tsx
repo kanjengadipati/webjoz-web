@@ -950,22 +950,26 @@ export function SiteWizard({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preview.previewState]);
 
-  // Rekomendasi hint — effect terpisah supaya tidak bergantung timing templatePool
+  // Rekomendasi hint — effect terpisah supaya tidak bergantung timing templatePool.
+  // Di mobile, tunggu sampai user benar-benar di layar preview (mobileScreen === "preview")
+  // agar popup tidak muncul saat layar chat masih aktif.
   React.useEffect(() => {
     if (preview.previewState !== "result") return;
     if (preview.templatePool.length <= 1) return;
+    if (device.isMobile && device.mobileScreen !== "preview") return;
     try {
       if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
-        setTimeout(() => {
+        const hintTimer = setTimeout(() => {
           setShowRekomendasiHint(true);
           setTimeout(() => {
             setShowRekomendasiHint(false);
             try { localStorage.setItem("wiz_rekomendasi_hint_seen", "1"); } catch { /* noop */ }
           }, 6000);
         }, 1200);
+        return () => clearTimeout(hintTimer);
       }
     } catch { /* localStorage unavailable */ }
-  }, [preview.previewState, preview.templatePool.length]);
+  }, [preview.previewState, preview.templatePool.length, device.isMobile, device.mobileScreen]);
 
   return (
     <div
@@ -1743,7 +1747,7 @@ export function SiteWizard({
           {preview.templatePool.length > 1 && preview.previewState === "result" && (
             <div className="relative shrink-0">
               {showRekomendasiHint && (
-                  <div className="absolute bottom-full left-0 mb-3 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-300 w-[240px]">
+                  <div className="absolute top-full left-0 mt-2 z-50 pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-300 w-[240px]">
                     <div className="relative bg-[#162520] border border-emerald-500/40 text-emerald-100 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
                       <button
                         type="button"
@@ -1761,7 +1765,7 @@ export function SiteWizard({
                           <p className="text-[11px] text-emerald-200/80 leading-snug">Klik untuk lihat pilihan tampilan lain.</p>
                         </div>
                       </div>
-                      <div className="absolute -bottom-1.5 left-[28px] w-3 h-3 bg-[#162520] border-r border-b border-emerald-500/40 transform rotate-45" />
+                      <div className="absolute -top-1.5 left-[28px] w-3 h-3 bg-[#162520] border-l border-t border-emerald-500/40 transform rotate-45" />
                     </div>
                   </div>
                 )}
