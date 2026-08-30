@@ -25,6 +25,7 @@ import {
   Crown,
   Dumbbell,
   Factory,
+  Flame,
   Flower2,
   GalleryHorizontal,
   GraduationCap,
@@ -111,6 +112,8 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Catering":                Package,
   "Minuman & Bubble Tea":    Waves,
   "Makanan Rumahan & Frozen Food": Box,
+  "Kuliner Kaki Lima & Angkringan": Flame,
+  "Jajanan Pasar & Kuliner Tradisional": ShoppingBag,
   "Herbal & Jamu":           Leaf,
   // Layanan & Reservasi
   "Rental Mobil & Kendaraan": Car,
