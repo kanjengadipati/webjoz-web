@@ -587,8 +587,16 @@ export function SiteWizard({
     return "";
   }, [preview.streamedSections]);
 
+  // Smart back: selalu navigasi ke target eksplisit, JANGAN router.back().
+  // router.back() melempar user ke entri history sebelumnya yang sering berupa
+  // halaman stale/redirect (mis. /login via window.location.replace) → blank page.
+  // `mode` membedakan jalur dashboard (/dashboard/sites/new) vs public (/create).
   const handleBack = () => {
-    if (window.history.length > 1) { router.back(); return; }
+    if (mode === "dashboard") {
+      router.push("/dashboard/sites");
+      return;
+    }
+    // mode public (/create) — kembali ke landing page.
     router.push("/");
   };
 
