@@ -5,7 +5,7 @@ import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { fetchDesignTokenLibrary, type DesignTokenLibraryItem } from "@/lib/design-token-library";
-import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
+import { scoreDesignToken } from "@/lib/design-token-score";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignToken } from "@/lib/template-registry";
 
@@ -170,8 +170,6 @@ function PreviewModal({
     };
   }, [onClose]);
 
-  const score = galleryScore(item);
-
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
@@ -213,16 +211,11 @@ function PreviewModal({
         <div className="w-full lg:w-72 shrink-0 flex flex-col p-6 gap-5 border-t lg:border-t-0 lg:border-l border-white/10">
           {/* Header */}
           <div>
-            <div className="flex items-center justify-between gap-2">
-              {templateDef?.category && (
-                <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
-                  {templateDef.category}
-                </span>
-              )}
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scoreBadgeClass(score)}`}>
-                {score}/100
+            {templateDef?.category && (
+              <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
+                {templateDef.category}
               </span>
-            </div>
+            )}
             <h3 className="text-lg font-bold text-white mt-1 leading-snug">
               {item.sample.businessName}
             </h3>
@@ -323,8 +316,6 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
     height?: string;
     showLabel?: boolean;
   }) {
-    const score = galleryScore(item);
-
     return (
       <div
         className="group relative rounded-2xl border border-white/10 bg-[#111318] overflow-hidden transition-all duration-300 hover:border-border hover:shadow-2xl hover:shadow-black/50 hover:-translate-y-0.5 cursor-pointer"
@@ -352,12 +343,6 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
           <div className="absolute top-2.5 left-2.5 z-10">
             <span className="text-[10px] font-semibold bg-black/60 backdrop-blur-sm text-white/80 border border-border px-2 py-0.5 rounded-full">
               {badgeLabel(item)}
-            </span>
-          </div>
-          {/* Score badge */}
-          <div className="absolute top-2.5 right-2.5 z-10">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border bg-black/60 backdrop-blur-sm ${scoreBadgeClass(score)}`}>
-              {score}/100
             </span>
           </div>
           {/* Bottom fade */}
@@ -435,11 +420,6 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
                 <div className="absolute top-2.5 left-2.5 z-10">
                   <span className="text-[10px] font-semibold bg-black/60 backdrop-blur-sm text-white/80 border border-border px-2 py-0.5 rounded-full">
                     {badgeLabel(featured)}
-                  </span>
-                </div>
-                <div className="absolute top-2.5 right-2.5 z-10">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border bg-black/60 backdrop-blur-sm ${scoreBadgeClass(galleryScore(featured))}`}>
-                    {galleryScore(featured)}/100
                   </span>
                 </div>
                 <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#111318] to-transparent pointer-events-none" />
