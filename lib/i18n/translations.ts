@@ -4451,6 +4451,8 @@ export const translations: Record<Locale, Translations> = {
           "Catering": "Catering",
           "Minuman & Bubble Tea": "Minuman",
           "Makanan Rumahan & Frozen Food": "Makanan Rumahan & Frozen Food",
+          "Kuliner Kaki Lima & Angkringan": "Kaki Lima & Angkringan",
+          "Jajanan Pasar & Kuliner Tradisional": "Jajanan Pasar",
           "Herbal & Jamu": "Herbal & Jamu",
           // Toko
           "Fashion & Pakaian": "Fashion",
@@ -6754,6 +6756,8 @@ export const translations: Record<Locale, Translations> = {
           "Catering": "Catering",
           "Minuman & Bubble Tea": "Drinks & Boba",
           "Makanan Rumahan & Frozen Food": "Home-Cooked & Frozen Food",
+          "Kuliner Kaki Lima & Angkringan": "Street Food & Angkringan",
+          "Jajanan Pasar & Kuliner Tradisional": "Traditional Snacks & Delicacies",
           "Herbal & Jamu": "Herbal & Health Drinks",
           // Retail & Store
           "Fashion & Pakaian": "Fashion & Apparel",

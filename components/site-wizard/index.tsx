@@ -214,7 +214,7 @@ function InferenceConfirmWidget({
               }`}
             >
               <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
-              <span>{t(`dashboard.wizard.subtypes.${st.value}`) || st.label}</span>
+              <span>{t(`dashboard.wizard.subtypes.${st.value}`, st.label)}</span>
               {isSelected && <span className="text-primary text-[10px]">✓</span>}
             </button>
           );
