@@ -388,6 +388,8 @@ export function generateDescriptionFromBusinessName(
         return `Modern haircuts, precision styling, and gentleman grooming services at ${name}.`;
       case "Gym & Olahraga":
         return `Complete fitness facilities, workout equipment, and personal coaching at ${name}.`;
+      case "Konten Kreator":
+        return `Creating engaging digital content, entertaining videos, and impactful brand collaborations by ${name}.`;
       case "Fotografer":
         return `Capturing timeless moments with professional photography services by ${name}.`;
       case "Videografer":
@@ -435,6 +437,8 @@ export function generateDescriptionFromBusinessName(
       return `Potong rambut pria kekinian, grooming, dan styling profesional dengan suasana nyaman di ${name}.`;
     case "Gym & Olahraga":
       return `Pusat kebugaran lengkap dengan peralatan modern dan bimbingan instruktur profesional di ${name}.`;
+    case "Konten Kreator":
+      return `Membuat konten digital kreatif, video edukasi & hiburan, serta kolaborasi promosi brand bersama ${name}.`;
     case "Fotografer":
       return `Jasa fotografi profesional untuk mengabadikan momen berharga, wedding, wisuda, dan produk bersama ${name}.`;
     case "Videografer":
@@ -873,6 +877,20 @@ const DESC_HINTS: DescHintEntry[] = [
       "finance", "tax", "business consulting", "management consulting", "it consulting",
     ],
     weight: 4,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Konten Kreator",
+    keywords: [
+      // ID
+      "konten kreator", "kreator konten", "creator", "content creator", "influencer",
+      "youtuber", "tiktoker", "streamer", "vlogger", "selebgram", "endorsement", "endorse",
+      "ugc", "ugc creator", "reels", "shorts", "affiliate", "kolaborasi brand",
+      // EN
+      "content creator", "influencer", "youtuber", "tiktoker", "streamer", "vlogger",
+      "ugc creator", "digital creator", "social media creator",
+    ],
+    weight: 5,
   },
   {
     type: "Kreatif & Profesional",

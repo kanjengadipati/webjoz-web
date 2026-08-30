@@ -57,6 +57,7 @@ import {
   Tag,
   Truck,
   UtensilsCrossed,
+  Video,
   Waves,
   Wheat,
   Wrench,
@@ -135,6 +136,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Otomotif & Sparepart":     Wrench,
   "Pertanian & Peternakan":   Wheat,
   // Kreatif & Profesional
+  "Konten Kreator":           Video,
   "Fotografer":               Camera,
   "Videografer":              Monitor,
   "Desainer":                 Palette,
