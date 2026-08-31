@@ -399,22 +399,23 @@ export default function LandingPageClient() {
             </div>
 
             {/* Mobile View: Clean Inline Highlights (Non-Card) */}
-            <div className="flex sm:hidden items-center justify-center gap-2.5 py-1.5 px-3 rounded-full border border-white/10 bg-white/[0.03] text-[11px] text-white/80">
-              <div className="flex items-center gap-1">
-                <Zap className="size-3 text-white" />
+            <div className="flex sm:hidden items-center justify-center flex-wrap gap-x-2.5 gap-y-1.5 py-1.5 px-3 rounded-full border border-white/10 bg-white/[0.03] text-[11px] text-white/80">
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <Zap className="size-3 text-white shrink-0" />
                 <span>{t("landing.tryFree")}</span>
               </div>
               <span className="text-white/25">•</span>
-              <div className="flex items-center gap-1">
-                <SparkleIcon className="size-3 text-white" />
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <SparkleIcon className="size-3 text-white shrink-0" />
                 <span>{t("landing.chatNotForm")}</span>
               </div>
               <span className="text-white/25">•</span>
-              <div className="flex items-center gap-1">
-                <Zap className="size-3 text-white" />
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <Zap className="size-3 text-white shrink-0" />
                 <span>{t("landing.activeInMinutes")}</span>
               </div>
             </div>
+
 
             {/* Desktop View: 3-Feature Highlights Cards */}
             <div className="hidden sm:grid grid-cols-3 gap-3 w-full max-w-xl pt-2">
