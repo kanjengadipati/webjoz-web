@@ -38,6 +38,20 @@ export default function CatalogCompact({ catalog }: CatalogVariantProps) {
                     {(item.price_display || item.price) && <span style={{ fontWeight: 700, fontSize: "0.8rem", color: brandPrimary, whiteSpace: "nowrap" }}>{item.price_display || item.price}</span>}
                   </div>
                   {item.description && <span style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }}>{item.description}</span>}
+                  {item.capacity != null && item.capacity > 0 && (
+                    <span style={{ fontSize: "0.7rem", fontWeight: 600, color: brandPrimary, marginTop: "0.15rem" }}>
+                      s/d {item.capacity} tamu
+                    </span>
+                  )}
+                  {item.features && item.features.length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginTop: "0.25rem" }}>
+                      {item.features.map((f: string, fi: number) => (
+                        <span key={fi} style={{ fontSize: "0.65rem", padding: "0.1rem 0.35rem", borderRadius: "4px", background: `color-mix(in srgb, ${brandPrimary} 10%, transparent)`, color: brandPrimary }}>
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

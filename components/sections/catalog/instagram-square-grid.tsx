@@ -148,6 +148,24 @@ export default function CatalogInstagramSquareGrid({ catalog }: CatalogVariantPr
                           {item.description}
                         </p>
                       )}
+
+                      {item.capacity != null && item.capacity > 0 && (
+                        <div className="mt-2">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)" }}>
+                            s/d {item.capacity} tamu
+                          </span>
+                        </div>
+                      )}
+
+                      {item.features && item.features.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {item.features.map((f: string, fi: number) => (
+                            <span key={fi} className="text-[10px] font-semibold px-2 py-0.5 border" style={{ borderColor: "var(--dt-border)", color: "var(--dt-text)" }}>
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* High-contrast Pinned Button */}

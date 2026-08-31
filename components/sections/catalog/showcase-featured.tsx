@@ -93,6 +93,24 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                           {item.description && (
                             <p style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }}>{item.description}</p>
                           )}
+                          {item.capacity != null && item.capacity > 0 && (
+                            <div style={{ marginTop: "0.25rem" }}>
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 600, padding: "0.15rem 0.5rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: "0.75rem", height: "0.75rem" }}><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
+                                s/d {item.capacity} tamu
+                              </span>
+                            </div>
+                          )}
+                          {item.features && item.features.length > 0 && (
+                            <ul style={{ margin: "0.25rem 0 0 0", padding: 0, listStyle: "none", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                              {item.features.map((f: string, fi: number) => (
+                                <li key={fi} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 500, padding: "0.15rem 0.45rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p }}>
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: "0.65rem", height: "0.65rem" }}><polyline points="20 6 9 17 4 12"/></svg>
+                                  {f}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                           <div style={{ marginTop: "auto", paddingTop: "0.75rem" }}>
                             <AddToCartButton
                               itemId={item.id || `cat-sf-feat-${ci}-${fi}`}
@@ -101,6 +119,7 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                               itemPriceAmount={item.price_amount}
                               itemPriceDisplay={item.price_display || item.price}
                               category={cat.name}
+                              variant_groups={item.variant_groups}
                               disabled={item.is_available === false}
                               className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
                               style={{ background: p, color: bg, border: "none" }}
@@ -131,6 +150,8 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                       badge={item.badge}
                       is_available={item.is_available}
                       variant_groups={item.variant_groups}
+                      features={item.features}
+                      capacity={item.capacity}
                       icon={ImageIcon}
                       className="group transition-all duration-300"
                       style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" }}
