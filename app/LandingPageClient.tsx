@@ -435,35 +435,45 @@ export default function LandingPageClient() {
           </div>
 
           {/* ── Artistic Right Panel ─────────────────────────────────────────── */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 relative flex flex-col items-center justify-center w-full">
-            {/* Soft ambient glows */}
-            <div className="absolute -top-16 -right-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-amber-400/15 rounded-full blur-[80px] pointer-events-none" />
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 relative flex flex-col items-center justify-center w-full py-6 lg:py-0">
 
-            {/* Dot-grid art backdrop */}
-            <div
-              className="absolute inset-0 rounded-3xl opacity-30 dark:opacity-20 pointer-events-none"
+            {/* Outer glow orbs — positioned relative to this container */}
+            <div className="absolute -top-12 -right-8 w-80 h-80 bg-primary/25 rounded-full blur-[110px] pointer-events-none -z-10" />
+            <div className="absolute -bottom-8 -left-8 w-64 h-64 bg-amber-400/20 rounded-full blur-[90px] pointer-events-none -z-10" />
+
+            {/* Decorative art frame that wraps the mockup */}
+            <div className="relative w-full rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm p-4 shadow-2xl shadow-primary/5"
               style={{
-                backgroundImage: "radial-gradient(circle, oklch(0.5 0.1 260 / 0.35) 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
+                backgroundImage: "radial-gradient(circle, oklch(0.55 0.12 260 / 0.25) 1px, transparent 1px)",
+                backgroundSize: "22px 22px",
               }}
-            />
+            >
+              {/* Corner accent lines */}
+              <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-primary/60 rounded-tl-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-primary/60 rounded-tr-2xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-amber-400/50 rounded-bl-2xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-amber-400/50 rounded-br-2xl pointer-events-none" />
 
-            {/* Floating stat chips */}
-            <div className="absolute -top-4 -left-2 sm:-left-8 z-10 flex items-center gap-2 rounded-xl border border-border/60 bg-card/90 backdrop-blur-sm px-3 py-2 shadow-lg text-xs font-semibold text-foreground animate-bounce" style={{ animationDuration: "3s" }}>
-              <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_6px_theme(colors.emerald.400)]" />
-              Live preview
-            </div>
-            <div className="absolute -bottom-4 -right-2 sm:-right-6 z-10 flex items-center gap-2 rounded-xl border border-border/60 bg-card/90 backdrop-blur-sm px-3 py-2 shadow-lg text-xs font-semibold text-foreground animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s" }}>
-              <span className="text-base">⚡</span>
-              &lt; 10 menit live
-            </div>
+              {/* Floating stat chips — inside the frame so they're never clipped */}
+              <div className="absolute -top-3.5 left-4 z-20 flex items-center gap-2 rounded-full border border-emerald-400/40 bg-card/95 backdrop-blur-md px-3 py-1.5 shadow-lg shadow-emerald-400/10 text-xs font-semibold text-foreground"
+                style={{ animation: "float 3s ease-in-out infinite" }}
+              >
+                <span className="size-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_theme(colors.emerald.400)]" />
+                Live preview
+              </div>
 
-            {/* The mockup itself */}
-            <div className="relative w-full">
+              <div className="absolute -bottom-3.5 right-4 z-20 flex items-center gap-2 rounded-full border border-amber-400/40 bg-card/95 backdrop-blur-md px-3 py-1.5 shadow-lg shadow-amber-400/10 text-xs font-semibold text-foreground"
+                style={{ animation: "float 4s ease-in-out infinite", animationDelay: "1.2s" }}
+              >
+                <span className="text-sm">⚡</span>
+                &lt; 10 menit live
+              </div>
+
+              {/* The mockup */}
               <InteractiveMockup />
             </div>
           </div>
+
         </div>
       </section>
 
