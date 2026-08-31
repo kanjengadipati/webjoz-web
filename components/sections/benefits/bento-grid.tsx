@@ -17,7 +17,7 @@ interface BenefitsVariantProps {
 
 function BentoCard({
   item,
-  span,
+  className,
   highlight,
   onUpdateField,
   isEditorMode,
@@ -27,7 +27,7 @@ function BentoCard({
   language,
 }: {
   item: NonNullable<TemplateProps["content"]["benefits"]>["items"][number];
-  span: string;
+  className?: string;
   highlight?: boolean;
   onUpdateField?: BenefitsVariantProps["onUpdateField"];
   isEditorMode?: boolean;
@@ -38,15 +38,15 @@ function BentoCard({
 }) {
   return (
     <div
+      className={className}
       style={{
-        gridArea: span,
         position: "relative",
         background: highlight
           ? `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 14%, var(--dt-surface)) 0%, var(--dt-surface) 100%)`
           : `var(--dt-surface)`,
-        border: `1px solid color-mix(in srgb, var(--dt-primary) ${highlight ? 20 : 12}%, transparent)`,
+        border: `1px solid color-mix(in srgb, var(--dt-primary) ${highlight ? 24 : 12}%, transparent)`,
         borderRadius: "var(--dt-radius-lg)",
-        padding: highlight ? "2rem 2.5rem" : "1.5rem",
+        padding: highlight ? "2rem 2.25rem" : "1.5rem",
         display: "flex",
         flexDirection: "column",
         gap: highlight ? "1rem" : "0.75rem",
@@ -57,13 +57,13 @@ function BentoCard({
         const el = e.currentTarget;
         el.style.boxShadow = `0 12px 36px color-mix(in srgb, var(--dt-primary) 16%, transparent)`;
         el.style.transform = "translateY(-3px)";
-        el.style.borderColor = `color-mix(in srgb, var(--dt-primary) 28%, transparent)`;
+        el.style.borderColor = `color-mix(in srgb, var(--dt-primary) 32%, transparent)`;
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget;
         el.style.boxShadow = "none";
         el.style.transform = "none";
-        el.style.borderColor = `color-mix(in srgb, var(--dt-primary) ${highlight ? 20 : 12}%, transparent)`;
+        el.style.borderColor = `color-mix(in srgb, var(--dt-primary) ${highlight ? 24 : 12}%, transparent)`;
       }}
     >
       {/* Accent line top */}
@@ -137,6 +137,28 @@ function BentoCard({
   );
 }
 
+function getBentoSpanClass(idx: number, total: number): string {
+  if (total === 1 || total === 2) {
+    return "col-span-1";
+  }
+  if (total === 3) {
+    if (idx === 0) return "sm:col-span-2 lg:col-span-2";
+    return "sm:col-span-1 lg:col-span-1";
+  }
+  if (total === 4) {
+    if (idx === 0 || idx === 3) return "sm:col-span-2 lg:col-span-2";
+    return "sm:col-span-1 lg:col-span-1";
+  }
+  if (total === 5) {
+    if (idx === 0) return "sm:col-span-2 lg:col-span-2";
+    return "sm:col-span-1 lg:col-span-1";
+  }
+  // 6 or more
+  if (idx === 0) return "sm:col-span-2 lg:col-span-2";
+  if (idx === 5) return "sm:col-span-2 lg:col-span-3";
+  return "sm:col-span-1 lg:col-span-1";
+}
+
 export default function BenefitsBentoGrid({
   benefits: b,
   onUpdateField,
@@ -148,19 +170,13 @@ export default function BenefitsBentoGrid({
 }: BenefitsVariantProps) {
   const isEN = language === "en";
   const items = b.items ?? [];
+  const count = items.length;
 
-  // Bento layout grid-template-areas by item count
-  const areaPatterns: Record<number, string> = {
-    1: `"a1 a1"`,
-    2: `"a1 a1" "a2 a2"`,
-    3: `"a1 a1" "b1 b2"`,
-    4: `"a1 a1" "b1 b2" "c1 c1"`,
-    5: `"a1 a1" "b1 b2" "c1 c2"`,
-    6: `"a1 a1" "b1 b2" "c1 c2" "d1 d1"`,
-  };
-  const areaNames = ["a1", "a2", "b1", "b2", "c1", "c2", "d1", "d2"];
-  const count = Math.min(items.length, 6);
-  const gridAreas = areaPatterns[count] ?? areaPatterns[6];
+  const gridColsClass = count <= 2 
+    ? "grid-cols-1 sm:grid-cols-2" 
+    : count === 3 
+    ? "grid-cols-1 sm:grid-cols-2" 
+    : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
   return (
     <section
@@ -193,17 +209,12 @@ export default function BenefitsBentoGrid({
         </div>
 
         {/* Bento grid */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gridTemplateAreas: gridAreas,
-          gap: "1rem",
-        }}>
+        <div className={`grid ${gridColsClass} gap-4`}>
           {items.map((item, idx) => (
             <BentoCard
               key={idx}
               item={item}
-              span={areaNames[idx % areaNames.length]}
+              className={getBentoSpanClass(idx, count)}
               highlight={idx === 0}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
