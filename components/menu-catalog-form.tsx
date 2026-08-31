@@ -768,6 +768,180 @@ function SortableItemRow({
             className={`${MCF_INPUT_BASE} resize-y min-h-[80px] rounded-t-none border-t-0`}
           />
         </div>
+
+        {/* ── Variant / Add-on Groups ──────────────────────────────────────── */}
+        <VariantGroupEditor
+          groups={item.variant_groups ?? []}
+          onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ─── VariantGroupEditor ─────────────────────────────────────────────────────────
+
+const VGE_INPUT = "w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[12px] text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors";
+
+interface VGGroup {
+  id: string;
+  name: string;
+  type: "single" | "multiple";
+  required: boolean;
+  options: VGOption[];
+}
+interface VGOption { id: string; name: string; price_delta?: number | null; price_display?: string | null; }
+
+function makeGroup(): VGGroup {
+  return { id: nanoid(), name: "", type: "single", required: true, options: [{ id: nanoid(), name: "", price_delta: null, price_display: null }] };
+}
+
+function VariantGroupEditor({ groups, onChange }: { groups: VGGroup[]; onChange: (groups: VGGroup[]) => void }) {
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
+  function updateGroup(gid: string, patch: Partial<VGGroup>) {
+    onChange(groups.map((g) => (g.id === gid ? { ...g, ...patch } : g)));
+  }
+  function removeGroup(gid: string) {
+    onChange(groups.filter((g) => g.id !== gid));
+  }
+  function addOption(gid: string) {
+    const g = groups.find((g) => g.id === gid);
+    if (!g) return;
+    updateGroup(gid, { options: [...g.options, { id: nanoid(), name: "", price_delta: null, price_display: null }] });
+  }
+  function updateOption(gid: string, oid: string, patch: Partial<VGOption>) {
+    const g = groups.find((g) => g.id === gid);
+    if (!g) return;
+    updateGroup(gid, { options: g.options.map((o) => (o.id === oid ? { ...o, ...patch } : o)) });
+  }
+  function removeOption(gid: string, oid: string) {
+    const g = groups.find((g) => g.id === gid);
+    if (!g) return;
+    updateGroup(gid, { options: g.options.filter((o) => o.id !== oid) });
+  }
+
+  return (
+    <div className="mt-3 border-t border-white/8 pt-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Varian / Add-on</span>
+        <button
+          type="button"
+          onClick={() => { const g = makeGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
+          className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 transition-colors cursor-pointer"
+        >
+          <Plus className="w-3 h-3" /> Tambah Grup
+        </button>
+      </div>
+
+      {groups.length === 0 && (
+        <p className="text-[10px] text-slate-500 italic">Belum ada varian. Contoh: Ukuran, Topping, Level Pedas.</p>
+      )}
+
+      <div className="flex flex-col gap-2">
+        {groups.map((group) => {
+          const isOpen = expandedGroup === group.id;
+          return (
+            <div key={group.id} className="rounded-xl border border-white/10 bg-white/[0.025] overflow-hidden">
+              {/* Group header */}
+              <div
+                className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
+                onClick={() => setExpandedGroup(isOpen ? null : group.id)}
+              >
+                <span className="flex-1 text-[11px] font-semibold text-slate-200 truncate">
+                  {group.name || <span className="text-slate-500 italic">Grup baru</span>}
+                </span>
+                <span className="text-[9px] text-slate-500 shrink-0">{group.type === "multiple" ? "multi" : "1 pilihan"}</span>
+                {isOpen ? <ChevronUp className="w-3 h-3 text-slate-400 shrink-0" /> : <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
+                  className="text-red-500/60 hover:text-red-400 cursor-pointer p-0.5 shrink-0"
+                  aria-label="Hapus grup"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+
+              {isOpen && (
+                <div className="px-3 pb-3 flex flex-col gap-2 border-t border-white/8">
+                  {/* Group name + type + required */}
+                  <input
+                    type="text"
+                    value={group.name}
+                    onChange={(e) => updateGroup(group.id, { name: e.target.value })}
+                    placeholder="Nama grup (cth. Ukuran, Topping)"
+                    className={`${VGE_INPUT} mt-2`}
+                  />
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={group.type === "multiple"}
+                        onChange={(e) => updateGroup(group.id, { type: e.target.checked ? "multiple" : "single" })}
+                        className="w-3 h-3 accent-primary"
+                      />
+                      Multi-pilih
+                    </label>
+                    <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={group.required}
+                        onChange={(e) => updateGroup(group.id, { required: e.target.checked })}
+                        className="w-3 h-3 accent-primary"
+                      />
+                      Wajib dipilih
+                    </label>
+                  </div>
+
+                  {/* Options */}
+                  <div className="flex flex-col gap-1.5 mt-1">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Pilihan</span>
+                    {group.options.map((opt) => (
+                      <div key={opt.id} className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          value={opt.name}
+                          onChange={(e) => updateOption(group.id, opt.id, { name: e.target.value })}
+                          placeholder="Nama opsi (cth. S, M, L)"
+                          className={`${VGE_INPUT} flex-1`}
+                        />
+                        <input
+                          type="number"
+                          value={opt.price_delta ?? ""}
+                          onChange={(e) => {
+                            const delta = e.target.value === "" ? null : Number(e.target.value);
+                            const display = delta != null && delta !== 0 ? (delta > 0 ? `+${delta.toLocaleString()}` : `${delta.toLocaleString()}`) : null;
+                            updateOption(group.id, opt.id, { price_delta: delta, price_display: display });
+                          }}
+                          placeholder="+harga"
+                          className={`${VGE_INPUT} w-20 shrink-0`}
+                          title="Delta harga (kosongkan jika tidak ada)"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeOption(group.id, opt.id)}
+                          disabled={group.options.length <= 1}
+                          className="text-red-500/60 hover:text-red-400 disabled:opacity-30 cursor-pointer p-0.5 shrink-0"
+                          aria-label="Hapus opsi"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => addOption(group.id)}
+                      className="self-start flex items-center gap-1 text-[10px] font-semibold text-primary/70 hover:text-primary mt-0.5 cursor-pointer transition-colors"
+                    >
+                      <Plus className="w-3 h-3" /> Tambah opsi
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

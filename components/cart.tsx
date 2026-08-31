@@ -12,10 +12,21 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
 import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle } from "lucide-react";
 
+import type { ItemVariantGroup } from "@/components/templates/types";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export interface SelectedVariant {
+  group_id: string;
+  group_name: string;
+  option_id: string;
+  option_name: string;
+  price_delta?: number;
+  price_display?: string;
+}
+
 export interface CartItem {
-  id: string;         // unique: `${categoryName}__${itemName}`
+  id: string;         // unique: `${categoryName}__${itemName}` or `${itemId}__${variantKey}`
   name: string;
   /** Legacy display string kept for backward compat with templates that pass price directly */
   price: string | null;
@@ -25,6 +36,7 @@ export interface CartItem {
   price_display?: string | null;
   category: string;
   qty: number;
+  selected_variants?: SelectedVariant[];
 }
 
 interface CartContextValue {
@@ -143,7 +155,6 @@ export function CartFab({ colorStyle }: { colorStyle?: React.CSSProperties }) {
 }
 
 // Helper: hides "Hubungi kami" placeholder prices from item cards.
-// The price is shown in the cart and WA message only when it's a real value.
 export function isPlaceholderPrice(price?: string | null): boolean {
   if (!price) return true;
   const lower = price.toLowerCase().trim();
@@ -156,23 +167,32 @@ interface AddToCartButtonProps {
   itemPrice: string | null | undefined;
   itemPriceAmount?: number | null;
   itemPriceDisplay?: string | null;
+  itemDescription?: string | null;
   category: string;
   className?: string;
   style?: React.CSSProperties;
   variant?: "light" | "dark" | "dynamic";
   /** When true the button is shown as disabled (item out of stock) */
   disabled?: boolean;
+  /** Optional variant groups for customization */
+  variant_groups?: ItemVariantGroup[] | null;
 }
 
 // ─── Add-to-Cart Button ────────────────────────────────────────────────────────
 
 export function AddToCartButton({
-  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, category,
-  className, style, variant = "dynamic", disabled = false,
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemDescription, category,
+  className, style, variant = "dynamic", disabled = false, variant_groups,
 }: AddToCartButtonProps) {
   const { items, add, increment, decrement } = useCart();
-  const existing = items.find((i) => i.id === itemId);
-  const qty = existing?.qty ?? 0;
+  const [selectorOpen, setSelectorOpen] = useState(false);
+
+  const hasVariants = Boolean(variant_groups && variant_groups.length > 0);
+
+  // If item has variants, count all matching items in cart regardless of variant
+  const totalItemQty = items
+    .filter((i) => i.id === itemId || i.id.startsWith(`${itemId}__`))
+    .reduce((s, i) => s + i.qty, 0);
 
   if (disabled) {
     return (
@@ -188,6 +208,41 @@ export function AddToCartButton({
       </button>
     );
   }
+
+  // If item has variants, button opens the Variant Selector Modal
+  if (hasVariants) {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setSelectorOpen(true)}
+          className={className ?? ""}
+          style={style}
+          aria-label={`Pilih opsi untuk ${itemName}`}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>{totalItemQty > 0 ? `Pilih Opsi (${totalItemQty})` : "Pilih Opsi"}</span>
+        </button>
+        {selectorOpen && (
+          <VariantSelectorModal
+            itemId={itemId}
+            itemName={itemName}
+            itemPrice={itemPrice}
+            itemPriceAmount={itemPriceAmount}
+            itemPriceDisplay={itemPriceDisplay}
+            itemDescription={itemDescription}
+            category={category}
+            variant_groups={variant_groups!}
+            onClose={() => setSelectorOpen(false)}
+          />
+        )}
+      </>
+    );
+  }
+
+  // Standard non-variant button behavior
+  const existing = items.find((i) => i.id === itemId);
+  const qty = existing?.qty ?? 0;
 
   if (qty === 0) {
     return (
@@ -235,6 +290,231 @@ export function AddToCartButton({
       >
         <Plus className="w-3.5 h-3.5" />
       </button>
+    </div>
+  );
+}
+
+// ─── Variant Selector Modal ───────────────────────────────────────────────────
+
+interface VariantSelectorModalProps {
+  itemId: string;
+  itemName: string;
+  itemPrice: string | null | undefined;
+  itemPriceAmount?: number | null;
+  itemPriceDisplay?: string | null;
+  itemDescription?: string | null;
+  category: string;
+  variant_groups: ItemVariantGroup[];
+  onClose: () => void;
+}
+
+export function VariantSelectorModal({
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemDescription, category,
+  variant_groups, onClose,
+}: VariantSelectorModalProps) {
+  const { add, primaryColor, primaryFg } = useCart();
+
+  // Initialize selected options map: groupId -> optionId[]
+  const [selectedMap, setSelectedMap] = useState<Record<string, string[]>>(() => {
+    const init: Record<string, string[]> = {};
+    for (const grp of variant_groups) {
+      if (grp.type === "single" && grp.options.length > 0 && grp.required !== false) {
+        init[grp.id] = [grp.options[0].id];
+      } else {
+        init[grp.id] = [];
+      }
+    }
+    return init;
+  });
+
+  const handleSelectOption = (group: ItemVariantGroup, optionId: string) => {
+    setSelectedMap((prev) => {
+      if (group.type === "single") {
+        return { ...prev, [group.id]: [optionId] };
+      }
+      const current = prev[group.id] || [];
+      const exists = current.includes(optionId);
+      const next = exists ? current.filter((id) => id !== optionId) : [...current, optionId];
+      return { ...prev, [group.id]: next };
+    });
+  };
+
+  // Compute live price delta and selected list
+  let totalDelta = 0;
+  const selectedVariants: SelectedVariant[] = [];
+  const optionKeys: string[] = [];
+
+  for (const grp of variant_groups) {
+    const chosenIds = selectedMap[grp.id] || [];
+    for (const optId of chosenIds) {
+      const opt = grp.options.find((o) => o.id === optId);
+      if (opt) {
+        if (typeof opt.price_delta === "number") totalDelta += opt.price_delta;
+        selectedVariants.push({
+          group_id: grp.id,
+          group_name: grp.name,
+          option_id: opt.id,
+          option_name: opt.name,
+          price_delta: opt.price_delta,
+          price_display: opt.price_display,
+        });
+        optionKeys.push(opt.id);
+      }
+    }
+  }
+
+  // Validate required groups
+  const isValid = variant_groups.every((grp) => {
+    if (grp.type === "single" && grp.required !== false) {
+      return (selectedMap[grp.id] || []).length > 0;
+    }
+    return true;
+  });
+
+  const hasNumericBase = typeof itemPriceAmount === "number" && itemPriceAmount > 0;
+  const computedTotalAmount = hasNumericBase ? itemPriceAmount! + totalDelta : null;
+
+  const handleAddToCart = () => {
+    if (!isValid) return;
+    optionKeys.sort();
+    const variantSignature = optionKeys.length > 0 ? optionKeys.join("_") : "default";
+    const cartItemId = `${itemId}__${variantSignature}`;
+
+    // Format display label
+    let formattedPriceDisplay = itemPriceDisplay || itemPrice || null;
+    if (computedTotalAmount !== null && itemPriceDisplay) {
+      formattedPriceDisplay = itemPriceDisplay.replace(/[\d.,]+/, () => computedTotalAmount.toLocaleString());
+    }
+
+    add({
+      id: cartItemId,
+      name: itemName,
+      price: itemPrice ?? null,
+      price_amount: computedTotalAmount,
+      price_display: formattedPriceDisplay,
+      category,
+      selected_variants: selectedVariants,
+    });
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[500] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal
+      aria-label={`Pilih varian ${itemName}`}
+    >
+      <div
+        className="w-full max-w-md max-h-[85vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
+        style={{
+          background: "var(--dt-bg, #fff)",
+          color: "var(--dt-text, #1e293b)",
+          border: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 12%, transparent)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between p-4 pb-3 border-b" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)" }}>
+          <div className="min-w-0 flex-1 pr-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider opacity-60 block">{category}</span>
+            <h3 className="text-base font-bold truncate leading-tight mt-0.5">{itemName}</h3>
+            {itemPriceDisplay || itemPrice ? (
+              <span className="text-xs font-semibold block mt-1" style={{ color: "var(--dt-primary, #4F46E5)" }}>
+                {itemPriceDisplay || itemPrice}
+              </span>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 rounded-full hover:opacity-70 cursor-pointer transition-opacity"
+            aria-label="Tutup"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Body — Variant Groups */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {variant_groups.map((grp) => {
+            const chosen = selectedMap[grp.id] || [];
+            return (
+              <div key={grp.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold">{grp.name}</span>
+                  <span className="text-[9px] font-medium px-2 py-0.5 rounded-full"
+                    style={{
+                      background: "color-mix(in srgb, var(--dt-primary, #4F46E5) 10%, transparent)",
+                      color: "var(--dt-primary, #4F46E5)",
+                    }}
+                  >
+                    {grp.type === "single" ? (grp.required !== false ? "Pilih 1 (Wajib)" : "Pilih 1 (Opsional)") : "Boleh Pilih Banyak"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {grp.options.map((opt) => {
+                    const isSelected = chosen.includes(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => handleSelectOption(grp, opt.id)}
+                        className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer text-left ${
+                          isSelected
+                            ? "border-primary ring-1 ring-primary"
+                            : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20"
+                        }`}
+                        style={{
+                          background: isSelected
+                            ? "color-mix(in srgb, var(--dt-primary, #4F46E5) 12%, transparent)"
+                            : "color-mix(in srgb, var(--dt-text, #1e293b) 3%, transparent)",
+                          color: isSelected ? "var(--dt-primary, #4F46E5)" : "inherit",
+                        }}
+                      >
+                        <span className="truncate mr-1">{opt.name}</span>
+                        {opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta > 0) ? (
+                          <span className="text-[10px] font-bold opacity-80 shrink-0">
+                            {opt.price_display || `+${opt.price_delta!.toLocaleString()}`}
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t flex items-center justify-between gap-3 shrink-0" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)" }}>
+          <div>
+            <span className="text-[10px] opacity-60 block">Total Item</span>
+            <span className="text-sm font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>
+              {computedTotalAmount !== null
+                ? (itemPriceDisplay ? itemPriceDisplay.replace(/[\d.,]+/, () => computedTotalAmount.toLocaleString()) : computedTotalAmount.toLocaleString())
+                : (itemPriceDisplay || itemPrice || "-")}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={!isValid}
+            className="flex-1 max-w-[200px] py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: primaryColor,
+              color: primaryFg,
+            }}
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Tambah</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -294,8 +574,12 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
         lineTotal = ` = ${isReal ? displayLabel!.replace(/[\d.,]+/, (n) => itemTotal.toLocaleString()) : itemTotal.toLocaleString()}`;
       }
 
-      const priceStr = isReal ? ` (${displayLabel}${lineTotal})` : "";
-      lines.push(`• ${item.qty}x ${item.name}${priceStr}`);
+      const variantStr = item.selected_variants && item.selected_variants.length > 0
+        ? ` (${item.selected_variants.map((v) => `${v.group_name}: ${v.option_name}`).join(", ")})`
+        : "";
+
+      const priceStr = isReal ? ` [${displayLabel}${lineTotal}]` : "";
+      lines.push(`• ${item.qty}x ${item.name}${variantStr}${priceStr}`);
     });
   });
 
@@ -618,6 +902,22 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium leading-tight truncate">{item.name}</p>
                     <p className="text-[11px] opacity-50 mt-0.5">{item.category}</p>
+                    {item.selected_variants && item.selected_variants.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {item.selected_variants.map((v, vi) => (
+                          <span
+                            key={vi}
+                            className="text-[9px] px-1.5 py-0.5 rounded font-medium"
+                            style={{
+                              background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 10%, transparent)",
+                              color: "var(--dt-primary, var(--primary))",
+                            }}
+                          >
+                            {v.group_name}: {v.option_name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     {(() => {
                       const displayLabel = item.price_display || item.price;
                       return displayLabel && !isPlaceholderPrice(displayLabel) ? (

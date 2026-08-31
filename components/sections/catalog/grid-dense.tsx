@@ -49,6 +49,7 @@ export default function CatalogGridDense({ catalog }: { catalog: TemplateProps["
                   image_url={item.image_url}
                   badge={item.badge}
                   is_available={item.is_available}
+                  variant_groups={item.variant_groups}
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", overflow: "hidden" }}

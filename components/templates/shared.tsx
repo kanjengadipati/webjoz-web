@@ -1033,6 +1033,7 @@ interface MenuCatalogCardProps {
   image_credit?: ImageCredit | null;
   badge?: string | null;
   is_available?: boolean;
+  variant_groups?: import("./types").ItemVariantGroup[] | null;
   icon: React.ElementType;
   layout?: "grid" | "compact";
   className?: string;
@@ -1062,7 +1063,7 @@ interface MenuCatalogCardProps {
 
 function MenuCatalogCard({
   itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay,
-  itemDescription, category, image_url, image_credit, badge, is_available = true, icon,
+  itemDescription, category, image_url, image_credit, badge, is_available = true, variant_groups, icon,
   layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
@@ -1171,6 +1172,7 @@ function MenuCatalogCard({
                 itemPriceAmount={itemPriceAmount}
                 itemPriceDisplay={displayPrice}
                 category={category}
+                variant_groups={variant_groups}
                 className={buttonClassName}
                 style={buttonStyle}
                 disabled={isOutOfStock}
@@ -1206,6 +1208,7 @@ function MenuCatalogCard({
             itemPriceAmount={itemPriceAmount}
             itemPriceDisplay={displayPrice}
             category={category}
+            variant_groups={variant_groups}
             className={buttonClassName}
             style={buttonStyle}
             disabled={isOutOfStock}
