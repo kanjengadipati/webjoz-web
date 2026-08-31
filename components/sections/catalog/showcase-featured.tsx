@@ -103,8 +103,8 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                           )}
                           {item.features && item.features.length > 0 && (
                             <ul style={{ margin: "0.25rem 0 0 0", padding: 0, listStyle: "none", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-                              {item.features.map((f: string, fi: number) => (
-                                <li key={fi} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 500, padding: "0.15rem 0.45rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p }}>
+                              {item.features.map((f: string, feaIdx: number) => (
+                                <li key={feaIdx} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 500, padding: "0.15rem 0.45rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p }}>
                                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: "0.65rem", height: "0.65rem" }}><polyline points="20 6 9 17 4 12"/></svg>
                                   {f}
                                 </li>
