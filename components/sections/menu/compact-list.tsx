@@ -50,6 +50,7 @@ export default function MenuCompactList({ menu }: { menu: TemplateProps["content
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
+                  image_urls={item.image_urls}
                   is_available={item.is_available}
                   variant_groups={item.variant_groups}
                   icon={Utensils}
