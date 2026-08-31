@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAccentPreference, useThemePreference, persistAuthSession } from "@/lib/auth-store";
+import { useAccentPreference, useThemePreference, persistAuthSession, resolveEffectiveTheme } from "@/lib/auth-store";
 import { ToastProvider } from "@/components/toast-provider";
 import type { Locale } from "@/lib/i18n/translations";
 import { I18nProvider } from "@/lib/i18n/context";
@@ -89,8 +89,16 @@ export function Providers({ children, defaultLocale = "id", forcedLocale }: { ch
   const accent = useAccentPreference();
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    document.documentElement.dataset.theme = theme;
+    function applyTheme() {
+      const effective = resolveEffectiveTheme(theme);
+      document.documentElement.classList.toggle("dark", effective === "dark");
+      document.documentElement.dataset.theme = effective;
+    }
+    applyTheme();
+
+    // Re-evaluate every 10 minutes so "auto" mode transitions correctly at 06:00 / 18:00
+    const interval = theme === "auto" ? setInterval(applyTheme, 10 * 60 * 1000) : undefined;
+    return () => clearInterval(interval);
   }, [theme]);
 
   useEffect(() => {
