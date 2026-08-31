@@ -42,7 +42,6 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{ lat: string; lon: string; display_name: string }>>([]);
   const [searching, setSearching] = useState(false);
-  const [locating, setLocating] = useState(false);
   const [position, setPosition] = useState<{ lat: number; lng: number }>(() => {
     return parseUrlCoords(currentUrl) ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
   });
@@ -50,21 +49,6 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const [detectingGeo, setDetectingGeo] = useState(false);
   const [tileStyle, setTileStyle] = useState("default");
   const tileLayerRef = useRef<any>(null);
-
-  // Auto-detect geolocation when popup opens
-  useEffect(() => {
-    if (!open || !navigator.geolocation) return;
-    setDetectingGeo(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setDetectedCoords({ lat: latitude, lng: longitude });
-        setDetectingGeo(false);
-      },
-      () => setDetectingGeo(false),
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
-  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -164,18 +148,19 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
 
   const detectLocation = () => {
     if (!navigator.geolocation) return;
-    setLocating(true);
+    setDetectingGeo(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        setDetectedCoords({ lat: latitude, lng: longitude });
         if (mapInstanceRef.current && markerRef.current) {
           mapInstanceRef.current.setView([latitude, longitude], 16);
           markerRef.current.setLatLng([latitude, longitude]);
         }
         setPosition({ lat: latitude, lng: longitude });
-        setLocating(false);
+        setDetectingGeo(false);
       },
-      () => setLocating(false),
+      () => setDetectingGeo(false),
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
@@ -254,11 +239,11 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
             </button>
             <button
               onClick={detectLocation}
-              disabled={locating}
+              disabled={detectingGeo}
               className="shrink-0 w-[38px] flex items-center justify-center rounded-lg bg-white/95 border border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-white hover:border-gray-300 disabled:opacity-40 shadow-sm transition-colors"
               title="Lokasi saya saat ini"
             >
-              {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
+              {detectingGeo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
             </button>
           </div>
 
