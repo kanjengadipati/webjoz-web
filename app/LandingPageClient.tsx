@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
-import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle } from "lucide-react";
+import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { PricingCards } from "@/components/pricing-cards";
 import { prefillForLibraryBusinessType, encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
@@ -398,54 +398,33 @@ export default function LandingPageClient() {
               </Button>
             </div>
 
-            {/* Mobile View: Clean Inline Highlights (Non-Card) */}
-            <div className="flex sm:hidden items-center justify-center flex-wrap gap-x-2.5 gap-y-1.5 py-1.5 px-3 rounded-full border border-white/10 bg-white/[0.03] text-[11px] text-white/80">
-              <div className="flex items-center gap-1 whitespace-nowrap">
-                <Zap className="size-3 text-white shrink-0" />
-                <span>{t("landing.tryFree")}</span>
-              </div>
-              <span className="text-white/25">•</span>
-              <div className="flex items-center gap-1 whitespace-nowrap">
-                <SparkleIcon className="size-3 text-white shrink-0" />
-                <span>{t("landing.chatNotForm")}</span>
-              </div>
-              <span className="text-white/25">•</span>
-              <div className="flex items-center gap-1 whitespace-nowrap">
-                <Zap className="size-3 text-white shrink-0" />
-                <span>{t("landing.activeInMinutes")}</span>
-              </div>
-            </div>
-
-
-            {/* Desktop View: 3-Feature Highlights Cards */}
-            <div className="hidden sm:grid grid-cols-3 gap-3 w-full max-w-xl pt-2">
-              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <Zap className="size-4 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-white truncate">{t("landing.tryFree")}</div>
-                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureFreeCard || "Tanpa daftar di awal"}</div>
+            {/* Highlights Row: Clean Inline Items with Vertical Dividers */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-y-3 gap-x-4 sm:gap-x-6 pt-2 text-left">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="size-6 text-white shrink-0 stroke-[1.75]" />
+                <div>
+                  <div className="text-xs sm:text-[13px] font-bold text-white leading-tight">{t("landing.tryFree")}</div>
+                  <div className="text-[10px] sm:text-[11px] text-white/50 leading-tight mt-0.5">{translations.landing.featureFreeCard || "Tanpa kartu kredit"}</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <SparkleIcon className="size-4 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-white truncate">{t("landing.chatNotForm")}</div>
-                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureChatEasy || "Tinggal ketik santai"}</div>
+              <div className="hidden sm:block h-6 w-px bg-white/15" aria-hidden="true" />
+
+              <div className="flex items-center gap-2.5">
+                <SparkleIcon className="size-6 text-white shrink-0" />
+                <div>
+                  <div className="text-xs sm:text-[13px] font-bold text-white leading-tight">{t("landing.chatNotForm")}</div>
+                  <div className="text-[10px] sm:text-[11px] text-white/50 leading-tight mt-0.5">{translations.landing.featureChatEasy || "Lebih cepat & mudah"}</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-left">
-                <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                  <Zap className="size-4 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-white truncate">{t("landing.activeInMinutes")}</div>
-                  <div className="text-[10px] text-white/50 truncate">{translations.landing.featureLiveInstant || "Preview instan & live"}</div>
+              <div className="hidden sm:block h-6 w-px bg-white/15" aria-hidden="true" />
+
+              <div className="flex items-center gap-2.5">
+                <Zap className="size-6 text-white shrink-0 stroke-[1.75]" />
+                <div>
+                  <div className="text-xs sm:text-[13px] font-bold text-white leading-tight">{t("landing.activeInMinutes")}</div>
+                  <div className="text-[10px] sm:text-[11px] text-white/50 leading-tight mt-0.5">{translations.landing.featureLiveInstant || "Live dalam hitungan menit"}</div>
                 </div>
               </div>
             </div>
