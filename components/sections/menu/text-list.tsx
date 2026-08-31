@@ -73,9 +73,14 @@ export default function MenuTextList({ menu }: { menu: TemplateProps["content"][
                         marginBottom: "0.2em",
                         minWidth: "1rem",
                       }} />
+                      {item.is_available === false && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500 text-white">
+                          Habis
+                        </span>
+                      )}
                       {showPrice && (
                         <span style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p, flexShrink: 0 }}>
-                          {item.price}
+                          {item.price_display || item.price}
                         </span>
                       )}
                     </div>
@@ -88,10 +93,13 @@ export default function MenuTextList({ menu }: { menu: TemplateProps["content"][
                     {/* Add to cart — compact inline */}
                     <div style={{ marginTop: "0.4rem" }}>
                       <AddToCartButton
-                        itemId={`menu-tl-${ci}-${ii}`}
+                        itemId={item.id || `menu-tl-${ci}-${ii}`}
                         itemName={item.name}
-                        itemPrice={item.price ?? null}
+                        itemPrice={item.price_display || item.price || null}
+                        itemPriceAmount={item.price_amount}
+                        itemPriceDisplay={item.price_display || item.price}
                         category={cat.name}
+                        disabled={item.is_available === false}
                         className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors"
                         style={{ background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p, border: `1px solid color-mix(in srgb, ${p} 25%, transparent)` }}
                       />

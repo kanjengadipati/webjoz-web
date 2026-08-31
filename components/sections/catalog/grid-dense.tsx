@@ -38,14 +38,17 @@ export default function CatalogGridDense({ catalog }: { catalog: TemplateProps["
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.875rem", alignItems: "stretch" }}>
               {cat.items?.map((item, ii) => (
                 <MenuCatalogCard
-                  key={ii}
-                  itemId={`cat-dense-${ci}-${ii}`}
+                  key={item.id || ii}
+                  itemId={item.id || `cat-dense-${ci}-${ii}`}
                   itemName={item.name}
                   itemPrice={item.price}
+                  itemPriceAmount={item.price_amount}
+                  itemPriceDisplay={item.price_display}
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
                   badge={item.badge}
+                  is_available={item.is_available}
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", overflow: "hidden" }}

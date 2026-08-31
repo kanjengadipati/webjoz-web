@@ -37,13 +37,16 @@ export default function MenuClassic({ menu }: MenuVariantProps) {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
               {cat.items?.map((item, itemIdx) => (
                 <MenuCatalogCard
-                  key={itemIdx}
-                  itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                  key={item.id || itemIdx}
+                  itemId={item.id || `${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
                   itemName={item.name}
                   itemPrice={item.price}
+                  itemPriceAmount={item.price_amount}
+                  itemPriceDisplay={item.price_display}
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
+                  is_available={item.is_available}
                   icon={Utensils}
                   className="group transition-all duration-300"
                   style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}

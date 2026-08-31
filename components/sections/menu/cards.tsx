@@ -58,14 +58,17 @@ export default function MenuCards({ menu }: MenuVariantProps) {
             <h3 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}>{cat.name}</h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "2rem" }}>
               {cat.items?.map((item, itemIdx) => (
-                <div key={itemIdx} className="flex flex-col">
+                <div key={item.id || itemIdx} className="flex flex-col">
                   <MenuCatalogCard
-                    itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                    itemId={item.id || `${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
                     itemName={item.name}
                     itemPrice={item.price}
+                    itemPriceAmount={item.price_amount}
+                    itemPriceDisplay={item.price_display}
                     itemDescription={item.description}
                     category={cat.name}
                     image_url={item.image_url}
+                    is_available={item.is_available}
                     icon={Utensils}
                     className="group transition-all duration-300 flex-1"
                     style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}

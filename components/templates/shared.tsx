@@ -1025,11 +1025,14 @@ interface MenuCatalogCardProps {
   itemId: string;
   itemName: string;
   itemPrice?: string | null;
+  itemPriceAmount?: number | null;
+  itemPriceDisplay?: string | null;
   itemDescription?: string | null;
   category: string;
   image_url?: string | null;
   image_credit?: ImageCredit | null;
   badge?: string | null;
+  is_available?: boolean;
   icon: React.ElementType;
   layout?: "grid" | "compact";
   className?: string;
@@ -1058,7 +1061,8 @@ interface MenuCatalogCardProps {
 }
 
 function MenuCatalogCard({
-  itemId, itemName, itemPrice, itemDescription, category, image_url, image_credit, badge, icon,
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay,
+  itemDescription, category, image_url, image_credit, badge, is_available = true, icon,
   layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
@@ -1067,16 +1071,18 @@ function MenuCatalogCard({
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const showPrice = itemPrice && !isPlaceholderPrice(itemPrice);
+  const displayPrice = itemPriceDisplay || itemPrice;
+  const showPrice = displayPrice && !isPlaceholderPrice(displayPrice);
+  const isOutOfStock = is_available === false;
 
   const imageNode = image_url ? (
     <div className="relative overflow-hidden">
       <img
         src={image_url}
         alt={itemName}
-        className={imageClassName}
-        style={{ ...imageStyle, cursor: "zoom-in" }}
-        onClick={() => setLightboxOpen(true)}
+        className={`${imageClassName || ""} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
+        style={{ ...imageStyle, cursor: isOutOfStock ? "default" : "zoom-in" }}
+        onClick={() => { if (!isOutOfStock) setLightboxOpen(true); }}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
       {image_credit?.name && (
@@ -1084,13 +1090,13 @@ function MenuCatalogCard({
           <PhotoCredit credit={image_credit} />
         </div>
       )}
-      {lightboxOpen && (
+      {lightboxOpen && !isOutOfStock && (
         <ImageLightbox src={image_url} alt={itemName} onClose={() => setLightboxOpen(false)} />
       )}
     </div>
   ) : (
     <div
-      className={placeholderClassName || "w-full h-44 flex flex-col items-center justify-center relative overflow-hidden"}
+      className={`${placeholderClassName || "w-full h-44 flex flex-col items-center justify-center relative overflow-hidden"} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
       style={{
         background: placeholderStyle?.background || `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 14%, var(--dt-surface)) 0%, color-mix(in srgb, var(--dt-surface) 96%, transparent) 100%)`,
         ...placeholderStyle,
@@ -1113,13 +1119,19 @@ function MenuCatalogCard({
   const header = (
     <div className={headerClassName} style={headerStyle}>
       <div className="min-w-0 flex-1">
-        {/* Fixed-height badge zone — reserves space even when badge is absent */}
-        <div className="min-h-[1.375rem] mb-1">
-          {badge && <span className={badgeClassName} style={badgeStyle}>{badge}</span>}
+        {/* Fixed-height badge zone */}
+        <div className="min-h-[1.375rem] mb-1 flex items-center gap-1.5 flex-wrap">
+          {isOutOfStock ? (
+            <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap bg-rose-500 text-white shadow-sm">
+              Habis
+            </span>
+          ) : badge ? (
+            <span className={badgeClassName} style={badgeStyle}>{badge}</span>
+          ) : null}
         </div>
         <h4 className={titleClassName} style={titleStyle}>{itemName}</h4>
       </div>
-      {showPrice && <span className={priceClassName} style={priceStyle}>{itemPrice}</span>}
+      {showPrice && <span className={priceClassName} style={priceStyle}>{displayPrice}</span>}
     </div>
   );
 
@@ -1153,8 +1165,15 @@ function MenuCatalogCard({
             {descriptionElement}
             <div className="mt-auto pt-2">
               <AddToCartButton
-                itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
-                category={category} className={buttonClassName} style={buttonStyle}
+                itemId={itemId}
+                itemName={itemName}
+                itemPrice={displayPrice ?? null}
+                itemPriceAmount={itemPriceAmount}
+                itemPriceDisplay={displayPrice}
+                category={category}
+                className={buttonClassName}
+                style={buttonStyle}
+                disabled={isOutOfStock}
               />
             </div>
           </div>
@@ -1181,8 +1200,15 @@ function MenuCatalogCard({
         )}
         <div className="mt-auto pt-3">
           <AddToCartButton
-            itemId={itemId} itemName={itemName} itemPrice={itemPrice ?? null}
-            category={category} className={buttonClassName} style={buttonStyle}
+            itemId={itemId}
+            itemName={itemName}
+            itemPrice={displayPrice ?? null}
+            itemPriceAmount={itemPriceAmount}
+            itemPriceDisplay={displayPrice}
+            category={category}
+            className={buttonClassName}
+            style={buttonStyle}
+            disabled={isOutOfStock}
           />
         </div>
       </div>
