@@ -398,33 +398,35 @@ export default function LandingPageClient() {
               </Button>
             </div>
 
-            {/* Highlights Row: Clean Single-Row Inline Items with Vertical Dividers */}
-            <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-x-2 sm:gap-x-5 lg:gap-x-6 pt-1.5 text-left">
-              <div className="flex items-center gap-1.5 sm:gap-2.5">
-                <ShieldCheck className="size-4 sm:size-5 text-white shrink-0 stroke-[1.75]" />
+            {/* Highlights Row: 3-Column Equal Grid with Vertical Dividers (Zero Overflow) */}
+            <div className="grid grid-cols-3 divide-x divide-white/10 w-full max-w-xl pt-1.5 text-left">
+              <div className="flex items-center gap-1.5 sm:gap-2.5 pr-1.5 sm:pr-4">
+                <ShieldCheck className="size-3.5 sm:size-5 text-white shrink-0 stroke-[1.75]" />
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs md:text-[13px] font-bold text-white leading-tight whitespace-nowrap">{t("landing.tryFree")}</div>
-                  <div className="text-[9px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 whitespace-nowrap">{translations.landing.featureFreeCard || "Tanpa kartu kredit"}</div>
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">{t("landing.tryFree")}</div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureFreeCard || "Tanpa kartu kredit"}</div>
                 </div>
               </div>
 
-              <div className="h-5 sm:h-6 w-px bg-white/10 shrink-0" aria-hidden="true" />
-
-              <div className="flex items-center gap-1.5 sm:gap-2.5">
-                <SparkleIcon className="size-4 sm:size-5 text-white shrink-0" />
+              <div className="flex items-center gap-1.5 sm:gap-2.5 px-1.5 sm:px-4">
+                <SparkleIcon className="size-3.5 sm:size-5 text-white shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs md:text-[13px] font-bold text-white leading-tight whitespace-nowrap">{t("landing.chatNotForm")}</div>
-                  <div className="text-[9px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 whitespace-nowrap">{translations.landing.featureChatEasy || "Lebih cepat & mudah"}</div>
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">
+                    <span className="sm:hidden">Chat AI</span>
+                    <span className="hidden sm:inline">{t("landing.chatNotForm")}</span>
+                  </div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureChatEasy || "Lebih cepat & mudah"}</div>
                 </div>
               </div>
 
-              <div className="h-5 sm:h-6 w-px bg-white/10 shrink-0" aria-hidden="true" />
-
-              <div className="flex items-center gap-1.5 sm:gap-2.5">
-                <Zap className="size-4 sm:size-5 text-white shrink-0 stroke-[1.75]" />
+              <div className="flex items-center gap-1.5 sm:gap-2.5 pl-1.5 sm:pl-4">
+                <Zap className="size-3.5 sm:size-5 text-white shrink-0 stroke-[1.75]" />
                 <div className="min-w-0">
-                  <div className="text-[11px] sm:text-xs md:text-[13px] font-bold text-white leading-tight whitespace-nowrap">{t("landing.activeInMinutes")}</div>
-                  <div className="text-[9px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 whitespace-nowrap">{translations.landing.featureLiveInstant || "Live dalam hitungan menit"}</div>
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">{t("landing.activeInMinutes")}</div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">
+                    <span className="sm:hidden">Hitungan menit</span>
+                    <span className="hidden sm:inline">{translations.landing.featureLiveInstant || "Live dalam hitungan menit"}</span>
+                  </div>
                 </div>
               </div>
             </div>
