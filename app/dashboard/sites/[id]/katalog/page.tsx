@@ -150,6 +150,7 @@ function MenuCatalogForm({
     };
     if (hasBadge) newItem.badge = null;
     if (sectionKey === "menu") { newItem.tags = []; newItem.delivery_platforms = []; }
+    else { newItem.capacity = null; newItem.features = []; }
     next[catIdx] = { ...next[catIdx], items: [...existingItems, newItem] };
     updateCategories(next);
   };
@@ -468,6 +469,48 @@ function KatSortableItemRow({
             <div>
               <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.badgeHint")}</span></label>
               <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo" className={inputBase} />
+            </div>
+          )}
+
+          {/* Capacity (catalog only — accommodation rooms / product capacity) */}
+          {sectionKey === "catalog" && (
+            <div>
+              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelCapacity")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.capacityHint")}</span></label>
+              <input
+                type="number" min={1}
+                value={item.capacity ?? ""}
+                onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value === "" ? null : Number(e.target.value))}
+                placeholder="cth. 2, 4, 6"
+                className={`${inputBase} [appearance:textfield]`}
+              />
+            </div>
+          )}
+
+          {/* Features / Amenities (catalog only) */}
+          {sectionKey === "catalog" && (
+            <div>
+              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelFeatures")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.featuresHint")}</span></label>
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {(item.features ?? []).map((f: string, fi: number) => (
+                  <span key={fi} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
+                    {f}
+                    <button type="button" onClick={() => updateItem(catIdx, itemIdx, "features", (item.features ?? []).filter((_: string, i: number) => i !== fi))} className="hover:opacity-70 cursor-pointer">
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text" placeholder="Ketik fitur lalu Enter" className={`${inputBase} text-xs`}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                    e.preventDefault();
+                    const next = [...(item.features ?? []), e.currentTarget.value.trim()];
+                    updateItem(catIdx, itemIdx, "features", next);
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
             </div>
           )}
 

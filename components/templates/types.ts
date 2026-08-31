@@ -54,6 +54,7 @@ export interface CatalogEntryBase {
   price_display?: string;
   price_amount?: number | null;
   image_url?: string | null;
+  image_urls?: string[] | null;
   image_credit?: ImageCredit | null;
   badge?: string | null;
   is_available?: boolean;
@@ -75,6 +76,7 @@ export interface MenuCategory {
 
 export interface CatalogItem extends CatalogEntryBase {
   features?: string[] | null;
+  capacity?: number | null;
 }
 
 export interface CatalogCategory {

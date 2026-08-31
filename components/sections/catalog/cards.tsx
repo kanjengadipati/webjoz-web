@@ -39,10 +39,12 @@ export default function CatalogCards({ catalog }: CatalogVariantProps) {
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
+                  image_urls={item.image_urls}
                   badge={item.badge}
                   is_available={item.is_available}
                   variant_groups={item.variant_groups}
                   features={item.features}
+                  capacity={item.capacity}
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}

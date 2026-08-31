@@ -1741,6 +1741,10 @@ export interface Translations {
       labelPrice: string;
       labelBadge: string;
       badgeHint: string;
+      labelCapacity: string;
+      capacityHint: string;
+      labelFeatures: string;
+      featuresHint: string;
       labelDescription: string;
       bulletList: string;
       numberedList: string;
@@ -3995,6 +3999,10 @@ export const translations: Record<Locale, Translations> = {
         labelPrice: "Harga",
         labelBadge: "Badge",
         badgeHint: "Badge menandai item sebagai unggulan dan menampilkan badge di showcase.",
+        labelCapacity: "Kapasitas",
+        capacityHint: "(opsional — jml tamu utk kamar / jml unit)",
+        labelFeatures: "Fitur / Fasilitas",
+        featuresHint: "(misal: AC, WiFi, Sarapan — utk kamar homestay)",
         labelDescription: "Deskripsi",
         bulletList: "Bullet List",
         numberedList: "Numbered List",
@@ -6311,6 +6319,10 @@ export const translations: Record<Locale, Translations> = {
         labelPrice: "Price",
         labelBadge: "Badge",
         badgeHint: "A badge marks items as featured and shows them in the showcase view.",
+        labelCapacity: "Capacity",
+        capacityHint: "(optional — max guests for rooms / units)",
+        labelFeatures: "Features / Amenities",
+        featuresHint: "(e.g. AC, WiFi, Breakfast — for homestay rooms)",
         labelDescription: "Description",
         bulletList: "Bullet List",
         numberedList: "Numbered List",
