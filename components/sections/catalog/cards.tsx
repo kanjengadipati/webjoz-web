@@ -30,14 +30,17 @@ export default function CatalogCards({ catalog }: CatalogVariantProps) {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2rem" }}>
               {cat.items?.map((item, itemIdx) => (
               <MenuCatalogCard
-                  key={itemIdx}
-                  itemId={`${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
+                  key={item.id || itemIdx}
+                  itemId={item.id || `${cat.name}__${item.name}__${catIdx}_${itemIdx}`}
                   itemName={item.name}
                   itemPrice={item.price}
+                  itemPriceAmount={item.price_amount}
+                  itemPriceDisplay={item.price_display}
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
                   badge={item.badge}
+                  is_available={item.is_available}
                   features={item.features}
                   icon={ImageIcon}
                   className="group transition-all duration-300"

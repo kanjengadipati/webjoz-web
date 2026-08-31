@@ -69,13 +69,16 @@ export default function MenuTabsByCategory({ menu }: { menu: TemplateProps["cont
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
             {active.items?.map((item, ii) => (
               <MenuCatalogCard
-                key={ii}
-                itemId={`menu-tab-${activeIdx}-${ii}`}
+                key={item.id || ii}
+                itemId={item.id || `menu-tab-${activeIdx}-${ii}`}
                 itemName={item.name}
                 itemPrice={item.price}
+                itemPriceAmount={item.price_amount}
+                itemPriceDisplay={item.price_display}
                 itemDescription={item.description}
                 category={active.name}
                 image_url={item.image_url}
+                is_available={item.is_available}
                 icon={Utensils}
                 className="group transition-all duration-300"
                 style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}

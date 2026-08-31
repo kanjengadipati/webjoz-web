@@ -40,14 +40,17 @@ export default function MenuCompactList({ menu }: { menu: TemplateProps["content
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {cat.items?.map((item, ii) => (
                 <MenuCatalogCard
-                  key={ii}
+                  key={item.id || ii}
                   layout="compact"
-                  itemId={`menu-cl-${ci}-${ii}`}
+                  itemId={item.id || `menu-cl-${ci}-${ii}`}
                   itemName={item.name}
                   itemPrice={item.price}
+                  itemPriceAmount={item.price_amount}
+                  itemPriceDisplay={item.price_display}
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
+                  is_available={item.is_available}
                   icon={Utensils}
                   className="transition-all duration-200 hover:shadow-md"
                   style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", padding: "0.875rem", overflow: "hidden" }}

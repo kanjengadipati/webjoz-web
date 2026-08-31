@@ -95,10 +95,13 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                           )}
                           <div style={{ marginTop: "auto", paddingTop: "0.75rem" }}>
                             <AddToCartButton
-                              itemId={`cat-sf-feat-${ci}-${fi}`}
+                              itemId={item.id || `cat-sf-feat-${ci}-${fi}`}
                               itemName={item.name}
-                              itemPrice={item.price ?? null}
+                              itemPrice={item.price_display || item.price || null}
+                              itemPriceAmount={item.price_amount}
+                              itemPriceDisplay={item.price_display || item.price}
                               category={cat.name}
+                              disabled={item.is_available === false}
                               className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
                               style={{ background: p, color: bg, border: "none" }}
                             />
@@ -115,14 +118,17 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
                   {rest.map((item, ii) => (
                     <MenuCatalogCard
-                      key={ii}
-                      itemId={`cat-sf-rest-${ci}-${ii}`}
+                      key={item.id || ii}
+                      itemId={item.id || `cat-sf-rest-${ci}-${ii}`}
                       itemName={item.name}
                       itemPrice={item.price}
+                      itemPriceAmount={item.price_amount}
+                      itemPriceDisplay={item.price_display}
                       itemDescription={item.description}
                       category={cat.name}
                       image_url={item.image_url}
                       badge={item.badge}
+                      is_available={item.is_available}
                       icon={ImageIcon}
                       className="group transition-all duration-300"
                       style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" }}
