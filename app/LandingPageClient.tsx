@@ -365,7 +365,7 @@ export default function LandingPageClient() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
-          <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
+          <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-start text-left">
             {/* Top pill badge */}
             {/* PR Test Banner */}
             <div className="sm:inline-block w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-6 py-3 mb-6 text-center text-sm text-amber-600 dark:text-amber-300">
@@ -400,7 +400,7 @@ export default function LandingPageClient() {
               </Button>
             </div>
 
-            {/* Highlights Row: 3-Column Equal Grid with Vertical Dividers (Zero Overflow) */}
+            {/* Highlights Row */}
             <div className="grid grid-cols-3 divide-x divide-border/80 dark:divide-white/10 w-full max-w-xl pt-1.5 text-left">
               <div className="flex items-center gap-1.5 sm:gap-2.5 pr-1.5 sm:pr-4">
                 <ShieldCheck className="size-3.5 sm:size-5 text-primary dark:text-white shrink-0 stroke-[1.75]" />
@@ -434,9 +434,35 @@ export default function LandingPageClient() {
             </div>
           </div>
 
-          {/* Interactive Mockup */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 flex flex-col items-center justify-center w-full -mt-2 sm:mt-0">
-            <InteractiveMockup />
+          {/* ── Artistic Right Panel ─────────────────────────────────────────── */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 relative flex flex-col items-center justify-center w-full">
+            {/* Soft ambient glows */}
+            <div className="absolute -top-16 -right-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-amber-400/15 rounded-full blur-[80px] pointer-events-none" />
+
+            {/* Dot-grid art backdrop */}
+            <div
+              className="absolute inset-0 rounded-3xl opacity-30 dark:opacity-20 pointer-events-none"
+              style={{
+                backgroundImage: "radial-gradient(circle, oklch(0.5 0.1 260 / 0.35) 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
+              }}
+            />
+
+            {/* Floating stat chips */}
+            <div className="absolute -top-4 -left-2 sm:-left-8 z-10 flex items-center gap-2 rounded-xl border border-border/60 bg-card/90 backdrop-blur-sm px-3 py-2 shadow-lg text-xs font-semibold text-foreground animate-bounce" style={{ animationDuration: "3s" }}>
+              <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_6px_theme(colors.emerald.400)]" />
+              Live preview
+            </div>
+            <div className="absolute -bottom-4 -right-2 sm:-right-6 z-10 flex items-center gap-2 rounded-xl border border-border/60 bg-card/90 backdrop-blur-sm px-3 py-2 shadow-lg text-xs font-semibold text-foreground animate-bounce" style={{ animationDuration: "4s", animationDelay: "1s" }}>
+              <span className="text-base">⚡</span>
+              &lt; 10 menit live
+            </div>
+
+            {/* The mockup itself */}
+            <div className="relative w-full">
+              <InteractiveMockup />
+            </div>
           </div>
         </div>
       </section>
