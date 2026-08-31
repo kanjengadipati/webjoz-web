@@ -66,7 +66,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   {
     value: "futuristic",
     emoji: "🤖",
-    label: "Futuristik & Modern",
+    label: "Futuristik",
     desc: "Modern, teknologi, dan futuristik",
     palette: ["#0B0F19", "#06B6D4", "#A855F7"],
     font: "Plus Jakarta Sans",

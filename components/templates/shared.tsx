@@ -1,7 +1,7 @@
 "use client";"use client";
 
 import React, { useId, useState, useEffect, useRef } from "react";
-import { headingVars } from "./helpers";
+import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2,
@@ -760,8 +760,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   </p>
                   <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
                     <div
-                      className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-white text-xs font-black flex-shrink-0"
-                      style={{ background: t.avatar_color || accentColor }}
+                      className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-xs font-black flex-shrink-0"
+                      style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                     >
                       {t.avatar_initials}
                     </div>
@@ -788,8 +788,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   </p>
                   <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium flex-shrink-0"
-                      style={{ background: t.avatar_color || accentColor, opacity: 0.85 }}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0"
+                      style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor), opacity: 0.85 }}
                     >
                       {t.avatar_initials}
                     </div>
@@ -821,8 +821,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   </p>
                   <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: "color-mix(in srgb, var(--dt-border) 20%, transparent)" }}>
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 shadow-inner"
-                      style={{ background: `linear-gradient(135deg, ${t.avatar_color || accentColor}, color-mix(in srgb, ${t.avatar_color || accentColor} 70%, black))` }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-inner"
+                      style={{ background: `linear-gradient(135deg, ${t.avatar_color || accentColor}, color-mix(in srgb, ${t.avatar_color || accentColor} 70%, black))`, color: avatarTextColor(t.avatar_color || accentColor) }}
                     >
                       {t.avatar_initials}
                     </div>
@@ -853,9 +853,10 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   </p>
                   <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 border border-cyan-400/30"
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border border-cyan-400/30"
                       style={{
                         background: `radial-gradient(circle, ${t.avatar_color || accentColor} 0%, rgba(0,0,0,0.4) 100%)`,
+                        color: avatarTextColor(t.avatar_color || accentColor),
                         boxShadow: `0 0 10px ${t.avatar_color || accentColor}33`,
                       }}
                     >
@@ -891,8 +892,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       </svg>
                       {/* Avatar */}
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 border border-border"
-                        style={{ background: t.avatar_color || accentColor }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border border-border"
+                        style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                       >
                         {t.avatar_initials}
                       </div>
@@ -999,8 +1000,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 <p className={quoteClasses} style={quoteStyle}>{t.quote}</p>
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ background: t.avatar_color || accentColor }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                   >
                     {t.avatar_initials}
                   </div>
