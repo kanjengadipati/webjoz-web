@@ -242,7 +242,9 @@ export function getTemplatePool(businessType: string, mood: string): string[] {
     return BUSINESS_TEMPLATE_POOLS.produk;
   }
   if (lower.includes("properti") || lower.includes("konstruksi") || lower.includes("hotel") ||
-    lower.includes("travel") || lower.includes("pendidikan") || lower.includes("manufaktur")) {
+    lower.includes("homestay") || lower.includes("penginapan") || lower.includes("villa") ||
+    lower.includes("resort") || lower.includes("guest") || lower.includes("travel") ||
+    lower.includes("pendidikan") || lower.includes("manufaktur")) {
     return BUSINESS_TEMPLATE_POOLS.properti;
   }
   if (lower.includes("retro") || lower.includes("vintage") || lower.includes("klasik")) {
