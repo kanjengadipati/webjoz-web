@@ -1337,13 +1337,13 @@ export function SiteWizard({
                           </div>
 
                           {/* Nama kanan */}
-                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1 min-w-0">
+                          <span className={`text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1 min-w-0 ${isSelected ? "pr-3" : ""}`}>
                             {translatedMoodLabel}
                           </span>
 
-                          {/* Checkmark kanan saat terpilih */}
+                          {/* Checkmark badge top-right corner saat terpilih */}
                           {isSelected && (
-                            <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                            <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-white flex items-center justify-center shadow-md">
                               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12" />
                               </svg>
