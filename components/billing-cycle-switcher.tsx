@@ -31,7 +31,7 @@ export function BillingCycleSwitcher({
           onClick={() => onCycleChange("monthly")}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
             billingCycle === "monthly"
-              ? "bg-white text-slate-900 shadow-sm font-bold"
+              ? "bg-card text-foreground shadow-sm font-bold dark:bg-white dark:text-slate-900"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -42,7 +42,7 @@ export function BillingCycleSwitcher({
           onClick={() => onCycleChange("yearly")}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
             billingCycle === "yearly"
-              ? "bg-white text-slate-900 shadow-sm font-bold"
+              ? "bg-card text-foreground shadow-sm font-bold dark:bg-white dark:text-slate-900"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >

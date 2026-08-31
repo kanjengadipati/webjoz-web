@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
 import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { PricingCards } from "@/components/pricing-cards";
 import { prefillForLibraryBusinessType, encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
 import { SparkleIcon } from "@/components/sparkle-icon";
@@ -220,7 +221,7 @@ export default function LandingPageClient() {
   }
 
   return (
-    <main className="dark min-h-screen pb-20 bg-[#080808] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+    <main className="min-h-screen pb-20 bg-background text-foreground selection:bg-amber-500/30 selection:text-amber-600 dark:selection:text-amber-200 transition-colors">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -282,7 +283,7 @@ export default function LandingPageClient() {
         }}
       />
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#080808]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -299,31 +300,32 @@ export default function LandingPageClient() {
           <nav className="hidden md:flex items-center gap-6">
             <a
               href="#how-it-works"
-              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("landing.navHowItWorks")}
             </a>
             <a
               href="#features"
-              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("landing.navFeatures")}
             </a>
             <a
               href="#pricing"
-              className="text-sm font-medium text-white/60 hover:text-white transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("landing.navPricing")}
             </a>
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <LanguageSwitcher />
 
             {/* Pusat Bantuan Header Link (Visible on Mobile & Desktop) */}
             <Link
               href="/help"
-              className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors px-1.5 py-1"
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-1.5 py-1"
               title={t("landing.navHelp")}
             >
               <svg className="size-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -338,20 +340,20 @@ export default function LandingPageClient() {
               isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="hidden sm:inline-block text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
+                  className="hidden sm:inline-block text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
                 >
                   {t("landing.navDashboard")}
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:inline-block text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
+                  className="hidden sm:inline-block text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
                 >
                   {t("landing.navLogin")}
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="inline-flex rounded-xl bg-white text-black font-semibold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-slate-200 transition-all cursor-pointer">
+            <Button onClick={() => startWizard()} className="inline-flex rounded-xl bg-primary text-primary-foreground font-semibold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-primary/90 transition-all cursor-pointer">
               {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
             </Button>
           </div>
@@ -366,12 +368,12 @@ export default function LandingPageClient() {
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center text-center lg:items-start lg:text-left">
             {/* Top pill badge */}
             {/* PR Test Banner */}
-            <div className="sm:inline-block w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-6 py-3 mb-6 text-center text-sm text-amber-300">
+            <div className="sm:inline-block w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-6 py-3 mb-6 text-center text-sm text-amber-600 dark:text-amber-300">
               <span className="font-medium">⚠️ PR Test Mode</span>
               <span className="ml-2">This is a test page for PRD validation — features may be limited.</span>
             </div>
-            <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/90 shadow-sm">
-              <SparkleIcon className="w-3.5 h-3.5 text-white" />
+            <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/80 px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-foreground shadow-sm dark:border-white/15 dark:bg-white/[0.04] dark:text-white/90">
+              <SparkleIcon className="w-3.5 h-3.5 text-amber-500 dark:text-white" />
               <span>{t("landing.badge")}</span>
             </div>
 
@@ -390,40 +392,40 @@ export default function LandingPageClient() {
               <Button
                 onClick={() => startWizard()}
                 size="lg"
-                className="w-auto rounded-full bg-white text-black font-extrabold px-7 py-5 sm:px-9 sm:py-6 text-base sm:text-lg shadow-[0_10px_35px_rgba(255,255,255,0.18)] hover:bg-slate-200 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group"
+                className="w-auto rounded-full bg-primary text-primary-foreground font-extrabold px-7 py-5 sm:px-9 sm:py-6 text-base sm:text-lg shadow-xl hover:bg-primary/90 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group dark:bg-white dark:text-black dark:hover:bg-slate-200"
               >
-                <SparkleIcon className="size-4 sm:size-4.5 text-black" />
+                <SparkleIcon className="size-4 sm:size-4.5 text-primary-foreground dark:text-black" />
                 <span>{t("landing.ctaPrimary")}</span>
-                <ArrowRight className="size-4 sm:size-4.5 text-black group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="size-4 sm:size-4.5 text-primary-foreground dark:text-black group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
 
             {/* Highlights Row: 3-Column Equal Grid with Vertical Dividers (Zero Overflow) */}
-            <div className="grid grid-cols-3 divide-x divide-white/10 w-full max-w-xl pt-1.5 text-left">
+            <div className="grid grid-cols-3 divide-x divide-border/80 dark:divide-white/10 w-full max-w-xl pt-1.5 text-left">
               <div className="flex items-center gap-1.5 sm:gap-2.5 pr-1.5 sm:pr-4">
-                <ShieldCheck className="size-3.5 sm:size-5 text-white shrink-0 stroke-[1.75]" />
+                <ShieldCheck className="size-3.5 sm:size-5 text-primary dark:text-white shrink-0 stroke-[1.75]" />
                 <div className="min-w-0">
-                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">{t("landing.tryFree")}</div>
-                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureFreeCard || "Tanpa kartu kredit"}</div>
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-foreground dark:text-white leading-tight truncate">{t("landing.tryFree")}</div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-muted-foreground dark:text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureFreeCard || "Tanpa kartu kredit"}</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 sm:gap-2.5 px-1.5 sm:px-4">
-                <SparkleIcon className="size-3.5 sm:size-5 text-white shrink-0" />
+                <SparkleIcon className="size-3.5 sm:size-5 text-amber-500 dark:text-white shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-foreground dark:text-white leading-tight truncate">
                     <span className="sm:hidden">Chat AI</span>
                     <span className="hidden sm:inline">{t("landing.chatNotForm")}</span>
                   </div>
-                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureChatEasy || "Lebih cepat & mudah"}</div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-muted-foreground dark:text-white/50 leading-tight mt-0.5 truncate">{translations.landing.featureChatEasy || "Lebih cepat & mudah"}</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 sm:gap-2.5 pl-1.5 sm:pl-4">
-                <Zap className="size-3.5 sm:size-5 text-white shrink-0 stroke-[1.75]" />
+                <Zap className="size-3.5 sm:size-5 text-primary dark:text-white shrink-0 stroke-[1.75]" />
                 <div className="min-w-0">
-                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-white leading-tight truncate">{t("landing.activeInMinutes")}</div>
-                  <div className="text-[8.5px] sm:text-[10.5px] text-white/50 leading-tight mt-0.5 truncate">
+                  <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-foreground dark:text-white leading-tight truncate">{t("landing.activeInMinutes")}</div>
+                  <div className="text-[8.5px] sm:text-[10.5px] text-muted-foreground dark:text-white/50 leading-tight mt-0.5 truncate">
                     <span className="sm:hidden">Hitungan menit</span>
                     <span className="hidden sm:inline">{translations.landing.featureLiveInstant || "Live dalam hitungan menit"}</span>
                   </div>
@@ -456,9 +458,9 @@ export default function LandingPageClient() {
             {STEPS.map((step) => (
               <div
                 key={step.num}
-                className="group relative rounded-2xl border border-white/10 bg-[#111318] p-6 transition-all duration-300 hover:border-amber-500/40 hover:bg-[#151720]"
+                className="group relative rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-amber-500/40 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 text-sm font-bold font-mono text-amber-400 group-hover:bg-amber-500/10 group-hover:border-amber-500/30 transition-colors">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/30 text-sm font-bold font-mono text-amber-600 dark:text-amber-400 group-hover:bg-amber-500/20 transition-colors">
                   {step.num}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
@@ -471,7 +473,7 @@ export default function LandingPageClient() {
             <Button
               onClick={() => startWizard()}
               size="lg"
-              className="rounded-full bg-white text-black font-bold px-8 hover:bg-slate-200 transition-all cursor-pointer"
+              className="rounded-full bg-primary text-primary-foreground font-bold px-8 hover:bg-primary/90 transition-all cursor-pointer dark:bg-white dark:text-black dark:hover:bg-slate-200"
             >
               {t("landing.howItWorksCta")}
             </Button>
@@ -487,16 +489,16 @@ export default function LandingPageClient() {
               {t("landing.featuresEyebrow")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground"
               dangerouslySetInnerHTML={{ __html: t("landing.featuresTitle") }}
             />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="overflow-hidden border-white/10 bg-[#111318] shadow-2xl">
+            <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400 font-semibold">
+                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
                     {t("landing.dashboardBadge")}
                   </Badge>
                   <div className="space-y-3">
@@ -509,7 +511,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.dashboardTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
+                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-300">
                         {tag}
                       </span>
                     ))}
@@ -518,10 +520,10 @@ export default function LandingPageClient() {
               </div>
             </Card>
 
-            <Card className="overflow-hidden border-white/10 bg-[#111318] shadow-2xl">
+            <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400 font-semibold">
+                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
                     {t("landing.domainBadge")}
                   </Badge>
                   <div className="space-y-3">
@@ -534,7 +536,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.domainTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
+                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-300">
                         {tag}
                       </span>
                     ))}
@@ -554,7 +556,7 @@ export default function LandingPageClient() {
               {t("landing.templatesEyebrow")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground"
               dangerouslySetInnerHTML={{ __html: t("landing.templatesTitle") }}
             />
             <p className="mx-auto max-w-2xl text-base text-muted-foreground">
@@ -574,7 +576,7 @@ export default function LandingPageClient() {
               {t("landing.whyEyebrow")}
             </p>
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground"
               dangerouslySetInnerHTML={{ __html: t("landing.whyTitle") }}
             />
           </div>
@@ -583,7 +585,7 @@ export default function LandingPageClient() {
             {FEATURES.map((f, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/10 bg-[#111318] p-6 transition-all hover:border-white/20 hover:bg-[#151720]"
+                className="rounded-2xl border border-border bg-card p-6 transition-all hover:border-border/80 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
               >
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-2xl">
                   {f.icon}
@@ -599,7 +601,7 @@ export default function LandingPageClient() {
       {/* ── Stats Banner (Pleco-style) ──────────────────────────────────────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto">
         <div className="mx-auto max-w-5xl">
-          <Card className="border-white/10 bg-[#111318] px-6 py-8 shadow-xl lg:px-8 lg:py-10">
+          <Card className="border-border bg-card px-6 py-8 shadow-xl lg:px-8 lg:py-10 dark:border-white/10 dark:bg-[#111318]">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { value: t("landing.statsValue1"), label: t("landing.statsLabel1") },
@@ -608,7 +610,7 @@ export default function LandingPageClient() {
                 { value: t("landing.statsValue4"), label: t("landing.statsLabel4") },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-bold tracking-tight text-white lg:text-4xl">{stat.value}</div>
+                  <div className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl dark:text-white">{stat.value}</div>
                   <div className="mt-1 text-xs text-muted-foreground font-medium">{stat.label}</div>
                 </div>
               ))}
@@ -621,7 +623,7 @@ export default function LandingPageClient() {
       <section id="pricing" className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto scroll-mt-16">
         <div className="mx-auto max-w-5xl">
           <div className="text-center space-y-3 mb-8">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{t("landing.pricingTitle")}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl dark:text-white">{t("landing.pricingTitle")}</h2>
             <p className="text-muted-foreground text-base max-w-lg mx-auto">
               {t("landing.pricingSubtitle")}
             </p>
@@ -672,13 +674,13 @@ export default function LandingPageClient() {
       {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-4xl mx-auto">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#14161f] via-[#111318] to-[#0d0e12] px-8 py-12 shadow-2xl">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 via-card to-background px-8 py-12 shadow-xl dark:border-white/10 dark:from-[#14161f] dark:via-[#111318] dark:to-[#0d0e12]">
             <div className="pointer-events-none absolute inset-0 -z-10">
               <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-[90px]" />
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl dark:text-white">
                 {t("landing.ctaBannerTitle")}
               </h2>
               <p className="mx-auto max-w-xl text-base leading-8 text-muted-foreground">
@@ -690,7 +692,7 @@ export default function LandingPageClient() {
               <Button
                 onClick={() => startWizard()}
                 size="lg"
-                className="rounded-full bg-white text-black font-bold px-10 py-6 text-base shadow-xl hover:bg-slate-200 transition-all cursor-pointer"
+                className="rounded-full bg-primary text-primary-foreground font-bold px-10 py-6 text-base shadow-xl hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-slate-200 transition-all cursor-pointer"
               >
                 {t("landing.ctaBannerCta")}
               </Button>
@@ -699,19 +701,19 @@ export default function LandingPageClient() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button variant="outline" size="lg" className="rounded-full border-white/15 bg-white/[0.04] text-slate-200 font-semibold px-8 py-6 text-base hover:border-white/30">
+                <Button variant="outline" size="lg" className="rounded-full border-border bg-card text-foreground font-semibold px-8 py-6 text-base hover:bg-muted dark:border-white/15 dark:bg-white/[0.04] dark:text-slate-200 dark:hover:border-white/30">
                   {t("landing.ctaBannerWhatsapp")}
                 </Button>
               </a>
             </div>
 
-            <p className="mt-6 text-sm text-slate-400">
+            <p className="mt-6 text-sm text-muted-foreground dark:text-slate-400">
               {t("landing.ctaBannerHelper")}{" "}
               <a
                 href={getWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 underline-offset-4 hover:underline font-semibold"
+                className="text-amber-500 hover:text-amber-600 dark:text-amber-400 underline-offset-4 hover:underline font-semibold"
               >
                 {t("landing.ctaBannerContact")}
               </a>
@@ -721,42 +723,42 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-white/10 px-4 py-10 sm:px-6 lg:px-8 bg-[#080808]">
+      <footer className="border-t border-border px-4 py-10 sm:px-6 lg:px-8 bg-card/40 dark:bg-[#080808] dark:border-white/10">
         <div className="mx-auto max-w-6xl flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
-              <span className="text-sm font-semibold text-white">Webjoz</span>
+              <span className="text-sm font-semibold text-foreground dark:text-white">Webjoz</span>
             </div>
-            <p className="text-xs text-slate-400 text-center">
+            <p className="text-xs text-muted-foreground dark:text-slate-400 text-center">
               {t("landing.footerCopyright", undefined, { year: String(new Date().getFullYear()) })}
             </p>
-            <div className="flex items-center gap-4 text-xs text-slate-400">
-              <Link href="/blog" className="hover:text-white transition">{t("landing.footerBlog")}</Link>
-              <Link href="/login" className="hover:text-white transition">{t("landing.footerLogin")}</Link>
-              <Link href="/contact" className="hover:text-white transition">{t("common.contact")}</Link>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-slate-400">
+              <Link href="/blog" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerBlog")}</Link>
+              <Link href="/login" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerLogin")}</Link>
+              <Link href="/contact" className="hover:text-foreground dark:hover:text-white transition">{t("common.contact")}</Link>
             </div>
           </div>
-          <div className="border-t border-white/5 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
-            <Link href="/help" className="hover:text-white transition">{t("landing.footerHelp")}</Link>
-            <Link href="/changelog" className="hover:text-white transition">{t("landing.footerChangelog")}</Link>
-            <Link href="/privacy-policy" className="hover:text-white transition">{t("landing.footerPrivacy")}</Link>
-            <Link href="/terms" className="hover:text-white transition">{t("landing.footerTerms")}</Link>
-            <Link href="/refund-policy" className="hover:text-white transition">{t("landing.footerRefund")}</Link>
-            <Link href="/contact" className="hover:text-white transition">{t("landing.footerContact")}</Link>
+          <div className="border-t border-border/40 dark:border-white/5 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground dark:text-slate-400">
+            <Link href="/help" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerHelp")}</Link>
+            <Link href="/changelog" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerChangelog")}</Link>
+            <Link href="/privacy-policy" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerPrivacy")}</Link>
+            <Link href="/terms" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerTerms")}</Link>
+            <Link href="/refund-policy" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerRefund")}</Link>
+            <Link href="/contact" className="hover:text-foreground dark:hover:text-white transition">{t("landing.footerContact")}</Link>
           </div>
         </div>
       </footer>
 
       {/* ── Sticky Mobile Bottom Navigation Bar ────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-1.5 pb-2.5">
+      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-2xl border-t border-border px-2 py-1.5 pb-2.5 dark:bg-[#08080a]/95 dark:border-white/10">
         <div className="flex items-center justify-around">
-          <Link href="/" className="flex flex-col items-center gap-0.5 text-white font-semibold text-[10px] min-w-[54px]">
-            <Home className="size-5 text-white" />
+          <Link href="/" className="flex flex-col items-center gap-0.5 text-foreground dark:text-white font-semibold text-[10px] min-w-[54px]">
+            <Home className="size-5 text-foreground dark:text-white" />
             <span>{t("landing.bottomNavHome")}</span>
           </Link>
-          <a href="#features" className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
-            <Zap className="size-5 text-white/60" />
+          <a href="#features" className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
+            <Zap className="size-5" />
             <span>{t("landing.bottomNavFeatures")}</span>
           </a>
 
@@ -766,18 +768,18 @@ export default function LandingPageClient() {
             onClick={() => startWizard()}
             className="flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
           >
-            <div className="size-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_22px_rgba(255,255,255,0.45)] ring-4 ring-[#08080a] group-hover:scale-105 transition-all">
-              <SparkleIcon className="size-6 text-black fill-black" />
+            <div className="size-12 rounded-full bg-primary text-primary-foreground dark:bg-white dark:text-black flex items-center justify-center shadow-lg ring-4 ring-background dark:ring-[#08080a] group-hover:scale-105 transition-all">
+              <SparkleIcon className="size-6 text-primary-foreground fill-primary-foreground dark:text-black dark:fill-black" />
             </div>
-            <span className="text-[10px] font-bold text-white mt-0.5">{t("landing.bottomNavCreate")}</span>
+            <span className="text-[10px] font-bold text-foreground dark:text-white mt-0.5">{t("landing.bottomNavCreate")}</span>
           </button>
 
-          <a href="#pricing" className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
-            <Tag className="size-5 text-white/60" />
+          <a href="#pricing" className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
+            <Tag className="size-5" />
             <span>{t("landing.bottomNavPricing")}</span>
           </a>
-          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition text-[10px] min-w-[54px]">
-            <UserCircle className="size-5 text-white/60" />
+          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
+            <UserCircle className="size-5" />
             <span>{t("landing.bottomNavAccount")}</span>
           </Link>
         </div>

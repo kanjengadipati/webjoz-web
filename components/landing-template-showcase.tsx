@@ -318,7 +318,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
   }) {
     return (
       <div
-        className="group relative rounded-2xl border border-white/10 bg-[#111318] overflow-hidden transition-all duration-300 hover:border-border hover:shadow-2xl hover:shadow-black/50 hover:-translate-y-0.5 cursor-pointer"
+        className="group relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:border-border hover:shadow-xl hover:-translate-y-0.5 cursor-pointer dark:border-white/10 dark:bg-[#111318]"
         onClick={() => setSelected(item)}
       >
         {/* Eye icon on hover */}
@@ -346,23 +346,23 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
             </span>
           </div>
           {/* Bottom fade */}
-          <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#111318] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-card dark:from-[#111318] to-transparent pointer-events-none" />
         </div>
 
         {/* Info bar */}
         {showLabel && (
           <div className="px-3.5 py-3 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-sm font-bold text-white truncate leading-tight">
+              <p className="text-sm font-bold text-foreground dark:text-white truncate leading-tight">
                 {item.sample.businessName}
               </p>
-              <p className="text-[11px] text-slate-400 truncate mt-0.5">
+              <p className="text-[11px] text-muted-foreground dark:text-slate-400 truncate mt-0.5">
                 {item.business_type}
               </p>
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); onStart(item); }}
-              className="shrink-0 rounded-full bg-white text-black px-3.5 py-1.5 text-[11px] font-bold transition-all hover:bg-slate-100 active:scale-95"
+              className="shrink-0 rounded-full bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1.5 text-[11px] font-bold transition-all hover:bg-primary/90 dark:hover:bg-slate-100 active:scale-95"
             >
               {t("landing.showcaseCreate")}
             </button>
@@ -375,10 +375,10 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
   if (items === null) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse" aria-hidden>
-        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-muted/50 border border-white/10 h-72 sm:h-80 lg:h-[340px]" />
+        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-muted/50 border border-border/60 dark:border-white/10 h-72 sm:h-80 lg:h-[340px]" />
         <div className="sm:col-span-2 grid grid-cols-2 gap-4">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-2xl bg-muted/50 border border-white/10 h-36 sm:h-40" />
+            <div key={i} className="rounded-2xl bg-muted/50 border border-border/60 dark:border-white/10 h-36 sm:h-40" />
           ))}
         </div>
       </div>
@@ -397,7 +397,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
           {/* Featured card */}
           <div className="sm:col-span-2 lg:col-span-1 flex flex-col">
             <div
-              className="group relative rounded-2xl border border-white/10 bg-[#111318] overflow-hidden transition-all duration-300 hover:border-border hover:shadow-2xl hover:shadow-black/50 cursor-pointer flex-1"
+              className="group relative rounded-2xl border border-border bg-card dark:border-white/10 dark:bg-[#111318] overflow-hidden transition-all duration-300 hover:border-border hover:shadow-xl cursor-pointer flex-1"
               onClick={() => setSelected(featured)}
             >
               {/* Eye icon */}
@@ -422,18 +422,18 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
                     {badgeLabel(featured)}
                   </span>
                 </div>
-                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#111318] to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-card dark:from-[#111318] to-transparent pointer-events-none" />
               </div>
               <div className="px-4 py-3.5 flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-base font-bold text-white truncate">{featured.sample.businessName}</p>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                  <p className="text-base font-bold text-foreground dark:text-white truncate">{featured.sample.businessName}</p>
+                  <p className="text-[11px] text-muted-foreground dark:text-slate-400 truncate mt-0.5">
                     {featured.business_type}
                   </p>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); onStart(featured); }}
-                  className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-bold transition-all hover:bg-slate-100 active:scale-95"
+                  className="shrink-0 rounded-full bg-primary text-primary-foreground dark:bg-white dark:text-black px-4 py-1.5 text-xs font-bold transition-all hover:bg-primary/90 dark:hover:bg-slate-100 active:scale-95"
                 >
                   {t("landing.showcaseCreate")}
                 </button>
