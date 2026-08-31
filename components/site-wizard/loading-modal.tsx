@@ -116,7 +116,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
               <SparkleIcon className="w-[18px] h-[18px]" />
               <span className="text-[11px] font-bold text-primary">{t("dashboard.wizard.loadingAiInsight", "AI Insight")}</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType)}</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType, locale)}</p>
           </div>
         )}
       </div>

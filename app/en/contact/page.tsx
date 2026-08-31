@@ -3,39 +3,39 @@ import Link from "next/link";
 import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER, SUPPORT_EMAIL, siteUrl } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Hubungi Kami | Webjoz",
-  description: "Hubungi tim Webjoz. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
-  keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website"],
+  title: "Contact Us | Webjoz",
+  description: "Contact the Webjoz team. We are here to assist you with any questions regarding our AI website builder platform.",
+  keywords: ["contact webjoz", "support webjoz", "customer support", "website help"],
   alternates: {
-    canonical: siteUrl("/contact"),
+    canonical: siteUrl("/en/contact"),
     languages: {
       id: siteUrl("/contact"),
       en: siteUrl("/en/contact"),
     },
   },
   openGraph: {
-    title: "Hubungi Kami | Webjoz",
-    description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan seputar platform AI website builder.",
-    url: siteUrl("/contact"),
+    title: "Contact Us | Webjoz",
+    description: "Contact the Webjoz team for assistance and inquiries about the AI website builder platform.",
+    url: siteUrl("/en/contact"),
     siteName: "Webjoz",
-    locale: "id_ID",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "Hubungi Kami | Webjoz",
-    description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan.",
+    title: "Contact Us | Webjoz",
+    description: "Contact the Webjoz team for support and questions.",
   },
 };
 
-export default function ContactPage() {
+export default function EnContactPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition mb-8 inline-block">← Kembali ke Beranda</Link>
+        <Link href="/en" className="text-xs text-muted-foreground hover:text-foreground transition mb-8 inline-block">← Back to Home</Link>
 
-        <h1 className="text-3xl font-bold mb-2">Hubungi Kami</h1>
-        <p className="text-sm text-muted-foreground mb-10">Tim kami siap membantu Anda — Senin sampai Jumat, 09.00–17.00 WIB.</p>
+        <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
+        <p className="text-sm text-muted-foreground mb-10">Our team is ready to assist you — Monday to Friday, 09:00 – 17:00 WIB (UTC+7).</p>
 
         <div className="grid gap-6 sm:grid-cols-2 mb-12">
           {/* Email */}
@@ -46,12 +46,12 @@ export default function ContactPage() {
             <div className="text-2xl">✉️</div>
             <h2 className="font-semibold text-foreground">Email</h2>
             <p className="text-sm text-muted-foreground">{SUPPORT_EMAIL}</p>
-            <span className="text-xs text-primary group-hover:underline mt-1">Kirim email →</span>
+            <span className="text-xs text-primary group-hover:underline mt-1">Send an email →</span>
           </a>
 
           {/* WhatsApp */}
           <a
-            href={getWhatsAppUrl("Halo Webjoz, saya ingin bertanya seputar platform.")}
+            href={getWhatsAppUrl("Hello Webjoz, I have a question about the platform.")}
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6 hover:border-border transition-colors group"
@@ -59,13 +59,13 @@ export default function ContactPage() {
             <div className="text-2xl">💬</div>
             <h2 className="font-semibold text-foreground">WhatsApp</h2>
             <p className="text-sm text-muted-foreground">{formatPhoneNumber(WHATSAPP_CS_NUMBER)}</p>
-            <span className="text-xs text-primary group-hover:underline mt-1">Chat sekarang →</span>
+            <span className="text-xs text-primary group-hover:underline mt-1">Chat now →</span>
           </a>
 
-          {/* Alamat */}
+          {/* Address */}
           <div className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6">
             <div className="text-2xl">📍</div>
-            <h2 className="font-semibold text-foreground">Alamat</h2>
+            <h2 className="font-semibold text-foreground">Office Address</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Jl. Malang Wijoyo, Malangan,<br />
               Giwangan, Umbulharjo, Yogyakarta,<br />
@@ -73,32 +73,32 @@ export default function ContactPage() {
             </p>
           </div>
 
-          {/* Jam Operasional */}
+          {/* Business Hours */}
           <div className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6">
             <div className="text-2xl">🕐</div>
-            <h2 className="font-semibold text-foreground">Jam Operasional</h2>
+            <h2 className="font-semibold text-foreground">Business Hours</h2>
             <div className="text-sm text-muted-foreground space-y-1">
-              <p>Senin – Jumat: 09.00 – 17.00 WIB</p>
-              <p>Sabtu – Minggu: Tutup</p>
+              <p>Monday – Friday: 09:00 – 17:00 WIB</p>
+              <p>Saturday – Sunday: Closed</p>
             </div>
           </div>
         </div>
 
         {/* About company */}
         <div className="rounded-2xl border border-border/60 bg-card/40 p-6">
-          <h2 className="font-semibold text-foreground mb-3">Tentang Giwangan Studio</h2>
+          <h2 className="font-semibold text-foreground mb-3">About Giwangan Studio</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">Giwangan Studio</strong> adalah perusahaan teknologi asal Yogyakarta yang mengembangkan <strong className="text-foreground">Webjoz</strong> — platform AI website builder yang membantu pelaku UMKM dan bisnis Indonesia memiliki website profesional dengan mudah dan cepat. Kami percaya bahwa setiap bisnis berhak memiliki kehadiran digital yang layak, tanpa perlu keahlian teknis.
+            <strong className="text-foreground">Giwangan Studio</strong> is a technology company based in Yogyakarta that develops <strong className="text-foreground">Webjoz</strong> — an AI-powered website builder platform enabling small businesses and entrepreneurs to launch professional websites quickly and effortlessly. We believe every business deserves a quality digital presence without needing technical expertise.
           </p>
         </div>
 
         {/* Links to legal pages */}
         <div className="mt-8 flex flex-wrap gap-4 text-xs text-muted-foreground">
-          <Link href="/help" className="hover:text-foreground transition">Pusat Bantuan</Link>
+          <Link href="/help" className="hover:text-foreground transition">Help Center</Link>
           <Link href="/changelog" className="hover:text-foreground transition">Changelog</Link>
-          <Link href="/privacy-policy" className="hover:text-foreground transition">Kebijakan Privasi</Link>
-          <Link href="/terms" className="hover:text-foreground transition">Syarat &amp; Ketentuan</Link>
-          <Link href="/refund-policy" className="hover:text-foreground transition">Kebijakan Refund</Link>
+          <Link href="/en/privacy-policy" className="hover:text-foreground transition">Privacy Policy</Link>
+          <Link href="/en/terms" className="hover:text-foreground transition">Terms &amp; Conditions</Link>
+          <Link href="/en/refund-policy" className="hover:text-foreground transition">Refund Policy</Link>
         </div>
       </div>
     </main>
