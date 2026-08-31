@@ -39,8 +39,8 @@ export function AuthShell({
 
   return (
     <main className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-8 sm:pb-8 lg:px-10">
-      {/* Mobile Top Bar Header with Separator Line */}
-      <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3 mb-2 border-b border-white/10 lg:hidden">
+      {/* Mobile Top Bar */}
+      <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3 mb-2 border-b border-border/60 lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo2.png"
@@ -54,7 +54,7 @@ export function AuthShell({
         <div className="flex items-center gap-2.5">
           <Link
             href="/help"
-            className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors px-1 py-1"
+            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-1 py-1"
             title={t("landing.navHelp")}
           >
             <svg className="size-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,16 +64,16 @@ export function AuthShell({
             </svg>
             <span>{t("landing.navHelp")}</span>
           </Link>
-          <div className="h-3 w-px bg-white/15" />
+          <div className="h-3 w-px bg-border/60" />
           <LanguageSwitcher />
         </div>
       </div>
 
-      {/* Desktop Top Actions (Bantuan + Language Switcher) */}
+      {/* Desktop Top Actions */}
       <div className="hidden lg:flex items-center gap-3 absolute top-6 right-6 z-10">
         <Link
           href="/help"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors px-2 py-1"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
           title={t("landing.navHelp")}
         >
           <svg className="size-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -86,13 +86,12 @@ export function AuthShell({
         <LanguageSwitcher />
       </div>
 
-      {/* Radial top glow — matches the home hero */}
+      {/* Radial top glow */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
 
-      {/* Center Main Content Container */}
+      {/* Center Main Content */}
       <div className="flex-1 flex flex-col justify-center my-auto w-full max-w-md mx-auto lg:max-w-6xl lg:grid lg:grid-cols-[1fr_0.9fr] lg:gap-8 lg:items-center">
         <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
-          {/* Badge — same pulsing primary style as home hero */}
           <div className="flex items-center gap-3">
             <Image
               src="/logo2.png"
@@ -110,7 +109,6 @@ export function AuthShell({
             </Badge>
           </div>
 
-          {/* Title — gradient clip-text, heavy weight, tight tracking, original sizes */}
           <h1 className="max-w-3xl text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl lg:text-6xl">
             {title}
           </h1>
@@ -143,54 +141,50 @@ export function AuthShell({
         </Card>
       </div>
 
-      {/* ── Mobile Sticky Bottom Navigation Bar (Beranda di paling kiri) ────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#08080a]/95 backdrop-blur-2xl border-t border-white/10 px-3 py-2 pb-3">
+      {/* ── Mobile Bottom Navigation Bar — theme-aware ─────────────────────── */}
+      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-2xl border-t border-border px-3 py-2 pb-3">
         <div className="flex items-center justify-around max-w-md mx-auto">
-          {/* 1. Beranda (Paling Kiri) */}
           <Link
             href="/"
-            className="flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl text-white/55 hover:text-white hover:bg-white/5"
+            className="flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent"
           >
             <Home className="size-4.5" />
             <span>{t("landing.bottomNavHome")}</span>
           </Link>
 
-          {/* 2. Masuk / Login */}
           <Link
             href="/login"
             className={cn(
               "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl",
               pathname === "/login"
-                ? "text-white font-bold bg-white/10 shadow-inner"
-                : "text-white/55 hover:text-white hover:bg-white/5"
+                ? "text-primary font-bold bg-primary/10"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
             )}
           >
             <LogIn className="size-4.5" />
             <span>{isEn ? "Login" : "Masuk"}</span>
           </Link>
 
-          {/* 3. Daftar */}
           <Link
             href="/register"
             className={cn(
               "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl",
               pathname === "/register"
-                ? "text-white font-bold bg-white/10 shadow-inner"
-                : "text-white/55 hover:text-white hover:bg-white/5"
+                ? "text-primary font-bold bg-primary/10"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
             )}
           >
             <UserPlus className="size-4.5" />
             <span>{isEn ? "Sign Up" : "Daftar"}</span>
           </Link>
 
-          {/* 4. Lupa Password */}
           <Link
             href="/forgot-password"
             className={cn(
               "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-2 rounded-xl",
               pathname === "/forgot-password"
-                ? "text-white font-bold bg-white/10 shadow-inner"
-                : "text-white/55 hover:text-white hover:bg-white/5"
+                ? "text-primary font-bold bg-primary/10"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
             )}
           >
             <KeyRound className="size-4.5" />
