@@ -1322,7 +1322,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
+                          className={`group relative flex flex-col justify-between rounded-xl border p-3 text-left transition-all duration-200 focus:outline-none min-h-[76px] ${
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md shadow-primary/15"
                               : isLocked
@@ -1331,24 +1331,24 @@ export function SiteWizard({
                           }`}
                           style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
                         >
-                          {/* Icon kiri */}
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
-                            {cfg.icon}
+                          {/* Top Row: Icon kiri & Checkmark kanan */}
+                          <div className="w-full flex items-center justify-between mb-2">
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
+                              {cfg.icon}
+                            </div>
+                            {isSelected && (
+                              <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </div>
+                            )}
                           </div>
 
-                          {/* Nama kanan */}
-                          <span className={`text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1 min-w-0 ${isSelected ? "pr-3" : ""}`}>
+                          {/* Nama bawah full-width */}
+                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-tight">
                             {translatedMoodLabel}
                           </span>
-
-                          {/* Checkmark badge top-right corner saat terpilih */}
-                          {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-white flex items-center justify-center shadow-md">
-                              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
-                            </div>
-                          )}
                         </button>
                       );
                     })}
