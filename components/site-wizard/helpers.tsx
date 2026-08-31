@@ -1254,7 +1254,7 @@ export function extractLocationFromDescription(description: string): string | nu
   return null;
 }
 
-const INSIGHT_POOL: Record<string, string[]> = {
+const INSIGHT_POOL_ID: Record<string, string[]> = {
   Kuliner: [
     "Website dengan foto makanan berkualitas tinggi meningkatkan konversi 3x lebih besar.",
     "Menu digital interaktif membuat pelanggan 40% lebih mungkin memesan.",
@@ -1304,6 +1304,20 @@ const INSIGHT_POOL: Record<string, string[]> = {
     "Testimoni klien sebelumnya membuat calon klien baru mantap merekrut Anda.",
     "Call-to-action kontak yang jelas mempercepat calon klien menghubungi Anda untuk proyek baru.",
   ],
+  "Company Profile": [
+    "Website profesional mempercepat kepercayaan klien dan mitra bisnis.",
+    "Profil perusahaan yang lengkap meningkatkan kredibilitas di mata calon klien.",
+    "Halaman layanan yang terstruktur membantu klien memahami nilai bisnis Anda.",
+    "Testimoni dan portofolio nyata memperkuat posisi bisnis di industri Anda.",
+    "Website yang responsif membuat bisnis Anda terlihat profesional di semua perangkat.",
+  ],
+  Company: [
+    "Website profesional mempercepat kepercayaan klien dan mitra bisnis.",
+    "Profil perusahaan yang lengkap meningkatkan kredibilitas di mata calon klien.",
+    "Halaman layanan yang terstruktur membantu klien memahami nilai bisnis Anda.",
+    "Testimoni dan portofolio nyata memperkuat posisi bisnis di industri Anda.",
+    "Website yang responsif membuat bisnis Anda terlihat profesional di semua perangkat.",
+  ],
   Jasa: [
     "Website dengan portofolio & testimoni nyata meningkatkan kepercayaan calon klien.",
     "Harga transparan di website meningkatkan konversi klien jasa 2x lipat.",
@@ -1313,13 +1327,94 @@ const INSIGHT_POOL: Record<string, string[]> = {
   ],
 };
 
-export function getInsight(businessType: string): string {
-  const pool = INSIGHT_POOL[businessType] || [
+const INSIGHT_POOL_EN: Record<string, string[]> = {
+  Kuliner: [
+    "Websites with high-quality food photography increase conversion rates up to 3x.",
+    "Interactive digital menus make visitors 40% more likely to place an order.",
+    "Authentic customer reviews significantly boost trust for new diners.",
+    "WhatsApp order integration allows customers to order directly and seamlessly.",
+    "Mobile-friendly design is essential since over 70% of food searches happen on smartphones.",
+  ],
+  Toko: [
+    "Websites with well-organized product catalogs double the average order value.",
+    "Online stores with clear navigation experience 25% lower bounce rates.",
+    "Professional product photos increase click-through rates by up to 50%.",
+    "Detailed product descriptions drastically reduce repetitive customer inquiries.",
+    "WhatsApp chat integration lets buyers check stock availability instantly.",
+  ],
+  "Toko & UMKM": [
+    "Websites with well-organized product catalogs double the average order value.",
+    "Online stores with clear navigation experience 25% lower bounce rates.",
+    "Professional product photos increase click-through rates by up to 50%.",
+    "Detailed product descriptions drastically reduce repetitive customer inquiries.",
+    "WhatsApp chat integration lets buyers check stock availability instantly.",
+  ],
+  "Layanan & Reservasi": [
+    "Simple booking and contact forms help prospective clients reserve faster.",
+    "Transparent service lists and pricing double appointment conversions.",
+    "Real client testimonials give prospective customers confidence to book.",
+    "WhatsApp booking integration makes scheduling quick and effortless.",
+    "Mobile-friendly layouts are crucial as most reservations are made on mobile devices.",
+  ],
+  "Jasa & Booking": [
+    "Simple booking and contact forms help prospective clients reserve faster.",
+    "Transparent service lists and pricing double appointment conversions.",
+    "Real client testimonials give prospective customers confidence to book.",
+    "WhatsApp booking integration makes scheduling quick and effortless.",
+    "Mobile-friendly layouts are crucial as most reservations are made on mobile devices.",
+  ],
+  "Kreatif & Profesional": [
+    "High-quality portfolio galleries boost prospective client trust up to 3x.",
+    "Real case studies are far more convincing than a plain list of past work experience.",
+    "A clean, polished portfolio layout makes your creative work look premium.",
+    "Previous client testimonials help new clients feel confident hiring you.",
+    "Clear contact call-to-actions make it easy for clients to reach out for new projects.",
+  ],
+  "Portofolio & Kreator": [
+    "High-quality portfolio galleries boost prospective client trust up to 3x.",
+    "Real case studies are far more convincing than a plain list of past work experience.",
+    "A clean, polished portfolio layout makes your creative work look premium.",
+    "Previous client testimonials help new clients feel confident hiring you.",
+    "Clear contact call-to-actions make it easy for clients to reach out for new projects.",
+  ],
+  "Company Profile": [
+    "A professional website accelerates trust with clients and business partners.",
+    "A comprehensive company profile establishes strong credibility in the market.",
+    "Structured service pages help prospective clients understand your core value.",
+    "Real testimonials and project showcases strengthen your industry standing.",
+    "A responsive design ensures your corporate brand looks great on any device.",
+  ],
+  Company: [
+    "A professional website accelerates trust with clients and business partners.",
+    "A comprehensive company profile establishes strong credibility in the market.",
+    "Structured service pages help prospective clients understand your core value.",
+    "Real testimonials and project showcases strengthen your industry standing.",
+    "A responsive design ensures your corporate brand looks great on any device.",
+  ],
+  Jasa: [
+    "Real client testimonials and case studies build immediate credibility.",
+    "Transparent service pricing on your site doubles inquiry conversion rates.",
+    "Simple inquiry forms make it effortless for prospective clients to reach you.",
+    "Concrete case studies are far more persuasive than a generic list of services.",
+    "Strong, clear calls-to-action encourage visitors to take the next step.",
+  ],
+};
+
+export function getInsight(businessType: string, lang: string = "id"): string {
+  const isEn = lang === "en";
+  const poolRecord = isEn ? INSIGHT_POOL_EN : INSIGHT_POOL_ID;
+  const pool = poolRecord[businessType] || (isEn ? [
+    "A professional website accelerates trust with clients and business partners.",
+    "A comprehensive company profile establishes strong credibility in the market.",
+    "Structured service pages help prospective clients understand your core value.",
+    "Real testimonials and project showcases strengthen your industry standing.",
+    "A responsive design ensures your business looks professional on all devices.",
+  ] : [
     "Website profesional mempercepat kepercayaan klien dan mitra bisnis.",
     "Profil perusahaan yang lengkap meningkatkan kredibilitas di mata calon klien.",
     "Halaman layanan yang terstruktur membantu klien memahami nilai bisnis Anda.",
     "Testimoni dan portofolio nyata memperkuat posisi bisnis di industri Anda.",
     "Website yang responsif membuat bisnis Anda terlihat profesional di semua perangkat.",
-  ];
+  ]);
   return pool[Math.floor(Math.random() * pool.length)];
 }

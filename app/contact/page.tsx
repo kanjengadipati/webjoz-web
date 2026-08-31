@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER, SUPPORT_EMAIL } from "@/lib/site-config";
+import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER, SUPPORT_EMAIL, siteUrl } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Hubungi Kami | Webjoz",
   description: "Hubungi tim Webjoz. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
   keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website"],
   alternates: {
-    canonical: "https://www.webjoz.com/contact",
+    canonical: siteUrl("/contact"),
+    languages: {
+      id: siteUrl("/contact"),
+      en: siteUrl("/en/contact"),
+    },
   },
   openGraph: {
     title: "Hubungi Kami | Webjoz",
     description: "Hubungi tim Webjoz untuk bantuan dan pertanyaan seputar platform AI website builder.",
-    url: "https://www.webjoz.com/contact",
+    url: siteUrl("/contact"),
     siteName: "Webjoz",
     locale: "id_ID",
     type: "website",
