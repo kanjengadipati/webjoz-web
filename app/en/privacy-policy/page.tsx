@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteUrl } from "@/lib/site-config";
+import { siteUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Webjoz",
@@ -129,7 +129,7 @@ export default function EnPrivacyPolicyPage() {
               <li>Submit a claim or complaint regarding a personal data protection violation.</li>
             </ul>
             <p className="mt-2">
-              To submit such a request, contact us at <strong>giwanganstudio@gmail.com</strong>. We respond to every request <strong>within 30 (thirty) days</strong> of receipt.
+              To submit such a request, contact us at <strong>{SUPPORT_EMAIL}</strong>. We respond to every request <strong>within 30 (thirty) days</strong> of receipt.
             </p>
           </section>
 
@@ -165,9 +165,8 @@ export default function EnPrivacyPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">12. Contact</h2>
             <p>If you have questions, data subject requests, or complaints regarding this privacy policy, please contact:</p>
             <address className="not-italic mt-2 space-y-1">
-              <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
-              <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
+              <p><strong>Webjoz Support</strong></p>
+              <p>Email: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a></p>
             </address>
           </section>
 

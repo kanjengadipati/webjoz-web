@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER } from "@/lib/site-config";
+import { getWhatsAppUrl, formatPhoneNumber, WHATSAPP_CS_NUMBER, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Hubungi Kami | Webjoz",
-  description: "Hubungi tim Webjoz — Giwangan Studio. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
-  keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website", "giwangan studio"],
+  description: "Hubungi tim Webjoz. Kami siap membantu Anda dengan pertanyaan seputar platform AI website builder.",
+  keywords: ["hubungi webjoz", "kontak webjoz", "customer support", "bantuan website"],
   alternates: {
     canonical: "https://www.webjoz.com/contact",
   },
@@ -36,12 +36,12 @@ export default function ContactPage() {
         <div className="grid gap-6 sm:grid-cols-2 mb-12">
           {/* Email */}
           <a
-            href="mailto:giwanganstudio@gmail.com"
+            href={`mailto:${SUPPORT_EMAIL}`}
             className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/40 p-6 hover:border-border transition-colors group"
           >
             <div className="text-2xl">✉️</div>
             <h2 className="font-semibold text-foreground">Email</h2>
-            <p className="text-sm text-muted-foreground">giwanganstudio@gmail.com</p>
+            <p className="text-sm text-muted-foreground">{SUPPORT_EMAIL}</p>
             <span className="text-xs text-primary group-hover:underline mt-1">Kirim email →</span>
           </a>
 

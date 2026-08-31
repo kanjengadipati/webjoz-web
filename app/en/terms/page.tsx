@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteUrl } from "@/lib/site-config";
+import { siteUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions | Webjoz",
@@ -173,9 +173,8 @@ export default function EnTermsPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">14. Contact</h2>
             <address className="not-italic space-y-1">
-              <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
-              <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
+              <p><strong>Webjoz Support</strong></p>
+              <p>Email: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a></p>
             </address>
           </section>
 
