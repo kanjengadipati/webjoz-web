@@ -437,28 +437,6 @@ export default function LandingPageClient() {
           {/* ── Right Panel ───────────────────────────────────────────────────── */}
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 w-full">
 
-            {/* Floating chips — normal flow, always visible */}
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300"
-                style={{ animation: "float 3s ease-in-out infinite" }}
-              >
-                <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_6px_theme(colors.emerald.400)]" />
-                Live preview
-              </span>
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300"
-                style={{ animation: "float 3.5s ease-in-out infinite", animationDelay: "0.6s" }}
-              >
-                ⚡ &lt;10 menit live
-              </span>
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary"
-                style={{ animation: "float 4s ease-in-out infinite", animationDelay: "1.2s" }}
-              >
-                🤖 AI-powered
-              </span>
-            </div>
 
             {/* Mockup — untouched */}
             <InteractiveMockup />
