@@ -319,7 +319,7 @@ export default function LandingPageClient() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle />
+            <ThemeToggle showAccent />
             <LanguageSwitcher />
 
             {/* Pusat Bantuan Header Link (Visible on Mobile & Desktop) */}
