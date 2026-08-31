@@ -388,7 +388,7 @@ export default function LandingPageClient() {
             </p>
 
             {/* Primary CTA Button */}
-            <div className="flex flex-col items-center lg:items-start gap-2.5 w-full pt-0.5 sm:pt-1">
+            <div className="flex flex-col items-start gap-2.5 w-full pt-0.5 sm:pt-1">
               <Button
                 onClick={() => startWizard()}
                 size="lg"
