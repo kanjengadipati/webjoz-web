@@ -264,7 +264,15 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     }
   }, [siteData]);
 
-  const handleSubmitLead = async (data: { name: string; email: string; phone: string; message: string }) => {
+  const handleSubmitLead = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    type?: string;
+    total_amount?: number | null;
+    payload?: string;
+  }) => {
     if (!siteData) return;
     try {
       setLeadSubmitting(true);
@@ -279,6 +287,9 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
           email: data.email,
           phone: data.phone,
           message: data.message,
+          type: data.type || "contact",
+          total_amount: data.total_amount ?? null,
+          payload: data.payload || null,
           source_url: window.location.href,
         }),
       });

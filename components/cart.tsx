@@ -75,7 +75,15 @@ interface CartProviderProps {
   primaryColor?: string;
   /** Foreground color on primaryColor background (defaults to #fff) */
   primaryFg?: string;
-  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmitLead?: (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    type?: string;
+    total_amount?: number | null;
+    payload?: string;
+  }) => Promise<void>;
 }
 
 export function CartProvider({ children, waPhone, brandName, previewMode, primaryColor, primaryFg, onSubmitLead }: CartProviderProps) {
@@ -607,7 +615,19 @@ function normalizePhone(raw: string): string {
   return "62" + digits;
 }
 
-function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; brandName?: string; onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void> }) {
+function CartPopover({ waPhone, brandName, onSubmitLead }: {
+  waPhone: string;
+  brandName?: string;
+  onSubmitLead?: (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    type?: string;
+    total_amount?: number | null;
+    payload?: string;
+  }) => Promise<void>;
+}) {
   const { items, open, setOpen, increment, decrement, remove, clear, totalQty, primaryColor, primaryFg } = useCart();
   const panelRef = useRef<HTMLDivElement>(null);
   const [leadLoading, setLeadLoading] = useState(false);
@@ -660,11 +680,15 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
         const fullMessage = `${cartMessage}\n\n*Catatan/Alamat Tambahan:*\n${customerNotes.trim() || "-"}`;
 
         if (onSubmitLead) {
+          const { total } = computeSubtotal(items);
           await onSubmitLead({
             name: customerName,
             email: "",
             phone: customerPhone,
             message: fullMessage,
+            type: "order",
+            total_amount: total > 0 ? total : null,
+            payload: JSON.stringify(items),
           });
         } else {
           // Simulate submission for preview modes (e.g. site wizard preview)
@@ -681,8 +705,25 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
       return;
     }
 
+    // WhatsApp Checkout: Also auto-record order snapshot if onSubmitLead is provided
     const phone = normalizePhone(waPhone);
     const message = buildWAMessage(items, brandName);
+
+    if (onSubmitLead) {
+      const { total } = computeSubtotal(items);
+      onSubmitLead({
+        name: "Pelanggan via WhatsApp",
+        email: "",
+        phone,
+        message,
+        type: "order",
+        total_amount: total > 0 ? total : null,
+        payload: JSON.stringify(items),
+      }).catch((err) => {
+        console.error("Failed to auto-record WhatsApp order snapshot:", err);
+      });
+    }
+
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank", "noopener,noreferrer");
     setOpen(false);
