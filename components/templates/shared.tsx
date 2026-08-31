@@ -1,4 +1,4 @@
-"use client";"use client";
+"use client";
 
 import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars, avatarTextColor } from "./helpers";
