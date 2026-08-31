@@ -34,11 +34,33 @@ export function useStoredEmail() {
   );
 }
 
+export type ThemePreference = "auto" | "dark" | "light";
+
+/**
+ * Returns 'light' during daytime (06:00 - 18:00 local time)
+ * and 'dark' during nighttime (18:00 - 06:00 local time).
+ */
+export function getTimeBasedTheme(): "dark" | "light" {
+  if (typeof window === "undefined") return "dark";
+  const hour = new Date().getHours();
+  return hour >= 6 && hour < 18 ? "light" : "dark";
+}
+
+/**
+ * Resolves effective theme ("light" | "dark") from user preference.
+ * If preference is "auto" or empty, dynamically calculates theme by time of day.
+ */
+export function resolveEffectiveTheme(preference: string): "dark" | "light" {
+  if (preference === "light") return "light";
+  if (preference === "dark") return "dark";
+  return getTimeBasedTheme();
+}
+
 export function useThemePreference() {
   return useSyncExternalStore(
     (callback) => subscribeToKeys([THEME_STORAGE_KEY], callback),
-    () => readStorageValue(THEME_STORAGE_KEY, "dark"),
-    () => "dark",
+    () => readStorageValue(THEME_STORAGE_KEY, "auto"),
+    () => "auto",
   );
 }
 
@@ -73,10 +95,11 @@ export function clearAuthSession() {
   }
 }
 
-export function setThemePreference(theme: "dark" | "light") {
+export function setThemePreference(theme: "auto" | "dark" | "light") {
   setStoredValue(THEME_STORAGE_KEY, theme);
 }
 
 export function setAccentPreference(accent: "blue" | "monochrome") {
   setStoredValue(ACCENT_STORAGE_KEY, accent);
 }
+
