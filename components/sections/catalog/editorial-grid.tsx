@@ -172,6 +172,24 @@ export default function CatalogEditorialGrid({ catalog }: CatalogVariantProps) {
                         </p>
                       )}
 
+                      {item.capacity != null && item.capacity > 0 && (
+                        <div className="mt-2">
+                          <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
+                            s/d {item.capacity} tamu
+                          </span>
+                        </div>
+                      )}
+
+                      {item.features && item.features.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {item.features.map((f: string, fi: number) => (
+                            <span key={fi} className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", color: "var(--dt-primary)" }}>
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
                       {/* Mobile button */}
                       <div className="mt-4 md:hidden">
                         <button

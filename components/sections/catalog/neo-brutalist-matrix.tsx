@@ -155,6 +155,24 @@ export default function CatalogNeoBrutalistMatrix({ catalog }: CatalogVariantPro
                           {item.description}
                         </p>
                       )}
+
+                      {item.capacity != null && item.capacity > 0 && (
+                        <div className="mb-2">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 border-2" style={{ borderColor: "var(--dt-border)", background: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
+                            s/d {item.capacity} tamu
+                          </span>
+                        </div>
+                      )}
+
+                      {item.features && item.features.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-1">
+                          {item.features.map((f: string, fi: number) => (
+                            <span key={fi} className="text-[10px] font-bold uppercase px-2 py-0.5 border-2" style={{ borderColor: "var(--dt-border)", color: "var(--dt-text)" }}>
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Row with action circular button */}
