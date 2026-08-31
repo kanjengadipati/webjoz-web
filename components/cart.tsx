@@ -17,7 +17,12 @@ import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCi
 export interface CartItem {
   id: string;         // unique: `${categoryName}__${itemName}`
   name: string;
+  /** Legacy display string kept for backward compat with templates that pass price directly */
   price: string | null;
+  /** Numeric amount (e.g. 15.99, 25000) for subtotal calculation. null = custom/nego price */
+  price_amount?: number | null;
+  /** Formatted display label (e.g. "$15.99", "Rp 25.000") */
+  price_display?: string | null;
   category: string;
   qty: number;
 }
@@ -149,27 +154,53 @@ interface AddToCartButtonProps {
   itemId: string;
   itemName: string;
   itemPrice: string | null | undefined;
+  itemPriceAmount?: number | null;
+  itemPriceDisplay?: string | null;
   category: string;
   className?: string;
   style?: React.CSSProperties;
   variant?: "light" | "dark" | "dynamic";
+  /** When true the button is shown as disabled (item out of stock) */
+  disabled?: boolean;
 }
 
 // ─── Add-to-Cart Button ────────────────────────────────────────────────────────
 
 export function AddToCartButton({
-  itemId, itemName, itemPrice, category,
-  className, style, variant = "dynamic"
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, category,
+  className, style, variant = "dynamic", disabled = false,
 }: AddToCartButtonProps) {
   const { items, add, increment, decrement } = useCart();
   const existing = items.find((i) => i.id === itemId);
   const qty = existing?.qty ?? 0;
 
+  if (disabled) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={`${className ?? ""} opacity-50 cursor-not-allowed`}
+        style={style}
+        aria-label={`${itemName} tidak tersedia`}
+        title="Item tidak tersedia"
+      >
+        <span>Habis</span>
+      </button>
+    );
+  }
+
   if (qty === 0) {
     return (
       <button
         type="button"
-        onClick={() => add({ id: itemId, name: itemName, price: itemPrice ?? null, category })}
+        onClick={() => add({
+          id: itemId,
+          name: itemName,
+          price: itemPrice ?? null,
+          price_amount: itemPriceAmount ?? null,
+          price_display: itemPriceDisplay ?? null,
+          category,
+        })}
         className={className ?? ""}
         style={style}
         aria-label={`Tambah ${itemName} ke keranjang`}
@@ -208,6 +239,32 @@ export function AddToCartButton({
   );
 }
 
+// ─── Subtotal Helper ──────────────────────────────────────────────────────────
+
+export interface SubtotalResult {
+  /** Numeric sum of all items with a defined price_amount */
+  total: number;
+  /** True when at least one item has no price_amount (custom / nego pricing) */
+  hasCustomPricing: boolean;
+}
+
+/**
+ * Computes the subtotal from cart items.
+ * Items without price_amount are counted as custom-pricing and excluded from total.
+ */
+export function computeSubtotal(items: CartItem[]): SubtotalResult {
+  let total = 0;
+  let hasCustomPricing = false;
+  for (const item of items) {
+    if (typeof item.price_amount === "number" && item.price_amount > 0) {
+      total += item.price_amount * item.qty;
+    } else {
+      hasCustomPricing = true;
+    }
+  }
+  return { total, hasCustomPricing };
+}
+
 // ─── Cart Popover ─────────────────────────────────────────────────────────────
 
 function buildWAMessage(items: CartItem[], brandName?: string): string {
@@ -221,16 +278,41 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
     byCategory[item.category].push(item);
   });
 
+  const { total, hasCustomPricing } = computeSubtotal(items);
+
   Object.entries(byCategory).forEach(([cat, catItems]) => {
     lines.push(`*${cat}*`);
     catItems.forEach((item) => {
-      const priceStr = item.price && !isPlaceholderPrice(item.price) ? ` (${item.price})` : "";
+      // Prefer price_display, fall back to legacy price string
+      const displayLabel = item.price_display || item.price;
+      const isReal = displayLabel && !isPlaceholderPrice(displayLabel);
+
+      let lineTotal = "";
+      if (typeof item.price_amount === "number" && item.price_amount > 0 && item.qty > 1) {
+        // Show per-item line total when qty > 1
+        const itemTotal = item.price_amount * item.qty;
+        lineTotal = ` = ${isReal ? displayLabel!.replace(/[\d.,]+/, (n) => itemTotal.toLocaleString()) : itemTotal.toLocaleString()}`;
+      }
+
+      const priceStr = isReal ? ` (${displayLabel}${lineTotal})` : "";
       lines.push(`• ${item.qty}x ${item.name}${priceStr}`);
     });
   });
 
   lines.push("");
-  lines.push("Mohon konfirmasi ketersediaan dan total harga. Terima kasih!");
+
+  if (total > 0) {
+    lines.push(`*Subtotal: ${total.toLocaleString()}*${hasCustomPricing ? " + harga item lainnya" : ""}`);
+  }
+
+  if (hasCustomPricing && total === 0) {
+    lines.push("Mohon konfirmasi harga & ketersediaan. Terima kasih!");
+  } else if (hasCustomPricing) {
+    lines.push("Mohon konfirmasi harga item yang belum tercantum. Terima kasih!");
+  } else {
+    lines.push("Mohon konfirmasi ketersediaan. Terima kasih!");
+  }
+
   return lines.join("\n");
 }
 
@@ -536,13 +618,16 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium leading-tight truncate">{item.name}</p>
                     <p className="text-[11px] opacity-50 mt-0.5">{item.category}</p>
-                    {item.price && !isPlaceholderPrice(item.price) && (
-                      <p className="text-[11px] font-semibold mt-0.5"
-                        style={{ color: "var(--dt-primary, var(--primary))" }}
-                      >
-                        {item.price}
-                      </p>
-                    )}
+                    {(() => {
+                      const displayLabel = item.price_display || item.price;
+                      return displayLabel && !isPlaceholderPrice(displayLabel) ? (
+                        <p className="text-[11px] font-semibold mt-0.5"
+                          style={{ color: "var(--dt-primary, var(--primary))" }}
+                        >
+                          {displayLabel}
+                        </p>
+                      ) : null;
+                    })()}
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -592,8 +677,22 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: { waPhone: string; br
             <div className="px-4 py-3 shrink-0 space-y-2"
               style={{ borderTop: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 8%, transparent)" }}
             >
+              {/* Subtotal row */}
+              {(() => {
+                const { total, hasCustomPricing } = computeSubtotal(items);
+                if (total > 0) return (
+                  <div className="flex items-baseline justify-between text-xs font-bold">
+                    <span className="opacity-70">Subtotal</span>
+                    <span style={{ color: "var(--dt-primary, var(--primary))" }}>
+                      {total.toLocaleString()}
+                      {hasCustomPricing && <span className="font-normal opacity-60 ml-1 text-[10px]">+item lainnya</span>}
+                    </span>
+                  </div>
+                );
+                return null;
+              })()}
               <p className="text-[10px] text-center leading-relaxed opacity-50">
-                {!isWaEmpty ? "Pesanan dikirim ke WhatsApp untuk konfirmasi harga & ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
+                {!isWaEmpty ? "Pesanan dikirim ke WhatsApp untuk konfirmasi ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
               </p>
               <button
                 type="button"

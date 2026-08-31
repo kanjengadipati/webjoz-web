@@ -31,33 +31,40 @@ export interface ImageCredit {
   url: string;
 }
 
-export interface MenuItem {
+export interface CatalogEntryBase {
+  id?: string;
   name: string;
   description?: string;
   price?: string;
+  price_display?: string;
+  price_amount?: number | null;
   image_url?: string | null;
   image_credit?: ImageCredit | null;
+  badge?: string | null;
+  is_available?: boolean;
+  sort_order?: number;
+}
+
+export interface MenuItem extends CatalogEntryBase {
   tags?: string[] | null;
   delivery_platforms?: { name: string; url: string }[] | null;
 }
 
 export interface MenuCategory {
+  id?: string;
   name: string;
+  sort_order?: number;
   items: MenuItem[];
 }
 
-export interface CatalogItem {
-  name: string;
-  description?: string;
-  price?: string;
-  badge?: string | null;
+export interface CatalogItem extends CatalogEntryBase {
   features?: string[] | null;
-  image_url?: string | null;
-  image_credit?: ImageCredit | null;
 }
 
 export interface CatalogCategory {
+  id?: string;
   name: string;
+  sort_order?: number;
   items: CatalogItem[];
 }
 

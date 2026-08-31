@@ -1,9 +1,50 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2, RotateCcw } from "lucide-react";
+import React, { useState, useCallback } from "react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2, RotateCcw, X, Link as LinkIcon } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+// ─── nanoid (inline, tiny — avoids extra dep) ────────────────────────────────────────────
+const NANOID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+function nanoid(size = 10): string {
+  let id = "";
+  const bytes = crypto.getRandomValues(new Uint8Array(size));
+  for (let i = 0; i < size; i++) id += NANOID_CHARS[bytes[i] % NANOID_CHARS.length];
+  return id;
+}
+
+/** Ensure item has id and sort_order, patching in-place */
+function ensureItemId(item: any, idx: number): any {
+  if (!item.id || !item.sort_order) {
+    return { ...item, id: item.id || nanoid(), sort_order: item.sort_order ?? idx };
+  }
+  return item;
+}
+
+/** Ensure category has id and sort_order */
+function ensureCatId(cat: any, idx: number): any {
+  const items = (cat.items ?? []).map((it: any, i: number) => ensureItemId(it, i));
+  if (!cat.id || cat.sort_order == null) {
+    return { ...cat, id: cat.id || nanoid(), sort_order: cat.sort_order ?? idx, items };
+  }
+  return { ...cat, items };
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -186,13 +227,13 @@ export function MenuCatalogForm({
   const updateCategories = (next: any[]) => updateField(sectionKey, "categories", next);
 
   const addCategory = () => {
-    const next = [...categories, { name: `Kategori ${categories.length + 1}`, items: [] }];
+    const next = [...categories, { id: nanoid(), name: `Kategori ${categories.length + 1}`, items: [], sort_order: categories.length }];
     updateCategories(next);
     setExpandedCat(next.length - 1);
   };
 
   const removeCategory = (catIdx: number) => {
-    updateCategories(categories.filter((_, i) => i !== catIdx));
+    updateCategories(categories.filter((_: any, i: number) => i !== catIdx));
     setExpandedCat(null);
   };
 
@@ -204,9 +245,21 @@ export function MenuCatalogForm({
 
   const addItem = (catIdx: number) => {
     const next = [...categories];
-    const newItem: any = { name: "", description: "", price: "", image_url: null };
+    const existingItems = next[catIdx].items ?? [];
+    const newItem: any = {
+      id: nanoid(),
+      name: "",
+      description: "",
+      price: "",
+      price_display: "",
+      price_amount: null,
+      image_url: null,
+      is_available: true,
+      sort_order: existingItems.length,
+    };
     if (hasBadge) newItem.badge = null;
-    next[catIdx] = { ...next[catIdx], items: [...(next[catIdx].items ?? []), newItem] };
+    if (sectionKey === "menu") { newItem.tags = []; newItem.delivery_platforms = []; }
+    next[catIdx] = { ...next[catIdx], items: [...existingItems, newItem] };
     updateCategories(next);
   };
 
@@ -239,6 +292,39 @@ export function MenuCatalogForm({
       </button>
     );
   };
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  /** Drag end for items inside a category */
+  const handleItemDragEnd = useCallback((catIdx: number, event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const next = [...categories];
+    const items = next[catIdx].items ?? [];
+    const oldIdx = items.findIndex((i: any) => i.id === active.id);
+    const newIdx = items.findIndex((i: any) => i.id === over.id);
+    if (oldIdx < 0 || newIdx < 0) return;
+    const reordered = arrayMove(items, oldIdx, newIdx).map((it: any, i: number) => ({ ...it, sort_order: i }));
+    next[catIdx] = { ...next[catIdx], items: reordered };
+    updateCategories(next);
+  }, [categories, updateCategories]);
+
+  /** Drag end for categories */
+  const handleCatDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIdx = categories.findIndex((c: any) => c.id === active.id);
+    const newIdx = categories.findIndex((c: any) => c.id === over.id);
+    if (oldIdx < 0 || newIdx < 0) return;
+    const reordered = arrayMove(categories, oldIdx, newIdx).map((c: any, i: number) => ({ ...c, sort_order: i }));
+    updateCategories(reordered);
+    // Adjust expanded index
+    setExpandedCat((prev) => {
+      if (prev === null) return null;
+      if (prev === oldIdx) return newIdx;
+      return prev;
+    });
+  }, [categories, updateCategories]);
 
   return (
     <div className="space-y-4">
@@ -280,159 +366,409 @@ export function MenuCatalogForm({
         </div>
       )}
 
-      {/* Categories */}
-      {categories.map((cat: any, catIdx: number) => {
-        const itemCount = cat.items?.length ?? 0;
-        return (
-          <div key={catIdx} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
-            {/* Category header */}
-            <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-white/10">
-              <GripVertical className="w-3.5 h-3.5 text-slate-600 flex-shrink-0" />
-              <input
-                type="text" value={cat.name ?? ""} onChange={(e) => updateCategoryName(catIdx, e.target.value)}
-                placeholder="Nama kategori"
-                className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
+      {/* Categories — DnD sortable */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCatDragEnd}>
+        <SortableContext items={categories.map((c: any) => c.id ?? c.name)} strategy={verticalListSortingStrategy}>
+          {categories.map((cat: any, catIdx: number) => {
+            const enrichedCat = ensureCatId(cat, catIdx);
+            const catId = enrichedCat.id;
+            const itemCount = cat.items?.length ?? 0;
+            return (
+              <SortableCategoryRow
+                key={catId}
+                catId={catId}
+                cat={enrichedCat}
+                catIdx={catIdx}
+                itemCount={itemCount}
+                expandedCat={expandedCat}
+                setExpandedCat={setExpandedCat}
+                removeCategory={removeCategory}
+                updateCategoryName={updateCategoryName}
+                items={enrichedCat.items ?? []}
+                itemLabel={itemLabel}
+                sectionKey={sectionKey}
+                hasPrice={hasPrice}
+                hasBadge={hasBadge}
+                updateItem={updateItem}
+                removeItem={removeItem}
+                addItem={addItem}
+                onAiDescription={onAiDescription}
+                aiLoadingDesc={aiLoadingDesc}
+                isPremium={isPremium}
+                onUpgradeRequired={onUpgradeRequired}
+                activeEmojiPicker={activeEmojiPicker}
+                setActiveEmojiPicker={setActiveEmojiPicker}
+                sensors={sensors}
+                handleItemDragEnd={handleItemDragEnd}
               />
-              <span className="text-[10px] text-slate-500 flex-shrink-0">{itemCount} item</span>
-              <button type="button" onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)} className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer">
-                {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              </button>
-              <button type="button" onClick={() => removeCategory(catIdx)} className="text-red-500/60 hover:text-red-400 p-1 cursor-pointer">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {expandedCat === catIdx && (
-              <div className="p-3 space-y-3">
-                {(cat.items ?? []).length === 0 && (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-muted/30 p-4 text-center text-xs text-slate-500">
-                    Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
-                  </div>
-                )}
-
-                {(cat.items ?? []).map((item: any, itemIdx: number) => (
-                  <div key={itemIdx} className="rounded-2xl border border-white/10 bg-muted/30 p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
-                      <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
-                      <FileUpload
-                        label="Foto" value={item.image_url ?? ""}
-                        onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
-                        placeholder="https://..." maxWidth={800} maxHeight={600} quality={0.8} previewSize="sm"
-                      />
-
-                      <div className="space-y-3">
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div>
-                            <label className={MCF_INPUT_LABEL}>Nama</label>
-                            <input type="text" value={item.name ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)} placeholder={`Nama ${itemLabel}`} className={MCF_INPUT_BASE} />
-                          </div>
-                          {hasPrice && (
-                            <div>
-                              <label className={MCF_INPUT_LABEL}>Harga</label>
-                              <input type="text" value={item.price ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "price", e.target.value)} placeholder="cth. Rp 25.000" className={MCF_INPUT_BASE} />
-                            </div>
-                          )}
-                        </div>
-
-                        {hasBadge && (
-                          <div>
-                            <label className={MCF_INPUT_LABEL}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
-                            <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo, Populer" className={MCF_INPUT_BASE} />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Description — full width */}
-                      <div className="col-span-full space-y-1.5 mt-1">
-                        <div className="flex items-center justify-between">
-                          <label className={MCF_INPUT_LABEL}>Deskripsi</label>
-                          {onAiDescription && (
-                            <AiFieldButton
-                              loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                              onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", cat.name || "", item.image_url || undefined)}
-                              title="AI: generate deskripsi"
-                              onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                            />
-                          )}
-                        </div>
-
-                        {/* Toolbar */}
-                        <div className="flex items-center gap-1.5 bg-muted/30 border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
-                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border border-white/5" title="Tambah List Bulat">
-                            <span>•</span> List
-                          </button>
-                          <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] select-none border border-white/5" title="Tambah List Angka">
-                            1. List
-                          </button>
-                          <div className="w-px h-3.5 bg-white/10 mx-0.5 select-none" />
-
-                          {/* Emoji picker */}
-                          <div className="relative">
-                            <button type="button"
-                              onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                              className={`px-2 py-1 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"}`}
-                            >
-                              😀 Emoji & Simbol
-                            </button>
-                            {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                              <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                                <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
-                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                                  <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">Tutup</button>
-                                </div>
-                                <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
-                                  {EMOJI_GROUPS.map((group) => (
-                                    <div key={group.name} className="space-y-1">
-                                      <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
-                                      <div className="grid grid-cols-7 gap-1">
-                                        {group.emojis.map((emoji) => (
-                                          <button key={emoji} type="button"
-                                            onClick={() => { updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji); setActiveEmojiPicker(null); }}
-                                            className="h-7 w-7 rounded bg-muted/40 hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
-                                          >{emoji}</button>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <textarea
-                          rows={4} value={item.description ?? ""}
-                          onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-                          placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
-                          className={`${MCF_INPUT_BASE} resize-y min-h-[80px] rounded-t-none border-t-0`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                <button type="button" onClick={() => addItem(catIdx)}
-                  className="w-full text-[12px] py-2 border border-dashed border-primary/20 rounded-xl text-primary/80 hover:bg-primary/10 hover:border-primary/40 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      })}
+            );
+          })}
+        </SortableContext>
+      </DndContext>
 
       <button type="button" onClick={addCategory}
         className="w-full text-[12px] py-2.5 border border-white/10 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
       >
         <Plus className="w-3.5 h-3.5" /> Tambah Kategori
       </button>
+    </div>
+  );
+}
+
+// ─── SortableCategoryRow ────────────────────────────────────────────────────────────
+
+function SortableCategoryRow({
+  catId, cat, catIdx, itemCount, expandedCat, setExpandedCat,
+  removeCategory, updateCategoryName,
+  items, itemLabel, sectionKey, hasPrice, hasBadge,
+  updateItem, removeItem, addItem,
+  onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
+  activeEmojiPicker, setActiveEmojiPicker,
+  sensors, handleItemDragEnd,
+}: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: catId });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
+      {/* Category header */}
+      <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-white/10">
+        <button
+          type="button"
+          className="cursor-grab active:cursor-grabbing touch-none text-slate-600 hover:text-slate-300 p-0.5 transition-colors"
+          aria-label="Geser kategori"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="w-3.5 h-3.5" />
+        </button>
+        <input
+          type="text" value={cat.name ?? ""} onChange={(e) => updateCategoryName(catIdx, e.target.value)}
+          placeholder="Nama kategori"
+          className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
+        />
+        <span className="text-[10px] text-slate-500 flex-shrink-0">{itemCount} item</span>
+        <button type="button" onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)} className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer">
+          {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
+        <button type="button" onClick={() => removeCategory(catIdx)} className="text-red-500/60 hover:text-red-400 p-1 cursor-pointer">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {expandedCat === catIdx && (
+        <div className="p-3 space-y-3">
+          {items.length === 0 && (
+            <div className="rounded-xl border border-dashed border-white/10 bg-muted/30 p-4 text-center text-xs text-slate-500">
+              Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.
+            </div>
+          )}
+
+          {/* Items — DnD sortable */}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(ev) => handleItemDragEnd(catIdx, ev)}>
+            <SortableContext items={items.map((i: any) => i.id ?? i.name)} strategy={verticalListSortingStrategy}>
+              {items.map((item: any, itemIdx: number) => (
+                <SortableItemRow
+                  key={item.id ?? itemIdx}
+                  item={item}
+                  itemIdx={itemIdx}
+                  catIdx={catIdx}
+                  itemLabel={itemLabel}
+                  sectionKey={sectionKey}
+                  hasPrice={hasPrice}
+                  hasBadge={hasBadge}
+                  updateItem={updateItem}
+                  removeItem={removeItem}
+                  onAiDescription={onAiDescription}
+                  aiLoadingDesc={aiLoadingDesc}
+                  isPremium={isPremium}
+                  onUpgradeRequired={onUpgradeRequired}
+                  catName={cat.name}
+                  activeEmojiPicker={activeEmojiPicker}
+                  setActiveEmojiPicker={setActiveEmojiPicker}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+
+          <button type="button" onClick={() => addItem(catIdx)}
+            className="w-full text-[12px] py-2 border border-dashed border-primary/20 rounded-xl text-primary/80 hover:bg-primary/10 hover:border-primary/40 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Tambah {itemLabel}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── SortableItemRow ───────────────────────────────────────────────────────────────
+
+function SortableItemRow({
+  item, itemIdx, catIdx, itemLabel, sectionKey, hasPrice, hasBadge,
+  updateItem, removeItem, onAiDescription, aiLoadingDesc, isPremium,
+  onUpgradeRequired, catName, activeEmojiPicker, setActiveEmojiPicker,
+}: any) {
+  const itemSortId = item.id ?? item.name ?? String(itemIdx);
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: itemSortId });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  const isAvailable = item.is_available !== false; // default true
+  const tags: string[] = item.tags ?? [];
+  const deliveryPlatforms: { name: string; url: string }[] = item.delivery_platforms ?? [];
+
+  return (
+    <div ref={setNodeRef} style={style} className="rounded-2xl border border-white/10 bg-muted/30 p-3">
+      {/* Item header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            className="cursor-grab active:cursor-grabbing touch-none text-slate-600 hover:text-slate-300 transition-colors"
+            aria-label="Geser item"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="w-3.5 h-3.5" />
+          </button>
+          <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{itemLabel} #{itemIdx + 1}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* is_available toggle */}
+          <button
+            type="button"
+            onClick={() => updateItem(catIdx, itemIdx, "is_available", !isAvailable)}
+            className={`text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border transition-all cursor-pointer ${
+              isAvailable
+                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                : "border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20"
+            }`}
+            title={isAvailable ? "Klik untuk tandai Habis" : "Klik untuk tandai Tersedia"}
+          >
+            {isAvailable ? "✓ Tersedia" : "✗ Habis"}
+          </button>
+          <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
+        <FileUpload
+          label="Foto" value={item.image_url ?? ""}
+          onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
+          placeholder="https://..." maxWidth={800} maxHeight={600} quality={0.8} previewSize="sm"
+        />
+
+        <div className="space-y-3">
+          {/* Name + Price */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className={MCF_INPUT_LABEL}>Nama</label>
+              <input type="text" value={item.name ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)} placeholder={`Nama ${itemLabel}`} className={MCF_INPUT_BASE} />
+            </div>
+            {hasPrice && (
+              <div className="space-y-1.5">
+                <label className={MCF_INPUT_LABEL}>Label Harga <span className="font-normal normal-case text-slate-500">(tampilan)</span></label>
+                <input
+                  type="text"
+                  value={item.price_display ?? item.price ?? ""}
+                  onChange={(e) => {
+                    updateItem(catIdx, itemIdx, "price_display", e.target.value);
+                    updateItem(catIdx, itemIdx, "price", e.target.value); // keep legacy field in sync
+                  }}
+                  placeholder="cth. Rp 25.000, $5.99, Mulai Rp 50rb"
+                  className={MCF_INPUT_BASE}
+                />
+                <div className="relative">
+                  <label className={`${MCF_INPUT_LABEL} mt-1`}>Harga <span className="font-normal normal-case text-slate-500">(angka untuk subtotal)</span></label>
+                  <input
+                    type="number"
+                    min={0}
+                    step="any"
+                    value={item.price_amount ?? ""}
+                    onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
+                    placeholder="cth. 25000 atau 5.99"
+                    className={`${MCF_INPUT_BASE} [appearance:textfield]`}
+                  />
+                  {item.price_amount == null && (
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-500 pointer-events-none">opsional</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Badge (catalog only) */}
+          {hasBadge && (
+            <div>
+              <label className={MCF_INPUT_LABEL}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
+              <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo, Populer" className={MCF_INPUT_BASE} />
+            </div>
+          )}
+
+          {/* Tags (menu only) */}
+          {sectionKey === "menu" && (
+            <div>
+              <label className={MCF_INPUT_LABEL}>Tags <span className="font-normal normal-case text-slate-500">(misal: Pedas, Vegetarian, Signature)</span></label>
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {tags.map((tag: string, ti: number) => (
+                  <span key={ti} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
+                    {tag}
+                    <button type="button" onClick={() => {
+                      const next = tags.filter((_: string, i: number) => i !== ti);
+                      updateItem(catIdx, itemIdx, "tags", next);
+                    }} className="hover:opacity-70 cursor-pointer">
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Ketik tag lalu Enter"
+                className={`${MCF_INPUT_BASE} text-xs`}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                    e.preventDefault();
+                    const newTag = e.currentTarget.value.trim().replace(/,$/, "");
+                    if (newTag && !tags.includes(newTag)) {
+                      updateItem(catIdx, itemIdx, "tags", [...tags, newTag]);
+                    }
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
+            </div>
+          )}
+
+          {/* Delivery Platforms (menu only) */}
+          {sectionKey === "menu" && (
+            <div>
+              <label className={MCF_INPUT_LABEL}>Platform Delivery <span className="font-normal normal-case text-slate-500">(GrabFood, GoFood, dll.)</span></label>
+              <div className="space-y-1.5 mb-1.5">
+                {deliveryPlatforms.map((dp: { name: string; url: string }, di: number) => (
+                  <div key={di} className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={dp.name}
+                      onChange={(e) => {
+                        const next = [...deliveryPlatforms];
+                        next[di] = { ...next[di], name: e.target.value };
+                        updateItem(catIdx, itemIdx, "delivery_platforms", next);
+                      }}
+                      placeholder="Nama (cth. GrabFood)"
+                      className={`${MCF_INPUT_BASE} flex-1 text-xs`}
+                    />
+                    <input
+                      type="url"
+                      value={dp.url}
+                      onChange={(e) => {
+                        const next = [...deliveryPlatforms];
+                        next[di] = { ...next[di], url: e.target.value };
+                        updateItem(catIdx, itemIdx, "delivery_platforms", next);
+                      }}
+                      placeholder="https://grab.com/..."
+                      className={`${MCF_INPUT_BASE} flex-1 text-xs`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = deliveryPlatforms.filter((_: any, i: number) => i !== di);
+                        updateItem(catIdx, itemIdx, "delivery_platforms", next);
+                      }}
+                      className="text-red-500/60 hover:text-red-400 cursor-pointer p-1"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", [...deliveryPlatforms, { name: "", url: "" }])}
+                className="flex items-center gap-1 text-[10px] text-primary/70 hover:text-primary cursor-pointer transition-colors"
+              >
+                <LinkIcon className="w-3 h-3" /> Tambah Platform
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Description — full width */}
+        <div className="col-span-full space-y-1.5 mt-1">
+          <div className="flex items-center justify-between">
+            <label className={MCF_INPUT_LABEL}>Deskripsi</label>
+            {onAiDescription && (
+              <AiFieldButton
+                loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
+                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", catName || "", item.image_url || undefined)}
+                title="AI: generate deskripsi"
+                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+              />
+            )}
+          </div>
+
+          {/* Toolbar */}
+          <div className="flex items-center gap-1.5 bg-muted/30 border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
+            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border border-white/5" title="Tambah List Bulat">
+              <span>•</span> List
+            </button>
+            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] select-none border border-white/5" title="Tambah List Angka">
+              1. List
+            </button>
+            <div className="w-px h-3.5 bg-white/10 mx-0.5 select-none" />
+
+            {/* Emoji picker */}
+            <div className="relative">
+              <button type="button"
+                onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
+                className={`px-2 py-1 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"}`}
+              >
+                😀 Emoji & Simbol
+              </button>
+              {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
+                <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
+                    <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">Tutup</button>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
+                    {EMOJI_GROUPS.map((group) => (
+                      <div key={group.name} className="space-y-1">
+                        <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
+                        <div className="grid grid-cols-7 gap-1">
+                          {group.emojis.map((emoji) => (
+                            <button key={emoji} type="button"
+                              onClick={() => { updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji); setActiveEmojiPicker(null); }}
+                              className="h-7 w-7 rounded bg-muted/40 hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
+                            >{emoji}</button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <textarea
+            rows={4} value={item.description ?? ""}
+            onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+            placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
+            className={`${MCF_INPUT_BASE} resize-y min-h-[80px] rounded-t-none border-t-0`}
+          />
+        </div>
+      </div>
     </div>
   );
 }

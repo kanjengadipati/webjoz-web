@@ -15,6 +15,9 @@
     "test:e2e:codegen": "npx playwright codegen http://localhost:3000"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@vercel/analytics": "^1.6.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.17.0",
