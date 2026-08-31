@@ -48,6 +48,7 @@ export default function CatalogClassic({ catalog }: CatalogVariantProps) {
                   image_url={item.image_url}
                   badge={item.badge}
                   is_available={item.is_available}
+                  variant_groups={item.variant_groups}
                   icon={ImageIcon}
                   className="group transition-all duration-300"
                   style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}

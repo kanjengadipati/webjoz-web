@@ -41,6 +41,7 @@ export default function CatalogCards({ catalog }: CatalogVariantProps) {
                   image_url={item.image_url}
                   badge={item.badge}
                   is_available={item.is_available}
+                  variant_groups={item.variant_groups}
                   features={item.features}
                   icon={ImageIcon}
                   className="group transition-all duration-300"

@@ -31,6 +31,21 @@ export interface ImageCredit {
   url: string;
 }
 
+export interface ItemVariantOption {
+  id: string;
+  name: string;
+  price_delta?: number;
+  price_display?: string;
+}
+
+export interface ItemVariantGroup {
+  id: string;
+  name: string;
+  type: "single" | "multiple";
+  required?: boolean;
+  options: ItemVariantOption[];
+}
+
 export interface CatalogEntryBase {
   id?: string;
   name: string;
@@ -43,6 +58,7 @@ export interface CatalogEntryBase {
   badge?: string | null;
   is_available?: boolean;
   sort_order?: number;
+  variant_groups?: ItemVariantGroup[] | null;
 }
 
 export interface MenuItem extends CatalogEntryBase {

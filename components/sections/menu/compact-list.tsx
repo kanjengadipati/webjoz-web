@@ -51,6 +51,7 @@ export default function MenuCompactList({ menu }: { menu: TemplateProps["content
                   category={cat.name}
                   image_url={item.image_url}
                   is_available={item.is_available}
+                  variant_groups={item.variant_groups}
                   icon={Utensils}
                   className="transition-all duration-200 hover:shadow-md"
                   style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", padding: "0.875rem", overflow: "hidden" }}

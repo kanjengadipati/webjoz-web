@@ -69,6 +69,7 @@ export default function MenuCards({ menu }: MenuVariantProps) {
                     category={cat.name}
                     image_url={item.image_url}
                     is_available={item.is_available}
+                    variant_groups={item.variant_groups}
                     icon={Utensils}
                     className="group transition-all duration-300 flex-1"
                     style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}
