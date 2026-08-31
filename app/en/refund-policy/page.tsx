@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteUrl } from "@/lib/site-config";
+import { siteUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Refund Policy | Webjoz",
@@ -62,7 +62,7 @@ export default function EnRefundPolicyPage() {
             <ul className="list-disc pl-5 space-y-2 mt-2">
               <li>The request is submitted within 7 calendar days of the payment date.</li>
               <li>You have not published more than 1 website using the plan.</li>
-              <li>The request is submitted by email to <strong>giwanganstudio@gmail.com</strong>.</li>
+              <li>The request is submitted by email to <strong>{SUPPORT_EMAIL}</strong>.</li>
             </ul>
           </section>
 
@@ -91,7 +91,7 @@ export default function EnRefundPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">5. How to Request a Refund</h2>
             <p>To request a refund:</p>
             <ol className="list-decimal pl-5 space-y-2 mt-2">
-              <li>Send an email to <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a> with the subject: <strong>&quot;Refund Request - [Account Name]&quot;</strong>.</li>
+              <li>Send an email to <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a> with the subject: <strong>&quot;Refund Request - [Account Name]&quot;</strong>.</li>
               <li>Include: the transaction number, payment date, and the reason for the refund request.</li>
               <li>Our team will respond within 2 working days.</li>
               <li>If approved, funds will be returned to the original payment method <strong>within no more than 14 working days</strong> from the date of approval, depending on bank/provider policy.</li>
@@ -115,9 +115,8 @@ export default function EnRefundPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">8. Contact</h2>
             <address className="not-italic space-y-1">
-              <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
-              <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
+              <p><strong>Webjoz Support</strong></p>
+              <p>Email: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a></p>
               <p>Business Hours: Monday – Friday, 09.00 – 17.00 WIB</p>
             </address>
           </section>

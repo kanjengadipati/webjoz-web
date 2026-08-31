@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { siteUrl } from "@/lib/site-config";
+import { siteUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Webjoz",
@@ -127,7 +127,7 @@ export default function PrivacyPolicyPage() {
               <li>Mengajukan gugatan atau pengaduan atas pelanggaran pelindungan data pribadi.</li>
             </ul>
             <p className="mt-2">
-              Untuk mengajukan permintaan tersebut, hubungi kami di <strong>giwanganstudio@gmail.com</strong>. Kami menanggapi setiap permintaan <strong>paling lambat 30 (tiga puluh) hari</strong> sejak permintaan diterima.
+              Untuk mengajukan permintaan tersebut, hubungi kami di <strong>{SUPPORT_EMAIL}</strong>. Kami menanggapi setiap permintaan <strong>paling lambat 30 (tiga puluh) hari</strong> sejak permintaan diterima.
             </p>
           </section>
 
@@ -163,9 +163,8 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-lg font-semibold text-foreground mb-3">12. Kontak</h2>
             <p>Jika Anda memiliki pertanyaan, permintaan hak atas data pribadi, atau pengaduan terkait kebijakan privasi ini, silakan hubungi:</p>
             <address className="not-italic mt-2 space-y-1">
-              <p><strong>Giwangan Studio</strong></p>
-              <p>Jl. Malang Wijoyo, Malangan, Giwangan, Umbulharjo, Yogyakarta</p>
-              <p>Email: <a href="mailto:giwanganstudio@gmail.com" className="text-primary hover:underline">giwanganstudio@gmail.com</a></p>
+              <p><strong>Webjoz Support</strong></p>
+              <p>Email: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a></p>
             </address>
           </section>
 

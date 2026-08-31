@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, HelpCircle, Mail, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getWhatsAppUrl } from "@/lib/site-config";
+import { getWhatsAppUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 import { useI18n } from "@/lib/i18n/context";
 
 interface FAQItem {
@@ -513,7 +513,7 @@ export default function HelpCenterPage() {
               <ExternalLink className="size-3.5 opacity-70" />
             </a>
             <a
-              href="mailto:giwanganstudio@gmail.com"
+              href={`mailto:${SUPPORT_EMAIL}`}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-border/60 bg-card/60 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
             >
               <Mail className="size-4" />

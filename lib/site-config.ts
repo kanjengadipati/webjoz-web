@@ -10,6 +10,9 @@ export const API_BASE_URL =
 export const WHATSAPP_CS_NUMBER =
   process.env.NEXT_PUBLIC_WHATSAPP_CS_NUMBER ?? "6285111221044";
 
+export const SUPPORT_EMAIL =
+  process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "cs@webjoz.com";
+
 export const siteUrl = (path = "/") => `${SITE_URL}${path}`;
 
 export const tenantSiteUrl = (subdomain: string) =>
