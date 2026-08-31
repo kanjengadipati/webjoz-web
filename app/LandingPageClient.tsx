@@ -220,7 +220,7 @@ export default function LandingPageClient() {
   }
 
   return (
-    <main className="min-h-screen pb-20 bg-[#080808] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+    <main className="dark min-h-screen pb-20 bg-[#080808] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
