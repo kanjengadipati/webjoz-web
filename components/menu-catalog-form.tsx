@@ -259,6 +259,7 @@ export function MenuCatalogForm({
     };
     if (hasBadge) newItem.badge = null;
     if (sectionKey === "menu") { newItem.tags = []; newItem.delivery_platforms = []; }
+    else { newItem.capacity = null; newItem.features = []; }
     next[catIdx] = { ...next[catIdx], items: [...existingItems, newItem] };
     updateCategories(next);
   };
@@ -612,6 +613,53 @@ function SortableItemRow({
             <div>
               <label className={MCF_INPUT_LABEL}>Badge <span className="font-normal normal-case text-slate-500">(isi untuk jadikan item unggulan di tampilan showcase)</span></label>
               <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo, Populer" className={MCF_INPUT_BASE} />
+            </div>
+          )}
+
+          {/* Capacity (catalog only — accommodation rooms / product capacity) */}
+          {sectionKey === "catalog" && (
+            <div>
+              <label className={MCF_INPUT_LABEL}>Kapasitas <span className="font-normal normal-case text-slate-500">(opsional — jml tamu utk kamar / jml unit)</span></label>
+              <input
+                type="number"
+                min={1}
+                value={item.capacity ?? ""}
+                onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value === "" ? null : Number(e.target.value))}
+                placeholder="cth. 2, 4, 6"
+                className={`${MCF_INPUT_BASE} [appearance:textfield]`}
+              />
+            </div>
+          )}
+
+          {/* Amenities / Features (catalog only) */}
+          {sectionKey === "catalog" && (
+            <div>
+              <label className={MCF_INPUT_LABEL}>Fitur / Fasilitas <span className="font-normal normal-case text-slate-500">(misal: AC, WiFi, Sarapan — utk kamar homestay)</span></label>
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {(item.features ?? []).map((f: string, fi: number) => (
+                  <span key={fi} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
+                    {f}
+                    <button type="button" onClick={() => {
+                      const next = (item.features ?? []).filter((_: string, i: number) => i !== fi);
+                      updateItem(catIdx, itemIdx, "features", next);
+                    }} className="hover:opacity-70 cursor-pointer">
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Ketik fitur lalu Enter"
+                className={`${MCF_INPUT_BASE} text-xs`}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                    const next = [...(item.features ?? []), e.currentTarget.value.trim()];
+                    updateItem(catIdx, itemIdx, "features", next);
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
             </div>
           )}
 

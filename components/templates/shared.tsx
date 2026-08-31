@@ -3,7 +3,7 @@
 import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars, avatarTextColor } from "./helpers";
 import {
-  Check, ArrowRight, ChevronDown, ChevronUp, Star, Menu, X, Send,
+  Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
@@ -110,16 +110,47 @@ function WaLeadModal({ onSubmitLead, onClose }: {
 
 // ─── Image Lightbox ───────────────────────────────────────────────────────────
 
-function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+function ImageLightbox({
+  src,
+  images,
+  initialIndex = 0,
+  alt,
+  onClose,
+}: {
+  src?: string;
+  images?: string[];
+  initialIndex?: number;
+  alt: string;
+  onClose: () => void;
+}) {
+  const allImages = images && images.length > 0 ? images : src ? [src] : [];
+  const [currentIndex, setCurrentIndex] = useState(
+    initialIndex >= 0 && initialIndex < allImages.length ? initialIndex : 0
+  );
+
+  const prev = () => {
+    setCurrentIndex((idx) => (idx === 0 ? allImages.length - 1 : idx - 1));
+  };
+  const next = () => {
+    setCurrentIndex((idx) => (idx === allImages.length - 1 ? 0 : idx + 1));
+  };
+
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft" && allImages.length > 1) prev();
+      if (e.key === "ArrowRight" && allImages.length > 1) next();
+    };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
+  }, [onClose, allImages.length]);
+
+  if (allImages.length === 0) return null;
+  const currentSrc = allImages[currentIndex];
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-[fadeIn_0.15s_ease]"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm animate-[fadeIn_0.15s_ease]"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -128,19 +159,79 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer z-10"
+        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer z-20"
         aria-label="Tutup preview"
       >
         <X className="w-5 h-5" />
       </button>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
+
+      {/* Prev / Next buttons */}
+      {allImages.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              prev();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/75 border border-white/20 flex items-center justify-center text-white transition-all cursor-pointer z-20"
+            aria-label="Foto sebelumnya"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              next();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-black/75 border border-white/20 flex items-center justify-center text-white transition-all cursor-pointer z-20"
+            aria-label="Foto selanjutnya"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </>
+      )}
+
+      <div
+        className="relative flex flex-col items-center max-w-[92vw] max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
-        className="max-w-[92vw] max-h-[88vh] object-contain rounded-xl shadow-2xl animate-[scaleIn_0.15s_ease]"
-        style={{ boxShadow: "0 25px 80px rgba(0,0,0,0.6)" }}
-      />
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={currentSrc}
+          src={currentSrc}
+          alt={`${alt} (${currentIndex + 1}/${allImages.length})`}
+          className="max-w-[92vw] max-h-[80vh] object-contain rounded-xl shadow-2xl animate-[scaleIn_0.15s_ease]"
+          style={{ boxShadow: "0 25px 80px rgba(0,0,0,0.6)" }}
+        />
+
+        {/* Counter & Thumbnails */}
+        {allImages.length > 1 && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-[11px] font-semibold text-white/75 px-2.5 py-0.5 rounded-full bg-black/40 border border-white/10">
+              {currentIndex + 1} / {allImages.length}
+            </span>
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-[80vw] py-1">
+              {allImages.map((img, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setCurrentIndex(i)}
+                  className={`w-9 h-9 rounded-lg overflow-hidden border-2 transition-all cursor-pointer flex-shrink-0 ${
+                    i === currentIndex
+                      ? "border-primary scale-105 shadow-md"
+                      : "border-white/20 opacity-50 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.93) } to { opacity: 1; transform: scale(1) } }
@@ -1030,6 +1121,7 @@ interface MenuCatalogCardProps {
   itemDescription?: string | null;
   category: string;
   image_url?: string | null;
+  image_urls?: string[] | null;
   image_credit?: ImageCredit | null;
   badge?: string | null;
   is_available?: boolean;
@@ -1059,40 +1151,77 @@ interface MenuCatalogCardProps {
   buttonClassName?: string;
   buttonStyle?: React.CSSProperties;
   features?: string[] | null;
+  capacity?: number | null;
 }
 
 function MenuCatalogCard({
   itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay,
-  itemDescription, category, image_url, image_credit, badge, is_available = true, variant_groups, icon,
+  itemDescription, category, image_url, image_urls, image_credit, badge, is_available = true, variant_groups, icon,
   layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
-  badgeStyle, buttonClassName, buttonStyle, features,
+  badgeStyle, buttonClassName, buttonStyle, features, capacity,
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [activeImgIdx, setActiveImgIdx] = useState(0);
+
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = displayPrice && !isPlaceholderPrice(displayPrice);
   const isOutOfStock = is_available === false;
 
-  const imageNode = image_url ? (
-    <div className="relative overflow-hidden">
+  const allImages = Array.from(
+    new Set([image_url, ...(image_urls || [])].filter((x): x is string => Boolean(x && typeof x === "string" && x.trim() !== "")))
+  );
+  const currentImg = allImages[activeImgIdx] || allImages[0] || image_url;
+
+  const imageNode = currentImg ? (
+    <div className="relative overflow-hidden group/img">
       <img
-        src={image_url}
+        src={currentImg}
         alt={itemName}
         className={`${imageClassName || ""} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
         style={{ ...imageStyle, cursor: isOutOfStock ? "default" : "zoom-in" }}
         onClick={() => { if (!isOutOfStock) setLightboxOpen(true); }}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
+      {/* Multi-image indicators/bullets */}
+      {allImages.length > 1 && (
+        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none z-10">
+          <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-full pointer-events-auto">
+            {allImages.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImgIdx(idx);
+                }}
+                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                  idx === activeImgIdx ? "bg-white scale-125" : "bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Foto ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <span className="text-[9px] font-bold text-white/90 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+            {allImages.length} Foto
+          </span>
+        </div>
+      )}
       {image_credit?.name && (
         <div className="absolute bottom-1 right-2 z-10">
           <PhotoCredit credit={image_credit} />
         </div>
       )}
       {lightboxOpen && !isOutOfStock && (
-        <ImageLightbox src={image_url} alt={itemName} onClose={() => setLightboxOpen(false)} />
+        <ImageLightbox
+          images={allImages}
+          initialIndex={activeImgIdx}
+          alt={itemName}
+          onClose={() => setLightboxOpen(false)}
+        />
       )}
     </div>
   ) : (
@@ -1190,6 +1319,14 @@ function MenuCatalogCard({
       <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
         {descriptionElement}
+        {capacity != null && capacity > 0 && (
+          <div className="mt-2">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
+              s/d {capacity} tamu
+            </span>
+          </div>
+        )}
         {features && features.length > 0 && (
           <ul className="mt-2 flex flex-wrap gap-1.5">
             {features.map((f, fi) => (
