@@ -1290,21 +1290,20 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {MOOD_OPTIONS.map((mo) => {
                       const isSelected = chat.mood === mo.value;
-                      const moodKeyMap: Record<string, { label: string; desc: string }> = {
-                        "clean-modern": { label: "modernClean", desc: "modernCleanDesc" },
-                        "warm-earthy": { label: "warmVintage", desc: "warmVintageDesc" },
-                        "bold-vibrant": { label: "playfulFun", desc: "playfulFunDesc" },
-                        "dark-premium": { label: "elegantLuxury", desc: "elegantLuxuryDesc" },
-                        "bold-dark": { label: "boldEnergetic", desc: "boldEnergeticDesc" },
-                        "retro": { label: "retro", desc: "retroDesc" },
-                        "futuristic": { label: "futuristic", desc: "futuristicDesc" },
+                      const moodKeyMap: Record<string, string> = {
+                        "clean-modern": "modernClean",
+                        "warm-earthy": "warmVintage",
+                        "bold-vibrant": "playfulFun",
+                        "dark-premium": "elegantLuxury",
+                        "bold-dark": "boldEnergetic",
+                        "retro": "retro",
+                        "futuristic": "futuristic",
                       };
-                      const keys = moodKeyMap[mo.value];
-                      const translatedMoodLabel = keys ? t(`dashboard.wizard.moods.${keys.label}`, mo.label) : mo.label;
-                      const translatedMoodDesc = keys ? t(`dashboard.wizard.moods.${keys.desc}`, mo.desc) : mo.desc;
+                      const moodKey = moodKeyMap[mo.value];
+                      const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
 
                       const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
                         "clean-modern":  { icon: <Monitor className="w-4 h-4" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
@@ -1323,7 +1322,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
                           disabled={isLocked}
-                          className={`group relative flex items-center gap-2.5 rounded-xl border p-2.5 sm:p-3 text-left transition-all duration-200 focus:outline-none ${
+                          className={`group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
                             isSelected
                               ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md shadow-primary/15"
                               : isLocked
@@ -1332,33 +1331,24 @@ export function SiteWizard({
                           }`}
                           style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
                         >
-                          {/* Icon kiri */}
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
-                            {cfg.icon}
-                          </div>
-
-                          {/* Info tengah (Judul + Deskripsi) */}
-                          <div className="flex-1 min-w-0">
-                            <div className="text-xs sm:text-sm font-semibold text-white leading-snug truncate">
-                              {translatedMoodLabel}
+                          {/* Icon kiri dengan badge centang tepat di atas icon */}
+                          <div className="relative shrink-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
+                              {cfg.icon}
                             </div>
-                            <div className="text-[10px] sm:text-[11px] text-slate-400 leading-tight truncate mt-0.5">
-                              {translatedMoodDesc}
-                            </div>
-                          </div>
-
-                          {/* Radio indicator kanan */}
-                          <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                            isSelected 
-                              ? "bg-white text-slate-900 shadow-sm" 
-                              : "border border-white/20 bg-transparent"
-                          }`}>
                             {isSelected && (
-                              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
+                              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center shadow-md ring-2 ring-[#16191E]">
+                                <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </div>
                             )}
                           </div>
+
+                          {/* Nama kanan */}
+                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1 min-w-0">
+                            {translatedMoodLabel}
+                          </span>
                         </button>
                       );
                     })}
