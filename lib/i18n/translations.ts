@@ -732,6 +732,11 @@ export interface Translations {
       purchaserCity: string;
       purchaserState: string;
       purchaserZip: string;
+      purchaserIdDoc: string;
+      purchaserIdSub: string;
+      purchaserIdPlaceholder: string;
+      verificationNotice: string;
+      verificationPending: string;
       purchasedTitle: string;
       expiresAt: string;
       purchaseInactive: string;
@@ -2976,6 +2981,11 @@ export const translations: Record<Locale, Translations> = {
         purchaserCity: "Kota",
         purchaserState: "Provinsi",
         purchaserZip: "Kode Pos",
+        purchaserIdDoc: "Nomor Dokumen Identitas",
+        purchaserIdSub: "Untuk domain .id, .co.id, .web.id dan sejenisnya wajib mengisi NIK KTP (individu) atau NPWP/NIB (perusahaan) sesuai aturan registrar Indonesia.",
+        purchaserIdPlaceholder: "NIK (16 digit) / NPWP (15 digit) / NIB",
+        verificationNotice: "Domain .id, .co.id, .web.id dan .or.id memerlukan verifikasi identitas oleh registrar (1-3 hari kerja). Domain baru aktif setelah terverifikasi.",
+        verificationPending: "Menunggu verifikasi identitas",
         purchasedTitle: "Domain Saya",
         expiresAt: "Berlaku hingga",
         purchaseInactive: "Pembelian domain sedang tidak aktif. Hubungi administrator.",
@@ -5287,6 +5297,11 @@ export const translations: Record<Locale, Translations> = {
         purchaserCity: "City",
         purchaserState: "State/Province",
         purchaserZip: "Postal Code",
+        purchaserIdDoc: "Identity Document Number",
+        purchaserIdSub: ".id, .co.id, .web.id and similar domains require your NIK KTP (individual) or NPWP/NIB (business), following Indonesian registrar rules.",
+        purchaserIdPlaceholder: "NIK (16 digits) / NPWP (15 digits) / NIB",
+        verificationNotice: ".id, .co.id, .web.id and .or.id domains require identity verification by the registrar (1-3 working days). The domain becomes active only after verification.",
+        verificationPending: "Awaiting identity verification",
         purchasedTitle: "My Domains",
         expiresAt: "Valid until",
         purchaseInactive: "Domain purchase is currently inactive. Contact an administrator.",

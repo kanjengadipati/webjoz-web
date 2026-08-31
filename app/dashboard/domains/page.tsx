@@ -89,11 +89,39 @@ interface PurchasedDomain {
   status: string;
   years: number;
   registrar: string;
+  verification_status?: string;
 }
 
 const CNAME_TARGET = "sites.webjoz.com";
 const customDomainRegex = /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
 const POPULAR_TLDS = ["com", "net", "org", "id", "co.id", "web.id", "xyz", "store"];
+
+// Indonesian second-level TLDs that require identity verification per PANDI-
+// backed registrar practice (.id variants need NIK/NPWP/NIB before activation).
+const VERIFY_TLDS = ["id", "co.id", "web.id", "or.id", "biz.id", "my.id"];
+
+function tldFromDomain(domain: string): string {
+  const d = domain.toLowerCase().trim();
+  for (const tld of VERIFY_TLDS) {
+    if (d.endsWith(`.${tld}`)) return tld;
+  }
+  if (d.includes(".")) return d.slice(d.lastIndexOf(".") + 1);
+  return "";
+}
+
+function requiresVerification(domain: string): boolean {
+  return VERIFY_TLDS.includes(tldFromDomain(domain));
+}
+
+function identityDocLabel(tld: string): string {
+  if (tld === "co.id" || tld === "or.id") return "NPWP / NIB";
+  return "NIK KTP (16 digit)";
+}
+
+function identityDocType(tld: string): string {
+  if (tld === "co.id" || tld === "or.id") return "npwp";
+  return "nik";
+}
 
 export default function DomainsPage() {
   const token         = useAuthToken();
@@ -144,6 +172,7 @@ export default function DomainsPage() {
     siteName: string;
     subdomain: string;
     expiresAt?: string;
+    verificationStatus?: string;
   } | null>(null);
   const [paymentGateway,      setPaymentGateway]      = useState<"midtrans" | "paypal">("midtrans");
   const [snapReady,           setSnapReady]           = useState(false);
@@ -160,6 +189,8 @@ export default function DomainsPage() {
     state: "",
     country: "ID",
     zip: "",
+    id_number: "",
+    id_type: "nik",
   });
 
   useEffect(() => {
@@ -227,6 +258,8 @@ export default function DomainsPage() {
       state,
       country,
       zip,
+      id_number: saved.id_number || "",
+      id_type: saved.id_type || "nik",
     });
   }, []);
 
@@ -395,6 +428,25 @@ export default function DomainsPage() {
       setIsConfirming(true);
       setBuyingDomain(purchaserDomain);
 
+      // Client-side validation for Indonesian .id identity documents
+      if (requiresVerification(purchaserDomain)) {
+        const idVal = purchaser.id_number.trim();
+        if (!/^\d+$/.test(idVal)) {
+          pushToast("Nomor dokumen identitas harus berupa angka (NIK/NPWP/NIB).", "error");
+          setIsConfirming(false);
+          setBuyingDomain(null);
+          return;
+        }
+        const tld = tldFromDomain(purchaserDomain);
+        const minLen = (tld === "co.id" || tld === "or.id") ? 15 : 16;
+        if (idVal.length < minLen) {
+          pushToast(`Panjang ${identityDocLabel(tld)} minimal ${minLen} karakter.`, "error");
+          setIsConfirming(false);
+          setBuyingDomain(null);
+          return;
+        }
+      }
+
       // Build purchaser payload
       const purchaserPayload = {
         name: purchaser.name,
@@ -406,6 +458,8 @@ export default function DomainsPage() {
         state: purchaser.state,
         country: purchaser.country,
         zip: purchaser.zip,
+        id_number: purchaser.id_number || "",
+        id_type: purchaser.id_type || (requiresVerification(purchaserDomain) ? identityDocType(purchaserDomain) : ""),
       };
 
       // Persist purchaser details for future domain purchases
@@ -556,6 +610,7 @@ export default function DomainsPage() {
         siteName: matchedSite?.name || "Website Anda",
         subdomain: matchedSite?.subdomain || "",
         expiresAt: res.data?.expires_at,
+        verificationStatus: res.data?.verification_status,
       });
       setShowSuccessModal(true);
       setResults([]);
@@ -744,8 +799,8 @@ export default function DomainsPage() {
                         {t("dashboard.domains.expiresAt")} {new Date(d.expires_at).toLocaleDateString("id-ID")}
                       </p>
                     </div>
-                    <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]">
-                      {t("dashboard.domains.active")}
+                    <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold shrink-0 ${d.verification_status === "pending_verification" ? "bg-amber-500/15 dark:bg-[#f0b429]/12 text-amber-600 dark:text-[#f3c451]" : "bg-emerald-500/15 dark:bg-[#3ddc84]/12 text-emerald-600 dark:text-[#5fe3a0]"}`}>
+                      {d.verification_status === "pending_verification" ? t("dashboard.domains.verificationPending") : t("dashboard.domains.active")}
                     </span>
                     <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-muted text-muted-foreground">
                       {d.registrar === "dna" ? "DNA" : "RC"}
@@ -1213,6 +1268,31 @@ export default function DomainsPage() {
               />
             </div>
 
+            {/* Identity document (required for .id TLD variants) */}
+            {requiresVerification(purchaserDomain) && (
+              <div className="p-3 border border-amber-500/20 bg-amber-500/5 rounded-xl space-y-2">
+                <div>
+                  <label className="block text-[11px] font-semibold text-muted-foreground mb-1">
+                    {t("dashboard.domains.purchaserIdDoc")} *
+                    <span className="text-[10px] text-primary ml-1">({identityDocLabel(tldFromDomain(purchaserDomain))})</span>
+                  </label>
+                  <input
+                    value={purchaser.id_number}
+                    onChange={e => setPurchaser(p => ({ ...p, id_number: e.target.value }))}
+                    placeholder={t("dashboard.domains.purchaserIdPlaceholder")}
+                    className="w-full bg-background border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary transition-colors"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                    {t("dashboard.domains.purchaserIdSub")}
+                  </p>
+                </div>
+                <div className="flex items-start gap-2 text-[11px] text-amber-300 leading-relaxed">
+                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                  <span>{t("dashboard.domains.verificationNotice")}</span>
+                </div>
+              </div>
+            )}
+
             {/* Telepon dengan country code */}
             <div>
               <label className="block text-[11px] font-semibold text-muted-foreground mb-1">{t("dashboard.domains.purchaserPhone")} *</label>
@@ -1360,7 +1440,7 @@ export default function DomainsPage() {
             </button>
             <button
               onClick={confirmBuy}
-              disabled={isConfirming || !purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip}
+              disabled={isConfirming || !purchaser.name || !purchaser.email || !purchaser.phone || !purchaser.address || !purchaser.city || !purchaser.state || !purchaser.zip || (requiresVerification(purchaserDomain) && !purchaser.id_number.trim())}
               className="flex-1 py-2 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isConfirming ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5" />}
@@ -1427,20 +1507,28 @@ export default function DomainsPage() {
                 <Sparkles className="w-3.5 h-3.5" /> Pembelian & Registrasi Berhasil
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight">
-                Selamat! Domain Anda Siap Digunakan
+                {purchasedSuccessData.verificationStatus === "pending_verification"
+                  ? "Menunggu Verifikasi Identitas"
+                  : "Selamat! Domain Anda Siap Digunakan"}
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                Domain telah berhasil didaftarkan dan diarahkan ke website Anda secara otomatis.
+                {purchasedSuccessData.verificationStatus === "pending_verification"
+                  ? "Domain berhasil dipesan dan sedang diverifikasi oleh registrar. Domain akan aktif setelah verifikasi identitas selesai (1-3 hari kerja)."
+                  : "Domain telah berhasil didaftarkan dan diarahkan ke website Anda secara otomatis."}
               </p>
             </div>
 
             {/* Domain Details Card */}
             <div className="bg-muted/30 border border-border rounded-2xl p-4 text-left space-y-3.5">
               <div className="flex items-center justify-between border-b border-border pb-3">
-                <span className="text-xs text-muted-foreground font-medium">Domain Aktif</span>
-                <span className="text-sm font-bold text-primary flex items-center gap-1.5 font-mono">
-                  <Globe className="w-4 h-4 text-primary" />
-                  {purchasedSuccessData.domain}
+                <span className="text-xs text-muted-foreground font-medium">
+                  {purchasedSuccessData.verificationStatus === "pending_verification" ? "Status" : "Domain Aktif"}
+                </span>
+                <span className={`text-sm font-bold flex items-center gap-1.5 font-mono ${purchasedSuccessData.verificationStatus === "pending_verification" ? "text-amber-500" : "text-primary"}`}>
+                  <Globe className="w-4 h-4" />
+                  {purchasedSuccessData.verificationStatus === "pending_verification"
+                    ? "Menunggu Verifikasi"
+                    : purchasedSuccessData.domain}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-border pb-3">
