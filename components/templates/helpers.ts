@@ -1,5 +1,73 @@
 import type { DesignToken } from "./types";
 
+function resolveCssColor(color: string): string {
+  const c = (color || "").trim();
+  const m = c.match(/^var\(\s*(--[^,)]+)(?:\s*,\s*([^)]+))?\)$/i);
+  if (m) {
+    if (typeof window !== "undefined") {
+      const resolved = window
+        .getComputedStyle(document.documentElement)
+        .getPropertyValue(m[1].trim());
+      const val = (resolved || m[2] || "").trim();
+      if (val) return val;
+      return c;
+    }
+    return m[2] ? m[2].trim() : c;
+  }
+  return c;
+}
+
+export function isColorDark(color: string): boolean {
+  const c = resolveCssColor(color);
+
+  // hex 3: #rgb
+  const hex3 = c.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+  if (hex3) {
+    const r = parseInt(hex3[1] + hex3[1], 16);
+    const g = parseInt(hex3[2] + hex3[2], 16);
+    const b = parseInt(hex3[3] + hex3[3], 16);
+    return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+  }
+
+  // hex 6: #rrggbb  or  hex 8: #rrggbbaa (ignore alpha)
+  const hex6 = c.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i);
+  if (hex6) {
+    const r = parseInt(hex6[1], 16);
+    const g = parseInt(hex6[2], 16);
+    const b = parseInt(hex6[3], 16);
+    return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+  }
+
+  // rgb / rgba: rgb(r, g, b)
+  const rgb = c.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (rgb) {
+    const r = parseInt(rgb[1]);
+    const g = parseInt(rgb[2]);
+    const b = parseInt(rgb[3]);
+    return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+  }
+
+  // hsl / hsla: hsl(h, s%, l%)  — use lightness < 40% as dark heuristic
+  const hsl = c.match(/^hsla?\(\s*[\d.]+\s*,\s*[\d.]+%?\s*,\s*([\d.]+)%/i);
+  if (hsl) {
+    return parseFloat(hsl[1]) < 40;
+  }
+
+  // oklch(L C H) — L ranges 0–1; < 0.4 is dark
+  const oklch = c.match(/^oklch\(\s*([\d.]+)/i);
+  if (oklch) {
+    return parseFloat(oklch[1]) < 0.4;
+  }
+
+  // Unknown format → assume light (non-dark) to keep white text readable
+  return false;
+}
+
+/** Pick a readable avatar-initial color for a given background color. */
+export function avatarTextColor(background: string): string {
+  return isColorDark(background) ? "#ffffff" : "#111827";
+}
+
 export function buildCssVars(dt: DesignToken | null | undefined): Record<string, string> {
   const p = dt?.palette;
   const ty = dt?.typography;
@@ -16,55 +84,9 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     rounded: "20px",
   };
 
-  const isDarkColor = (color: string) => {
-    const c = (color || "").trim();
-
-    // hex 3: #rgb
-    const hex3 = c.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-    if (hex3) {
-      const r = parseInt(hex3[1] + hex3[1], 16);
-      const g = parseInt(hex3[2] + hex3[2], 16);
-      const b = parseInt(hex3[3] + hex3[3], 16);
-      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
-    }
-
-    // hex 6: #rrggbb  or  hex 8: #rrggbbaa (ignore alpha)
-    const hex6 = c.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i);
-    if (hex6) {
-      const r = parseInt(hex6[1], 16);
-      const g = parseInt(hex6[2], 16);
-      const b = parseInt(hex6[3], 16);
-      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
-    }
-
-    // rgb / rgba: rgb(r, g, b)
-    const rgb = c.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-    if (rgb) {
-      const r = parseInt(rgb[1]);
-      const g = parseInt(rgb[2]);
-      const b = parseInt(rgb[3]);
-      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
-    }
-
-    // hsl / hsla: hsl(h, s%, l%)  — use lightness < 40% as dark heuristic
-    const hsl = c.match(/^hsla?\(\s*[\d.]+\s*,\s*[\d.]+%?\s*,\s*([\d.]+)%/i);
-    if (hsl) {
-      return parseFloat(hsl[1]) < 40;
-    }
-
-    // oklch(L C H) — L ranges 0–1; < 0.4 is dark
-    const oklch = c.match(/^oklch\(\s*([\d.]+)/i);
-    if (oklch) {
-      return parseFloat(oklch[1]) < 0.4;
-    }
-
-    // Unknown format → assume light (non-dark) to keep white text readable
-    return false;
-  };
-
   const rawBg = p?.background ?? "#F8F9FF";
   const rawText = p?.text ?? "#1e293b";
-  const isRawBgDark = isDarkColor(rawBg);
+  const isRawBgDark = isColorDark(rawBg);
   const themeMode = dt?.theme_mode; // undefined = auto-detect, 'light'/'dark' = forced
 
   // Normalise: light mode → light bg/dark text, dark mode → dark bg/light text
@@ -84,7 +106,7 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     // Auto-detect — original behaviour
     bg = rawBg;
     text = rawText;
-    const isDarkBg = isDarkColor(bg);
+    const isDarkBg = isColorDark(bg);
     surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
     if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
       surfaceVal = isDarkBg
@@ -93,7 +115,7 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     }
   }
 
-  const isDarkBg = isDarkColor(bg);
+  const isDarkBg = isColorDark(bg);
 
   const borderVal = isDarkBg
     ? "color-mix(in srgb, var(--dt-bg) 85%, white)"
@@ -101,8 +123,8 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
 
   const primaryColor = p?.primary ?? "#4F46E5";
   const accentColor = p?.accent ?? "#7C3AED";
-  const isPrimaryDark = isDarkColor(primaryColor);
-  const isAccentDark = isDarkColor(accentColor);
+  const isPrimaryDark = isColorDark(primaryColor);
+  const isAccentDark = isColorDark(accentColor);
 
   // In dark mode, lighten primary/accent if they're too dark for dark bg
   const lightenIfDark = (hex: string, isDark: boolean) =>

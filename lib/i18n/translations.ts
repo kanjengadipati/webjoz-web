@@ -4438,7 +4438,7 @@ export const translations: Record<Locale, Translations> = {
           playfulFunDesc: "Ceria, ramah, dan penuh warna",
           retro: "Klasik & Retro",
           retroDesc: "Klasik, nostalgia, dan berkarakter",
-          futuristic: "Futuristik & Modern",
+          futuristic: "Futuristik",
           futuristicDesc: "Modern, teknologi, dan futuristik",
           minimalistDark: "Minimalis Gelap",
           minimalistDarkDesc: "Gelap, futuristik, dan modern",

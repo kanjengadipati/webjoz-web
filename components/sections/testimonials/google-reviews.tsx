@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
+import { avatarTextColor } from "../../templates/helpers";
 
 interface Props {
   testimonials: TemplateProps["content"]["testimonials"];
@@ -120,7 +121,7 @@ export default function TestimonialsGoogleReviews({ testimonials: t, design_toke
                       />
                     ) : (
                       <div style={{ width: 40, height: 40, borderRadius: "50%", background: accentColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#fff" }}>{initials}</span>
+                        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: avatarTextColor(accentColor) }}>{initials}</span>
                       </div>
                     )}
                     {/* Name + role */}
