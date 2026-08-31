@@ -2127,6 +2127,9 @@ export interface Translations {
       btnEditPublish: string;
       btnConfirmYes: string;
       btnChangeCategory: string;
+      btnTryOtherRecommendation: string;
+      recommendationHintTitle: string;
+      recommendationHintDesc: string;
       inferenceHint: string;
       notThisType: string;
       moreSpecific: string;
@@ -4384,6 +4387,9 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publikasikan",
         btnConfirmYes: "Ya, lanjut",
         btnChangeCategory: "Ganti kategori",
+        btnTryOtherRecommendation: "Coba rekomendasi lain ({current}/{total})",
+        recommendationHintTitle: "Ada {count} rekomendasi desain!",
+        recommendationHintDesc: "Klik untuk lihat pilihan tampilan lain.",
         inferenceHint: "Klik untuk lanjut, atau pilih kategori lain",
         notThisType: "Bukan ini? Pilih jenis bisnis lain",
         moreSpecific: "Lebih spesifik:",
@@ -6692,6 +6698,9 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publish",
         btnConfirmYes: "Yes, continue",
         btnChangeCategory: "Change category",
+        btnTryOtherRecommendation: "Try other recommendation ({current}/{total})",
+        recommendationHintTitle: "{count} design recommendations available!",
+        recommendationHintDesc: "Click to explore alternative layouts.",
         inferenceHint: "Tap to continue, or choose a different category",
         notThisType: "Not this? Choose another business type",
         moreSpecific: "More specific:",
