@@ -434,29 +434,12 @@ export default function LandingPageClient() {
             </div>
           </div>
 
-          {/* ── Right Panel ───────────────────────────────────────────────────── */}
+          {/* ── Right Panel — mockup only ────────────────────────────────────── */}
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 w-full">
-
-
-            {/* Mockup — untouched */}
             <InteractiveMockup />
+          </div>
+        </div>
 
-            {/* Stat strip — normal flow below mockup */}
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
-                <span className="text-sm font-black text-foreground">500+</span>
-                <span className="text-[10px] text-muted-foreground leading-tight">Website dibuat</span>
-              </div>
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
-                <span className="text-sm font-black text-foreground">4.9 ★</span>
-                <span className="text-[10px] text-muted-foreground leading-tight">Rating user</span>
-              </div>
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
-                <span className="text-sm font-black text-foreground">&lt;10m</span>
-                <span className="text-[10px] text-muted-foreground leading-tight">Rata-rata live</span>
-              </div>
-            </div>
-          </div>        </div>
       </section>
 
       {/* ── How It Works (Pleco-style numbered cards) ──────────────────────── */}
