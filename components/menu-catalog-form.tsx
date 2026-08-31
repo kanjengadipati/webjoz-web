@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2, RotateCcw, X, Link as LinkIcon } from "lucide-react";
+import React, { useState, useRef, useCallback } from "react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2, RotateCcw, X, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
-import FileUpload from "@/components/file-upload";
+import FileUpload, { uploadImageFile } from "@/components/file-upload";
 import {
   DndContext,
   closestCenter,
@@ -562,11 +562,12 @@ function SortableItemRow({
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[180px_1fr]">
-        <FileUpload
-          label="Foto" value={item.image_url ?? ""}
-          onChange={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
-          placeholder="https://..." maxWidth={800} maxHeight={600} quality={0.8} previewSize="sm"
+      <div className="grid gap-3 lg:grid-cols-[200px_1fr]">
+        <ItemPhotoGalleryEditor
+          imageUrl={item.image_url ?? ""}
+          imageUrls={item.image_urls ?? []}
+          onUpdatePrimary={(url) => updateItem(catIdx, itemIdx, "image_url", url || null)}
+          onUpdateGallery={(urls) => updateItem(catIdx, itemIdx, "image_urls", urls.length > 0 ? urls : null)}
         />
 
         <div className="space-y-3">
@@ -990,6 +991,156 @@ function VariantGroupEditor({ groups, onChange }: { groups: VGGroup[]; onChange:
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+// ─── ItemPhotoGalleryEditor ─────────────────────────────────────────────────────
+
+function ItemPhotoGalleryEditor({
+  imageUrl,
+  imageUrls,
+  onUpdatePrimary,
+  onUpdateGallery,
+}: {
+  imageUrl: string;
+  imageUrls: string[];
+  onUpdatePrimary: (url: string) => void;
+  onUpdateGallery: (urls: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Extra images list (excluding primary imageUrl to avoid duplicate)
+  const extraImages = imageUrls.filter((u) => u && u !== imageUrl);
+
+  const handleUploadExtra = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploading(true);
+      const url = await uploadImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
+      if (url) {
+        if (!imageUrl) {
+          onUpdatePrimary(url);
+        } else {
+          onUpdateGallery([...extraImages, url]);
+        }
+      }
+    } catch (err: any) {
+      alert(err.message || "Gagal mengunggah foto.");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSetPrimary = (targetUrl: string) => {
+    const nextExtra = [imageUrl, ...extraImages].filter((u) => u && u !== targetUrl);
+    onUpdatePrimary(targetUrl);
+    onUpdateGallery(nextExtra);
+  };
+
+  const handleRemoveExtra = (targetUrl: string) => {
+    onUpdateGallery(extraImages.filter((u) => u !== targetUrl));
+  };
+
+  return (
+    <div className="space-y-2">
+      <FileUpload
+        label="Foto Utama"
+        value={imageUrl}
+        onChange={onUpdatePrimary}
+        placeholder="https://..."
+        maxWidth={800}
+        maxHeight={600}
+        quality={0.8}
+        previewSize="sm"
+      />
+
+      {/* Multi-Photo Manager Accordion */}
+      <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-semibold text-slate-300 hover:bg-white/5 transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-1.5">
+            <ImageIcon className="w-3.5 h-3.5 text-primary" />
+            <span>Galeri Foto ({1 + extraImages.length})</span>
+          </div>
+          {isOpen ? <ChevronUp className="w-3.5 h-3.5 text-slate-400" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-400" />}
+        </button>
+
+        {isOpen && (
+          <div className="p-2.5 border-t border-white/8 space-y-2">
+            <p className="text-[10px] text-slate-400 leading-relaxed">
+              Tambahkan hingga beberapa foto untuk item ini. Pelanggan bisa melihat preview galeri foto di website.
+            </p>
+
+            {/* Thumbnail grid */}
+            <div className="flex flex-wrap gap-2">
+              {/* Primary badge thumbnail */}
+              {imageUrl && (
+                <div className="relative w-14 h-14 rounded-lg overflow-hidden border-2 border-primary group">
+                  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+                  <span className="absolute bottom-0 inset-x-0 bg-primary text-[8px] font-black text-black text-center py-0.5 uppercase">
+                    Utama
+                  </span>
+                </div>
+              )}
+
+              {/* Extra images */}
+              {extraImages.map((url, idx) => (
+                <div key={idx} className="relative w-14 h-14 rounded-lg overflow-hidden border border-white/15 group">
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => handleSetPrimary(url)}
+                      className="text-[8px] font-bold text-white bg-primary/90 px-1 py-0.5 rounded cursor-pointer hover:bg-primary"
+                    >
+                      Utama
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExtra(url)}
+                      className="text-red-400 hover:text-red-300 p-0.5 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* Add photo button */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleUploadExtra}
+                accept="image/*"
+                className="hidden"
+              />
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-14 h-14 rounded-lg border border-dashed border-white/20 hover:border-primary/50 hover:bg-primary/5 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-all cursor-pointer disabled:opacity-50"
+              >
+                {uploading ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4" />
+                    <span className="text-[9px] font-semibold">+Foto</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

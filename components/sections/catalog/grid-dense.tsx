@@ -47,6 +47,7 @@ export default function CatalogGridDense({ catalog }: { catalog: TemplateProps["
                   itemDescription={item.description}
                   category={cat.name}
                   image_url={item.image_url}
+                  image_urls={item.image_urls}
                   badge={item.badge}
                   is_available={item.is_available}
                   variant_groups={item.variant_groups}
