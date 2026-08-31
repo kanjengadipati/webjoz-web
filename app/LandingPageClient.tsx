@@ -361,7 +361,7 @@ export default function LandingPageClient() {
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
+      <section className="relative overflow-hidden px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
@@ -434,60 +434,51 @@ export default function LandingPageClient() {
             </div>
           </div>
 
-          {/* ── Artistic Right Panel ─────────────────────────────────────────── */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 relative w-full py-8 lg:py-0">
+          {/* ── Right Panel ───────────────────────────────────────────────────── */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 w-full">
 
-            {/* Glow orbs — behind everything */}
-            <div className="absolute -top-10 -right-10 w-72 h-72 bg-primary/20 rounded-full blur-[90px] pointer-events-none -z-10" />
-            <div className="absolute -bottom-6 -left-6 w-56 h-56 bg-amber-400/15 rounded-full blur-[70px] pointer-events-none -z-10" />
-
-            {/* ── Row 1: floating status chips in normal flow ── */}
-            <div className="flex items-center gap-2.5 mb-4 flex-wrap">
-              <div
-                className="flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 shadow-sm"
+            {/* Floating chips — normal flow, always visible */}
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300"
                 style={{ animation: "float 3s ease-in-out infinite" }}
               >
-                <span className="size-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_theme(colors.emerald.400)]" />
+                <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_6px_theme(colors.emerald.400)]" />
                 Live preview
-              </div>
-              <div
-                className="flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300 shadow-sm"
-                style={{ animation: "float 4s ease-in-out infinite", animationDelay: "0.8s" }}
+              </span>
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300"
+                style={{ animation: "float 3.5s ease-in-out infinite", animationDelay: "0.6s" }}
               >
-                <span className="text-sm leading-none">⚡</span>
-                &lt; 10 menit live
-              </div>
-              <div
-                className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm"
-                style={{ animation: "float 3.5s ease-in-out infinite", animationDelay: "0.4s" }}
+                ⚡ &lt;10 menit live
+              </span>
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary"
+                style={{ animation: "float 4s ease-in-out infinite", animationDelay: "1.2s" }}
               >
-                <span className="text-sm leading-none">🤖</span>
-                AI-powered
-              </div>
+                🤖 AI-powered
+              </span>
             </div>
 
-            {/* ── Mockup (untouched) ── */}
+            {/* Mockup — untouched */}
             <InteractiveMockup />
 
-            {/* ── Row 2: decorative stat strip below mockup ── */}
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm py-2.5 px-2 text-center shadow-sm">
-                <span className="text-base font-black text-foreground">500+</span>
-                <span className="text-[10px] text-muted-foreground mt-0.5 leading-tight">Website dibuat</span>
+            {/* Stat strip — normal flow below mockup */}
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
+                <span className="text-sm font-black text-foreground">500+</span>
+                <span className="text-[10px] text-muted-foreground leading-tight">Website dibuat</span>
               </div>
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm py-2.5 px-2 text-center shadow-sm">
-                <span className="text-base font-black text-foreground">4.9★</span>
-                <span className="text-[10px] text-muted-foreground mt-0.5 leading-tight">Rating pengguna</span>
+              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
+                <span className="text-sm font-black text-foreground">4.9 ★</span>
+                <span className="text-[10px] text-muted-foreground leading-tight">Rating user</span>
               </div>
-              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm py-2.5 px-2 text-center shadow-sm">
-                <span className="text-base font-black text-foreground">&lt;10m</span>
-                <span className="text-[10px] text-muted-foreground mt-0.5 leading-tight">Rata-rata live</span>
+              <div className="flex flex-col items-center rounded-xl border border-border/60 bg-card/70 py-2.5 px-2 text-center">
+                <span className="text-sm font-black text-foreground">&lt;10m</span>
+                <span className="text-[10px] text-muted-foreground leading-tight">Rata-rata live</span>
               </div>
             </div>
-          </div>
-
-
-        </div>
+          </div>        </div>
       </section>
 
       {/* ── How It Works (Pleco-style numbered cards) ──────────────────────── */}
