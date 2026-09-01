@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { NavMenu, LogoImage, navCtaHref } from "../../templates/shared";
+import { NavMenu, LogoImage, navCtaHref, InlineText } from "../../templates/shared";
 import { Globe } from "lucide-react";
 import type { HeaderVariantProps } from "./types";
 
@@ -11,6 +11,7 @@ export default function TransparentOverlay({
   navLinkClass = "",
   drawerStyle,
   language,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const [scrolled, setScrolled] = useState(false);
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
@@ -51,13 +52,31 @@ export default function TransparentOverlay({
           imgClass="h-8 w-auto shrink-0 object-contain"
         />
         <span className="min-w-0">
-          <span className="truncate block">
-            {header?.brand_name || "Brand Kami"}
-          </span>
+          <InlineText
+            section="header"
+            fieldKey="brand_name"
+            value={header?.brand_name || "Brand Kami"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            className="truncate block"
+          />
           {header?.tagline && (
-            <span className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate">
-              {header.tagline}
-            </span>
+            <InlineText
+              section="header"
+              fieldKey="tagline"
+              value={header.tagline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate"
+            />
           )}
         </span>
       </span>
@@ -85,7 +104,17 @@ export default function TransparentOverlay({
             color: "var(--dt-primary-foreground)",
           }}
         >
-          {header?.nav_cta_text || defaultCta}
+          <InlineText
+            section="header"
+            fieldKey="nav_cta_text"
+            value={header?.nav_cta_text || defaultCta}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+          />
         </a>
       )}
     </header>

@@ -1,14 +1,20 @@
 "use client";
 import React from "react";
 import { Utensils } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function BentoPhotoGrid({ menu }: MenuVariantProps) {
+export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -32,26 +38,44 @@ export default function BentoPhotoGrid({ menu }: MenuVariantProps) {
       <div className="max-w-7xl mx-auto">
         <div id="bento-header" className="text-center mb-16 max-w-2xl mx-auto">
           {eyebrow && (
-            <span
-              id="bento-eyebrow"
+            <InlineText
+              section="menu"
+              fieldKey="eyebrow"
+              value={eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
               className="text-xs font-medium tracking-wider uppercase text-dt-text-muted block mb-2 font-dt-heading"
-            >
-              {eyebrow}
-            </span>
+            />
           )}
-          <h2
-            id="bento-title"
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
             className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-dt-text font-dt-heading"
-          >
-            {title}
-          </h2>
+          />
           {subtitle && (
-            <p
-              id="bento-subtitle"
+            <InlineText
+              section="menu"
+              fieldKey="subtitle"
+              value={subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
               className="text-sm md:text-base text-dt-text-muted"
-            >
-              {subtitle}
-            </p>
+            />
           )}
         </div>
 

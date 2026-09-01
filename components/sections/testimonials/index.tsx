@@ -9,7 +9,17 @@ import TestimonialsLogoWall from "./logo-wall";
 import TestimonialsFeaturedSpotlight from "./featured-spotlight";
 import TestimonialsGoogleReviews from "./google-reviews";
 
-const variants: Record<string, ComponentType<{ testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }>> = {
+type TestimonialVariantProps = {
+  testimonials: TemplateProps["content"]["testimonials"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+};
+
+const variants: Record<string, ComponentType<TestimonialVariantProps>> = {
   carousel: TestimonialsClassic,
   compact: TestimonialsCompact,
   grid: TestimonialsGrid,
@@ -18,8 +28,34 @@ const variants: Record<string, ComponentType<{ testimonials: TemplateProps["cont
   "google-reviews": TestimonialsGoogleReviews,
 };
 
-export default function TestimonialsSection({ testimonials, design_token }: { testimonials: TemplateProps["content"]["testimonials"]; design_token?: DesignToken | null }) {
+export default function TestimonialsSection({
+  testimonials,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  testimonials: TemplateProps["content"]["testimonials"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
   const Renderer = variants[variant] ?? TestimonialsClassic;
-  return <Renderer testimonials={testimonials} design_token={design_token} />;
+  return (
+    <Renderer
+      testimonials={testimonials}
+      design_token={design_token}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }

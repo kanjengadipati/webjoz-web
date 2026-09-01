@@ -1,11 +1,17 @@
 "use client";
 import React from "react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { avatarTextColor } from "../../templates/helpers";
 
 interface Props {
   testimonials: TemplateProps["content"]["testimonials"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 function StarRow({ rating = 5 }: { rating?: number }) {
@@ -34,7 +40,15 @@ function GoogleBadge() {
   );
 }
 
-export default function TestimonialsGoogleReviews({ testimonials: t, design_token }: Props) {
+export default function TestimonialsGoogleReviews({
+  testimonials: t,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: Props) {
   if (!t?.items?.length) return null;
 
   const items = t.items;
@@ -59,15 +73,44 @@ export default function TestimonialsGoogleReviews({ testimonials: t, design_toke
         {/* Section header */}
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           {t.eyebrow && (
-            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>
-              {t.eyebrow}
-            </span>
+            <InlineText
+              section="testimonials"
+              fieldKey="eyebrow"
+              value={t.eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
-          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.1rem)", color: "var(--dt-text)", marginTop: t.eyebrow ? "0.5rem" : 0, marginBottom: 0 }}>
-            {t.title}
-          </h2>
+          <InlineText
+            section="testimonials"
+            fieldKey="title"
+            value={t.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h2"
+            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.1rem)", color: "var(--dt-text)", marginTop: t.eyebrow ? "0.5rem" : 0, marginBottom: 0 }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
           {t.subtitle && (
-            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", marginTop: "0.5rem", marginBottom: 0 }}>{t.subtitle}</p>
+            <InlineText
+              section="testimonials"
+              fieldKey="subtitle"
+              value={t.subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", marginTop: "0.5rem", marginBottom: 0 }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
 
           {/* Aggregate Google rating badge */}

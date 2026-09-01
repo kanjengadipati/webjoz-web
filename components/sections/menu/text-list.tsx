@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { AddToCartButton, isPlaceholderPrice } from "@/components/cart";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -9,7 +10,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Item name left, dotted leader, price right.
  * AddToCartButton preserved per spec requirement.
  */
-export default function MenuTextList({ menu }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }) {
+export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
   if (!menu) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -24,15 +25,44 @@ export default function MenuTextList({ menu }: { menu: TemplateProps["content"][
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           {menu.eyebrow && (
-            <span style={{ display: "inline-block", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", color: p, marginBottom: "0.75rem" }}>
-              {menu.eyebrow}
-            </span>
+            <InlineText
+              section="menu"
+              fieldKey="eyebrow"
+              value={menu.eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              style={{ display: "inline-block", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", color: p, marginBottom: "0.75rem" }}
+            />
           )}
-          <h2 style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 4cqw, 2.25rem)", color: text, margin: 0, lineHeight: 1.15 }}>
-            {menu.title}
-          </h2>
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={menu.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
+            style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 4cqw, 2.25rem)", color: text, margin: 0, lineHeight: 1.15 }}
+          />
           {menu.subtitle && (
-            <p style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: muted, lineHeight: 1.6 }}>{menu.subtitle}</p>
+            <InlineText
+              section="menu"
+              fieldKey="subtitle"
+              value={menu.subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
+              style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: muted, lineHeight: 1.6 }}
+            />
           )}
           <div style={{ width: "2rem", height: "1px", background: p, margin: "1.25rem auto 0", opacity: 0.5 }} />
         </div>

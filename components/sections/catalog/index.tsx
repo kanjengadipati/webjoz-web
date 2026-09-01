@@ -15,7 +15,17 @@ import CatalogSplitHeroCatalog from "./split-hero-catalog";
 import CatalogNeoBrutalistMatrix from "./neo-brutalist-matrix";
 import CatalogHorizontalSwipeCarousel from "./horizontal-swipe-carousel";
 
-const variants: Record<string, ComponentType<{ catalog: TemplateProps["content"]["catalog"]; design_token?: DesignToken | null }>> = {
+type CatalogVariantProps = {
+  catalog: TemplateProps["content"]["catalog"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+};
+
+const variants: Record<string, ComponentType<CatalogVariantProps>> = {
   // existing
   grid: CatalogClassic,
   compact: CatalogCompact,
@@ -32,8 +42,34 @@ const variants: Record<string, ComponentType<{ catalog: TemplateProps["content"]
   "horizontal-swipe-carousel": CatalogHorizontalSwipeCarousel,
 };
 
-export default function CatalogSection({ catalog, design_token }: { catalog: TemplateProps["content"]["catalog"]; design_token?: DesignToken | null }) {
+export default function CatalogSection({
+  catalog,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  catalog: TemplateProps["content"]["catalog"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const variant = design_token?.layout?.section_variants?.catalog ?? "grid";
   const Renderer = variants[variant] ?? CatalogClassic;
-  return <Renderer catalog={catalog} design_token={design_token} />;
+  return (
+    <Renderer
+      catalog={catalog}
+      design_token={design_token}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }

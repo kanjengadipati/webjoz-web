@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import { NavMenu, LogoImage, navCtaHref } from "../../templates/shared";
+import { NavMenu, LogoImage, navCtaHref, InlineText } from "../../templates/shared";
 import { Globe } from "lucide-react";
 import type { HeaderVariantProps } from "./types";
 
 export default function LogoWithCtaButton({
   header, sectionOrder, hiddenSections,
   navLinkClass = "", drawerStyle, extraLinks, language,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
@@ -26,11 +27,31 @@ export default function LogoWithCtaButton({
           imgClass="h-8 w-auto shrink-0 object-contain"
         />
         <span className="min-w-0">
-          <span className="truncate block">{header?.brand_name || "Brand Kami"}</span>
+          <InlineText
+            section="header"
+            fieldKey="brand_name"
+            value={header?.brand_name || "Brand Kami"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            className="truncate block"
+          />
           {header?.tagline && (
-            <span className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate">
-              {header.tagline}
-            </span>
+            <InlineText
+              section="header"
+              fieldKey="tagline"
+              value={header.tagline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate"
+            />
           )}
         </span>
       </span>
@@ -50,7 +71,17 @@ export default function LogoWithCtaButton({
             className="shrink-0 px-5 py-2.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold hover:opacity-85 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || defaultCta}
+            <InlineText
+              section="header"
+              fieldKey="nav_cta_text"
+              value={header?.nav_cta_text || defaultCta}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
           </a>
         )}
       </div>

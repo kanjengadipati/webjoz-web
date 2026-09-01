@@ -1,14 +1,20 @@
 "use client";
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function CatalogInstagramSquareGrid({ catalog }: CatalogVariantProps) {
+export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -26,30 +32,51 @@ export default function CatalogInstagramSquareGrid({ catalog }: CatalogVariantPr
       <div className="mb-16 border-b-2 pb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4" style={{ borderColor: "var(--dt-border)" }}>
         <div>
           {eyebrow && (
-            <span
+            <InlineText
+              section="catalog"
+              fieldKey="eyebrow"
+              value={eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
               className="text-xs uppercase tracking-wider font-extrabold block mb-2"
               style={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
-            >
-              {eyebrow}
-            </span>
+            />
           )}
-          <h2
+          <InlineText
+            section="catalog"
+            fieldKey="title"
+            value={title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
             className="text-4xl font-black tracking-tight"
             style={{
               color: "var(--dt-text)",
               fontFamily: "var(--dt-heading-font, sans-serif)"
             }}
-          >
-            {title}
-          </h2>
+          />
         </div>
         {subtitle && (
-          <p
+          <InlineText
+            section="catalog"
+            fieldKey="subtitle"
+            value={subtitle}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="p"
             className="text-sm font-medium max-w-md md:text-right"
             style={{ color: "var(--dt-text-muted)" }}
-          >
-            {subtitle}
-          </p>
+          />
         )}
       </div>
 

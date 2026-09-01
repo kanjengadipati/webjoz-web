@@ -1,10 +1,20 @@
 "use client";
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
-import { MenuCatalogCard, isPlaceholderPrice } from "../../templates/shared";
+import { MenuCatalogCard, InlineText, isPlaceholderPrice } from "../../templates/shared";
 import { AddToCartButton } from "@/components/cart";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
+
+interface CatalogVariantProps {
+  catalog: TemplateProps["content"]["catalog"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}
 
 /**
  * Showcase Featured — items with a non-empty `badge` field are featured.
@@ -12,7 +22,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
  */
-export default function CatalogShowcaseFeatured({ catalog }: { catalog: TemplateProps["content"]["catalog"]; design_token?: DesignToken | null }) {
+export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
   if (!catalog) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -27,12 +37,30 @@ export default function CatalogShowcaseFeatured({ catalog }: { catalog: Template
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>
-            {catalog.eyebrow ?? "Koleksi Produk"}
-          </span>
-          <h2 style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}>
-            {catalog.title}
-          </h2>
+          <InlineText
+            section="catalog"
+            fieldKey="eyebrow"
+            value={catalog.eyebrow ?? "Koleksi Produk"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}
+          />
+          <InlineText
+            section="catalog"
+            fieldKey="title"
+            value={catalog.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
+            style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}
+          />
           <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
         </div>
 

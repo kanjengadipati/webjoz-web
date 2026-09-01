@@ -1,14 +1,20 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function SidebarScrollspyPhoto({ menu }: MenuVariantProps) {
+export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -87,17 +93,44 @@ export default function SidebarScrollspyPhoto({ menu }: MenuVariantProps) {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div id="scrollspy-header" className="mb-16">
           {eyebrow && (
-            <span className="text-xs font-medium tracking-wider uppercase text-dt-text-muted block mb-1 font-dt-heading">
-              {eyebrow}
-            </span>
+            <InlineText
+              section="menu"
+              fieldKey="eyebrow"
+              value={eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="text-xs font-medium tracking-wider uppercase text-dt-text-muted block mb-1 font-dt-heading"
+            />
           )}
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-dt-text font-dt-heading">
-            {title}
-          </h2>
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
+            className="text-3xl md:text-5xl font-bold tracking-tight text-dt-text font-dt-heading"
+          />
           {subtitle && (
-            <p className="text-sm md:text-base text-dt-text-muted mt-2 max-w-xl">
-              {subtitle}
-            </p>
+            <InlineText
+              section="menu"
+              fieldKey="subtitle"
+              value={subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
+              className="text-sm md:text-base text-dt-text-muted mt-2 max-w-xl"
+            />
           )}
         </div>
 
