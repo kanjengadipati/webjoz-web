@@ -658,18 +658,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </Link>
                   )}
 
-                  {/* Pusat Bantuan Link */}
+                  {/* Pusat Bantuan Link (mobile: icon only) */}
                   <Link
                     href="/help"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/50 hover:bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all shadow-sm"
+                    className="md:hidden inline-flex items-center justify-center rounded-full border border-border/60 bg-muted/50 hover:bg-muted size-9 text-muted-foreground hover:text-foreground transition-all shadow-sm"
                     title="Pusat Bantuan"
+                    aria-label="Bantuan"
                   >
-                    <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/>
                       <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                       <path d="M12 17h.01"/>
                     </svg>
-                    <span>Bantuan</span>
                   </Link>
                 </div>
               </div>
@@ -705,6 +705,21 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
+
+      {/* Pusat Bantuan floating button (desktop: bottom-right) */}
+      <Link
+        href="/help"
+        className="hidden md:inline-flex fixed bottom-6 right-6 z-40 items-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted px-4 py-3 text-sm font-semibold text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95"
+        title="Pusat Bantuan"
+        aria-label="Pusat Bantuan"
+      >
+        <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <path d="M12 17h.01"/>
+        </svg>
+        Bantuan
+      </Link>
     </div>
   );
 }
