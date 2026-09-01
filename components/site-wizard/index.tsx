@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useRef, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -31,6 +32,7 @@ import {
   GalleryHorizontal,
   GraduationCap,
   HandHeart,
+  HelpCircle,
   Home,
   Hotel,
   Leaf,
@@ -1048,12 +1050,24 @@ export function SiteWizard({
                     <button
                       type="button"
                       onClick={() => device.setMobileScreen("preview")}
-                      className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse"
+                      className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse cursor-pointer"
                     >
                       Preview &rarr;
                     </button>
                   )}
                   <span className="text-[10px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">BETA</span>
+                  
+                  {/* Help Button in Top Chat Header */}
+                  <Link
+                    href="/help"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-slate-400 hover:text-white hover:bg-white/10 transition-colors shadow-xs"
+                    title={t("landing.navHelp", "Pusat Bantuan")}
+                    aria-label="Pusat Bantuan"
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             </div>

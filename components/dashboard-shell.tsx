@@ -692,20 +692,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {/* Pusat Bantuan floating button (bottom-right) */}
-      <Link
-        href="/help"
-        className="inline-flex fixed bottom-20 right-5 md:bottom-6 md:right-6 z-[70] items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 p-0 size-8 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
-        title="Pusat Bantuan"
-        aria-label="Pusat Bantuan"
-      >
-        <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-          <path d="M12 17h.01"/>
-        </svg>
-        <span className="hidden md:inline">Bantuan</span>
-      </Link>
+      {/* Pusat Bantuan floating button (bottom-right) - Only on non-fullscreen workspace pages */}
+      {!isFullscreenWorkspace && (
+        <Link
+          href="/help"
+          className="inline-flex fixed bottom-20 right-5 md:bottom-6 md:right-6 z-[70] items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 p-0 size-8 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
+          title="Pusat Bantuan"
+          aria-label="Pusat Bantuan"
+        >
+          <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <path d="M12 17h.01"/>
+          </svg>
+          <span className="hidden md:inline">Bantuan</span>
+        </Link>
+      )}
     </div>
   );
 }
