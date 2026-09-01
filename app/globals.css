@@ -156,70 +156,109 @@ nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-overlay], #__next-build-wat
   }
 }
 
-@keyframes skeleton-shimmer {
+@keyframes skeleton-shimmer-sweep {
   0% {
-    background-position: -200% 0;
+    transform: translateX(-150%);
   }
   100% {
-    background-position: 200% 0;
+    transform: translateX(150%);
   }
 }
 
-.animate-skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(255, 255, 255, 0.12) 35%,
-    rgba(255, 255, 255, 0.22) 50%,
-    rgba(255, 255, 255, 0.12) 65%,
-    rgba(255, 255, 255, 0.03) 100%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.animate-skeleton-shimmer-strong {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.20) 35%,
-    rgba(255, 255, 255, 0.35) 50%,
-    rgba(255, 255, 255, 0.20) 65%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
+.animate-skeleton-shimmer,
+.animate-skeleton-shimmer-strong,
 .animate-skeleton-card-shimmer {
-  position: relative;
-  overflow: hidden;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.animate-skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-150%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.08) 75%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.animate-skeleton-shimmer-strong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-150%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.12) 80%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer-sweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .animate-skeleton-card-shimmer::after {
   content: "";
   position: absolute;
   inset: 0;
-  transform: translateX(-100%);
+  transform: translateX(-150%);
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.03) 30%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.03) 70%,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.04) 75%,
     transparent 100%
   );
-  animation: card-shimmer-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: skeleton-shimmer-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
+  z-index: 2;
 }
 
-@keyframes card-shimmer-sweep {
+@keyframes canvas-scanline {
   0% {
-    transform: translateX(-100%);
+    top: -10%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
   }
   100% {
-    transform: translateX(100%);
+    top: 110%;
+    opacity: 0;
   }
+}
+
+.animate-canvas-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.2) 95%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+  animation: canvas-scanline 3.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 20;
 }
 
 @keyframes bounce-in {
