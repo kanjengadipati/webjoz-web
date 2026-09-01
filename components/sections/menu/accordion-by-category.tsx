@@ -83,9 +83,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                     transition: "background 0.2s",
                   }}
                 >
-                  <span style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.9rem", color: isOpen ? p : text }}>
-                    {cat.name}
-                  </span>
+                  <InlineText section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.9rem", color: isOpen ? p : text }} />
                   <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <span style={{ fontSize: "0.65rem", color: muted, fontWeight: 500 }}>{cat.items?.length ?? 0} item</span>
                     <ChevronDown
@@ -129,9 +127,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem", alignItems: "baseline" }}>
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <span style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.875rem", color: text }}>
-                                  {item.name}
-                                </span>
+                                <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.875rem", color: text }} />
                                 {item.is_available === false && (
                                   <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500 text-white flex-shrink-0">
                                     Habis
@@ -139,15 +135,11 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                                 )}
                               </div>
                               {showPrice && (
-                                <span style={{ fontWeight: 700, fontSize: "0.8rem", color: p, flexShrink: 0 }}>
-                                  {item.price_display || item.price}
-                                </span>
+                                <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 700, fontSize: "0.8rem", color: p, flexShrink: 0 }} />
                               )}
                             </div>
                             {item.description && (
-                              <p style={{ margin: "0.25rem 0 0.5rem", fontSize: "0.75rem", color: muted, lineHeight: 1.5 }}>
-                                {item.description}
-                              </p>
+                              <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: "0.25rem 0 0.5rem", fontSize: "0.75rem", color: muted, lineHeight: 1.5 }} />
                             )}
                             <AddToCartButton
                               itemId={item.id || `menu-acc-${ci}-${ii}`}

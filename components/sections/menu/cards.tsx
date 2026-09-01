@@ -71,7 +71,7 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
         </div>
         {menu.categories?.map((cat, catIdx) => (
           <div key={catIdx} style={{ marginBottom: "4rem" }}>
-            <h3 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}>{cat.name}</h3>
+            <InlineText section="menu" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "2rem" }}>
               {cat.items?.map((item, itemIdx) => (
                 <div key={item.id || itemIdx} className="flex flex-col">
@@ -103,9 +103,16 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                     descriptionStyle={{ color: `color-mix(in srgb, ${brandText} 60%, transparent)` }}
                     priceClassName="text-sm font-bold px-3 py-1.5 rounded-full whitespace-nowrap shrink-0"
                     priceStyle={{ background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary }}
-                    buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3.5 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
-                    buttonStyle={{ background: brandPrimary, color: brandBg, border: "none" }}
-                  />
+                  buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3.5 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
+                  buttonStyle={{ background: brandPrimary, color: brandBg, border: "none" }}
+                  editSection="menu"
+                  pathBase={"categories." + catIdx + ".items." + itemIdx}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                   {/* Tags: dietary / category labels */}
                   {item.tags && item.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2 px-1">

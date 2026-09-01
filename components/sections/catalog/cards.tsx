@@ -42,7 +42,7 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
         </div>
         {catalog.categories?.map((cat, catIdx) => (
           <div key={catIdx} style={{ marginBottom: "4rem" }}>
-            <h3 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}>{cat.name}</h3>
+            <InlineText section="catalog" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2rem" }}>
               {cat.items?.map((item, itemIdx) => (
               <MenuCatalogCard
@@ -81,6 +81,13 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
                   badgeStyle={{ background: brandPrimary, color: brandBg }}
                   buttonClassName="w-full flex items-center justify-center gap-1.5 py-3.5 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
                   buttonStyle={{ background: brandPrimary, color: brandBg, border: "none" }}
+                  editSection="catalog"
+                  pathBase={"categories." + catIdx + ".items." + itemIdx}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
                 />
               ))}
             </div>

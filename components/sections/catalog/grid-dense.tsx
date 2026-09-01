@@ -60,7 +60,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
           <div key={ci} style={{ marginBottom: "3rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.25rem" }}>
               <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
-              <h3 style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+              <InlineText section="catalog" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }} />
               <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.875rem", alignItems: "stretch" }}>
@@ -101,6 +101,13 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                   badgeStyle={{ background: p, color: bg }}
                   buttonClassName="w-full flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold cursor-pointer transition-all hover:brightness-110"
                   buttonStyle={{ background: p, color: bg, border: "none" }}
+                  editSection="catalog"
+                  pathBase={"categories." + ci + ".items." + ii}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
                 />
               ))}
             </div>

@@ -39,22 +39,22 @@ export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, i
         </div>
         {catalog.categories?.map((cat, catIdx) => (
           <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
-            <h3 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }}>{cat.name}</h3>
+            <InlineText section="catalog" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
                 <div key={item.id || itemIdx} style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "1rem" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }}>{item.name}</span>
+                      <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }} />
                       {item.is_available === false ? (
                         <span style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", padding: "0.1rem 0.35rem", borderRadius: "4px", background: "#f43f5e", color: "#fff" }}>Habis</span>
                       ) : item.badge ? (
                         <span style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0.15rem 0.5rem", borderRadius: "9999px", background: brandPrimary, color: "var(--dt-bg)" }}>{item.badge}</span>
                       ) : null}
                     </div>
-                    {(item.price_display || item.price) && <span style={{ fontWeight: 700, fontSize: "0.8rem", color: brandPrimary, whiteSpace: "nowrap" }}>{item.price_display || item.price}</span>}
+                    {(item.price_display || item.price) && <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 700, fontSize: "0.8rem", color: brandPrimary, whiteSpace: "nowrap" }} />}
                   </div>
-                  {item.description && <span style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }}>{item.description}</span>}
+                  {item.description && <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
                   {item.capacity != null && item.capacity > 0 && (
                     <span style={{ fontSize: "0.7rem", fontWeight: 600, color: brandPrimary, marginTop: "0.15rem" }}>
                       s/d {item.capacity} tamu

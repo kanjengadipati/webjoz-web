@@ -85,7 +85,7 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                   whiteSpace: "nowrap",
                 }}
               >
-                {cat.name}
+                <InlineText section="catalog" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? bg : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
               </button>
             );
           })}
@@ -130,6 +130,13 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                 badgeStyle={{ background: p, color: bg }}
                 buttonClassName="w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
                 buttonStyle={{ background: p, color: bg, border: "none" }}
+                editSection="catalog"
+                pathBase={"categories." + activeIdx + ".items." + ii}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
               />
             ))}
           </div>

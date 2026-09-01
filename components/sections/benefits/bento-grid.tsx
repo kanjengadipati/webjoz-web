@@ -17,6 +17,7 @@ interface BenefitsVariantProps {
 
 function BentoCard({
   item,
+  itemIndex,
   className,
   highlight,
   onUpdateField,
@@ -27,6 +28,7 @@ function BentoCard({
   language,
 }: {
   item: NonNullable<TemplateProps["content"]["benefits"]>["items"][number];
+  itemIndex: number;
   className?: string;
   highlight?: boolean;
   onUpdateField?: BenefitsVariantProps["onUpdateField"];
@@ -114,25 +116,44 @@ function BentoCard({
         </div>
       )}
 
-      <h3 style={{
-        fontFamily: "var(--dt-heading-font)",
-        fontWeight: highlight ? 800 : 700,
-        fontSize: highlight ? "clamp(1.1rem, 2.5cqw, 1.35rem)" : "0.95rem",
-        color: "var(--dt-text)",
-        margin: 0,
-        lineHeight: 1.3,
-      }}>
-        {item.title}
-      </h3>
+      <InlineText
+        section="benefits"
+        fieldKey={"items." + itemIndex + ".title"}
+        value={item.title ?? ""}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        as="h3"
+        style={{
+          fontFamily: "var(--dt-heading-font)",
+          fontWeight: highlight ? 800 : 700,
+          fontSize: highlight ? "clamp(1.1rem, 2.5cqw, 1.35rem)" : "0.95rem",
+          color: "var(--dt-text)",
+          margin: 0,
+          lineHeight: 1.3,
+        }}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
 
-      <p style={{
-        color: "var(--dt-text-muted)",
-        fontSize: highlight ? "0.875rem" : "0.8rem",
-        lineHeight: 1.65,
-        margin: 0,
-      }}>
-        {item.description}
-      </p>
+      <InlineText
+        section="benefits"
+        fieldKey={"items." + itemIndex + ".description"}
+        value={item.description ?? ""}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        as="p"
+        style={{
+          color: "var(--dt-text-muted)",
+          fontSize: highlight ? "0.875rem" : "0.8rem",
+          lineHeight: 1.65,
+          margin: 0,
+        }}
+        multiline
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
     </div>
   );
 }
@@ -214,6 +235,7 @@ export default function BenefitsBentoGrid({
             <BentoCard
               key={idx}
               item={item}
+              itemIndex={idx}
               className={getBentoSpanClass(idx, count)}
               highlight={idx === 0}
               onUpdateField={onUpdateField}

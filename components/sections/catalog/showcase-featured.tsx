@@ -72,7 +72,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
               {/* Category label */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.75rem" }}>
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
-                <h3 style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+                <InlineText section="catalog" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }} />
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
 
@@ -113,13 +113,13 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                         {/* Content */}
                         <div style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                            <h4 style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1rem", color: text, margin: 0 }}>{item.name}</h4>
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1rem", color: text, margin: 0 }} />
                             {showPrice && (
-                              <span style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }}>{item.price}</span>
+                              <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
                             )}
                           </div>
                           {item.description && (
-                            <p style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }}>{item.description}</p>
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }} />
                           )}
                           {item.capacity != null && item.capacity > 0 && (
                             <div style={{ marginTop: "0.25rem" }}>
@@ -198,6 +198,13 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                       priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                       buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
                       buttonStyle={{ background: p, color: bg, border: "none" }}
+                      editSection="catalog"
+                      pathBase={"categories." + ci + ".items." + ii}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
                     />
                   ))}
                 </div>

@@ -128,14 +128,33 @@ export default function BenefitsIconRow({
                 )}
 
                 {/* Title */}
-                <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.975rem", margin: 0, lineHeight: 1.3 }}>
-                  {item.title}
-                </h3>
+                <InlineText
+                  section="benefits"
+                  fieldKey={"items." + idx + ".title"}
+                  value={item.title ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="h3"
+                  style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.975rem", margin: 0, lineHeight: 1.3 }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
 
                 {/* Description */}
-                <p style={{ color: "var(--dt-text-muted)", fontSize: "0.825rem", lineHeight: 1.65, margin: 0 }}>
-                  {item.description}
-                </p>
+                <InlineText
+                  section="benefits"
+                  fieldKey={"items." + idx + ".description"}
+                  value={item.description ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="p"
+                  style={{ color: "var(--dt-text-muted)", fontSize: "0.825rem", lineHeight: 1.65, margin: 0 }}
+                  multiline
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </div>
             </React.Fragment>
           ))}

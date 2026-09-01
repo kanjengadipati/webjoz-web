@@ -52,7 +52,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
           <div key={ci} style={{ marginBottom: "2.5rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.25rem" }}>
               <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
-              <h3 style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{cat.name}</h3>
+              <InlineText section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }} />
               <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -91,6 +91,13 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                   priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                   buttonClassName="mt-auto self-start flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all hover:brightness-110"
                   buttonStyle={{ background: p, color: bg, border: "none" }}
+                  editSection="menu"
+                  pathBase={"categories." + ci + ".items." + ii}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
                 />
               ))}
             </div>

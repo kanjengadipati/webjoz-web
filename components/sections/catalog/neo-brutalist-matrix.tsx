@@ -94,15 +94,22 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
       <div className="space-y-24">
         {categories?.map((category, catIdx) => (
           <div key={catIdx} className="space-y-8">
-            <h3
+            <InlineText
+              section="catalog"
+              fieldKey={"categories." + catIdx + ".name"}
+              value={category.name ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="h3"
               className="text-2xl font-black uppercase tracking-wider inline-block border-b-4 pb-1"
               style={{
                 fontFamily: "var(--dt-heading-font)",
                 borderColor: "var(--dt-accent)"
               }}
-            >
-              {category.name}
-            </h3>
+            />
 
             {/* Matrix Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -152,35 +159,57 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                   <div className="p-5 flex-grow flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start gap-4 mb-4">
-                        <h4
+                        <InlineText
+                          section="catalog"
+                          fieldKey={"categories." + catIdx + ".items." + index + ".name"}
+                          value={item.name ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="h4"
                           className="text-lg font-black uppercase tracking-tight"
                           style={{ color: "var(--dt-text)" }}
-                        >
-                          {item.name}
-                        </h4>
+                        />
 
                         {/* Large Bold Price Tag */}
                         {item.price && (
-                          <span
+                          <InlineText
+                            section="catalog"
+                            fieldKey={"categories." + catIdx + ".items." + index + ".price"}
+                            value={item.price ?? ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="span"
                             className="text-lg font-black uppercase tracking-wider px-2 py-1 border-[3px] border-solid shrink-0"
                             style={{
                               borderColor: "var(--dt-border)",
                               backgroundColor: "var(--dt-accent)",
                               color: "var(--dt-primary-foreground)"
                             }}
-                          >
-                            {item.price}
-                          </span>
+                          />
                         )}
                       </div>
 
                       {item.description && (
-                        <p
+                        <InlineText
+                          section="catalog"
+                          fieldKey={"categories." + catIdx + ".items." + index + ".description"}
+                          value={item.description ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="p"
+                          multiline
                           className="text-sm font-bold leading-relaxed mb-6"
                           style={{ color: "var(--dt-text-muted)" }}
-                        >
-                          {item.description}
-                        </p>
+                        />
                       )}
 
                       {item.capacity != null && item.capacity > 0 && (

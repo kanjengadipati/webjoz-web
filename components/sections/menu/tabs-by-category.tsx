@@ -76,7 +76,7 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                   whiteSpace: "nowrap",
                 }}
               >
-                {cat.name}
+                <InlineText section="menu" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? bg : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
               </button>
             );
           })}
@@ -117,6 +117,13 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                 priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                 buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110"
                 buttonStyle={{ background: p, color: bg, border: "none" }}
+                editSection="menu"
+                pathBase={"categories." + activeIdx + ".items." + ii}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
               />
             ))}
           </div>

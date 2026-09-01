@@ -1,14 +1,27 @@
 "use client";
 import React from "react";
 import { ArrowRight, Check, X } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
   benefits: TemplateProps["content"]["benefits"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function BenefitsComparisonTable({ benefits: b }: BenefitsVariantProps) {
+export default function BenefitsComparisonTable({
+  benefits: b,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: BenefitsVariantProps) {
   const comp = b.comparison;
   const rows = comp?.rows || [];
   return (
@@ -31,7 +44,20 @@ export default function BenefitsComparisonTable({ benefits: b }: BenefitsVariant
             <tbody>
               {rows.map((row, idx) => (
                 <tr key={idx} style={{ borderBottom: idx < rows.length - 1 ? `1px solid color-mix(in srgb, var(--dt-primary) 8%, transparent)` : "none", background: idx % 2 === 0 ? "transparent" : "color-mix(in srgb, var(--dt-primary) 3%, transparent)" }}>
-                  <td style={{ padding: "0.85rem 1.25rem", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.85rem" }}>{row.label}</td>
+                  <td style={{ padding: "0.85rem 1.25rem", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.85rem" }}>
+                    <InlineText
+                      section="benefits"
+                      fieldKey={"items." + idx + ".title"}
+                      value={row.label ?? ""}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      style={{ color: "var(--dt-text)", fontWeight: 600, fontSize: "0.85rem" }}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
+                  </td>
                   <td style={{ padding: "0.85rem 1.25rem", textAlign: "center" }}>
                     {row.value_a === "true" || row.value_a === "✓" ? <Check style={{ width: 18, height: 18, color: "var(--dt-primary)", margin: "0 auto" }} />
                     : row.value_a === "false" || row.value_a === "✗" ? <X style={{ width: 18, height: 18, color: "var(--dt-text-muted)", margin: "0 auto" }} />

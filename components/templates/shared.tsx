@@ -1144,6 +1144,13 @@ interface MenuCatalogCardProps {
   buttonStyle?: React.CSSProperties;
   features?: string[] | null;
   capacity?: number | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+  editSection?: string;
+  pathBase?: string;
 }
 
 function MenuCatalogCard({
@@ -1154,6 +1161,7 @@ function MenuCatalogCard({
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
   badgeStyle, buttonClassName, buttonStyle, features, capacity,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase,
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -1251,9 +1259,9 @@ function MenuCatalogCard({
             <span className={badgeClassName} style={badgeStyle}>{badge}</span>
           ) : null}
         </div>
-        <h4 className={titleClassName} style={titleStyle}>{itemName}</h4>
+        <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </div>
-      {showPrice && <span className={priceClassName} style={priceStyle}>{displayPrice}</span>}
+      {showPrice && <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
     </div>
   );
 
@@ -1263,18 +1271,22 @@ function MenuCatalogCard({
     : itemDescription;
 
   const descriptionElement = itemDescription && (
-    <p className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }}>
-      {displayDescription}
-      {isLong && (
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
-        >
-          {isExpanded ? "Sembunyikan" : "Selengkapnya"}
-        </button>
-      )}
-    </p>
+    (editSection && pathBase && isEditorMode) ? (
+      <InlineText section={editSection} fieldKey={pathBase + ".description"} value={itemDescription ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+    ) : (
+      <p className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }}>
+        {displayDescription}
+        {isLong && (
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
+          >
+            {isExpanded ? "Sembunyikan" : "Selengkapnya"}
+          </button>
+        )}
+      </p>
+    )
   );
 
   if (layout === "compact") {
@@ -2234,6 +2246,7 @@ export interface InlineTextProps {
   multiline?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  id?: string;
   as?: keyof React.JSX.IntrinsicElements;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
@@ -2251,6 +2264,7 @@ export function InlineText({
   multiline = false,
   className = "",
   style,
+  id,
   as: Component = "span",
   collapseSheetForInlineEdit,
   onEditingStateChange,
@@ -2265,7 +2279,7 @@ export function InlineText({
   }, [value]);
 
   if (!isEditorMode || !onUpdateField) {
-    return <Component className={className} style={style}>{children ?? value ?? placeholder}</Component>;
+    return <Component id={id} className={className} style={style}>{children ?? value ?? placeholder}</Component>;
   }
 
   const handleStartEdit = (e: React.MouseEvent | React.TouchEvent) => {

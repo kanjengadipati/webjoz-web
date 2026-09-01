@@ -127,12 +127,31 @@ export default function BenefitsFeaturedGrid({
               )}
             </div>
 
-            <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "clamp(1.15rem, 3cqw, 1.5rem)", color: "var(--dt-text)", margin: 0, lineHeight: 1.25 }}>
-              {featured.title}
-            </h3>
-            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", lineHeight: 1.7, margin: 0, maxWidth: "52rem" }}>
-              {featured.description}
-            </p>
+            <InlineText
+              section="benefits"
+              fieldKey={"items.0.title"}
+              value={featured.title ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h3"
+              style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "clamp(1.15rem, 3cqw, 1.5rem)", color: "var(--dt-text)", margin: 0, lineHeight: 1.25 }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+            <InlineText
+              section="benefits"
+              fieldKey={"items.0.description"}
+              value={featured.description ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", lineHeight: 1.7, margin: 0, maxWidth: "52rem" }}
+              multiline
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </div>
         )}
 
@@ -192,12 +211,31 @@ export default function BenefitsFeaturedGrid({
                   </div>
                 )}
 
-                <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.975rem", margin: 0, lineHeight: 1.3 }}>
-                  {item.title}
-                </h3>
-                <p style={{ color: "var(--dt-text-muted)", fontSize: "0.835rem", lineHeight: 1.65, margin: 0 }}>
-                  {item.description}
-                </p>
+                <InlineText
+                  section="benefits"
+                  fieldKey={"items." + (idx + 1) + ".title"}
+                  value={item.title ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="h3"
+                  style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.975rem", margin: 0, lineHeight: 1.3 }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+                <InlineText
+                  section="benefits"
+                  fieldKey={"items." + (idx + 1) + ".description"}
+                  value={item.description ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="p"
+                  style={{ color: "var(--dt-text-muted)", fontSize: "0.835rem", lineHeight: 1.65, margin: 0 }}
+                  multiline
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </div>
             ))}
           </div>
