@@ -1760,6 +1760,7 @@ export interface Translations {
       itemNumberLabel: string;
       noItemsDesc: string;
       labelSectionTitle: string;
+      sectionSettingsSubtitle: string;
       labelEyebrow: string;
       labelSubtitle: string;
       labelPhoto: string;
@@ -4097,6 +4098,7 @@ export const translations: Record<Locale, Translations> = {
         itemNumberLabel: "Item {number}",
         noItemsDesc: "Belum ada {itemLabel} di kategori ini.",
         labelSectionTitle: "Judul Bagian",
+        sectionSettingsSubtitle: "Atur judul, subjudul, dan teks pengantar katalog di website",
         labelEyebrow: "Eyebrow",
         labelSubtitle: "Subjudul",
         labelPhoto: "Foto",
@@ -6496,6 +6498,7 @@ export const translations: Record<Locale, Translations> = {
         itemNumberLabel: "Item {number}",
         noItemsDesc: "No {itemLabel} in this category yet.",
         labelSectionTitle: "Section Title",
+        sectionSettingsSubtitle: "Set section title, subtitle, and intro text for your website catalog",
         labelEyebrow: "Eyebrow",
         labelSubtitle: "Subtitle",
         labelPhoto: "Photo",
