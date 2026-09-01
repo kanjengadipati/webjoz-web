@@ -272,6 +272,7 @@ export interface TemplateProps {
     contact: {
       title: string;
       subtitle?: string;
+      secondary_form_title?: string;
       address: string;
       phone: string;
       email: string;

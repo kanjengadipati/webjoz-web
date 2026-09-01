@@ -172,7 +172,7 @@ export default function WhatsAppDirect({
               }}
             >
               <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.1rem", marginBottom: "1rem" }}>
-                {isEN ? "Or Send Message" : "Atau Kirim Pesan"}
+                <InlineText section="contact" fieldKey="secondary_form_title" value={c.secondary_form_title || (isEN ? "Or Send Message" : "Atau Kirim Pesan")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </h3>
               <DynamicLeadForm
                 onSubmit={onSubmitLead!}
