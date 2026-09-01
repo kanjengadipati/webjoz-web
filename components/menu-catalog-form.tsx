@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback } from "react";
 import {
   Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2,
   RotateCcw, X, Link as LinkIcon, Image as ImageIcon, Layers,
-  SlidersHorizontal, Check, Sparkles
+  SlidersHorizontal, Sparkles, FolderOpen, CheckCircle2
 } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload, { uploadImageFile } from "@/components/file-upload";
@@ -61,9 +61,9 @@ export const EMOJI_GROUPS = [
 ];
 
 export const MCF_INPUT_BASE =
-  "w-full px-3.5 py-2 border border-border/80 focus:border-primary/60 rounded-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all shadow-2xs";
+  "w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all shadow-2xs";
 
-export const MCF_INPUT_LABEL = "text-[10.5px] uppercase tracking-wider font-bold text-muted-foreground block mb-1";
+export const MCF_INPUT_LABEL = "text-[11px] uppercase tracking-wider font-bold text-muted-foreground block mb-1.5";
 
 /** Strip AI-generated literal "null" strings */
 export const normStr = (v: any): string => {
@@ -84,6 +84,8 @@ export interface AiFieldButtonProps {
 export function AiFieldButton({
   onGenerate, onUpgradeRequired, loading, title = "Generate dengan AI",
 }: AiFieldButtonProps) {
+  const { t } = useI18n();
+  const label = title ?? t("dashboard.sitesKatalog.aiGenerateTitle", "Generate dengan AI");
   const handleClick = async () => {
     try { await onGenerate(); }
     catch (err: any) {
@@ -94,12 +96,11 @@ export function AiFieldButton({
   };
   return (
     <button
-      type="button" onClick={handleClick} disabled={loading} title={title}
-      className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 hover:text-primary transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
+      type="button" onClick={handleClick} disabled={loading} title={label}
+      className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all disabled:opacity-40 cursor-pointer text-xs font-semibold"
     >
-      {loading
-        ? <Loader2 className="w-3 h-3 animate-spin" />
-        : <SparkleGenAI className="w-[18px] h-[18px]" />}
+      {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
+      <span className="text-[11px] hidden sm:inline">{t("dashboard.sitesKatalog.aiGenerateTitle", "Generate AI")}</span>
     </button>
   );
 }
@@ -124,19 +125,19 @@ export function AiPromptModal({
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-border bg-card shadow-2xl p-6 space-y-5"
+        className="w-full max-w-md rounded-3xl border border-border bg-card shadow-2xl p-6 space-y-5"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/15">
             <SparkleGenAI className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-[14px] font-bold text-foreground leading-tight">
+            <h3 className="text-sm sm:text-base font-bold text-foreground leading-tight">
               Instruksi AI — {label}
             </h3>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Tambahkan instruksi khusus atau langsung klik Generate.
             </p>
           </div>
@@ -159,7 +160,7 @@ export function AiPromptModal({
           <button
             type="button"
             onClick={() => setInput("Tulis deskripsi berdasarkan foto produk ini")}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
           >
             <span className="text-base leading-none">📸</span>
             <span>Tulis deskripsi dari foto produk</span>
@@ -184,14 +185,14 @@ export function AiPromptModal({
         )}
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="flex gap-2.5">
           <button type="button" onClick={onCancel}
-            className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
+            className="flex-1 h-10 rounded-xl border border-border text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
           >
             Batal
           </button>
           <button type="button" onClick={() => onConfirm(input.trim())}
-            className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+            className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
           >
             <SparkleGenAI className="h-4 w-4" /> Generate
           </button>
@@ -291,6 +292,14 @@ export function MenuCatalogForm({
     updateCategories(next);
   };
 
+  const updateItemMulti = (catIdx: number, itemIdx: number, patch: Record<string, any>) => {
+    const next = [...categories];
+    const items = [...(next[catIdx].items ?? [])];
+    items[itemIdx] = { ...items[itemIdx], ...patch };
+    next[catIdx] = { ...next[catIdx], items };
+    updateCategories(next);
+  };
+
   const renderFieldActions = (key: string) => {
     const fieldPath = `${sectionKey}.${key}`;
     const stack = fieldUndoStacks?.[fieldPath] || [];
@@ -341,7 +350,7 @@ export function MenuCatalogForm({
 
   return (
     <div className={isPageMode ? "space-y-6" : "space-y-4"}>
-      {/* Section header fields */}
+      {/* Section Settings Card */}
       <div className={`rounded-3xl border border-border/80 bg-card ${isPageMode ? "p-5 sm:p-6 shadow-sm" : "p-4 space-y-3 shadow-2xs"}`}>
         <div className={`flex items-center justify-between gap-3 ${isPageMode ? "pb-4 border-b border-border/60 mb-5" : "pb-2.5 border-b border-border/50"}`}>
           <div className="flex items-center gap-2.5">
@@ -439,11 +448,21 @@ export function MenuCatalogForm({
 
       {/* Empty state */}
       {categories.length === 0 && (
-        <div className={`rounded-3xl border border-dashed border-primary/20 bg-primary/5 text-center ${isPageMode ? "p-10" : "p-6"}`}>
-          <p className="text-sm font-semibold text-foreground">{t("dashboard.sitesKatalog.emptyCategoriesTitle", "Belum ada kategori")}</p>
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            {t("dashboard.sitesKatalog.emptyCategoriesDesc", `Tambahkan kategori agar ${itemLabel} bisa ditampilkan lebih rapi di website.`)}
+        <div className={`rounded-3xl border border-dashed border-primary/30 bg-primary/5 text-center space-y-3 ${isPageMode ? "p-12" : "p-6"}`}>
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <FolderOpen className="w-6 h-6" />
+          </div>
+          <p className="text-base font-bold text-foreground">{t("dashboard.sitesKatalog.noCategoriesTitle", "Belum ada kategori produk")}</p>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+            {t("dashboard.sitesKatalog.noCategoriesDesc", `Tambahkan kategori agar ${itemLabel} bisa ditampilkan lebih rapi di website.`, { itemLabel })}
           </p>
+          <button
+            type="button"
+            onClick={addCategory}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all cursor-pointer shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "Tambah Kategori")}
+          </button>
         </div>
       )}
 
@@ -472,6 +491,7 @@ export function MenuCatalogForm({
                   hasPrice={hasPrice}
                   hasBadge={hasBadge}
                   updateItem={updateItem}
+                  updateItemMulti={updateItemMulti}
                   removeItem={removeItem}
                   addItem={addItem}
                   onAiDescription={onAiDescription}
@@ -511,7 +531,7 @@ function SortableCategoryRow({
   catId, cat, catIdx, itemCount, expandedCat, setExpandedCat,
   removeCategory, updateCategoryName,
   items, itemLabel, sectionKey, hasPrice, hasBadge,
-  updateItem, removeItem, addItem,
+  updateItem, updateItemMulti, removeItem, addItem,
   onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
   activeEmojiPicker, setActiveEmojiPicker,
   sensors, handleItemDragEnd, mode,
@@ -546,7 +566,7 @@ function SortableCategoryRow({
           placeholder={t("dashboard.sitesKatalog.categoryNamePlaceholder", "Nama kategori")}
           className="min-w-0 flex-1 bg-transparent text-sm font-bold text-foreground outline-none placeholder:text-muted-foreground/60"
         />
-        <span className="text-[11px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border/50 shrink-0">
+        <span className="text-[11px] font-semibold text-muted-foreground bg-muted px-2.5 py-0.5 rounded-full border border-border/50 shrink-0">
           {itemCount} {itemLabel}
         </span>
         <button
@@ -578,7 +598,7 @@ function SortableCategoryRow({
           {/* Items — DnD sortable */}
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(ev) => handleItemDragEnd(catIdx, ev)}>
             <SortableContext items={items.map((i: any) => i.id ?? i.name)} strategy={verticalListSortingStrategy}>
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 {items.map((item: any, itemIdx: number) => (
                   <SortableItemRow
                     key={item.id ?? itemIdx}
@@ -590,6 +610,7 @@ function SortableCategoryRow({
                     hasPrice={hasPrice}
                     hasBadge={hasBadge}
                     updateItem={updateItem}
+                    updateItemMulti={updateItemMulti}
                     removeItem={removeItem}
                     onAiDescription={onAiDescription}
                     aiLoadingDesc={aiLoadingDesc}
@@ -608,9 +629,9 @@ function SortableCategoryRow({
           <button
             type="button"
             onClick={() => addItem(catIdx)}
-            className="w-full text-xs font-bold py-2.5 border border-dashed border-primary/30 rounded-2xl text-primary bg-primary/5 hover:bg-primary/10 hover:border-primary/50 flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-2xs"
+            className="w-full text-xs font-bold py-3 border border-dashed border-primary/30 rounded-2xl text-primary bg-primary/5 hover:bg-primary/10 hover:border-primary/50 flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-2xs"
           >
-            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addItem", `Tambah ${itemLabel}`)}
+            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addItem", `Tambah ${itemLabel}`)}
           </button>
         </div>
       )}
@@ -622,7 +643,7 @@ function SortableCategoryRow({
 
 function SortableItemRow({
   item, itemIdx, catIdx, itemLabel, sectionKey, hasPrice, hasBadge,
-  updateItem, removeItem, onAiDescription, aiLoadingDesc, isPremium,
+  updateItem, updateItemMulti, removeItem, onAiDescription, aiLoadingDesc, isPremium,
   onUpgradeRequired, catName, activeEmojiPicker, setActiveEmojiPicker, mode,
 }: any) {
   const { t } = useI18n();
@@ -640,50 +661,61 @@ function SortableItemRow({
   const isPageMode = mode === "page";
 
   return (
-    <div ref={setNodeRef} style={style} className="rounded-2xl border border-border/80 bg-muted/15 p-4 space-y-3.5 shadow-2xs">
+    <div ref={setNodeRef} style={style} className="rounded-3xl border border-border/80 bg-muted/15 p-4 sm:p-5 space-y-4 shadow-2xs">
       {/* Item header */}
-      <div className="flex items-center justify-between pb-2 border-b border-border/50">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between pb-3 border-b border-border/50">
+        <div className="flex items-center gap-2 min-w-0">
           <button
             type="button"
-            className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded hover:bg-muted"
+            className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted shrink-0"
             aria-label="Geser item"
             {...attributes}
             {...listeners}
           >
-            <GripVertical className="w-3.5 h-3.5" />
+            <GripVertical className="w-4 h-4" />
           </button>
-          <span className="text-[11px] font-bold text-foreground">
+          <span className="text-xs sm:text-sm font-bold text-foreground truncate">
             {item.name ? item.name : `${itemLabel} #${itemIdx + 1}`}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {/* is_available toggle */}
           <button
             type="button"
             onClick={() => updateItem(catIdx, itemIdx, "is_available", !isAvailable)}
-            className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border transition-all cursor-pointer ${
+            className={`flex items-center gap-1 text-[10px] sm:text-xs font-bold tracking-wide px-3 py-1 rounded-full border transition-all cursor-pointer ${
               isAvailable
                 ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
                 : "border-red-500/40 bg-red-500/10 text-red-500 hover:bg-red-500/20"
             }`}
-            title={isAvailable ? t("dashboard.sitesKatalog.markOutOfStock", "Klik untuk tandai Habis") : t("dashboard.sitesKatalog.markAvailable", "Klik untuk tandai Tersedia")}
+            title={isAvailable ? t("dashboard.sitesKatalog.markOutOfStock", "Tandai Habis") : t("dashboard.sitesKatalog.markAvailable", "Tandai Tersedia")}
           >
-            {isAvailable ? `✓ ${t("dashboard.sitesKatalog.available", "Tersedia")}` : `✗ ${t("dashboard.sitesKatalog.outOfStock", "Habis")}`}
+            {isAvailable ? (
+              <>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{t("dashboard.sitesKatalog.available", "Tersedia")}</span>
+              </>
+            ) : (
+              <>
+                <X className="w-3.5 h-3.5" />
+                <span>{t("dashboard.sitesKatalog.outOfStock", "Habis")}</span>
+              </>
+            )}
           </button>
           <button
             type="button"
             onClick={() => removeItem(catIdx, itemIdx)}
-            className="text-red-500/60 hover:text-red-500 cursor-pointer p-1 rounded hover:bg-red-500/10 transition-colors"
+            className="text-red-500/60 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors cursor-pointer"
             aria-label={`Hapus ${itemLabel}`}
+            title={t("dashboard.sitesKatalog.deleteItem", "Hapus Item")}
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Item Body */}
-      <div className="space-y-3.5">
+      {/* Item Body: In Page Mode we use Side-by-Side (Photo on Left, Details on Right), in Sidebar Mode we use vertical stack */}
+      <div className={isPageMode ? "grid gap-5 lg:grid-cols-[220px_1fr]" : "space-y-4"}>
         <ItemPhotoGalleryEditor
           imageUrl={item.image_url ?? ""}
           imageUrls={item.image_urls ?? []}
@@ -692,161 +724,179 @@ function SortableItemRow({
           mode={mode}
         />
 
-        <div className="space-y-3">
-          {/* Name */}
-          <div className="space-y-1">
-            <label className={MCF_INPUT_LABEL}>
-              {t("dashboard.sitesKatalog.itemName", `Nama ${itemLabel}`)}
-            </label>
-            <input
-              type="text"
-              value={item.name ?? ""}
-              onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
-              placeholder={`cth. Nama ${itemLabel}`}
-              className={MCF_INPUT_BASE}
-            />
-          </div>
-
-          {/* Price */}
-          {hasPrice && (
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-1">
-                <label className={MCF_INPUT_LABEL}>
-                  {t("dashboard.sitesKatalog.priceDisplay", "Label Harga")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.display", "tampilan")})</span>
-                </label>
-                <input
-                  type="text"
-                  value={item.price_display ?? item.price ?? ""}
-                  onChange={(e) => {
-                    updateItem(catIdx, itemIdx, "price_display", e.target.value);
-                    updateItem(catIdx, itemIdx, "price", e.target.value);
-                  }}
-                  placeholder={t("dashboard.sitesKatalog.priceDisplayPlaceholder", "cth. Rp 25.000 atau $5.99")}
-                  className={MCF_INPUT_BASE}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className={MCF_INPUT_LABEL}>
-                  {t("dashboard.sitesKatalog.priceAmount", "Nominal")}
-                </label>
-                <input
-                  type="number"
-                  min={0}
-                  step="any"
-                  value={item.price_amount ?? ""}
-                  onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
-                  placeholder={t("dashboard.sitesKatalog.priceAmountPlaceholder", "cth. 25000")}
-                  className={`${MCF_INPUT_BASE} [appearance:textfield]`}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Badge (catalog only) */}
-          {hasBadge && (
+        <div className="space-y-4 min-w-0">
+          {/* Name & Price */}
+          <div className={isPageMode && hasPrice ? "grid gap-3 sm:grid-cols-[2fr_1.4fr_1.1fr]" : "space-y-3"}>
             <div className="space-y-1">
               <label className={MCF_INPUT_LABEL}>
-                Badge <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.badgeHelp", "cth. Best Seller, Promo, Baru")})</span>
+                {t("dashboard.sitesKatalog.itemName", `Nama ${itemLabel}`)}
               </label>
               <input
                 type="text"
-                value={normStr(item.badge)}
-                onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)}
-                placeholder={t("dashboard.sitesKatalog.badgePlaceholder", "cth. Best Seller, Baru, Promo")}
+                value={item.name ?? ""}
+                onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
+                placeholder={`cth. ${itemLabel === "menu" ? "Nasi Goreng Spesial" : "Paket Layanan Pro"}`}
                 className={MCF_INPUT_BASE}
               />
             </div>
-          )}
 
-          {/* Capacity (catalog only) */}
-          {sectionKey === "catalog" && (
-            <div className="space-y-1">
-              <label className={MCF_INPUT_LABEL}>
-                {t("dashboard.sitesKatalog.capacity", "Kapasitas")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.capacityHelp", "opsional — jml tamu / unit")})</span>
-              </label>
-              <input
-                type="number"
-                min={1}
-                value={item.capacity ?? ""}
-                onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value === "" ? null : Number(e.target.value))}
-                placeholder={t("dashboard.sitesKatalog.capacityPlaceholder", "cth. 2, 4, 6")}
-                className={`${MCF_INPUT_BASE} [appearance:textfield]`}
-              />
+            {hasPrice && (
+              <div className={isPageMode ? "contents" : "grid gap-3 sm:grid-cols-2"}>
+                <div className="space-y-1">
+                  <label className={MCF_INPUT_LABEL}>
+                    {t("dashboard.sitesKatalog.priceDisplay", "Harga Tampil")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.display", "tampilan")})</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={item.price_display ?? item.price ?? ""}
+                    onChange={(e) => {
+                      if (updateItemMulti) {
+                        updateItemMulti(catIdx, itemIdx, {
+                          price_display: e.target.value,
+                          price: e.target.value,
+                        });
+                      } else {
+                        updateItem(catIdx, itemIdx, "price_display", e.target.value);
+                        updateItem(catIdx, itemIdx, "price", e.target.value);
+                      }
+                    }}
+                    placeholder={t("dashboard.sitesKatalog.priceDisplayPlaceholder", "cth. Rp 25.000")}
+                    className={MCF_INPUT_BASE}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className={MCF_INPUT_LABEL}>
+                    {t("dashboard.sitesKatalog.priceAmount", "Nominal")}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    step="any"
+                    value={item.price_amount ?? ""}
+                    onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
+                    placeholder={t("dashboard.sitesKatalog.priceAmountPlaceholder", "cth. 25000")}
+                    className={`${MCF_INPUT_BASE} [appearance:textfield]`}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Badge & Capacity Row */}
+          {(hasBadge || (sectionKey === "catalog")) && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {hasBadge && (
+                <div className="space-y-1">
+                  <label className={MCF_INPUT_LABEL}>
+                    {t("dashboard.sitesKatalog.labelBadge", "Badge / Label")}
+                  </label>
+                  <input
+                    type="text"
+                    value={normStr(item.badge)}
+                    onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)}
+                    placeholder={t("dashboard.sitesKatalog.badgePlaceholder", "cth. Terlaris, Best Seller, Baru")}
+                    className={MCF_INPUT_BASE}
+                  />
+                </div>
+              )}
+
+              {sectionKey === "catalog" && (
+                <div className="space-y-1">
+                  <label className={MCF_INPUT_LABEL}>
+                    {t("dashboard.sitesKatalog.labelCapacity", "Kapasitas / Satuan")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.capacityHelp", "opsional — jml tamu / unit")})</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={item.capacity ?? ""}
+                    onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value || null)}
+                    placeholder={t("dashboard.sitesKatalog.capacityPlaceholder", "cth. 2 orang, 4 pax, 1 set")}
+                    className={MCF_INPUT_BASE}
+                  />
+                </div>
+              )}
             </div>
           )}
 
           {/* Features (catalog only) */}
           {sectionKey === "catalog" && (
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
-                {t("dashboard.sitesKatalog.features", "Fitur / Fasilitas")} <span className="font-normal normal-case text-muted-foreground/60">(misal: AC, WiFi, Sarapan)</span>
+                {t("dashboard.sitesKatalog.labelFeatures", "Fasilitas & Keunggulan")}
               </label>
-              <div className="flex flex-wrap gap-1.5 mb-1.5">
+              <div className="flex flex-wrap gap-1.5 min-h-[38px] p-2 rounded-xl bg-muted/20 border border-border/60">
                 {(item.features ?? []).map((f: string, fi: number) => (
-                  <span key={fi} className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-primary/15 text-primary border border-primary/20">
+                  <span key={fi} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/15 text-primary border border-primary/25">
                     {f}
-                    <button type="button" onClick={() => {
-                      const next = (item.features ?? []).filter((_: string, i: number) => i !== fi);
-                      updateItem(catIdx, itemIdx, "features", next);
-                    }} className="hover:opacity-70 cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = (item.features ?? []).filter((_: string, i: number) => i !== fi);
+                        updateItem(catIdx, itemIdx, "features", next);
+                      }}
+                      className="hover:opacity-70 cursor-pointer"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 ))}
-              </div>
-              <input
-                type="text"
-                placeholder={t("dashboard.sitesKatalog.featuresPlaceholder", "Ketik fitur lalu Enter")}
-                className={`${MCF_INPUT_BASE} text-xs`}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
-                    e.preventDefault();
-                    const val = e.currentTarget.value.trim().replace(/,$/, "");
-                    if (val) {
-                      const next = [...(item.features ?? []), val];
-                      updateItem(catIdx, itemIdx, "features", next);
+                <input
+                  type="text"
+                  placeholder={t("dashboard.sitesKatalog.featuresPlaceholder", "Ketik fasilitas lalu Enter (cth: WiFi, AC, Breakfast)")}
+                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 outline-none flex-1 min-w-[180px] py-1"
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                      e.preventDefault();
+                      const val = e.currentTarget.value.trim().replace(/,$/, "");
+                      if (val) {
+                        const next = [...(item.features ?? []), val];
+                        updateItem(catIdx, itemIdx, "features", next);
+                      }
+                      e.currentTarget.value = "";
                     }
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
+                  }}
+                />
+              </div>
             </div>
           )}
 
           {/* Tags (menu only) */}
           {sectionKey === "menu" && (
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
-                Tags <span className="font-normal normal-case text-muted-foreground/60">(misal: Pedas, Vegetarian, Signature)</span>
+                Tags Menu <span className="font-normal normal-case text-muted-foreground/60">(misal: Pedas, Vegetarian, Signature)</span>
               </label>
-              <div className="flex flex-wrap gap-1.5 mb-1.5">
+              <div className="flex flex-wrap gap-1.5 min-h-[38px] p-2 rounded-xl bg-muted/20 border border-border/60">
                 {tags.map((tag: string, ti: number) => (
-                  <span key={ti} className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-primary/15 text-primary border border-primary/20">
+                  <span key={ti} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/15 text-primary border border-primary/25">
                     {tag}
-                    <button type="button" onClick={() => {
-                      const next = tags.filter((_: string, i: number) => i !== ti);
-                      updateItem(catIdx, itemIdx, "tags", next);
-                    }} className="hover:opacity-70 cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = tags.filter((_: string, i: number) => i !== ti);
+                        updateItem(catIdx, itemIdx, "tags", next);
+                      }}
+                      className="hover:opacity-70 cursor-pointer"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 ))}
-              </div>
-              <input
-                type="text"
-                placeholder={t("dashboard.sitesKatalog.tagsPlaceholder", "Ketik tag lalu Enter")}
-                className={`${MCF_INPUT_BASE} text-xs`}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
-                    e.preventDefault();
-                    const newTag = e.currentTarget.value.trim().replace(/,$/, "");
-                    if (newTag && !tags.includes(newTag)) {
-                      updateItem(catIdx, itemIdx, "tags", [...tags, newTag]);
+                <input
+                  type="text"
+                  placeholder={t("dashboard.sitesKatalog.tagsPlaceholder", "Ketik tag lalu Enter (cth: Pedas, Best Seller)")}
+                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 outline-none flex-1 min-w-[180px] py-1"
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                      e.preventDefault();
+                      const newTag = e.currentTarget.value.trim().replace(/,$/, "");
+                      if (newTag && !tags.includes(newTag)) {
+                        updateItem(catIdx, itemIdx, "tags", [...tags, newTag]);
+                      }
+                      e.currentTarget.value = "";
                     }
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
+                  }}
+                />
+              </div>
             </div>
           )}
 
@@ -904,105 +954,105 @@ function SortableItemRow({
               </button>
             </div>
           )}
-        </div>
 
-        {/* Description */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.description", "Deskripsi")}</label>
-            {onAiDescription && (
-              <AiFieldButton
-                loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", catName || "", item.image_url || undefined)}
-                title="AI: generate deskripsi"
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
-            )}
-          </div>
-
-          {/* Toolbar */}
-          <div className="flex items-center gap-1.5 bg-muted/40 border border-border/80 border-b-0 rounded-t-xl px-2.5 py-1.5 text-xs flex-wrap">
-            <button
-              type="button"
-              onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }}
-              className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
-              title="Tambah List Bulat"
-            >
-              <span>•</span> List
-            </button>
-            <button
-              type="button"
-              onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }}
-              className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
-              title="Tambah List Angka"
-            >
-              1. List
-            </button>
-            <div className="w-px h-3.5 bg-border mx-0.5" />
-
-            {/* Emoji picker */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                className={`px-2 py-1 rounded-lg text-[11px] font-semibold cursor-pointer border transition-colors shadow-2xs flex items-center gap-1 ${
-                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
-                    ? "bg-primary/20 text-primary border-primary/40"
-                    : "bg-card hover:bg-muted border-border/70 text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                😀 Emoji & Simbol
-              </button>
-              {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-2xl border border-border bg-card p-3 shadow-2xl space-y-3">
-                  <div className="flex items-center justify-between border-b border-border/50 pb-1.5 select-none">
-                    <span className="text-[10.5px] font-bold text-foreground uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                    <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-muted-foreground hover:text-foreground text-[11px] font-bold cursor-pointer">Tutup</button>
-                  </div>
-                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
-                    {EMOJI_GROUPS.map((group) => (
-                      <div key={group.name} className="space-y-1">
-                        <div className="text-[9.5px] font-bold text-muted-foreground select-none">
-                          {t(group.name, group.fallbackName)}
-                        </div>
-                        <div className="grid grid-cols-7 gap-1">
-                          {group.emojis.map((emoji) => (
-                            <button
-                              key={emoji}
-                              type="button"
-                              onClick={() => {
-                                updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji);
-                                setActiveEmojiPicker(null);
-                              }}
-                              className="text-base hover:scale-125 transition-transform cursor-pointer rounded p-1 hover:bg-muted/60 flex items-center justify-center"
-                            >
-                              {emoji}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          {/* Description */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.description", "Deskripsi")}</label>
+              {onAiDescription && (
+                <AiFieldButton
+                  loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
+                  onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", catName || "", item.image_url || undefined)}
+                  title="AI: generate deskripsi"
+                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
+                />
               )}
             </div>
+
+            {/* Toolbar */}
+            <div className="flex items-center gap-1.5 bg-muted/40 border border-border/80 border-b-0 rounded-t-xl px-2.5 py-1.5 text-xs flex-wrap">
+              <button
+                type="button"
+                onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }}
+                className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
+                title="Tambah List Bulat"
+              >
+                <span>•</span> List
+              </button>
+              <button
+                type="button"
+                onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }}
+                className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
+                title="Tambah List Angka"
+              >
+                1. List
+              </button>
+              <div className="w-px h-3.5 bg-border mx-0.5" />
+
+              {/* Emoji picker */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-semibold cursor-pointer border transition-colors shadow-2xs flex items-center gap-1 ${
+                    activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
+                      ? "bg-primary/20 text-primary border-primary/40"
+                      : "bg-card hover:bg-muted border-border/70 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  😀 Emoji & Simbol
+                </button>
+                {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
+                  <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-2xl border border-border bg-card p-3 shadow-2xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-border/50 pb-1.5 select-none">
+                      <span className="text-[10.5px] font-bold text-foreground uppercase tracking-wide">Pilih Emoji & Simbol</span>
+                      <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-muted-foreground hover:text-foreground text-[11px] font-bold cursor-pointer">Tutup</button>
+                    </div>
+                    <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
+                      {EMOJI_GROUPS.map((group) => (
+                        <div key={group.name} className="space-y-1">
+                          <div className="text-[9.5px] font-bold text-muted-foreground select-none">
+                            {t(group.name, group.fallbackName)}
+                          </div>
+                          <div className="grid grid-cols-7 gap-1">
+                            {group.emojis.map((emoji) => (
+                              <button
+                                key={emoji}
+                                type="button"
+                                onClick={() => {
+                                  updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji);
+                                  setActiveEmojiPicker(null);
+                                }}
+                                className="text-base hover:scale-125 transition-transform cursor-pointer rounded p-1 hover:bg-muted/60 flex items-center justify-center"
+                              >
+                                {emoji}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <textarea
+              value={item.description ?? ""}
+              rows={3}
+              onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+              placeholder={t("dashboard.sitesKatalog.descriptionPlaceholder", `Jelaskan keunggulan dan spesifikasi ${itemLabel} ini...`)}
+              className="w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-b-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all resize-y shadow-2xs"
+            />
           </div>
 
-          <textarea
-            value={item.description ?? ""}
-            rows={3}
-            onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-            placeholder={t("dashboard.sitesKatalog.descriptionPlaceholder", `Jelaskan keunggulan dan spesifikasi ${itemLabel} ini...`)}
-            className="w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-b-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all resize-y shadow-2xs"
+          {/* Variant Groups */}
+          <VariantGroupEditor
+            groups={item.variant_groups ?? []}
+            onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
+            mode={mode}
           />
         </div>
-
-        {/* Variant Groups */}
-        <VariantGroupEditor
-          groups={item.variant_groups ?? []}
-          onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
-          mode={mode}
-        />
       </div>
     </div>
   );
@@ -1068,99 +1118,102 @@ export function VariantGroupEditor({
 
   return (
     <div className="mt-3 border-t border-border/50 pt-3 space-y-2.5">
-      <div className="flex items-center justify-between gap-2 min-w-0">
-        <div>
-          <span className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground block">
-            {t("dashboard.sitesKatalog.variantsTitle", "Varian & Opsi Tambahan")}
-          </span>
-          {mode === "page" && (
-            <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
-              {t("dashboard.sitesKatalog.variantsSubtitle", "Kustomisasi pilihan produk seperti Ukuran, Topping, atau Opsi Tambahan.")}
-            </p>
-          )}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0">
+        <div className="min-w-0 flex-1">
+          <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.variantsTitle", "Varian & Opsi Tambahan")}</label>
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
+            {t("dashboard.sitesKatalog.variantsSubtitle", "Kustomisasi pilihan produk seperti Ukuran, Topping, atau Opsi Tambahan.")}
+          </p>
         </div>
         <button
           type="button"
           onClick={() => { const g = makeGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
-          className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer shadow-2xs"
+          className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
         >
-          <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "Tambah Grup")}
+          <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "Tambah Grup Varian")}
         </button>
       </div>
 
       {groups.length === 0 && (
-        <p className="text-[11px] text-muted-foreground/80 italic p-3 rounded-2xl bg-muted/20 border border-border/40">
+        <p className="text-xs text-muted-foreground/80 italic p-3 rounded-2xl bg-muted/20 border border-border/40">
           {t("dashboard.sitesKatalog.variantsNoGroups", "Belum ada varian atau opsi tambahan untuk produk ini.")}
         </p>
       )}
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {groups.map((group) => {
           const isOpen = expandedGroup === group.id;
           return (
             <div key={group.id} className="rounded-2xl border border-border/80 bg-muted/20 overflow-hidden shadow-2xs">
               {/* Group header */}
               <div
-                className="flex items-center gap-2.5 px-3.5 py-2.5 cursor-pointer select-none bg-muted/30 hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none bg-muted/30 hover:bg-muted/50 transition-colors"
                 onClick={() => setExpandedGroup(isOpen ? null : group.id)}
               >
                 <Layers className="w-4 h-4 text-primary shrink-0" />
-                <span className="flex-1 text-[12px] font-bold text-foreground truncate">
-                  {group.name || <span className="text-muted-foreground italic">{t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "Grup baru")}</span>}
+                <span className="flex-1 text-xs sm:text-sm font-bold text-foreground truncate">
+                  {group.name || <span className="text-muted-foreground italic font-normal">{t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "Grup Varian Baru")}</span>}
                 </span>
-                <span className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-md border border-border/50 shrink-0">
-                  {group.type === "multiple" ? t("dashboard.sitesKatalog.variantsTypeMultiple", "Pilih Banyak") : t("dashboard.sitesKatalog.variantsTypeSingle", "Pilih 1")}
-                </span>
-                {isOpen ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground shrink-0" /> : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />}
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
-                  className="text-red-500/60 hover:text-red-500 cursor-pointer p-1 rounded hover:bg-red-500/10 transition-colors shrink-0"
-                  aria-label="Hapus grup"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-md border border-border/50">
+                    {group.type === "multiple" ? t("dashboard.sitesKatalog.variantsTypeMultiple", "Bisa Pilih Banyak") : t("dashboard.sitesKatalog.variantsTypeSingle", "Pilih 1")}
+                  </span>
+                  {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
+                    className="text-red-500/60 hover:text-red-500 p-1 rounded-lg hover:bg-red-500/10 cursor-pointer transition-colors"
+                    aria-label="Hapus grup"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {isOpen && (
-                <div className="p-3.5 flex flex-col gap-3 border-t border-border/60 bg-card">
+                <div className="p-4 space-y-4 border-t border-border/60 bg-card">
                   {/* Group name + type + required */}
-                  <div className="space-y-1">
-                    <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.variantsGroupName", "Nama Grup Varian")}</label>
-                    <input
-                      type="text"
-                      value={group.name}
-                      onChange={(e) => updateGroup(group.id, { name: e.target.value })}
-                      placeholder={t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "cth. Ukuran, Topping, Level Pedas")}
-                      className={MCF_INPUT_BASE}
-                    />
-                  </div>
-                  <div className="flex items-center gap-4 flex-wrap pt-1">
-                    <label className="flex items-center gap-2 text-[11px] font-semibold text-foreground cursor-pointer select-none">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.variantsGroupName", "Nama Grup Varian")}</label>
                       <input
-                        type="checkbox"
-                        checked={group.type === "multiple"}
-                        onChange={(e) => updateGroup(group.id, { type: e.target.checked ? "multiple" : "single" })}
-                        className="w-3.5 h-3.5 accent-primary rounded cursor-pointer"
+                        type="text"
+                        value={group.name}
+                        onChange={(e) => updateGroup(group.id, { name: e.target.value })}
+                        placeholder={t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "cth. Ukuran Porsi, Topping Ekstra")}
+                        className={MCF_INPUT_BASE}
                       />
-                      {t("dashboard.sitesKatalog.variantsTypeMultiple", "Pilih Banyak (Checkbox)")}
-                    </label>
-                    <label className="flex items-center gap-2 text-[11px] font-semibold text-foreground cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={group.required}
-                        onChange={(e) => updateGroup(group.id, { required: e.target.checked })}
-                        className="w-3.5 h-3.5 accent-primary rounded cursor-pointer"
-                      />
-                      {t("dashboard.sitesKatalog.variantsRequired", "Wajib Dipilih")}
-                    </label>
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-0 sm:pt-6 flex-wrap">
+                      <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={group.type === "multiple"}
+                          onChange={(e) => updateGroup(group.id, { type: e.target.checked ? "multiple" : "single" })}
+                          className="w-4 h-4 accent-primary rounded cursor-pointer"
+                        />
+                        {t("dashboard.sitesKatalog.variantsTypeMultiple", "Pilih Banyak (Checkbox)")}
+                      </label>
+                      <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={group.required}
+                          onChange={(e) => updateGroup(group.id, { required: e.target.checked })}
+                          className="w-4 h-4 accent-primary rounded cursor-pointer"
+                        />
+                        {t("dashboard.sitesKatalog.variantsRequired", "Wajib Dipilih")}
+                      </label>
+                    </div>
                   </div>
 
                   {/* Options */}
-                  <div className="flex flex-col gap-2 pt-2 border-t border-border/50">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <div className="space-y-2 pt-2 border-t border-border/50">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       {t("dashboard.sitesKatalog.variantsOptionsTitle", "Daftar Pilihan / Opsi")}
                     </span>
+
                     <div className="space-y-2">
                       {group.options.map((opt) => (
                         <div key={opt.id} className="flex items-center gap-2">
@@ -1168,8 +1221,8 @@ export function VariantGroupEditor({
                             type="text"
                             value={opt.name}
                             onChange={(e) => updateOption(group.id, opt.id, { name: e.target.value })}
-                            placeholder={t("dashboard.sitesKatalog.variantsOptionNamePlaceholder", "cth. Regular, Large, Ekstra")}
-                            className={`${MCF_INPUT_BASE} flex-1 text-xs`}
+                            placeholder={t("dashboard.sitesKatalog.variantsOptionNamePlaceholder", "cth. Regular, Large, Ekstra Keju")}
+                            className={`${MCF_INPUT_BASE} py-2 flex-1 text-xs`}
                           />
                           <input
                             type="number"
@@ -1180,25 +1233,26 @@ export function VariantGroupEditor({
                               updateOption(group.id, opt.id, { price_delta: delta, price_display: display });
                             }}
                             placeholder="+Rp"
-                            className={`${MCF_INPUT_BASE} w-24 shrink-0 text-xs`}
-                            title={t("dashboard.sitesKatalog.variantsOptionDelta", "Tambahan harga")}
+                            title={t("dashboard.sitesKatalog.variantsOptionDelta", "Tambahan Harga")}
+                            className={`${MCF_INPUT_BASE} py-2 w-28 shrink-0 text-xs`}
                           />
                           <button
                             type="button"
                             onClick={() => removeOption(group.id, opt.id)}
                             disabled={group.options.length <= 1}
-                            className="text-red-500/60 hover:text-red-500 disabled:opacity-30 cursor-pointer p-1 rounded hover:bg-red-500/10 transition-colors shrink-0"
+                            className="text-red-500/60 hover:text-red-500 disabled:opacity-30 cursor-pointer p-1.5 rounded-lg hover:bg-red-500/10 transition-colors shrink-0"
                             aria-label="Hapus opsi"
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-4 h-4" />
                           </button>
                         </div>
                       ))}
                     </div>
+
                     <button
                       type="button"
                       onClick={() => addOption(group.id)}
-                      className="self-start inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline cursor-pointer pt-1"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline cursor-pointer pt-1"
                     >
                       <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddOption", "Tambah Pilihan")}
                     </button>
