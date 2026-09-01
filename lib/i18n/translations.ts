@@ -582,6 +582,32 @@ export interface Translations {
       receivedOn: string;
       sourceUrl: string;
       selectPrompt: string;
+      tabAll: string;
+      tabOrders: string;
+      tabContacts: string;
+      searchPlaceholder: string;
+      totalLeads: string;
+      totalOrders: string;
+      totalRevenue: string;
+      totalContacts: string;
+      noFilterResults: string;
+      noFilterResultsDesc: string;
+      clearFilter: string;
+      chatWhatsapp: string;
+      callPhone: string;
+      sendEmail: string;
+      copyPhone: string;
+      copyEmail: string;
+      copyMessage: string;
+      copied: string;
+      orderBadge: string;
+      contactBadge: string;
+      orderItemsList: string;
+      totalOrderAmount: string;
+      openWebsite: string;
+      openEditor: string;
+      close: string;
+      quickStatsTitle: string;
     };
     team: {
       loadFailed: string;
@@ -2822,19 +2848,45 @@ export const translations: Record<Locale, Translations> = {
         loading: "Memuat kotak masuk leads...",
         filter: "Filter",
         allWebsites: "Semua Website",
-        emptyTitle: "Kotak Masuk Kosong",
-        emptyDesc: "Belum ada leads yang masuk. Pastikan Anda mengaktifkan opsi \"Tampilkan Formulir Kontak\" pada konfigurasi website Anda.",
+        emptyTitle: "Kotak Masuk Masih Kosong",
+        emptyDesc: "Formulir kontak dan pesanan WhatsApp dari website publik Anda akan otomatis masuk ke sini secara realtime.",
         sender: "Pengirim",
-        date: "Tanggal Masuk",
+        date: "Waktu Masuk",
         sourceSite: "Website Sumber",
         actions: "Aksi",
-        siteId: "Situs ID #{id}",
+        siteId: "Situs #{id}",
         detail: "Detail",
         leadDetail: "Detail Leads Pelanggan",
-        inquiryMessage: "Pesan Inkuiri",
-        receivedOn: "Diterima pada",
-        sourceUrl: "URL Halaman Sumber",
-        selectPrompt: "Pilih salah satu lead di tabel untuk melihat isi pesan detail.",
+        inquiryMessage: "Isi Pesan Masuk",
+        receivedOn: "Diterima Pada",
+        sourceUrl: "Halaman Sumber",
+        selectPrompt: "Pilih salah satu baris untuk melihat rincian lengkap pesanan atau pesan.",
+        tabAll: "Semua",
+        tabOrders: "Pesanan",
+        tabContacts: "Pesan Kontak",
+        searchPlaceholder: "Cari nama, no HP, email, atau pesan...",
+        totalLeads: "Total Leads",
+        totalOrders: "Pesanan Masuk",
+        totalRevenue: "Estimasi Nilai Pesanan",
+        totalContacts: "Pesan Kontak",
+        noFilterResults: "Tidak Ada Hasil yang Cocok",
+        noFilterResultsDesc: "Tidak ditemukan leads atau pesanan yang sesuai dengan kata kunci atau filter saat ini.",
+        clearFilter: "Reset Filter",
+        chatWhatsapp: "Chat di WhatsApp",
+        callPhone: "Telepon",
+        sendEmail: "Kirim Email",
+        copyPhone: "Salin No HP",
+        copyEmail: "Salin Email",
+        copyMessage: "Salin Pesan",
+        copied: "Tersalin!",
+        orderBadge: "Pesanan",
+        contactBadge: "Kontak",
+        orderItemsList: "Daftar Item Pesanan",
+        totalOrderAmount: "Total Pesanan",
+        openWebsite: "Kunjungi Website",
+        openEditor: "Buka Editor Website",
+        close: "Tutup",
+        quickStatsTitle: "Ringkasan Leads",
       },
       team: {
         loadFailed: "Gagal memuat data tim",
@@ -5142,19 +5194,45 @@ export const translations: Record<Locale, Translations> = {
         loading: "Loading leads inbox...",
         filter: "Filter",
         allWebsites: "All Websites",
-        emptyTitle: "Inbox Empty",
-        emptyDesc: "No leads yet. Make sure the \"Show Contact Form\" option is enabled in your website configuration.",
+        emptyTitle: "Inbox is Empty",
+        emptyDesc: "Contact form inquiries and WhatsApp catalog orders from your public website visitors will appear here automatically.",
         sender: "Sender",
         date: "Received At",
         sourceSite: "Source Website",
         actions: "Actions",
-        siteId: "Site ID #{id}",
+        siteId: "Site #{id}",
         detail: "Detail",
-        leadDetail: "Customer Lead Detail",
+        leadDetail: "Customer Lead Details",
         inquiryMessage: "Inquiry Message",
-        receivedOn: "Received on",
+        receivedOn: "Received On",
         sourceUrl: "Source Page URL",
-        selectPrompt: "Select a lead in the table to view the full message.",
+        selectPrompt: "Select a lead or order to inspect the full details.",
+        tabAll: "All",
+        tabOrders: "Orders",
+        tabContacts: "Contact Inquiries",
+        searchPlaceholder: "Search name, phone, email, or message...",
+        totalLeads: "Total Leads",
+        totalOrders: "Orders Received",
+        totalRevenue: "Estimated Order Value",
+        totalContacts: "Contact Messages",
+        noFilterResults: "No Matching Leads Found",
+        noFilterResultsDesc: "No leads or orders match your current search query or filter selection.",
+        clearFilter: "Reset Filter",
+        chatWhatsapp: "Chat on WhatsApp",
+        callPhone: "Call",
+        sendEmail: "Send Email",
+        copyPhone: "Copy Phone",
+        copyEmail: "Copy Email",
+        copyMessage: "Copy Message",
+        copied: "Copied!",
+        orderBadge: "Order",
+        contactBadge: "Contact",
+        orderItemsList: "Ordered Items Breakdown",
+        totalOrderAmount: "Total Order Amount",
+        openWebsite: "Visit Website",
+        openEditor: "Open Website Builder",
+        close: "Close",
+        quickStatsTitle: "Leads Overview",
       },
       team: {
         loadFailed: "Failed to load team data",
