@@ -107,7 +107,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
                   <div className="space-y-2">
                     <DynamicIcon name={about.icon} defaultIcon={Utensils} className="w-12 h-12 text-[var(--dt-primary)] mx-auto" />
                     <p className=" italic text-[var(--dt-text)] font-semibold text-lg">{header?.brand_name || "Bisnis Kami"}</p>
-                    <p className="text-[var(--dt-text-muted)] text-sm max-w-xs">{about.title}</p>
+                    <p className="text-[var(--dt-text-muted)] text-sm max-w-xs"><InlineText section="about" fieldKey="title" value={about.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
                   </div>
                 </div>
                 {about.image_url && (

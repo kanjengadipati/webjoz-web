@@ -29,10 +29,25 @@ export default function PricingComparisonTable({
     onUpdateField?.("pricing", "plans", next);
   };
 
-  // Collect all unique features across plans
-  const allFeatures = Array.from(
-    new Set(pricing.plans.flatMap((p) => p.features || []))
-  );
+  const handleUpdatePlanFeature = (planIndex: number, featureIndex: number, value: string) => {
+    const next = [...(pricing.plans || [])];
+    const feats = [...(next[planIndex].features || [])];
+    feats[featureIndex] = value;
+    next[planIndex] = { ...next[planIndex], features: feats };
+    onUpdateField?.("pricing", "plans", next);
+  };
+
+  // Collect all unique features across plans, tracking the first plan that owns each.
+  const featureRefs: { feature: string; planIdx: number; featureIdx: number }[] = [];
+  const seenFeatures = new Set<string>();
+  (pricing.plans || []).forEach((plan, planIdx) => {
+    (plan.features || []).forEach((feature, featureIdx) => {
+      if (!seenFeatures.has(feature)) {
+        seenFeatures.add(feature);
+        featureRefs.push({ feature, planIdx, featureIdx });
+      }
+    });
+  });
 
   return (
     <section
@@ -238,13 +253,27 @@ export default function PricingComparisonTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {allFeatures.map((feature, fIdx) => (
+              {featureRefs.map(({ feature, planIdx, featureIdx }, fIdx) => (
                 <tr key={fIdx} className="hover:bg-white/[0.02] transition-colors">
                   <td
                     className="p-4 px-6 text-sm font-medium"
                     style={{ color: `color-mix(in srgb, ${brandText} 85%, transparent)` }}
                   >
-                    {feature}
+                    {isEditorMode ? (
+                      <InlineText
+                        section="pricing"
+                        fieldKey={`plans.${planIdx}.features.${featureIdx}`}
+                        value={feature}
+                        onUpdateField={(_, __, val) => handleUpdatePlanFeature(planIdx, featureIdx, val)}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                        as="span"
+                      />
+                    ) : (
+                      feature
+                    )}
                   </td>
                   {pricing.plans.map((plan, pIdx) => {
                     const hasFeature = plan.features?.includes(feature);

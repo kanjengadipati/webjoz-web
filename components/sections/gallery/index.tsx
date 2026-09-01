@@ -105,6 +105,11 @@ export default function GallerySection({
           items={gallery.items}
           index={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          onUpdateCaption={onUpdateCaption}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
         />
       )}
     </section>

@@ -101,7 +101,17 @@ export default function HeroNeoBrutalist({
                 width: "fit-content",
               }}
             >
-              {h.eyebrow}
+              <InlineText
+                section="hero"
+                fieldKey="eyebrow"
+                value={h.eyebrow ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </motion.div>
           )}
 
@@ -231,7 +241,17 @@ export default function HeroNeoBrutalist({
                   e.currentTarget.style.transform = "none";
                 }}
               >
-                {h.cta_secondary_text}
+                <InlineText
+                  section="hero"
+                  fieldKey="cta_secondary_text"
+                  value={h.cta_secondary_text ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </a>
             )}
           </motion.div>
@@ -253,7 +273,17 @@ export default function HeroNeoBrutalist({
                 width: "fit-content",
               }}
             >
-              {h.badge_text}
+              <InlineText
+                section="hero"
+                fieldKey="badge_text"
+                value={h.badge_text ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </motion.div>
           )}
         </div>
