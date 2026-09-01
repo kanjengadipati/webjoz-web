@@ -199,19 +199,19 @@ export default function WhatsAppDirect({
                 {hasPhone && (
                   <div className="flex items-center gap-2">
                     <Phone className="w-3.5 h-3.5 text-primary" />
-                    <span>{c.phone}</span>
+                    <span><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
                   </div>
                 )}
                 {hasEmail && (
                   <div className="flex items-center gap-2">
                     <Mail className="w-3.5 h-3.5 text-primary" />
-                    <span>{c.email}</span>
+                    <span><InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
                   </div>
                 )}
                 {hasAddress && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5 text-primary" />
-                    <span>{c.address}</span>
+                    <span><InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
                   </div>
                 )}
               </div>
