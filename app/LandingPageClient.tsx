@@ -222,6 +222,10 @@ export default function LandingPageClient() {
 
   return (
     <main className="min-h-screen pb-20 bg-background text-foreground selection:bg-amber-500/30 selection:text-amber-600 dark:selection:text-amber-200 transition-colors">
+      {/* PR Test Banner — floating top-right */}
+      <div className="fixed top-16 right-4 z-[100] rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-[10px] font-medium text-amber-600 dark:text-amber-300 shadow-sm backdrop-blur-md">
+        <span>⚠️ Mode Uji PR</span>
+      </div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -367,11 +371,6 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-start text-left">
             {/* Top pill badge */}
-            {/* PR Test Banner */}
-            <div className="sm:inline-block w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-6 py-3 mb-6 text-center text-sm text-amber-600 dark:text-amber-300">
-              <span className="font-medium">⚠️ PR Test Mode</span>
-              <span className="ml-2">This is a test page for PRD validation — features may be limited.</span>
-            </div>
             <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/80 px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-foreground shadow-sm dark:border-white/15 dark:bg-white/[0.04] dark:text-white/90">
               <SparkleIcon className="w-3.5 h-3.5 text-amber-500 dark:text-white" />
               <span>{t("landing.badge")}</span>
@@ -382,8 +381,8 @@ export default function LandingPageClient() {
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl">
+            {/* Subtitle — hidden on mobile to keep hero compact */}
+            <p className="hidden sm:block text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg max-w-xl">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroSubtitle") }} />
             </p>
 
