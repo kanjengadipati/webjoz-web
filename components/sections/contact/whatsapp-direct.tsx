@@ -31,6 +31,7 @@ export default function WhatsAppDirect({
   const hasEmail = Boolean(c.email && c.email.trim());
   const hasAddress = Boolean(c.address && c.address.trim());
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
+  const showWhatsappCard = c.show_whatsapp_card !== false;
   const waUrl = formatWhatsAppUrl(c.phone);
 
   return (
@@ -72,8 +73,9 @@ export default function WhatsAppDirect({
         </div>
 
         {/* Main Grid: WhatsApp Hero Card + Optional Secondary Form/Info */}
-        <div className={`grid grid-cols-1 ${hasLeadForm ? "lg:grid-cols-12" : "max-w-xl mx-auto"} gap-6 items-stretch`}>
+        <div className={`grid grid-cols-1 ${hasLeadForm && showWhatsappCard ? "lg:grid-cols-12" : ""} gap-6 items-stretch`}>
           {/* WhatsApp Direct Action Card */}
+          {showWhatsappCard && (
           <div
             className={hasLeadForm ? "lg:col-span-7" : "w-full"}
             style={{
@@ -111,29 +113,42 @@ export default function WhatsAppDirect({
 
               {/* Chat snippet preview */}
               <div
-                className="p-4 rounded-xl space-y-1.5"
+                className="p-4 rounded-2xl space-y-1.5"
                 style={{
-                  background: "color-mix(in srgb, var(--dt-bg) 60%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)",
+                  background: "color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))",
+                  border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
                 }}
               >
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  {isEN ? "Default Inquiry Message" : "Pesan Otomatis Siap Kirim:"}
-                </span>
-                <p className="text-xs italic text-slate-200 leading-relaxed">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#25D366]" />
+                  <span
+                    className="text-[10.5px] font-bold uppercase tracking-wider"
+                    style={{ color: "var(--dt-text-muted)" }}
+                  >
+                    {isEN ? "Default Inquiry Message:" : "Pesan Otomatis Siap Kirim:"}
+                  </span>
+                </div>
+                <p
+                  className="text-xs sm:text-[13px] italic leading-relaxed font-medium pl-3 border-l-2 border-[#25D366]/40"
+                  style={{ color: "var(--dt-text)" }}
+                >
                   &ldquo;Halo, saya ingin konsultasi dan tanya informasi lebih lanjut mengenai layanan Anda.&rdquo;
                 </p>
               </div>
 
               {/* Trust badges */}
-              <div className="grid grid-cols-2 gap-3 text-xs" style={{ color: "var(--dt-text-muted)" }}>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary shrink-0" />
-                  <span>{isEN ? "Quick Reply" : "Balasan Cepat"}</span>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex items-center gap-2" style={{ color: "var(--dt-text)" }}>
+                  <div className="w-6 h-6 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0">
+                    <Clock className="w-3.5 h-3.5 text-[#25D366]" />
+                  </div>
+                  <span className="font-semibold">{isEN ? "Quick Reply" : "Balasan Cepat"}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#25D366] shrink-0" />
-                  <span>{isEN ? "100% Free Inquiry" : "Konsultasi Gratis"}</span>
+                <div className="flex items-center gap-2" style={{ color: "var(--dt-text)" }}>
+                  <div className="w-6 h-6 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#25D366]" />
+                  </div>
+                  <span className="font-semibold">{isEN ? "100% Free Inquiry" : "Konsultasi Gratis"}</span>
                 </div>
               </div>
             </div>
@@ -145,7 +160,7 @@ export default function WhatsAppDirect({
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-bold text-white text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_8px_24px_rgba(37,211,102,0.35)]"
+                  className="w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-bold text-white text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_8px_24px_rgba(37,211,102,0.35)] cursor-pointer"
                   style={{ background: "#25D366" }}
                 >
                   <MessageCircle className="w-5 h-5 fill-white text-transparent" />
@@ -153,17 +168,29 @@ export default function WhatsAppDirect({
                   <ArrowRight className="w-4 h-4" />
                 </a>
               ) : (
-                <div className="text-center p-3 rounded-lg border border-amber-500/20 bg-amber-500/10 text-xs text-amber-300">
-                  {isEN ? "Add phone number in Site Editor to activate WhatsApp button" : "Masukkan nomor WhatsApp di Site Editor untuk mengaktifkan tombol ini"}
+                <div
+                  className="text-center p-3.5 rounded-xl border border-amber-500/30 text-xs font-semibold flex items-center justify-center gap-2 leading-relaxed"
+                  style={{
+                    background: "color-mix(in srgb, #f59e0b 12%, var(--dt-surface))",
+                    color: "color-mix(in srgb, #b45309 85%, var(--dt-text))",
+                  }}
+                >
+                  <Phone className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <span>
+                    {isEN
+                      ? "Add phone number in Site Editor to activate WhatsApp button"
+                      : "Masukkan nomor WhatsApp di Site Editor untuk mengaktifkan tombol ini"}
+                  </span>
                 </div>
               )}
             </div>
           </div>
+          )}
 
           {/* Secondary Details: Form or Direct Details */}
           {hasLeadForm ? (
             <div
-              className="lg:col-span-5"
+              className={showWhatsappCard ? "lg:col-span-5" : "lg:col-span-12"}
               style={{
                 background: "var(--dt-surface)",
                 borderRadius: "var(--dt-radius-lg)",

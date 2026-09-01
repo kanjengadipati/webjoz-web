@@ -1640,6 +1640,15 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
+            <span className="text-[12px] font-medium text-slate-200">Kartu WhatsApp</span>
+            <input 
+              type="checkbox" 
+              checked={content.contact.show_whatsapp_card !== false} 
+              onChange={(e) => updateField("contact", "show_whatsapp_card", e.target.checked)} 
+              className="w-4 h-4 accent-primary cursor-pointer" 
+            />
+          </div>
+          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
             <div className="flex gap-1">
               {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
