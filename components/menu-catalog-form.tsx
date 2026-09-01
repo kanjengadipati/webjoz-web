@@ -56,9 +56,9 @@ export const EMOJI_GROUPS = [
 ];
 
 export const MCF_INPUT_BASE =
-  "w-full px-3 py-2 border border-white/10 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500";
+  "w-full px-3.5 py-2 border border-border/80 focus:border-primary/60 rounded-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all shadow-2xs";
 
-export const MCF_INPUT_LABEL = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
+export const MCF_INPUT_LABEL = "text-[10.5px] uppercase tracking-wider font-bold text-muted-foreground block mb-1";
 
 /** Strip AI-generated literal "null" strings */
 export const normStr = (v: any): string => {
@@ -330,31 +330,63 @@ export function MenuCatalogForm({
   return (
     <div className="space-y-4">
       {/* Section header fields */}
-      <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-white/[0.02] p-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex-1 space-y-2">
+      <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-3 shadow-2xs">
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border/50">
+          <span className="text-[11px] font-bold text-foreground uppercase tracking-wider">
+            Pengaturan Bagian
+          </span>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary shrink-0 whitespace-nowrap">
+            {sectionKey === "menu" ? "Kuliner" : "Produk"} · {categories.length} kategori
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
               <label className={MCF_INPUT_LABEL}>Judul Section</label>
               {renderFieldActions("title")}
             </div>
-            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. Menu ${sectionTitle}`} className={`${MCF_INPUT_BASE} bg-muted/50`} />
+            <input
+              type="text"
+              value={data?.title ?? ""}
+              onChange={(e) => updateField(sectionKey, "title", e.target.value)}
+              placeholder={`cth. Menu ${sectionTitle}`}
+              className={MCF_INPUT_BASE}
+            />
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className={MCF_INPUT_LABEL}>Eyebrow <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
-              {renderFieldActions("eyebrow")}
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className={MCF_INPUT_LABEL}>
+                  Eyebrow <span className="text-muted-foreground/60 font-normal normal-case">(opsional)</span>
+                </label>
+                {renderFieldActions("eyebrow")}
+              </div>
+              <input
+                type="text"
+                value={data?.eyebrow ?? ""}
+                onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)}
+                placeholder={`cth. Pilihan ${sectionTitle}`}
+                className={MCF_INPUT_BASE}
+              />
             </div>
-            <input type="text" value={data?.eyebrow ?? ""} onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)} placeholder={`cth. Pilihan ${sectionTitle}`} className={MCF_INPUT_BASE} />
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className={MCF_INPUT_LABEL}>Subtitle <span className="text-slate-500 font-normal normal-case">(opsional)</span></label>
-              {renderFieldActions("subtitle")}
+
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className={MCF_INPUT_LABEL}>
+                  Subtitle <span className="text-muted-foreground/60 font-normal normal-case">(opsional)</span>
+                </label>
+                {renderFieldActions("subtitle")}
+              </div>
+              <input
+                type="text"
+                value={data?.subtitle ?? ""}
+                onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
+                placeholder="cth. Nikmati berbagai pilihan menu terbaik kami"
+                className={MCF_INPUT_BASE}
+              />
             </div>
-            <input type="text" value={data?.subtitle ?? ""} onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)} placeholder="cth. Nikmati berbagai pilihan menu terbaik kami" className={MCF_INPUT_BASE} />
-          </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">
-            {sectionKey === "menu" ? "Kuliner" : "Produk"} · {categories.length} kategori
           </div>
         </div>
       </div>
@@ -562,7 +594,8 @@ function SortableItemRow({
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[200px_1fr]">
+      {/* Item Body: Photo + Details in clean vertical stack */}
+      <div className="space-y-3.5">
         <ItemPhotoGalleryEditor
           imageUrl={item.image_url ?? ""}
           imageUrls={item.image_urls ?? []}
@@ -571,43 +604,52 @@ function SortableItemRow({
         />
 
         <div className="space-y-3">
-          {/* Name + Price */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className={MCF_INPUT_LABEL}>Nama</label>
-              <input type="text" value={item.name ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)} placeholder={`Nama ${itemLabel}`} className={MCF_INPUT_BASE} />
-            </div>
-            {hasPrice && (
-              <div className="space-y-1.5">
-                <label className={MCF_INPUT_LABEL}>Label Harga <span className="font-normal normal-case text-slate-500">(tampilan)</span></label>
+          {/* Name */}
+          <div className="space-y-1">
+            <label className={MCF_INPUT_LABEL}>Nama {itemLabel}</label>
+            <input
+              type="text"
+              value={item.name ?? ""}
+              onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
+              placeholder={`Nama ${itemLabel}`}
+              className={MCF_INPUT_BASE}
+            />
+          </div>
+
+          {/* Price */}
+          {hasPrice && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <label className={MCF_INPUT_LABEL}>
+                  Label Harga <span className="font-normal normal-case text-muted-foreground/60">(tampilan)</span>
+                </label>
                 <input
                   type="text"
                   value={item.price_display ?? item.price ?? ""}
                   onChange={(e) => {
                     updateItem(catIdx, itemIdx, "price_display", e.target.value);
-                    updateItem(catIdx, itemIdx, "price", e.target.value); // keep legacy field in sync
+                    updateItem(catIdx, itemIdx, "price", e.target.value);
                   }}
-                  placeholder="cth. Rp 25.000, $5.99, Mulai Rp 50rb"
+                  placeholder="cth. Rp 25.000 atau $5.99"
                   className={MCF_INPUT_BASE}
                 />
-                <div className="relative">
-                  <label className={`${MCF_INPUT_LABEL} mt-1`}>Harga <span className="font-normal normal-case text-slate-500">(angka untuk subtotal)</span></label>
-                  <input
-                    type="number"
-                    min={0}
-                    step="any"
-                    value={item.price_amount ?? ""}
-                    onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
-                    placeholder="cth. 25000 atau 5.99"
-                    className={`${MCF_INPUT_BASE} [appearance:textfield]`}
-                  />
-                  {item.price_amount == null && (
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-500 pointer-events-none">opsional</span>
-                  )}
-                </div>
               </div>
-            )}
-          </div>
+              <div className="space-y-1">
+                <label className={MCF_INPUT_LABEL}>
+                  Nominal <span className="font-normal normal-case text-muted-foreground/60">(angka kalkulator)</span>
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={item.price_amount ?? ""}
+                  onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="cth. 25000"
+                  className={`${MCF_INPUT_BASE} [appearance:textfield]`}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Badge (catalog only) */}
           {hasBadge && (
@@ -767,39 +809,61 @@ function SortableItemRow({
           </div>
 
           {/* Toolbar */}
-          <div className="flex items-center gap-1.5 bg-muted/30 border border-white/10 border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
-            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border border-white/5" title="Tambah List Bulat">
+          <div className="flex items-center gap-1.5 bg-muted/40 border border-border/80 border-b-0 rounded-t-xl px-2.5 py-1.5 text-xs flex-wrap">
+            <button
+              type="button"
+              onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }}
+              className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
+              title="Tambah List Bulat"
+            >
               <span>•</span> List
             </button>
-            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer active:scale-95 transition-all text-[9px] select-none border border-white/5" title="Tambah List Angka">
+            <button
+              type="button"
+              onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }}
+              className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
+              title="Tambah List Angka"
+            >
               1. List
             </button>
-            <div className="w-px h-3.5 bg-white/10 mx-0.5 select-none" />
+            <div className="w-px h-3.5 bg-border mx-0.5" />
 
             {/* Emoji picker */}
             <div className="relative">
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                className={`px-2 py-1 rounded font-semibold cursor-pointer active:scale-95 transition-all text-[9px] flex items-center gap-1 select-none border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-white/5 text-slate-300"}`}
+                className={`px-2 py-1 rounded-lg text-[11px] font-semibold cursor-pointer border transition-colors shadow-2xs flex items-center gap-1 ${
+                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
+                    ? "bg-primary/20 text-primary border-primary/40"
+                    : "bg-card hover:bg-muted border-border/70 text-muted-foreground hover:text-foreground"
+                }`}
               >
                 😀 Emoji & Simbol
               </button>
               {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-white/10 bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                  <div className="flex items-center justify-between border-b border-white/5 pb-1 select-none">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Emoji & Simbol</span>
-                    <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">Tutup</button>
+                <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-2xl border border-border bg-card p-3 shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between border-b border-border/50 pb-1.5 select-none">
+                    <span className="text-[10.5px] font-bold text-foreground uppercase tracking-wide">Pilih Emoji & Simbol</span>
+                    <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-muted-foreground hover:text-foreground text-[11px] font-bold cursor-pointer">Tutup</button>
                   </div>
                   <div className="max-h-48 overflow-y-auto space-y-3 pr-1 text-left custom-scrollbar">
                     {EMOJI_GROUPS.map((group) => (
                       <div key={group.name} className="space-y-1">
-                        <div className="text-[9px] font-semibold text-slate-500 select-none">{group.name}</div>
+                        <div className="text-[9.5px] font-bold text-muted-foreground select-none">{group.name}</div>
                         <div className="grid grid-cols-7 gap-1">
                           {group.emojis.map((emoji) => (
-                            <button key={emoji} type="button"
-                              onClick={() => { updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji); setActiveEmojiPicker(null); }}
-                              className="h-7 w-7 rounded bg-muted/40 hover:bg-white/[0.1] flex items-center justify-center text-sm cursor-pointer transition-colors active:scale-90"
-                            >{emoji}</button>
+                            <button
+                              key={emoji}
+                              type="button"
+                              onClick={() => {
+                                updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji);
+                                setActiveEmojiPicker(null);
+                              }}
+                              className="text-base hover:scale-125 transition-transform cursor-pointer rounded p-1 hover:bg-muted/60 flex items-center justify-center"
+                            >
+                              {emoji}
+                            </button>
                           ))}
                         </div>
                       </div>
@@ -811,14 +875,15 @@ function SortableItemRow({
           </div>
 
           <textarea
-            rows={4} value={item.description ?? ""}
+            value={item.description ?? ""}
+            rows={3}
             onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-            placeholder="Deskripsi singkat, list menu, info porsi, detail spesifikasi, dll..."
-            className={`${MCF_INPUT_BASE} resize-y min-h-[80px] rounded-t-none border-t-0`}
+            placeholder={`Jelaskan keunggulan dan detail ${itemLabel} ini...`}
+            className="w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-b-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all resize-y shadow-2xs"
           />
         </div>
 
-        {/* ── Variant / Add-on Groups ──────────────────────────────────────── */}
+        {/* Variant Groups */}
         <VariantGroupEditor
           groups={item.variant_groups ?? []}
           onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
@@ -830,7 +895,7 @@ function SortableItemRow({
 
 // ─── VariantGroupEditor ─────────────────────────────────────────────────────────
 
-const VGE_INPUT = "w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[12px] text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors";
+const VGE_INPUT = "w-full px-3 py-2 rounded-xl bg-background border border-border/80 text-[13px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all shadow-2xs";
 
 interface VGGroup {
   id: string;
@@ -871,37 +936,41 @@ function VariantGroupEditor({ groups, onChange }: { groups: VGGroup[]; onChange:
   }
 
   return (
-    <div className="mt-3 border-t border-white/8 pt-3">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Varian / Add-on</span>
+    <div className="mt-3 border-t border-border/50 pt-3 space-y-2">
+      <div className="flex items-center justify-between gap-2 min-w-0">
+        <span className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">Varian / Add-on</span>
         <button
           type="button"
           onClick={() => { const g = makeGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
-          className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 transition-colors cursor-pointer"
+          className="shrink-0 whitespace-nowrap inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer shadow-2xs"
         >
           <Plus className="w-3 h-3" /> Tambah Grup
         </button>
       </div>
 
       {groups.length === 0 && (
-        <p className="text-[10px] text-slate-500 italic">Belum ada varian. Contoh: Ukuran, Topping, Level Pedas.</p>
+        <p className="text-[11px] text-muted-foreground/80 italic p-2.5 rounded-xl bg-muted/20 border border-border/40">
+          Belum ada varian. Contoh: Ukuran, Topping, Level Pedas.
+        </p>
       )}
 
       <div className="flex flex-col gap-2">
         {groups.map((group) => {
           const isOpen = expandedGroup === group.id;
           return (
-            <div key={group.id} className="rounded-xl border border-white/10 bg-white/[0.025] overflow-hidden">
+            <div key={group.id} className="rounded-2xl border border-border/80 bg-muted/20 overflow-hidden">
               {/* Group header */}
               <div
-                className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
+                className="flex items-center gap-2 px-3.5 py-2.5 cursor-pointer select-none bg-muted/30 hover:bg-muted/50 transition-colors"
                 onClick={() => setExpandedGroup(isOpen ? null : group.id)}
               >
-                <span className="flex-1 text-[11px] font-semibold text-slate-200 truncate">
-                  {group.name || <span className="text-slate-500 italic">Grup baru</span>}
+                <span className="flex-1 text-[12px] font-bold text-foreground truncate">
+                  {group.name || <span className="text-muted-foreground italic">Grup baru</span>}
                 </span>
-                <span className="text-[9px] text-slate-500 shrink-0">{group.type === "multiple" ? "multi" : "1 pilihan"}</span>
-                {isOpen ? <ChevronUp className="w-3 h-3 text-slate-400 shrink-0" /> : <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />}
+                <span className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-md border border-border/50 shrink-0">
+                  {group.type === "multiple" ? "Pilih Banyak" : "Pilih 1"}
+                </span>
+                {isOpen ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground shrink-0" /> : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />}
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
