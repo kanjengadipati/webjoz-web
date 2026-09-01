@@ -18,4 +18,9 @@ export interface HeaderVariantProps {
   drawerStyle?: React.CSSProperties;
   extraLinks?: { label: string; href: string }[];
   language?: "id" | "en";
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }

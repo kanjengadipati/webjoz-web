@@ -13,7 +13,17 @@ import MenuBentoPhotoGrid from "./bento-photo-grid";
 import MenuVisualShowcaseHero from "./visual-showcase-hero";
 import MenuSidebarScrollspyPhoto from "./sidebar-scrollspy-photo";
 
-const variants: Record<string, ComponentType<{ menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }>> = {
+type MenuVariantProps = {
+  menu: TemplateProps["content"]["menu"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+};
+
+const variants: Record<string, ComponentType<MenuVariantProps>> = {
   // existing
   grid: MenuClassic,
   compact: MenuCompact,
@@ -28,8 +38,34 @@ const variants: Record<string, ComponentType<{ menu: TemplateProps["content"]["m
   "sidebar-scrollspy-photo": MenuSidebarScrollspyPhoto,
 };
 
-export default function MenuSection({ menu, design_token }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }) {
+export default function MenuSection({
+  menu,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  menu: TemplateProps["content"]["menu"];
+  design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const variant = design_token?.layout?.section_variants?.menu ?? "grid";
   const Renderer = variants[variant] ?? MenuClassic;
-  return <Renderer menu={menu} design_token={design_token} />;
+  return (
+    <Renderer
+      menu={menu}
+      design_token={design_token}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
 }

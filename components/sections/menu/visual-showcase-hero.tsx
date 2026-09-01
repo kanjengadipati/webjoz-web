@@ -1,14 +1,20 @@
 "use client";
 import React from "react";
 import { Utensils } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function VisualShowcaseHero({ menu }: MenuVariantProps) {
+export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -20,27 +26,45 @@ export default function VisualShowcaseHero({ menu }: MenuVariantProps) {
       <div className="max-w-7xl mx-auto">
         <div id="hero-header" className="text-center mb-20 max-w-3xl mx-auto">
           {eyebrow && (
-            <span
-              id="hero-eyebrow"
+            <InlineText
+              section="menu"
+              fieldKey="eyebrow"
+              value={eyebrow}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
               className="text-xs font-medium tracking-widest uppercase text-dt-text-muted block mb-4 font-dt-heading"
-            >
-              {eyebrow}
-            </span>
+            />
           )}
-          <h2
-            id="hero-title"
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
             className="text-4xl md:text-6xl font-light tracking-tight mb-6 text-dt-text font-dt-heading"
-          >
-            {title}
-          </h2>
+          />
           <div className="w-16 h-[2px] bg-dt-primary mx-auto mb-6"></div>
           {subtitle && (
-            <p
-              id="hero-subtitle"
+            <InlineText
+              section="menu"
+              fieldKey="subtitle"
+              value={subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
               className="text-sm md:text-base text-dt-text-muted max-w-xl mx-auto italic font-light"
-            >
-              {subtitle}
-            </p>
+            />
           )}
         </div>
 

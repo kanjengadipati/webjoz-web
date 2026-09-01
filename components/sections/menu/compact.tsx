@@ -1,13 +1,19 @@
 "use client";
 import React from "react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function MenuCompact({ menu }: MenuVariantProps) {
+export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
   if (!menu) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
@@ -18,7 +24,18 @@ export default function MenuCompact({ menu }: MenuVariantProps) {
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: brandPrimary, background: `color-mix(in srgb, ${brandPrimary} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>Pilihan Menu</span>
-          <h2 style={{ fontFamily: headingFont, fontWeight: headingWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: brandText, marginTop: "0.85rem", lineHeight: 1.15 }}>{menu.title}</h2>
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={menu.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
+            style={{ fontFamily: headingFont, fontWeight: headingWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: brandText, marginTop: "0.85rem", lineHeight: 1.15 }}
+          />
         </div>
         {menu.categories?.map((cat, catIdx) => (
           <div key={catIdx} style={{ marginBottom: "2.5rem" }}>

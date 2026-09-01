@@ -1,14 +1,20 @@
 "use client";
 import React from "react";
 import { ShoppingBag, Image as ImageIcon } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function CatalogMasonryFlow({ catalog }: CatalogVariantProps) {
+export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -25,29 +31,50 @@ export default function CatalogMasonryFlow({ catalog }: CatalogVariantProps) {
       {/* Header */}
       <div className="mb-16 text-center max-w-2xl mx-auto">
         {eyebrow && (
-          <span
+          <InlineText
+            section="catalog"
+            fieldKey="eyebrow"
+            value={eyebrow}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
             className="text-xs uppercase tracking-widest font-semibold block mb-2"
             style={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
-          >
-            {eyebrow}
-          </span>
+          />
         )}
-        <h2
+        <InlineText
+          section="catalog"
+          fieldKey="title"
+          value={title}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+          as="h2"
           className="text-3xl md:text-4xl font-normal tracking-tight mb-4"
           style={{
             color: "var(--dt-text)",
             fontFamily: "var(--dt-heading-font, serif)"
           }}
-        >
-          {title}
-        </h2>
+        />
         {subtitle && (
-          <p
+          <InlineText
+            section="catalog"
+            fieldKey="subtitle"
+            value={subtitle}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="p"
             className="text-base font-light leading-relaxed"
             style={{ color: "var(--dt-text-muted)" }}
-          >
-            {subtitle}
-          </p>
+          />
         )}
       </div>
 

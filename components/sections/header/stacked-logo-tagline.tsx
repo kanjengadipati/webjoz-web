@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import { NavMenu, LogoImage, navCtaHref } from "../../templates/shared";
+import { NavMenu, LogoImage, navCtaHref, InlineText } from "../../templates/shared";
 import { Globe } from "lucide-react";
 import type { HeaderVariantProps } from "./types";
 
 export default function StackedLogoTagline({
   header, sectionOrder, hiddenSections,
   navLinkClass = "", drawerStyle, extraLinks, language,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
@@ -26,11 +27,31 @@ export default function StackedLogoTagline({
           imgClass="h-10 w-auto shrink-0 object-contain"
         />
         <span className="text-lg font-bold text-[var(--dt-text)] tracking-wide text-center">
-          {header?.brand_name || "Brand Kami"}
+          <InlineText
+            section="header"
+            fieldKey="brand_name"
+            value={header?.brand_name || "Brand Kami"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+          />
         </span>
         {header?.tagline && (
           <span className="text-[11px] text-[var(--dt-text-muted)] text-center italic tracking-wide">
-            {header.tagline}
+            <InlineText
+              section="header"
+              fieldKey="tagline"
+              value={header.tagline}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
           </span>
         )}
       </div>
@@ -50,7 +71,17 @@ export default function StackedLogoTagline({
             className="shrink-0 px-4 py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || defaultCta}
+            <InlineText
+              section="header"
+              fieldKey="nav_cta_text"
+              value={header?.nav_cta_text || defaultCta}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
           </a>
         )}
       </div>

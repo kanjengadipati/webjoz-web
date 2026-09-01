@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Utensils } from "lucide-react";
-import { MenuCatalogCard } from "../../templates/shared";
+import { MenuCatalogCard, InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -9,7 +9,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Reuses MenuCatalogCard with layout="compact".
  * Good for menus with many items where vertical space is precious.
  */
-export default function MenuCompactList({ menu }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null }) {
+export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
   if (!menu) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -21,12 +21,30 @@ export default function MenuCompactList({ menu }: { menu: TemplateProps["content
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>
-            {menu.eyebrow ?? "Pilihan Menu"}
-          </span>
-          <h2 style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}>
-            {menu.title}
-          </h2>
+          <InlineText
+            section="menu"
+            fieldKey="eyebrow"
+            value={menu.eyebrow ?? "Pilihan Menu"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}
+          />
+          <InlineText
+            section="menu"
+            fieldKey="title"
+            value={menu.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="h2"
+            style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}
+          />
           <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
         </div>
 

@@ -152,21 +152,46 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSectionInner benefits={b} design_token={dt} language={language} />
+          <BenefitsSectionInner
+            benefits={b}
+            design_token={dt}
+            language={language}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "benefits"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <MenuSectionInner menu={m} design_token={dt} />
+          <MenuSectionInner
+            menu={m}
+            design_token={dt}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "menu"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <CatalogSectionInner catalog={c} design_token={dt} />
+          <CatalogSectionInner
+            catalog={c}
+            design_token={dt}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={activeSection === "catalog"}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
@@ -252,7 +277,15 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} />
+        <TestimonialsSectionInner
+          testimonials={testimonials}
+          design_token={dt}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={activeSection === "testimonials"}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       </MemoPreviewSectionWrapper>
     ) : null,
     gallery: gallery ? (
@@ -282,7 +315,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
         return (
           <>
             <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
+              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
             {renderedSectionOrder.map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}

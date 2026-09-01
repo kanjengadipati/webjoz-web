@@ -1,14 +1,27 @@
 "use client";
 import React from "react";
 import { Quote } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface TestimonialsVariantProps {
   testimonials: TemplateProps["content"]["testimonials"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export default function TestimonialsFeaturedSpotlight({ testimonials: t }: TestimonialsVariantProps) {
+export default function TestimonialsFeaturedSpotlight({
+  testimonials: t,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: TestimonialsVariantProps) {
   if (!t) return null;
   const featured = t.items?.[0];
   if (!featured) return null;
@@ -17,7 +30,18 @@ export default function TestimonialsFeaturedSpotlight({ testimonials: t }: Testi
       <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Testimoni</span>
-          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{t.title}</h2>
+          <InlineText
+            section="testimonials"
+            fieldKey="title"
+            value={t.title}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h2"
+            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         </div>
         <div style={{ position: "relative", background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", padding: "3rem 2.5rem", textAlign: "center" }}>
           <div style={{ position: "absolute", top: "-1rem", left: "2rem", width: 40, height: 40, borderRadius: "50%", background: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>

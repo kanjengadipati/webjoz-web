@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import { NavMenu, LogoImage, navCtaHref } from "../../templates/shared";
+import { NavMenu, LogoImage, navCtaHref, InlineText } from "../../templates/shared";
 import { Globe } from "lucide-react";
 import type { HeaderVariantProps } from "./types";
 
 export default function CenteredLogo({
   header, sectionOrder, hiddenSections,
   navLinkClass = "", drawerStyle, extraLinks, language,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
@@ -26,7 +27,18 @@ export default function CenteredLogo({
             iconClass="w-6 h-6 shrink-0 text-[var(--dt-primary)]"
             imgClass="h-9 w-auto shrink-0 object-contain"
           />
-          <span className="truncate">{header?.brand_name || "Brand Kami"}</span>
+          <InlineText
+            section="header"
+            fieldKey="brand_name"
+            value={header?.brand_name || "Brand Kami"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            className="truncate"
+          />
         </span>
         {!header?.nav_cta_hidden && (
           <a
@@ -35,7 +47,17 @@ export default function CenteredLogo({
             className="shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center sm:hidden"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || defaultCta}
+            <InlineText
+              section="header"
+              fieldKey="nav_cta_text"
+              value={header?.nav_cta_text || defaultCta}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
           </a>
         )}
       </div>
@@ -55,13 +77,33 @@ export default function CenteredLogo({
             className="hidden sm:inline-flex shrink-0 px-5 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm items-center"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
-            {header?.nav_cta_text || defaultCta}
+            <InlineText
+              section="header"
+              fieldKey="nav_cta_text"
+              value={header?.nav_cta_text || defaultCta}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
           </a>
         )}
       </div>
       {header?.tagline && (
         <p className="text-[11px] text-[var(--dt-text-muted)] text-center w-full -mt-1">
-          {header.tagline}
+          <InlineText
+            section="header"
+            fieldKey="tagline"
+            value={header.tagline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+          />
         </p>
       )}
     </header>

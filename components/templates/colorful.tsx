@@ -6,7 +6,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, ctaHref,
+  SeoEditorPreview, ctaHref, InlineText,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "./helpers";
 import HeaderSection from "../sections/header";
@@ -63,24 +63,22 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
             <div className="md:col-span-7 space-y-5">
               {h.eyebrow && (
                 <span className="inline-flex items-center gap-1.5 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000", background: `color-mix(in srgb, ${yellow} 35%, white)`, color: black }}>
-                  <SparkleIcon className="w-[18px] h-[18px]" /> {h.eyebrow}
+                  <SparkleIcon className="w-[18px] h-[18px]" /> <InlineText section="hero" fieldKey="eyebrow" value={h.eyebrow} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 </span>
               )}
-              <h1 className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tight" style={{ color: black, ...headingVars }}>
-                {h.headline}
-              </h1>
-              <p className="text-sm font-bold leading-relaxed" style={{ color: "#3D2B00" }}>{h.subheadline}</p>
+              <InlineText section="hero" fieldKey="headline" value={h.headline} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} multiline as="h1" className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tight" style={{ color: black, ...headingVars }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section="hero" fieldKey="subheadline" value={h.subheadline} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} multiline as="p" className="text-sm font-bold leading-relaxed" style={{ color: "#3D2B00" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               <div className="flex flex-wrap gap-3 pt-2">
                 <a href={ctaHref(contact.phone, h.cta_url)}
                   className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all ${shadowBlock} ${shadowBlockHover}`}
                   style={{ background: yellow, color: ctaText }}>
-                  {h.cta_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
+                  <InlineText section="hero" fieldKey="cta_text" value={h.cta_text} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> <ArrowRight className="w-4 h-4 stroke-[3]" />
                 </a>
                 {h.cta_secondary_text && (
                   <a href="#contact"
                     className={`inline-flex items-center gap-2 px-6 py-3.5 border-2 border-black font-black text-xs uppercase tracking-wider transition-all bg-white ${shadowBlock} ${shadowBlockHover}`}
                     style={{ color: black }}>
-                    {h.cta_secondary_text}
+                    <InlineText section="hero" fieldKey="cta_secondary_text" value={h.cta_secondary_text} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </a>
                 )}
               </div>
@@ -111,9 +109,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           <section id="about" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E8F5E9" }}>
             <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-10 items-center" : "max-w-3xl mx-auto"}`}>
               <div className="space-y-4" style={{ textAlign: a.textAlign || "left" }}>
-                {a.eyebrow && <span className="inline-block text-[10px] font-black uppercase tracking-widest px-2 py-1" style={{ background: black, color: yellow }}>{a.eyebrow}</span>}
-                <h2 className="text-2xl md:text-3xl font-black uppercase leading-snug" style={{ color: black, ...headingVars }}>{a.title}</h2>
-                <p className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }}>{a.body}</p>
+                {a.eyebrow && <InlineText section="about" fieldKey="eyebrow" value={a.eyebrow} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" className="inline-block text-[10px] font-black uppercase tracking-widest px-2 py-1" style={{ background: black, color: yellow }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                <InlineText section="about" fieldKey="title" value={a.title} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} multiline as="h2" className="text-2xl md:text-3xl font-black uppercase leading-snug" style={{ color: black, ...headingVars }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <InlineText section="about" fieldKey="body" value={a.body} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} multiline as="p" className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-3 pt-3">
                     {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
@@ -140,26 +138,26 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     benefits: (
       <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
-          <BenefitsSectionInner benefits={b} design_token={dt} language={language} />
+          <BenefitsSectionInner benefits={b} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "benefits"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} />
+        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "testimonials"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
     ) : null,
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <MenuSectionInner menu={m} design_token={dt} />
+          <MenuSectionInner menu={m} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "menu"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <CatalogSectionInner catalog={c} design_token={dt} />
+          <CatalogSectionInner catalog={c} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "catalog"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
@@ -184,13 +182,13 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         <MemoSectionContent content={cta} render={(c) => (
           <section className="py-16 px-6 border-y-4 border-black text-center" style={{ background: black }}>
             <div className="max-w-2xl mx-auto space-y-6">
-              {c.eyebrow && <span className="inline-block border-2 border-yellow-300 text-yellow-300 text-[10px] font-black uppercase px-2.5 py-1">{c.eyebrow}</span>}
-              <h2 className="text-2xl md:text-4xl font-black uppercase leading-tight" style={{ color: yellow, ...headingVars }}>{c.headline}</h2>
-              {c.subheadline && <p className="text-sm font-bold" style={{ color: "#ccc" }}>{c.subheadline}</p>}
+              {c.eyebrow && <InlineText section="cta" fieldKey="eyebrow" value={c.eyebrow} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "cta"} as="span" className="inline-block border-2 border-yellow-300 text-yellow-300 text-[10px] font-black uppercase px-2.5 py-1" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+              <InlineText section="cta" fieldKey="headline" value={c.headline} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "cta"} multiline as="h2" className="text-2xl md:text-4xl font-black uppercase leading-tight" style={{ color: yellow, ...headingVars }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              {c.subheadline && <InlineText section="cta" fieldKey="subheadline" value={c.subheadline} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "cta"} multiline as="p" className="text-sm font-bold" style={{ color: "#ccc" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
               <a href={c.button_url} className={`inline-flex items-center gap-2 px-8 py-4 border-4 font-black text-sm uppercase tracking-wider transition-all ${shadowBlock} hover:translate-y-0.5`} style={{ borderColor: yellow, background: yellow, color: ctaText }}>
-                {c.button_text} <ArrowRight className="w-4 h-4 stroke-[3]" />
+                <InlineText section="cta" fieldKey="button_text" value={c.button_text} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "cta"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> <ArrowRight className="w-4 h-4 stroke-[3]" />
               </a>
-              {c.trust_signal && <p className="text-[11px] font-bold" style={{ color: "#999" }}>{c.trust_signal}</p>}
+              {c.trust_signal && <InlineText section="cta" fieldKey="trust_signal" value={c.trust_signal} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "cta"} multiline as="p" className="text-[11px] font-bold" style={{ color: "#999" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
             </div>
           </section>
         )} />
@@ -236,7 +234,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         return (
           <>
             <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} />
+              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
             {renderedSectionOrder.map((k) => {
