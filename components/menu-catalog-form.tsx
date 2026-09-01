@@ -635,9 +635,7 @@ function SortableItemRow({
                 />
               </div>
               <div className="space-y-1">
-                <label className={MCF_INPUT_LABEL}>
-                  Nominal <span className="font-normal normal-case text-muted-foreground/60">(angka kalkulator)</span>
-                </label>
+                <label className={MCF_INPUT_LABEL}>Nominal</label>
                 <input
                   type="number"
                   min={0}
