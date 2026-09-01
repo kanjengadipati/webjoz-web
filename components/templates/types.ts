@@ -273,6 +273,7 @@ export interface TemplateProps {
       title: string;
       subtitle?: string;
       secondary_form_title?: string;
+      whatsapp_card_title?: string;
       address: string;
       phone: string;
       email: string;
