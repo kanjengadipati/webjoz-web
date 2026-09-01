@@ -134,6 +134,68 @@ const FAQ_DATA: Record<string, FAQCategory[]> = {
       ],
     },
     {
+      id: "catalog-menu",
+      title: "Katalog & Menu",
+      icon: "🛍️",
+      items: [
+        {
+          q: "Apa perbedaan antara Katalog dan Menu?",
+          a: "Katalog cocok untuk toko produk fisik/digital — menampilkan foto, harga, fitur, dan spesifikasi. Menu cocok untuk bisnis kuliner — menampilkan hidangan per kategori lengkap dengan tags (mis. Vegetarian, Halal, Pedas) dan link order di platform delivery (GrabFood, GoFood, dll). Keduanya memiliki fitur pencarian, filter kategori, varian/add-on, dan pemesanan via WhatsApp.",
+          tags: ["katalog", "menu", "produk"],
+        },
+        {
+          q: "Bagaimana cara menambah kategori dan produk?",
+          a: "Buka Dashboard → Website → tab Katalog/Menu. Klik \"+ Kategori Baru\" untuk membuat kategori (mis. Minuman, Makanan Utama). Di dalam kategori, klik \"+ Tambah Item\" untuk menambah produk/menu. Setiap item bisa diisi dengan: nama, deskripsi, harga, foto (bisa banyak), badge (mis. Best Seller), status stok, dan varian/add-on.",
+          tags: ["kategori", "tambah produk", "item"],
+        },
+        {
+          q: "Bagaimana cara kerja pencarian dan filter kategori?",
+          a: "Di halaman website Anda, pengunjung bisa langsung mengetik di kotak pencarian untuk memfilter produk secara real-time — berdasarkan nama, deskripsi, tags, atau fitur. Di bawah kotak pencarian ada tombol kategori (pills) untuk menyaring per kategori. Hasil update otomatis tanpa perlu reload halaman.",
+          tags: ["search", "filter", "pencarian", "kategori"],
+        },
+        {
+          q: "Apa itu Tags pada item menu?",
+          a: "Tags adalah label pendek yang mendeskripsikan karakteristik item — contoh: Vegetarian, Vegan, Halal, Pedas, Best Seller, Bebas Gluten. Tags ditampilkan sebagai chip berwarna di kartu item, dan bisa dicari oleh pengunjung. Tambahkan tags saat mengisi form item di Katalog/Menu manager.",
+          tags: ["tags", "label", "vegetarian", "halal"],
+        },
+        {
+          q: "Bagaimana cara menambahkan link GoFood, GrabFood, atau platform delivery lain?",
+          a: "Di form item (saat tambah/edit item menu), ada kolom \"Platform Delivery\" — tambahkan nama platform (mis. GrabFood) dan URL link langsung ke item di platform tersebut. Hasilnya akan muncul sebagai tombol link di kartu item dengan indikator hijau online.",
+          tags: ["delivery", "grabfood", "gofood", "shopee food", "platform"],
+        },
+        {
+          q: "Apa itu Varian dan Add-On?",
+          a: "Varian adalah pilihan yang mengubah harga item — misalnya ukuran (S/M/L) atau pilihan rasa. Add-on adalah tambahan opsional — misalnya topping, extra saus. Saat pengunjung klik \"Pesan\", mereka akan memilih varian/add-on dulu sebelum pesanan dikirim ke WhatsApp. Tambahkan varian lewat tombol \"+ Varian/Add-on\" di form item.",
+          tags: ["varian", "add-on", "pilihan", "ukuran"],
+        },
+        {
+          q: "Bagaimana cara menandai item sebagai habis/tidak tersedia?",
+          a: "Di form edit item, aktifkan toggle \"Stok Habis\" atau atur \"Ketersediaan\" menjadi tidak tersedia. Item yang habis akan ditampilkan dengan overlay abu-abu dan badge \"Habis\" — tombol pesan otomatis dinonaktifkan sehingga pengunjung tidak bisa memesan.",
+          tags: ["stok", "habis", "tidak tersedia", "availability"],
+        },
+        {
+          q: "Bagaimana sistem pemesanan via WhatsApp bekerja?",
+          a: "Pengunjung memilih produk/menu, klik \"Pesan\", pilih varian/add-on jika ada, lalu klik \"Kirim ke WhatsApp\". Pesan otomatis berisi daftar item yang dipesan (nama, varian, harga, jumlah) akan terbuka di WhatsApp dan dikirim langsung ke nomor bisnis Anda. Tidak perlu aplikasi kasir tambahan.",
+          tags: ["whatsapp", "pesan", "order", "checkout"],
+        },
+        {
+          q: "Bisakah pengunjung memesan banyak item sekaligus?",
+          a: "Ya! Ada keranjang belanja (cart) yang bisa menampung banyak item dari berbagai kategori sekaligus. Pengunjung tinggal klik tombol \"+ Pesan\" di setiap item untuk menambahkan ke keranjang, lalu checkout semuanya sekaligus ke WhatsApp dalam satu pesan yang terstruktur.",
+          tags: ["keranjang", "cart", "banyak item", "checkout"],
+        },
+        {
+          q: "Berapa banyak kategori dan item yang bisa ditambahkan?",
+          a: "Tidak ada batasan jumlah kategori maupun item di Webjoz. Anda bisa menambahkan sebanyak yang diperlukan. Semua varian tampilan katalog/menu (Grid, Classic, Dense, Tabs) sudah dioptimasi untuk menampilkan banyak item dengan performa yang baik.",
+          tags: ["limit", "batasan", "banyak", "kapasitas"],
+        },
+        {
+          q: "Tampilan Katalog/Menu ada berapa macam?",
+          a: "Ada 10+ varian tampilan yang bisa dipilih: Cards (grid besar), Classic (grid dengan divider kategori), Grid Dense (grid padat untuk banyak item), Tabs by Category (tab per kategori), Compact List (baris horizontal), Text List (daftar teks gaya menu restoran fine dining), Split Hero, Showcase Featured, Masonry, dan lainnya. Ganti tampilan dari editor website.",
+          tags: ["tampilan", "varian", "template", "layout"],
+        },
+      ],
+    },
+    {
       id: "troubleshooting",
       title: "Troubleshooting",
       icon: "🔧",
@@ -266,6 +328,68 @@ const FAQ_DATA: Record<string, FAQCategory[]> = {
         {
           q: "How do I view my payment history?",
           a: 'Go to Dashboard → Upgrade Plan. There you can see your active plan. Full transaction history can be viewed in the "Billing" section in settings.',
+        },
+      ],
+    },
+    {
+      id: "catalog-menu",
+      title: "Catalog & Menu",
+      icon: "🛍️",
+      items: [
+        {
+          q: "What's the difference between Catalog and Menu?",
+          a: "Catalog is suited for physical/digital product stores — displaying photos, prices, features, and specs. Menu is suited for food & beverage businesses — displaying dishes per category with tags (e.g. Vegetarian, Halal, Spicy) and order links on delivery platforms (GrabFood, GoFood, etc). Both support search, category filtering, variants/add-ons, and WhatsApp ordering.",
+          tags: ["catalog", "menu", "product"],
+        },
+        {
+          q: "How do I add categories and items?",
+          a: 'Go to Dashboard → Website → Catalog/Menu tab. Click "+ New Category" to create a category (e.g. Drinks, Main Course). Inside the category, click "+ Add Item" to add a product/dish. Each item can have: name, description, price, photos (multiple), badge (e.g. Best Seller), stock status, and variants/add-ons.',
+          tags: ["category", "add product", "item"],
+        },
+        {
+          q: "How does the search and category filter work?",
+          a: "On your website, visitors can type in the search box to filter products in real-time — by name, description, tags, or features. Below the search box there are category pill buttons to narrow by category. Results update instantly without reloading the page.",
+          tags: ["search", "filter", "category"],
+        },
+        {
+          q: "What are Tags on menu items?",
+          a: "Tags are short labels describing item characteristics — e.g. Vegetarian, Vegan, Halal, Spicy, Best Seller, Gluten Free. Tags appear as colored chips on item cards and are searchable by visitors. Add tags when filling in the item form in the Catalog/Menu manager.",
+          tags: ["tags", "label", "vegetarian", "halal"],
+        },
+        {
+          q: "How do I add GoFood, GrabFood, or other delivery platform links?",
+          a: 'In the item form (when adding/editing a menu item), there is a "Delivery Platforms" field — add the platform name (e.g. GrabFood) and the direct URL link to that item on the platform. It will appear as a link button on the item card with a green online indicator.',
+          tags: ["delivery", "grabfood", "gofood", "shopee food", "platform"],
+        },
+        {
+          q: "What are Variants and Add-Ons?",
+          a: 'Variants are choices that change the item price — for example size (S/M/L) or flavor. Add-ons are optional extras — like toppings or extra sauce. When a visitor clicks "Order", they select variants/add-ons before the order is sent to WhatsApp. Add variants via the "+ Variant/Add-on" button in the item form.',
+          tags: ["variant", "add-on", "options", "size"],
+        },
+        {
+          q: "How do I mark an item as out of stock / unavailable?",
+          a: 'In the item edit form, enable the "Out of Stock" toggle or set Availability to unavailable. Out-of-stock items are displayed with a grey overlay and an "Out of Stock" badge — the order button is automatically disabled so visitors cannot order.',
+          tags: ["stock", "out of stock", "unavailable", "availability"],
+        },
+        {
+          q: "How does the WhatsApp ordering system work?",
+          a: 'Visitors select a product/dish, click "Order", choose variants/add-ons if any, then click "Send to WhatsApp". A pre-filled message containing the list of ordered items (name, variant, price, quantity) will open in WhatsApp and be sent directly to your business number. No additional POS app needed.',
+          tags: ["whatsapp", "order", "checkout"],
+        },
+        {
+          q: "Can visitors order multiple items at once?",
+          a: 'Yes! There is a shopping cart that can hold multiple items from different categories at once. Visitors click the "+ Order" button on each item to add to the cart, then checkout everything at once to WhatsApp in a single structured message.',
+          tags: ["cart", "multiple items", "checkout"],
+        },
+        {
+          q: "How many categories and items can I add?",
+          a: "There is no limit on the number of categories or items in Webjoz. You can add as many as needed. All catalog/menu layout variants (Grid, Classic, Dense, Tabs) are optimized to display many items with good performance.",
+          tags: ["limit", "many", "capacity"],
+        },
+        {
+          q: "How many Catalog/Menu display variants are there?",
+          a: "There are 10+ layout variants to choose from: Cards (large grid), Classic (grid with category dividers), Grid Dense (compact grid for many items), Tabs by Category (category tabs), Compact List (horizontal rows), Text List (text-style like fine dining menus), Split Hero, Showcase Featured, Masonry, and more. Switch layouts from the website editor.",
+          tags: ["display", "variant", "template", "layout"],
         },
       ],
     },
