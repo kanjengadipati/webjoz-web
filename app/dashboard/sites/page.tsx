@@ -1101,13 +1101,6 @@ export default function SitesPage() {
 
                   {/* Secondary action shortcut pills (Flex-wrap with icons - always visible) */}
                   <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/40">
-                    <Link
-                      href={`/dashboard/sites/${site.id}/blog`}
-                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
-                    >
-                      <FileText className="w-3 h-3 text-muted-foreground/80" />
-                      {t("dashboard.sites.linkBlog")}
-                    </Link>
                     {site.has_catalog && (
                       <Link
                         href={`/dashboard/sites/${site.id}/katalog`}
@@ -1126,6 +1119,13 @@ export default function SitesPage() {
                         {t("dashboard.sites.linkMenu")}
                       </Link>
                     )}
+                    <Link
+                      href={`/dashboard/sites/${site.id}/blog`}
+                      className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
+                    >
+                      <FileText className="w-3 h-3 text-muted-foreground/80" />
+                      {t("dashboard.sites.linkBlog")}
+                    </Link>
                     <Link
                       href={`/dashboard/sites/${site.id}/seo`}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
