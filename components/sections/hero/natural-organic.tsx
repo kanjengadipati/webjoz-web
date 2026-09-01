@@ -120,7 +120,17 @@ export default function HeroNaturalOrganic({
             }}
           >
             <Leaf style={{ width: 10, height: 10 }} />
-            {h.eyebrow || h.badge_text}
+            <InlineText
+              section="hero"
+              fieldKey="eyebrow"
+              value={h.eyebrow || h.badge_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </motion.div>
         )}
 
@@ -245,7 +255,17 @@ export default function HeroNaturalOrganic({
                 border: "1px solid color-mix(in srgb, var(--dt-text) 22%, transparent)",
               }}
             >
-              {h.cta_secondary_text}
+              <InlineText
+                section="hero"
+                fieldKey="cta_secondary_text"
+                value={h.cta_secondary_text ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </a>
           )}
         </motion.div>
@@ -266,7 +286,17 @@ export default function HeroNaturalOrganic({
             }}
           >
             <Leaf style={{ width: 10, height: 10, color: "var(--dt-primary)" }} />
-            {h.opening_hours}
+            <InlineText
+              section="hero"
+              fieldKey="opening_hours"
+              value={h.opening_hours ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </motion.p>
         )}
 

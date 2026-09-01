@@ -90,12 +90,15 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
               </div>
               {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t" style={{ borderColor: border }}>
-                  {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                  {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].map((stat, i) => {
+                    const keyNum = i + 1;
+                    return stat ? (
                     <div key={i} className="text-center space-y-1">
-                      <p className="text-2xl font-bold" style={{ color: sage, fontFamily: "var(--dt-heading-font)" }}>{stat!.value}</p>
-                      <p className="text-[10px]  " style={{ color: brownMuted }}>{stat!.label}</p>
+                      <p className="text-2xl font-bold" style={{ color: sage, fontFamily: "var(--dt-heading-font)" }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.value`} value={stat.value ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                      <p className="text-[10px]  " style={{ color: brownMuted }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.label`} value={stat.label ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
                     </div>
-                  ))}
+                    ) : null;
+                  })}
                 </div>
               )}
             </div>

@@ -83,7 +83,25 @@ export function GallerySectionHeader({
   );
 }
 
-export function Lightbox({ items, index, onClose }: { items: GalleryItem[]; index: number; onClose: () => void }) {
+export function Lightbox({
+  items,
+  index,
+  onClose,
+  isEditorMode,
+  isSelected,
+  onUpdateCaption,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  items: GalleryItem[];
+  index: number;
+  onClose: () => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  onUpdateCaption?: (idx: number, val: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const [current, setCurrent] = useState(index);
 
   const prev = useCallback(() => setCurrent((i) => (i > 0 ? i - 1 : items.length - 1)), [items.length]);
@@ -179,8 +197,24 @@ export function Lightbox({ items, index, onClose }: { items: GalleryItem[]; inde
             className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
           />
         ) : null}
-        {item.caption && (
-          <p className="mt-3 text-white/80 text-sm text-center max-w-lg">{item.caption}</p>
+        {(item.caption || isEditorMode) && (
+          <p className="mt-3 text-white/80 text-sm text-center max-w-lg">
+            {isEditorMode ? (
+              <InlineText
+                section="gallery"
+                fieldKey={`items.${current}.caption`}
+                value={item.caption ?? ""}
+                placeholder="Tambah caption..."
+                onUpdateField={(_, __, val) => onUpdateCaption?.(current, val)}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            ) : (
+              item.caption
+            )}
+          </p>
         )}
         {items.length > 1 && (
           <p className="mt-2 text-white/50 text-xs">{current + 1} / {items.length}</p>

@@ -93,7 +93,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
                       <DynamicIcon name={about.icon} defaultIcon={Shield} className="w-8 h-8" />
                     </div>
                     <p className="font-bold text-[var(--dt-text)] text-xl">{header?.brand_name || "Bisnis Kami"}</p>
-                    <p className="text-[var(--dt-text-muted)] text-sm max-w-xs leading-relaxed">{about.title}</p>
+                    <p className="text-[var(--dt-text-muted)] text-sm max-w-xs leading-relaxed"><InlineText section="about" fieldKey="title" value={about.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
                   </div>
                 </div>
                 {about.image_url && (

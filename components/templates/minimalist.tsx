@@ -79,12 +79,15 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
                 <InlineText section="about" fieldKey="body" value={a.body} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} multiline as="p" className="text-sm font-light leading-relaxed" style={{ color: zinc500 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-6 pt-4 border-t" style={{ borderColor: zinc200 }}>
-                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].map((stat, i) => {
+                      const keyNum = i + 1;
+                      return stat ? (
                       <div key={i} className="space-y-1">
-                        <p className="text-2xl font-light" style={{ color: zinc900 }}>{stat!.value}</p>
-                        <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: zinc500 }}>{stat!.label}</p>
+                        <p className="text-2xl font-light" style={{ color: zinc900 }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.value`} value={stat.value ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                        <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: zinc500 }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.label`} value={stat.label ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
                       </div>
-                    ))}
+                      ) : null;
+                    })}
                   </div>
                 )}
               </div>

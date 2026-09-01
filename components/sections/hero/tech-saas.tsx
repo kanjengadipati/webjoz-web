@@ -121,7 +121,17 @@ export default function HeroTechSaaS({
                 animation: "pulse 1.5s infinite",
               }}
             />
-            {h.eyebrow}
+            <InlineText
+              section="hero"
+              fieldKey="eyebrow"
+              value={h.eyebrow ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </motion.div>
         )}
 
@@ -226,7 +236,17 @@ export default function HeroTechSaaS({
                 fontSize: "0.875rem",
               }}
             >
-              {h.cta_secondary_text}
+              <InlineText
+                section="hero"
+                fieldKey="cta_secondary_text"
+                value={h.cta_secondary_text ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </a>
           )}
         </motion.div>
@@ -238,7 +258,17 @@ export default function HeroTechSaaS({
             transition={{ delay: 0.5 }}
             style={{ fontSize: "0.7rem", color: "var(--dt-text-muted)", margin: 0 }}
           >
-            {h.badge_text}
+            <InlineText
+              section="hero"
+              fieldKey="badge_text"
+              value={h.badge_text ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </motion.p>
         )}
       </div>

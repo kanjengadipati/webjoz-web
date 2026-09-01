@@ -82,7 +82,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                   </a>
                 )}
               </div>
-              {h.badge_text && <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: pink }}>{h.badge_text}</p>}
+              {h.badge_text && <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: pink }}><InlineText section="hero" fieldKey="badge_text" value={h.badge_text ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>}
             </div>
             <div className="md:col-span-5 relative">
               <div className="absolute inset-0 rounded-2xl rotate-2 border-2 border-black" style={{ background: pink }} />
@@ -114,12 +114,15 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
                 <InlineText section="about" fieldKey="body" value={a.body} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} multiline as="p" className="text-sm font-semibold leading-relaxed" style={{ color: "#2D4A1E" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 {(a.highlight_stat_1 || a.highlight_stat_2 || a.highlight_stat_3) && (
                   <div className="grid grid-cols-3 gap-3 pt-3">
-                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].filter(Boolean).map((stat, i) => (
+                    {[a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3].map((stat, i) => {
+                      const keyNum = i + 1;
+                      return stat ? (
                       <div key={i} className={`border-2 border-black p-3 text-center ${shadowBlock}`} style={{ background: i === 0 ? yellow : i === 1 ? pink : "#B2EBF2" }}>
-                        <p className="text-xl font-black" style={{ color: black }}>{stat!.value}</p>
-                        <p className="text-[9px] font-black uppercase tracking-wider" style={{ color: black }}>{stat!.label}</p>
+                        <p className="text-xl font-black" style={{ color: black }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.value`} value={stat.value ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                        <p className="text-[9px] font-black uppercase tracking-wider" style={{ color: black }}><InlineText section="about" fieldKey={`highlight_stat_${keyNum}.label`} value={stat.label ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "about"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
                       </div>
-                    ))}
+                      ) : null;
+                    })}
                   </div>
                 )}
               </div>

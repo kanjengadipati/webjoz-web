@@ -151,7 +151,17 @@ export default function HeroSplitEditorial({
                 color: "var(--dt-primary)",
               }}
             >
-              {h.eyebrow}
+              <InlineText
+                section="hero"
+                fieldKey="eyebrow"
+                value={h.eyebrow ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </span>
           </motion.div>
         )}
@@ -255,7 +265,17 @@ export default function HeroSplitEditorial({
                 fontSize: "0.85rem",
               }}
             >
-              {h.cta_secondary_text}
+              <InlineText
+                section="hero"
+                fieldKey="cta_secondary_text"
+                value={h.cta_secondary_text ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
               <ArrowUpRight style={{ width: 14, height: 14 }} />
             </a>
           )}
