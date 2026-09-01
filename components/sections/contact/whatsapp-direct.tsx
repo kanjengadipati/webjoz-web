@@ -100,7 +100,7 @@ export default function WhatsAppDirect({
                 </div>
                 <div>
                   <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.2rem", margin: 0 }}>
-                    WhatsApp Official
+                    <InlineText section="contact" fieldKey="whatsapp_card_title" value={c.whatsapp_card_title || "WhatsApp Official"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[#25D366]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#25D366]" />
