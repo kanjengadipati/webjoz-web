@@ -43,7 +43,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
               <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
             <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.5, margin: 0 }}>
-              Portal kontak interaktif. {isEN ? "Send a message, see location, and access important contacts." : "Kirim pesan, lihat lokasi, dan akses kontak penting."}
+              Portal kontak interaktif. <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Send a message, see location, and access important contacts." : "Kirim pesan, lihat lokasi, dan akses kontak penting.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </p>
           </div>
           <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.8rem" }}>

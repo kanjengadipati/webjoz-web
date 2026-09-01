@@ -68,11 +68,7 @@ export default function WhatsAppDirect({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          <p style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", maxWidth: "34rem", margin: "0 auto", lineHeight: 1.6 }}>
-            {isEN
-              ? "Chat with our team directly on WhatsApp for instant assistance, orders, and inquiries."
-              : "Hubungi tim kami langsung melalui WhatsApp untuk konsultasi cepat, pemesanan, dan informasi lengkap."}
-          </p>
+          <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Chat with our team directly on WhatsApp for instant assistance, orders, and inquiries." : "Hubungi tim kami langsung melalui WhatsApp untuk konsultasi cepat, pemesanan, dan informasi lengkap.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", maxWidth: "34rem", margin: "0 auto", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </div>
 
         {/* Main Grid: WhatsApp Hero Card + Optional Secondary Form/Info */}

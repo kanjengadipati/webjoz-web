@@ -271,6 +271,7 @@ export interface TemplateProps {
     };
     contact: {
       title: string;
+      subtitle?: string;
       address: string;
       phone: string;
       email: string;

@@ -41,9 +41,7 @@ export default function MinimalCentered({
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
         />
-        <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", maxWidth: "24rem", margin: "0 auto 2rem", lineHeight: 1.6 }}>
-          {isEN ? "Have a question, idea, or just want to say hello? We'll get back to you shortly." : "Punya pertanyaan, ide kolaborasi, atau hanya ingin menyapa? Kami akan segera membalasnya."}
-        </p>
+        <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Have a question, idea, or just want to say hello? We'll get back to you shortly." : "Punya pertanyaan, ide kolaborasi, atau hanya ingin menyapa? Kami akan segera membalasnya.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", maxWidth: "24rem", margin: "0 auto 2rem", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
 
         {hasLeadForm && (
           <div style={{ textAlign: "left", background: "var(--dt-surface)", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" }}>
