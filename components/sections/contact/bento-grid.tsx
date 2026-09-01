@@ -4,13 +4,14 @@ import { MapPin, Phone, Mail, Clock, ExternalLink, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
+import { InlineText } from "../../templates/shared";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
   const addr = c.address || "Monas, Jakarta, Indonesia";
   return `https://maps.google.com/?q=${encodeURIComponent(addr)}`;
 }
 
-export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id" }: ContactVariantProps) {
+export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id", onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: ContactVariantProps) {
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
@@ -39,7 +40,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
               Bento Grid
             </span>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4cqw, 1.75rem)", color: "var(--dt-text)", margin: "0 0 0.5rem" } as any}>
-              {c.title}
+              <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
             <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.5, margin: 0 }}>
               Portal kontak interaktif. {isEN ? "Send a message, see location, and access important contacts." : "Kirim pesan, lihat lokasi, dan akses kontak penting."}
@@ -50,14 +51,14 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
               <div style={iconBox}><Mail style={{ width: 14, height: 14 }} /></div>
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Email Utama</p>
-                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}>{displayEmail}</p>
+                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <div style={iconBox}><Phone style={{ width: 14, height: 14 }} /></div>
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon"}</p>
-                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}>{displayPhone}</p>
+                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="phone" value={displayPhone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
               </div>
             </div>
           </div>
@@ -72,7 +73,9 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
                 <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)", flexShrink: 0 }} />
                 <div style={{ minWidth: 0 }}>
                   <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Address" : "Alamat"}</p>
-                  <p style={{ fontSize: "0.75rem", color: "var(--dt-text)", fontWeight: 500, margin: "0.125rem 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayAddress}</p>
+                  <p style={{ fontSize: "0.75rem", color: "var(--dt-text)", fontWeight: 500, margin: "0.125rem 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <InlineText section="contact" fieldKey="address" value={displayAddress ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </p>
                 </div>
               </div>
               <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ padding: "0.375rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", color: "var(--dt-primary)", flexShrink: 0 }}>

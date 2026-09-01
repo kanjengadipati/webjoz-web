@@ -100,7 +100,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><MapPin style={{ width: 18, height: 18 }} /></div>
                   <div style={{ flexGrow: 1 }}>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Address" : "Alamat / Lokasi"}</h4>
-                    <p style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0.75rem", lineHeight: 1.5 }}>{c.address}</p>
+                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0.75rem", lineHeight: 1.5 }} />
                     {showMap && (
                       <>
                         <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem" }}>

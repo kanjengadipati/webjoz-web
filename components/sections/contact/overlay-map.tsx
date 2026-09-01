@@ -4,13 +4,14 @@ import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
+import { InlineText } from "../../templates/shared";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
   const addr = c.address || "Monas, Jakarta, Indonesia";
   return `https://maps.google.com/?q=${encodeURIComponent(addr)}`;
 }
 
-export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id" }: ContactVariantProps) {
+export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id", onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: ContactVariantProps) {
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
@@ -31,7 +32,9 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
           <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)" }} />
           <div>
             <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{isEN ? "Location" : "Lokasi"}</p>
-            <p style={{ fontSize: "0.7rem", color: "var(--dt-text-muted)", margin: 0 }}>{displayAddress}</p>
+            <p style={{ fontSize: "0.7rem", color: "var(--dt-text-muted)", margin: 0 }}>
+              <InlineText section="contact" fieldKey="address" value={displayAddress ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            </p>
           </div>
         </div>
       </div>
@@ -43,7 +46,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
               {isEN ? "Overlay Map" : "Peta Overlay"}
             </span>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "1.25rem", color: "var(--dt-text)", margin: "0 0 0.25rem" } as any}>
-              {isEN ? "Contact Us" : "Hubungi Kami"}
+              <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
             <p style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 }}>
               {isEN ? "Need a quote or partnership info? Fill in the form, the map shows our office location." : "Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami."}
@@ -52,11 +55,11 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
             <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", fontSize: "0.7rem", color: "var(--dt-text-muted)" }}>
               <div>
                 <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>{isEN ? "Phone" : "Telepon"}</p>
-                <p style={{ margin: 0 }}>{displayPhone}</p>
+                <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="phone" value={displayPhone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
               </div>
               <div>
                 <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>Email</p>
-                <p style={{ margin: 0 }}>{displayEmail}</p>
+                <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
               </div>
             </div>
             <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontSize: "0.7rem", fontWeight: 600, marginTop: "0.75rem" }}>

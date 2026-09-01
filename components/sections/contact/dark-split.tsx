@@ -4,8 +4,9 @@ import { MapPin, Mail, Navigation } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
+import { InlineText } from "../../templates/shared";
 
-export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id" }: ContactVariantProps) {
+export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, language = "id", onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: ContactVariantProps) {
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
@@ -28,7 +29,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               </span>
             </div>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.75rem" } as any}>
-              {c.title}
+              <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
             <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
               {isEN ? "Use this portal to send inquiries, reports, or collaboration discussions." : "Gunakan portal ini untuk mengirimkan pertanyaan, laporan, atau diskusi kerjasama."}
@@ -52,7 +53,9 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               </div>
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Physical HQ" : "Markas Fisik"}</p>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>{displayAddress}</p>
+                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                  <InlineText section="contact" fieldKey="address" value={displayAddress ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                </p>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
@@ -61,7 +64,9 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               </div>
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>Email</p>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>{displayEmail}</p>
+                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                  <InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                </p>
               </div>
             </div>
           </div>
