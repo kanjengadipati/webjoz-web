@@ -566,9 +566,9 @@ function KatSortableItemRow({
         />
 
         <div className="space-y-4 min-w-0">
-          {/* Name & Price */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
+          {/* Name & Price — flat 3-column grid */}
+          <div className={`grid gap-3 ${hasPrice ? "sm:grid-cols-[2fr_1.4fr_1.1fr]" : ""}`}>
+            <div className="space-y-1.5">
               <label className={inputLabel}>{t("dashboard.sitesKatalog.labelName", "Nama Produk")}</label>
               <input
                 type="text"
@@ -580,9 +580,9 @@ function KatSortableItemRow({
             </div>
 
             {hasPrice && (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <label className={inputLabel}>{t("dashboard.sitesKatalog.priceDisplay", "Tampilan Harga")}</label>
+              <>
+                <div className="space-y-1.5">
+                  <label className={inputLabel}>{t("dashboard.sitesKatalog.priceDisplay", "Harga Tampil")}</label>
                   <input
                     type="text"
                     value={item.price_display ?? item.price ?? ""}
@@ -594,9 +594,9 @@ function KatSortableItemRow({
                     className={inputBase}
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <label className={inputLabel} title={t("dashboard.sitesKatalog.priceAmountHelp", "Untuk kalkulasi keranjang")}>
-                    {t("dashboard.sitesKatalog.priceAmount", "Nominal (Angka)")}
+                    {t("dashboard.sitesKatalog.priceAmount", "Nominal")}
                   </label>
                   <input
                     type="number"
@@ -608,15 +608,15 @@ function KatSortableItemRow({
                     className={`${inputBase} [appearance:textfield]`}
                   />
                 </div>
-              </div>
+              </>
             )}
           </div>
 
-          {/* Badge & Capacity/Tags Row */}
-          <div className="grid gap-4 sm:grid-cols-2">
+          {/* Badge & Capacity Row */}
+          <div className="grid gap-3 sm:grid-cols-2">
             {hasBadge && (
-              <div className="space-y-1">
-                <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge", "Badge / Label Khusus")}</label>
+              <div className="space-y-1.5">
+                <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge", "Badge / Label")}</label>
                 <input
                   type="text"
                   value={normStr(item.badge)}
@@ -628,7 +628,7 @@ function KatSortableItemRow({
             )}
 
             {sectionKey === "catalog" && (
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <label className={inputLabel}>{t("dashboard.sitesKatalog.labelCapacity", "Kapasitas / Satuan")}</label>
                 <input
                   type="text"
