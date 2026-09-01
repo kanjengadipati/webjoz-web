@@ -60,7 +60,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
 
   return (
     <div
-      className="h-full overflow-y-auto p-4 sm:p-8 transition-colors duration-500"
+      className="h-full overflow-y-auto p-4 sm:p-8 transition-colors duration-500 relative"
       style={{
         background: designToken ? "var(--dt-bg)" : "#0d0f14",
         color: designToken ? "var(--dt-text)" : "#cbd5e1",
@@ -68,7 +68,10 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
         ...cssVars
       }}
     >
-      <div className="w-full max-w-xl lg:max-w-3xl mx-auto space-y-6 sm:space-y-8">
+      {/* ── Glowing AI Scanline Beam traversing down the canvas ── */}
+      <div className="animate-canvas-scanline pointer-events-none" />
+
+      <div className="w-full max-w-xl lg:max-w-3xl mx-auto space-y-6 sm:space-y-8 relative z-10">
         {designToken && (
           <div
             className="flex items-center gap-2 mb-2 px-3 py-1.5 rounded-full w-fit text-[11px] font-medium animate-in fade-in slide-in-from-top-2 duration-500 shadow-sm"
@@ -94,7 +97,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           <div className="flex items-center gap-2 min-w-0">
             {businessName ? (
               <div
-                className="py-1.5 px-3 flex items-center rounded-lg text-xs sm:text-sm font-bold truncate max-w-[150px] sm:max-w-none whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-400 shadow-sm"
+                className="py-1.5 px-3 flex items-center rounded-lg text-xs sm:text-sm font-bold truncate max-w-[150px] sm:max-w-none whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-400 shadow-sm animate-skeleton-shimmer"
                 style={{
                   background: designToken ? "var(--dt-primary-soft)" : "color-mix(in srgb, var(--primary) 25%, transparent)",
                   border: designToken ? "1px solid color-mix(in srgb, var(--dt-primary) 30%, transparent)" : "1px solid color-mix(in srgb, var(--primary) 40%, transparent)",
@@ -148,7 +151,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           <div className="relative z-10 flex flex-col justify-center p-6 sm:p-12 gap-3.5 sm:gap-4.5">
             {businessType ? (
               <div
-                className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400 shadow-sm"
+                className="h-5 w-fit px-3 flex items-center rounded-full text-[10px] font-bold uppercase tracking-widest animate-in fade-in duration-400 shadow-sm animate-skeleton-shimmer"
                 style={{
                   background: designToken ? "var(--dt-primary-soft)" : "color-mix(in srgb, var(--primary) 20%, transparent)",
                   color: designToken ? "var(--dt-primary)" : "var(--primary)",
@@ -180,7 +183,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
             <div className="space-y-2.5">
               {businessName ? (
                 <div
-                  className="min-h-10 py-1 px-3 flex items-center rounded-xl font-black text-lg sm:text-2xl truncate leading-tight animate-in fade-in slide-in-from-bottom-2 duration-500 shadow-sm"
+                  className="min-h-10 py-1 px-3 flex items-center rounded-xl font-black text-lg sm:text-2xl truncate leading-tight animate-in fade-in slide-in-from-bottom-2 duration-500 shadow-sm animate-skeleton-shimmer-strong"
                   style={{
                     background: designToken ? "var(--dt-surface)" : "rgba(255,255,255,0.06)",
                     color: designToken ? "var(--dt-text)" : "white",
@@ -194,7 +197,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               )}
               {description ? (
                 <div
-                  className="min-h-7 py-1 px-3 flex items-center rounded-lg text-xs animate-in fade-in duration-500"
+                  className="min-h-7 py-1 px-3 flex items-center rounded-lg text-xs animate-in fade-in duration-500 animate-skeleton-shimmer"
                   style={{
                     background: designToken ? "var(--dt-surface)" : "rgba(255,255,255,0.04)",
                     color: designToken ? "var(--dt-text-muted)" : "#cbd5e1"
@@ -210,7 +213,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
             <div className="h-4 w-2/3 rounded-md animate-skeleton-shimmer" style={skeletonSoft} />
 
             <div
-              className="h-11 w-40 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-500 shadow-sm"
+              className="h-11 w-40 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-500 shadow-sm animate-skeleton-shimmer-strong"
               style={highlight
                 ? {
                     background: designToken ? "var(--dt-primary)" : "color-mix(in srgb, var(--primary) 75%, transparent)",
