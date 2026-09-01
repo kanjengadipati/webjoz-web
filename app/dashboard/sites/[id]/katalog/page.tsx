@@ -56,8 +56,8 @@ const EMOJI_GROUPS = [
 
 // ─── Shared input styles ──────────────────────────────────────────────────────
 const inputBase =
-  "w-full px-3.5 py-2.5 border border-slate-200 dark:border-border/70 rounded-xl text-[13px] outline-none focus:border-primary/70 focus:ring-2 focus:ring-primary/15 bg-white dark:bg-muted/40 text-foreground placeholder:text-slate-400 dark:placeholder:text-muted-foreground/50 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-none transition-all";
-const inputLabel = "text-[10.5px] uppercase tracking-widest font-bold text-slate-500 dark:text-muted-foreground block mb-1.5";
+  "w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/50 transition-all shadow-2xs";
+const inputLabel = "text-[11px] uppercase tracking-wider font-bold text-muted-foreground block mb-1.5";
 
 // Strip AI-generated literal null strings
 const normStr = (v: any): string => {
@@ -787,14 +787,14 @@ function KatSortableItemRow({
           </div>
 
           {/* Description Toolbar */}
-          <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-muted/40 border border-slate-200 dark:border-border border-b-0 rounded-t-xl px-3 py-2 text-xs">
+          <div className="flex items-center gap-1.5 bg-muted/40 border border-border border-b-0 rounded-t-xl px-3 py-2 text-xs">
             <button
               type="button"
               onClick={() => {
                 const cur = item.description ?? "";
                 updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
               }}
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-background hover:bg-slate-100 dark:hover:bg-muted text-slate-600 dark:text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs flex items-center gap-1 border border-slate-200 dark:border-border/60 transition-colors shadow-sm"
+              className="px-2.5 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs flex items-center gap-1 border border-border/80 transition-colors shadow-2xs"
             >
               <span>•</span> {t("dashboard.sitesKatalog.bulletList", "Bullet List")}
             </button>
@@ -804,21 +804,21 @@ function KatSortableItemRow({
                 const cur = item.description ?? "";
                 updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
               }}
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-background hover:bg-slate-100 dark:hover:bg-muted text-slate-600 dark:text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs border border-slate-200 dark:border-border/60 transition-colors shadow-sm"
+              className="px-2.5 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs border border-border/80 transition-colors shadow-2xs"
             >
               1. {t("dashboard.sitesKatalog.numberedList", "Numbered List")}
             </button>
 
-            <div className="w-px h-4 bg-slate-200 dark:bg-border mx-1" />
+            <div className="w-px h-4 bg-border mx-1" />
 
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                className={`px-2.5 py-1 rounded-lg font-semibold cursor-pointer text-xs flex items-center gap-1 border transition-colors shadow-sm ${
+                className={`px-2.5 py-1 rounded-lg font-semibold cursor-pointer text-xs flex items-center gap-1 border transition-colors shadow-2xs ${
                   activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
-                    ? "bg-primary/15 text-primary border-primary/30"
-                    : "bg-white dark:bg-background hover:bg-slate-100 dark:hover:bg-muted border-slate-200 dark:border-border/60 text-slate-600 dark:text-muted-foreground hover:text-foreground"
+                    ? "bg-primary/20 text-primary border-primary/40"
+                    : "bg-card hover:bg-muted border-border/80 text-muted-foreground hover:text-foreground"
                 }`}
               >
                 😀 {t("dashboard.sitesKatalog.emojiSymbol", "Emoji")}
@@ -868,7 +868,7 @@ function KatSortableItemRow({
             rows={3}
             onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
             placeholder={`Jelaskan keunggulan dan spesifikasi ${itemLabel} ini secara menarik...`}
-            className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-border rounded-b-xl text-[13px] outline-none focus:border-primary/70 focus:ring-2 focus:ring-primary/15 bg-white dark:bg-muted/40 text-foreground placeholder:text-slate-400 dark:placeholder:text-muted-foreground/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-none resize-y transition-all"
+            className="w-full px-3.5 py-2.5 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/50 resize-y transition-all shadow-2xs"
           />
         </div>
 
