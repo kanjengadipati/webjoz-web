@@ -846,9 +846,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   }}
                 >
                   <span className="text-4xl font-black text-black leading-none -mb-3 opacity-20 font-mono select-none">“</span>
-                  <p className={`text-sm font-bold text-black leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle}>
-                    {t.quote}
-                  </p>
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold text-black leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
                     <div
                       className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-xs font-black flex-shrink-0"
@@ -857,8 +855,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {t.avatar_initials}
                     </div>
                     <div className="min-w-0">
-                      <p className={`text-sm font-black text-black leading-tight ${nameClass}`} style={nameStyle}>{t.name}</p>
-                      {t.role && <p className={`text-xs font-bold text-stone-600 ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black text-black leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold text-stone-600 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -874,9 +872,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   style={cardStyle}
                 >
                   <span className="text-5xl font-serif leading-none -mb-4 opacity-30 select-none" style={{ color: accentColor }}>“</span>
-                  <p className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle}>
-                    {t.quote}
-                  </p>
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0"
@@ -885,8 +881,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {t.avatar_initials}
                     </div>
                     <div className="min-w-0">
-                      <p className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle}>{t.name}</p>
-                      {t.role && <p className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -907,9 +903,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   }}
                 >
                   <span className="text-4xl font-serif text-[var(--dt-primary)] leading-none -mb-4 opacity-40 select-none">“</span>
-                  <p className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle}>
-                    {t.quote}
-                  </p>
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: "color-mix(in srgb, var(--dt-border) 20%, transparent)" }}>
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-inner"
@@ -918,8 +912,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {t.avatar_initials}
                     </div>
                     <div className="min-w-0">
-                      <p className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle}>{t.name}</p>
-                      {t.role && <p className={`text-xs italic ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs italic ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -939,9 +933,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   }}
                 >
                   <span className="text-5xl font-mono text-cyan-400 leading-none -mb-5 opacity-40 select-none">“</span>
-                  <p className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle}>
-                    {t.quote}
-                  </p>
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border border-cyan-400/30"
@@ -954,8 +946,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {t.avatar_initials}
                     </div>
                     <div className="min-w-0">
-                      <p className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle}>{t.name}</p>
-                      {t.role && <p className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle}>{t.role}</p>}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -990,7 +982,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       </div>
                       {/* Contact Info */}
                       <div className="min-w-0 leading-tight">
-                        <h4 className="text-xs font-bold truncate">{t.name}</h4>
+                        <h4 className="text-xs font-bold truncate"><InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></h4>
                         <span className="text-[10px] text-emerald-100 opacity-90 block">Online</span>
                       </div>
                     </div>
@@ -1032,7 +1024,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {/* Right Message Bubble (Client Testimonial) */}
                     <div className="bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] self-end relative border border-[#c1e8ba]/40 flex flex-col gap-1">
                       <p className={`text-[11px] leading-normal font-normal ${quoteClass}`} style={quoteStyle}>
-                        {t.quote}
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       </p>
                       <div className="flex items-center gap-1 self-end mt-0.5 leading-none">
                         <span className="text-[8px] text-gray-500">11:22 AM</span>
@@ -1088,7 +1080,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
             return (
               <div key={idx} className={cardClasses} style={cardStyle}>
-                <p className={quoteClasses} style={quoteStyle}>{t.quote}</p>
+                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -1097,8 +1089,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {t.avatar_initials}
                   </div>
                   <div className="min-w-0">
-                    <p className={nameClasses} style={nameStyle}>{t.name}</p>
-                    {t.role && <p className={roleClasses} style={roleStyle}>{t.role}</p>}
+                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                   </div>
                 </div>
               </div>

@@ -995,13 +995,24 @@ export default function SiteEditorPage() {
 
     const [prevVal, ...rest] = stack;
 
-    setContent((prev: any) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: prevVal
-      }
-    }));
+    const match = /^items\.(\d+)\.(\w+)$/.exec(key);
+    if (match) {
+      const idx = Number(match[1]);
+      const itemField = match[2];
+      setContent((prev: any) => {
+        const items = [...(prev[section]?.items ?? [])];
+        items[idx] = { ...items[idx], [itemField]: prevVal };
+        return { ...prev, [section]: { ...prev[section], items } };
+      });
+    } else {
+      setContent((prev: any) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [key]: prevVal
+        }
+      }));
+    }
 
     setFieldUndoStacks(prev => ({
       ...prev,
@@ -1010,6 +1021,27 @@ export default function SiteEditorPage() {
   };
 
   const updateField = (section: string, key: string, val: any) => {
+    // Nested item path: "items.<index>.<field>" (e.g. "items.0.quote")
+    const match = /^items\.(\d+)\.(\w+)$/.exec(key);
+    if (match) {
+      const idx = Number(match[1]);
+      const itemField = match[2];
+      const currentVal = contentRef.current?.[section]?.items?.[idx]?.[itemField] || "";
+      const fieldUndoKey = `items.${idx}.${itemField}`;
+      if (typeof val === "string" && val !== currentVal) {
+        pushFieldUndo(section, fieldUndoKey, currentVal);
+        pushGlobalUndo();
+      }
+      setContent((prev: any) => {
+        const items = [...(prev[section]?.items ?? [])];
+        items[idx] = { ...items[idx], [itemField]: val };
+        return {
+          ...prev,
+          [section]: { ...prev[section], items }
+        };
+      });
+      return;
+    }
     const currentVal = contentRef.current?.[section]?.[key] || "";
     if (typeof val === "string" && val !== currentVal) {
       pushFieldUndo(section, key, currentVal);
