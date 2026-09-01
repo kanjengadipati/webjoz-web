@@ -16,16 +16,10 @@ export function useTheme() {
   // Effective resolved theme (what the UI actually shows right now)
   const theme = resolveEffectiveTheme(preference) as "light" | "dark";
 
-  // Cycle: auto → light → dark → auto
+  // Direct 1-click toggle between Light and Dark based on current effective theme
   const toggleTheme = useCallback(() => {
-    if (preference === "auto") {
-      setThemePreference("light");
-    } else if (preference === "light") {
-      setThemePreference("dark");
-    } else {
-      setThemePreference("auto");
-    }
-  }, [preference]);
+    setThemePreference(theme === "dark" ? "light" : "dark");
+  }, [theme]);
 
   const toggleAccent = useCallback(() => {
     setAccentPreference(accent === "monochrome" ? "blue" : "monochrome");
