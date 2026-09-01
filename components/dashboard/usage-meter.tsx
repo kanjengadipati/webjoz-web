@@ -62,13 +62,6 @@ const LIMIT_KEYS = {
   designRegens: "maxDesignRegens",
 } as const;
 
-const USAGE_KEYS = {
-  sites: "sites",
-  generates: "generates",
-  sectionRegens: "sectionRegens",
-  designRegens: "designRegens",
-} as const;
-
 export function UsageMeter({ usage, limits, compact = false, className, siteCount }: UsageMeterProps) {
   const { t } = useI18n();
   const items = METERS.map((m) => {
@@ -98,9 +91,9 @@ export function UsageMeter({ usage, limits, compact = false, className, siteCoun
       <div className={cn("space-y-3", className)}>
         {items.map((item) => (
           <div key={item.key}>
-            <div className="flex items-center justify-between text-[11px] mb-1">
-              <span className="text-muted-foreground">{item.label}</span>
-              <span className={cn("font-semibold tabular-nums", item.isAtLimit && "text-destructive")}>
+            <div className="flex items-center justify-between text-[11px] mb-1 gap-2">
+              <span className="text-muted-foreground truncate">{item.label}</span>
+              <span className={cn("font-semibold tabular-nums shrink-0", item.isAtLimit && "text-destructive")}>
                 {item.used} / {item.limitText}
               </span>
             </div>
@@ -117,53 +110,67 @@ export function UsageMeter({ usage, limits, compact = false, className, siteCoun
   }
 
   return (
-    <div className={cn("grid grid-cols-2 lg:grid-cols-4 gap-4", className)}>
+    <div className={cn("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4", className)}>
       {items.map((item) => {
         const Icon = item.icon;
         return (
           <div
             key={item.key}
             className={cn(
-              "bg-card rounded-3xl border border-border/60 p-5 shadow-sm transition-all",
-              item.isAtLimit && "border-destructive/40 bg-destructive/5",
-              item.isNearLimit && !item.isAtLimit && "border-amber-500/40 bg-amber-500/5",
+              "bg-card rounded-3xl border border-border/60 p-5 shadow-sm transition-all flex flex-col justify-between",
+              item.isAtLimit && "border-rose-500/40 bg-rose-500/5 ring-1 ring-rose-500/20",
+              item.isNearLimit && !item.isAtLimit && "border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20",
             )}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Icon className={cn("size-4", item.textColor)} />
-                <span className="text-sm font-semibold text-muted-foreground">{item.label}</span>
-              </div>
-              {item.isAtLimit && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-destructive bg-destructive/10 px-1.5 py-0.5 rounded">
-                  {t("dashboard.limitReached")}
-                </span>
-              )}
-              {item.isNearLimit && !item.isAtLimit && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded">
-                  {t("dashboard.nearLimit")}
-                </span>
-              )}
-            </div>
-            <div className="flex items-baseline gap-1.5 mb-2">
-              <span className={cn("text-2xl font-bold tabular-nums", item.isAtLimit && "text-destructive")}>
-                {item.used}
-              </span>
-              <span className="text-sm text-muted-foreground font-medium">/ {item.limitText}</span>
-            </div>
-            <div className="h-2 rounded-full bg-muted/30 overflow-hidden mb-2">
-              <div
-                className={cn(
-                  "h-full rounded-full transition-all duration-500",
-                  item.color,
-                  item.isAtLimit && "animate-pulse",
+            <div>
+              {/* Card Header: Icon + Title on Left, Badge on Right */}
+              <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className="size-6 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
+                    <Icon className={cn("size-3.5", item.textColor)} />
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-foreground truncate">
+                    {item.label}
+                  </span>
+                </div>
+
+                {item.isAtLimit && (
+                  <span className="shrink-0 whitespace-nowrap text-[9px] font-extrabold uppercase tracking-wider text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded-full shadow-2xs">
+                    {t("dashboard.limitReached", "Limit")}
+                  </span>
                 )}
-                style={{ width: `${item.pct}%` }}
-              />
+                {item.isNearLimit && !item.isAtLimit && (
+                  <span className="shrink-0 whitespace-nowrap text-[9px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full shadow-2xs">
+                    {t("dashboard.nearLimit", "Near Limit")}
+                  </span>
+                )}
+              </div>
+
+              {/* Card Numbers */}
+              <div className="flex items-baseline gap-1.5 mb-2.5">
+                <span className={cn("text-2xl sm:text-3xl font-extrabold tabular-nums tracking-tight", item.isAtLimit ? "text-rose-500" : "text-foreground")}>
+                  {item.used}
+                </span>
+                <span className="text-xs sm:text-sm text-muted-foreground font-semibold">/ {item.limitText}</span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="h-2 rounded-full bg-muted/50 overflow-hidden mb-2.5">
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    item.color,
+                    item.isAtLimit && "bg-rose-500",
+                  )}
+                  style={{ width: `${item.pct}%` }}
+                />
+              </div>
             </div>
-            <p className="text-[11px] text-muted-foreground">
+
+            {/* Bottom Remaining Text */}
+            <p className="text-[11px] font-medium text-muted-foreground">
               {item.isUnlimited
-                ? t("dashboard.unlimitedUsage")
+                ? t("dashboard.unlimitedUsage", "Pemakaian tanpa batas")
                 : t("dashboard.remaining", undefined, { count: item.remaining })}
             </p>
           </div>
