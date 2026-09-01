@@ -14,21 +14,16 @@ export function ThemeToggle({ className = "", showAccent = false }: { className?
   const { t } = useI18n();
 
   const themeLabel =
-    preference === "auto"
-      ? t("dashboard.autoTheme", "Mode Otomatis (Siang/Malam)")
-      : theme === "dark"
+    theme === "dark"
       ? t("dashboard.switchLight", "Ganti ke Mode Terang")
       : t("dashboard.switchDark", "Ganti ke Mode Gelap");
 
-  const ThemeIcon =
-    preference === "auto" ? SunMoon : theme === "dark" ? Sun : Moon;
+  const ThemeIcon = theme === "dark" ? Sun : Moon;
 
   const themeIconClass =
-    preference === "auto"
-      ? "text-sky-500"
-      : theme === "dark"
+    theme === "dark"
       ? "text-amber-400"
-      : "text-slate-600";
+      : "text-slate-600 dark:text-slate-300";
 
   return (
     <div className="inline-flex items-center gap-1">
