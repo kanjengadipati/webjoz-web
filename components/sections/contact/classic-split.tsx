@@ -69,9 +69,19 @@ export default function ClassicSplit({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />
-            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-              {isEN ? "Have a question or want to discuss? Send a message and we'll respond within 24 hours." : "Punya pertanyaan atau ingin diskusi? Kirim pesan dan kami akan merespons dalam waktu 24 jam."}
-            </p>
+            <InlineText
+              section="contact"
+              fieldKey="subtitle"
+              value={c.subtitle || (isEN ? "Have a question or want to discuss? Send a message and we'll respond within 24 hours." : "Punya pertanyaan atau ingin diskusi? Kirim pesan dan kami akan merespons dalam waktu 24 jam.")}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              multiline
+              style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, marginBottom: "1.5rem" } as any}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
               {c.phone && (
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>

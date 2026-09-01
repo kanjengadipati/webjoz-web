@@ -48,9 +48,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "1.25rem", color: "var(--dt-text)", margin: "0 0 0.25rem" } as any}>
               <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
-            <p style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 }}>
-              {isEN ? "Need a quote or partnership info? Fill in the form, the map shows our office location." : "Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami."}
-            </p>
+            <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Need a quote or partnership info? Fill in the form, the map shows our office location." : "Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
             <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", fontSize: "0.7rem", color: "var(--dt-text-muted)" }}>
               <div>

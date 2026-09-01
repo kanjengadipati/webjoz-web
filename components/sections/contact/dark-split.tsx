@@ -31,9 +31,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.75rem" } as any}>
               <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
-            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-              {isEN ? "Use this portal to send inquiries, reports, or collaboration discussions." : "Gunakan portal ini untuk mengirimkan pertanyaan, laporan, atau diskusi kerjasama."}
-            </p>
+            <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Use this portal to send inquiries, reports, or collaboration discussions." : "Gunakan portal ini untuk mengirimkan pertanyaan, laporan, atau diskusi kerjasama.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", lineHeight: 1.6, marginBottom: "1.5rem" } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           </div>
 
           {showMap && (
