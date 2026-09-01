@@ -273,7 +273,7 @@ function MenuCatalogForm({
             onClick={addCategory}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all cursor-pointer shadow-sm"
           >
-            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "+ Tambah Kategori")}
+            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "Tambah Kategori")}
           </button>
         </div>
       )}
@@ -329,7 +329,7 @@ function MenuCatalogForm({
           onClick={addCategory}
           className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-primary/30 text-sm font-bold text-primary hover:bg-primary/5 hover:border-primary/60 transition-all cursor-pointer active:scale-[0.99]"
         >
-          <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "+ Tambah Kategori")}
+          <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "Tambah Kategori")}
         </button>
       )}
     </div>
@@ -750,7 +750,7 @@ function KatSortableItemRow({
                     onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", [...deliveryPlatforms, { name: "", url: "" }])}
                     className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer pt-1"
                   >
-                    <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addDeliveryPlatform", "+ Tambah Platform")}
+                    <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addDeliveryPlatform", "Tambah Platform")}
                   </button>
                 </div>
               </div>
@@ -913,7 +913,7 @@ function KatVariantGroupEditor({ groups, onChange, t, inputBase }: { groups: KVG
           onClick={() => { const g = makeKVGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
           className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "+ Tambah Grup Varian")}
+          <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "Tambah Grup Varian")}
         </button>
       </div>
 
@@ -1035,7 +1035,7 @@ function KatVariantGroupEditor({ groups, onChange, t, inputBase }: { groups: KVG
                       onClick={() => addOption(group.id)}
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline cursor-pointer pt-1"
                     >
-                      <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddOption", "+ Tambah Pilihan")}
+                      <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddOption", "Tambah Pilihan")}
                     </button>
                   </div>
                 </div>
@@ -1173,7 +1173,7 @@ function KatItemPhotoGalleryEditor({
                 ) : (
                   <>
                     <Plus className="w-4 h-4" />
-                    <span className="text-[10px] font-bold">{t("dashboard.sitesKatalog.photoAdd", "+ Foto")}</span>
+                    <span className="text-[10px] font-bold">{t("dashboard.sitesKatalog.photoAdd", "Foto")}</span>
                   </>
                 )}
               </button>
