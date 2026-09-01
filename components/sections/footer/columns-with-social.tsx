@@ -30,7 +30,9 @@ export default function ColumnsWithSocial({
     >
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-2">
-          <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
+          <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>
+            <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+          </p>
           {(displayTagline || isEditorMode) && (
             <p style={{ color: TXT_MED }}>
               {isEditorMode ? (

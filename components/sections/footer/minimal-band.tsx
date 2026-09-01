@@ -23,7 +23,9 @@ export default function MinimalBand({
       className="text-center py-10 text-xs space-y-1"
       style={{ background: FOOTER_BG, color: TXT_BASE, borderTop: `1px solid ${BORDER_TOP}` }}
     >
-      <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>{displayBrand}</p>
+      <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>
+        <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+      </p>
       {(displayTagline || isEditorMode) && (
         <p style={{ color: TXT_MED }}>
           {isEditorMode ? (

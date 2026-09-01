@@ -16,7 +16,9 @@ export default function DarkContrastBand({
       className="text-center py-10 text-xs space-y-1"
       style={{ background: "var(--dt-bg)", color: "color-mix(in srgb, var(--dt-text) 65%, transparent)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)" }}
     >
-      <p className="text-sm font-bold" style={{ color: "var(--dt-primary)" }}>{displayBrand}</p>
+      <p className="text-sm font-bold" style={{ color: "var(--dt-primary)" }}>
+        <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+      </p>
       {(displayTagline || isEditorMode) && (
         <p style={{ color: "color-mix(in srgb, var(--dt-text) 50%, transparent)" }}>
           {isEditorMode ? (

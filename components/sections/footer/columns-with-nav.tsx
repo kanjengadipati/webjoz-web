@@ -47,7 +47,7 @@ export default function ColumnsWithNav({
           {/* Kolom 1: Brand & Tagline */}
           <div className="md:col-span-2 space-y-3">
             <p className="text-base font-bold tracking-tight" style={{ color: TXT_HIGH, fontFamily: "var(--dt-heading-font)" }}>
-              {displayBrand}
+              <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
             </p>
             {(displayTagline || isEditorMode) && (
               <p className="text-xs leading-relaxed max-w-sm" style={{ color: TXT_MED }}>
