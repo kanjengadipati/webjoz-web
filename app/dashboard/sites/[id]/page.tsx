@@ -58,6 +58,30 @@ import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 
+// Immutably set a nested value in `obj` by a dotted path of segments where
+// numeric segments index into arrays (e.g. ["categories", "0", "name"]).
+function previewSetByPath(obj: any, segments: string[], value: any): any {
+  if (segments.length === 0) return value;
+  const [head, ...rest] = segments;
+  const isIndex = /^\d+$/.test(head);
+  if (rest.length === 0) {
+    if (isIndex) {
+      const arr = Array.isArray(obj) ? obj.slice() : [];
+      arr[Number(head)] = value;
+      return arr;
+    }
+    return { ...(obj ?? {}), [head]: value };
+  }
+  const next = obj?.[head];
+  const child = previewSetByPath(next, rest, value);
+  if (isIndex) {
+    const arr = Array.isArray(obj) ? obj.slice() : [];
+    arr[Number(head)] = child;
+    return arr;
+  }
+  return { ...(obj ?? {}), [head]: child };
+}
+
 export default function SiteEditorPage() {
   const params = useParams();
   const router = useRouter();
@@ -995,14 +1019,11 @@ export default function SiteEditorPage() {
 
     const [prevVal, ...rest] = stack;
 
-    const match = /^items\.(\d+)\.(\w+)$/.exec(key);
-    if (match) {
-      const idx = Number(match[1]);
-      const itemField = match[2];
+    if (key.includes(".") && /\.\d+([.\w]|$)/.test(key)) {
+      const segs = key.split(".");
       setContent((prev: any) => {
-        const items = [...(prev[section]?.items ?? [])];
-        items[idx] = { ...items[idx], [itemField]: prevVal };
-        return { ...prev, [section]: { ...prev[section], items } };
+        const root = previewSetByPath(prev?.[section] ?? {}, segs, prevVal);
+        return { ...prev, [section]: root };
       });
     } else {
       setContent((prev: any) => ({
@@ -1021,23 +1042,31 @@ export default function SiteEditorPage() {
   };
 
   const updateField = (section: string, key: string, val: any) => {
-    // Nested item path: "items.<index>.<field>" (e.g. "items.0.quote")
-    const match = /^items\.(\d+)\.(\w+)$/.exec(key);
-    if (match) {
-      const idx = Number(match[1]);
-      const itemField = match[2];
-      const currentVal = contentRef.current?.[section]?.items?.[idx]?.[itemField] || "";
-      const fieldUndoKey = `items.${idx}.${itemField}`;
+    // Nested path support: any dotted path of array indices + field names,
+    // e.g. "items.0.quote", "categories.2.name", "categories.0.items.3.description"
+    if (key.includes(".") && /\.\d+([.\w]|$)/.test(key)) {
+      const segs = key.split(".");
+      const currentVal = (() => {
+        try {
+          let node: any = contentRef.current?.[section];
+          for (const seg of segs) {
+            if (node == null) return "";
+            node = node[seg];
+          }
+          return typeof node === "string" ? node : "";
+        } catch {
+          return "";
+        }
+      })();
       if (typeof val === "string" && val !== currentVal) {
-        pushFieldUndo(section, fieldUndoKey, currentVal);
+        pushFieldUndo(section, key, currentVal);
         pushGlobalUndo();
       }
       setContent((prev: any) => {
-        const items = [...(prev[section]?.items ?? [])];
-        items[idx] = { ...items[idx], [itemField]: val };
+        const root = previewSetByPath(prev?.[section] ?? {}, segs, val);
         return {
           ...prev,
-          [section]: { ...prev[section], items }
+          [section]: root
         };
       });
       return;

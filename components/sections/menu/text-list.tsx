@@ -72,13 +72,11 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
             {/* Category divider */}
             <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.25rem" }}>
               <span style={{ flex: 1, height: "1px", background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
-              <h3 style={{
+              <InlineText section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{
                 fontFamily: hFont, fontWeight: 600, fontSize: "0.7rem",
                 textTransform: "uppercase", letterSpacing: "0.2em",
                 color: p, margin: 0, whiteSpace: "nowrap",
-              }}>
-                {cat.name}
-              </h3>
+              }} />
               <span style={{ flex: 1, height: "1px", background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
             </div>
 
@@ -93,9 +91,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                   }}>
                     {/* Name + dotted leader + price row */}
                     <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
-                      <span style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.9rem", color: text, flexShrink: 0 }}>
-                        {item.name}
-                      </span>
+                      <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.9rem", color: text, flexShrink: 0 }} />
                       {/* Dotted leader */}
                       <span style={{
                         flex: 1,
@@ -109,16 +105,12 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                         </span>
                       )}
                       {showPrice && (
-                        <span style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p, flexShrink: 0 }}>
-                          {item.price_display || item.price}
-                        </span>
+                        <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p, flexShrink: 0 }} />
                       )}
                     </div>
                     {/* Description */}
                     {item.description && (
-                      <p style={{ margin: "0.3rem 0 0.6rem", fontSize: "0.78rem", color: muted, lineHeight: 1.55 }}>
-                        {item.description}
-                      </p>
+                      <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: "0.3rem 0 0.6rem", fontSize: "0.78rem", color: muted, lineHeight: 1.55 }} />
                     )}
                     {/* Add to cart — compact inline */}
                     <div style={{ marginTop: "0.4rem" }}>

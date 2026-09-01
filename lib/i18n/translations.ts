@@ -1801,6 +1801,56 @@ export interface Translations {
       chipMenu: string;
       chipCatalog: string;
       chipCategoryCount: string;
+      statCategories: string;
+      statTotalItems: string;
+      statAvailable: string;
+      statVariants: string;
+      available: string;
+      outOfStock: string;
+      markAvailable: string;
+      markOutOfStock: string;
+      categoryPlaceholder: string;
+      dragCategory: string;
+      dragItem: string;
+      deleteCategory: string;
+      deleteItem: string;
+      deleteCategoryConfirm: string;
+      priceDisplay: string;
+      priceDisplayPlaceholder: string;
+      priceAmount: string;
+      priceAmountPlaceholder: string;
+      priceAmountHelp: string;
+      badgePlaceholder: string;
+      capacityPlaceholder: string;
+      featuresPlaceholder: string;
+      tagsPlaceholder: string;
+      deliveryPlatforms: string;
+      deliveryPlatformsHelp: string;
+      addDeliveryPlatform: string;
+      platformNamePlaceholder: string;
+      platformUrlPlaceholder: string;
+      photoPrimary: string;
+      photoGallery: string;
+      photoGalleryCount: string;
+      photoGalleryHelp: string;
+      photoSetPrimary: string;
+      photoAdd: string;
+      photoUploading: string;
+      variantsTitle: string;
+      variantsSubtitle: string;
+      variantsAddGroup: string;
+      variantsNoGroups: string;
+      variantsGroupName: string;
+      variantsGroupNamePlaceholder: string;
+      variantsTypeSingle: string;
+      variantsTypeMultiple: string;
+      variantsRequired: string;
+      variantsOptionsTitle: string;
+      variantsOptionName: string;
+      variantsOptionNamePlaceholder: string;
+      variantsOptionDelta: string;
+      variantsAddOption: string;
+      allChangesSaved: string;
     };
     sitesBlog: {
       title: string;
@@ -4088,6 +4138,56 @@ export const translations: Record<Locale, Translations> = {
         chipMenu: "Menu",
         chipCatalog: "Katalog",
         chipCategoryCount: "{count} kategori",
+        statCategories: "Kategori",
+        statTotalItems: "Total Produk",
+        statAvailable: "Tersedia",
+        statVariants: "Varian / Opsi",
+        available: "Tersedia",
+        outOfStock: "Habis",
+        markAvailable: "Tandai Tersedia",
+        markOutOfStock: "Tandai Habis",
+        categoryPlaceholder: "Nama Kategori (cth: Makanan Utama, Paket Hemat)",
+        dragCategory: "Geser urutan kategori",
+        dragItem: "Geser urutan item",
+        deleteCategory: "Hapus Kategori",
+        deleteItem: "Hapus Item",
+        deleteCategoryConfirm: "Apakah Anda yakin ingin menghapus kategori ini beserta seluruh isinya?",
+        priceDisplay: "Tampilan Harga",
+        priceDisplayPlaceholder: "cth. Rp 25.000 atau Mulai Rp 15rb",
+        priceAmount: "Harga Angka (Kalkulator)",
+        priceAmountPlaceholder: "cth. 25000",
+        priceAmountHelp: "Digunakan untuk perhitungan subtotal checkout & pesanan",
+        badgePlaceholder: "cth. Terlaris, Best Seller, Diskon 20%, Baru",
+        capacityPlaceholder: "cth. 2 orang, 4 pax, 1 set",
+        featuresPlaceholder: "Ketik fasilitas/fitur lalu tekan Enter (cth: WiFi, AC, Breakfast)",
+        tagsPlaceholder: "Ketik tag lalu tekan Enter (cth: Pedas, Best Seller)",
+        deliveryPlatforms: "Platform Delivery Online",
+        deliveryPlatformsHelp: "Tautkan link GoFood, GrabFood, ShopeeFood, Tokopedia, dll.",
+        addDeliveryPlatform: "+ Tambah Platform Delivery",
+        platformNamePlaceholder: "Nama (cth. GrabFood)",
+        platformUrlPlaceholder: "https://...",
+        photoPrimary: "Foto Utama",
+        photoGallery: "Galeri Foto Tambahan",
+        photoGalleryCount: "Galeri Foto ({count})",
+        photoGalleryHelp: "Unggah foto tambahan dari sudut berbeda atau variasi produk.",
+        photoSetPrimary: "Jadikan Utama",
+        photoAdd: "+ Foto",
+        photoUploading: "Mengunggah...",
+        variantsTitle: "Varian & Opsi Tambahan",
+        variantsSubtitle: "Kustomisasi pilihan produk seperti Ukuran, Topping, Tingkat Manis, atau Opsi Tambahan.",
+        variantsAddGroup: "+ Tambah Grup Varian",
+        variantsNoGroups: "Belum ada varian atau add-on untuk produk ini.",
+        variantsGroupName: "Nama Grup",
+        variantsGroupNamePlaceholder: "cth. Ukuran Porsi, Topping Ekstra, Level Pedas",
+        variantsTypeSingle: "Pilih 1 Saja (Radio)",
+        variantsTypeMultiple: "Bisa Pilih Banyak (Checkbox)",
+        variantsRequired: "Wajib Dipilih Pengunjung",
+        variantsOptionsTitle: "Daftar Pilihan / Opsi",
+        variantsOptionName: "Nama Pilihan",
+        variantsOptionNamePlaceholder: "cth. Regular, Large, Ekstra Keju",
+        variantsOptionDelta: "+Tambahan Harga",
+        variantsAddOption: "+ Tambah Pilihan",
+        allChangesSaved: "Semua perubahan otomatis tersimpan secara aman",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -6437,6 +6537,56 @@ export const translations: Record<Locale, Translations> = {
         chipMenu: "Menu",
         chipCatalog: "Catalog",
         chipCategoryCount: "{count} categories",
+        statCategories: "Categories",
+        statTotalItems: "Total Products",
+        statAvailable: "Available",
+        statVariants: "Variants / Options",
+        available: "Available",
+        outOfStock: "Out of Stock",
+        markAvailable: "Mark Available",
+        markOutOfStock: "Mark Out of Stock",
+        categoryPlaceholder: "Category Name (e.g. Main Course, Value Pack)",
+        dragCategory: "Drag to reorder category",
+        dragItem: "Drag to reorder item",
+        deleteCategory: "Delete Category",
+        deleteItem: "Delete Item",
+        deleteCategoryConfirm: "Are you sure you want to delete this category and all its items?",
+        priceDisplay: "Display Price",
+        priceDisplayPlaceholder: "e.g. $15.00 or From $10",
+        priceAmount: "Numeric Price (Calculator)",
+        priceAmountPlaceholder: "e.g. 15.00",
+        priceAmountHelp: "Used for checkout & order calculation",
+        badgePlaceholder: "e.g. Best Seller, New, 20% Off",
+        capacityPlaceholder: "e.g. 2 guests, 4 pax, 1 set",
+        featuresPlaceholder: "Type amenity/feature and press Enter (e.g. WiFi, AC, Breakfast)",
+        tagsPlaceholder: "Type tag and press Enter (e.g. Spicy, Vegan)",
+        deliveryPlatforms: "Online Delivery Platforms",
+        deliveryPlatformsHelp: "Link GoFood, GrabFood, ShopeeFood, Tokopedia, etc.",
+        addDeliveryPlatform: "+ Add Delivery Platform",
+        platformNamePlaceholder: "Name (e.g. GrabFood)",
+        platformUrlPlaceholder: "https://...",
+        photoPrimary: "Primary Photo",
+        photoGallery: "Additional Photo Gallery",
+        photoGalleryCount: "Photo Gallery ({count})",
+        photoGalleryHelp: "Upload extra photos from different angles or product variations.",
+        photoSetPrimary: "Set as Primary",
+        photoAdd: "+ Photo",
+        photoUploading: "Uploading...",
+        variantsTitle: "Variants & Add-ons",
+        variantsSubtitle: "Customize product options like Size, Extra Topping, Sweetness, or Add-ons.",
+        variantsAddGroup: "+ Add Variant Group",
+        variantsNoGroups: "No variants or add-ons added for this item.",
+        variantsGroupName: "Group Name",
+        variantsGroupNamePlaceholder: "e.g. Portion Size, Extra Topping, Spicy Level",
+        variantsTypeSingle: "Single Choice (Radio)",
+        variantsTypeMultiple: "Multiple Choice (Checkbox)",
+        variantsRequired: "Required for Visitors",
+        variantsOptionsTitle: "Option Choices",
+        variantsOptionName: "Option Name",
+        variantsOptionNamePlaceholder: "e.g. Regular, Large, Extra Cheese",
+        variantsOptionDelta: "+Price Delta",
+        variantsAddOption: "+ Add Option",
+        allChangesSaved: "All changes are automatically and securely saved",
       },
       sitesBlog: {
         title: "Blog Posts",

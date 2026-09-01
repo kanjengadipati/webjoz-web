@@ -75,12 +75,18 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
             className="mb-24 last:mb-0"
           >
             <div className="text-center mb-12">
-              <h3
-                id={`hero-cat-title-${catIndex}`}
+              <InlineText
+                section="menu"
+                fieldKey={"categories." + catIndex + ".name"}
+                value={category.name ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="h3"
                 className="text-2xl md:text-3xl font-normal tracking-wide text-dt-text font-dt-heading inline-block relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/4 after:right-1/4 after:h-[1px] after:bg-dt-border"
-              >
-                {category.name}
-              </h3>
+              />
             </div>
 
             <div
@@ -134,20 +140,14 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
 
                     <div className="flex-1 p-6 flex flex-col justify-between bg-dt-surface">
                       <div className="flex items-start justify-between gap-4">
-                        <h4 className="text-lg font-medium tracking-tight font-dt-heading text-dt-text leading-snug group-hover:text-dt-primary transition-colors duration-300">
-                          {item.name}
-                        </h4>
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" className="text-lg font-medium tracking-tight font-dt-heading text-dt-text leading-snug group-hover:text-dt-primary transition-colors duration-300" />
                         {item.price && (
-                          <span className="text-base font-semibold font-dt-heading text-dt-primary">
-                            {item.price}
-                          </span>
+                          <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-base font-semibold font-dt-heading text-dt-primary" />
                         )}
                       </div>
 
                       {item.description && (
-                        <p className="text-xs md:text-sm text-dt-text-muted font-light leading-relaxed line-clamp-2 mt-2">
-                          {item.description}
-                        </p>
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted font-light leading-relaxed line-clamp-2 mt-2" />
                       )}
 
                       <div className="w-full h-[1px] bg-dt-border/40 mt-4"></div>

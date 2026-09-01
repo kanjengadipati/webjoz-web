@@ -143,7 +143,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 fontFamily: "var(--dt-heading-font)"
               }}
             >
-              {category.name}
+              <InlineText section="catalog" fieldKey={"categories." + idx + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)", fontFamily: "var(--dt-heading-font)" }} />
               {isActive && (
                 <span
                   className="absolute bottom-0 left-0 right-0 h-0.5"
@@ -214,29 +214,51 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 <div className="p-5 flex flex-col flex-grow justify-between min-h-[160px]">
                   <div>
                     <div className="flex justify-between items-start gap-4 mb-2">
-                      <h4
+                      <InlineText
+                        section="catalog"
+                        fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".name"}
+                        value={item.name ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                        as="h4"
                         className="text-base font-normal tracking-tight"
                         style={{ color: "var(--dt-text)" }}
-                      >
-                        {item.name}
-                      </h4>
+                      />
                       {item.price && (
-                        <span
+                        <InlineText
+                          section="catalog"
+                          fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".price"}
+                          value={item.price ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="span"
                           className="text-sm font-semibold tracking-tight"
                           style={{ color: "var(--dt-text)" }}
-                        >
-                          {item.price}
-                        </span>
+                        />
                       )}
                     </div>
 
                     {item.description && (
-                      <p
+                      <InlineText
+                        section="catalog"
+                        fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".description"}
+                        value={item.description ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                        as="p"
+                        multiline
                         className="text-xs leading-relaxed mt-1"
                         style={{ color: "var(--dt-text-muted)" }}
-                      >
-                        {item.description}
-                      </p>
+                      />
                     )}
 
                     {item.capacity != null && item.capacity > 0 && (

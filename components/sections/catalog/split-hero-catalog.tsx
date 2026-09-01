@@ -118,12 +118,19 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
           {categories?.map((category, catIdx) => (
             <div key={catIdx} className="space-y-8">
               <div className="border-b pb-4 flex justify-between items-end" style={{ borderColor: "var(--dt-border)" }}>
-                <h3
+                <InlineText
+                  section="catalog"
+                  fieldKey={"categories." + catIdx + ".name"}
+                  value={category.name ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="h3"
                   className="text-xl font-light tracking-wide uppercase"
                   style={{ fontFamily: "var(--dt-heading-font)" }}
-                >
-                  {category.name}
-                </h3>
+                />
                 <span className="text-xs text-neutral-400 font-mono">
                   {category.items?.length} items
                 </span>
@@ -175,29 +182,51 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                     <div className="md:col-span-7 flex flex-col justify-between h-full min-h-[160px]">
                       <div>
                         <div className="flex justify-between items-start gap-4 mb-2">
-                          <h4
+                          <InlineText
+                            section="catalog"
+                            fieldKey={"categories." + catIdx + ".items." + index + ".name"}
+                            value={item.name ?? ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="h4"
                             className="text-lg font-normal tracking-tight"
                             style={{ color: "var(--dt-text)" }}
-                          >
-                            {item.name}
-                          </h4>
+                          />
                           {item.price && (
-                            <span
+                            <InlineText
+                              section="catalog"
+                              fieldKey={"categories." + catIdx + ".items." + index + ".price"}
+                              value={item.price ?? ""}
+                              onUpdateField={onUpdateField}
+                              isEditorMode={isEditorMode}
+                              isSelected={isSelected}
+                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                              onEditingStateChange={onEditingStateChange}
+                              as="span"
                               className="text-base font-semibold tracking-tight shrink-0"
                               style={{ color: "var(--dt-text)" }}
-                            >
-                              {item.price}
-                            </span>
+                            />
                           )}
                         </div>
 
                         {item.description && (
-                          <p
+                          <InlineText
+                            section="catalog"
+                            fieldKey={"categories." + catIdx + ".items." + index + ".description"}
+                            value={item.description ?? ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="p"
+                            multiline
                             className="text-sm font-light leading-relaxed mb-4"
                             style={{ color: "var(--dt-text-muted)" }}
-                          >
-                            {item.description}
-                          </p>
+                          />
                         )}
 
                         {item.capacity != null && item.capacity > 0 && (

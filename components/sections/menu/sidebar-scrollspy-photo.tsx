@@ -157,7 +157,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                         : "text-dt-text-muted border-transparent hover:text-dt-text hover:border-dt-border"
                     }`}
                   >
-                    <span>{category.name}</span>
+                  <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                     <ChevronRight
                       className={`w-4 h-4 transition-transform duration-200 ${
                         isActive ? "translate-x-0 opacity-100 text-dt-primary" : "translate-x-[-4px] opacity-0 group-hover:opacity-55"
@@ -185,11 +185,11 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                       ? "bg-dt-primary text-dt-primary-foreground border-dt-primary shadow-xs"
                       : "bg-dt-surface text-dt-text-muted border-dt-border hover:text-dt-text hover:border-dt-border"
                   }`}
-                >
-                  {category.name}
-                </button>
-              );
-            })}
+                  >
+                    <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                  </button>
+);
+                })}
           </div>
 
           <div id="scrollspy-items-container" className="flex-1 w-full space-y-16">
@@ -201,9 +201,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                 className="scroll-mt-24"
               >
                 <div className="flex items-center gap-4 mb-8">
-                  <h3 className="text-xl md:text-2xl font-bold tracking-tight font-dt-heading text-dt-text">
-                    {category.name}
-                  </h3>
+                  <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" className="text-xl md:text-2xl font-bold tracking-tight font-dt-heading text-dt-text" />
                   <div className="h-[1px] flex-1 bg-dt-border"></div>
                 </div>
 
@@ -251,20 +249,14 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                         <div className="flex-1 p-6 flex flex-col justify-between">
                           <div>
                             <div className="flex items-baseline justify-between gap-4 mb-2">
-                              <h4 className="text-lg font-bold tracking-tight text-dt-text font-dt-heading group-hover:text-dt-primary transition-colors duration-200">
-                                {item.name}
-                              </h4>
+                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" className="text-lg font-bold tracking-tight text-dt-text font-dt-heading group-hover:text-dt-primary transition-colors duration-200" />
                               {item.price && (
-                                <span className="text-base font-bold text-dt-primary font-dt-heading">
-                                  {item.price}
-                                </span>
+                                <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-base font-bold text-dt-primary font-dt-heading" />
                               )}
                             </div>
 
                             {item.description && (
-                              <p className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2">
-                                {item.description}
-                              </p>
+                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2" />
                             )}
                           </div>
 

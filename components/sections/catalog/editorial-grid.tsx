@@ -83,12 +83,19 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
         {categories?.map((category, catIdx) => (
           <div key={catIdx} className="space-y-10">
             <div className="border-b pb-4" style={{ borderColor: "var(--dt-border)" }}>
-              <h3
+              <InlineText
+                section="catalog"
+                fieldKey={"categories." + catIdx + ".name"}
+                value={category.name ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="h3"
                 className="text-lg uppercase tracking-wider font-medium"
                 style={{ fontFamily: "var(--dt-heading-font)" }}
-              >
-                {category.name}
-              </h3>
+              />
             </div>
 
             {/* Asymmetric Grid */}
@@ -174,29 +181,51 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                     {/* Metadata Area */}
                     <div className="flex flex-col flex-grow">
                       <div className="flex justify-between items-start gap-4 mb-2">
-                        <h4
+                        <InlineText
+                          section="catalog"
+                          fieldKey={"categories." + catIdx + ".items." + index + ".name"}
+                          value={item.name ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="h4"
                           className="text-lg font-light tracking-tight"
                           style={{ color: "var(--dt-text)" }}
-                        >
-                          {item.name}
-                        </h4>
+                        />
                         {item.price && (
-                          <span
+                          <InlineText
+                            section="catalog"
+                            fieldKey={"categories." + catIdx + ".items." + index + ".price"}
+                            value={item.price ?? ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="span"
                             className="text-sm font-medium tracking-tight"
                             style={{ color: "var(--dt-text)" }}
-                          >
-                            {item.price}
-                          </span>
+                          />
                         )}
                       </div>
 
                       {item.description && (
-                        <p
+                        <InlineText
+                          section="catalog"
+                          fieldKey={"categories." + catIdx + ".items." + index + ".description"}
+                          value={item.description ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="p"
+                          multiline
                           className="text-sm font-light leading-relaxed mt-1"
                           style={{ color: "var(--dt-text-muted)" }}
-                        >
-                          {item.description}
-                        </p>
+                        />
                       )}
 
                       {item.capacity != null && item.capacity > 0 && (

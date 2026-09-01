@@ -1,15 +1,29 @@
 "use client";
 import React from "react";
 import { CheckCircle } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
   benefits: TemplateProps["content"]["benefits"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
 }
 
-export default function BenefitsChecklist({ benefits: b , language = "id" }: BenefitsVariantProps) {
+export default function BenefitsChecklist({
+  benefits: b,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  language = "id",
+}: BenefitsVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
   return (
@@ -29,12 +43,35 @@ export default function BenefitsChecklist({ benefits: b , language = "id" }: Ben
                 </div>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1rem", margin: 0 }}>{item.title}</h3>
+                    <InlineText
+                      section="benefits"
+                      fieldKey={"items." + idx + ".title"}
+                      value={item.title ?? ""}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="h3"
+                      style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1rem", margin: 0 }}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                     {item.stat && (
                       <span style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.15rem 0.6rem", borderRadius: "var(--dt-radius)", whiteSpace: "nowrap" }}>{item.stat}</span>
                     )}
                   </div>
-                  <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}>{item.description}</p>
+                  <InlineText
+                    section="benefits"
+                    fieldKey={"items." + idx + ".description"}
+                    value={item.description ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="p"
+                    style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}
+                    multiline
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </div>
               </div>
             </React.Fragment>

@@ -15,8 +15,9 @@ import {
   Loader2, Plus, Trash2, ChevronDown, ChevronUp,
   GripVertical, ChevronLeft, Save, Check, ShoppingBag,
   Utensils, X, Link as LinkIcon, Image as ImageIcon,
+  FolderOpen, Layers, CheckCircle2, SlidersHorizontal, Sparkles,
+  Info
 } from "lucide-react";
-import { AI_SUGGESTIONS } from "../editor-utils";
 import { useI18n } from "@/lib/i18n/context";
 import {
   DndContext, closestCenter, PointerSensor,
@@ -55,8 +56,8 @@ const EMOJI_GROUPS = [
 
 // ─── Shared input styles ──────────────────────────────────────────────────────
 const inputBase =
-  "w-full px-3 py-2 border border-border rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500";
-const inputLabel = "text-[10px] uppercase tracking-wide font-bold text-slate-500 block mb-1";
+  "w-full px-3.5 py-2.5 border border-border/80 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 bg-muted/40 text-foreground placeholder:text-muted-foreground/60 transition-all";
+const inputLabel = "text-[11px] uppercase tracking-wider font-bold text-muted-foreground block mb-1.5";
 
 // Strip AI-generated literal null strings
 const normStr = (v: any): string => {
@@ -85,9 +86,10 @@ function AiFieldButton({
   return (
     <button
       type="button" onClick={handleClick} disabled={loading} title={label}
-      className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 text-primary hover:bg-primary/30 transition-all disabled:opacity-40 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
+      className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all disabled:opacity-40 cursor-pointer text-xs font-semibold"
     >
-      {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <SparkleGenAI className="w-[18px] h-[18px]" />}
+      {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <SparkleGenAI className="w-4 h-4" />}
+      <span className="text-[11px] hidden sm:inline">{t("dashboard.sitesKatalog.aiGenerateTitle", "Generate AI")}</span>
     </button>
   );
 }
@@ -127,8 +129,10 @@ function MenuCatalogForm({
   };
 
   const removeCategory = (catIdx: number) => {
-    updateCategories(categories.filter((_: any, i: number) => i !== catIdx));
-    setExpandedCat(null);
+    if (window.confirm(t("dashboard.sitesKatalog.deleteCategoryConfirm", "Hapus kategori ini beserta seluruh isinya?"))) {
+      updateCategories(categories.filter((_: any, i: number) => i !== catIdx));
+      setExpandedCat(null);
+    }
   };
 
   const updateCategoryName = (catIdx: number, name: string) => {
@@ -198,89 +202,141 @@ function MenuCatalogForm({
   }, [categories, updateCategories]);
 
   return (
-    <div className="space-y-4">
-      {/* Section header */}
-      <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-white/[0.02] p-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex-1 space-y-2">
-            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSectionTitle")}</label>
-            <input type="text" value={data?.title ?? ""} onChange={(e) => updateField(sectionKey, "title", e.target.value)} placeholder={`cth. ${sectionTitle}`} className={`${inputBase} bg-muted/50`} />
+    <div className="space-y-6">
+      {/* Section Settings Card */}
+      <div className="rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
+        <div className="flex items-center justify-between gap-3 pb-4 border-b border-border/60 mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+              <SlidersHorizontal className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-foreground">{t("dashboard.sitesKatalog.labelSectionTitle", "Pengaturan Tampilan Bagian")}</h3>
+              <p className="text-xs text-muted-foreground">{t("dashboard.sitesKatalog.variantsSubtitle", "Atur judul, subjudul, dan teks pengantar katalog di website")}</p>
+            </div>
           </div>
-          <div className="space-y-2">
-            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelEyebrow")} <span className="text-slate-500 font-normal normal-case">({t("dashboard.sitesKatalog.optional")})</span></label>
-            <input type="text" value={data?.eyebrow ?? ""} onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)} placeholder={`cth. Pilihan ${sectionTitle}`} className={inputBase} />
+          <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            {sectionKey === "menu" ? t("dashboard.sitesKatalog.chipMenu", "Menu") : t("dashboard.sitesKatalog.chipCatalog", "Katalog")} · {t("dashboard.sitesKatalog.chipCategoryCount", undefined, { count: String(categories.length) })}
           </div>
-          <div className="space-y-2">
-            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSubtitle")} <span className="text-slate-500 font-normal normal-case">({t("dashboard.sitesKatalog.optional")})</span></label>
-            <input type="text" value={data?.subtitle ?? ""} onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)} placeholder="cth. Lihat produk pilihan kami" className={inputBase} />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelSectionTitle", "Judul Bagian")}</label>
+            <input
+              type="text"
+              value={data?.title ?? ""}
+              onChange={(e) => updateField(sectionKey, "title", e.target.value)}
+              placeholder={`cth. ${sectionTitle}`}
+              className={inputBase}
+            />
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-primary">
-            {sectionKey === "menu" ? t("dashboard.sitesKatalog.chipMenu") : t("dashboard.sitesKatalog.chipCatalog")} · {t("dashboard.sitesKatalog.chipCategoryCount", undefined, { count: String(categories.length) })}
+          <div className="space-y-1.5">
+            <label className={inputLabel}>
+              {t("dashboard.sitesKatalog.labelEyebrow", "Eyebrow")} <span className="text-muted-foreground font-normal normal-case">({t("dashboard.sitesKatalog.optional", "Opsional")})</span>
+            </label>
+            <input
+              type="text"
+              value={data?.eyebrow ?? ""}
+              onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)}
+              placeholder={`cth. PILIHAN ${sectionTitle.toUpperCase()}`}
+              className={inputBase}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className={inputLabel}>
+              {t("dashboard.sitesKatalog.labelSubtitle", "Subjudul")} <span className="text-muted-foreground font-normal normal-case">({t("dashboard.sitesKatalog.optional", "Opsional")})</span>
+            </label>
+            <input
+              type="text"
+              value={data?.subtitle ?? ""}
+              onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
+              placeholder="cth. Temukan produk dan layanan terbaik untuk Anda"
+              className={inputBase}
+            />
           </div>
         </div>
       </div>
 
       {/* Empty state */}
       {categories.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-8 text-center">
-          <p className="text-sm font-semibold text-slate-200">{t("dashboard.sitesKatalog.noCategoriesTitle")}</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">{t("dashboard.sitesKatalog.noCategoriesDesc", undefined, { itemLabel })}</p>
+        <div className="rounded-3xl border border-dashed border-primary/30 bg-primary/5 p-12 text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <FolderOpen className="w-6 h-6" />
+          </div>
+          <p className="text-base font-bold text-foreground">{t("dashboard.sitesKatalog.noCategoriesTitle", "Belum ada kategori produk")}</p>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+            {t("dashboard.sitesKatalog.noCategoriesDesc", undefined, { itemLabel })}
+          </p>
+          <button
+            type="button"
+            onClick={addCategory}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all cursor-pointer shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "+ Tambah Kategori")}
+          </button>
         </div>
       )}
 
       {/* Categories — DnD sortable */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCatDragEnd}>
         <SortableContext items={categories.map((c: any) => c.id ?? c.name)} strategy={verticalListSortingStrategy}>
-          {categories.map((cat: any, catIdx: number) => {
-            const enriched = ensureCatId(cat, catIdx);
-            return (
-              <KatSortableCategoryRow
-                key={enriched.id}
-                catId={enriched.id}
-                cat={enriched}
-                catIdx={catIdx}
-                itemCount={enriched.items?.length ?? 0}
-                expandedCat={expandedCat}
-                setExpandedCat={setExpandedCat}
-                removeCategory={removeCategory}
-                updateCategoryName={updateCategoryName}
-                items={enriched.items ?? []}
-                itemLabel={itemLabel}
-                sectionKey={sectionKey}
-                hasPrice={hasPrice}
-                hasBadge={hasBadge}
-                updateItem={updateItem}
-                removeItem={removeItem}
-                addItem={addItem}
-                onAiDescription={onAiDescription}
-                aiLoadingDesc={aiLoadingDesc ?? null}
-                isPremium={isPremium}
-                onUpgradeRequired={onUpgradeRequired}
-                activeEmojiPicker={activeEmojiPicker}
-                setActiveEmojiPicker={setActiveEmojiPicker}
-                sensors={sensors}
-                handleItemDragEnd={handleItemDragEnd}
-                t={t}
-                inputBase={inputBase}
-                inputLabel={inputLabel}
-                EMOJI_GROUPS={EMOJI_GROUPS}
-                normStr={normStr}
-              />
-            );
-          })}
+          <div className="space-y-4">
+            {categories.map((cat: any, catIdx: number) => {
+              const enriched = ensureCatId(cat, catIdx);
+              return (
+                <KatSortableCategoryRow
+                  key={enriched.id}
+                  catId={enriched.id}
+                  cat={enriched}
+                  catIdx={catIdx}
+                  itemCount={enriched.items?.length ?? 0}
+                  expandedCat={expandedCat}
+                  setExpandedCat={setExpandedCat}
+                  removeCategory={removeCategory}
+                  updateCategoryName={updateCategoryName}
+                  items={enriched.items ?? []}
+                  itemLabel={itemLabel}
+                  sectionKey={sectionKey}
+                  hasPrice={hasPrice}
+                  hasBadge={hasBadge}
+                  updateItem={updateItem}
+                  removeItem={removeItem}
+                  addItem={addItem}
+                  onAiDescription={onAiDescription}
+                  aiLoadingDesc={aiLoadingDesc ?? null}
+                  isPremium={isPremium}
+                  onUpgradeRequired={onUpgradeRequired}
+                  activeEmojiPicker={activeEmojiPicker}
+                  setActiveEmojiPicker={setActiveEmojiPicker}
+                  sensors={sensors}
+                  handleItemDragEnd={handleItemDragEnd}
+                  t={t}
+                  inputBase={inputBase}
+                  inputLabel={inputLabel}
+                  EMOJI_GROUPS={EMOJI_GROUPS}
+                  normStr={normStr}
+                />
+              );
+            })}
+          </div>
         </SortableContext>
       </DndContext>
 
-      <button type="button" onClick={addCategory}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed border-primary/25 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-      >
-        <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory")}
-      </button>
+      {categories.length > 0 && (
+        <button
+          type="button"
+          onClick={addCategory}
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-primary/30 text-sm font-bold text-primary hover:bg-primary/5 hover:border-primary/60 transition-all cursor-pointer active:scale-[0.99]"
+        >
+          <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addCategory", "+ Tambah Kategori")}
+        </button>
+      )}
     </div>
   );
 }
 
-// ─── Sortable sub-components (i18n-aware) ─────────────────────────────────────────────────
+// ─── Sortable Category Row ────────────────────────────────────────────────────
 function KatSortableCategoryRow({
   catId, cat, catIdx, itemCount, expandedCat, setExpandedCat,
   removeCategory, updateCategoryName,
@@ -297,80 +353,129 @@ function KatSortableCategoryRow({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const isExpanded = expandedCat === catIdx;
+
   return (
-    <div ref={setNodeRef} style={style} className="overflow-hidden rounded-2xl border border-border bg-white/[0.025]">
-      <div className="flex items-center gap-2 bg-gradient-to-r from-white/[0.045] to-white/[0.015] px-3 py-2.5 border-b border-border">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`overflow-hidden rounded-3xl border transition-all duration-200 ${
+        isExpanded ? "border-primary/40 bg-card shadow-md ring-1 ring-primary/20" : "border-border bg-card hover:border-border/80"
+      }`}
+    >
+      {/* Category Header Bar */}
+      <div className="flex items-center gap-3 px-4 py-3.5 bg-muted/20 border-b border-border/60">
         <button
           type="button"
-          className="cursor-grab active:cursor-grabbing touch-none text-slate-600 hover:text-slate-300 p-0.5 transition-colors"
-          aria-label="Geser kategori" {...attributes} {...listeners}
+          className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground/60 hover:text-foreground p-1 rounded-lg hover:bg-muted transition-colors"
+          aria-label={t("dashboard.sitesKatalog.dragCategory", "Geser urutan kategori")}
+          {...attributes} {...listeners}
         >
-          <GripVertical className="w-3.5 h-3.5" />
+          <GripVertical className="w-4 h-4" />
         </button>
-        <input
-          type="text" value={cat.name ?? ""} onChange={(e) => updateCategoryName(catIdx, e.target.value)}
-          placeholder="Nama kategori"
-          className="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-100 outline-none placeholder-slate-600"
-        />
-        <span className="text-[10px] text-slate-500 flex-shrink-0">{t("dashboard.sitesKatalog.itemCountLabel", undefined, { count: String(itemCount) })}</span>
-        <button type="button" onClick={() => setExpandedCat(expandedCat === catIdx ? null : catIdx)} className="text-slate-500 hover:text-slate-200 p-1 cursor-pointer">
-          {expandedCat === catIdx ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-        </button>
-        <button type="button" onClick={() => removeCategory(catIdx)} className="text-red-500/60 hover:text-red-400 p-1 cursor-pointer">
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+
+        <div className="flex-1 min-w-0 flex items-center gap-3">
+          <input
+            type="text"
+            value={cat.name ?? ""}
+            onChange={(e) => updateCategoryName(catIdx, e.target.value)}
+            placeholder={t("dashboard.sitesKatalog.categoryPlaceholder", "Nama Kategori")}
+            className="w-full bg-transparent text-sm sm:text-base font-bold text-foreground outline-none placeholder:text-muted-foreground/50 focus:text-primary transition-colors"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-[11px] font-semibold text-muted-foreground bg-muted/60 px-2.5 py-0.5 rounded-full border border-border/50">
+            {t("dashboard.sitesKatalog.itemCountLabel", undefined, { count: String(itemCount) })}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setExpandedCat(isExpanded ? null : catIdx)}
+            className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+            title={isExpanded ? "Tutup Kategori" : "Buka Kategori"}
+          >
+            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => removeCategory(catIdx)}
+            className="text-red-500/70 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors cursor-pointer"
+            title={t("dashboard.sitesKatalog.deleteCategory", "Hapus Kategori")}
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {expandedCat === catIdx && (
-        <div className="p-3 space-y-3">
+      {/* Category Content Area */}
+      {isExpanded && (
+        <div className="p-4 sm:p-6 space-y-4">
           {items.length === 0 && (
-            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-4 text-center text-xs text-slate-500">
-              {t("dashboard.sitesKatalog.noItemsDesc", undefined, { itemLabel })}
+            <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-8 text-center space-y-2">
+              <p className="text-xs text-muted-foreground">
+                {t("dashboard.sitesKatalog.noItemsDesc", undefined, { itemLabel })}
+              </p>
+              <button
+                type="button"
+                onClick={() => addItem(catIdx)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addItemLabel", undefined, { label: itemLabel, category: cat.name || "" })}
+              </button>
             </div>
           )}
 
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(ev: DragEndEvent) => handleItemDragEnd(catIdx, ev)}>
             <SortableContext items={items.map((i: any) => i.id ?? i.name)} strategy={verticalListSortingStrategy}>
-              {items.map((item: any, itemIdx: number) => (
-                <KatSortableItemRow
-                  key={item.id ?? itemIdx}
-                  item={item}
-                  itemIdx={itemIdx}
-                  catIdx={catIdx}
-                  catName={cat.name}
-                  itemLabel={itemLabel}
-                  sectionKey={sectionKey}
-                  hasPrice={hasPrice}
-                  hasBadge={hasBadge}
-                  updateItem={updateItem}
-                  removeItem={removeItem}
-                  onAiDescription={onAiDescription}
-                  aiLoadingDesc={aiLoadingDesc}
-                  isPremium={isPremium}
-                  onUpgradeRequired={onUpgradeRequired}
-                  activeEmojiPicker={activeEmojiPicker}
-                  setActiveEmojiPicker={setActiveEmojiPicker}
-                  t={t}
-                  inputBase={inputBase}
-                  inputLabel={inputLabel}
-                  EMOJI_GROUPS={EMOJI_GROUPS}
-                  normStr={normStr}
-                />
-              ))}
+              <div className="space-y-4">
+                {items.map((item: any, itemIdx: number) => (
+                  <KatSortableItemRow
+                    key={item.id ?? itemIdx}
+                    item={item}
+                    itemIdx={itemIdx}
+                    catIdx={catIdx}
+                    catName={cat.name}
+                    itemLabel={itemLabel}
+                    sectionKey={sectionKey}
+                    hasPrice={hasPrice}
+                    hasBadge={hasBadge}
+                    updateItem={updateItem}
+                    removeItem={removeItem}
+                    onAiDescription={onAiDescription}
+                    aiLoadingDesc={aiLoadingDesc}
+                    isPremium={isPremium}
+                    onUpgradeRequired={onUpgradeRequired}
+                    activeEmojiPicker={activeEmojiPicker}
+                    setActiveEmojiPicker={setActiveEmojiPicker}
+                    t={t}
+                    inputBase={inputBase}
+                    inputLabel={inputLabel}
+                    EMOJI_GROUPS={EMOJI_GROUPS}
+                    normStr={normStr}
+                  />
+                ))}
+              </div>
             </SortableContext>
           </DndContext>
 
-          <button type="button" onClick={() => addItem(catIdx)}
-            className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-primary/30 text-[12px] font-semibold text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addItemLabel", undefined, { label: itemLabel })}
-          </button>
+          {items.length > 0 && (
+            <button
+              type="button"
+              onClick={() => addItem(catIdx)}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-dashed border-primary/30 text-xs font-bold text-primary hover:bg-primary/10 transition-colors cursor-pointer active:scale-[0.99]"
+            >
+              <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addItemLabel", undefined, { label: itemLabel, category: cat.name || "" })}
+            </button>
+          )}
         </div>
       )}
     </div>
   );
 }
 
+// ─── Sortable Item Row ────────────────────────────────────────────────────────
 function KatSortableItemRow({
   item, itemIdx, catIdx, catName, itemLabel, sectionKey, hasPrice, hasBadge,
   updateItem, removeItem, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
@@ -389,76 +494,117 @@ function KatSortableItemRow({
   const deliveryPlatforms: { name: string; url: string }[] = item.delivery_platforms ?? [];
 
   return (
-    <div ref={setNodeRef} style={style} className="rounded-2xl border border-border bg-muted/30 p-3">
-      {/* Item header */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-1.5">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="rounded-2xl border border-border/80 bg-background/80 hover:border-border transition-all p-4 sm:p-5 shadow-xs space-y-4"
+    >
+      {/* Item Top Bar */}
+      <div className="flex items-center justify-between pb-3 border-b border-border/50">
+        <div className="flex items-center gap-2.5 min-w-0">
           <button
             type="button"
-            className="cursor-grab active:cursor-grabbing touch-none text-slate-600 hover:text-slate-300 transition-colors"
-            aria-label="Geser item" {...attributes} {...listeners}
+            className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground/60 hover:text-foreground p-1 rounded hover:bg-muted transition-colors"
+            aria-label={t("dashboard.sitesKatalog.dragItem", "Geser item")}
+            {...attributes} {...listeners}
           >
             <GripVertical className="w-3.5 h-3.5" />
           </button>
-          <span className="text-[10px] uppercase tracking-wide font-bold text-slate-500">
-            {t("dashboard.sitesKatalog.itemNumberLabel", undefined, { label: itemLabel, number: String(itemIdx + 1) })}
+          <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+            #{itemIdx + 1}
+          </span>
+          <span className="text-xs font-bold text-foreground truncate max-w-[200px] sm:max-w-xs">
+            {item.name || <span className="text-muted-foreground italic font-normal">{t("dashboard.sitesKatalog.itemFallback", undefined, { number: String(itemIdx + 1) })}</span>}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          {/* is_available toggle */}
+
+        <div className="flex items-center gap-2 shrink-0">
+          {/* is_available switch pill */}
           <button
             type="button"
             onClick={() => updateItem(catIdx, itemIdx, "is_available", !isAvailable)}
-            className={`text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border transition-all cursor-pointer ${
+            className={`flex items-center gap-1 text-[10px] font-bold tracking-wide px-3 py-1 rounded-full border transition-all cursor-pointer ${
               isAvailable
                 ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
                 : "border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20"
             }`}
-            title={isAvailable ? "Tandai Habis" : "Tandai Tersedia"}
+            title={isAvailable ? t("dashboard.sitesKatalog.markOutOfStock", "Tandai Habis") : t("dashboard.sitesKatalog.markAvailable", "Tandai Tersedia")}
           >
-            {isAvailable ? "✓ Tersedia" : "✗ Habis"}
+            {isAvailable ? (
+              <>
+                <CheckCircle2 className="w-3 h-3" />
+                <span>{t("dashboard.sitesKatalog.available", "Tersedia")}</span>
+              </>
+            ) : (
+              <>
+                <X className="w-3 h-3" />
+                <span>{t("dashboard.sitesKatalog.outOfStock", "Habis")}</span>
+              </>
+            )}
           </button>
-          <button type="button" onClick={() => removeItem(catIdx, itemIdx)} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1">
+
+          <button
+            type="button"
+            onClick={() => removeItem(catIdx, itemIdx)}
+            className="text-red-500/60 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors cursor-pointer"
+            title={t("dashboard.sitesKatalog.deleteItem", "Hapus Item")}
+          >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[200px_1fr]">
+      {/* Item Body Grid: Photo on Left, Details on Right */}
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
         <KatItemPhotoGalleryEditor
-          label={t("dashboard.sitesKatalog.labelPhoto")}
+          label={t("dashboard.sitesKatalog.photoPrimary", "Foto Utama")}
           imageUrl={item.image_url ?? ""}
           imageUrls={item.image_urls ?? []}
           onUpdatePrimary={(val) => updateItem(catIdx, itemIdx, "image_url", val || null)}
           onUpdateGallery={(urls) => updateItem(catIdx, itemIdx, "image_urls", urls.length > 0 ? urls : null)}
+          t={t}
         />
-        <div className="space-y-3">
-          {/* Name + Price */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelName")}</label>
-              <input type="text" value={item.name ?? ""} onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)} placeholder={`Nama ${itemLabel}`} className={inputBase} />
+
+        <div className="space-y-4 min-w-0">
+          {/* Name & Price */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelName", "Nama Produk")}</label>
+              <input
+                type="text"
+                value={item.name ?? ""}
+                onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
+                placeholder={`cth. ${itemLabel === "menu" ? "Nasi Goreng Spesial" : "Paket Layanan Pro"}`}
+                className={inputBase}
+              />
             </div>
+
             {hasPrice && (
-              <div className="space-y-1.5">
-                <label className={inputLabel}>{t("dashboard.sitesKatalog.labelPrice")} <span className="font-normal normal-case text-slate-500">(tampilan)</span></label>
-                <input
-                  type="text"
-                  value={item.price_display ?? item.price ?? ""}
-                  onChange={(e) => {
-                    updateItem(catIdx, itemIdx, "price_display", e.target.value);
-                    updateItem(catIdx, itemIdx, "price", e.target.value);
-                  }}
-                  placeholder="cth. Rp 25.000, $5.99"
-                  className={inputBase}
-                />
-                <div className="relative">
-                  <label className={`${inputLabel} mt-1`}>Harga <span className="font-normal normal-case text-slate-500">(angka untuk subtotal)</span></label>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <label className={inputLabel}>{t("dashboard.sitesKatalog.priceDisplay", "Tampilan Harga")}</label>
                   <input
-                    type="number" min={0} step="any"
+                    type="text"
+                    value={item.price_display ?? item.price ?? ""}
+                    onChange={(e) => {
+                      updateItem(catIdx, itemIdx, "price_display", e.target.value);
+                      updateItem(catIdx, itemIdx, "price", e.target.value);
+                    }}
+                    placeholder={t("dashboard.sitesKatalog.priceDisplayPlaceholder", "cth. Rp 25.000")}
+                    className={inputBase}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className={inputLabel} title={t("dashboard.sitesKatalog.priceAmountHelp", "Untuk kalkulasi keranjang")}>
+                    {t("dashboard.sitesKatalog.priceAmount", "Nominal (Angka)")}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    step="any"
                     value={item.price_amount ?? ""}
                     onChange={(e) => updateItem(catIdx, itemIdx, "price_amount", e.target.value === "" ? null : Number(e.target.value))}
-                    placeholder="cth. 25000 atau 5.99"
+                    placeholder={t("dashboard.sitesKatalog.priceAmountPlaceholder", "cth. 25000")}
                     className={`${inputBase} [appearance:textfield]`}
                   />
                 </div>
@@ -466,149 +612,234 @@ function KatSortableItemRow({
             )}
           </div>
 
-          {/* Badge */}
-          {hasBadge && (
-            <div>
-              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.badgeHint")}</span></label>
-              <input type="text" value={normStr(item.badge)} onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)} placeholder="cth. Best Seller, Baru, Promo" className={inputBase} />
-            </div>
-          )}
+          {/* Badge & Capacity/Tags Row */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {hasBadge && (
+              <div className="space-y-1">
+                <label className={inputLabel}>{t("dashboard.sitesKatalog.labelBadge", "Badge / Label Khusus")}</label>
+                <input
+                  type="text"
+                  value={normStr(item.badge)}
+                  onChange={(e) => updateItem(catIdx, itemIdx, "badge", normStr(e.target.value) || null)}
+                  placeholder={t("dashboard.sitesKatalog.badgePlaceholder", "cth. Terlaris, Best Seller, Baru")}
+                  className={inputBase}
+                />
+              </div>
+            )}
 
-          {/* Capacity (catalog only — accommodation rooms / product capacity) */}
-          {sectionKey === "catalog" && (
-            <div>
-              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelCapacity")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.capacityHint")}</span></label>
-              <input
-                type="number" min={1}
-                value={item.capacity ?? ""}
-                onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value === "" ? null : Number(e.target.value))}
-                placeholder="cth. 2, 4, 6"
-                className={`${inputBase} [appearance:textfield]`}
-              />
-            </div>
-          )}
+            {sectionKey === "catalog" && (
+              <div className="space-y-1">
+                <label className={inputLabel}>{t("dashboard.sitesKatalog.labelCapacity", "Kapasitas / Satuan")}</label>
+                <input
+                  type="text"
+                  value={item.capacity ?? ""}
+                  onChange={(e) => updateItem(catIdx, itemIdx, "capacity", e.target.value || null)}
+                  placeholder={t("dashboard.sitesKatalog.capacityPlaceholder", "cth. 2 orang, 4 pax, 1 set")}
+                  className={inputBase}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Features / Amenities (catalog only) */}
           {sectionKey === "catalog" && (
-            <div>
-              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelFeatures")} <span className="font-normal normal-case text-slate-500">{t("dashboard.sitesKatalog.featuresHint")}</span></label>
-              <div className="flex flex-wrap gap-1.5 mb-1.5">
+            <div className="space-y-1.5">
+              <label className={inputLabel}>{t("dashboard.sitesKatalog.labelFeatures", "Fasilitas & Keunggulan")}</label>
+              <div className="flex flex-wrap gap-1.5 min-h-[30px] p-2 rounded-xl bg-muted/20 border border-border/60">
                 {(item.features ?? []).map((f: string, fi: number) => (
-                  <span key={fi} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
+                  <span key={fi} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/15 text-primary border border-primary/25">
                     {f}
-                    <button type="button" onClick={() => updateItem(catIdx, itemIdx, "features", (item.features ?? []).filter((_: string, i: number) => i !== fi))} className="hover:opacity-70 cursor-pointer">
-                      <X className="w-2.5 h-2.5" />
+                    <button
+                      type="button"
+                      onClick={() => updateItem(catIdx, itemIdx, "features", (item.features ?? []).filter((_: string, i: number) => i !== fi))}
+                      className="hover:text-red-400 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
                     </button>
                   </span>
                 ))}
+                <input
+                  type="text"
+                  placeholder={t("dashboard.sitesKatalog.featuresPlaceholder", "Ketik fasilitas lalu Enter (cth: WiFi, AC, Breakfast)")}
+                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 outline-none flex-1 min-w-[180px]"
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                      e.preventDefault();
+                      const next = [...(item.features ?? []), e.currentTarget.value.trim()];
+                      updateItem(catIdx, itemIdx, "features", next);
+                      e.currentTarget.value = "";
+                    }
+                  }}
+                />
               </div>
-              <input
-                type="text" placeholder="Ketik fitur lalu Enter" className={`${inputBase} text-xs`}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
-                    e.preventDefault();
-                    const next = [...(item.features ?? []), e.currentTarget.value.trim()];
-                    updateItem(catIdx, itemIdx, "features", next);
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
             </div>
           )}
 
-          {/* Tags (menu only) */}
+          {/* Tags & Delivery Platforms (menu only) */}
           {sectionKey === "menu" && (
-            <div>
-              <label className={inputLabel}>Tags <span className="font-normal normal-case text-slate-500">(misal: Pedas, Vegetarian)</span></label>
-              <div className="flex flex-wrap gap-1.5 mb-1.5">
-                {tags.map((tag: string, ti: number) => (
-                  <span key={ti} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
-                    {tag}
-                    <button type="button" onClick={() => updateItem(catIdx, itemIdx, "tags", tags.filter((_: string, i: number) => i !== ti))} className="hover:opacity-70 cursor-pointer">
-                      <X className="w-2.5 h-2.5" />
-                    </button>
-                  </span>
-                ))}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label className={inputLabel}>Tags Menu</label>
+                <div className="flex flex-wrap gap-1.5 min-h-[30px] p-2 rounded-xl bg-muted/20 border border-border/60">
+                  {tags.map((tag: string, ti: number) => (
+                    <span key={ti} className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary border border-primary/20">
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => updateItem(catIdx, itemIdx, "tags", tags.filter((_: string, i: number) => i !== ti))}
+                        className="hover:text-red-400 cursor-pointer"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    placeholder={t("dashboard.sitesKatalog.tagsPlaceholder", "Ketik tag lalu Enter")}
+                    className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 outline-none flex-1 min-w-[120px]"
+                    onKeyDown={(e) => {
+                      if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
+                        e.preventDefault();
+                        const newTag = e.currentTarget.value.trim().replace(/,$/, "");
+                        if (newTag && !tags.includes(newTag)) updateItem(catIdx, itemIdx, "tags", [...tags, newTag]);
+                        e.currentTarget.value = "";
+                      }
+                    }}
+                  />
+                </div>
               </div>
-              <input
-                type="text" placeholder="Ketik tag lalu Enter" className={`${inputBase} text-xs`}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === ",") && e.currentTarget.value.trim()) {
-                    e.preventDefault();
-                    const newTag = e.currentTarget.value.trim().replace(/,$/, "");
-                    if (newTag && !tags.includes(newTag)) updateItem(catIdx, itemIdx, "tags", [...tags, newTag]);
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
-            </div>
-          )}
 
-          {/* Delivery Platforms (menu only) */}
-          {sectionKey === "menu" && (
-            <div>
-              <label className={inputLabel}>Platform Delivery <span className="font-normal normal-case text-slate-500">(GrabFood, GoFood, dll.)</span></label>
-              <div className="space-y-1.5 mb-1.5">
-                {deliveryPlatforms.map((dp: { name: string; url: string }, di: number) => (
-                  <div key={di} className="flex items-center gap-1.5">
-                    <input type="text" value={dp.name} onChange={(e) => { const n = [...deliveryPlatforms]; n[di] = { ...n[di], name: e.target.value }; updateItem(catIdx, itemIdx, "delivery_platforms", n); }} placeholder="GrabFood" className={`${inputBase} flex-1 text-xs`} />
-                    <input type="url" value={dp.url} onChange={(e) => { const n = [...deliveryPlatforms]; n[di] = { ...n[di], url: e.target.value }; updateItem(catIdx, itemIdx, "delivery_platforms", n); }} placeholder="https://grab.com/..." className={`${inputBase} flex-1 text-xs`} />
-                    <button type="button" onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", deliveryPlatforms.filter((_: any, i: number) => i !== di))} className="text-red-500/60 hover:text-red-400 cursor-pointer p-1"><X className="w-3 h-3" /></button>
-                  </div>
-                ))}
+              <div className="space-y-1.5">
+                <label className={inputLabel}>{t("dashboard.sitesKatalog.deliveryPlatforms", "Platform Delivery Online")}</label>
+                <div className="space-y-2">
+                  {deliveryPlatforms.map((dp: { name: string; url: string }, di: number) => (
+                    <div key={di} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={dp.name}
+                        onChange={(e) => {
+                          const n = [...deliveryPlatforms];
+                          n[di] = { ...n[di], name: e.target.value };
+                          updateItem(catIdx, itemIdx, "delivery_platforms", n);
+                        }}
+                        placeholder="GrabFood"
+                        className={`${inputBase} py-1.5 text-xs flex-1`}
+                      />
+                      <input
+                        type="url"
+                        value={dp.url}
+                        onChange={(e) => {
+                          const n = [...deliveryPlatforms];
+                          n[di] = { ...n[di], url: e.target.value };
+                          updateItem(catIdx, itemIdx, "delivery_platforms", n);
+                        }}
+                        placeholder="https://..."
+                        className={`${inputBase} py-1.5 text-xs flex-1`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", deliveryPlatforms.filter((_: any, i: number) => i !== di))}
+                        className="text-red-500/60 hover:text-red-500 p-1 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", [...deliveryPlatforms, { name: "", url: "" }])}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer pt-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.addDeliveryPlatform", "+ Tambah Platform")}
+                  </button>
+                </div>
               </div>
-              <button type="button" onClick={() => updateItem(catIdx, itemIdx, "delivery_platforms", [...deliveryPlatforms, { name: "", url: "" }])} className="flex items-center gap-1 text-[10px] text-primary/70 hover:text-primary cursor-pointer transition-colors">
-                <LinkIcon className="w-3 h-3" /> Tambah Platform
-              </button>
             </div>
           )}
         </div>
 
-        {/* Description — full width */}
-        <div className="col-span-full space-y-1.5 mt-1">
+        {/* Full-Width Description Box with Rich Toolbar */}
+        <div className="col-span-full space-y-2 pt-2 border-t border-border/50">
           <div className="flex items-center justify-between">
-            <label className="text-[10px] uppercase tracking-wide font-bold text-slate-500">{t("dashboard.sitesKatalog.labelDescription")}</label>
+            <label className={inputLabel}>{t("dashboard.sitesKatalog.labelDescription", "Deskripsi Produk")}</label>
             {onAiDescription && (
               <AiFieldButton
                 loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
                 onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", catName || "", item.image_url || undefined)}
-                title={t("dashboard.sitesKatalog.aiGenerateDesc")} isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
+                title={t("dashboard.sitesKatalog.aiGenerateDesc")}
+                isPremium={isPremium}
+                onUpgradeRequired={onUpgradeRequired}
               />
             )}
           </div>
 
-          {/* Toolbar */}
-          <div className="flex items-center gap-1.5 bg-muted/30 border border-border border-b-0 rounded-t-xl px-2 py-1.5 text-[10px]">
-            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] flex items-center gap-1 border border-border/50">
-              <span>•</span> {t("dashboard.sitesKatalog.bulletList")}
+          {/* Description Toolbar */}
+          <div className="flex items-center gap-1.5 bg-muted/40 border border-border border-b-0 rounded-t-xl px-3 py-2 text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                const cur = item.description ?? "";
+                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• "));
+              }}
+              className="px-2.5 py-1 rounded-lg bg-background hover:bg-muted text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs flex items-center gap-1 border border-border/60 transition-colors shadow-2xs"
+            >
+              <span>•</span> {t("dashboard.sitesKatalog.bulletList", "Bullet List")}
             </button>
-            <button type="button" onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }} className="px-2 py-1 rounded bg-[#1e293b]/60 hover:bg-[#1e293b]/90 text-slate-300 font-semibold cursor-pointer text-[9px] border border-border/50">
-              1. {t("dashboard.sitesKatalog.numberedList")}
+            <button
+              type="button"
+              onClick={() => {
+                const cur = item.description ?? "";
+                updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. "));
+              }}
+              className="px-2.5 py-1 rounded-lg bg-background hover:bg-muted text-muted-foreground hover:text-foreground font-semibold cursor-pointer text-xs border border-border/60 transition-colors shadow-2xs"
+            >
+              1. {t("dashboard.sitesKatalog.numberedList", "Numbered List")}
             </button>
-            <div className="w-px h-3.5 bg-white/10 mx-0.5" />
+
+            <div className="w-px h-4 bg-border mx-1" />
+
             <div className="relative">
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setActiveEmojiPicker(activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? null : { catIdx, itemIdx })}
-                className={`px-2 py-1 rounded font-semibold cursor-pointer text-[9px] flex items-center gap-1 border ${activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx ? "bg-primary/20 text-primary border-primary/30" : "bg-[#1e293b]/60 hover:bg-[#1e293b]/90 border-border/50 text-slate-300"}`}
+                className={`px-2.5 py-1 rounded-lg font-semibold cursor-pointer text-xs flex items-center gap-1 border transition-colors shadow-2xs ${
+                  activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx
+                    ? "bg-primary/20 text-primary border-primary/40"
+                    : "bg-background hover:bg-muted border-border/60 text-muted-foreground hover:text-foreground"
+                }`}
               >
-                😀 {t("dashboard.sitesKatalog.emojiSymbol")}
+                😀 {t("dashboard.sitesKatalog.emojiSymbol", "Emoji")}
               </button>
+
               {activeEmojiPicker?.catIdx === catIdx && activeEmojiPicker?.itemIdx === itemIdx && (
-                <div className="absolute left-0 bottom-full mb-1.5 z-[100] w-64 rounded-xl border border-border bg-[#1e293b] p-3 shadow-2xl space-y-3">
-                  <div className="flex items-center justify-between border-b border-border/50 pb-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t("dashboard.sitesKatalog.pickEmojiTitle")}</span>
-                    <button type="button" onClick={() => setActiveEmojiPicker(null)} className="text-slate-500 hover:text-slate-300 text-[10px] font-bold cursor-pointer">{t("dashboard.sitesKatalog.close")}</button>
+                <div className="absolute left-0 bottom-full mb-2 z-[100] w-72 rounded-2xl border border-border bg-card p-3.5 shadow-2xl space-y-3 animate-in zoom-in-95 duration-150">
+                  <div className="flex items-center justify-between border-b border-border pb-2">
+                    <span className="text-[11px] font-bold text-foreground uppercase tracking-wide">{t("dashboard.sitesKatalog.pickEmojiTitle", "Pilih Emoji")}</span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveEmojiPicker(null)}
+                      className="text-muted-foreground hover:text-foreground text-xs font-bold cursor-pointer"
+                    >
+                      {t("dashboard.sitesKatalog.close", "Tutup")}
+                    </button>
                   </div>
-                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1">
+                  <div className="max-h-52 overflow-y-auto space-y-3 pr-1">
                     {EMOJI_GROUPS.map((group: any) => (
                       <div key={group.name} className="space-y-1">
-                        <div className="text-[9px] font-semibold text-slate-500">{t(group.name)}</div>
+                        <div className="text-[10px] font-bold text-muted-foreground">{t(group.name)}</div>
                         <div className="grid grid-cols-7 gap-1">
                           {group.emojis.map((emoji: string) => (
-                            <button key={emoji} type="button"
-                              onClick={() => { updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji); setActiveEmojiPicker(null); }}
-                              className="text-base hover:scale-125 transition-transform cursor-pointer rounded p-0.5 hover:bg-white/10"
-                            >{emoji}</button>
+                            <button
+                              key={emoji}
+                              type="button"
+                              onClick={() => {
+                                updateItem(catIdx, itemIdx, "description", (item.description ?? "") + emoji);
+                                setActiveEmojiPicker(null);
+                              }}
+                              className="text-lg hover:scale-125 transition-transform cursor-pointer rounded-lg p-1 hover:bg-muted flex items-center justify-center"
+                            >
+                              {emoji}
+                            </button>
                           ))}
                         </div>
                       </div>
@@ -618,18 +849,22 @@ function KatSortableItemRow({
               )}
             </div>
           </div>
+
           <textarea
-            value={item.description ?? ""} rows={3}
+            value={item.description ?? ""}
+            rows={3}
             onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-            placeholder={`Deskripsi singkat ${itemLabel} ini`}
-            className="w-full px-3 py-2 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 bg-muted/40 text-slate-100 placeholder-slate-500 resize-y"
+            placeholder={`Jelaskan keunggulan dan spesifikasi ${itemLabel} ini secara menarik...`}
+            className="w-full px-3.5 py-2.5 border border-border rounded-b-xl text-[13px] outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 bg-muted/40 text-foreground placeholder:text-muted-foreground/60 resize-y transition-all"
           />
         </div>
 
-        {/* Variant / Add-on Groups */}
+        {/* Variant / Option Groups */}
         <KatVariantGroupEditor
           groups={item.variant_groups ?? []}
           onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
+          t={t}
+          inputBase={inputBase}
         />
       </div>
     </div>
@@ -637,17 +872,14 @@ function KatSortableItemRow({
 }
 
 // ─── KatVariantGroupEditor ──────────────────────────────────────────────────────
-
-const KAT_VGE_INPUT = "w-full px-2.5 py-1.5 rounded-lg border border-border text-[12px] bg-muted/40 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors";
-
 interface KVGGroup { id: string; name: string; type: "single" | "multiple"; required: boolean; options: KVGOption[]; }
 interface KVGOption { id: string; name: string; price_delta?: number | null; price_display?: string | null; }
 
 function makeKVGroup(): KVGGroup {
-  return { id: katNanoid(), name: "", type: "single", required: true, options: [{ id: katNanoid(), name: "", price_delta: null, price_display: null }] };
+  return { id: katNanoid(), name: "", type: "single", required: false, options: [{ id: katNanoid(), name: "", price_delta: null, price_display: null }] };
 }
 
-function KatVariantGroupEditor({ groups, onChange }: { groups: KVGGroup[]; onChange: (groups: KVGGroup[]) => void }) {
+function KatVariantGroupEditor({ groups, onChange, t, inputBase }: { groups: KVGGroup[]; onChange: (groups: KVGGroup[]) => void; t: any; inputBase: string }) {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   function updateGroup(gid: string, patch: Partial<KVGGroup>) {
@@ -668,92 +900,142 @@ function KatVariantGroupEditor({ groups, onChange }: { groups: KVGGroup[]; onCha
   }
 
   return (
-    <div className="col-span-full mt-2 border-t border-border pt-3">
-      <div className="flex items-center justify-between mb-2">
-        <label className="text-[10px] uppercase tracking-wide font-bold text-slate-500">Varian / Add-on</label>
+    <div className="col-span-full pt-3 border-t border-border/50 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <label className={inputLabel}>{t("dashboard.sitesKatalog.variantsTitle", "Varian & Opsi Tambahan")}</label>
+          <p className="text-[11px] text-muted-foreground">
+            {t("dashboard.sitesKatalog.variantsSubtitle", "Kustomisasi pilihan produk seperti Ukuran, Topping, Tingkat Manis, atau Opsi Tambahan.")}
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => { const g = makeKVGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
-          className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 transition-colors cursor-pointer"
+          className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer"
         >
-          <Plus className="w-3 h-3" /> Tambah Grup
+          <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "+ Tambah Grup Varian")}
         </button>
       </div>
 
       {groups.length === 0 && (
-        <p className="text-[10px] text-slate-500 italic">Belum ada varian. Contoh: Ukuran, Topping, Level Pedas.</p>
+        <p className="text-xs text-muted-foreground/80 italic p-3 rounded-xl bg-muted/20 border border-border/40">
+          {t("dashboard.sitesKatalog.variantsNoGroups", "Belum ada varian atau add-on untuk produk ini.")}
+        </p>
       )}
 
-      <div className="flex flex-col gap-2">
+      <div className="space-y-3">
         {groups.map((group) => {
           const isOpen = expandedGroup === group.id;
           return (
-            <div key={group.id} className="rounded-xl border border-border bg-muted/20 overflow-hidden">
+            <div key={group.id} className="rounded-2xl border border-border/80 bg-muted/20 overflow-hidden">
               <div
-                className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
+                className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none bg-muted/30 hover:bg-muted/50 transition-colors"
                 onClick={() => setExpandedGroup(isOpen ? null : group.id)}
               >
-                <span className="flex-1 text-[11px] font-semibold text-slate-200 truncate">
-                  {group.name || <span className="text-slate-500 italic">Grup baru</span>}
+                <Layers className="w-4 h-4 text-primary shrink-0" />
+                <span className="flex-1 text-xs sm:text-sm font-bold text-foreground truncate">
+                  {group.name || <span className="text-muted-foreground italic font-normal">{t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "Grup Varian Baru")}</span>}
                 </span>
-                <span className="text-[9px] text-slate-500 shrink-0">{group.type === "multiple" ? "multi" : "1 pilihan"}</span>
-                {isOpen ? <ChevronUp className="w-3 h-3 text-slate-400 shrink-0" /> : <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />}
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
-                  className="text-red-500/60 hover:text-red-400 cursor-pointer p-0.5 shrink-0"
-                  aria-label="Hapus grup"
-                ><Trash2 className="w-3 h-3" /></button>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-md border border-border/50">
+                    {group.type === "multiple" ? t("dashboard.sitesKatalog.variantsTypeMultiple", "Bisa Pilih Banyak") : t("dashboard.sitesKatalog.variantsTypeSingle", "Pilih 1")}
+                  </span>
+                  {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
+                    className="text-red-500/60 hover:text-red-500 p-1 rounded hover:bg-red-500/10 cursor-pointer"
+                    aria-label="Hapus grup"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {isOpen && (
-                <div className="px-3 pb-3 flex flex-col gap-2 border-t border-border">
-                  <input
-                    type="text" value={group.name}
-                    onChange={(e) => updateGroup(group.id, { name: e.target.value })}
-                    placeholder="Nama grup (cth. Ukuran, Topping)"
-                    className={`${KAT_VGE_INPUT} mt-2`}
-                  />
-                  <div className="flex items-center gap-4 flex-wrap">
-                    <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer select-none">
-                      <input type="checkbox" checked={group.type === "multiple"}
-                        onChange={(e) => updateGroup(group.id, { type: e.target.checked ? "multiple" : "single" })}
-                        className="w-3 h-3 accent-primary" /> Multi-pilih
-                    </label>
-                    <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer select-none">
-                      <input type="checkbox" checked={group.required}
-                        onChange={(e) => updateGroup(group.id, { required: e.target.checked })}
-                        className="w-3 h-3 accent-primary" /> Wajib dipilih
-                    </label>
+                <div className="p-4 space-y-4 border-t border-border/60 bg-card">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label className={inputLabel}>{t("dashboard.sitesKatalog.variantsGroupName", "Nama Grup Varian")}</label>
+                      <input
+                        type="text"
+                        value={group.name}
+                        onChange={(e) => updateGroup(group.id, { name: e.target.value })}
+                        placeholder={t("dashboard.sitesKatalog.variantsGroupNamePlaceholder", "cth. Ukuran Porsi, Topping Ekstra")}
+                        className={inputBase}
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-6">
+                      <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={group.type === "multiple"}
+                          onChange={(e) => updateGroup(group.id, { type: e.target.checked ? "multiple" : "single" })}
+                          className="w-4 h-4 accent-primary rounded cursor-pointer"
+                        />
+                        {t("dashboard.sitesKatalog.variantsTypeMultiple", "Pilih Banyak (Checkbox)")}
+                      </label>
+                      <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={group.required}
+                          onChange={(e) => updateGroup(group.id, { required: e.target.checked })}
+                          className="w-4 h-4 accent-primary rounded cursor-pointer"
+                        />
+                        {t("dashboard.sitesKatalog.variantsRequired", "Wajib Dipilih")}
+                      </label>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1.5 mt-1">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Pilihan</span>
-                    {group.options.map((opt) => (
-                      <div key={opt.id} className="flex items-center gap-1.5">
-                        <input type="text" value={opt.name}
-                          onChange={(e) => updateOption(group.id, opt.id, { name: e.target.value })}
-                          placeholder="Nama opsi (cth. S, M, L)"
-                          className={`${KAT_VGE_INPUT} flex-1`}
-                        />
-                        <input type="number" value={opt.price_delta ?? ""}
-                          onChange={(e) => {
-                            const delta = e.target.value === "" ? null : Number(e.target.value);
-                            const display = delta != null && delta !== 0 ? (delta > 0 ? `+${delta.toLocaleString()}` : `${delta.toLocaleString()}`) : null;
-                            updateOption(group.id, opt.id, { price_delta: delta, price_display: display });
-                          }}
-                          placeholder="+harga" title="Delta harga"
-                          className={`${KAT_VGE_INPUT} w-24 shrink-0`}
-                        />
-                        <button type="button" onClick={() => removeOption(group.id, opt.id)}
-                          disabled={group.options.length <= 1}
-                          className="text-red-500/60 hover:text-red-400 disabled:opacity-30 cursor-pointer p-0.5 shrink-0"
-                          aria-label="Hapus opsi"><X className="w-3 h-3" /></button>
-                      </div>
-                    ))}
-                    <button type="button" onClick={() => addOption(group.id)}
-                      className="self-start flex items-center gap-1 text-[10px] font-semibold text-primary/70 hover:text-primary mt-0.5 cursor-pointer transition-colors">
-                      <Plus className="w-3 h-3" /> Tambah opsi
+                  {/* Options List */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      {t("dashboard.sitesKatalog.variantsOptionsTitle", "Daftar Pilihan / Opsi")}
+                    </span>
+
+                    <div className="space-y-2">
+                      {group.options.map((opt) => (
+                        <div key={opt.id} className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={opt.name}
+                            onChange={(e) => updateOption(group.id, opt.id, { name: e.target.value })}
+                            placeholder={t("dashboard.sitesKatalog.variantsOptionNamePlaceholder", "cth. Regular, Large, Ekstra Keju")}
+                            className={`${inputBase} py-2 flex-1 text-xs`}
+                          />
+                          <input
+                            type="number"
+                            value={opt.price_delta ?? ""}
+                            onChange={(e) => {
+                              const delta = e.target.value === "" ? null : Number(e.target.value);
+                              const display = delta != null && delta !== 0 ? (delta > 0 ? `+${delta.toLocaleString()}` : `${delta.toLocaleString()}`) : null;
+                              updateOption(group.id, opt.id, { price_delta: delta, price_display: display });
+                            }}
+                            placeholder="+Rp"
+                            title={t("dashboard.sitesKatalog.variantsOptionDelta", "Tambahan Harga")}
+                            className={`${inputBase} py-2 w-28 shrink-0 text-xs`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeOption(group.id, opt.id)}
+                            disabled={group.options.length <= 1}
+                            className="text-red-500/60 hover:text-red-500 disabled:opacity-30 cursor-pointer p-1.5 rounded hover:bg-red-500/10 transition-colors shrink-0"
+                            aria-label="Hapus opsi"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => addOption(group.id)}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline cursor-pointer pt-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddOption", "+ Tambah Pilihan")}
                     </button>
                   </div>
                 </div>
@@ -767,19 +1049,10 @@ function KatVariantGroupEditor({ groups, onChange }: { groups: KVGGroup[]; onCha
 }
 
 // ─── KatItemPhotoGalleryEditor ──────────────────────────────────────────────────
-
 function KatItemPhotoGalleryEditor({
-  label,
-  imageUrl,
-  imageUrls,
-  onUpdatePrimary,
-  onUpdateGallery,
+  label, imageUrl, imageUrls, onUpdatePrimary, onUpdateGallery, t,
 }: {
-  label: string;
-  imageUrl: string;
-  imageUrls: string[];
-  onUpdatePrimary: (url: string) => void;
-  onUpdateGallery: (urls: string[]) => void;
+  label: string; imageUrl: string; imageUrls: string[]; onUpdatePrimary: (url: string) => void; onUpdateGallery: (urls: string[]) => void; t: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -819,9 +1092,9 @@ function KatItemPhotoGalleryEditor({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <FileUpload
-        label={label || "Foto Utama"}
+        label={label || t("dashboard.sitesKatalog.photoPrimary", "Foto Utama")}
         value={imageUrl}
         onChange={onUpdatePrimary}
         placeholder="https://..."
@@ -831,52 +1104,52 @@ function KatItemPhotoGalleryEditor({
         previewSize="sm"
       />
 
-      <div className="rounded-xl border border-border bg-muted/20 overflow-hidden">
+      <div className="rounded-2xl border border-border/80 bg-muted/20 overflow-hidden">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-semibold text-slate-300 hover:bg-muted/40 transition-colors cursor-pointer"
+          className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-1.5">
-            <ImageIcon className="w-3.5 h-3.5 text-primary" />
-            <span>Galeri Foto ({1 + extraImages.length})</span>
+          <div className="flex items-center gap-2">
+            <ImageIcon className="w-4 h-4 text-primary" />
+            <span>{t("dashboard.sitesKatalog.photoGalleryCount", undefined, { count: String(1 + extraImages.length) })}</span>
           </div>
-          {isOpen ? <ChevronUp className="w-3.5 h-3.5 text-slate-400" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-400" />}
+          {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>
 
         {isOpen && (
-          <div className="p-2.5 border-t border-border space-y-2">
-            <p className="text-[10px] text-slate-400 leading-relaxed">
-              Tambahkan hingga beberapa foto untuk item ini.
+          <div className="p-3 border-t border-border/60 space-y-3 bg-card">
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {t("dashboard.sitesKatalog.photoGalleryHelp", "Unggah foto tambahan dari sudut berbeda atau variasi produk.")}
             </p>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {imageUrl && (
-                <div className="relative w-14 h-14 rounded-lg overflow-hidden border-2 border-primary group">
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2 border-primary group shadow-xs">
                   <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                  <span className="absolute bottom-0 inset-x-0 bg-primary text-[8px] font-black text-black text-center py-0.5 uppercase">
-                    Utama
+                  <span className="absolute bottom-0 inset-x-0 bg-primary text-[9px] font-black text-primary-foreground text-center py-0.5 uppercase">
+                    {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
                   </span>
                 </div>
               )}
 
               {extraImages.map((url, idx) => (
-                <div key={idx} className="relative w-14 h-14 rounded-lg overflow-hidden border border-border group">
+                <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-border group shadow-xs">
                   <img src={url} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-0.5">
+                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-1">
                     <button
                       type="button"
                       onClick={() => handleSetPrimary(url)}
-                      className="text-[8px] font-bold text-white bg-primary/90 px-1 py-0.5 rounded cursor-pointer hover:bg-primary"
+                      className="text-[9px] font-bold text-white bg-primary px-1.5 py-0.5 rounded cursor-pointer hover:bg-primary/90"
                     >
-                      Utama
+                      {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleRemoveExtra(url)}
                       className="text-red-400 hover:text-red-300 p-0.5 cursor-pointer"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -893,14 +1166,14 @@ function KatItemPhotoGalleryEditor({
                 type="button"
                 disabled={uploading}
                 onClick={() => fileInputRef.current?.click()}
-                className="w-14 h-14 rounded-lg border border-dashed border-border hover:border-primary/50 hover:bg-primary/5 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-all cursor-pointer disabled:opacity-50"
+                className="w-16 h-16 rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-all cursor-pointer disabled:opacity-50"
               >
                 {uploading ? (
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
                 ) : (
                   <>
                     <Plus className="w-4 h-4" />
-                    <span className="text-[9px] font-semibold">+Foto</span>
+                    <span className="text-[10px] font-bold">{t("dashboard.sitesKatalog.photoAdd", "+ Foto")}</span>
                   </>
                 )}
               </button>
@@ -954,7 +1227,6 @@ export default function KatalogManagerPage() {
       const content = res.data?.content ?? {};
       fullContentRef.current = content;
 
-      // Prefer catalog; fall back to menu if the site uses menu instead
       if (content.menu && !content.catalog) {
         setSectionKey("menu");
         setSectionData(content.menu ?? {});
@@ -973,7 +1245,6 @@ export default function KatalogManagerPage() {
 
   useEffect(() => { fetchContent(); }, [fetchContent]);
 
-  // Keep ref in sync
   useEffect(() => { sectionDataRef.current = sectionData; }, [sectionData]);
 
   const saveContent = useCallback(async (data: any, key: "catalog" | "menu") => {
@@ -1001,7 +1272,6 @@ export default function KatalogManagerPage() {
     autosaveTimer.current = setTimeout(() => { void saveContent(data, key); }, 2000);
   }, [saveContent]);
 
-  // updateField mirrors SectionForms updateField signature
   const updateField = useCallback((section: string, key: string, val: any) => {
     setSectionData((prev: any) => {
       const next = { ...prev, [key]: val };
@@ -1053,69 +1323,94 @@ export default function KatalogManagerPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-80">
-        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
 
   const isMenu = sectionKey === "menu";
-  const sectionTitle = isMenu ? t("dashboard.sitesKatalog.sectionTitleMenu") : t("dashboard.sitesKatalog.sectionTitleCatalog");
-  const itemLabel = isMenu ? t("dashboard.sitesKatalog.itemLabelMenu") : t("dashboard.sitesKatalog.itemLabelCatalog");
+  const sectionTitle = isMenu ? t("dashboard.sitesKatalog.sectionTitleMenu", "Menu Resto") : t("dashboard.sitesKatalog.sectionTitleCatalog", "Katalog Produk");
+  const itemLabel = isMenu ? t("dashboard.sitesKatalog.itemLabelMenu", "menu") : t("dashboard.sitesKatalog.itemLabelCatalog", "produk");
   const SectionIcon = isMenu ? Utensils : ShoppingBag;
 
+  // Calculate statistics
+  const categoriesList: any[] = sectionData?.categories ?? [];
+  const totalCategories = categoriesList.length;
+  const totalItems = categoriesList.reduce((acc, cat) => acc + (cat.items?.length ?? 0), 0);
+  const totalAvailable = categoriesList.reduce((acc, cat) => acc + (cat.items?.filter((it: any) => it.is_available !== false).length ?? 0), 0);
+  const totalVariantGroups = categoriesList.reduce((acc, cat) => acc + (cat.items?.filter((it: any) => it.variant_groups?.length > 0).length ?? 0), 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <SiteSubNav siteId={siteId} />
 
-      {/* Page header */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Link href={`/dashboard/sites/${siteId}`} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> {t("dashboard.sitesKatalog.webLink")}
+      {/* Top Header Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl border border-border/80 bg-card shadow-xs">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <Link
+            href={`/dashboard/sites/${siteId}`}
+            className="flex items-center justify-center w-9 h-9 rounded-xl border border-border bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            title={t("dashboard.sitesKatalog.webLink", "Kembali ke Website")}
+          >
+            <ChevronLeft className="w-5 h-5" />
           </Link>
-          <SectionIcon className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-bold">{sectionTitle}</h2>
+          <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-xs">
+            <SectionIcon className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-extrabold text-foreground truncate leading-tight">{sectionTitle}</h1>
+            <p className="text-xs text-muted-foreground truncate">{t("dashboard.sitesKatalog.allChangesSaved", "Semua perubahan otomatis tersimpan secara aman")}</p>
+          </div>
         </div>
 
-        {/* Save status indicator */}
-        <div className="flex items-center gap-2">
+        {/* Save status & manual save button */}
+        <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
           {saving ? (
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesKatalog.saving")}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesKatalog.saving", "Menyimpan...")}
             </span>
           ) : savedAt ? (
-            <span className="flex items-center gap-1.5 text-xs text-emerald-500">
-              <Check className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.saved")}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <Check className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.saved", "Tersimpan")}
             </span>
           ) : null}
+
           <button
             type="button"
-            onClick={() => { if (autosaveTimer.current) clearTimeout(autosaveTimer.current); void saveContent(sectionDataRef.current, sectionKey); }}
+            onClick={() => {
+              if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+              void saveContent(sectionDataRef.current, sectionKey);
+            }}
             disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 disabled:opacity-60 transition-all cursor-pointer shadow-sm active:scale-95"
           >
-            <Save className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.save")}
+            <Save className="w-4 h-4" /> {t("dashboard.sitesKatalog.save", "Simpan Sekarang")}
           </button>
         </div>
       </div>
 
-      {/* Info banner */}
-      <Card>
-        <CardContent className="py-3">
-          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-            <p className="font-semibold">{isMenu ? "🍽️" : "🛍️"} {t("dashboard.sitesKatalog.bannerTitle", undefined, { title: sectionTitle })}</p>
-            <p className="mt-1 text-primary/80">
-              {t("dashboard.sitesKatalog.bannerDesc1", undefined, { itemLabel, pricePart: isMenu ? "" : t("dashboard.sitesKatalog.bannerPricePart") })}
-              {t("dashboard.sitesKatalog.bannerDesc2")}
-              <strong>+ {t("dashboard.sitesKatalog.addWord")}</strong>
-              {t("dashboard.sitesKatalog.bannerDesc3")}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Summary Metric Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-2xs space-y-1">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesKatalog.statCategories", "Kategori")}</span>
+          <p className="text-xl sm:text-2xl font-black text-foreground">{totalCategories}</p>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-2xs space-y-1">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesKatalog.statTotalItems", "Total Produk")}</span>
+          <p className="text-xl sm:text-2xl font-black text-foreground">{totalItems}</p>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-2xs space-y-1">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesKatalog.statAvailable", "Tersedia")}</span>
+          <p className="text-xl sm:text-2xl font-black text-emerald-400">{totalAvailable}</p>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-2xs space-y-1">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{t("dashboard.sitesKatalog.statVariants", "Varian / Opsi")}</span>
+          <p className="text-xl sm:text-2xl font-black text-primary">{totalVariantGroups}</p>
+        </div>
+      </div>
 
-      {/* Catalog / Menu editor */}
+      {/* Catalog / Menu editor component */}
       <MenuCatalogForm
         sectionKey={sectionKey}
         sectionTitle={sectionTitle}
@@ -1137,37 +1432,47 @@ export default function KatalogManagerPage() {
           onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+            className="w-full max-w-md rounded-3xl border border-border bg-card shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
-                <SparkleGenAI className="h-6 w-6 text-primary" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                <SparkleGenAI className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">{t("dashboard.sitesKatalog.aiModalTitle")}</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  {t("dashboard.sitesKatalog.aiModalDesc")} <span className="font-semibold text-primary">{aiPromptModal.label}</span>
+                <h3 className="text-base font-bold text-foreground leading-tight">{t("dashboard.sitesKatalog.aiModalTitle", "Tulis Deskripsi dengan AI")}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t("dashboard.sitesKatalog.aiModalDesc", "Instruksi khusus untuk")} <span className="font-bold text-primary">{aiPromptModal.label}</span>
                 </p>
               </div>
             </div>
             <input
-              autoFocus type="text" value={aiPromptInput}
+              autoFocus
+              type="text"
+              value={aiPromptInput}
               onChange={(e) => setAiPromptInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }
                 if (e.key === "Escape") { aiPromptModal.resolve(null); setAiPromptModal(null); }
               }}
-              placeholder={`cth. "fokus manfaat utama dan buat pembaca tertarik"`}
-              className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 placeholder:text-slate-600"
+              placeholder={`cth. "Fokus pada bahan premium dan aroma khas yang menggugah selera"`}
+              className="w-full px-4 py-3 border border-border bg-muted/40 text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 placeholder:text-muted-foreground/60 transition-all"
             />
-            <div className="flex gap-2">
-              <button type="button" onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] font-medium hover:bg-muted/50 transition-colors"
-              >{t("dashboard.sitesKatalog.cancel")}</button>
-              <button type="button" onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold hover:bg-primary/90 transition-colors"
-              >{t("dashboard.sitesKatalog.generate")}</button>
+            <div className="flex gap-2.5">
+              <button
+                type="button"
+                onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl border border-border text-muted-foreground text-xs font-semibold hover:bg-muted transition-colors cursor-pointer"
+              >
+                {t("dashboard.sitesKatalog.cancel", "Batal")}
+              </button>
+              <button
+                type="button"
+                onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
+                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.generate", "Generate")}
+              </button>
             </div>
           </div>
         </div>
@@ -1180,18 +1485,28 @@ export default function KatalogManagerPage() {
           onClick={() => setUpgradePromptOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-4 text-center"
+            className="w-full max-w-sm rounded-3xl border border-border bg-card shadow-2xl p-6 space-y-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[14px] font-semibold text-slate-100">{t("dashboard.sitesKatalog.upgradeTitle")}</p>
-            <p className="text-[12px] text-slate-400">{t("dashboard.sitesKatalog.upgradeDesc")}</p>
-            <div className="flex gap-2">
-              <button type="button" onClick={() => setUpgradePromptOpen(false)}
-                className="flex-1 h-10 rounded-xl border border-border text-slate-400 text-[13px] hover:bg-muted/50 transition-colors"
-              >{t("dashboard.sitesKatalog.later")}</button>
-              <Link href="/dashboard/upgrade"
-                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center hover:bg-primary/90 transition-colors"
-              >{t("dashboard.sitesKatalog.upgradeNow")}</Link>
+            <div className="w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center mx-auto">
+              <SparkleGenAI className="w-6 h-6" />
+            </div>
+            <p className="text-base font-bold text-foreground">{t("dashboard.sitesKatalog.upgradeTitle", "Fitur AI — Plan Pro")}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t("dashboard.sitesKatalog.upgradeDesc", "Generate deskripsi otomatis dengan AI tersedia tanpa batas di paket Pro.")}</p>
+            <div className="flex gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setUpgradePromptOpen(false)}
+                className="flex-1 h-10 rounded-xl border border-border text-muted-foreground text-xs font-semibold hover:bg-muted transition-colors cursor-pointer"
+              >
+                {t("dashboard.sitesKatalog.later", "Nanti")}
+              </button>
+              <Link
+                href="/dashboard/upgrade"
+                className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center hover:bg-primary/90 transition-all cursor-pointer shadow-sm"
+              >
+                {t("dashboard.sitesKatalog.upgradeNow", "Upgrade Sekarang")}
+              </Link>
             </div>
           </div>
         </div>

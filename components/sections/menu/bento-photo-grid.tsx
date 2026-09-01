@@ -86,12 +86,18 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
             className="mb-16 last:mb-0"
           >
             <div className="flex items-center gap-4 mb-8">
-              <h3
-                id={`bento-cat-title-${catIndex}`}
+              <InlineText
+                section="menu"
+                fieldKey={"categories." + catIndex + ".name"}
+                value={category.name ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="h3"
                 className="text-xl md:text-2xl font-bold tracking-tight font-dt-heading text-dt-text"
-              >
-                {category.name}
-              </h3>
+              />
               <div className="h-[1px] flex-1 bg-dt-border"></div>
             </div>
 
@@ -151,22 +157,27 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
 
                     <div className="relative p-6 z-10 text-white select-none">
                       <div className="flex items-baseline justify-between gap-4 mb-2">
-                        <h4 className="text-lg md:text-xl font-bold tracking-tight font-dt-heading">
-                          {item.name}
-                        </h4>
+                        <InlineText
+                          section="menu"
+                          fieldKey={"categories." + catIndex + ".items." + itemIndex + ".name"}
+                          value={item.name ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="h4"
+                          className="text-lg md:text-xl font-bold tracking-tight font-dt-heading"
+                        />
                         {item.price && (
-                          <span className="text-base md:text-lg font-bold font-dt-heading text-dt-primary shrink-0">
-                            {item.price}
-                          </span>
+                          <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-base md:text-lg font-bold font-dt-heading text-dt-primary shrink-0" />
                         )}
                       </div>
 
                       {item.description && (
-                        <p className={`text-xs md:text-sm text-white/80 font-normal leading-relaxed transition-all duration-300 ${
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className={`text-xs md:text-sm text-white/80 font-normal leading-relaxed transition-all duration-300 ${
                           isLarge ? "line-clamp-none opacity-100" : "line-clamp-2 md:line-clamp-1 group-hover:line-clamp-none"
-                        }`}>
-                          {item.description}
-                        </p>
+                        }`} />
                       )}
                     </div>
                   </div>

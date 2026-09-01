@@ -1,16 +1,29 @@
 "use client";
 import React from "react";
 import { Star, TrendingUp, Award, BarChart3 } from "lucide-react";
-import { DynamicIcon } from "../../templates/shared";
+import { DynamicIcon, InlineText } from "../../templates/shared";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
   benefits: TemplateProps["content"]["benefits"];
   design_token?: DesignToken | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
 }
 
-export default function BenefitsStatGrid({ benefits: b , language = "id" }: BenefitsVariantProps) {
+export default function BenefitsStatGrid({
+  benefits: b,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  language = "id",
+}: BenefitsVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
   return (
@@ -33,8 +46,31 @@ export default function BenefitsStatGrid({ benefits: b , language = "id" }: Bene
                   <span style={{ color: "var(--dt-primary)", display: "contents" }}><DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" /></span>
                 </div>
               )}
-              <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.05rem", margin: 0 }}>{item.title}</h3>
-              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}>{item.description}</p>
+              <InlineText
+                section="benefits"
+                fieldKey={"items." + idx + ".title"}
+                value={item.title ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h3"
+                style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.05rem", margin: 0 }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <InlineText
+                section="benefits"
+                fieldKey={"items." + idx + ".description"}
+                value={item.description ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="p"
+                style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}
+                multiline
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </div>
           ))}
         </div>
