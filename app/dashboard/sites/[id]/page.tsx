@@ -310,7 +310,7 @@ export default function SiteEditorPage() {
         testimonials: { title: "", items: [] },
         // NOTE: faq is intentionally NOT in the fallback — it is an optional section.
         cta: { headline: "", button_text: "", button_url: "" },
-        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true, map_tile_style: defaultTileStyle },
+        contact: { title: "", address: "", phone: "", email: "", show_lead_form: true, show_map: true, show_whatsapp_card: true, map_tile_style: defaultTileStyle },
         footer: { brand_name: "", tagline: "", copyright_text: "" },
         seo: { title: "", description: "", favicon_url: "", og_image_url: "" }
       };

@@ -274,6 +274,7 @@ export interface TemplateProps {
       subtitle?: string;
       secondary_form_title?: string;
       whatsapp_card_title?: string;
+      show_whatsapp_card?: boolean;
       address: string;
       phone: string;
       email: string;
