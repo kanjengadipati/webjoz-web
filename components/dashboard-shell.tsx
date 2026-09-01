@@ -695,7 +695,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       {/* Pusat Bantuan floating button (bottom-right) */}
       <Link
         href="/help"
-        className="inline-flex fixed bottom-20 right-5 md:bottom-6 md:right-6 z-[70] items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 size-12 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
+        className="inline-flex fixed bottom-20 right-5 md:bottom-6 md:right-6 z-[70] items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 p-0 size-8 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
         title="Pusat Bantuan"
         aria-label="Pusat Bantuan"
       >
