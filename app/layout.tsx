@@ -79,8 +79,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const defaultLocale: Locale =
     pathIsEn ? "en" : pathIsId ? "id" : cookieLocale === "en" ? "en" : "id";
   return (
-    <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
-      <head />
+    <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var el=document.documentElement;var t=localStorage.getItem("webjoz_theme")||"auto";var dark;if(t==="light"){dark=false;}else if(t==="dark"){dark=true;}else{var h=new Date().getHours();dark=!(h>=6&&h<18);}el.classList.toggle("dark",dark);el.dataset.theme=dark?"dark":"light";}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full font-sans">
         <Providers defaultLocale={defaultLocale}>
           <div className="flex min-h-screen flex-col">
