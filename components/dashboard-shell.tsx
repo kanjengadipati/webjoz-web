@@ -657,20 +657,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       </button>
                     </Link>
                   )}
-
-                  {/* Pusat Bantuan Link (mobile: icon only) */}
-                  <Link
-                    href="/help"
-                    className="md:hidden inline-flex items-center justify-center rounded-full border border-border/60 bg-muted/50 hover:bg-muted size-9 text-muted-foreground hover:text-foreground transition-all shadow-sm"
-                    title="Pusat Bantuan"
-                    aria-label="Bantuan"
-                  >
-                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                      <path d="M12 17h.01"/>
-                    </svg>
-                  </Link>
                 </div>
               </div>
             </header>
@@ -706,10 +692,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {/* Pusat Bantuan floating button (desktop: bottom-right) */}
+      {/* Pusat Bantuan floating button (bottom-right) */}
       <Link
         href="/help"
-        className="hidden md:inline-flex fixed bottom-6 right-6 z-40 items-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted px-4 py-3 text-sm font-semibold text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95"
+        className="inline-flex fixed bottom-5 right-5 md:bottom-6 md:right-6 z-40 items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 size-12 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
         title="Pusat Bantuan"
         aria-label="Pusat Bantuan"
       >
@@ -718,7 +704,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
           <path d="M12 17h.01"/>
         </svg>
-        Bantuan
+        <span className="hidden md:inline">Bantuan</span>
       </Link>
     </div>
   );
