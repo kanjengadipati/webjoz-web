@@ -37,12 +37,12 @@ function katNanoid(size = 10): string {
   return id;
 }
 function ensureItemId(item: any, idx: number): any {
-  if (!item.id) return { ...item, id: katNanoid(), sort_order: item.sort_order ?? idx };
+  if (!item.id) return { ...item, id: `item-${idx}-${item.name || idx}`, sort_order: item.sort_order ?? idx };
   return item;
 }
 function ensureCatId(cat: any, idx: number): any {
   const items = (cat.items ?? []).map((it: any, i: number) => ensureItemId(it, i));
-  if (!cat.id) return { ...cat, id: katNanoid(), sort_order: cat.sort_order ?? idx, items };
+  if (!cat.id) return { ...cat, id: `cat-${idx}-${cat.name || idx}`, sort_order: cat.sort_order ?? idx, items };
   return { ...cat, items };
 }
 
@@ -169,6 +169,15 @@ function MenuCatalogForm({
     const next = [...categories];
     const items = [...(next[catIdx].items ?? [])];
     items[itemIdx] = { ...items[itemIdx], [field]: value };
+    next[catIdx] = { ...next[catIdx], items };
+    updateCategories(next);
+  };
+
+  // Batch-update multiple fields in one setState to avoid cursor-jump on controlled inputs
+  const updateItemMulti = (catIdx: number, itemIdx: number, patch: Record<string, any>) => {
+    const next = [...categories];
+    const items = [...(next[catIdx].items ?? [])];
+    items[itemIdx] = { ...items[itemIdx], ...patch };
     next[catIdx] = { ...next[catIdx], items };
     updateCategories(next);
   };
@@ -301,6 +310,7 @@ function MenuCatalogForm({
                   hasPrice={hasPrice}
                   hasBadge={hasBadge}
                   updateItem={updateItem}
+                  updateItemMulti={updateItemMulti}
                   removeItem={removeItem}
                   addItem={addItem}
                   onAiDescription={onAiDescription}
@@ -341,7 +351,7 @@ function KatSortableCategoryRow({
   catId, cat, catIdx, itemCount, expandedCat, setExpandedCat,
   removeCategory, updateCategoryName,
   items, itemLabel, sectionKey, hasPrice, hasBadge,
-  updateItem, removeItem, addItem,
+  updateItem, updateItemMulti, removeItem, addItem,
   onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
   activeEmojiPicker, setActiveEmojiPicker,
   sensors, handleItemDragEnd, t, inputBase, inputLabel, EMOJI_GROUPS, normStr,
@@ -442,6 +452,7 @@ function KatSortableCategoryRow({
                     hasPrice={hasPrice}
                     hasBadge={hasBadge}
                     updateItem={updateItem}
+                    updateItemMulti={updateItemMulti}
                     removeItem={removeItem}
                     onAiDescription={onAiDescription}
                     aiLoadingDesc={aiLoadingDesc}
@@ -478,7 +489,7 @@ function KatSortableCategoryRow({
 // ─── Sortable Item Row ────────────────────────────────────────────────────────
 function KatSortableItemRow({
   item, itemIdx, catIdx, catName, itemLabel, sectionKey, hasPrice, hasBadge,
-  updateItem, removeItem, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
+  updateItem, updateItemMulti, removeItem, onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
   activeEmojiPicker, setActiveEmojiPicker, t, inputBase, inputLabel, EMOJI_GROUPS, normStr,
 }: any) {
   const itemSortId = item.id ?? item.name ?? String(itemIdx);
@@ -586,10 +597,12 @@ function KatSortableItemRow({
                   <input
                     type="text"
                     value={item.price_display ?? item.price ?? ""}
-                    onChange={(e) => {
-                      updateItem(catIdx, itemIdx, "price_display", e.target.value);
-                      updateItem(catIdx, itemIdx, "price", e.target.value);
-                    }}
+                    onChange={(e) =>
+                      updateItemMulti(catIdx, itemIdx, {
+                        price_display: e.target.value,
+                        price: e.target.value,
+                      })
+                    }
                     placeholder={t("dashboard.sitesKatalog.priceDisplayPlaceholder", "cth. Rp 25.000")}
                     className={inputBase}
                   />
