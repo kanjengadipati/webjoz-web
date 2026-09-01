@@ -1144,6 +1144,8 @@ interface MenuCatalogCardProps {
   buttonStyle?: React.CSSProperties;
   features?: string[] | null;
   capacity?: number | null;
+  tags?: string[] | null;
+  delivery_platforms?: { name: string; url: string }[] | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;
@@ -1160,7 +1162,7 @@ function MenuCatalogCard({
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
-  badgeStyle, buttonClassName, buttonStyle, features, capacity,
+  badgeStyle, buttonClassName, buttonStyle, features, capacity, tags, delivery_platforms,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase,
 }: MenuCatalogCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -1289,6 +1291,45 @@ function MenuCatalogCard({
     )
   );
 
+  const tagsAndPlatforms = (
+    <>
+      {tags && tags.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {tags.map((tag, ti) => (
+            <span
+              key={ti}
+              className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+              style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+      {delivery_platforms && delivery_platforms.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {delivery_platforms.map((dp, di) => (
+            <a
+              key={di}
+              href={dp.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all hover:brightness-110"
+              style={{
+                borderColor: "color-mix(in srgb, var(--dt-primary) 25%, transparent)",
+                background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)",
+                color: "var(--dt-primary)",
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+              <span>{dp.name || "Order Online"}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </>
+  );
+
   if (layout === "compact") {
     return (
       <div className={className} style={style}>
@@ -1297,6 +1338,7 @@ function MenuCatalogCard({
           <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
             {header}
             {descriptionElement}
+            {tagsAndPlatforms}
             <div className="mt-auto pt-2">
               <AddToCartButton
                 itemId={itemId}
@@ -1341,6 +1383,7 @@ function MenuCatalogCard({
             ))}
           </ul>
         )}
+        {tagsAndPlatforms}
         <div className="mt-auto pt-3">
           <AddToCartButton
             itemId={itemId}
@@ -1356,6 +1399,111 @@ function MenuCatalogCard({
           />
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── Catalog / Menu Filter Bar ────────────────────────────────────────────────
+
+interface CatalogMenuFilterBarProps {
+  categories?: Array<{ name?: string; items?: any[] }> | null;
+  activeCategory: string;
+  onSelectCategory: (category: string) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  placeholder?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+function CatalogMenuFilterBar({
+  categories = [],
+  activeCategory,
+  onSelectCategory,
+  searchQuery,
+  onSearchChange,
+  placeholder = "Cari menu atau produk...",
+  className,
+  style,
+}: CatalogMenuFilterBarProps) {
+  const safeCategories = categories || [];
+  const totalAllItems = safeCategories.reduce((acc, cat) => acc + (cat?.items?.length ?? 0), 0);
+
+  // If there are no items, don't show the filter bar
+  if (totalAllItems === 0) return null;
+
+  return (
+    <div className={`w-full max-w-2xl mx-auto mb-10 space-y-3.5 ${className || ""}`} style={style}>
+      {/* Search Input Bar */}
+      <div className="relative flex items-center">
+        <div className="absolute left-4 pointer-events-none opacity-60" style={{ color: "var(--dt-text)" }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-4 h-4">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full pl-11 pr-10 py-3 text-xs sm:text-sm outline-none transition-all shadow-xs"
+          style={{
+            background: "color-mix(in srgb, var(--dt-bg) 94%, var(--dt-text) 6%)",
+            color: "var(--dt-text)",
+            border: "1px solid color-mix(in srgb, var(--dt-text) 16%, transparent)",
+            borderRadius: "var(--dt-radius, 1rem)",
+          }}
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => onSearchChange("")}
+            className="absolute right-3.5 p-1 rounded-full opacity-60 hover:opacity-100 cursor-pointer transition-opacity"
+            aria-label="Hapus pencarian"
+            style={{ color: "var(--dt-text)" }}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Category Pills */}
+      {safeCategories.length > 1 && (
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 justify-start sm:justify-center">
+          <button
+            type="button"
+            onClick={() => onSelectCategory("all")}
+            className="px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs"
+            style={{
+              background: activeCategory === "all" ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 6%, transparent)",
+              color: activeCategory === "all" ? "var(--dt-cta-text, #fff)" : "var(--dt-text)",
+              border: `1px solid ${activeCategory === "all" ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 12%, transparent)"}`,
+            }}
+          >
+            Semua ({totalAllItems})
+          </button>
+          {safeCategories.map((cat, idx) => {
+            const catName = cat?.name || `Kategori ${idx + 1}`;
+            const isCatActive = activeCategory === catName;
+            const count = cat?.items?.length ?? 0;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => onSelectCategory(catName)}
+                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs"
+                style={{
+                  background: isCatActive ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 6%, transparent)",
+                  color: isCatActive ? "var(--dt-cta-text, #fff)" : "var(--dt-text)",
+                  border: `1px solid ${isCatActive ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 12%, transparent)"}`,
+                }}
+              >
+                {catName} ({count})
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -2478,7 +2626,7 @@ export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
   SharedTestimonialsSection,
   SharedTestimonialsSection as TestimonialsSection,
-  MenuCatalogCard, FaqAccordion,
+  MenuCatalogCard, CatalogMenuFilterBar, FaqAccordion,
   LeadForm, DynamicIcon, LogoImage, SeoEditorPreview,
   CartProvider, CartFab, AddToCartButton, isPlaceholderPrice,
   SharedContactSection,
@@ -2486,4 +2634,4 @@ export {
   SharedBenefitsSection,
   SharedBenefitsSection as BenefitsSection,
 };
-export type { MenuCatalogCardProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };
+export type { MenuCatalogCardProps, CatalogMenuFilterBarProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };

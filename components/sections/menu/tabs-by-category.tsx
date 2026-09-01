@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Utensils } from "lucide-react";
+import { Utensils, X } from "lucide-react";
 import { MenuCatalogCard, InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -9,8 +9,10 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Best for menus with 3+ categories where scrolling per-category is too long.
  */
 export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
-  if (!menu) return null;
   const [activeIdx, setActiveIdx] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  if (!menu) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
   const surface = "var(--dt-surface)";
@@ -19,12 +21,23 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
   const hWeight = "var(--dt-heading-weight)";
   const cats = menu.categories ?? [];
   const active = cats[activeIdx];
+  const query = searchQuery.trim().toLowerCase();
+
+  const activeItems = (active?.items || [])
+    .map((item, originalItemIdx) => ({ item, originalItemIdx }))
+    .filter(({ item }) => {
+      if (!query) return true;
+      const nameMatch = (item.name || "").toLowerCase().includes(query);
+      const descMatch = (item.description || "").toLowerCase().includes(query);
+      const tagMatch = (item.tags || []).some((t: string) => t.toLowerCase().includes(query));
+      return nameMatch || descMatch || tagMatch;
+    });
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <InlineText
             section="menu"
             fieldKey="eyebrow"
@@ -52,6 +65,39 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
           <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
         </div>
 
+        {/* Search bar */}
+        <div className="w-full max-w-md mx-auto mb-6 relative flex items-center">
+          <div className="absolute left-3.5 pointer-events-none opacity-60" style={{ color: text }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-4 h-4">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari menu di kategori ini..."
+            className="w-full pl-10 pr-9 py-2.5 text-xs sm:text-sm outline-none transition-all shadow-2xs"
+            style={{
+              background: `color-mix(in srgb, ${bg} 92%, ${text} 8%)`,
+              color: text,
+              border: `1px solid color-mix(in srgb, ${text} 15%, transparent)`,
+              borderRadius: "9999px",
+            }}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 p-1 rounded-full opacity-60 hover:opacity-100 cursor-pointer"
+              aria-label="Hapus pencarian"
+              style={{ color: text }}
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
         {/* Tab bar — smooth horizontal scroll on mobile, centered on desktop */}
         <div
           className="flex items-center gap-2 overflow-x-auto pb-2 mb-8 no-scrollbar justify-start sm:justify-center"
@@ -69,14 +115,14 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                   fontSize: "0.78rem",
                   fontWeight: isActive ? 700 : 500,
                   background: isActive ? p : `color-mix(in srgb, ${p} 8%, ${surface})`,
-                  color: isActive ? bg : `color-mix(in srgb, ${text} 70%, transparent)`,
+                  color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`,
                   border: isActive ? `1.5px solid ${p}` : `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`,
                   cursor: "pointer",
                   transition: "all 0.18s",
                   whiteSpace: "nowrap",
                 }}
               >
-                <InlineText section="menu" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? bg : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                <InlineText section="menu" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
               </button>
             );
           })}
@@ -84,49 +130,59 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
 
         {/* Active category items */}
         {active && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
-            {active.items?.map((item, ii) => (
-              <MenuCatalogCard
-                key={item.id || ii}
-                itemId={item.id || `menu-tab-${activeIdx}-${ii}`}
-                itemName={item.name}
-                itemPrice={item.price}
-                itemPriceAmount={item.price_amount}
-                itemPriceDisplay={item.price_display}
-                itemDescription={item.description}
-                category={active.name}
-                image_url={item.image_url}
-                image_urls={item.image_urls}
-                is_available={item.is_available}
-                variant_groups={item.variant_groups}
-                icon={Utensils}
-                className="group transition-all duration-300"
-                style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                imageClassName="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
-                placeholderClassName="w-full h-52 flex items-center justify-center"
-                placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
-                placeholderIconClassName="w-12 h-12"
-                placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                contentClassName="p-5 space-y-3 flex flex-col flex-1"
-                headerClassName="flex items-start justify-between gap-3"
-                titleClassName="font-bold text-sm leading-tight"
-                titleStyle={{ color: text, fontFamily: hFont }}
-                descriptionClassName="text-xs leading-relaxed flex-1"
-                descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
-                priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
-                buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110"
-                buttonStyle={{ background: p, color: bg, border: "none" }}
-                editSection="menu"
-                pathBase={"categories." + activeIdx + ".items." + ii}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            ))}
-          </div>
+          activeItems.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
+              <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
+                Tidak ada menu yang cocok dengan pencarian "{searchQuery}".
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+              {activeItems.map(({ item, originalItemIdx }) => (
+                <MenuCatalogCard
+                  key={item.id || `menu-tab-${activeIdx}-${originalItemIdx}`}
+                  itemId={item.id || `menu-tab-${activeIdx}-${originalItemIdx}`}
+                  itemName={item.name}
+                  itemPrice={item.price}
+                  itemPriceAmount={item.price_amount}
+                  itemPriceDisplay={item.price_display}
+                  itemDescription={item.description}
+                  category={active.name}
+                  image_url={item.image_url}
+                  image_urls={item.image_urls}
+                  is_available={item.is_available}
+                  variant_groups={item.variant_groups}
+                  tags={item.tags}
+                  delivery_platforms={item.delivery_platforms}
+                  icon={Utensils}
+                  className="group transition-all duration-300"
+                  style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+                  imageClassName="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
+                  placeholderClassName="w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
+                  placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
+                  placeholderIconClassName="w-12 h-12"
+                  placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
+                  contentClassName="p-5 space-y-3 flex flex-col flex-1"
+                  headerClassName="flex items-start justify-between gap-3"
+                  titleClassName="font-bold text-sm leading-tight"
+                  titleStyle={{ color: text, fontFamily: hFont }}
+                  descriptionClassName="text-xs leading-relaxed flex-1"
+                  descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
+                  priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
+                  priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
+                  buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
+                  buttonStyle={{ background: p, color: "var(--dt-cta-text, #fff)", border: "none" }}
+                  editSection="menu"
+                  pathBase={"categories." + activeIdx + ".items." + originalItemIdx}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              ))}
+            </div>
+          )
         )}
       </div>
     </section>
