@@ -2100,6 +2100,9 @@ export interface Translations {
       loadingPleaseWait: string;
       loadingCharsWritten: string;
       loadingAiInsight: string;
+      loadingEstCountdown: string;
+      loadingEstFinalizing: string;
+      loadingEstDeepNote: string;
       loadingChecklist0: string;
       loadingChecklist1: string;
       loadingChecklist2: string;
@@ -4395,6 +4398,9 @@ export const translations: Record<Locale, Translations> = {
         loadingPleaseWait: "Mohon tunggu sebentar...",
         loadingCharsWritten: "✍️ {count} karakter ditulis",
         loadingAiInsight: "AI Insight",
+        loadingEstCountdown: "Estimasi: ~{secs} dtk lagi",
+        loadingEstFinalizing: "Sedang merapikan copywriting...",
+        loadingEstDeepNote: "AI merancang seluruh halaman (~20-25 dtk)",
         loadingChecklist0: "Menulis headline & hero",
         loadingChecklist1: "Menyusun cerita bisnis",
         loadingChecklist2: "Menulis keunggulan & layanan",
@@ -6741,6 +6747,9 @@ export const translations: Record<Locale, Translations> = {
         loadingPleaseWait: "Please wait a moment...",
         loadingCharsWritten: "✍️ {count} characters written",
         loadingAiInsight: "AI Insight",
+        loadingEstCountdown: "Est. remaining: ~{secs}s",
+        loadingEstFinalizing: "Finalizing copywriting...",
+        loadingEstDeepNote: "AI crafting full page (~20-25s)",
         loadingChecklist0: "Writing headline & hero",
         loadingChecklist1: "Structuring business story",
         loadingChecklist2: "Crafting benefits & services",

@@ -58,8 +58,8 @@ export default function TestimonialsLogoWall({
             <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", padding: "1.5rem", background: "var(--dt-surface)", borderRadius: "var(--dt-radius-lg)", border: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
               {item.logo_url && <img src={item.logo_url} alt={item.company || item.name} style={{ maxWidth: "100%", height: "48px", objectFit: "contain" }}
                 onError={(e) => { e.currentTarget.style.display = "none"; }} />}
-              <p style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", margin: 0 }}>{item.quote}</p>
-              <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{item.name}</p>
+              <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={item.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", margin: 0 }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </div>
           ))}
         </div>

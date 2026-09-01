@@ -47,14 +47,14 @@ export default function TestimonialsFeaturedSpotlight({
           <div style={{ position: "absolute", top: "-1rem", left: "2rem", width: 40, height: 40, borderRadius: "50%", background: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Quote style={{ width: 18, height: 18, color: "#fff" }} />
           </div>
-          <blockquote style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--dt-text)", fontStyle: "italic", margin: "0 0 1.5rem" }}>{featured.quote}</blockquote>
+          <InlineText section="testimonials" fieldKey="items.0.quote" value={featured.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="blockquote" style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--dt-text)", fontStyle: "italic", margin: "0 0 1.5rem" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem" }}>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: featured.avatar_color || `color-mix(in srgb, var(--dt-primary) 15%, var(--dt-bg))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)" }}>{featured.avatar_initials || featured.name?.charAt(0)}</span>
             </div>
             <div style={{ textAlign: "left" }}>
-              <p style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }}>{featured.name}</p>
-              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", margin: 0 }}>{featured.role}{featured.company ? ` · ${featured.company}` : ""}</p>
+              <InlineText section="testimonials" fieldKey="items.0.name" value={featured.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", margin: 0 }}><InlineText section="testimonials" fieldKey="items.0.role" value={featured.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{featured.company ? ` · ${featured.company}` : ""}</p>
             </div>
           </div>
         </div>
@@ -62,8 +62,8 @@ export default function TestimonialsFeaturedSpotlight({
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
             {t.items.slice(1).map((item, idx) => (
               <div key={idx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 8%, transparent)`, borderRadius: "var(--dt-radius)", padding: "1rem", textAlign: "center" }}>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", fontStyle: "italic", margin: "0 0 0.5rem", lineHeight: 1.4 }}>&ldquo;{item.quote}&rdquo;</p>
-                <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{item.name}</p>
+                <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", fontStyle: "italic", margin: "0 0 0.5rem", lineHeight: 1.4 }}>&ldquo;<InlineText section="testimonials" fieldKey={`items.${idx + 1}.quote`} value={item.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />&rdquo;</p>
+                <InlineText section="testimonials" fieldKey={`items.${idx + 1}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </div>
             ))}
           </div>
