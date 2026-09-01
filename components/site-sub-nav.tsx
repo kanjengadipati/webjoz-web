@@ -28,17 +28,12 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
   const catalogLabel = hasMenu ? t("dashboard.sites.linkMenu") : t("dashboard.sites.linkCatalog");
   const CatalogIcon  = hasMenu ? Utensils : ShoppingBag;
 
-  const ALWAYS_TABS = [
-    { href: "",              label: t("dashboard.sites.linkEditor"), icon: LayoutDashboard },
-    { href: "/blog",         label: t("dashboard.sites.linkBlog"),   icon: FileText },
-    { href: "/integrations", label: t("dashboard.sites.linkIntegrations"), icon: Code },
-    { href: "/testimonials", label: t("dashboard.sites.linkTestimonials"), icon: Star },
-  ] as const;
-
   const allTabs = [
-    ...ALWAYS_TABS.slice(0, 2),
+    { href: "" as const, label: t("dashboard.sites.linkEditor"), icon: LayoutDashboard },
     ...(showCatalogTab ? [{ href: "/katalog" as const, label: catalogLabel, icon: CatalogIcon }] : []),
-    ...ALWAYS_TABS.slice(2),
+    { href: "/blog" as const, label: t("dashboard.sites.linkBlog"), icon: FileText },
+    { href: "/integrations" as const, label: t("dashboard.sites.linkIntegrations"), icon: Code },
+    { href: "/testimonials" as const, label: t("dashboard.sites.linkTestimonials"), icon: Star },
     { href: "/seo" as const, label: t("dashboard.sites.linkSeo"), icon: SearchIcon },
   ];
 

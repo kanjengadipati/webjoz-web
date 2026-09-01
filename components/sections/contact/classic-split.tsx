@@ -78,7 +78,9 @@ export default function ClassicSplit({
                   <div style={iconBox}><Phone style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon / WhatsApp"}</h4>
-                    <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-text)", margin: "0.125rem 0 0" }}>{c.phone}</p>
+                    <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                      <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    </p>
                   </div>
                 </div>
               )}
@@ -87,7 +89,9 @@ export default function ClassicSplit({
                   <div style={iconBox}><Mail style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Email</h4>
-                    <a href={`mailto:${c.email}`} style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", margin: "0.125rem 0 0", display: "block" }}>{c.email}</a>
+                    <a href={`mailto:${c.email}`} style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", margin: "0.125rem 0 0", display: "block" }}>
+                      <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    </a>
                   </div>
                 </div>
               )}
