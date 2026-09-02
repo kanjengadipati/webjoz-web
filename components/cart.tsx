@@ -732,26 +732,43 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
 
     // WhatsApp Checkout: Also auto-record order snapshot if onSubmitLead is provided
     const phone = normalizePhone(waPhone);
-    const message = buildWAMessage(items, brandName);
 
-    if (onSubmitLead) {
-      const { total } = computeSubtotal(items);
-      onSubmitLead({
-        name: "Pelanggan via WhatsApp",
-        email: "",
-        phone,
-        message,
-        type: "order",
-        total_amount: total > 0 ? total : null,
-        payload: JSON.stringify(items),
-      }).catch((err) => {
-        console.error("Failed to auto-record WhatsApp order snapshot:", err);
-      });
+    setLeadLoading(true);
+    try {
+      let orderNoFromServer: string | void;
+      let message = buildWAMessage(items, brandName);
+
+      if (onSubmitLead) {
+        const { total } = computeSubtotal(items);
+        orderNoFromServer = await onSubmitLead({
+          name: "Pelanggan via WhatsApp",
+          email: "",
+          phone,
+          message,
+          type: "order",
+          total_amount: total > 0 ? total : null,
+          payload: JSON.stringify(items),
+        });
+        if (typeof orderNoFromServer === "string" && orderNoFromServer) {
+          setOrderNo(orderNoFromServer);
+          message = `${message}\n\n*No. Pesanan: ${orderNoFromServer}*`;
+        }
+      } else {
+        // Simulate order creation for preview modes
+        await new Promise((resolve) => setTimeout(resolve, 800));
+      }
+
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+      setOpen(false);
+    } catch (err) {
+      console.error("Failed to auto-record WhatsApp order snapshot:", err);
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(buildWAMessage(items, brandName))}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+      setOpen(false);
+    } finally {
+      setLeadLoading(false);
     }
-
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-    setOpen(false);
   };
 
   if (!open) return null;
