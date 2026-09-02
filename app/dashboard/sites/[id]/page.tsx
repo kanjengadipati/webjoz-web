@@ -10,8 +10,8 @@ import { request } from "@/lib/api/client";
 import {
   Save, Loader2, Zap, Database,
   HelpCircle, AlertCircle,
-  Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon
+  Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
+  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card } from "@/components/ui";
@@ -204,7 +204,7 @@ export default function SiteEditorPage() {
   const [sheetCollapsed, setSheetCollapsed] = useState(true);
   const [qualityModalOpen, setQualityModalOpen] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(false);
   const { isOpen: onboardingOpen, openGuide, handleClose: closeOnboarding } = useEditorOnboarding();
 
   const isInlineEditingRef = useRef(false);
@@ -1408,26 +1408,42 @@ export default function SiteEditorPage() {
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
-        {/* ════ LEFT SIDEBAR (Desktop) ════ */}
+        {/* ════ LEFT SIDE DRAWER (Desktop) ════ */}
         <div
-          className={`hidden md:flex ${desktopSidebarOpen ? "md:w-[380px]" : "md:w-0"} md:relative md:inset-auto md:z-10 flex-shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-all duration-300`}
-          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          data-desktop-drawer
+          className="hidden md:flex absolute top-0 bottom-0 left-0 z-40 transition-transform duration-300 ease-out select-none"
+          style={{
+            transform: desktopSidebarOpen ? "translateX(0)" : "translateX(-380px)",
+          }}
         >
-
-          {/* Site identity */}
-          <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
-            <button
-              onClick={() => router.push("/dashboard/sites")}
-              className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
-              aria-label={t("dashboard.sitesEditor.backToSites")}
-            >
-              <ChevronLeft className="h-5 w-5 flex-shrink-0" />
-            </button>
-            <div className="h-5 w-px bg-white/10 flex-shrink-0" />
-            <div className="min-w-0 flex-1">
-              <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
+          {/* Main 380px Drawer Body */}
+          <div
+            className="w-[380px] h-full flex-shrink-0 flex flex-col overflow-hidden bg-[#111318] border-r border-border/70 shadow-[20px_0_60px_rgba(0,0,0,0.6)]"
+            style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            {/* Site identity */}
+            <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
+              <button
+                onClick={() => router.push("/dashboard/sites")}
+                className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
+                aria-label={t("dashboard.sitesEditor.backToSites")}
+              >
+                <ChevronLeft className="h-5 w-5 flex-shrink-0" />
+              </button>
+              <div className="h-5 w-px bg-white/10 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
+              </div>
+              {/* Close Drawer Button inside header */}
+              <button
+                type="button"
+                onClick={() => setDesktopSidebarOpen(false)}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                title="Tutup Panel Editor"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
             </div>
-          </div>
 
           {/* Tab Switcher: Konten vs Desain */}
           <div className="flex border-b border-border p-1 bg-muted/30 flex-shrink-0">
@@ -2257,6 +2273,68 @@ export default function SiteEditorPage() {
               </>
             )}
           </div>
+        </div>
+
+          {/* 36px Vertical Handle Strip (facing canvas) — counterpart of mobile bottom sheet header bar */}
+          <div
+            onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+            className="w-9 h-full flex flex-col items-center justify-between py-2.5 bg-[#111318] border-r border-y border-border/80 rounded-r-[20px] shadow-[15px_0_35px_rgba(0,0,0,0.5)] cursor-pointer select-none transition-colors hover:bg-[#161a22] flex-shrink-0"
+            title={desktopSidebarOpen ? "Tutup Panel Editor" : "Buka Panel Editor"}
+          >
+            {/* Quality score badge (Top) */}
+            {quality.issues.length > 0 ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setQualityModalOpen(true);
+                }}
+                className="flex flex-col items-center justify-center p-1 rounded-xl text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95 cursor-pointer"
+                title={t("dashboard.sitesEditor.viewCompleteness")}
+              >
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="text-[9px] font-bold mt-0.5">{quality.score}%</span>
+              </button>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-1 text-slate-400">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </div>
+            )}
+
+            {/* Drag handle pill & toggle Chevron (Center) */}
+            <div className="flex flex-col items-center justify-center py-2 flex-1 group w-full">
+              {/* Vertical Drag handle pill bar */}
+              <div className="w-1 h-10 rounded-full bg-white/20 group-hover:bg-white/50 transition-colors my-2" />
+
+              {/* Expand / Collapse toggle chevron */}
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 group-hover:bg-white/10 group-hover:text-white transition-all">
+                <ChevronRight className={`h-4 w-4 transition-transform duration-300 ${desktopSidebarOpen ? "rotate-180" : ""}`} />
+              </div>
+
+              {/* Vertical label when collapsed */}
+              {!desktopSidebarOpen && (
+                <span
+                  className="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors select-none mt-4"
+                  style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+                >
+                  Panel Editor
+                </span>
+              )}
+            </div>
+
+            {/* Active Section Indicator (Bottom) */}
+            <div
+              className="flex flex-col items-center justify-center p-1"
+              title={`Section: ${pageOrderSections.find(s => s.key === activeTab)?.label || activeTab}`}
+            >
+              <span
+                className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 shadow-xs"
+                style={{ background: "var(--primary)", color: "white" }}
+              >
+                {pageOrderSections.findIndex(s => s.key === activeTab) + 1 || 1}
+              </span>
+            </div>
+          </div>
 
         </div>
 
@@ -2337,7 +2415,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Canvas topbar */}
-          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
+          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3 pl-12">
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
               <div className="relative group">
@@ -2418,17 +2496,6 @@ export default function SiteEditorPage() {
             >
               <HelpCircle className="w-3.5 h-3.5" />
               <span>Panduan</span>
-            </button>
-
-            {/* Sidebar Desktop Toggle (Canvas-First) */}
-            <button
-              type="button"
-              onClick={() => setDesktopSidebarOpen(o => !o)}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-white/5 px-2.5 text-[11px] font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer active:scale-95"
-              title={desktopSidebarOpen ? "Sembunyikan Panel Editor (Layar Penuh)" : "Buka Panel Editor"}
-            >
-              <Layout className="w-3.5 h-3.5 text-primary" />
-              <span>{desktopSidebarOpen ? "Tutup Panel" : "Buka Panel"}</span>
             </button>
 
             {/* Separator */}
@@ -2608,13 +2675,17 @@ export default function SiteEditorPage() {
           <div id="preview-scroll-container" data-edu="canvas" className="flex-1 min-h-0 overflow-y-auto bg-background flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
               // Collapse sheet when user taps the preview area on mobile,
-              // but do NOT collapse when tapping an inline-edit contentEditable element.
+              // or collapse desktop side drawer when user taps canvas outside on desktop.
               const target = e.target as HTMLElement;
               const isSheet = target.closest('[data-mobile-sheet]');
+              const isDrawer = target.closest('[data-desktop-drawer]');
               const isInlineEdit = target.closest('[contenteditable="true"]');
               if (!isSheet && !isInlineEdit && window.innerWidth < 768 && !sheetCollapsed) {
                 setSheetCollapsed(true);
                 setSheetExpanded(false);
+              }
+              if (!isDrawer && !isInlineEdit && window.innerWidth >= 768 && desktopSidebarOpen) {
+                setDesktopSidebarOpen(false);
               }
             }}
             onScroll={() => {
@@ -3548,6 +3619,11 @@ export default function SiteEditorPage() {
         <EditorOnboardingModal
           isOpen={onboardingOpen}
           onClose={closeOnboarding}
+          onStepChange={(s) => {
+            if (s >= 2) {
+              setDesktopSidebarOpen(true);
+            }
+          }}
         />
       </div>
     </div>
