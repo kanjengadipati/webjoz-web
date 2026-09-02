@@ -1,8 +1,33 @@
 "use client";
 import React, { useState } from "react";
 import { Check, Send } from "lucide-react";
+import { InlineText } from "../../templates/shared";
 
-export default function DynamicLeadForm({ onSubmit, submitting, success, error, language = "id" }: { onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>; submitting?: boolean; success?: boolean; error?: string | null; language?: "id" | "en"; }) {
+export default function DynamicLeadForm({
+  onSubmit,
+  submitting,
+  success,
+  error,
+  language = "id",
+  buttonText,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+}: {
+  onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  submitting?: boolean;
+  success?: boolean;
+  error?: string | null;
+  language?: "id" | "en";
+  buttonText?: string | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -55,7 +80,24 @@ export default function DynamicLeadForm({ onSubmit, submitting, success, error, 
         disabled={submitting}
         style={{ padding: "0.75rem 1.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", fontWeight: 700, fontFamily: "var(--dt-body-font)", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "opacity 0.2s", border: "none" }}
       >
-        {submitting ? (isEN ? "Sending..." : "Mengirim...") : <><Send style={{ width: 16, height: 16 }} /> {isEN ? "Send Message" : "Kirim Pesan"}</>}
+        {submitting ? (
+          isEN ? "Sending..." : "Mengirim..."
+        ) : (
+          <>
+            <Send style={{ width: 16, height: 16 }} />
+            <InlineText
+              section="contact"
+              fieldKey="button_text"
+              value={buttonText || (isEN ? "Send Message" : "Kirim Pesan")}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
+          </>
+        )}
       </button>
     </form>
   );

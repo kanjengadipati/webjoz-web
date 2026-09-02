@@ -54,9 +54,18 @@ export default function ClassicSplit({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12" style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div className="lg:col-span-5" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}>
-              {isEN ? "Contact Us" : "Hubungi Kami"}
-            </span>
+            <InlineText
+              section="contact"
+              fieldKey="eyebrow"
+              value={c.eyebrow || (isEN ? "Contact Us" : "Hubungi Kami")}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
             <InlineText
               section="contact"
               fieldKey="title"
@@ -88,9 +97,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><Phone style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon / WhatsApp"}</h4>
-                    <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
-                      <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    </p>
+                    <InlineText section="contact" fieldKey="phone" value={displayPhone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
               )}
@@ -99,9 +106,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><Mail style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Email</h4>
-                    <a href={`mailto:${c.email}`} style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", margin: "0.125rem 0 0", display: "block" }}>
-                      <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    </a>
+                    <InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
               )}
@@ -131,8 +136,31 @@ export default function ClassicSplit({
         <div className="lg:col-span-7">
           {hasLeadForm && (
             <div style={{ background: "var(--dt-surface)", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" }}>
-              <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", marginBottom: "1.5rem", marginTop: 0 }}>{isEN ? "Contact Us" : "Hubungi Kami"}</h3>
-              <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
+              <InlineText
+                section="contact"
+                fieldKey="form_title"
+                value={c.form_title || (isEN ? "Contact Us" : "Hubungi Kami")}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h3"
+                style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", marginBottom: "1.5rem", marginTop: 0 }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+              <DynamicLeadForm
+                buttonText={c.button_text}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                onSubmit={onSubmitLead!}
+                submitting={leadSubmitting}
+                success={leadSuccess}
+                error={leadError}
+                language={language}
+              />
             </div>
           )}
         </div>

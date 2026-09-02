@@ -202,6 +202,12 @@ export default function WhatsAppDirect({
                 <InlineText section="contact" fieldKey="secondary_form_title" value={c.secondary_form_title || (isEN ? "Or Send Message" : "Atau Kirim Pesan")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </h3>
               <DynamicLeadForm
+                buttonText={c.button_text}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
                 onSubmit={onSubmitLead!}
                 submitting={leadSubmitting}
                 success={leadSuccess}

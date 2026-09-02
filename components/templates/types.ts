@@ -280,7 +280,10 @@ export interface TemplateProps {
     };
     contact: {
       title: string;
+      eyebrow?: string;
       subtitle?: string;
+      form_title?: string;
+      button_text?: string;
       secondary_form_title?: string;
       whatsapp_card_title?: string;
       show_whatsapp_card?: boolean;

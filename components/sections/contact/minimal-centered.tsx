@@ -26,9 +26,18 @@ export default function MinimalCentered({
   return (
     <section id="contact" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       <div style={{ maxWidth: "32rem", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}>
-          {isEN ? "Contact Us" : "Hubungi Kami"}
-        </span>
+        <InlineText
+          section="contact"
+          fieldKey="eyebrow"
+          value={c.eyebrow || (isEN ? "Contact Us" : "Hubungi Kami")}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          as="span"
+          style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
         <InlineText
           section="contact"
           fieldKey="title"
@@ -45,7 +54,19 @@ export default function MinimalCentered({
 
         {hasLeadForm && (
           <div style={{ textAlign: "left", background: "var(--dt-surface)", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)" }}>
-            <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
+            <DynamicLeadForm
+              buttonText={c.button_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              onSubmit={onSubmitLead!}
+              submitting={leadSubmitting}
+              success={leadSuccess}
+              error={leadError}
+              language={language}
+            />
           </div>
         )}
 
