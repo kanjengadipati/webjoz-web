@@ -264,8 +264,8 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         </div>
                       )}
 
-                      {/* Mobile button */}
-                      <div className="mt-4 md:hidden">
+                      {/* Add to Cart button — always visible (mobile & desktop) */}
+                      <div className="mt-4">
                         <AddToCartButton
                           itemId={item.id || `cat-ed-m-${catIdx}-${index}`}
                           itemName={item.name}
