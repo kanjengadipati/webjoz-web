@@ -154,7 +154,9 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-surface": surfaceVal,
     "--dt-border": borderVal,
     "--dt-text": text,
-    "--dt-text-muted": "color-mix(in srgb, var(--dt-text) 70%, var(--dt-bg))",
+    "--dt-text-muted": isDarkBg
+      ? `color-mix(in srgb, ${text} 60%, ${bg})`   // dark bg: muted stays lighter
+      : `color-mix(in srgb, ${text} 55%, ${bg})`,  // light bg: limit how light it gets
     "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
     "--dt-heading-weight": ty?.heading_weight ?? "700",
