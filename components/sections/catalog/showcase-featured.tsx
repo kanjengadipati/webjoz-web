@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
-import { MenuCatalogCard, InlineText, isPlaceholderPrice } from "../../templates/shared";
+import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
 import { AddToCartButton } from "@/components/cart";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -65,7 +65,10 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
         </div>
 
         {catalog.categories?.map((cat, ci) => {
-          const featured = cat.items?.filter((it) => it.badge) ?? [];
+          // Track original indices while filtering, so we can write to the right path
+          const featuredWithIdx = (cat.items ?? [])
+            .map((it, idx) => ({ item: it, originalIdx: idx }))
+            .filter(({ item }) => item.badge);
           const rest = cat.items?.filter((it) => !it.badge) ?? [];
           return (
             <div key={ci} style={{ marginBottom: "4rem" }}>
@@ -77,32 +80,32 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
               </div>
 
               {/* Featured items — large cards (up to 2) */}
-              {featured.length > 0 && (
-                <div style={{ display: "grid", gridTemplateColumns: featured.length === 1 ? "1fr" : "1fr 1fr", gap: "1.25rem", marginBottom: "1.5rem" }}>
-                  {featured.slice(0, 2).map((item, fi) => {
+              {featuredWithIdx.length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: featuredWithIdx.length === 1 ? "1fr" : "1fr 1fr", gap: "1.25rem", marginBottom: "1.5rem" }}>
+                  {featuredWithIdx.slice(0, 2).map(({ item, originalIdx: itemIdx }) => {
                     const showPrice = item.price && !isPlaceholderPrice(item.price);
                     return (
                       <div
-                        key={fi}
+                        key={itemIdx}
                         style={{ background: surface, border: `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`, borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: `0 4px 20px color-mix(in srgb, ${p} 10%, transparent)` }}
                       >
                         {/* Featured image — taller */}
                         <div style={{ position: "relative", height: "15rem" }}>
-                          {item.image_url ? (
-                            <>
-                              <img
-                                src={item.image_url}
-                                alt={item.name}
-                                onError={(e) => { e.currentTarget.style.display = "none"; }}
-                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                              />
-                              <div style={{ position: "absolute", bottom: 8, right: 8 }}>
-                                <PhotoCredit credit={item.image_credit} />
-                              </div>
-                            </>
-                          ) : (
-                            <div style={{ width: "100%", height: "100%", background: `color-mix(in srgb, ${p} 10%, ${bg})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <ImageIcon style={{ width: "3rem", height: "3rem", color: `color-mix(in srgb, ${p} 30%, transparent)` }} />
+                          <InlineImage
+                            section="catalog"
+                            fieldKey={"categories." + ci + ".items." + itemIdx + ".image_url"}
+                            src={item.image_url}
+                            alt={item.name}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            className="w-full h-full object-cover"
+                            style={{ position: "absolute", inset: 0 }}
+                          />
+                          {item.image_credit && (
+                            <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 5 }}>
+                              <PhotoCredit credit={item.image_credit} />
                             </div>
                           )}
                           {/* Badge pill overlay */}
@@ -113,13 +116,13 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                         {/* Content */}
                         <div style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1rem", color: text, margin: 0 }} />
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1rem", color: text, margin: 0 }} />
                             {showPrice && (
-                              <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
+                              <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
                             )}
                           </div>
                           {item.description && (
-                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + fi + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }} />
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }} />
                           )}
                           {item.capacity != null && item.capacity > 0 && (
                             <div style={{ marginTop: "0.25rem" }}>
@@ -141,7 +144,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                           )}
                           <div style={{ marginTop: "auto", paddingTop: "0.75rem" }}>
                             <AddToCartButton
-                              itemId={item.id || `cat-sf-feat-${ci}-${fi}`}
+                              itemId={item.id || `cat-sf-feat-${ci}-${itemIdx}`}
                               itemName={item.name}
                               itemPrice={item.price_display || item.price || null}
                               itemPriceAmount={item.price_amount}
@@ -161,54 +164,59 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
               )}
 
               {/* Remaining items — standard grid */}
-              {rest.length > 0 && (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
-                  {rest.map((item, ii) => (
-                    <MenuCatalogCard
-                      key={item.id || ii}
-                      itemId={item.id || `cat-sf-rest-${ci}-${ii}`}
-                      itemName={item.name}
-                      itemPrice={item.price}
-                      itemPriceAmount={item.price_amount}
-                      itemPriceDisplay={item.price_display}
-                      itemDescription={item.description}
-                      category={cat.name}
-                      image_url={item.image_url}
-                      image_urls={item.image_urls}
-                      badge={item.badge}
-                      is_available={item.is_available}
-                      variant_groups={item.variant_groups}
-                      features={item.features}
-                      capacity={item.capacity}
-                      icon={ImageIcon}
-                      className="group transition-all duration-300"
-                      style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" }}
-                      imageClassName="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
-                      placeholderClassName="w-full h-40 flex items-center justify-center"
-                      placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
-                      placeholderIconClassName="w-10 h-10"
-                      placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                      contentClassName="p-4 flex flex-col flex-1"
-                      headerClassName="flex items-start justify-between gap-2 mb-2"
-                      titleClassName="font-semibold text-sm leading-tight line-clamp-2"
-                      titleStyle={{ color: text, fontFamily: hFont }}
-                      descriptionClassName="text-xs leading-relaxed line-clamp-3"
-                      descriptionStyle={{ color: muted }}
-                      priceClassName="text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
-                      priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
-                      buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
-                      buttonStyle={{ background: p, color: bg, border: "none" }}
-                      editSection="catalog"
-                      pathBase={"categories." + ci + ".items." + ii}
-                      onUpdateField={onUpdateField}
-                      isEditorMode={isEditorMode}
-                      isSelected={isSelected}
-                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      onEditingStateChange={onEditingStateChange}
-                    />
-                  ))}
-                </div>
-              )}
+              {(() => {
+                const restWithIdx = (cat.items ?? [])
+                  .map((it, idx) => ({ item: it, originalIdx: idx }))
+                  .filter(({ item }) => !item.badge);
+                return restWithIdx.length > 0 && (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
+                    {restWithIdx.map(({ item, originalIdx: itemIdx }) => (
+                      <MenuCatalogCard
+                        key={item.id || itemIdx}
+                        itemId={item.id || `cat-sf-rest-${ci}-${itemIdx}`}
+                        itemName={item.name}
+                        itemPrice={item.price}
+                        itemPriceAmount={item.price_amount}
+                        itemPriceDisplay={item.price_display}
+                        itemDescription={item.description}
+                        category={cat.name}
+                        image_url={item.image_url}
+                        image_urls={item.image_urls}
+                        badge={item.badge}
+                        is_available={item.is_available}
+                        variant_groups={item.variant_groups}
+                        features={item.features}
+                        capacity={item.capacity}
+                        icon={ImageIcon}
+                        className="group transition-all duration-300"
+                        style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" }}
+                        imageClassName="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+                        placeholderClassName="w-full h-40 flex items-center justify-center"
+                        placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
+                        placeholderIconClassName="w-10 h-10"
+                        placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
+                        contentClassName="p-4 flex flex-col flex-1"
+                        headerClassName="flex items-start justify-between gap-2 mb-2"
+                        titleClassName="font-semibold text-sm leading-tight line-clamp-2"
+                        titleStyle={{ color: text, fontFamily: hFont }}
+                        descriptionClassName="text-xs leading-relaxed line-clamp-3"
+                        descriptionStyle={{ color: muted }}
+                        priceClassName="text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
+                        priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
+                        buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
+                        buttonStyle={{ background: p, color: bg, border: "none" }}
+                        editSection="catalog"
+                        pathBase={"categories." + ci + ".items." + itemIdx}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    ))}
+                  </div>
+                );
+              })()}
 
               {/* Edge case: all items have badge — show them in featured grid only, no rest grid needed */}
             </div>
