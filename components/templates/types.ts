@@ -53,6 +53,10 @@ export interface CatalogEntryBase {
   price?: string;
   price_display?: string;
   price_amount?: number | null;
+  promo_price?: string | null;
+  promo_price_display?: string | null;
+  promo_price_amount?: number | null;
+  discount_label?: string | null;
   image_url?: string | null;
   image_urls?: string[] | null;
   image_credit?: ImageCredit | null;

@@ -1111,6 +1111,9 @@ interface MenuCatalogCardProps {
   itemPrice?: string | null;
   itemPriceAmount?: number | null;
   itemPriceDisplay?: string | null;
+  itemPromoPriceAmount?: number | null;
+  itemPromoPriceDisplay?: string | null;
+  discountLabel?: string | null;
   itemDescription?: string | null;
   category: string;
   image_url?: string | null;
@@ -1157,7 +1160,7 @@ interface MenuCatalogCardProps {
 }
 
 function MenuCatalogCard({
-  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay,
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemPromoPriceAmount, itemPromoPriceDisplay, discountLabel,
   itemDescription, category, image_url, image_urls, image_credit, badge, is_available = true, variant_groups, icon,
   layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
@@ -1175,6 +1178,8 @@ function MenuCatalogCard({
 
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = displayPrice && !isPlaceholderPrice(displayPrice);
+  const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
+    (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
   const isOutOfStock = is_available === false;
 
   const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
@@ -1355,7 +1360,17 @@ function MenuCatalogCard({
         </div>
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </div>
-      {showPrice && <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+      {showPrice && (
+        hasPromo ? (
+          <div className={`${priceClassName ?? ""} flex items-center gap-1.5 whitespace-nowrap shrink-0`} style={priceStyle}>
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={itemPromoPriceDisplay || displayPrice} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <span className="line-through opacity-45 text-xs">{displayPrice}</span>
+          </div>
+        ) : (
+          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+        )
+      )}
     </div>
   );
 
@@ -1438,6 +1453,9 @@ function MenuCatalogCard({
                 itemPrice={displayPrice ?? null}
                 itemPriceAmount={itemPriceAmount}
                 itemPriceDisplay={displayPrice}
+                itemPromoPriceAmount={itemPromoPriceAmount}
+                itemPromoPriceDisplay={itemPromoPriceDisplay}
+                discountLabel={discountLabel}
                 category={category}
                 variant_groups={variant_groups}
                 className={buttonClassName}

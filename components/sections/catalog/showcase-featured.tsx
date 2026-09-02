@@ -149,6 +149,9 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                               itemPrice={item.price_display || item.price || null}
                               itemPriceAmount={item.price_amount}
                               itemPriceDisplay={item.price_display || item.price}
+                              itemPromoPriceAmount={item.promo_price_amount}
+                              itemPromoPriceDisplay={item.promo_price_display}
+                              discountLabel={item.discount_label}
                               category={cat.name}
                               variant_groups={item.variant_groups}
                               disabled={item.is_available === false}
@@ -178,6 +181,9 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                         itemPrice={item.price}
                         itemPriceAmount={item.price_amount}
                         itemPriceDisplay={item.price_display}
+                        itemPromoPriceAmount={item.promo_price_amount}
+                        itemPromoPriceDisplay={item.promo_price_display}
+                        discountLabel={item.discount_label}
                         itemDescription={item.description}
                         category={cat.name}
                         image_url={item.image_url}

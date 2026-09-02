@@ -146,6 +146,9 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                   itemPrice={item.price}
                   itemPriceAmount={item.price_amount}
                   itemPriceDisplay={item.price_display}
+                  itemPromoPriceAmount={item.promo_price_amount}
+                  itemPromoPriceDisplay={item.promo_price_display}
+                  discountLabel={item.discount_label}
                   itemDescription={item.description}
                   category={active.name}
                   image_url={item.image_url}

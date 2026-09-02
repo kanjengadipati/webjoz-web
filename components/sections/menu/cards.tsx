@@ -106,6 +106,9 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                       itemPrice={item.price}
                       itemPriceAmount={item.price_amount}
                       itemPriceDisplay={item.price_display}
+                      itemPromoPriceAmount={item.promo_price_amount}
+                      itemPromoPriceDisplay={item.promo_price_display}
+                      discountLabel={item.discount_label}
                       itemDescription={item.description}
                       category={cat.name}
                       image_url={item.image_url}
