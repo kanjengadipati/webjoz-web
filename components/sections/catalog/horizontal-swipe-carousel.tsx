@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { ShoppingBag, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -181,19 +181,17 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                     borderTopRightRadius: "calc(var(--dt-radius) - 1px)"
                   }}
                 >
-                  {item.image_url ? (
-                    <img
-                      src={item.image_url}
-                      alt={item.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-neutral-400 dark:text-neutral-600">
-                      <ImageIcon size={32} strokeWidth={1} className="mb-2" />
-                      <span className="text-xs uppercase tracking-wider font-medium">No Image</span>
-                    </div>
-                  )}
+                  <InlineImage
+                    section="catalog"
+                    fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".image_url"}
+                    src={item.image_url}
+                    alt={item.name}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                  />
 
                   {/* Badge */}
                   {item.badge && (

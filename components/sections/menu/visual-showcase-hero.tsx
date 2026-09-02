@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Utensils } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -104,25 +104,17 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                     className="group flex flex-col bg-dt-surface rounded-dt overflow-hidden border border-dt-border/50 hover:shadow-xl hover:border-dt-border transition-all duration-300 h-[560px]"
                   >
                     <div className="relative h-[390px] w-full overflow-hidden bg-dt-accent/5">
-                      {item.image_url ? (
-                        <img
-                          id={`hero-img-${catIndex}-${itemIndex}`}
-                          src={item.image_url}
-                          alt={item.name}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        />
-                      ) : (
-                        <div
-                          id={`hero-fallback-${catIndex}-${itemIndex}`}
-                          className="w-full h-full bg-dt-accent/15 flex flex-col items-center justify-center text-dt-primary/40"
-                        >
-                          <Utensils className="w-12 h-12 stroke-[1] mb-2" />
-                          <span className="text-[10px] uppercase tracking-widest font-dt-heading font-medium text-dt-text-muted">
-                            Menu Selection
-                          </span>
-                        </div>
-                      )}
+                      <InlineImage
+                        section="menu"
+                        fieldKey={"categories." + catIndex + ".items." + itemIndex + ".image_url"}
+                        src={item.image_url}
+                        alt={item.name}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
 
                       {hasBadge && (
                         <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black/40 to-transparent"></div>

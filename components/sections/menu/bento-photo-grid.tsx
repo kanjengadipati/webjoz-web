@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Utensils } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -117,25 +117,17 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                     id={`bento-item-${catIndex}-${itemIndex}`}
                     className={`relative group overflow-hidden rounded-dt border border-dt-border bg-dt-surface flex flex-col justify-end transition-all duration-300 hover:shadow-lg hover:border-dt-primary ${bentoSizeClass}`}
                   >
-                    {item.image_url ? (
-                      <img
-                        id={`bento-img-${catIndex}-${itemIndex}`}
-                        src={item.image_url}
-                        alt={item.name}
-                        referrerPolicy="no-referrer"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div
-                        id={`bento-fallback-${catIndex}-${itemIndex}`}
-                        className="absolute inset-0 w-full h-full bg-dt-accent/20 flex flex-col items-center justify-center text-dt-primary/40"
-                      >
-                        <Utensils className="w-12 h-12 stroke-[1.5] mb-2" />
-                        <span className="text-xs font-medium font-dt-heading text-dt-text-muted uppercase tracking-wider">
-                          Our Selection
-                        </span>
-                      </div>
-                    )}
+                    <InlineImage
+                      section="menu"
+                      fieldKey={"categories." + catIndex + ".items." + itemIndex + ".image_url"}
+                      src={item.image_url}
+                      alt={item.name}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent transition-opacity duration-300 group-hover:from-black/95"></div>
 
