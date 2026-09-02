@@ -15,6 +15,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "sites", href: "/dashboard/sites", label: "Website Saya", permission: "site:view", icon: "globe", section: "Website Builder", groupStart: false },
   { id: "domains", href: "/dashboard/domains", label: "Custom Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },
+  { id: "orders", href: "/dashboard/orders", label: "Pesanan", permission: "lead:read", icon: "shopping-bag", section: "Website Builder", groupStart: false },
   { id: "analytics", href: "/dashboard/analytics", label: "Web Statistik", permission: "analytics:read", icon: "chart", section: "Website Builder", groupStart: false },
   { id: "sales-referral", href: "/dashboard/sales", label: "Kode Referral", permission: "sales:manage-referral", icon: "share", section: "Sales & Referral", groupStart: false },
   { id: "sales-commissions", href: "/dashboard/sales/commissions", label: "Komisi Saya", permission: "commission:read_own", icon: "dollar", section: "Sales & Referral", groupStart: false },
