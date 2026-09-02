@@ -2481,16 +2481,17 @@ export function InlineText({
   if (isEditing) {
     return (
       <div
-        className="relative w-full my-1 inline-block z-50 animate-in fade-in zoom-in-95 duration-150"
+        className={`relative w-full my-0.5 inline-block z-40 animate-in fade-in zoom-in-95 duration-100 ${className}`}
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
       >
-        {/* Floating Mini Action Toolbar above input */}
-        <div className="absolute -top-9 left-0 z-50 flex items-center gap-1 bg-slate-900/95 border border-white/15 px-2 py-1 rounded-full shadow-2xl backdrop-blur-md">
-          <span className="text-[10px] font-semibold text-slate-300 px-1">
-            {multiline ? "Ctrl+↵ Selesai" : "↵ Selesai"}
+        {/* Floating Mini Action Toolbar - positioned neatly above the input */}
+        <div className="absolute -top-9 left-0 z-50 flex items-center gap-1.5 bg-slate-900/95 text-slate-100 border border-white/20 px-2.5 py-1 rounded-full shadow-2xl backdrop-blur-md whitespace-nowrap select-none">
+          <span className="text-[10px] font-medium text-slate-400">
+            {multiline ? "Ctrl+↵ Simpan" : "↵ Simpan"}
           </span>
+          <span className="text-white/20">|</span>
           <button
             type="button"
             onMouseDown={(e) => {
@@ -2525,16 +2526,15 @@ export function InlineText({
               if (e.key === "Escape") handleCancel();
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleCommit();
             }}
-            className="w-full min-h-[60px] p-2.5 border-2 border-primary rounded-xl bg-slate-900/95 text-white font-sans text-sm outline-none resize-none shadow-2xl ring-4 ring-primary/20 backdrop-blur"
+            className="w-full min-h-[50px] p-2 bg-background/80 text-foreground border-2 border-primary/80 rounded-xl outline-none resize-none shadow-lg ring-4 ring-primary/15 backdrop-blur-sm transition-all"
             style={{
-              color: "#ffffff",
-              backgroundColor: "#0f172a",
-              caretColor: "#ffffff",
-              fontSize: style?.fontSize,
-              fontFamily: style?.fontFamily,
-              fontWeight: style?.fontWeight,
-              lineHeight: style?.lineHeight,
-              textAlign: style?.textAlign,
+              fontSize: "inherit",
+              fontFamily: "inherit",
+              fontWeight: "inherit",
+              lineHeight: "inherit",
+              letterSpacing: "inherit",
+              textAlign: "inherit",
+              ...style,
             }}
           />
         ) : (
@@ -2548,15 +2548,15 @@ export function InlineText({
               if (e.key === "Enter") handleCommit();
               if (e.key === "Escape") handleCancel();
             }}
-            className="w-full px-2.5 py-1.5 border-2 border-primary rounded-xl bg-slate-900/95 text-white font-sans text-sm outline-none shadow-2xl ring-4 ring-primary/20 backdrop-blur"
+            className="w-full px-2.5 py-1 bg-background/80 text-foreground border-2 border-primary/80 rounded-xl outline-none shadow-lg ring-4 ring-primary/15 backdrop-blur-sm transition-all"
             style={{
-              color: "#ffffff",
-              backgroundColor: "#0f172a",
-              caretColor: "#ffffff",
-              fontSize: style?.fontSize,
-              fontFamily: style?.fontFamily,
-              fontWeight: style?.fontWeight,
-              textAlign: style?.textAlign,
+              fontSize: "inherit",
+              fontFamily: "inherit",
+              fontWeight: "inherit",
+              lineHeight: "inherit",
+              letterSpacing: "inherit",
+              textAlign: "inherit",
+              ...style,
             }}
           />
         )}
