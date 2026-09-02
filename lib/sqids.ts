@@ -24,9 +24,18 @@ export function decodeSiteId(val: string | number | undefined | null): number {
   if (!val) return 0;
   if (typeof val === "number") return val;
 
-  // Try decoding with Sqids
+  const str = String(val).trim();
+  if (!str) return 0;
+
+  // 1. If it's a plain numeric string (legacy ID or already decoded numeric ID), parse directly
+  if (/^\d+$/.test(str)) {
+    const num = parseInt(str, 10);
+    return isNaN(num) ? 0 : num;
+  }
+
+  // 2. Decode with Sqids
   try {
-    const decoded = sqids.decode(val);
+    const decoded = sqids.decode(str);
     if (decoded && decoded.length > 0 && decoded[0] > 0) {
       return decoded[0];
     }
@@ -34,9 +43,7 @@ export function decodeSiteId(val: string | number | undefined | null): number {
     // ignore
   }
 
-  // Fallback to numeric string (for backward compatibility)
-  const num = parseInt(val, 10);
-  return isNaN(num) ? 0 : num;
+  return 0;
 }
 
 /**
