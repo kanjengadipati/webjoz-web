@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { ShoppingBag, Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -58,7 +59,8 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
           className="text-4xl md:text-5xl font-light tracking-tight mb-4"
           style={{
             color: "var(--dt-text)",
-            fontFamily: "var(--dt-heading-font, serif)"
+            fontFamily: "var(--dt-heading-font)",
+            fontWeight: "var(--dt-heading-weight, 300)" as any,
           }}
         />
         {subtitle && (
@@ -72,17 +74,19 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="p"
-            className="text-lg font-light leading-relaxed"
+            multiline
+            className="text-base font-light leading-relaxed"
             style={{ color: "var(--dt-text-muted)" }}
           />
         )}
       </div>
 
-      {/* Categories */}
+      {/* Categories Mapping */}
       <div className="space-y-24">
         {categories?.map((category, catIdx) => (
-          <div key={catIdx} className="space-y-10">
-            <div className="border-b pb-4" style={{ borderColor: "var(--dt-border)" }}>
+          <div key={catIdx} className="space-y-8">
+            {/* Category Title / Separator */}
+            <div className="border-b pb-4 flex justify-between items-baseline" style={{ borderColor: "var(--dt-border)" }}>
               <InlineText
                 section="catalog"
                 fieldKey={"categories." + catIdx + ".name"}
@@ -93,16 +97,23 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                 onEditingStateChange={onEditingStateChange}
                 as="h3"
-                className="text-lg uppercase tracking-wider font-medium"
-                style={{ fontFamily: "var(--dt-heading-font)" }}
+                className="text-xl md:text-2xl font-normal tracking-wide"
+                style={{
+                  color: "var(--dt-text)",
+                  fontFamily: "var(--dt-heading-font)",
+                }}
               />
+              <span className="text-xs font-mono" style={{ color: "var(--dt-text-muted)" }}>
+                {category.items?.length || 0} ITEMS
+              </span>
             </div>
 
-            {/* Asymmetric Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-16">
+            {/* Asymmetrical Editorial Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
               {category.items?.map((item, index) => {
-                let colSpanClass = "md:col-span-6";
-                let aspectClass = "aspect-[4/5]";
+                // Editorial layout patterning based on item index to create magazine-feel rhythm
+                let colSpanClass = "md:col-span-4";
+                let aspectClass = "aspect-[3/4]";
 
                 if (index % 6 === 0) {
                   colSpanClass = "md:col-span-8";
@@ -160,20 +171,26 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         </div>
                       )}
 
-                      {/* Floating Hover Add to Cart */}
-                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none md:pointer-events-auto">
-                        <button
-                          className="pointer-events-auto transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 px-6 py-3 rounded-full text-xs font-medium uppercase tracking-wider flex items-center gap-2 shadow-lg"
-                          style={{
-                            backgroundColor: "var(--dt-primary)",
-                            color: "var(--dt-primary-foreground)",
-                          }}
-                          aria-label={`Add ${item.name} to cart`}
-                        >
-                          <ShoppingBag size={14} />
-                          Tambah
-                        </button>
-                      </div>
+                      {/* Floating Hover Add to Cart (only on live website) */}
+                      {!isEditorMode && (
+                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none md:pointer-events-auto">
+                          <AddToCartButton
+                            itemId={item.id || `cat-ed-${catIdx}-${index}`}
+                            itemName={item.name}
+                            itemPrice={item.price_display || item.price || null}
+                            itemPriceAmount={item.price_amount}
+                            itemPriceDisplay={item.price_display || item.price}
+                            category={category.name}
+                            variant_groups={item.variant_groups}
+                            disabled={item.is_available === false}
+                            className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 px-6 py-3 rounded-full text-xs font-medium uppercase tracking-wider flex items-center gap-2 shadow-lg cursor-pointer hover:brightness-110"
+                            style={{
+                              backgroundColor: "var(--dt-primary)",
+                              color: "var(--dt-primary-foreground)",
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     {/* Metadata Area */}
@@ -246,17 +263,22 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
 
                       {/* Mobile button */}
                       <div className="mt-4 md:hidden">
-                        <button
-                          className="w-full py-2.5 border text-xs font-medium uppercase tracking-wider flex items-center justify-center gap-2"
+                        <AddToCartButton
+                          itemId={item.id || `cat-ed-m-${catIdx}-${index}`}
+                          itemName={item.name}
+                          itemPrice={item.price_display || item.price || null}
+                          itemPriceAmount={item.price_amount}
+                          itemPriceDisplay={item.price_display || item.price}
+                          category={category.name}
+                          variant_groups={item.variant_groups}
+                          disabled={item.is_available === false}
+                          className="w-full py-2.5 border text-xs font-medium uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:brightness-110"
                           style={{
                             borderColor: "var(--dt-border)",
                             color: "var(--dt-text)",
                             borderRadius: "var(--dt-radius)",
                           }}
-                        >
-                          <ShoppingBag size={14} />
-                          Tambah
-                        </button>
+                        />
                       </div>
                     </div>
                   </div>

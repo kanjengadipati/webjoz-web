@@ -2740,8 +2740,8 @@ export function InlineImage({
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
         disabled={uploading}
-        className={`absolute top-3 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
-          isSelected ? "opacity-100" : "max-md:opacity-100 opacity-0 group-hover/inline-img:opacity-100"
+        className={`absolute top-3 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
+          isSelected ? "opacity-100" : "opacity-90 group-hover:opacity-100 group-hover/inline-img:opacity-100"
         } backdrop-blur-sm`}
       >
         {uploading ? (

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { ShoppingBag, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -138,20 +138,26 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                       </div>
                     )}
 
-                    {/* Hover Overlay Button */}
-                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
-                      <button
-                        className="w-full py-2 px-4 rounded text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow transition-transform duration-300 translate-y-2 group-hover:translate-y-0"
-                        style={{
-                          backgroundColor: "var(--dt-primary)",
-                          color: "var(--dt-primary-foreground)",
-                        }}
-                        aria-label={`Add ${item.name} to cart`}
-                      >
-                        <ShoppingBag size={12} />
-                        Tambah
-                      </button>
-                    </div>
+                    {/* Hover Overlay Button (only on live website) */}
+                    {!isEditorMode && (
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                        <AddToCartButton
+                          itemId={item.id || `cat-mf-${catIdx}-${index}`}
+                          itemName={item.name}
+                          itemPrice={item.price_display || item.price || null}
+                          itemPriceAmount={item.price_amount}
+                          itemPriceDisplay={item.price_display || item.price}
+                          category={category.name}
+                          variant_groups={item.variant_groups}
+                          disabled={item.is_available === false}
+                          className="w-full py-2 px-4 rounded text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow transition-transform duration-300 translate-y-2 group-hover:translate-y-0 cursor-pointer hover:brightness-110"
+                          style={{
+                            backgroundColor: "var(--dt-primary)",
+                            color: "var(--dt-primary-foreground)",
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Metadata area */}
@@ -224,17 +230,22 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
 
                     {/* Mobile Add to Cart */}
                     <div className="mt-4 md:hidden">
-                      <button
-                        className="w-full py-2 border text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2"
+                      <AddToCartButton
+                        itemId={item.id || `cat-mf-m-${catIdx}-${index}`}
+                        itemName={item.name}
+                        itemPrice={item.price_display || item.price || null}
+                        itemPriceAmount={item.price_amount}
+                        itemPriceDisplay={item.price_display || item.price}
+                        category={category.name}
+                        variant_groups={item.variant_groups}
+                        disabled={item.is_available === false}
+                        className="w-full py-2 border text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:brightness-110"
                         style={{
                           borderColor: "var(--dt-border)",
                           color: "var(--dt-text)",
                           borderRadius: "var(--dt-radius)",
                         }}
-                      >
-                        <ShoppingBag size={12} />
-                        Tambah
-                      </button>
+                      />
                     </div>
                   </div>
                 </div>
