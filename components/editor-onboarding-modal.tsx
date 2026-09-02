@@ -11,17 +11,12 @@ import {
 } from "lucide-react";
 import { SparkleGenAI } from "./sparkle-icon";
 
-const STORAGE_KEY = "webjoz_editor_onboarding_v3";
+const STORAGE_KEY = "webjoz_editor_onboarding_v4";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const TIPS = [
   {
-    // data-edu="canvas": the preview canvas on the right
-    target: "canvas",
-    // Preferred placement: tooltip appears inside the canvas at the top-left,
-    // with an arrow that points DOWN toward the text content below.
-    placement: "inside-top-left" as const,
     icon: MousePointerClick,
     color: "text-cyan-400",
     iconBg: "bg-cyan-500/15 border-cyan-500/30",
@@ -29,12 +24,9 @@ const TIPS = [
     arrowColor: "bg-[#0e1420] border-cyan-500/30",
     badge: "Klik & Ketik",
     title: "Klik teks langsung untuk mengedit",
-    desc: "Cukup klik teks apa saja — judul, harga, deskripsi — dan langsung mengetik.",
+    desc: "Cukup klik teks apa saja (judul, harga, deskripsi) dan langsung mengetik seperti dokumen biasa.",
   },
   {
-    // data-edu="canvas": still the canvas but pointing toward upper-center (where hero images are)
-    target: "canvas",
-    placement: "inside-top-center" as const,
     icon: ImageIcon,
     color: "text-pink-400",
     iconBg: "bg-pink-500/15 border-pink-500/30",
@@ -42,12 +34,9 @@ const TIPS = [
     arrowColor: "bg-[#0e1420] border-pink-500/30",
     badge: "Ganti Foto",
     title: "Hover gambar → klik Ganti Foto",
-    desc: "Arahkan kursor ke gambar mana saja, lalu klik tombol 'Ganti Foto' yang muncul di pojok kanan atas.",
+    desc: "Arahkan kursor ke gambar mana saja, lalu klik tombol 'Ganti Foto' di pojok kanan atas untuk unggah foto baru.",
   },
   {
-    // data-edu="variant-picker": the variant dropdown in the sidebar
-    target: "variant-picker",
-    placement: "below" as const,
     icon: SlidersHorizontal,
     color: "text-amber-400",
     iconBg: "bg-amber-500/15 border-amber-500/30",
@@ -55,12 +44,9 @@ const TIPS = [
     arrowColor: "bg-[#0e1420] border-amber-500/30",
     badge: "Variasi Layout",
     title: "Pilih tampilan section di sini",
-    desc: "Ganti antara varian Grid, Masonry, Bento, dll sesuai selera.",
+    desc: "Ganti variasi tampilan (Grid, Masonry, Bento, dll) serta tema dan warna dari panel desain.",
   },
   {
-    // data-edu="publish-btn" or "autosave": the autosave/publish area
-    target: "autosave",
-    placement: "below" as const,
     icon: CheckCircle2,
     color: "text-emerald-400",
     iconBg: "bg-emerald-500/15 border-emerald-500/30",
@@ -68,17 +54,15 @@ const TIPS = [
     arrowColor: "bg-[#0e1420] border-emerald-500/30",
     badge: "Autosave",
     title: "Setiap perubahan tersimpan otomatis",
-    desc: "Anda tidak perlu klik simpan. Publish kapan saja saat sudah siap.",
+    desc: "Anda tidak perlu repot klik simpan. Setiap ketikan otomatis tersimpan dan siap dipublikasikan.",
   },
 ] as const;
-
-type Placement = "inside-top-left" | "inside-top-center" | "below";
 
 interface TooltipPos {
   top: number;
   left: number;
-  arrowSide: "top" | "bottom" | "left" | "right";
-  arrowOffset: number; // px from the near edge of the tooltip box
+  arrowSide: "top" | "bottom" | "left" | "right" | "none";
+  arrowOffset: number; // px from edge
   maxWidth: number;
 }
 
@@ -108,9 +92,13 @@ export function useEditorOnboarding() {
 
 // ─── Main component ────────────────────────────────────────────────────────────
 
-interface Props { isOpen: boolean; onClose: () => void; }
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  onStepChange?: (step: number) => void;
+}
 
-export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
+export default function EditorOnboardingModal({ isOpen, onClose, onStepChange }: Props) {
   const [step, setStep] = useState(0);
   const [pos, setPos] = useState<TooltipPos | null>(null);
   const [visible, setVisible] = useState(false);
@@ -119,46 +107,152 @@ export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
   const TipIcon = tip.icon;
   const isLast = step === TIPS.length - 1;
 
-  // Calculate tooltip position from target element
+  // Calculate accurate tooltip position and arrow direction based on target element
   const calcPos = useCallback((tipIdx: number): TooltipPos | null => {
     if (typeof document === "undefined") return null;
-    const t = TIPS[tipIdx];
-    const el = document.querySelector<HTMLElement>(`[data-edu="${t.target}"]`);
-    if (!el) return null;
 
-    const rect = el.getBoundingClientRect();
-    const GAP = 10; // px between element and tooltip
-    const W = 256; // tooltip width
     const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const W = 280;
+    const H = 145; // estimated tooltip height
+    const GAP = 12;
 
-    let top = 0, left = 0;
-    let arrowSide: TooltipPos["arrowSide"] = "top";
-    let arrowOffset = 28;
+    let el: HTMLElement | null = null;
 
-    const placement = t.placement as Placement;
-
-    if (placement === "inside-top-left") {
-      // Place inside canvas, top-left area with padding
-      top = rect.top + 16;
-      left = rect.left + 16;
-      arrowSide = "top";
-      arrowOffset = 24;
-    } else if (placement === "inside-top-center") {
-      // Center of canvas, slightly offset
-      top = rect.top + 16;
-      left = rect.left + rect.width / 2 - W / 2;
-      arrowSide = "top";
-      arrowOffset = W / 2 - 12;
-    } else if (placement === "below") {
-      // Below the target element, centered horizontally over it
-      top = rect.bottom + GAP;
-      left = rect.left + rect.width / 2 - W / 2;
-      arrowSide = "top"; // arrow points UP from tooltip (back to element above)
-      arrowOffset = Math.min(Math.max(rect.left + rect.width / 2 - left, 16), W - 32);
+    if (tipIdx === 0) {
+      // 1. Text edit: find visible editable text element in canvas preview
+      const preview = document.getElementById("preview-scroll-container");
+      if (preview) {
+        const texts = Array.from(
+          preview.querySelectorAll<HTMLElement>('[contenteditable="true"], h1, h2, h3')
+        );
+        el = texts.find((item) => {
+          const r = item.getBoundingClientRect();
+          return r.width > 20 && r.height > 10 && r.top >= 50 && r.bottom <= vh - 50;
+        }) || texts[0] || null;
+      }
+    } else if (tipIdx === 1) {
+      // 2. Image edit: find visible image in canvas preview
+      const preview = document.getElementById("preview-scroll-container");
+      if (preview) {
+        const imgs = Array.from(
+          preview.querySelectorAll<HTMLElement>('.group\\/inline-img, [data-inline-image], img')
+        );
+        el = imgs.find((item) => {
+          const r = item.getBoundingClientRect();
+          return r.width > 40 && r.height > 40 && r.top >= 50 && r.bottom <= vh - 50;
+        }) || imgs[0] || null;
+      }
+    } else if (tipIdx === 2) {
+      // 3. Variant picker in drawer
+      const vp = document.querySelector<HTMLElement>('[data-edu="variant-picker"]');
+      if (vp) {
+        const r = vp.getBoundingClientRect();
+        if (r.width > 0 && r.left >= 0 && r.right <= vw) {
+          el = vp;
+        }
+      }
+      if (!el) {
+        el = document.querySelector<HTMLElement>('[data-desktop-drawer]') || null;
+      }
+    } else if (tipIdx === 3) {
+      // 4. Autosave indicator
+      el = document.querySelector<HTMLElement>('[data-edu="autosave"]');
     }
 
-    // Clamp to viewport
-    left = Math.max(8, Math.min(left, vw - W - 8));
+    if (!el) {
+      // Fallback
+      return {
+        top: vh - H - 32,
+        left: vw - W - 32,
+        arrowSide: "none",
+        arrowOffset: 0,
+        maxWidth: W,
+      };
+    }
+
+    const rect = el.getBoundingClientRect();
+    let top = 0;
+    let left = 0;
+    let arrowSide: TooltipPos["arrowSide"] = "bottom";
+    let arrowOffset = 24;
+
+    if (tipIdx === 0) {
+      // Tip 0: Text editing
+      // If text is in top half of screen: place BELOW text, arrow on TOP pointing UP at the text!
+      // If text is in lower half: place ABOVE text, arrow on BOTTOM pointing DOWN at the text!
+      const canPlaceBelow = rect.bottom + H + GAP <= vh - 20;
+      const canPlaceAbove = rect.top - H - GAP >= 50;
+
+      if (canPlaceAbove && rect.top > vh * 0.45) {
+        top = rect.top - H - GAP;
+        arrowSide = "bottom"; // Arrow at bottom pointing DOWN at text
+      } else if (canPlaceBelow) {
+        top = rect.bottom + GAP;
+        arrowSide = "top"; // Arrow at top pointing UP at text
+      } else {
+        top = Math.max(50, rect.top - H - GAP);
+        arrowSide = "bottom";
+      }
+
+      left = rect.left + rect.width / 2 - W / 2;
+      left = Math.max(16, Math.min(left, vw - W - 16));
+      arrowOffset = Math.min(Math.max(rect.left + rect.width / 2 - left - 6, 20), W - 32);
+
+    } else if (tipIdx === 1) {
+      // Tip 1: Ganti foto
+      // Point directly at the "Ganti Foto" button area at top-right of image (rect.right - 24, rect.top + 24)
+      const targetX = rect.right - 24;
+      const canPlaceAbove = rect.top - H - GAP >= 50;
+      const canPlaceBelow = rect.bottom + H + GAP <= vh - 20;
+
+      if (canPlaceAbove) {
+        // Place ABOVE image: arrow at BOTTOM pointing DOWN directly at the Ganti Foto button
+        top = rect.top - H - GAP;
+        left = targetX - W + 40;
+        left = Math.max(16, Math.min(left, vw - W - 16));
+        arrowSide = "bottom"; // Arrow on bottom pointing DOWN at Ganti Foto button
+        arrowOffset = Math.min(Math.max(targetX - left - 6, 20), W - 32);
+      } else if (canPlaceBelow) {
+        // Place BELOW image: arrow at TOP pointing UP directly at the image
+        top = rect.bottom + GAP;
+        left = targetX - W + 40;
+        left = Math.max(16, Math.min(left, vw - W - 16));
+        arrowSide = "top"; // Arrow on top pointing UP at image
+        arrowOffset = Math.min(Math.max(targetX - left - 6, 20), W - 32);
+      } else {
+        // Fallback beside image
+        top = Math.max(50, rect.top);
+        left = Math.max(16, rect.left - W - GAP);
+        arrowSide = "right"; // Arrow on right pointing RIGHT at image
+        arrowOffset = 24;
+      }
+
+    } else if (tipIdx === 2) {
+      // Tip 2: Variant picker
+      // If variant picker is open in drawer: place to the RIGHT of drawer, arrow on LEFT pointing LEFT at picker
+      if (rect.left >= 0 && rect.width > 0) {
+        left = rect.right + GAP;
+        top = rect.top + rect.height / 2 - H / 2;
+        top = Math.max(50, Math.min(top, vh - H - 20));
+        arrowSide = "left"; // Arrow on left of tooltip points LEFT at the variant picker
+        arrowOffset = Math.min(Math.max(rect.top + rect.height / 2 - top - 6, 16), H - 28);
+      } else {
+        // Drawer handle on left edge
+        left = 48;
+        top = vh / 2 - H / 2;
+        arrowSide = "left";
+        arrowOffset = H / 2 - 6;
+      }
+
+    } else if (tipIdx === 3) {
+      // Tip 3: Autosave indicator in topbar
+      top = rect.bottom + GAP;
+      left = rect.left + rect.width / 2 - W / 2;
+      left = Math.max(16, Math.min(left, vw - W - 16));
+      arrowSide = "top"; // Arrow on top pointing UP at autosave icon
+      arrowOffset = Math.min(Math.max(rect.left + rect.width / 2 - left - 6, 20), W - 32);
+    }
 
     return { top, left, arrowSide, arrowOffset, maxWidth: W };
   }, []);
@@ -166,13 +260,14 @@ export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
   // Fade out → advance → recalc → fade in
   const goTo = useCallback((idx: number) => {
     setVisible(false);
+    onStepChange?.(idx);
     setTimeout(() => {
       setStep(idx);
       const newPos = calcPos(idx);
       setPos(newPos);
       setTimeout(() => setVisible(true), 30);
     }, 180);
-  }, [calcPos]);
+  }, [calcPos, onStepChange]);
 
   const dismiss = useCallback(() => {
     setVisible(false);
@@ -185,11 +280,12 @@ export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
   useEffect(() => {
     if (!isOpen) { setVisible(false); return; }
     setStep(0);
+    onStepChange?.(0);
     const newPos = calcPos(0);
     setPos(newPos);
     const t = setTimeout(() => setVisible(true), 60);
     return () => clearTimeout(t);
-  }, [isOpen, calcPos]);
+  }, [isOpen, calcPos, onStepChange]);
 
   // Recalc on resize
   useEffect(() => {
@@ -201,30 +297,13 @@ export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
 
   if (!isOpen || !pos) return null;
 
-  const arrowBase = "absolute w-3 h-3 border rotate-45";
+  const arrowBase = "absolute w-3.5 h-3.5 border rotate-45 pointer-events-none";
 
   return (
     <div
       className="fixed inset-0 z-[300] pointer-events-none"
       aria-hidden="true"
     >
-      {/* Subtle canvas highlight for inside-canvas tips */}
-      {(tip.placement === "inside-top-left" || tip.placement === "inside-top-center") && (() => {
-        const el = typeof document !== "undefined"
-          ? document.querySelector<HTMLElement>(`[data-edu="${tip.target}"]`)
-          : null;
-        if (!el) return null;
-        const r = el.getBoundingClientRect();
-        return (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `radial-gradient(ellipse 60% 50% at ${r.left + r.width / 2}px ${r.top + 120}px, rgba(14,200,240,0.05) 0%, transparent 70%)`,
-            }}
-          />
-        );
-      })()}
-
       {/* Tooltip card */}
       <div
         className={`absolute pointer-events-auto transition-all duration-200 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
@@ -232,17 +311,35 @@ export default function EditorOnboardingModal({ isOpen, onClose }: Props) {
       >
         <div className={`relative bg-[#0e1420] border ${tip.cardBorder} rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.7)]`}>
 
-          {/* Arrow — points BACK toward the target element */}
+          {/* Arrow pointing UP (when tooltip is below target) */}
           {pos.arrowSide === "top" && (
             <div
-              className={`${arrowBase} ${tip.arrowColor} border-r-0 border-b-0 -top-[7px]`}
+              className={`${arrowBase} ${tip.arrowColor} border-r-0 border-b-0 -top-[8px]`}
               style={{ left: pos.arrowOffset }}
             />
           )}
+
+          {/* Arrow pointing DOWN (when tooltip is above target) */}
           {pos.arrowSide === "bottom" && (
             <div
-              className={`${arrowBase} ${tip.arrowColor} border-l-0 border-t-0 -bottom-[7px]`}
+              className={`${arrowBase} ${tip.arrowColor} border-l-0 border-t-0 -bottom-[8px]`}
               style={{ left: pos.arrowOffset }}
+            />
+          )}
+
+          {/* Arrow pointing LEFT (when tooltip is to the right of target) */}
+          {pos.arrowSide === "left" && (
+            <div
+              className={`${arrowBase} ${tip.arrowColor} border-t-0 border-r-0 -left-[8px]`}
+              style={{ top: pos.arrowOffset }}
+            />
+          )}
+
+          {/* Arrow pointing RIGHT (when tooltip is to the left of target) */}
+          {pos.arrowSide === "right" && (
+            <div
+              className={`${arrowBase} ${tip.arrowColor} border-b-0 border-l-0 -right-[8px]`}
+              style={{ top: pos.arrowOffset }}
             />
           )}
 
