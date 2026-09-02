@@ -6,6 +6,8 @@ export const DASHBOARD_NAVIGATION = [
   { id: "health", href: "/dashboard/admin/health", label: "System Health", permission: "tenant:manage", icon: "activity", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "announcements", href: "/dashboard/admin/announcements", label: "Announcements", permission: "tenant:manage", icon: "megaphone", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "admin-commissions", href: "/dashboard/admin/commissions", label: "Semua Komisi", permission: "commission:read_all", icon: "dollar", section: "Dashboard", groupStart: false, adminOnly: true },
+  { id: "admin-payments", href: "/dashboard/admin/payments", label: "Manajemen Pembayaran", permission: "tenant:manage", icon: "credit-card", section: "Dashboard", groupStart: false, adminOnly: true },
+  { id: "admin-reports", href: "/dashboard/admin/reports", label: "Revenue Report", permission: "tenant:manage", icon: "bar-chart", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "tenants", href: "/dashboard/tenants", label: "All Tenants", permission: "tenant:manage", icon: "building", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "templates", href: "/dashboard/admin/templates", label: "Template Gallery", permission: "tenant:manage", icon: "palette", section: "Dashboard", groupStart: false, superAdminOnly: true },
   { id: "design-assets", href: "/dashboard/admin/design-assets", label: "Design Assets", permission: "tenant:manage", icon: "palette", section: "Dashboard", groupStart: false, superAdminOnly: true },
@@ -18,6 +20,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "sales-commissions", href: "/dashboard/sales/commissions", label: "Komisi Saya", permission: "commission:read_own", icon: "dollar", section: "Sales & Referral", groupStart: false },
   { id: "team", href: "/dashboard/team", label: "Tim", permission: "", icon: "users", section: "Website Builder", groupStart: false },
   { id: "usage", href: "/dashboard/usage", label: "Pemakaian", permission: "", icon: "gauge", section: "Website Builder", groupStart: false },
+  { id: "billing", href: "/dashboard/billing", label: "Riwayat Tagihan", permission: "", icon: "receipt", section: "Website Builder", groupStart: false },
   { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },
   { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;
