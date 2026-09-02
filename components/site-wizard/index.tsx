@@ -88,6 +88,7 @@ import {
   WizardResumeSnapshot,
   savePendingUpgradeDraft,
 } from "./wizard-persistence";
+import { encodeSiteId } from "@/lib/sqids";
 import { WizardUpgradeModal } from "./wizard-upgrade-modal";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
@@ -808,7 +809,7 @@ export function SiteWizard({
 
       localStorage.removeItem(PENDING_KEY);
       clearWizardSnapshot();
-      router.push(`/dashboard/sites/${siteId}`);
+      router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
         // Save pending upgrade draft snapshot to localStorage so it's 100% recoverable

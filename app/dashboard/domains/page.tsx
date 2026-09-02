@@ -18,6 +18,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
 import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL, PAYPAL_ENABLED, PAYPAL_CLIENT_ID } from "@/lib/config";
 import type { Profile } from "@/lib/types";
+import { encodeSiteId } from "@/lib/sqids";
 
 function loadSnapScript(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -1002,7 +1003,7 @@ export default function DomainsPage() {
                     </div>
                     <p className="text-[12px] text-muted-foreground m-0 mt-0.5 truncate">
                       → {site ? (
-                        <Link href={`/dashboard/sites/${site.id}`} className="hover:text-primary transition-colors">
+                        <Link href={`/dashboard/sites/${encodeSiteId(site.id)}`} className="hover:text-primary transition-colors">
                           {site.name}
                         </Link>
                       ) : t("dashboard.domains.siteId", undefined, { id: String(dom.site_id) })}

@@ -10,6 +10,7 @@ import { useToast } from "@/components/toast-provider";
 import { Loader2, Save, Code } from "lucide-react";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 
 export default function IntegrationsPage() {
   const { id } = useParams();
@@ -18,7 +19,7 @@ export default function IntegrationsPage() {
   const { pushToast } = useToast();
   const { t } = useI18n();
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
   const [ga4Id, setGa4Id] = useState("");
   const [metaPixelId, setMetaPixelId] = useState("");

@@ -12,6 +12,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { loadPendingUpgradeDraft, clearPendingUpgradeDraft, PendingUpgradeSiteDraft } from "@/components/site-wizard/wizard-persistence";
 import { buildFullContent } from "@/lib/build-full-content";
+import { encodeSiteId } from "@/lib/sqids";
 
 interface Transaction {
   id: number;
@@ -106,7 +107,7 @@ export default function PaymentSuccessPage() {
       // 3. Clear draft and navigate to editor
       clearPendingUpgradeDraft();
       pushToast("Website berhasil disimpan ke paket Pro Anda!", "success");
-      router.push(`/dashboard/sites/${siteId}`);
+      router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       pushToast(err.message || "Gagal menyimpan website otomatis. Silakan coba lagi.", "error");
       setIsSavingSite(false);

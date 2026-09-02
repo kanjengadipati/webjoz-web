@@ -14,6 +14,7 @@ import { Loader2, ChevronLeft, Save, Check, SearchIcon, Zap } from "lucide-react
 import { AI_SUGGESTIONS } from "../editor-utils";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 
 export default function SeoManagerPage() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ export default function SeoManagerPage() {
   const router = useRouter();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
 
   const [loading, setLoading]       = useState(true);
