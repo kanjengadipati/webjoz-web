@@ -83,7 +83,7 @@ interface CartProviderProps {
     type?: string;
     total_amount?: number | null;
     payload?: string;
-  }) => Promise<void>;
+  }) => Promise<string | void>;
 }
 
 export function CartProvider({ children, waPhone, brandName, previewMode, primaryColor, primaryFg, onSubmitLead }: CartProviderProps) {
@@ -646,7 +646,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
     type?: string;
     total_amount?: number | null;
     payload?: string;
-  }) => Promise<void>;
+  }) => Promise<string | void>;
 }) {
   const { items, open, setOpen, increment, decrement, remove, clear, totalQty, primaryColor, primaryFg } = useCart();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -658,6 +658,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [orderNo, setOrderNo] = useState<string>("");
 
   useEffect(() => {
     if (!open) {
@@ -666,6 +667,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
       setCustomerPhone("");
       setCustomerNotes("");
       setIsSuccess(false);
+      setOrderNo("");
     }
   }, [open]);
 
@@ -701,7 +703,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
 
         if (onSubmitLead) {
           const { total } = computeSubtotal(items);
-          await onSubmitLead({
+          const orderNoFromServer = await onSubmitLead({
             name: customerName,
             email: "",
             phone: customerPhone,
@@ -710,6 +712,9 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
             total_amount: total > 0 ? total : null,
             payload: JSON.stringify(items),
           });
+          if (typeof orderNoFromServer === "string" && orderNoFromServer) {
+            setOrderNo(orderNoFromServer);
+          }
         } else {
           // Simulate submission for preview modes (e.g. site wizard preview)
           await new Promise((resolve) => setTimeout(resolve, 800));
@@ -779,6 +784,13 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
           </div>
           <div className="space-y-1">
             <h3 className="font-bold text-base">Pesanan Dikirim!</h3>
+            {orderNo && (
+              <div className="mx-auto mt-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
+                style={{ background: "color-mix(in srgb, var(--dt-primary, var(--primary, #4F46E5)) 12%, transparent)", color: "var(--dt-primary, var(--primary, #4F46E5))" }}
+              >
+                No. Pesanan: {orderNo}
+              </div>
+            )}
             <p className="text-xs opacity-70 leading-relaxed">
               Terima kasih, pesanan Anda telah tersimpan. Pemilik bisnis akan menghubungi Anda segera.
             </p>
