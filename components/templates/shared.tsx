@@ -2421,10 +2421,27 @@ export function InlineText({
 }: InlineTextProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftValue, setDraftValue] = useState(value || "");
+  const [justSaved, setJustSaved] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setDraftValue(value || "");
   }, [value]);
+
+  useEffect(() => {
+    if (isEditing) {
+      if (multiline && textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 60)}px`;
+        textareaRef.current.focus();
+        textareaRef.current.select();
+      } else if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select();
+      }
+    }
+  }, [isEditing, multiline]);
 
   if (!isEditorMode || !onUpdateField) {
     return <Component id={id} className={className} style={style}>{children ?? value ?? placeholder}</Component>;
@@ -2444,6 +2461,8 @@ export function InlineText({
     onEditingStateChange?.(false);
     if (draftValue !== value) {
       onUpdateField(section, fieldKey, draftValue);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 1500);
     }
   };
 
@@ -2453,55 +2472,95 @@ export function InlineText({
     setDraftValue(value || "");
   };
 
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDraftValue(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${Math.max(e.target.scrollHeight, 60)}px`;
+  };
+
   if (isEditing) {
-    if (multiline) {
-      return (
-        <textarea
-          autoFocus
-          value={draftValue}
-          onClick={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onChange={(e) => setDraftValue(e.target.value)}
-          onBlur={handleCommit}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") handleCancel();
-          }}
-          className="w-full min-h-[90px] p-3 border-2 border-primary rounded-xl bg-slate-900 text-white font-sans text-sm outline-none resize-y shadow-2xl z-50 ring-2 ring-primary/30"
-          style={{
-            color: "#ffffff",
-            backgroundColor: "#0f172a",
-            caretColor: "#ffffff",
-            fontSize: style?.fontSize,
-            fontFamily: style?.fontFamily,
-          }}
-        />
-      );
-    }
     return (
-      <input
-        autoFocus
-        type="text"
-        value={draftValue}
+      <div
+        className="relative w-full my-1 inline-block z-50 animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
-        onChange={(e) => setDraftValue(e.target.value)}
-        onBlur={handleCommit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleCommit();
-          if (e.key === "Escape") handleCancel();
-        }}
-        className="w-full min-w-[140px] px-3 py-1.5 border-2 border-primary rounded-xl bg-slate-900 text-white font-sans text-sm outline-none shadow-2xl z-50 ring-2 ring-primary/30"
-        style={{
-          color: "#ffffff",
-          backgroundColor: "#0f172a",
-          caretColor: "#ffffff",
-          fontSize: style?.fontSize,
-          fontFamily: style?.fontFamily,
-          fontWeight: style?.fontWeight,
-        }}
-      />
+      >
+        {/* Floating Mini Action Toolbar above input */}
+        <div className="absolute -top-9 left-0 z-50 flex items-center gap-1 bg-slate-900/95 border border-white/15 px-2 py-1 rounded-full shadow-2xl backdrop-blur-md">
+          <span className="text-[10px] font-semibold text-slate-300 px-1">
+            {multiline ? "Ctrl+↵ Selesai" : "↵ Selesai"}
+          </span>
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleCommit();
+            }}
+            className="flex items-center gap-1 px-2 py-0.5 bg-primary text-primary-foreground text-[11px] font-bold rounded-full hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-sm"
+          >
+            <Check className="w-3 h-3 stroke-[2.5]" />
+            Simpan
+          </button>
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleCancel();
+            }}
+            className="flex items-center gap-0.5 px-1.5 py-0.5 text-slate-400 hover:text-slate-100 text-[11px] font-medium rounded-full hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+          >
+            <X className="w-3 h-3" />
+            Batal
+          </button>
+        </div>
+
+        {multiline ? (
+          <textarea
+            ref={textareaRef}
+            value={draftValue}
+            onChange={handleTextareaChange}
+            onBlur={handleCommit}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") handleCancel();
+              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleCommit();
+            }}
+            className="w-full min-h-[60px] p-2.5 border-2 border-primary rounded-xl bg-slate-900/95 text-white font-sans text-sm outline-none resize-none shadow-2xl ring-4 ring-primary/20 backdrop-blur"
+            style={{
+              color: "#ffffff",
+              backgroundColor: "#0f172a",
+              caretColor: "#ffffff",
+              fontSize: style?.fontSize,
+              fontFamily: style?.fontFamily,
+              fontWeight: style?.fontWeight,
+              lineHeight: style?.lineHeight,
+              textAlign: style?.textAlign,
+            }}
+          />
+        ) : (
+          <input
+            ref={inputRef}
+            type="text"
+            value={draftValue}
+            onChange={(e) => setDraftValue(e.target.value)}
+            onBlur={handleCommit}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleCommit();
+              if (e.key === "Escape") handleCancel();
+            }}
+            className="w-full px-2.5 py-1.5 border-2 border-primary rounded-xl bg-slate-900/95 text-white font-sans text-sm outline-none shadow-2xl ring-4 ring-primary/20 backdrop-blur"
+            style={{
+              color: "#ffffff",
+              backgroundColor: "#0f172a",
+              caretColor: "#ffffff",
+              fontSize: style?.fontSize,
+              fontFamily: style?.fontFamily,
+              fontWeight: style?.fontWeight,
+              textAlign: style?.textAlign,
+            }}
+          />
+        )}
+      </div>
     );
   }
 
@@ -2509,27 +2568,46 @@ export function InlineText({
   const wrapperDisplay = isInline ? "inline-flex items-center gap-1.5" : "block";
 
   return (
-    <Component className={`relative group/inline ${wrapperDisplay} ${className}`} style={style}>
+    <Component
+      onClick={handleStartEdit}
+      className={`relative group/inline ${wrapperDisplay} ${className} cursor-text rounded-md px-1 -mx-1 transition-all duration-150 hover:outline-dashed hover:outline-1 hover:outline-primary/60 hover:bg-primary/[0.04] ${
+        isSelected ? "ring-2 ring-primary/40 bg-primary/[0.06]" : ""
+      }`}
+      style={style}
+      title="Klik untuk mengedit teks"
+    >
       <span>{children ?? value ?? placeholder}</span>
-      <button
-        type="button"
-        onClick={handleStartEdit}
-        onPointerDown={(e) => e.stopPropagation()}
-        onTouchStart={(e) => e.stopPropagation()}
-        title="Edit teks ini"
-        aria-label="Edit teks ini"
-        className={`inline-flex h-5 w-5 ml-1.5 align-middle items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
-          isSelected ? "opacity-100 scale-100" : "max-md:opacity-100 max-md:scale-100 opacity-0 md:group-hover:opacity-100 md:group-hover:scale-100 scale-90"
-        }`}
-        style={{
-          background: "var(--dt-primary, #7C3AED)",
-          color: "#ffffff",
-          border: "1.5px solid rgba(255,255,255,0.7)",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.25)"
-        }}
-      >
-        <Pencil className="h-3 w-3 text-white flex-shrink-0 stroke-[2.5]" />
-      </button>
+
+      {/* Just saved confirmation badge */}
+      {justSaved && (
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/90 border border-emerald-500/40 px-2 py-0.5 rounded-full animate-in fade-in slide-in-from-bottom-1 duration-200 shadow-md">
+          <Check className="w-3 h-3 stroke-[2.5]" />
+          Tersimpan
+        </span>
+      )}
+
+      {/* Edit pencil affordance icon on hover */}
+      {!justSaved && (
+        <button
+          type="button"
+          onClick={handleStartEdit}
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          title="Klik untuk edit"
+          aria-label="Edit teks ini"
+          className={`inline-flex h-5 w-5 ml-1 align-middle items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
+            isSelected ? "opacity-100 scale-100" : "max-md:opacity-80 max-md:scale-100 opacity-0 md:group-hover/inline:opacity-100 md:group-hover/inline:scale-100 scale-90"
+          }`}
+          style={{
+            background: "var(--dt-primary, #7C3AED)",
+            color: "#ffffff",
+            border: "1.5px solid rgba(255,255,255,0.7)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
+          }}
+        >
+          <Pencil className="h-2.5 w-2.5 text-white flex-shrink-0 stroke-[2.5]" />
+        </button>
+      )}
     </Component>
   );
 }
