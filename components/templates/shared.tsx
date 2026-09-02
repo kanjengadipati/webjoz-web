@@ -2396,7 +2396,7 @@ export interface InlineTextProps {
   className?: string;
   style?: React.CSSProperties;
   id?: string;
-  as?: keyof React.JSX.IntrinsicElements;
+  as?: React.ElementType;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   placeholder?: string;
@@ -2421,196 +2421,70 @@ export function InlineText({
   children,
 }: InlineTextProps) {
   const { t } = useI18n();
-  const [isEditing, setIsEditing] = useState(false);
-  const [draftValue, setDraftValue] = useState(value || "");
-  const [justSaved, setJustSaved] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const elementRef = useRef<HTMLElement | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const initialText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
 
+  // Keep DOM in sync when value changes from outside (e.g. undo, AI regen)
   useEffect(() => {
-    setDraftValue(value || "");
-  }, [value]);
-
-  useEffect(() => {
-    if (isEditing) {
-      if (multiline && textareaRef.current) {
-        textareaRef.current.style.height = "auto";
-        textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 60)}px`;
-        textareaRef.current.focus();
-        textareaRef.current.select();
-      } else if (inputRef.current) {
-        inputRef.current.focus();
-        inputRef.current.select();
-      }
+    if (elementRef.current && !isFocused) {
+      elementRef.current.innerText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
     }
-  }, [isEditing, multiline]);
+  }, [value, children, placeholder, isFocused]);
+
+  const Comp = (Component || "span") as React.ElementType;
 
   if (!isEditorMode || !onUpdateField) {
-    return <Component id={id} className={className} style={style}>{children ?? value ?? placeholder}</Component>;
+    return <Comp id={id} className={className} style={style}>{children ?? value ?? placeholder}</Comp>;
   }
 
-  const handleStartEdit = (e: React.MouseEvent | React.TouchEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
+  const handleFocus = () => {
+    setIsFocused(true);
     collapseSheetForInlineEdit?.();
     onEditingStateChange?.(true);
-    setDraftValue(value || "");
-    setIsEditing(true);
   };
 
-  const handleCommit = () => {
-    setIsEditing(false);
+  const handleBlur = (e: React.FocusEvent<HTMLElement>) => {
+    setIsFocused(false);
     onEditingStateChange?.(false);
-    if (draftValue !== value) {
-      onUpdateField(section, fieldKey, draftValue);
-      setJustSaved(true);
-      setTimeout(() => setJustSaved(false), 1500);
+    const newText = e.currentTarget.innerText.trim();
+    if (newText !== (value || "").trim()) {
+      onUpdateField(section, fieldKey, newText);
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    onEditingStateChange?.(false);
-    setDraftValue(value || "");
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (!multiline && e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      if (elementRef.current) {
+        elementRef.current.innerText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
+      }
+      e.currentTarget.blur();
+    }
   };
-
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDraftValue(e.target.value);
-    e.target.style.height = "auto";
-    e.target.style.height = `${Math.max(e.target.scrollHeight, 60)}px`;
-  };
-
-  if (isEditing) {
-    return (
-      <div
-        className={`relative w-full my-0.5 inline-block z-40 animate-in fade-in zoom-in-95 duration-100 ${className}`}
-        onClick={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        onTouchStart={(e) => e.stopPropagation()}
-      >
-        {/* Floating Mini Action Toolbar - positioned neatly above the input */}
-        <div className="absolute -top-9 left-0 z-50 flex items-center gap-1.5 bg-slate-900/95 text-slate-100 border border-white/20 px-2.5 py-1 rounded-full shadow-2xl backdrop-blur-md whitespace-nowrap select-none">
-          <span className="text-[10px] font-medium text-slate-400">
-            {multiline ? t("dashboard.sitesEditor.inlineShortcutMulti") : t("dashboard.sitesEditor.inlineShortcutSingle")}
-          </span>
-          <span className="text-white/20">|</span>
-          <button
-            type="button"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              handleCommit();
-            }}
-            className="flex items-center gap-1 px-2 py-0.5 bg-primary text-primary-foreground text-[11px] font-bold rounded-full hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-sm"
-          >
-            <Check className="w-3 h-3 stroke-[2.5]" />
-            {t("dashboard.sitesEditor.inlineSave")}
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              handleCancel();
-            }}
-            className="flex items-center gap-0.5 px-1.5 py-0.5 text-slate-400 hover:text-slate-100 text-[11px] font-medium rounded-full hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
-          >
-            <X className="w-3 h-3" />
-            {t("dashboard.sitesEditor.inlineCancel")}
-          </button>
-        </div>
-
-        {multiline ? (
-          <textarea
-            ref={textareaRef}
-            value={draftValue}
-            onChange={handleTextareaChange}
-            onBlur={handleCommit}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") handleCancel();
-              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleCommit();
-            }}
-            className="w-full min-h-[50px] p-2 bg-background/80 text-foreground border-2 border-primary/80 rounded-xl outline-none resize-none shadow-lg ring-4 ring-primary/15 backdrop-blur-sm transition-all"
-            style={{
-              fontSize: "inherit",
-              fontFamily: "inherit",
-              fontWeight: "inherit",
-              lineHeight: "inherit",
-              letterSpacing: "inherit",
-              textAlign: "inherit",
-              ...style,
-            }}
-          />
-        ) : (
-          <input
-            ref={inputRef}
-            type="text"
-            value={draftValue}
-            onChange={(e) => setDraftValue(e.target.value)}
-            onBlur={handleCommit}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleCommit();
-              if (e.key === "Escape") handleCancel();
-            }}
-            className="w-full px-2.5 py-1 bg-background/80 text-foreground border-2 border-primary/80 rounded-xl outline-none shadow-lg ring-4 ring-primary/15 backdrop-blur-sm transition-all"
-            style={{
-              fontSize: "inherit",
-              fontFamily: "inherit",
-              fontWeight: "inherit",
-              lineHeight: "inherit",
-              letterSpacing: "inherit",
-              textAlign: "inherit",
-              ...style,
-            }}
-          />
-        )}
-      </div>
-    );
-  }
-
-  const isInline = Component === "span";
-  const wrapperDisplay = isInline ? "inline-flex items-center gap-1.5" : "block";
 
   return (
-    <Component
-      onClick={handleStartEdit}
-      className={`relative group/inline ${wrapperDisplay} ${className} cursor-text rounded-md px-1 -mx-1 transition-all duration-150 hover:outline-dashed hover:outline-1 hover:outline-primary/60 hover:bg-primary/[0.04] ${
-        isSelected ? "ring-2 ring-primary/40 bg-primary/[0.06]" : ""
-      }`}
+    <Comp
+      id={id}
+      ref={elementRef}
+      contentEditable={true}
+      suppressContentEditableWarning={true}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      className={`outline-none transition-all cursor-text select-text ${
+        isFocused
+          ? "ring-1 ring-primary/70 rounded-[2px]"
+          : "hover:outline-dashed hover:outline-1 hover:outline-primary/50 hover:bg-primary/[0.03] rounded-[2px]"
+      } ${className}`}
       style={style}
       title={t("dashboard.sitesEditor.inlineClickToEdit")}
     >
-      <span>{children ?? value ?? placeholder}</span>
-
-      {/* Just saved confirmation badge */}
-      {justSaved && (
-        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/90 border border-emerald-500/40 px-2 py-0.5 rounded-full animate-in fade-in slide-in-from-bottom-1 duration-200 shadow-md">
-          <Check className="w-3 h-3 stroke-[2.5]" />
-          {t("dashboard.sitesEditor.inlineSaved")}
-        </span>
-      )}
-
-      {/* Edit pencil affordance icon on hover */}
-      {!justSaved && (
-        <button
-          type="button"
-          onClick={handleStartEdit}
-          onPointerDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          title={t("dashboard.sitesEditor.inlineClickToEdit")}
-          aria-label={t("dashboard.sitesEditor.inlineClickToEdit")}
-          className={`inline-flex h-5 w-5 ml-1 align-middle items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
-            isSelected ? "opacity-100 scale-100" : "max-md:opacity-80 max-md:scale-100 opacity-0 md:group-hover/inline:opacity-100 md:group-hover/inline:scale-100 scale-90"
-          }`}
-          style={{
-            background: "var(--dt-primary, #7C3AED)",
-            color: "#ffffff",
-            border: "1.5px solid rgba(255,255,255,0.7)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
-          }}
-        >
-          <Pencil className="h-2.5 w-2.5 text-white flex-shrink-0 stroke-[2.5]" />
-        </button>
-      )}
-    </Component>
+      {initialText}
+    </Comp>
   );
 }
 
