@@ -2534,10 +2534,12 @@ export default function SiteEditorPage() {
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
           <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-background flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
-              // Collapse sheet when user taps the preview area on mobile
+              // Collapse sheet when user taps the preview area on mobile,
+              // but do NOT collapse when tapping an inline-edit contentEditable element.
               const target = e.target as HTMLElement;
               const isSheet = target.closest('[data-mobile-sheet]');
-              if (!isSheet && window.innerWidth < 768 && !sheetCollapsed) {
+              const isInlineEdit = target.closest('[contenteditable="true"]');
+              if (!isSheet && !isInlineEdit && window.innerWidth < 768 && !sheetCollapsed) {
                 setSheetCollapsed(true);
                 setSheetExpanded(false);
               }
