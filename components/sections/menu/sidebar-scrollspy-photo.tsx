@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -216,25 +216,17 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                         className="group flex flex-col md:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px]"
                       >
                         <div className="relative w-full md:w-[260px] h-[200px] md:h-auto overflow-hidden bg-dt-accent/5 shrink-0">
-                          {item.image_url ? (
-                            <img
-                              id={`scrollspy-img-${index}-${itemIndex}`}
-                              src={item.image_url}
-                              alt={item.name}
-                              referrerPolicy="no-referrer"
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                            />
-                          ) : (
-                            <div
-                              id={`scrollspy-fallback-${index}-${itemIndex}`}
-                              className="w-full h-full bg-dt-accent/20 flex flex-col items-center justify-center text-dt-primary/40"
-                            >
-                              <Utensils className="w-10 h-10 stroke-[1.5] mb-1" />
-                              <span className="text-[10px] font-semibold uppercase tracking-widest font-dt-heading text-dt-text-muted">
-                                Our Selection
-                              </span>
-                            </div>
-                          )}
+                          <InlineImage
+                            section="menu"
+                            fieldKey={"categories." + index + ".items." + itemIndex + ".image_url"}
+                            src={item.image_url}
+                            alt={item.name}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                          />
 
                           {badge && (
                             <div

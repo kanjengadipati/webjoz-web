@@ -2629,12 +2629,14 @@ export function InlineImage({
   style,
   collapseSheetForInlineEdit,
 }: InlineImageProps) {
+  const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   if (!isEditorMode || !onUpdateField) {
+    if (!src) return null;
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src || ""} alt={alt} className={className} style={style} />;
+    return <img src={src} alt={alt} className={className} style={style} />;
   }
 
   const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
@@ -2667,11 +2669,18 @@ export function InlineImage({
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
       onTouchStart={(e) => e.stopPropagation()}
-      className={`relative group/inline-img ${className}`}
+      className={`relative group/inline-img overflow-hidden ${className}`}
       style={style}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src || ""} alt={alt} className="w-full h-full object-cover" />
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={alt} className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full min-h-[140px] flex flex-col items-center justify-center p-4 bg-muted/40 text-muted-foreground border-2 border-dashed border-border rounded-xl">
+          <Upload className="w-6 h-6 mb-1 opacity-50" />
+          <span className="text-[11px] font-medium opacity-75">{t("dashboard.sitesEditor.addPhoto")}</span>
+        </div>
+      )}
 
       <input
         type="file"
@@ -2690,16 +2699,16 @@ export function InlineImage({
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
         disabled={uploading}
-        className={`absolute inset-x-0 bottom-3 mx-auto w-max z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-border hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
-          isSelected ? "opacity-100" : "max-md:opacity-100 opacity-0 md:group-hover:opacity-100"
-        }`}
+        className={`absolute top-3 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
+          isSelected ? "opacity-100" : "max-md:opacity-100 opacity-0 group-hover/inline-img:opacity-100"
+        } backdrop-blur-sm`}
       >
         {uploading ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
         ) : (
           <Upload className="w-3.5 h-3.5 text-white" />
         )}
-        <span>{uploading ? "Mengunggah..." : "Ganti Foto"}</span>
+        <span>{uploading ? t("dashboard.sitesEditor.uploadingPhoto") : (src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto"))}</span>
       </button>
     </div>
   );

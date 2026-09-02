@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -119,19 +119,17 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                   >
                     {/* Image Area - 1:1 Square Crop */}
                     <div className="relative w-full aspect-square overflow-hidden border-b-2" style={{ borderColor: "var(--dt-border)" }}>
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.name}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-neutral-400 dark:text-neutral-600">
-                          <ImageIcon size={32} strokeWidth={2} className="mb-2" />
-                          <span className="text-xs uppercase tracking-wider font-bold">No Image</span>
-                        </div>
-                      )}
+                      <InlineImage
+                        section="catalog"
+                        fieldKey={"categories." + catIdx + ".items." + index + ".image_url"}
+                        src={item.image_url}
+                        alt={item.name}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
 
                       {/* Bold Sequential Numbering */}
                       <div

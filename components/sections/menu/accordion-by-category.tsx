@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AddToCartButton, isPlaceholderPrice } from "@/components/cart";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -115,12 +115,18 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                           }}
                         >
                           {/* Item image thumbnail */}
-                          {item.image_url && (
-                            <img
+                          {(item.image_url || isEditorMode) && (
+                            <InlineImage
+                              section="menu"
+                              fieldKey={"categories." + ci + ".items." + ii + ".image_url"}
                               src={item.image_url}
                               alt={item.name}
-                              onError={(e) => { e.currentTarget.style.display = "none"; }}
-                              style={{ width: "3.5rem", height: "3.5rem", objectFit: "cover", borderRadius: "8px", flexShrink: 0 }}
+                              onUpdateField={onUpdateField}
+                              isEditorMode={isEditorMode}
+                              isSelected={isSelected}
+                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                              style={{ width: "3.5rem", height: "3.5rem", borderRadius: "8px", flexShrink: 0 }}
+                              className="w-14 h-14 object-cover rounded-lg shrink-0"
                             />
                           )}
                           {/* Text */}

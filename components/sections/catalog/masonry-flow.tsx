@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { ShoppingBag, Image as ImageIcon } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -112,19 +112,17 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                 >
                   {/* Image area */}
                   <div className="relative w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900">
-                    {item.image_url ? (
-                      <img
-                        src={item.image_url}
-                        alt={item.name}
-                        className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-102"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-48 flex flex-col items-center justify-center p-6 text-neutral-400 dark:text-neutral-600">
-                        <ImageIcon size={32} strokeWidth={1} className="mb-2" />
-                        <span className="text-xs uppercase tracking-wider">No Image</span>
-                      </div>
-                    )}
+                    <InlineImage
+                      section="catalog"
+                      fieldKey={"categories." + catIdx + ".items." + index + ".image_url"}
+                      src={item.image_url}
+                      alt={item.name}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-102"
+                    />
 
                     {/* Badge */}
                     {item.badge && (

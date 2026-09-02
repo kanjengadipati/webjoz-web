@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -126,19 +126,17 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                 >
                   {/* Image Container */}
                   <div className="relative aspect-square overflow-hidden border-b-[3px] border-solid" style={{ borderColor: "var(--dt-border)" }}>
-                    {item.image_url ? (
-                      <img
-                        src={item.image_url}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-neutral-500">
-                        <ImageIcon size={36} strokeWidth={2.5} className="mb-2" />
-                        <span className="text-xs uppercase font-extrabold tracking-wider">No Image</span>
-                      </div>
-                    )}
+                    <InlineImage
+                      section="catalog"
+                      fieldKey={"categories." + catIdx + ".items." + index + ".image_url"}
+                      src={item.image_url}
+                      alt={item.name}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      className="w-full h-full object-cover"
+                    />
 
                     {/* Left corner Badge */}
                     {item.badge && (
