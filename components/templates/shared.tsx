@@ -1166,6 +1166,9 @@ function MenuCatalogCard({
   badgeStyle, buttonClassName, buttonStyle, features, capacity, tags, delivery_platforms,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase,
 }: MenuCatalogCardProps) {
+  const { t } = useI18n();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
@@ -1173,6 +1176,31 @@ function MenuCatalogCard({
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = displayPrice && !isPlaceholderPrice(displayPrice);
   const isOutOfStock = is_available === false;
+
+  const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onUpdateField || !editSection || !pathBase) return;
+
+    try {
+      setUploadingImage(true);
+      const secureUrl = await uploadImageFile(file);
+      onUpdateField(editSection, `${pathBase}.image_url`, secureUrl);
+    } catch (err: any) {
+      console.error("Upload catalog/menu item image error:", err);
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const allImages = Array.from(
     new Set([image_url, ...(image_urls || [])].filter((x): x is string => Boolean(x && typeof x === "string" && x.trim() !== "")))
@@ -1218,6 +1246,38 @@ function MenuCatalogCard({
           <PhotoCredit credit={image_credit} />
         </div>
       )}
+
+      {/* Inline photo upload overlay in editor mode */}
+      {isEditorMode && onUpdateField && editSection && pathBase && (
+        <>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={handleTriggerUpload}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            disabled={uploadingImage}
+            className="absolute top-2.5 right-2.5 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 text-white text-[11px] font-semibold shadow-lg border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 group-hover/img:opacity-100 opacity-90 backdrop-blur-sm"
+          >
+            {uploadingImage ? (
+              <Loader2 className="w-3 h-3 animate-spin text-white" />
+            ) : (
+              <Upload className="w-3 h-3 text-white" />
+            )}
+            <span>{uploadingImage ? t("dashboard.sitesEditor.uploadingPhoto") : t("dashboard.sitesEditor.changePhoto")}</span>
+          </button>
+        </>
+      )}
+
       {lightboxOpen && !isOutOfStock && (
         <ImageLightbox
           images={allImages}
@@ -1245,6 +1305,37 @@ function MenuCatalogCard({
         <span className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60" style={{ color: "var(--dt-text)" }}>
           {category}
         </span>
+      )}
+
+      {/* Inline photo upload button on placeholder in editor mode */}
+      {isEditorMode && onUpdateField && editSection && pathBase && (
+        <>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={handleTriggerUpload}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            disabled={uploadingImage}
+            className="mt-2.5 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+          >
+            {uploadingImage ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Upload className="w-3.5 h-3.5" />
+            )}
+            <span>{uploadingImage ? t("dashboard.sitesEditor.uploadingPhoto") : t("dashboard.sitesEditor.addPhoto")}</span>
+          </button>
+        </>
       )}
     </div>
   );
@@ -2466,12 +2557,37 @@ export function InlineText({
     }
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    const parentInteractive = (e.target as HTMLElement)?.closest("a, button");
+    if (parentInteractive) {
+      e.preventDefault();
+      elementRef.current?.focus();
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <Comp
       id={id}
       ref={elementRef}
       contentEditable={true}
       suppressContentEditableWarning={true}
+      onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
