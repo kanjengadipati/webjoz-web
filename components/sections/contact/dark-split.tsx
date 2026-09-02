@@ -73,7 +73,19 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
         <div className="lg:col-span-7">
           {hasLeadForm && (
             <div style={{ background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-surface))", padding: "2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)" }}>
-              <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />
+              <DynamicLeadForm
+                buttonText={c.button_text}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                onSubmit={onSubmitLead!}
+                submitting={leadSubmitting}
+                success={leadSuccess}
+                error={leadError}
+                language={language}
+              />
             </div>
           )}
         </div>

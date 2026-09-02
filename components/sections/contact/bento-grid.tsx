@@ -87,7 +87,21 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
 
         {/* Block 3: Form */}
         <div className="lg:col-span-8" style={{ background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-surface))", padding: "1.5rem 2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)" }}>
-          {hasLeadForm && <DynamicLeadForm onSubmit={onSubmitLead!} submitting={leadSubmitting} success={leadSuccess} error={leadError} language={language} />}
+          {hasLeadForm && (
+            <DynamicLeadForm
+              buttonText={c.button_text}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              onSubmit={onSubmitLead!}
+              submitting={leadSubmitting}
+              success={leadSuccess}
+              error={leadError}
+              language={language}
+            />
+          )}
         </div>
 
         {/* Block 4: Hours + Social */}

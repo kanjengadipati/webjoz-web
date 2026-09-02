@@ -1843,9 +1843,18 @@ interface LeadFormProps {
   buttonStyle?: React.CSSProperties;
   inputStyle?: React.CSSProperties;
   language?: "id" | "en";
+  buttonText?: string | null;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, error, buttonClass, inputClass, buttonStyle, inputStyle, language = "id" }) => {
+const LeadForm: React.FC<LeadFormProps> = ({
+  onSubmit, submitting, success, error, buttonClass, inputClass, buttonStyle, inputStyle, language = "id",
+  buttonText, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange
+}) => {
   const isEN = language === "en";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -1913,9 +1922,21 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit, submitting, success, erro
         className={`${buttonClass} w-full min-h-11 py-3 flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2`}
         style={buttonStyle}
       >
-        {submitting ? (isEN ? "Sending..." : "Mengirim...") : (
+        {submitting ? (
+          isEN ? "Sending..." : "Mengirim..."
+        ) : (
           <>
-            {isEN ? "Send Message" : "Kirim Pesan"}
+            <InlineText
+              section="contact"
+              fieldKey="button_text"
+              value={buttonText || (isEN ? "Send Message" : "Kirim Pesan")}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+            />
             <Send className="w-4 h-4" />
           </>
         )}
@@ -2125,6 +2146,8 @@ interface ContactSectionProps {
   leadTitleClass?: string;
   leadTitleStyle?: React.CSSProperties;
   leadTitleText?: string;
+  formTitle?: string | null;
+  buttonText?: string | null;
   leadFormBtnClass?: string;
   leadFormBtnStyle?: React.CSSProperties;
   leadFormInputClass?: string;
@@ -2148,7 +2171,7 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   accentColor = "currentColor",
   textClass = "text-sm", textStyle,
   leadCardClass, leadCardStyle,
-  leadTitleClass, leadTitleStyle, leadTitleText,
+  leadTitleClass, leadTitleStyle, leadTitleText, formTitle, buttonText,
   leadFormBtnClass, leadFormBtnStyle,
   leadFormInputClass, leadFormInputStyle,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
@@ -2157,7 +2180,7 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   mapLayout = "inline",
 }) => {
   const isEN = language === "en";
-  const effectiveLeadTitleText = leadTitleText ?? (isEN ? "Contact Us" : "Hubungi Kami");
+  const effectiveLeadTitleText = formTitle || leadTitleText || (isEN ? "Contact Us" : "Hubungi Kami");
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
   const isCenter = effectiveAlign === "center";
@@ -2256,7 +2279,19 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
         {showForm && (
           <div className={`space-y-6 ${showForm && !isStacked ? "md:w-1/2" : ""} ${isStacked ? "mt-10" : ""}`}>
             <div className={leadCardClass || "p-7 rounded-2xl border shadow-sm"} style={leadCardStyle || { background: "white", borderColor: `${accentColor}20` }}>
-              <h3 className={`text-base font-bold mb-5 ${leadTitleClass || ""}`} style={leadTitleStyle}>{effectiveLeadTitleText}</h3>
+              <InlineText
+                section="contact"
+                fieldKey="form_title"
+                value={effectiveLeadTitleText}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h3"
+                className={`text-base font-bold mb-5 ${leadTitleClass || ""}`}
+                style={leadTitleStyle}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
               <LeadForm
                 onSubmit={onSubmitLead!}
                 submitting={leadSubmitting ?? false}
@@ -2267,6 +2302,12 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
                 inputClass={leadFormInputClass || ""}
                 inputStyle={leadFormInputStyle}
                 language={language}
+                buttonText={buttonText}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
               />
             </div>
           </div>
