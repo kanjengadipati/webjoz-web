@@ -34,7 +34,7 @@ import {
   getSectionScore
 } from "./editor-utils";
 import TemplateThumbnail from "./TemplateThumbnail";
-import { loadGoogleFont } from "@/components/templates/helpers";
+import { loadGoogleFont, isColorDark } from "@/components/templates/helpers";
 import SectionForms from "./SectionForms";
 import FontPicker from "./components/FontPicker";
 import PublishModal from "./modals/PublishModal";
@@ -1239,6 +1239,13 @@ export default function SiteEditorPage() {
     return () => setEditorSiteId(null);
   }, [siteId]);
 
+  // Derived: resolve the effective dark/light state of the site design token.
+  // When theme_mode is set explicitly, use it. When undefined (AI didn't set it),
+  // infer from the background color so the toggle button reflects reality.
+  const effectiveThemeIsDark =
+    designToken?.theme_mode === 'dark' ||
+    (designToken?.theme_mode === undefined && isColorDark(designToken?.palette?.background ?? '#ffffff'));
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-3">
@@ -2336,17 +2343,17 @@ export default function SiteEditorPage() {
                   pushDesignUndo();
                   setDesignToken((prev: any) => ({
                     ...(prev || {}),
-                    theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
+                    theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
                   }));
                 }}
-                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
+                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${effectiveThemeIsDark
                   ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
                   : 'border-border bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
                 aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
               >
-                {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
+                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                {effectiveThemeIsDark ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
               </button>
               <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
                 {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
@@ -2950,15 +2957,15 @@ export default function SiteEditorPage() {
                       pushDesignUndo();
                       setDesignToken((prev: any) => ({
                         ...(prev || {}),
-                        theme_mode: prev?.theme_mode === 'dark' ? 'light' : 'dark',
+                        theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
                       }));
                     }}
-                    className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${designToken?.theme_mode === 'dark'
+                    className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${effectiveThemeIsDark
                       ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
                       : 'border-border bg-white/5 text-slate-300 hover:bg-white/10'}`}
                   >
-                    {designToken?.theme_mode === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                    {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
+                    {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                    {effectiveThemeIsDark ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
                   </button>
 
                   {/* Gaya Situs */}
