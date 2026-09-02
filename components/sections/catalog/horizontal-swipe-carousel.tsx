@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { ShoppingBag, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -280,18 +281,22 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
 
                   {/* Pinned Add to Cart button */}
                   <div className="mt-6 pt-4 border-t" style={{ borderColor: "var(--dt-border)" }}>
-                    <button
-                      className="w-full py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2"
+                    <AddToCartButton
+                      itemId={item.id || `cat-hsc-${activeCategoryIdx}-${index}`}
+                      itemName={item.name}
+                      itemPrice={item.price_display || item.price || null}
+                      itemPriceAmount={item.price_amount}
+                      itemPriceDisplay={item.price_display || item.price}
+                      category={activeCategory.name}
+                      variant_groups={item.variant_groups}
+                      disabled={item.is_available === false}
+                      className="w-full py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:brightness-110"
                       style={{
                         backgroundColor: "var(--dt-primary)",
                         color: "var(--dt-primary-foreground)",
                         borderRadius: "var(--dt-radius)",
                       }}
-                      aria-label={`Add ${item.name} to cart`}
-                    >
-                      <ShoppingBag size={12} />
-                      Tambah
-                    </button>
+                    />
                   </div>
                 </div>
               </div>

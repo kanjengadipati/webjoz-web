@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { ShoppingBag, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -248,18 +249,22 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
 
                       {/* Pinned Add to Cart */}
                       <div>
-                        <button
-                          className="px-6 py-2.5 border text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200"
+                        <AddToCartButton
+                          itemId={item.id || `cat-sh-${catIdx}-${index}`}
+                          itemName={item.name}
+                          itemPrice={item.price_display || item.price || null}
+                          itemPriceAmount={item.price_amount}
+                          itemPriceDisplay={item.price_display || item.price}
+                          category={category.name}
+                          variant_groups={item.variant_groups}
+                          disabled={item.is_available === false}
+                          className="px-6 py-2.5 border text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer hover:brightness-110"
                           style={{
                             borderColor: "var(--dt-border)",
                             color: "var(--dt-text)",
                             borderRadius: "var(--dt-radius)",
                           }}
-                          aria-label={`Add ${item.name} to cart`}
-                        >
-                          <ShoppingBag size={14} />
-                          Tambah
-                        </button>
+                        />
                       </div>
                     </div>
                   </div>
