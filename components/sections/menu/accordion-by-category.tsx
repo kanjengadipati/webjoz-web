@@ -153,6 +153,9 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                               itemPrice={item.price_display || item.price || null}
                               itemPriceAmount={item.price_amount}
                               itemPriceDisplay={item.price_display || item.price}
+                              itemPromoPriceAmount={item.promo_price_amount}
+                              itemPromoPriceDisplay={item.promo_price_display}
+                              discountLabel={item.discount_label}
                               category={cat.name}
                               disabled={item.is_available === false}
                               className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors"

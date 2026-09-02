@@ -180,6 +180,9 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                             itemPrice={item.price_display || item.price || null}
                             itemPriceAmount={item.price_amount}
                             itemPriceDisplay={item.price_display || item.price}
+                            itemPromoPriceAmount={item.promo_price_amount}
+                            itemPromoPriceDisplay={item.promo_price_display}
+                            discountLabel={item.discount_label}
                             category={category.name}
                             variant_groups={item.variant_groups}
                             disabled={item.is_available === false}
@@ -269,6 +272,9 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                           itemPrice={item.price_display || item.price || null}
                           itemPriceAmount={item.price_amount}
                           itemPriceDisplay={item.price_display || item.price}
+                          itemPromoPriceAmount={item.promo_price_amount}
+                          itemPromoPriceDisplay={item.promo_price_display}
+                          discountLabel={item.discount_label}
                           category={category.name}
                           variant_groups={item.variant_groups}
                           disabled={item.is_available === false}

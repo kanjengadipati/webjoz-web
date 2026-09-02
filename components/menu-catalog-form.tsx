@@ -278,6 +278,10 @@ export function MenuCatalogForm({
       price: "",
       price_display: "",
       price_amount: null,
+      promo_price: "",
+      promo_price_display: "",
+      promo_price_amount: null,
+      discount_label: null,
       image_url: null,
       is_available: true,
       sort_order: existingItems.length,
@@ -788,6 +792,65 @@ function SortableItemRow({
                     placeholder={t("dashboard.sitesKatalog.priceAmountPlaceholder", "cth. 25000")}
                     className={`${MCF_INPUT_BASE} [appearance:textfield]`}
                   />
+                </div>
+              </div>
+            )}
+
+            {hasPrice && (
+              <div className="space-y-1 rounded-xl border border-dashed p-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold flex items-center gap-1.5">
+                    <span>{t("dashboard.sitesKatalog.promoPrice", "Harga Promo")}</span>
+                  </label>
+                  {item.promo_price_amount != null && item.promo_price_amount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => updateItemMulti(catIdx, itemIdx, { promo_price_display: null, promo_price_amount: null, discount_label: null })}
+                      className="text-[10px] font-semibold text-red-500 hover:underline cursor-pointer"
+                    >
+                      {t("dashboard.sitesKatalog.clearPromo", "Hapus Promo")}
+                    </button>
+                  )}
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <label className={MCF_INPUT_LABEL}>
+                      {t("dashboard.sitesKatalog.promoPriceDisplay", "Harga Promo Tampil")}
+                    </label>
+                    <input
+                      type="text"
+                      value={item.promo_price_display ?? item.promo_price ?? ""}
+                      onChange={(e) => updateItemMulti(catIdx, itemIdx, { promo_price_display: e.target.value, promo_price: e.target.value })}
+                      placeholder={t("dashboard.sitesKatalog.promoPriceDisplayPlaceholder", "cth. Rp 19.000")}
+                      className={MCF_INPUT_BASE}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className={MCF_INPUT_LABEL}>
+                      {t("dashboard.sitesKatalog.promoPriceAmount", "Nominal Promo")}
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      step="any"
+                      value={item.promo_price_amount ?? ""}
+                      onChange={(e) => updateItem(catIdx, itemIdx, "promo_price_amount", e.target.value === "" ? null : Number(e.target.value))}
+                      placeholder={t("dashboard.sitesKatalog.promoPriceAmountPlaceholder", "cth. 19000")}
+                      className={`${MCF_INPUT_BASE} [appearance:textfield]`}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className={MCF_INPUT_LABEL}>
+                      {t("dashboard.sitesKatalog.discountLabel", "Label Diskon")}
+                    </label>
+                    <input
+                      type="text"
+                      value={item.discount_label ?? ""}
+                      onChange={(e) => updateItem(catIdx, itemIdx, "discount_label", e.target.value || null)}
+                      placeholder={t("dashboard.sitesKatalog.discountLabelPlaceholder", "cth. Diskon 20%")}
+                      className={MCF_INPUT_BASE}
+                    />
+                  </div>
                 </div>
               </div>
             )}

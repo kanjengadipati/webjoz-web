@@ -175,6 +175,10 @@ interface AddToCartButtonProps {
   itemPrice: string | null | undefined;
   itemPriceAmount?: number | null;
   itemPriceDisplay?: string | null;
+  /** Optional promo price shown in link-through; used to compute effective price */
+  itemPromoPriceAmount?: number | null;
+  itemPromoPriceDisplay?: string | null;
+  discountLabel?: string | null;
   itemDescription?: string | null;
   category: string;
   className?: string;
@@ -189,13 +193,19 @@ interface AddToCartButtonProps {
 // ─── Add-to-Cart Button ────────────────────────────────────────────────────────
 
 export function AddToCartButton({
-  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemDescription, category,
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemPromoPriceAmount, itemPromoPriceDisplay, discountLabel, itemDescription, category,
   className, style, variant = "dynamic", disabled = false, variant_groups,
 }: AddToCartButtonProps) {
   const { items, add, increment, decrement } = useCart();
   const [selectorOpen, setSelectorOpen] = useState(false);
 
   const hasVariants = Boolean(variant_groups && variant_groups.length > 0);
+
+  // Effective price: use promo only when it is a valid, lower price than normal
+  const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
+    (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
+  const effectiveAmount = hasPromo ? itemPromoPriceAmount : itemPriceAmount;
+  const effectiveDisplay = hasPromo ? (itemPromoPriceDisplay || itemPriceDisplay) : (itemPriceDisplay || itemPrice);
 
   // If item has variants, count all matching items in cart regardless of variant
   const totalItemQty = items
@@ -236,8 +246,10 @@ export function AddToCartButton({
             itemId={itemId}
             itemName={itemName}
             itemPrice={itemPrice}
-            itemPriceAmount={itemPriceAmount}
-            itemPriceDisplay={itemPriceDisplay}
+            itemPriceAmount={effectiveAmount}
+            itemPriceDisplay={effectiveDisplay}
+            itemPriceNormalDisplay={itemPriceDisplay || itemPrice}
+            hasPromo={hasPromo}
             itemDescription={itemDescription}
             category={category}
             variant_groups={variant_groups!}
@@ -259,9 +271,9 @@ export function AddToCartButton({
         onClick={() => add({
           id: itemId,
           name: itemName,
-          price: itemPrice ?? null,
-          price_amount: itemPriceAmount ?? null,
-          price_display: itemPriceDisplay ?? null,
+          price: effectiveDisplay ?? null,
+          price_amount: effectiveAmount ?? null,
+          price_display: effectiveDisplay ?? null,
           category,
         })}
         className={className ?? ""}
@@ -310,6 +322,9 @@ interface VariantSelectorModalProps {
   itemPrice: string | null | undefined;
   itemPriceAmount?: number | null;
   itemPriceDisplay?: string | null;
+  /** Normal (pre-discount) display label for a stuck-out price when promo is active */
+  itemPriceNormalDisplay?: string | null;
+  hasPromo?: boolean;
   itemDescription?: string | null;
   category: string;
   variant_groups: ItemVariantGroup[];
@@ -317,7 +332,7 @@ interface VariantSelectorModalProps {
 }
 
 export function VariantSelectorModal({
-  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemDescription, category,
+  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemPriceNormalDisplay, hasPromo, itemDescription, category,
   variant_groups, onClose,
 }: VariantSelectorModalProps) {
   const { add, primaryColor, primaryFg } = useCart();
@@ -430,6 +445,11 @@ export function VariantSelectorModal({
             <h3 className="text-base font-bold truncate leading-tight mt-0.5">{itemName}</h3>
             {itemPriceDisplay || itemPrice ? (
               <span className="text-xs font-semibold block mt-1" style={{ color: "var(--dt-primary, #4F46E5)" }}>
+                {hasPromo && itemPriceNormalDisplay ? (
+                  <>
+                    <span className="line-through opacity-50 mr-1.5">{itemPriceNormalDisplay}</span>
+                  </>
+                ) : null}
                 {itemPriceDisplay || itemPrice}
               </span>
             ) : null}
