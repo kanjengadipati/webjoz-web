@@ -10,6 +10,7 @@ import { useToast } from "@/components/toast-provider";
 import { Loader2, Check, X, Copy, Star, MessageSquareQuote, Plus } from "lucide-react";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -43,7 +44,7 @@ export default function TestimonialModerationPage() {
   const { pushToast } = useToast();
   const { t } = useI18n();
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
   const shareLink = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/testimoni/${siteId}`;
 

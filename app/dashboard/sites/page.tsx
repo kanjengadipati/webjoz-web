@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { encodeSiteId } from "@/lib/sqids";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -1068,7 +1069,7 @@ export default function SitesPage() {
                   {/* Primary card actions */}
                   <div className="flex gap-2 border-t border-border pt-3.5 mt-1">
                     <Link
-                      href={`/dashboard/sites/${site.id}`}
+                      href={`/dashboard/sites/${encodeSiteId(site.id)}`}
                       className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-muted/50 transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
@@ -1103,7 +1104,7 @@ export default function SitesPage() {
                   <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/40">
                     {site.has_catalog && (
                       <Link
-                        href={`/dashboard/sites/${site.id}/katalog`}
+                        href={`/dashboard/sites/${encodeSiteId(site.id)}/katalog`}
                         className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                       >
                         <ShoppingBag className="w-3 h-3 text-muted-foreground/80" />
@@ -1112,7 +1113,7 @@ export default function SitesPage() {
                     )}
                     {site.has_menu && (
                       <Link
-                        href={`/dashboard/sites/${site.id}/katalog`}
+                        href={`/dashboard/sites/${encodeSiteId(site.id)}/katalog`}
                         className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                       >
                         <Utensils className="w-3 h-3 text-muted-foreground/80" />
@@ -1120,28 +1121,28 @@ export default function SitesPage() {
                       </Link>
                     )}
                     <Link
-                      href={`/dashboard/sites/${site.id}/blog`}
+                      href={`/dashboard/sites/${encodeSiteId(site.id)}/blog`}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <FileText className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkBlog")}
                     </Link>
                     <Link
-                      href={`/dashboard/sites/${site.id}/seo`}
+                      href={`/dashboard/sites/${encodeSiteId(site.id)}/seo`}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Search className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkSeo")}
                     </Link>
                     <Link
-                      href={`/dashboard/sites/${site.id}/integrations`}
+                      href={`/dashboard/sites/${encodeSiteId(site.id)}/integrations`}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Code className="w-3 h-3 text-muted-foreground/80" />
                       {t("dashboard.sites.linkIntegrations")}
                     </Link>
                     <Link
-                      href={`/dashboard/sites/${site.id}/testimonials`}
+                      href={`/dashboard/sites/${encodeSiteId(site.id)}/testimonials`}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Star className="w-3 h-3 text-muted-foreground/80" />
@@ -1152,7 +1153,7 @@ export default function SitesPage() {
                         const customDom = domains.find(d => d.site_id === site.id);
                         return customDom
                           ? `/dashboard/domains?domain_id=${customDom.id}`
-                          : `/dashboard/domains?site_id=${site.id}`;
+                          : `/dashboard/domains?site_id=${encodeSiteId(site.id)}`;
                       })()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-primary/35 bg-primary/[0.04] text-primary hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-semibold"
                     >

@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Code, Star, ShoppingBag, Utensils, LayoutDashboard, SearchIcon, Globe } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { encodeSiteId } from "@/lib/sqids";
 
 interface SiteSubNavProps {
-  siteId: number;
+  siteId: number | string;
   compact?: boolean;
   /** When provided, the Katalog/Menu tab is only shown if the site has that section.
    *  Leave undefined (e.g. in the desktop editor footer) to always show the tab. */
@@ -17,7 +18,8 @@ interface SiteSubNavProps {
 export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
-  const current = pathname.replace(`/dashboard/sites/${siteId}`, "") || "";
+  const encodedId = encodeSiteId(siteId);
+  const current = pathname.replace(`/dashboard/sites/${encodedId}`, "").replace(`/dashboard/sites/${siteId}`, "") || "";
 
   // Determine whether to show the catalog/menu tab and what label/icon to use.
   // If both props are undefined the tab is always shown (editor desktop footer context).
@@ -46,7 +48,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
         return (
           <Link
             key={href}
-            href={`/dashboard/sites/${siteId}${href}`}
+            href={`/dashboard/sites/${encodedId}${href}`}
             className={`
               group relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold
               transition-all duration-200 whitespace-nowrap select-none outline-none

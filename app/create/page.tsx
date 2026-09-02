@@ -11,6 +11,7 @@ import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
 import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY } from "@/components/site-wizard/wizard-persistence";
+import { encodeSiteId } from "@/lib/sqids";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 
@@ -213,7 +214,7 @@ function PublicWizardContent() {
         localStorage.removeItem("webjoz_login_redirect");
 
         // Redirect langsung ke editor website yang baru dibuat
-        router.push(`/dashboard/sites/${siteId}`);
+        router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
       } catch (err: any) {
         console.error(err);
         const msg = err.message || "Gagal menyimpan website. Silakan coba lagi.";

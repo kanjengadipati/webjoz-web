@@ -14,6 +14,7 @@ import Link from "next/link";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import type { BlogLayout } from "@/components/templates/types";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 
 interface BlogPost {
   id: number;
@@ -65,7 +66,7 @@ export default function BlogManagerPage() {
   const [layoutSaving, setLayoutSaving] = useState(false);
   const [layoutIsAiPick, setLayoutIsAiPick] = useState(false);
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
 
   const fetchBlogLayout = async () => {

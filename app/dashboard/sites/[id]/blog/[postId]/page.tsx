@@ -11,6 +11,7 @@ import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import FileUpload from "@/components/file-upload";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId, encodeSiteId } from "@/lib/sqids";
 import { marked } from "marked";
 import {
   Loader2, Bold, Italic, Heading2, Heading3,
@@ -67,7 +68,7 @@ export default function EditBlogPostPage() {
   const { pushToast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
@@ -266,7 +267,7 @@ export default function EditBlogPostPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 gap-4">
         <p className="text-muted-foreground">{t("dashboard.sitesBlogPost.notFound")}</p>
-        <Link href={`/dashboard/sites/${siteId}/blog`} className="text-sm text-primary hover:underline">
+        <Link href={`/dashboard/sites/${encodeSiteId(siteId)}/blog`} className="text-sm text-primary hover:underline">
           {t("dashboard.sitesBlogPost.back")}
         </Link>
       </div>
@@ -281,7 +282,7 @@ export default function EditBlogPostPage() {
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b -mx-6 px-6 py-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <Link
-            href={`/dashboard/sites/${siteId}/blog`}
+            href={`/dashboard/sites/${encodeSiteId(siteId)}/blog`}
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -323,7 +324,7 @@ export default function EditBlogPostPage() {
           </div>
 
           <div className="flex gap-1">
-            <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/sites/${siteId}/blog`)}>
+            <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/sites/${encodeSiteId(siteId)}/blog`)}>
               {t("dashboard.sitesBlogPost.back")}
             </Button>
             <Button size="sm" onClick={handleSave} disabled={saving || !title.trim()}>

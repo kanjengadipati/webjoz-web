@@ -41,6 +41,7 @@ import PublishModal from "./modals/PublishModal";
 import CongratsModal from "./modals/CongratsModal";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 
 import {
   type TypographyPairing,
@@ -91,7 +92,7 @@ export default function SiteEditorPage() {
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
-  const siteId = params.id ? Number(params.id) : null;
+  const siteId = params.id ? decodeSiteId(params.id as string) || null : null;
 
   const [previewToken, setPreviewToken] = useState<string | null>(null);
 

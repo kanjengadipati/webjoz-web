@@ -14,6 +14,7 @@ import {
   Utensils, Sparkles
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
 
 export default function KatalogManagerPage() {
@@ -24,7 +25,7 @@ export default function KatalogManagerPage() {
   const { t } = useI18n();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
-  const siteId = Number(id);
+  const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
 
   const [loading, setLoading] = useState(true);
