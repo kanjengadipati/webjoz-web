@@ -2467,8 +2467,14 @@ export function InlineText({
           onKeyDown={(e) => {
             if (e.key === "Escape") handleCancel();
           }}
-          className={`w-full min-h-[80px] p-2.5 border-2 border-primary rounded-lg bg-slate-900/95 text-slate-100 font-sans text-sm outline-none resize-y shadow-xl z-50 ${className}`}
-          style={style}
+          className="w-full min-h-[90px] p-3 border-2 border-primary rounded-xl bg-slate-900 text-white font-sans text-sm outline-none resize-y shadow-2xl z-50 ring-2 ring-primary/30"
+          style={{
+            color: "#ffffff",
+            backgroundColor: "#0f172a",
+            caretColor: "#ffffff",
+            fontSize: style?.fontSize,
+            fontFamily: style?.fontFamily,
+          }}
         />
       );
     }
@@ -2486,8 +2492,15 @@ export function InlineText({
           if (e.key === "Enter") handleCommit();
           if (e.key === "Escape") handleCancel();
         }}
-        className={`w-full px-2.5 py-1 border-2 border-primary rounded-lg bg-slate-900/95 text-slate-100 font-sans text-sm outline-none shadow-xl z-50 ${className}`}
-        style={style}
+        className="w-full min-w-[140px] px-3 py-1.5 border-2 border-primary rounded-xl bg-slate-900 text-white font-sans text-sm outline-none shadow-2xl z-50 ring-2 ring-primary/30"
+        style={{
+          color: "#ffffff",
+          backgroundColor: "#0f172a",
+          caretColor: "#ffffff",
+          fontSize: style?.fontSize,
+          fontFamily: style?.fontFamily,
+          fontWeight: style?.fontWeight,
+        }}
       />
     );
   }
