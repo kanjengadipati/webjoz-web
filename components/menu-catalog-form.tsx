@@ -34,21 +34,32 @@ export function nanoid(size = 10): string {
   return id;
 }
 
-/** Ensure item has id and sort_order, patching in-place */
+/**
+ * Ensure item has a STABLE id and sort_order. Ids must be deterministic,
+ * NOT random — because this runs on every render.
+ * A random nanoid regenerated each render makes the React `key` change,
+ * which remounts the SortableItemRow and drops the controlled input's focus
+ * after every keystroke (cursor jumps / can't type). Deterministic ids stay
+ * constant across renders so the row is never remounted. Items that already
+ * carry a persisted id (e.g. freshly added via addItem) are left untouched.
+ */
 export function ensureItemId(item: any, idx: number): any {
-  if (!item.id || !item.sort_order) {
-    return { ...item, id: item.id || nanoid(), sort_order: item.sort_order ?? idx };
+  if (item.id) {
+    return { ...item, sort_order: item.sort_order ?? idx };
   }
-  return item;
+  // Index-only id (NOT name-based): stays constant while the user types the
+  // name, so the row never remounts mid-keystroke. It only changes when the
+  // item is drag-reordered, which is an explicit action — not during typing.
+  return { ...item, id: `item-${idx}`, sort_order: item.sort_order ?? idx };
 }
 
-/** Ensure category has id and sort_order */
+/** Ensure category has id and sort_order (see ensureItemId for determinism rationale) */
 export function ensureCatId(cat: any, idx: number): any {
   const items = (cat.items ?? []).map((it: any, i: number) => ensureItemId(it, i));
-  if (!cat.id || cat.sort_order == null) {
-    return { ...cat, id: cat.id || nanoid(), sort_order: cat.sort_order ?? idx, items };
+  if (cat.id) {
+    return { ...cat, sort_order: cat.sort_order ?? idx, items };
   }
-  return { ...cat, items };
+  return { ...cat, id: `cat-${idx}`, sort_order: cat.sort_order ?? idx, items };
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -468,7 +479,7 @@ export function MenuCatalogForm({
 
       {/* Categories — DnD sortable */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCatDragEnd}>
-        <SortableContext items={categories.map((c: any) => c.id ?? c.name)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={categories.map((c: any, i: number) => ensureCatId(c, i).id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-4">
             {categories.map((cat: any, catIdx: number) => {
               const enrichedCat = ensureCatId(cat, catIdx);
