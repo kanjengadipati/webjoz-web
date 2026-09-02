@@ -93,36 +93,53 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
   let bg: string;
   let text: string;
   let surfaceVal: string;
+  let primaryColor: string;
+  let accentColor: string;
 
   if (themeMode === 'dark') {
-    bg = isRawBgDark ? rawBg : rawText;
-    text = isRawBgDark ? rawText : rawBg;
-    surfaceVal = "color-mix(in srgb, var(--dt-bg) 92%, white)";
+    // Prefer a dedicated dark_palette when the AI provided one.
+    const dp = dt?.dark_palette;
+    if (dp?.background && dp?.text) {
+      // Dark palette explicitly designed for dark mode — use as-is.
+      bg         = dp.background;
+      text       = dp.text;
+      surfaceVal = dp.surface ?? "color-mix(in srgb, var(--dt-bg) 92%, white)";
+      primaryColor = dp.primary ?? p?.primary ?? "#4F46E5";
+      accentColor  = dp.accent  ?? p?.accent  ?? "#7C3AED";
+    } else {
+      // Fall back to swapping light palette colors.
+      bg = isRawBgDark ? rawBg : rawText;
+      text = isRawBgDark ? rawText : rawBg;
+      surfaceVal = "color-mix(in srgb, var(--dt-bg) 92%, white)";
+      primaryColor = p?.primary ?? "#4F46E5";
+      accentColor  = p?.accent  ?? "#7C3AED";
+    }
   } else if (themeMode === 'light') {
     bg = isRawBgDark ? rawText : rawBg;
     text = isRawBgDark ? rawBg : rawText;
     surfaceVal = "color-mix(in srgb, var(--dt-bg) 96%, black)";
+    primaryColor = p?.primary ?? "#4F46E5";
+    accentColor  = p?.accent  ?? "#7C3AED";
   } else {
     // Auto-detect — original behaviour
     bg = rawBg;
     text = rawText;
-    const isDarkBg = isColorDark(bg);
-    surfaceVal = p?.surface ?? (isDarkBg ? "#1F2937" : "#FFFFFF");
+    const autoIsDarkBg = isColorDark(bg);
+    surfaceVal = p?.surface ?? (autoIsDarkBg ? "#1F2937" : "#FFFFFF");
     if (surfaceVal.toLowerCase() === bg.toLowerCase()) {
-      surfaceVal = isDarkBg
+      surfaceVal = autoIsDarkBg
         ? "color-mix(in srgb, var(--dt-bg) 92%, white)"
         : "color-mix(in srgb, var(--dt-bg) 96%, black)";
     }
+    primaryColor = p?.primary ?? "#4F46E5";
+    accentColor  = p?.accent  ?? "#7C3AED";
   }
 
   const isDarkBg = isColorDark(bg);
-
   const borderVal = isDarkBg
     ? "color-mix(in srgb, var(--dt-bg) 85%, white)"
     : "color-mix(in srgb, var(--dt-bg) 88%, black)";
 
-  const primaryColor = p?.primary ?? "#4F46E5";
-  const accentColor = p?.accent ?? "#7C3AED";
   const isPrimaryDark = isColorDark(primaryColor);
   const isAccentDark = isColorDark(accentColor);
 

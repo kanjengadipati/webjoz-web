@@ -70,7 +70,31 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 }) => {
   const dt = design_token ?? null;
   const { header, footer, seo } = content;
-  const cssVars = buildCssVars(dt);
+  // Memoize CSS vars — buildCssVars is pure but iterates ~30 keys on every call.
+  // The editor re-renders frequently (inline edits, hover, scroll) so this
+  // avoids redundant work when only non-design props change.
+  const cssVars = React.useMemo(() => buildCssVars(dt), [
+    dt?.theme_mode,
+    dt?.palette?.primary,
+    dt?.palette?.accent,
+    dt?.palette?.background,
+    dt?.palette?.surface,
+    dt?.palette?.text,
+    dt?.dark_palette?.background,
+    dt?.dark_palette?.text,
+    dt?.dark_palette?.primary,
+    dt?.dark_palette?.accent,
+    dt?.dark_palette?.surface,
+    dt?.typography?.heading_font,
+    dt?.typography?.body_font,
+    dt?.typography?.heading_weight,
+    dt?.typography?.heading_size_hero,
+    dt?.typography?.heading_style,
+    dt?.typography?.heading_transform,
+    dt?.typography?.heading_tracking,
+    dt?.layout?.section_spacing,
+    dt?.layout?.corner_radius,
+  ]);
 
   const rawSections = normalizeContent(content, dt);
   const resolvedSections = React.useMemo(() => {

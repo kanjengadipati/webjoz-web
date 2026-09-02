@@ -131,6 +131,15 @@ export interface DesignToken {
     surface?: string;
     text?: string;
   };
+  /** Optional separate palette for dark mode. When present and theme_mode === 'dark',
+   *  buildCssVars uses these colors directly instead of swapping light palette. */
+  dark_palette?: {
+    primary?: string;
+    accent?: string;
+    background?: string;
+    surface?: string;
+    text?: string;
+  };
   typography?: {
     heading_font?: string;
     body_font?: string;
