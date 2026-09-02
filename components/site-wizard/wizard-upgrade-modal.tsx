@@ -35,7 +35,7 @@ export function WizardUpgradeModal({
   const [plans, setPlans] = useState<PlanItem[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [paymentGateway, setPaymentGateway] = useState<"midtrans" | "paypal">("midtrans");
 
   // Checkout & Payment Modal state
