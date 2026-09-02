@@ -107,11 +107,11 @@ export function SocialAuthButtons({
       const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
       if (redirectParam) {
         sessionStorage.setItem("webjoz_google_return_to", redirectParam);
-      } else if (pendingWizard) {
-        sessionStorage.setItem("webjoz_google_return_to", "/create");
-      } else {
-        sessionStorage.setItem("webjoz_google_return_to", "/dashboard");
-      }
+} else if (pendingWizard) {
+              sessionStorage.setItem("webjoz_google_return_to", "/dashboard");
+            } else {
+              sessionStorage.setItem("webjoz_google_return_to", "/dashboard");
+            }
     }
 
     const redirectUri = window.location.origin;
@@ -154,15 +154,13 @@ export function SocialAuthButtons({
                 persistAuthSession("", apiResponse.data.access_token);
                 pushToast(`Welcome! Facebook ${mode === "login" ? "login" : "signup"} successful.`, "success");
 
-                const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-                const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
-                if (redirectParam) {
-                  router.push(redirectParam);
-                } else if (pendingWizard) {
-                  router.push("/create");
-                } else {
-                  router.push("/dashboard");
-                }
+const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+              const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
+              if (redirectParam) {
+                router.push(redirectParam);
+              } else {
+                router.push("/dashboard");
+              }
               })
               .catch((error: unknown) => {
                 setLocalLoading(false);
