@@ -23,7 +23,14 @@ export const PreviewSectionWrapper: React.FC<{
     return (
       <div
         id={`section-preview-${section}`}
-        onClick={() => onSelectSection?.(section)}
+        onClick={(e) => {
+          // Do NOT activate section selection when the user clicked inside a
+          // contentEditable inline-edit element — that would open the mobile
+          // bottom drawer and overlap the editing surface.
+          const target = e.target as HTMLElement;
+          if (target.closest('[contenteditable="true"]')) return;
+          onSelectSection?.(section);
+        }}
         className={`group relative transition-all duration-150 ${isSelected
           ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
