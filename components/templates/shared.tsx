@@ -12,6 +12,7 @@ import { uploadImageFile } from "@/components/file-upload";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
+import { useI18n } from "@/lib/i18n/context";
 
 // Global variable to store editorSiteId (only used in dashboard editor)
 let EDITOR_SITE_ID: number | null = null;
@@ -2419,6 +2420,7 @@ export function InlineText({
   placeholder,
   children,
 }: InlineTextProps) {
+  const { t } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
   const [draftValue, setDraftValue] = useState(value || "");
   const [justSaved, setJustSaved] = useState(false);
@@ -2489,7 +2491,7 @@ export function InlineText({
         {/* Floating Mini Action Toolbar - positioned neatly above the input */}
         <div className="absolute -top-9 left-0 z-50 flex items-center gap-1.5 bg-slate-900/95 text-slate-100 border border-white/20 px-2.5 py-1 rounded-full shadow-2xl backdrop-blur-md whitespace-nowrap select-none">
           <span className="text-[10px] font-medium text-slate-400">
-            {multiline ? "Ctrl+↵ Simpan" : "↵ Simpan"}
+            {multiline ? t("dashboard.sitesEditor.inlineShortcutMulti") : t("dashboard.sitesEditor.inlineShortcutSingle")}
           </span>
           <span className="text-white/20">|</span>
           <button
@@ -2501,7 +2503,7 @@ export function InlineText({
             className="flex items-center gap-1 px-2 py-0.5 bg-primary text-primary-foreground text-[11px] font-bold rounded-full hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-sm"
           >
             <Check className="w-3 h-3 stroke-[2.5]" />
-            Simpan
+            {t("dashboard.sitesEditor.inlineSave")}
           </button>
           <button
             type="button"
@@ -2512,7 +2514,7 @@ export function InlineText({
             className="flex items-center gap-0.5 px-1.5 py-0.5 text-slate-400 hover:text-slate-100 text-[11px] font-medium rounded-full hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
           >
             <X className="w-3 h-3" />
-            Batal
+            {t("dashboard.sitesEditor.inlineCancel")}
           </button>
         </div>
 
@@ -2574,7 +2576,7 @@ export function InlineText({
         isSelected ? "ring-2 ring-primary/40 bg-primary/[0.06]" : ""
       }`}
       style={style}
-      title="Klik untuk mengedit teks"
+      title={t("dashboard.sitesEditor.inlineClickToEdit")}
     >
       <span>{children ?? value ?? placeholder}</span>
 
@@ -2582,7 +2584,7 @@ export function InlineText({
       {justSaved && (
         <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/90 border border-emerald-500/40 px-2 py-0.5 rounded-full animate-in fade-in slide-in-from-bottom-1 duration-200 shadow-md">
           <Check className="w-3 h-3 stroke-[2.5]" />
-          Tersimpan
+          {t("dashboard.sitesEditor.inlineSaved")}
         </span>
       )}
 
@@ -2593,8 +2595,8 @@ export function InlineText({
           onClick={handleStartEdit}
           onPointerDown={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
-          title="Klik untuk edit"
-          aria-label="Edit teks ini"
+          title={t("dashboard.sitesEditor.inlineClickToEdit")}
+          aria-label={t("dashboard.sitesEditor.inlineClickToEdit")}
           className={`inline-flex h-5 w-5 ml-1 align-middle items-center justify-center rounded-full shadow-md transition-all hover:scale-110 active:scale-95 flex-shrink-0 cursor-pointer z-30 ${
             isSelected ? "opacity-100 scale-100" : "max-md:opacity-80 max-md:scale-100 opacity-0 md:group-hover/inline:opacity-100 md:group-hover/inline:scale-100 scale-90"
           }`}

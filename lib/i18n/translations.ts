@@ -1996,6 +1996,12 @@ export interface Translations {
       autosaveFailed: string;
       notFoundTitle: string;
       notFoundDesc: string;
+      inlineSave: string;
+      inlineCancel: string;
+      inlineSaved: string;
+      inlineClickToEdit: string;
+      inlineShortcutSingle: string;
+      inlineShortcutMulti: string;
       preview: string;
       previewDesktop: string;
       previewTablet: string;
@@ -4337,6 +4343,12 @@ export const translations: Record<Locale, Translations> = {
         autosaveFailed: "Gagal menyimpan",
         notFoundTitle: "Situs Tidak Ditemukan",
         notFoundDesc: "Kami tidak dapat menemukan situs yang Anda cari pada workspace saat ini.",
+        inlineSave: "Simpan",
+        inlineCancel: "Batal",
+        inlineSaved: "Tersimpan",
+        inlineClickToEdit: "Klik untuk mengedit teks",
+        inlineShortcutSingle: "↵ Simpan",
+        inlineShortcutMulti: "Ctrl+↵ Simpan",
         preview: "Preview",
         previewDesktop: "Preview desktop",
         previewTablet: "Preview tablet",
@@ -6740,6 +6752,12 @@ export const translations: Record<Locale, Translations> = {
         autosaveFailed: "Failed to save",
         notFoundTitle: "Site Not Found",
         notFoundDesc: "We couldn't find the site you're looking for in this workspace.",
+        inlineSave: "Save",
+        inlineCancel: "Cancel",
+        inlineSaved: "Saved",
+        inlineClickToEdit: "Click to edit text",
+        inlineShortcutSingle: "↵ Save",
+        inlineShortcutMulti: "Ctrl+↵ Save",
         preview: "Preview",
         previewDesktop: "Preview desktop",
         previewTablet: "Preview tablet",
