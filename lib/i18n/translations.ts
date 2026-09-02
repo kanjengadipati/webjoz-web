@@ -460,6 +460,8 @@ export interface Translations {
       health: string;
       announcements: string;
       commissions: string;
+      adminPayments: string;
+      adminReports: string;
       tenants: string;
       templates: string;
       designAssets: string;
@@ -473,6 +475,7 @@ export interface Translations {
       salesCommissions: string;
       team: string;
       usage: string;
+      billing: string;
       upgrade: string;
       settings: string;
     };
@@ -2793,6 +2796,8 @@ export const translations: Record<Locale, Translations> = {
         health: "Kesehatan Sistem",
         announcements: "Pengumuman",
         commissions: "Semua Komisi",
+        adminPayments: "Manajemen Pembayaran",
+        adminReports: "Revenue Report",
         tenants: "Daftar Klien",
         templates: "Galeri Template",
         designAssets: "Aset Desain",
@@ -2806,6 +2811,7 @@ export const translations: Record<Locale, Translations> = {
         salesCommissions: "Komisi Saya",
         team: "Tim",
         usage: "Pemakaian",
+        billing: "Riwayat Tagihan",
         upgrade: "Upgrade Paket",
         settings: "Pengaturan",
       },
@@ -5193,6 +5199,8 @@ export const translations: Record<Locale, Translations> = {
         health: "System Health",
         announcements: "Announcements",
         commissions: "All Commissions",
+        adminPayments: "Payment Management",
+        adminReports: "Revenue Report",
         tenants: "All Tenants",
         templates: "Template Gallery",
         designAssets: "Design Assets",
@@ -5206,6 +5214,7 @@ export const translations: Record<Locale, Translations> = {
         salesCommissions: "My Commissions",
         team: "Team",
         usage: "Usage",
+        billing: "Billing History",
         upgrade: "Upgrade Plan",
         settings: "Settings",
       },

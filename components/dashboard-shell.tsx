@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
@@ -29,6 +29,8 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   health: "dashboard.nav.health",
   announcements: "dashboard.nav.announcements",
   "admin-commissions": "dashboard.nav.commissions",
+  "admin-payments": "dashboard.nav.adminPayments",
+  "admin-reports": "dashboard.nav.adminReports",
   tenants: "dashboard.nav.tenants",
   templates: "dashboard.nav.templates",
   "design-assets": "dashboard.nav.designAssets",
@@ -40,6 +42,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   "sales-referral": "dashboard.nav.salesReferral",
   "sales-commissions": "dashboard.nav.salesCommissions",
   team: "dashboard.nav.team",
+  billing: "dashboard.nav.billing",
   upgrade: "dashboard.nav.upgrade",
   settings: "dashboard.nav.settings",
 };
@@ -173,6 +176,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     share: Share2,
     percent: Percent,
     gauge: BarChart2,
+    "bar-chart": BarChart2,
+    receipt: Receipt,
   };
 
   return (
