@@ -84,7 +84,7 @@ function SectionVariantPicker({
   const currentOpt = enabledOpts.find(o => o.value === currentVal) || enabledOpts[0];
 
   return (
-    <div className="rounded-2xl border border-primary/25 bg-primary/[0.08] p-3 space-y-2 mb-3 shadow-2xs">
+    <div data-edu="variant-picker" className="rounded-2xl border border-primary/25 bg-primary/[0.08] p-3 space-y-2 mb-3 shadow-2xs">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
           <SparkleGenAI className="w-3.5 h-3.5 text-primary" />
@@ -2294,6 +2294,7 @@ export default function SiteEditorPage() {
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
                         : "border-red-500/30 bg-red-500/10 text-red-300"
                     }`}
+                  data-edu="autosave"
                 >
                   {autosaveStatus === "saving" && <Loader2 className="h-3 w-3 animate-spin" />}
                   {autosaveStatus === "saved" && <Check className="h-3 w-3" />}
@@ -2324,6 +2325,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setPublishModalOpen(true)}
+                  data-edu="publish-btn"
                   className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground"
                   style={{ background: "var(--primary)" }}
                 >
@@ -2603,7 +2605,7 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas body — edge-to-edge white on dark bg, like the wizard right panel */}
-          <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto bg-background flex items-start justify-center pb-[48vh] md:pb-24"
+          <div id="preview-scroll-container" data-edu="canvas" className="flex-1 min-h-0 overflow-y-auto bg-background flex items-start justify-center pb-[48vh] md:pb-24"
             onClick={(e) => {
               // Collapse sheet when user taps the preview area on mobile,
               // but do NOT collapse when tapping an inline-edit contentEditable element.
