@@ -1411,7 +1411,7 @@ export default function SiteEditorPage() {
         {/* ════ LEFT SIDE DRAWER (Desktop) ════ */}
         <div
           data-desktop-drawer
-          className="hidden md:flex absolute top-0 bottom-0 left-0 z-40 transition-transform duration-300 ease-out select-none"
+          className="hidden md:flex absolute top-0 bottom-[52px] left-0 z-40 transition-transform duration-300 ease-out select-none"
           style={{
             transform: desktopSidebarOpen ? "translateX(0)" : "translateX(-380px)",
           }}
@@ -3342,7 +3342,7 @@ export default function SiteEditorPage() {
           </div>
 
           {/* Desktop sticky publish footer — inside canvas */}
-          <div className="hidden md:flex flex-shrink-0 items-center justify-between gap-3 border-t border-border bg-background/95 backdrop-blur px-6 py-1">
+          <div className="hidden md:flex h-[52px] flex-shrink-0 items-center justify-between gap-3 border-t border-border bg-background/95 backdrop-blur px-6 py-1">
             <SiteSubNav siteId={siteId!} compact />
             <div className="flex items-center gap-3 flex-shrink-0">
               {siteDetails?.status === "published" ? (

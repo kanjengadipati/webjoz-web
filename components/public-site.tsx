@@ -272,7 +272,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     type?: string;
     total_amount?: number | null;
     payload?: string;
-  }) => {
+  }): Promise<string | void> => {
     if (!siteData) return;
     try {
       setLeadSubmitting(true);
@@ -300,6 +300,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
       }
 
       setLeadSuccess(true);
+      return envelope?.data?.order_no as string | undefined;
     } catch (err: any) {
       setLeadError(err.message || "Gagal mengirim pesan. Silakan coba beberapa saat lagi.");
     } finally {
