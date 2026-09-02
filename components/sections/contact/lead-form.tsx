@@ -16,7 +16,7 @@ export default function DynamicLeadForm({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: {
-  onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   submitting?: boolean;
   success?: boolean;
   error?: string | null;

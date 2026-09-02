@@ -35,7 +35,7 @@ export function isPlaceholderMap(url: string | null | undefined): boolean {
 // ─── WA Lead Modal ────────────────────────────────────────────────────────────
 
 function WaLeadModal({ onSubmitLead, onClose }: {
-  onSubmitLead: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmitLead: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   onClose: () => void;
 }) {
   const [name, setName] = useState("");
@@ -434,7 +434,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
 const WAFloatingButton: React.FC<{
   phone: string;
   isEditorMode?: boolean;
-  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   brandName?: string;
   /** true = premium chat widget; false = simple floating WA button */
   isPremium?: boolean;
@@ -1852,7 +1852,7 @@ const FaqAccordion: React.FC<{
 // ─── Lead Form ────────────────────────────────────────────────────────────────
 
 interface LeadFormProps {
-  onSubmit: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmit: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   submitting: boolean;
   success: boolean;
   error: string | null;
@@ -2148,7 +2148,7 @@ interface ContactSectionProps {
   showLeadForm?: boolean | null;
   showMap?: boolean | null;
   mapTileStyle?: string | null;
-  onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<void>) | null;
+  onSubmitLead?: ((data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>) | null;
   leadSubmitting?: boolean | null;
   leadSuccess?: boolean | null;
   leadError?: string | null;

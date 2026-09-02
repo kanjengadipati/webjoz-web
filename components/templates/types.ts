@@ -363,7 +363,7 @@ export interface TemplateProps {
     };
   };
   design_token?: DesignToken | null;
-  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<void>;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   leadSubmitting?: boolean;
   leadSuccess?: boolean;
   leadError?: string | null;
