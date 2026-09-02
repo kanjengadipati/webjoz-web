@@ -2002,6 +2002,9 @@ export interface Translations {
       inlineClickToEdit: string;
       inlineShortcutSingle: string;
       inlineShortcutMulti: string;
+      changePhoto: string;
+      addPhoto: string;
+      uploadingPhoto: string;
       preview: string;
       previewDesktop: string;
       previewTablet: string;
@@ -4349,6 +4352,9 @@ export const translations: Record<Locale, Translations> = {
         inlineClickToEdit: "Klik untuk mengedit teks",
         inlineShortcutSingle: "↵ Simpan",
         inlineShortcutMulti: "Ctrl+↵ Simpan",
+        changePhoto: "Ganti Foto",
+        addPhoto: "Tambah Foto",
+        uploadingPhoto: "Mengunggah...",
         preview: "Preview",
         previewDesktop: "Preview desktop",
         previewTablet: "Preview tablet",
@@ -6758,6 +6764,9 @@ export const translations: Record<Locale, Translations> = {
         inlineClickToEdit: "Click to edit text",
         inlineShortcutSingle: "↵ Save",
         inlineShortcutMulti: "Ctrl+↵ Save",
+        changePhoto: "Change Photo",
+        addPhoto: "Add Photo",
+        uploadingPhoto: "Uploading...",
         preview: "Preview",
         previewDesktop: "Preview desktop",
         previewTablet: "Preview tablet",
