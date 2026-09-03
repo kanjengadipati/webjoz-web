@@ -204,7 +204,7 @@ export default function SiteEditorPage() {
   const [sheetCollapsed, setSheetCollapsed] = useState(true);
   const [qualityModalOpen, setQualityModalOpen] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const { isOpen: onboardingOpen, openGuide, handleClose: closeOnboarding } = useEditorOnboarding();
 
   const isInlineEditingRef = useRef(false);
