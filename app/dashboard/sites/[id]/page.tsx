@@ -1408,18 +1408,21 @@ export default function SiteEditorPage() {
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
-        {/* ════ LEFT SIDEBAR (Desktop) ════ */}
+        {/* ════ LEFT SIDEBAR + HANDLE STRIP (Desktop) ════ */}
         <div
           data-desktop-drawer
-          className={`hidden md:flex flex-shrink-0 flex-col h-full overflow-hidden bg-[#111318] border-r border-border/70 select-none transition-all duration-300 ease-in-out z-20 ${
-            desktopSidebarOpen ? "w-[380px]" : "w-0 border-r-0"
-          }`}
-          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          className="hidden md:flex flex-shrink-0 h-full select-none z-20"
         >
-          {/* Main 380px Sidebar Body */}
-          <div className="w-[380px] h-full flex-shrink-0 flex flex-col overflow-hidden">
-            {/* Site identity */}
-            <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
+          {/* Main 380px Collapsible Drawer Body */}
+          <div
+            className={`h-full flex-shrink-0 flex flex-col overflow-hidden bg-[#111318] border-r border-border/70 transition-[width] duration-300 ease-in-out ${
+              desktopSidebarOpen ? "w-[380px]" : "w-0 border-r-0"
+            }`}
+            style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            <div className="w-[380px] h-full flex-shrink-0 flex flex-col overflow-hidden">
+              {/* Site identity */}
+              <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
               <button
                 onClick={() => router.push("/dashboard/sites")}
                 className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
@@ -2271,6 +2274,69 @@ export default function SiteEditorPage() {
             )}
           </div>
         </div>
+      </div>
+
+        {/* 36px Vertical Handle Strip (facing canvas) — counterpart of mobile bottom sheet header bar */}
+        <div
+          onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+          className="w-9 h-full flex flex-col items-center justify-between py-2.5 bg-[#111318] border-r border-border/80 shadow-[4px_0_16px_rgba(0,0,0,0.3)] cursor-pointer select-none transition-colors hover:bg-[#161a22] flex-shrink-0"
+          title={desktopSidebarOpen ? "Tutup Panel Editor" : "Buka Panel Editor"}
+        >
+          {/* Quality score badge (Top) */}
+          {quality.issues.length > 0 ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setQualityModalOpen(true);
+              }}
+              className="flex flex-col items-center justify-center p-1 rounded-xl text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95 cursor-pointer"
+              title={t("dashboard.sitesEditor.viewCompleteness")}
+            >
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="text-[9px] font-bold mt-0.5">{quality.score}%</span>
+            </button>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-1 text-slate-400">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+            </div>
+          )}
+
+          {/* Drag handle pill & toggle Chevron (Center) */}
+          <div className="flex flex-col items-center justify-center py-2 flex-1 group w-full">
+            {/* Vertical Drag handle pill bar */}
+            <div className="w-1 h-10 rounded-full bg-white/20 group-hover:bg-white/50 transition-colors my-2" />
+
+            {/* Expand / Collapse toggle chevron */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 group-hover:bg-white/10 group-hover:text-white transition-all">
+              <ChevronRight className={`h-4 w-4 transition-transform duration-300 ${desktopSidebarOpen ? "rotate-180" : ""}`} />
+            </div>
+
+            {/* Vertical label when collapsed */}
+            {!desktopSidebarOpen && (
+              <span
+                className="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors select-none mt-4"
+                style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+              >
+                Panel Editor
+              </span>
+            )}
+          </div>
+
+          {/* Active Section Indicator (Bottom) */}
+          <div
+            className="flex flex-col items-center justify-center p-1"
+            title={`Section: ${pageOrderSections.find(s => s.key === activeTab)?.label || activeTab}`}
+          >
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 shadow-xs"
+              style={{ background: "var(--primary)", color: "white" }}
+            >
+              {pageOrderSections.findIndex(s => s.key === activeTab) + 1 || 1}
+            </span>
+          </div>
+        </div>
+
       </div>
 
         {/* ════ RIGHT CANVAS ════ */}
