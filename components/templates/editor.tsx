@@ -36,25 +36,29 @@ export const PreviewSectionWrapper: React.FC<{
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
           }`}
       >
-        {/* Section Header Controls (Top Right — safe from left sidebar & handle strip) */}
-        <div className={`absolute top-2 right-2 z-20 flex items-center gap-1.5 transition-all duration-150 ${
+        {/* Section Title Badge (Top Left) */}
+        <div className={`absolute top-2.5 left-3 z-20 flex items-center gap-1.5 pointer-events-none transition-all duration-150 ${
           isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}>
-          <span className="bg-slate-900/85 backdrop-blur-sm text-slate-200 border border-white/10 text-[9px] font-bold tracking-widest px-2 py-0.5 rounded uppercase select-none shadow-sm pointer-events-none">
+          <span className="bg-slate-900/85 backdrop-blur-sm text-slate-200 border border-white/10 text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded uppercase select-none shadow-sm">
             {label}
           </span>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onRegenSection?.(section);
-            }}
-            className="bg-slate-900/85 backdrop-blur-sm text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen shadow-sm"
-          >
-            <SparkleGenAI className="w-3.5 h-3.5" />
-            Regen
-          </button>
         </div>
+
+        {/* Section Action (Top Right) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRegenSection?.(section);
+          }}
+          className={`absolute top-2.5 right-3 z-20 bg-slate-900/85 backdrop-blur-sm text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen shadow-sm ${
+            isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
+        >
+          <SparkleGenAI className="w-3.5 h-3.5" />
+          Regen
+        </button>
         {children}
       </div>
     );
