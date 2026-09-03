@@ -36,10 +36,10 @@ export const PreviewSectionWrapper: React.FC<{
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
           }`}
       >
-        <div className={`absolute -top-5 left-3 z-[80] flex items-center gap-1.5 pointer-events-none transition-all duration-150 ${
-          isSelected ? "opacity-100 translate-y-0" : "opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
+        <div className={`absolute top-2 left-2 z-[80] flex items-center gap-1.5 pointer-events-none transition-all duration-150 ${
+          isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}>
-          <span className="bg-primary text-primary-foreground text-[9px] font-bold tracking-widest px-2 py-0.5 rounded uppercase select-none shadow-sm">
+          <span className="bg-slate-900/80 backdrop-blur-sm text-slate-100 border border-white/10 text-[9px] font-bold tracking-widest px-2 py-0.5 rounded uppercase select-none shadow-sm">
             {label}
           </span>
         </div>
