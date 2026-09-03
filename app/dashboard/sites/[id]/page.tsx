@@ -2313,6 +2313,16 @@ export default function SiteEditorPage() {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 group-hover:bg-white/10 group-hover:text-white transition-all">
               <ChevronRight className={`h-4 w-4 transition-transform duration-300 ${desktopSidebarOpen ? "rotate-180" : ""}`} />
             </div>
+
+            {/* Vertical label when collapsed */}
+            {!desktopSidebarOpen && (
+              <span
+                className="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors select-none mt-4"
+                style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+              >
+                Panel Editor
+              </span>
+            )}
           </div>
 
           {/* Active Section Indicator (Bottom) */}
