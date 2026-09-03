@@ -2311,16 +2311,6 @@ export default function SiteEditorPage() {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 group-hover:bg-white/10 group-hover:text-white transition-all">
               <ChevronRight className={`h-4 w-4 transition-transform duration-300 ${desktopSidebarOpen ? "rotate-180" : ""}`} />
             </div>
-
-            {/* Vertical label when collapsed */}
-            {!desktopSidebarOpen && (
-              <span
-                className="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors select-none mt-4"
-                style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-              >
-                Panel Editor
-              </span>
-            )}
           </div>
 
           {/* Active Section Indicator (Bottom) */}
@@ -2417,23 +2407,6 @@ export default function SiteEditorPage() {
 
           {/* Canvas topbar */}
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
-            {/* Sidebar toggle button */}
-            <button
-              type="button"
-              onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-              className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-all cursor-pointer shadow-xs active:scale-95 ${
-                desktopSidebarOpen
-                  ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
-                  : "border-border bg-muted/60 text-slate-200 hover:bg-white/10 hover:text-white"
-              }`}
-              title={desktopSidebarOpen ? "Sembunyikan Panel Editor" : "Tampilkan Panel Editor"}
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Panel Editor</span>
-            </button>
-
-            <div className="h-5 w-px bg-white/10" />
-
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
               <div className="relative group">
