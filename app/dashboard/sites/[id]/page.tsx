@@ -1411,7 +1411,7 @@ export default function SiteEditorPage() {
         {/* ════ LEFT SIDE DRAWER (Desktop) ════ */}
         <div
           data-desktop-drawer
-          className="hidden md:flex absolute top-0 bottom-[52px] left-0 z-40 transition-transform duration-300 ease-out select-none"
+          className="hidden md:flex absolute top-0 bottom-[52px] left-0 z-50 transition-transform duration-300 ease-out select-none"
           style={{
             transform: desktopSidebarOpen ? "translateX(0)" : "translateX(-380px)",
           }}
