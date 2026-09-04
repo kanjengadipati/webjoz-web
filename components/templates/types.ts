@@ -220,6 +220,7 @@ export interface TemplateProps {
       icon?: string;
       logo_url?: string;
       tagline?: string;
+      nav_labels?: Record<string, string>;
     };
     hero: {
       headline: string;

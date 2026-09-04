@@ -813,7 +813,7 @@ export default function SectionForms({
                     }`}
                   >
                     {hidden ? "🙈" : "👁️"}
-                    {label}
+                    {(content.header as any)?.nav_labels?.[key] || label}
                   </button>
                 );
               })}

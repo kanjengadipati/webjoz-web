@@ -10,6 +10,7 @@ export interface HeaderVariantProps {
     nav_cta_text?: string;
     nav_cta_hidden?: boolean;
     nav_cta_href?: string;
+    nav_labels?: Record<string, string>;
   };
   design_token?: DesignToken | null;
   sectionOrder: string[];

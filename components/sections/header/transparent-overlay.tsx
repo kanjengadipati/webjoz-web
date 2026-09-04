@@ -10,6 +10,7 @@ export default function TransparentOverlay({
   hiddenSections,
   navLinkClass = "",
   drawerStyle,
+  extraLinks,
   language,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
@@ -83,6 +84,7 @@ export default function TransparentOverlay({
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
+        extraLinks={extraLinks}
         language={language}
         linkClass={navLinkClass || "text-[var(--dt-text)]"}
         drawerStyle={
@@ -91,6 +93,12 @@ export default function TransparentOverlay({
             borderTop: "1px solid var(--dt-border)",
           }
         }
+        nav_labels={header?.nav_labels}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
       />
       {!header?.nav_cta_hidden && (
         <a
