@@ -279,6 +279,12 @@ interface NavMenuProps {
   drawerStyle?: React.CSSProperties;
   extraLinks?: { label: string; href: string }[];
   language?: "id" | "en";
+  nav_labels?: Record<string, string>;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -288,17 +294,27 @@ const NavMenu: React.FC<NavMenuProps> = ({
   drawerStyle,
   extraLinks = [],
   language = "id",
+  nav_labels,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
 }) => {
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  const navLabels = language === "en" ? NAV_LABELS_EN : NAV_LABELS_ID;
+  const defaultLabels = language === "en" ? NAV_LABELS_EN : NAV_LABELS_ID;
 
   const navItems = [
     ...sectionOrder
-      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && navLabels[k])
-      .map(k => ({ key: k, label: navLabels[k], href: k === "blog" ? "__blog__" : "" })),
+      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && (nav_labels?.[k] || defaultLabels[k]))
+      .map(k => ({
+        key: k,
+        label: nav_labels?.[k] || defaultLabels[k],
+        href: k === "blog" ? "__blog__" : ""
+      })),
     ...extraLinks.map(l => ({ key: l.href, label: l.label, href: l.href }))
   ];
 
@@ -314,6 +330,14 @@ const NavMenu: React.FC<NavMenuProps> = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, item: { key: string; label: string; href: string }) => {
+    if (isEditorMode) {
+      const editable = e.currentTarget.querySelector<HTMLElement>("[contenteditable='true']");
+      if (editable) {
+        e.preventDefault();
+        editable.focus();
+        return;
+      }
+    }
     if (item.href === "__blog__") {
       // Editor mode: siteId is set via setEditorSiteId() → use /preview/[id]/blog
       if (EDITOR_SITE_ID) {
@@ -376,16 +400,33 @@ const NavMenu: React.FC<NavMenuProps> = ({
   return (
     <>
       <nav className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
-        {navItems.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            onClick={(e) => handleClick(e, item)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
-          >
-            {item.label}
-          </button>
-        ))}
+        {navItems.map((item) => {
+          const isExtraLink = extraLinks.some(l => l.href === item.key);
+          return (
+            <button
+              key={item.key}
+              type="button"
+              onClick={(e) => handleClick(e, item)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
+            >
+              {!isExtraLink && isEditorMode ? (
+                <InlineText
+                  section="header"
+                  fieldKey={`nav_labels.${item.key}`}
+                  value={item.label}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                />
+              ) : (
+                item.label
+              )}
+            </button>
+          );
+        })}
       </nav>
 
       <button
@@ -412,16 +453,33 @@ const NavMenu: React.FC<NavMenuProps> = ({
             className="md:hidden fixed left-0 right-0 z-[60] shadow-lg py-2"
             style={{ top: drawerTop, ...(drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }) }}
           >
-            {navItems.map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                onClick={(e) => handleClick(e, item)}
-                className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
-              >
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const isExtraLink = extraLinks.some(l => l.href === item.key);
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={(e) => handleClick(e, item)}
+                  className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
+                >
+                  {!isExtraLink && isEditorMode ? (
+                    <InlineText
+                      section="header"
+                      fieldKey={`nav_labels.${item.key}`}
+                      value={item.label}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                      as="span"
+                    />
+                  ) : (
+                    item.label
+                  )}
+                </button>
+              );
+            })}
           </div>
         </>
       )}

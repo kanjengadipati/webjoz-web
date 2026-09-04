@@ -63,6 +63,12 @@ export default function StackedLogoTagline({
           language={language}
           linkClass={navLinkClass || "text-[var(--dt-text-muted)] text-xs"}
           drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
+          nav_labels={header?.nav_labels}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
         />
         {!header?.nav_cta_hidden && (
           <a

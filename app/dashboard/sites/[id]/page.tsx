@@ -1095,7 +1095,7 @@ export default function SiteEditorPage() {
 
     const [prevVal, ...rest] = stack;
 
-    if (key.includes(".") && /\.\d+([.\w]|$)/.test(key)) {
+    if (key.includes(".")) {
       const segs = key.split(".");
       setContent((prev: any) => {
         const root = previewSetByPath(prev?.[section] ?? {}, segs, prevVal);
@@ -1118,9 +1118,9 @@ export default function SiteEditorPage() {
   };
 
   const updateField = (section: string, key: string, val: any) => {
-    // Nested path support: any dotted path of array indices + field names,
-    // e.g. "items.0.quote", "categories.2.name", "categories.0.items.3.description"
-    if (key.includes(".") && /\.\d+([.\w]|$)/.test(key)) {
+    // Nested path support: any dotted path of object properties or array indices,
+    // e.g. "items.0.quote", "categories.2.name", "nav_labels.benefits"
+    if (key.includes(".")) {
       const segs = key.split(".");
       const currentVal = (() => {
         try {
