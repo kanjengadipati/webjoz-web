@@ -4,7 +4,7 @@ import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
-  MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2,
+  MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Sparkles, Link2, ImagePlus,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -1323,21 +1323,23 @@ function MenuCatalogCard({
             accept="image/*"
             className="hidden"
           />
-          <button
-            type="button"
-            onClick={handleTriggerUpload}
-            onPointerDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            disabled={uploadingImage}
-            className="absolute top-2.5 right-2.5 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 text-white text-[11px] font-semibold shadow-lg border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 group-hover/img:opacity-100 opacity-90 backdrop-blur-sm"
-          >
-            {uploadingImage ? (
-              <Loader2 className="w-3 h-3 animate-spin text-white" />
-            ) : (
-              <Upload className="w-3 h-3 text-white" />
-            )}
-            <span>{uploadingImage ? t("dashboard.sitesEditor.uploadingPhoto") : t("dashboard.sitesEditor.changePhoto")}</span>
-          </button>
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover/img:opacity-100 transition-all duration-200 pointer-events-none group-hover/img:pointer-events-auto">
+            <button
+              type="button"
+              onClick={handleTriggerUpload}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              disabled={uploadingImage}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-sm"
+            >
+              {uploadingImage ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+              ) : (
+                <Camera className="w-3.5 h-3.5 text-white" />
+              )}
+              <span>{uploadingImage ? t("dashboard.sitesEditor.uploadingPhoto") : t("dashboard.sitesEditor.changePhoto")}</span>
+            </button>
+          </div>
         </>
       )}
 
@@ -2734,6 +2736,21 @@ export interface InlineImageProps {
   collapseSheetForInlineEdit?: () => void;
 }
 
+const DEFAULT_IMAGE_POOL = [
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&auto=format&fit=crop&q=80",
+];
+
 export function InlineImage({
   section,
   fieldKey,
@@ -2761,6 +2778,26 @@ export function InlineImage({
     e.preventDefault();
     collapseSheetForInlineEdit?.();
     fileInputRef.current?.click();
+  };
+
+  const handleRandomPhoto = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    const currentSrc = src || "";
+    const available = DEFAULT_IMAGE_POOL.filter((u) => u !== currentSrc);
+    const chosen = available[Math.floor(Math.random() * available.length)] || DEFAULT_IMAGE_POOL[0];
+    onUpdateField(section, fieldKey, chosen);
+  };
+
+  const handlePromptUrl = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    const entered = window.prompt("Masukkan URL gambar:", src || "");
+    if (entered !== null && entered.trim() && entered.trim() !== (src || "").trim()) {
+      onUpdateField(section, fieldKey, entered.trim());
+    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -2793,9 +2830,17 @@ export function InlineImage({
         // eslint-disable-next-line @next/next/no-img-element
         <img src={src} alt={alt} className="w-full h-full object-cover" />
       ) : (
-        <div className="w-full h-full min-h-[140px] flex flex-col items-center justify-center p-4 bg-muted/40 text-muted-foreground border-2 border-dashed border-border rounded-xl">
-          <Upload className="w-6 h-6 mb-1 opacity-50" />
-          <span className="text-[11px] font-medium opacity-75">{t("dashboard.sitesEditor.addPhoto")}</span>
+        <div
+          onClick={handleTriggerUpload}
+          className="w-full h-full min-h-[140px] flex flex-col items-center justify-center p-4 bg-muted/40 text-muted-foreground border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-muted/60 transition-colors"
+        >
+          <Camera className="w-6 h-6 mb-1 opacity-60 text-primary" />
+          <span className="text-[11px] font-semibold text-foreground">
+            {t("dashboard.sitesEditor.addPhoto")}
+          </span>
+          <span className="text-[10px] text-muted-foreground mt-0.5">
+            Klik untuk unggah
+          </span>
         </div>
       )}
 
@@ -2810,23 +2855,66 @@ export function InlineImage({
         className="hidden"
       />
 
-      <button
-        type="button"
-        onClick={handleTriggerUpload}
-        onPointerDown={(e) => e.stopPropagation()}
-        onTouchStart={(e) => e.stopPropagation()}
-        disabled={uploading}
-        className={`absolute top-3 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${
-          isSelected ? "opacity-100" : "opacity-90 group-hover:opacity-100 group-hover/inline-img:opacity-100"
-        } backdrop-blur-sm`}
-      >
-        {uploading ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-        ) : (
-          <Upload className="w-3.5 h-3.5 text-white" />
-        )}
-        <span>{uploading ? t("dashboard.sitesEditor.uploadingPhoto") : (src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto"))}</span>
-      </button>
+      {/* Centered hover overlay */}
+      {src && (
+        <div
+          className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] transition-all duration-200 pointer-events-none ${
+            isSelected
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto"
+          }`}
+        >
+          <div className="flex items-center gap-1.5 p-1 max-w-[90%]">
+            {/* Main Change Photo Button */}
+            <button
+              type="button"
+              onClick={handleTriggerUpload}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              disabled={uploading}
+              title={t("dashboard.sitesEditor.changePhoto")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+            >
+              {uploading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+              ) : (
+                <Camera className="w-3.5 h-3.5 text-white" />
+              )}
+              <span className="whitespace-nowrap">
+                {uploading
+                  ? t("dashboard.sitesEditor.uploadingPhoto")
+                  : (src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto"))}
+              </span>
+            </button>
+
+            {/* Quick Random Photo Button */}
+            <button
+              type="button"
+              onClick={handleRandomPhoto}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              disabled={uploading}
+              title="Ganti foto acak (Unsplash)"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            </button>
+
+            {/* Quick URL Input Button */}
+            <button
+              type="button"
+              onClick={handlePromptUrl}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              disabled={uploading}
+              title="Masukkan Link URL Foto"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+            >
+              <Link2 className="w-3 h-3 text-slate-300" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
