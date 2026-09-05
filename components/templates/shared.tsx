@@ -905,7 +905,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   }}
                 >
                   <span className="text-4xl font-black text-black leading-none -mb-3 opacity-20 font-mono select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold text-black leading-relaxed flex-1 ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold leading-relaxed flex-1 ${quoteClass}`} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
                     <div
                       className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-xs font-black flex-shrink-0"
@@ -914,8 +914,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {t.avatar_initials}
                     </div>
                     <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black text-black leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold text-stone-600 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black leading-tight ${nameClass}`} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold ${roleClass}`} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -1139,7 +1139,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
             return (
               <div key={idx} className={cardClasses} style={cardStyle}>
-                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -1148,8 +1148,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {t.avatar_initials}
                   </div>
                   <div className="min-w-0">
-                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                   </div>
                 </div>
               </div>

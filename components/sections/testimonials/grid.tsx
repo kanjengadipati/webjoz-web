@@ -26,8 +26,13 @@ export default function TestimonialsGrid({
       testimonials={testimonials}
       variant="grid"
       wrapperClass="py-20 px-5 sm:px-6"
-      wrapperStyle={{ background: "transparent" }}
+      wrapperStyle={{ background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}
+      eyebrowStyle={{ color: "var(--dt-primary)" }}
+      titleStyle={{ color: "var(--dt-text)" }}
       cardStyle={{ background: "var(--dt-surface)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", borderRadius: "var(--dt-radius-lg)" }}
+      quoteStyle={{ color: "var(--dt-text)" }}
+      nameStyle={{ color: "var(--dt-text)" }}
+      roleStyle={{ color: "var(--dt-text-muted)" }}
       onUpdateField={onUpdateField}
       isEditorMode={isEditorMode}
       isSelected={isSelected}
