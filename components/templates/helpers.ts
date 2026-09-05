@@ -17,6 +17,65 @@ function resolveCssColor(color: string): string {
   return c;
 }
 
+// ── WCAG contrast-safe muted color ───────────────────────────────────────────
+// --dt-text-muted lama dihitung via color-mix persentase TETAP (text 55–60%
+// ke arah bg). Itu tidak memvalidasi kontras: campuran yang tadinya lolos
+// (mis. 21:1) bisa jatuh di bawah 4.5:1 setelah didilusi. Backend hanya
+// menjamin --dt-text terhadap --dt-bg/--dt-surface MURNI, bukan varian
+// turunannya. Jadi cari persentase blend TERBESAR (paling mendekati preferensi
+// desain) yang tetap ≥4.5:1 terhadap KEDUA latar (bg dan surface), karena
+// --dt-text-muted dipakai di dua konteks (langsung di atas page, dan di dalam
+// kartu surface). 
+
+function hexToRgbTuple(hex: string): [number, number, number] | null {
+  const c = resolveCssColor(hex).replace("#", "").trim();
+  if (c.length === 3 && /^[0-9a-f]{3}$/i.test(c)) {
+    return [parseInt(c[0] + c[0], 16), parseInt(c[1] + c[1], 16), parseInt(c[2] + c[2], 16)];
+  }
+  if (c.length >= 6 && /^[0-9a-f]{6}/i.test(c)) {
+    return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)];
+  }
+  return null; // bukan hex (mis. var() belum ter-resolve saat SSR / color-mix) — jangan blokir
+}
+
+function relativeLuminance([r, g, b]: [number, number, number]): number {
+  const srgb = [r, g, b].map((v) => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+}
+
+function contrastRatio(hexA: string, hexB: string): number {
+  const a = hexToRgbTuple(hexA);
+  const b = hexToRgbTuple(hexB);
+  if (!a || !b) return 21; // tidak bisa di-resolve — anggap aman
+  const [l1, l2] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+function mixHex(hexA: string, hexB: string, pctA: number): string {
+  const a = hexToRgbTuple(hexA);
+  const b = hexToRgbTuple(hexB);
+  if (!a || !b) return hexA;
+  const mix = a.map((v, i) => Math.round(v * pctA + b[i] * (1 - pctA)));
+  return `#${mix.map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
+
+// resolveSafeMutedColor: mulai dari persentase preferensi desain (dark 60% /
+// light 55% text — konsisten dengan intent lama), lalu naik bertahap sampai
+// kontras 4.5:1 terhadap bg DAN surface terpenuhi. Return pure text kalau
+// tidak ada yang lolos (text sudah pasti paling kontras & divalidasi backend).
+function resolveSafeMutedColor(text: string, bg: string, surface: string, preferredPct: number): string {
+  for (let pct = preferredPct; pct <= 0.95; pct += 0.05) {
+    const candidate = mixHex(text, bg, pct);
+    if (contrastRatio(candidate, bg) >= 4.5 && contrastRatio(candidate, surface) >= 4.5) {
+      return candidate;
+    }
+  }
+  return text;
+}
+
 export function isColorDark(color: string): boolean {
   const c = resolveCssColor(color);
 
@@ -171,9 +230,10 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-surface": surfaceVal,
     "--dt-border": borderVal,
     "--dt-text": text,
-    "--dt-text-muted": isDarkBg
-      ? `color-mix(in srgb, ${text} 60%, ${bg})`   // dark bg: muted stays lighter
-      : `color-mix(in srgb, ${text} 55%, ${bg})`,  // light bg: limit how light it gets
+    // Muted harus GARANSI kontras ≥4.5:1 terhadap --dt-bg maupun --dt-surface
+    // (dipakai di dua konteks). Cari blend terbesar yang aman; kalau warna
+    // dasar tidak sampai 4.5:1, kembalikan --dt-text murni (paling kontras).
+    "--dt-text-muted": resolveSafeMutedColor(text, bg, surfaceVal, isDarkBg ? 0.6 : 0.55),
     "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
     "--dt-heading-weight": ty?.heading_weight ?? "700",
