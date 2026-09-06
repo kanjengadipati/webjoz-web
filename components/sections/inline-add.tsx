@@ -61,7 +61,7 @@ export function InlineAddTile({
         onPointerDown={stop}
         onTouchStart={stop}
         onKeyDown={handleKey}
-        className={`group flex flex-col items-center justify-center gap-3 border-2 border-dashed transition-all duration-200 cursor-pointer p-6 select-none hover:shadow-md min-h-[240px] rounded-2xl ${className ?? ""}`}
+        className={`group flex flex-col items-center justify-center gap-3 border-2 border-dashed transition-all duration-200 cursor-pointer p-6 select-none hover:shadow-md min-h-[240px] rounded-2xl w-full ${className ?? ""}`}
         style={{
           borderColor: "color-mix(in srgb, var(--dt-primary, #6366f1) 45%, rgba(100, 116, 139, 0.35))",
           background: "color-mix(in srgb, var(--dt-primary, #6366f1) 6%, rgba(100, 116, 139, 0.04))",

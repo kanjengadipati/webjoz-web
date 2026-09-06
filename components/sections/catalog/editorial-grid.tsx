@@ -21,6 +21,29 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
+  const getAddTileClass = (count: number) => {
+    const rem = count % 6;
+    switch (rem) {
+      case 1:
+        // Item 0 takes 8 cols, tile completes row with remaining 4 cols
+        return "md:col-span-4 self-stretch min-h-[320px]";
+      case 3:
+        // Item 2 takes 5 cols, tile completes row with remaining 7 cols
+        return "md:col-span-7 self-stretch min-h-[320px]";
+      case 5:
+        // Item 4 takes 6 cols, tile completes row with remaining 6 cols
+        return "md:col-span-6 self-stretch min-h-[320px]";
+      case 0:
+        return count === 0 ? "col-span-full md:col-span-6 min-h-[260px]" : "md:col-span-6 min-h-[280px]";
+      case 2:
+        return "md:col-span-5 min-h-[280px]";
+      case 4:
+        return "md:col-span-6 min-h-[280px]";
+      default:
+        return "md:col-span-4 min-h-[280px]";
+    }
+  };
+
   return (
     <section
       id="catalog"
@@ -296,7 +319,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                 <InlineAddTile
                   label="Tambah Item"
                   variant="card"
-                  className="rounded-2xl"
+                  className={`w-full rounded-2xl ${getAddTileClass(category.items?.length ?? 0)}`}
                   onClick={() => onAddItem(catIdx)}
                 />
               )}

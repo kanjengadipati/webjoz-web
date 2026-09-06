@@ -278,7 +278,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                   <InlineAddTile
                     label="Tambah Item"
                     variant="card"
-                    className="rounded-2xl min-h-[260px]"
+                    className="rounded-2xl min-h-[160px] w-full"
                     onClick={() => onAddItem(catIdx)}
                   />
                 )}

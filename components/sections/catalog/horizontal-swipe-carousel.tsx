@@ -306,6 +306,14 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 </div>
               </div>
             ))}
+            {isEditorMode && onAddItem && (
+              <InlineAddTile
+                label="Tambah Item"
+                variant="card"
+                className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] snap-start shrink-0 rounded-2xl min-h-[380px]"
+                onClick={() => onAddItem(activeCategoryIdx)}
+              />
+            )}
           </div>
 
           {/* Swipe indicator for mobile */}
@@ -320,14 +328,6 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 }}
               />
             ))}
-            {isEditorMode && onAddItem && (
-              <InlineAddTile
-                label="Tambah Item"
-                variant="card"
-                className="shrink-0 w-[260px] md:w-[280px] snap-start rounded-2xl"
-                onClick={() => onAddItem(activeCategoryIdx)}
-              />
-            )}
           </div>
         </div>
       )}
