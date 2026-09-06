@@ -2831,7 +2831,10 @@ export default function SiteEditorPage() {
           <div
             data-mobile-sheet
             className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
-            style={{ maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%" }}
+            style={{
+              display: device === "mobile" ? "flex" : undefined,
+              maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%",
+            }}
           >
             {/* Drag handle & header bar */}
             <div className="flex items-center justify-between px-3 pt-1.5 pb-1 flex-shrink-0 select-none">
