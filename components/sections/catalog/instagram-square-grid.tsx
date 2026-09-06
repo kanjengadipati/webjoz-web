@@ -2,6 +2,7 @@
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -12,9 +13,10 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -241,6 +243,14 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                   </div>
                 );
               })}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="aspect-square rounded-2xl"
+                  onClick={() => onAddItem(catIdx)}
+                />
+              )}
             </div>
           </div>
         ))}

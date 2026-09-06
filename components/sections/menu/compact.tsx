@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -11,9 +12,10 @@ interface MenuVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
+export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
   if (!menu) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
@@ -55,6 +57,14 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
                   {item.description && <InlineText section="menu" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
                 </div>
               ))}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-xl min-h-[140px]"
+                  onClick={() => onAddItem(catIdx)}
+                />
+              )}
             </div>
           </div>
         ))}

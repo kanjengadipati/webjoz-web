@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -9,7 +10,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Reuses MenuCatalogCard with layout="compact".
  * Good for menus with many items where vertical space is precious.
  */
-export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
+export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -156,6 +157,11 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                   />
                 ))}
               </div>
+              {isEditorMode && onAddItem && (
+                <div style={{ marginTop: "0.75rem" }}>
+                  <InlineAddTile label="Tambah Item" onClick={() => onAddItem(cat.originalCatIdx)} />
+                </div>
+              )}
             </div>
           ))
         )}

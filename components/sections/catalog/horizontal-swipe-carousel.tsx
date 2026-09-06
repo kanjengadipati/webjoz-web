@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -13,9 +14,10 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -318,6 +320,14 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 }}
               />
             ))}
+            {isEditorMode && onAddItem && (
+              <InlineAddTile
+                label="Tambah Item"
+                variant="card"
+                className="shrink-0 w-[260px] md:w-[280px] snap-start rounded-2xl"
+                onClick={() => onAddItem(activeCategoryIdx)}
+              />
+            )}
           </div>
         </div>
       )}

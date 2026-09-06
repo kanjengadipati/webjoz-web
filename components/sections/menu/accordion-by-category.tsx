@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -10,7 +11,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * First category open by default. Compact and space-efficient.
  * Uses plain item rows (no full MenuCatalogCard) to keep it clean.
  */
-export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
+export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
   if (!menu) return null;
   const [openIdx, setOpenIdx] = useState<number>(0);
   const p = "var(--dt-primary)";
@@ -165,6 +166,11 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                         </div>
                       );
                     })}
+                    {isEditorMode && onAddItem && (
+                      <div style={{ padding: "0.875rem 1.25rem", borderTop: `1px solid color-mix(in srgb, ${p} 10%, transparent)` }}>
+                        <InlineAddTile compact label="Tambah Item" onClick={() => onAddItem(ci)} />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

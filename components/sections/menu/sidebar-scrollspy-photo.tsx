@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -12,9 +13,10 @@ interface MenuVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
+export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -211,7 +213,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
 
                     return (
                       <div
-                        key={item.name}
+                        key={item.id || item.name}
                         id={`scrollspy-item-${index}-${itemIndex}`}
                         className="group flex flex-col md:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px]"
                       >
@@ -264,6 +266,11 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                       </div>
                     );
                   })}
+                  {isEditorMode && onAddItem && (
+                    <div style={{ marginTop: "0.875rem" }}>
+                      <InlineAddTile label="Tambah Item" onClick={() => onAddItem(index)} />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

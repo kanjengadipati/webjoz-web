@@ -207,27 +207,58 @@ export function GalleryAddTile({
 
   return (
     <div
-      className="group flex flex-col items-center justify-center gap-2 border-2 border-dashed border-white/50 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer p-4"
-      style={style}
+      className="group flex flex-col items-center justify-center gap-3 border-2 border-dashed transition-all duration-200 cursor-pointer p-5 select-none hover:shadow-md min-h-[180px]"
+      style={{
+        borderColor: "color-mix(in srgb, var(--dt-primary, #6366f1) 45%, rgba(100, 116, 139, 0.4))",
+        background: "color-mix(in srgb, var(--dt-primary, #6366f1) 6%, rgba(100, 116, 139, 0.04))",
+        ...style,
+      }}
       onClick={(e) => { stop(e); openPicker(); }}
       onPointerDown={stop}
       onTouchStart={stop}
     >
       <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
-      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white">
-        {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+
+      {/* Prominent Plus Icon Circle */}
+      <div
+        className="flex items-center justify-center w-12 h-12 rounded-full transition-transform duration-200 group-hover:scale-110 shadow-sm"
+        style={{
+          background: "color-mix(in srgb, var(--dt-primary, #6366f1) 18%, rgba(100, 116, 139, 0.12))",
+          color: "var(--dt-primary, #6366f1)",
+          border: "1px solid color-mix(in srgb, var(--dt-primary, #6366f1) 30%, transparent)",
+        }}
+      >
+        {uploading ? (
+          <Loader2 className="w-6 h-6 animate-spin" />
+        ) : (
+          <Plus className="w-6 h-6 stroke-[2.5]" />
+        )}
       </div>
-      <span className="text-xs font-semibold text-white/80">Tambah Foto</span>
-      <div className="flex items-center gap-1.5">
+
+      {/* Label */}
+      <span
+        className="text-xs font-bold tracking-wide"
+        style={{ color: "var(--dt-text, currentColor)" }}
+      >
+        Tambah Foto
+      </span>
+
+      {/* Quick Action Chips */}
+      <div className="flex items-center gap-1.5 pt-0.5">
         <button
           type="button"
           onClick={(e) => { stop(e); openPicker(); }}
           onPointerDown={stop}
           onTouchStart={stop}
-          className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-semibold hover:bg-white/20 transition-colors cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+          style={{
+            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+            color: "var(--dt-text, currentColor)",
+            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+          }}
         >
-          <Camera className="w-3 h-3" />
-          Unggah
+          <Camera className="w-3.5 h-3.5" />
+          <span>Unggah</span>
         </button>
         <button
           type="button"
@@ -235,10 +266,15 @@ export function GalleryAddTile({
           onPointerDown={stop}
           onTouchStart={stop}
           title="Masukkan URL foto"
-          className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-semibold hover:bg-white/20 transition-colors cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+          style={{
+            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+            color: "var(--dt-text, currentColor)",
+            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+          }}
         >
-          <Link2 className="w-3 h-3" />
-          URL
+          <Link2 className="w-3.5 h-3.5" />
+          <span>URL</span>
         </button>
         <button
           type="button"
@@ -246,9 +282,13 @@ export function GalleryAddTile({
           onPointerDown={stop}
           onTouchStart={stop}
           title="Foto acak (Unsplash)"
-          className="flex items-center justify-center w-7 h-6 rounded-full bg-white/10 text-amber-300 hover:bg-white/20 transition-colors cursor-pointer"
+          className="flex items-center justify-center w-7 h-6 rounded-full text-amber-500 dark:text-amber-400 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+          style={{
+            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+          }}
         >
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -269,15 +309,27 @@ export function GalleryAddButton({
 
   return (
     <div
-      className="inline-flex items-center gap-2 rounded-full border border-dashed border-white/50 bg-white/5 hover:bg-white/10 text-white/90 text-xs font-semibold transition-colors cursor-pointer px-3 py-1.5"
+      className="inline-flex items-center gap-2 rounded-full border-2 border-dashed text-xs font-bold transition-all cursor-pointer px-3.5 py-1.5 shadow-2xs hover:scale-105 active:scale-95"
+      style={{
+        borderColor: "color-mix(in srgb, var(--dt-primary, #6366f1) 45%, rgba(100, 116, 139, 0.35))",
+        background: "color-mix(in srgb, var(--dt-primary, #6366f1) 8%, transparent)",
+        color: "var(--dt-primary, currentColor)",
+      }}
       onClick={(e) => { stop(e); openPicker(); }}
       onPointerDown={stop}
       onTouchStart={stop}
     >
       <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
-      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+      {uploading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Plus className="w-4 h-4 stroke-[2.5]" />
+      )}
       <span>Tambah Foto</span>
-      <span className="w-px h-3 bg-white/20" />
+      <span
+        className="w-px h-3.5"
+        style={{ background: "color-mix(in srgb, var(--dt-primary, currentColor) 25%, transparent)" }}
+      />
       <button
         type="button"
         onClick={(e) => { stop(e); promptUrl(); }}
@@ -285,7 +337,8 @@ export function GalleryAddButton({
         onTouchStart={stop}
         title="Masukkan URL foto"
         aria-label="Masukkan URL foto"
-        className="text-white/70 hover:text-white transition-colors cursor-pointer"
+        className="hover:opacity-80 transition-opacity cursor-pointer"
+        style={{ color: "var(--dt-primary, currentColor)" }}
       >
         <Link2 className="w-3.5 h-3.5" />
       </button>

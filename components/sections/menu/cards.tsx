@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -12,9 +13,10 @@ interface MenuVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
+export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -145,6 +147,14 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                     />
                   </div>
                 ))}
+                {isEditorMode && onAddItem && (
+                  <InlineAddTile
+                    label="Tambah Item"
+                    variant="card"
+                    className="rounded-3xl"
+                    onClick={() => onAddItem(cat.originalCatIdx)}
+                  />
+                )}
               </div>
             </div>
           ))

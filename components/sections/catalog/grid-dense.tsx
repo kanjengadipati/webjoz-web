@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -12,13 +13,14 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
 /**
  * Grid Dense — tighter grid, smaller cards, fits more items per row.
  * Best for catalogs with 20+ items. Cards use minmax(180px, 1fr).
  */
-export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -154,6 +156,14 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                     onEditingStateChange={onEditingStateChange}
                   />
                 ))}
+                {isEditorMode && onAddItem && (
+                  <InlineAddTile
+                    label="Tambah Item"
+                    variant="card"
+                    className="rounded-xl"
+                    onClick={() => onAddItem(cat.originalCatIdx)}
+                  />
+                )}
               </div>
             </div>
           ))

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -11,9 +12,10 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
@@ -71,6 +73,14 @@ export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, i
                   )}
                 </div>
               ))}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-xl min-h-[140px]"
+                  onClick={() => onAddItem(catIdx)}
+                />
+              )}
             </div>
           </div>
         ))}
