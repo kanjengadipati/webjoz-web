@@ -5,6 +5,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import StatsCounterRow from "./counter-row";
 import StatsCardGrid from "./card-grid";
 import StatsMinimalSplit from "./minimal-split";
+import StatsBigNumberSpotlight from "./big-number-spotlight";
 
 export interface StatsVariantProps {
   stats: NonNullable<TemplateProps["content"]["stats"]>;
@@ -21,6 +22,7 @@ const variants: Record<string, ComponentType<StatsVariantProps>> = {
   "counter-row": StatsCounterRow,
   "card-grid": StatsCardGrid,
   "minimal-split": StatsMinimalSplit,
+  "big-number-spotlight": StatsBigNumberSpotlight,
 };
 
 export default function StatsSection(props: {

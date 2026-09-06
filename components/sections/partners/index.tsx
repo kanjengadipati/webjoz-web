@@ -5,6 +5,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import PartnersLogoWall from "./logo-wall";
 import PartnersMarquee from "./marquee";
 import PartnersPillGrid from "./pill-grid";
+import PartnersFeaturedCollabGrid from "./featured-collab-grid";
 
 export interface PartnersVariantProps {
   partners: NonNullable<TemplateProps["content"]["partners"]>;
@@ -21,6 +22,7 @@ const variants: Record<string, ComponentType<PartnersVariantProps>> = {
   "logo-wall": PartnersLogoWall,
   marquee: PartnersMarquee,
   "pill-grid": PartnersPillGrid,
+  "featured-collab-grid": PartnersFeaturedCollabGrid,
 };
 
 export default function PartnersSection(props: {
