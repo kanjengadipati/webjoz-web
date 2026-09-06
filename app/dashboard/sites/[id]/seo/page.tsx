@@ -15,6 +15,7 @@ import { AI_SUGGESTIONS } from "../editor-utils";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
+import { tenantHost } from "@/lib/site-config";
 
 export default function SeoManagerPage() {
   const { id } = useParams();
@@ -66,7 +67,7 @@ export default function SeoManagerPage() {
       try {
         const siteRes = await request<any>(`/sites/${siteId}`, { headers: tenantHeaders }, token);
         const sd = siteRes.data?.subdomain ?? "";
-        if (sd && !sd.startsWith("draft-")) setSubdomain(`${sd}.webjoz.com`);
+        if (sd && !sd.startsWith("draft-")) setSubdomain(tenantHost(sd));
       } catch { /* non-critical */ }
     } catch (err: any) {
       pushToast(err.message || t("dashboard.sitesSeo.loadFailed"), "error");

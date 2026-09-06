@@ -397,4 +397,6 @@ export interface TemplateProps {
   editorSiteId?: number | null;
   /** Bahasa situs (id | en) untuk static chrome rendering */
   language?: "id" | "en";
+  /** Host/domain situs tenant (cth. "namabisnis.webjoz.com") — dipakai preview SEO editor */
+  tenantDomain?: string;
 }

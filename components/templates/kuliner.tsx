@@ -23,7 +23,7 @@ import type { TemplateProps } from "./types";
 export const TemplateKuliner: React.FC<TemplateProps> = ({
   content, design_token, onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
-  isEditorMode = false, arrivedSections, isPremium = false, language
+  isEditorMode = false, arrivedSections, isPremium = false, language, tenantDomain
 }) => {
   const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery } = content;
   const dt = design_token ?? null;
@@ -299,7 +299,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       {isEditorMode && (
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={seo} render={(seoData) => (
-            <SeoEditorPreview seo={seoData} />
+            <SeoEditorPreview seo={seoData} domain={tenantDomain} />
           )} />
         </MemoPreviewSectionWrapper>
       )}

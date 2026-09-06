@@ -2052,7 +2052,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass }: {
 
 // ─── SEO Editor Preview ───────────────────────────────────────────────────────
 
-const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string; keywords?: string[]; og_type?: string; twitter_card?: string; robots?: string; canonical_path?: string } }) => (
+const SeoEditorPreview = ({ seo, domain }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string; keywords?: string[]; og_type?: string; twitter_card?: string; robots?: string; canonical_path?: string }; domain?: string }) => (
   <section className="bg-background px-5 py-8 border-t border-white/5">
     <div className="max-w-2xl mx-auto space-y-6">
 
@@ -2067,12 +2067,18 @@ const SeoEditorPreview = ({ seo }: { seo?: { title?: string; description?: strin
         <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Preview di Google</p>
         <div className="rounded-xl p-4 space-y-1" style={{ background: "#fff", border: "1px solid #e2e8f0" }}>
           {/* Favicon + URL bar */}
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center">
-              <span className="text-[8px] text-slate-500 font-bold">W</span>
+          {domain && (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+                {seo?.favicon_url ? (
+                  <img src={seo.favicon_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                ) : (
+                  <span className="text-[8px] text-slate-500 font-bold">W</span>
+                )}
+              </div>
+              <span className="text-[11px] text-slate-500 truncate">{domain}</span>
             </div>
-            <span className="text-[11px] text-slate-500 truncate">webjoz.id › bisnis</span>
-          </div>
+          )}
           {/* Title */}
           <p className="text-[15px] font-medium leading-snug truncate" style={{ color: "#1a0dab" }}>
             {seo?.title || <span className="text-slate-300 italic">Tambahkan SEO title...</span>}

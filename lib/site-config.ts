@@ -18,6 +18,9 @@ export const siteUrl = (path = "/") => `${SITE_URL}${path}`;
 export const tenantSiteUrl = (subdomain: string) =>
   `https://${subdomain}.${BASE_DOMAIN}`;
 
+export const tenantHost = (subdomain: string) =>
+  `${subdomain}.${BASE_DOMAIN}`;
+
 export const formatPhoneNumber = (phone = WHATSAPP_CS_NUMBER) => {
   const digits = phone.replace(/\D/g, "");
   const countryCodes: Record<string, string> = {

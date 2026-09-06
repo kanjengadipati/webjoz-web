@@ -16,6 +16,7 @@ import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { encodeSiteId } from "@/lib/sqids";
+import { BASE_DOMAIN } from "@/lib/site-config";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -230,7 +231,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
     onConfirm(subdomain);
   };
 
-  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.webjoz.com` : "";
+  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.${BASE_DOMAIN}` : "";
 
   return (
     <Dialog
@@ -281,7 +282,7 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
               autoFocus
             />
             <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-muted/30 select-none">
-              .webjoz.com
+              .{BASE_DOMAIN}
             </span>
           </div>
 
@@ -943,7 +944,7 @@ export default function SitesPage() {
                       </div>
                       <div className="flex-1 max-w-[130px] h-3.5 bg-background/60 rounded-full flex items-center justify-center px-2">
                         <span className="text-[8.5px] font-mono text-muted-foreground/80 truncate">
-                          {site.subdomain ? `${site.subdomain}.webjoz.com` : "webjoz.com"}
+                          {site.subdomain ? `${site.subdomain}.${BASE_DOMAIN}` : BASE_DOMAIN}
                         </span>
                       </div>
                       <div className="w-5" />
