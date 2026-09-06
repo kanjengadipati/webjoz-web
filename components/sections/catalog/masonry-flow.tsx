@@ -262,7 +262,7 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                 <InlineAddTile
                   label="Tambah Item"
                   variant="card"
-                  className="break-inside-avoid rounded-2xl"
+                  className="break-inside-avoid mb-6 rounded-2xl"
                   onClick={() => onAddItem(catIdx)}
                 />
               )}
