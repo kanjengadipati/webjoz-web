@@ -65,12 +65,16 @@ export default function TestimonialsLogoWall({
               <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </div>
           ))}
+          {isEditorMode && onAddItem && (
+            <InlineAddTile
+              label="Tambah Testimoni"
+              variant="card"
+              className="rounded-2xl min-h-[160px] w-full"
+              style={{ borderRadius: "var(--dt-radius-lg)" }}
+              onClick={onAddItem}
+            />
+          )}
         </div>
-        {isEditorMode && onAddItem && (
-          <div style={{ marginTop: "2rem", maxWidth: "20rem", marginLeft: "auto", marginRight: "auto" }}>
-            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
-          </div>
-        )}
       </div>
     </section>
   );
