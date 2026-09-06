@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import FaqClassic from "./classic";
@@ -39,6 +39,15 @@ export default function FaqSection({
 }) {
   const variant = design_token?.layout?.section_variants?.faq ?? "accordion";
   const Renderer = variants[variant] ?? FaqClassic;
+  const isEditor = !!isEditorMode;
+
+  const onAddItem = useCallback(() => {
+    if (!onUpdateField) return;
+    const items = [...(faq?.items ?? [])];
+    items.push({ question: "", answer: "", category: null });
+    onUpdateField("faq", "items", items);
+  }, [faq?.items, onUpdateField]);
+
   return (
     <Renderer
       faq={faq}
@@ -49,6 +58,7 @@ export default function FaqSection({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      onAddItem={isEditor ? onAddItem : undefined}
     />
   );
 }

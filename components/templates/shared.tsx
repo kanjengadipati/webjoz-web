@@ -12,6 +12,7 @@ import { uploadImageFile } from "@/components/file-upload";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
+import { InlineAddTile } from "../sections/inline-add";
 import { useI18n } from "@/lib/i18n/context";
 
 // Global variable to store editorSiteId (only used in dashboard editor)
@@ -815,6 +816,7 @@ interface TestimonialsSectionProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
@@ -841,8 +843,10 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }) => {
-  if (!testimonials?.items?.length) return null;
+  if (!testimonials) return null;
+  if (!testimonials.items?.length && !(isEditorMode && onAddItem)) return null;
 
   const resolvedDesignVariant = testimonials?.variant || designVariant || "standard";
 
@@ -1156,6 +1160,11 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             );
           })}
         </div>
+        {isEditorMode && onAddItem && (
+          <div className={variant === "compact" || variant === "carousel" ? "mt-4" : "mt-8"}>
+            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
+          </div>
+        )}
       </div>
     </section>
   );

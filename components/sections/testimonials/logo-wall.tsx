@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface TestimonialsVariantProps {
@@ -11,6 +12,7 @@ interface TestimonialsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function TestimonialsLogoWall({
@@ -20,6 +22,7 @@ export default function TestimonialsLogoWall({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: TestimonialsVariantProps) {
   if (!t) return null;
   const items = t.items?.filter(i => i.logo_url) || [];
@@ -63,6 +66,11 @@ export default function TestimonialsLogoWall({
             </div>
           ))}
         </div>
+        {isEditorMode && onAddItem && (
+          <div style={{ marginTop: "2rem", maxWidth: "20rem", marginLeft: "auto", marginRight: "auto" }}>
+            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
+          </div>
+        )}
       </div>
     </section>
   );

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -13,6 +14,7 @@ interface FaqVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 function DynamicFaqItem({
@@ -94,6 +96,7 @@ export default function FaqSidebarCategory({
   isSelected = false,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: FaqVariantProps) {
   const items = faq.items || [];
   const categories = [...new Set(items.map(i => i.category).filter(Boolean))] as string[];
@@ -154,6 +157,11 @@ export default function FaqSidebarCategory({
           );
         })}
       </div>
+      {isEditorMode && onAddItem && (
+        <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "center" }}>
+          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
+        </div>
+      )}
     </section>
   );
 }

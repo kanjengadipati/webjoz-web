@@ -3,6 +3,7 @@ import React, { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 
 const DynamicFaqAccordion: React.FC<{
   item: FaqItem;
@@ -121,6 +122,7 @@ interface FaqVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function FaqClassic({
@@ -131,6 +133,7 @@ export default function FaqClassic({
   isSelected = false,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -176,6 +179,11 @@ export default function FaqClassic({
           />
         ))}
       </div>
+      {isEditorMode && onAddItem && (
+        <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "center" }}>
+          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
+        </div>
+      )}
     </section>
   );
 }

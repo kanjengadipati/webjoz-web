@@ -2,6 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -12,6 +13,7 @@ interface FaqVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function FaqColumns({
@@ -22,6 +24,7 @@ export default function FaqColumns({
   isSelected = false,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -88,6 +91,11 @@ export default function FaqColumns({
             </p>
           </div>
         ))}
+        {isEditorMode && onAddItem && (
+          <div className="md:col-span-2">
+            <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)" }} />
+          </div>
+        )}
       </div>
     </section>
   );

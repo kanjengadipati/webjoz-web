@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import BenefitsClassic from "./classic";
@@ -19,6 +19,7 @@ type BenefitVariantProps = {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
+  onAddItem?: () => void;
 };
 
 const variants: Record<string, ComponentType<BenefitVariantProps>> = {
@@ -52,6 +53,15 @@ export default function BenefitsSection({
 }) {
   const variant = design_token?.layout?.section_variants?.benefits ?? "grid";
   const Renderer = variants[variant] ?? BenefitsClassic;
+  const isEditor = !!isEditorMode;
+
+  const onAddItem = useCallback(() => {
+    if (!onUpdateField) return;
+    const items = [...(benefits?.items ?? [])];
+    items.push({ title: "", description: "", icon: "" });
+    onUpdateField("benefits", "items", items);
+  }, [benefits?.items, onUpdateField]);
+
   return (
     <Renderer
       benefits={benefits}
@@ -62,6 +72,7 @@ export default function BenefitsSection({
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
       language={language}
+      onAddItem={isEditor ? onAddItem : undefined}
     />
   );
 }

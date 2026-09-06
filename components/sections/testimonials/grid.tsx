@@ -11,6 +11,7 @@ interface TestimonialsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function TestimonialsGrid({
@@ -20,6 +21,7 @@ export default function TestimonialsGrid({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: TestimonialsVariantProps) {
   return (
     <SharedTestimonialsSection
@@ -38,6 +40,7 @@ export default function TestimonialsGrid({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      onAddItem={onAddItem}
     />
   );
 }

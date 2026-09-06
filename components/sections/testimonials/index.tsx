@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import TestimonialsClassic from "./classic";
@@ -17,6 +17,7 @@ type TestimonialVariantProps = {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 };
 
 const variants: Record<string, ComponentType<TestimonialVariantProps>> = {
@@ -47,6 +48,15 @@ export default function TestimonialsSection({
 }) {
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
   const Renderer = variants[variant] ?? TestimonialsClassic;
+  const isEditor = !!isEditorMode;
+
+  const onAddItem = useCallback(() => {
+    if (!onUpdateField) return;
+    const items = [...(testimonials?.items ?? [])];
+    items.push({ quote: "", name: "", role: "", avatar_initials: "", avatar_color: "" });
+    onUpdateField("testimonials", "items", items);
+  }, [testimonials?.items, onUpdateField]);
+
   return (
     <Renderer
       testimonials={testimonials}
@@ -56,6 +66,7 @@ export default function TestimonialsSection({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      onAddItem={isEditor ? onAddItem : undefined}
     />
   );
 }

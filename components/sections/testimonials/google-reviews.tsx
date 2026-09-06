@@ -3,6 +3,7 @@ import React from "react";
 import { InlineText } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { avatarTextColor } from "../../templates/helpers";
+import { InlineAddTile } from "../inline-add";
 
 interface Props {
   testimonials: TemplateProps["content"]["testimonials"];
@@ -12,6 +13,7 @@ interface Props {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 function StarRow({ rating = 5 }: { rating?: number }) {
@@ -48,8 +50,10 @@ export default function TestimonialsGoogleReviews({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: Props) {
-  if (!t?.items?.length) return null;
+  if (!t) return null;
+  if (!t.items?.length && !(isEditorMode && onAddItem)) return null;
 
   const items = t.items;
 
@@ -191,6 +195,11 @@ export default function TestimonialsGoogleReviews({
             );
           })}
         </div>
+        {isEditorMode && onAddItem && (
+          <div style={{ marginTop: "1.25rem" }}>
+            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
+          </div>
+        )}
       </div>
     </section>
   );
