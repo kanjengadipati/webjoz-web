@@ -178,12 +178,15 @@ export default function FaqClassic({
             onEditingStateChange={onEditingStateChange}
           />
         ))}
+        {isEditorMode && onAddItem && (
+          <InlineAddTile
+            label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            onClick={onAddItem}
+            className="w-full"
+            style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
+          />
+        )}
       </div>
-      {isEditorMode && onAddItem && (
-        <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "center" }}>
-          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
-        </div>
-      )}
     </section>
   );
 }

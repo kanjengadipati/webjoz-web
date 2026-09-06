@@ -120,12 +120,15 @@ export default function FaqChatBubbleStyle({
             </React.Fragment>
           );
         })}
+        {isEditorMode && onAddItem && (
+          <InlineAddTile
+            label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            onClick={onAddItem}
+            className="w-full"
+            style={{ borderRadius: "1rem", color: "var(--dt-text)" }}
+          />
+        )}
       </div>
-      {isEditorMode && onAddItem && (
-        <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "1rem", maxWidth: "24rem" }} />
-        </div>
-      )}
     </section>
   );
 }

@@ -58,8 +58,12 @@ export default function TestimonialsFeaturedSpotlight({
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)" }}>{featured.avatar_initials || featured.name?.charAt(0)}</span>
                 </div>
                 <div style={{ textAlign: "left" }}>
-                  <InlineText section="testimonials" fieldKey="items.0.name" value={featured.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                  <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", margin: 0 }}><InlineText section="testimonials" fieldKey="items.0.role" value={featured.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{featured.company ? ` · ${featured.company}` : ""}</p>
+                    <InlineText section="testimonials" fieldKey="items.0.name" value={featured.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    {(featured.role || featured.company || isEditorMode) && (
+                      <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", margin: 0 }}>
+                        <InlineText section="testimonials" fieldKey="items.0.role" value={featured.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{featured.company ? ` · ${featured.company}` : ""}
+                      </p>
+                    )}
                 </div>
               </div>
             </>

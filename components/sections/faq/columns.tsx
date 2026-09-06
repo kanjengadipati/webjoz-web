@@ -92,9 +92,13 @@ export default function FaqColumns({
           </div>
         ))}
         {isEditorMode && onAddItem && (
-          <div className="md:col-span-2">
-            <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)" }} />
-          </div>
+          <InlineAddTile
+            label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            variant="card"
+            className="w-full h-full min-h-[160px] rounded-2xl"
+            style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
+            onClick={onAddItem}
+          />
         )}
       </div>
     </section>
