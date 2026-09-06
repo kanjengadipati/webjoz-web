@@ -53,7 +53,9 @@ export default function StatsBigNumberSpotlight({
         <div style={{ marginBottom: "2.5rem" }}>
           {hero.icon && (
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
-              <DynamicIcon name={hero.icon} defaultIcon={TrendingUp} className="w-8 h-8" style={{ color: "var(--dt-primary)" }} />
+              <span style={{ color: "var(--dt-primary)" }}>
+                <DynamicIcon name={hero.icon} defaultIcon={TrendingUp} className="w-8 h-8" />
+              </span>
             </div>
           )}
           <div style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 900, fontSize: "clamp(3rem, 10cqw, 6rem)", color: "var(--dt-primary)", lineHeight: 1 }}>

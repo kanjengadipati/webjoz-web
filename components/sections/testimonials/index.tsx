@@ -53,7 +53,13 @@ export default function TestimonialsSection({
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
     const items = [...(testimonials?.items ?? [])];
-    items.push({ quote: "", name: "", role: "", avatar_initials: "", avatar_color: "" });
+    items.push({
+      quote: "Pelayanan sangat ramah, profesional, dan hasil yang diberikan sangat memuaskan!",
+      name: "Nama Pelanggan",
+      role: "Pelanggan",
+      avatar_initials: "NP",
+      avatar_color: "var(--dt-primary)",
+    });
     onUpdateField("testimonials", "items", items);
   }, [testimonials?.items, onUpdateField]);
 

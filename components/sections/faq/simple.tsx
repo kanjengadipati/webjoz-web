@@ -91,12 +91,15 @@ export default function FaqSimple({
             </p>
           </div>
         ))}
+        {isEditorMode && onAddItem && (
+          <InlineAddTile
+            label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            onClick={onAddItem}
+            className="w-full"
+            style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
+          />
+        )}
       </div>
-      {isEditorMode && onAddItem && (
-        <div style={{ marginTop: "1.25rem", display: "flex", justifyContent: "center" }}>
-          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
-        </div>
-      )}
     </section>
   );
 }

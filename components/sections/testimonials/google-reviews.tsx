@@ -174,9 +174,9 @@ export default function TestimonialsGoogleReviews({
                     {/* Name + role */}
                     <div>
                       <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0, lineHeight: 1.3 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {(item.role || item.company) && (
+                      {(item.role || item.company || isEditorMode) && (
                         <p style={{ color: "var(--dt-text-muted)", fontSize: "0.75rem", margin: 0, lineHeight: 1.3 }}>
-                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{item.company ? ` · ${item.company}` : ""}
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{item.company ? ` · ${item.company}` : ""}
                         </p>
                       )}
                     </div>

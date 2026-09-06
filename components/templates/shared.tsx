@@ -4,7 +4,7 @@ import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
-  MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Sparkles, Link2, ImagePlus,
+  MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Sparkles, Link2, ImagePlus, Trash2,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -896,30 +896,58 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
         )}
         <div className={gridClass}>
           {testimonials.items.map((t, idx) => {
+            const initials =
+              t.avatar_initials?.trim() ||
+              t.name
+                ?.trim()
+                .split(/\s+/)
+                .filter(Boolean)
+                .map((w: string) => w[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase() ||
+              "?";
+
+            const deleteButton = isEditorMode && onUpdateField && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const updated = testimonials.items.filter((_, i) => i !== idx);
+                  onUpdateField("testimonials", "items", updated);
+                }}
+                className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white flex items-center justify-center opacity-70 group-hover:opacity-100 transition-all cursor-pointer z-20 shadow-sm border border-red-500/20"
+                title="Hapus testimoni"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            );
+
             // ─── 1. NEOBRUTALIST VARIANT ───
             if (resolvedDesignVariant === "neobrutalist") {
               return (
                 <div
                   key={idx}
-                  className={`border-3 border-black p-6 flex flex-col gap-4 bg-white transition-transform hover:-translate-y-1 ${cardClass}`}
+                  className={`relative group border-3 border-black p-6 flex flex-col gap-4 bg-white transition-transform hover:-translate-y-1 ${cardClass}`}
                   style={{
                     boxShadow: "4px 4px 0px 0px #000000",
                     borderRadius: "12px",
                     ...cardStyle,
                   }}
                 >
+                  {deleteButton}
                   <span className="text-4xl font-black text-black leading-none -mb-3 opacity-20 font-mono select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold leading-relaxed flex-1 ${quoteClass}`} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold leading-relaxed flex-1 ${quoteClass}`} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
                     <div
                       className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-xs font-black flex-shrink-0"
                       style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                     >
-                      {t.avatar_initials}
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black leading-tight ${nameClass}`} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold ${roleClass}`} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black leading-tight ${nameClass}`} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold ${roleClass}`} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -931,21 +959,22 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               return (
                 <div
                   key={idx}
-                  className={`p-6 flex flex-col gap-4 bg-transparent border-0 shadow-none ${cardClass}`}
+                  className={`relative group p-6 flex flex-col gap-4 bg-transparent border-0 shadow-none ${cardClass}`}
                   style={cardStyle}
                 >
+                  {deleteButton}
                   <span className="text-5xl font-serif leading-none -mb-4 opacity-30 select-none" style={{ color: accentColor }}>“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0"
                       style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor), opacity: 0.85 }}
                     >
-                      {t.avatar_initials}
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -957,7 +986,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               return (
                 <div
                   key={idx}
-                  className={`p-7 flex flex-col gap-5 bg-gradient-to-b from-white/50 to-white/10 backdrop-blur-sm border transition-all hover:shadow-lg hover:border-[var(--dt-primary)]/40 ${cardClass}`}
+                  className={`relative group p-7 flex flex-col gap-5 bg-gradient-to-b from-white/50 to-white/10 backdrop-blur-sm border transition-all hover:shadow-lg hover:border-[var(--dt-primary)]/40 ${cardClass}`}
                   style={{
                     borderRadius: "16px",
                     borderColor: "color-mix(in srgb, var(--dt-border) 40%, transparent)",
@@ -965,18 +994,19 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     ...cardStyle,
                   }}
                 >
+                  {deleteButton}
                   <span className="text-4xl font-serif text-[var(--dt-primary)] leading-none -mb-4 opacity-40 select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: "color-mix(in srgb, var(--dt-border) 20%, transparent)" }}>
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-inner"
                       style={{ background: `linear-gradient(135deg, ${t.avatar_color || accentColor}, color-mix(in srgb, ${t.avatar_color || accentColor} 70%, black))`, color: avatarTextColor(t.avatar_color || accentColor) }}
                     >
-                      {t.avatar_initials}
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs italic ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs italic ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -988,15 +1018,16 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               return (
                 <div
                   key={idx}
-                  className={`p-6 flex flex-col gap-4 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)] ${cardClass}`}
+                  className={`relative group p-6 flex flex-col gap-4 bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)] ${cardClass}`}
                   style={{
                     borderRadius: "20px",
                     boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
                     ...cardStyle,
                   }}
                 >
+                  {deleteButton}
                   <span className="text-5xl font-mono text-cyan-400 leading-none -mb-5 opacity-40 select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border border-cyan-400/30"
@@ -1006,11 +1037,11 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                         boxShadow: `0 0 10px ${t.avatar_color || accentColor}33`,
                       }}
                     >
-                      {t.avatar_initials}
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                     </div>
                   </div>
                 </div>
@@ -1022,12 +1053,26 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               return (
                 <div
                   key={idx}
-                  className={`w-full max-w-[360px] mx-auto bg-[#efeae2] border border-[#d1d7db] shadow-md rounded-[24px] overflow-hidden flex flex-col relative select-none font-sans ${cardClass}`}
+                  className={`relative group w-full max-w-[360px] mx-auto bg-[#efeae2] border border-[#d1d7db] shadow-md rounded-[24px] overflow-hidden flex flex-col select-none font-sans ${cardClass}`}
                   style={{
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23c1b8aa' fill-opacity='0.15'%3E%3Cpath d='M10 20c2 0 3-1 3-3s-1-3-3-3-3 1-3 3 1 3 3 3zm0-4c1 0 1 .5 1 1s0 1-1 1-1-.5-1-1 0-1 1-1zm32 30c0-1.5 1-2.5 2.5-2.5S47 34.5 47 36s-1 2.5-2.5 2.5-2.5-1-2.5-2.5zm4 0c0-.5-.5-1-1.5-1s-1.5.5-1.5 1 .5 1 1.5 1 1.5-.5 1.5-1zM58 8c1.5 0 2.5 1 2.5 2.5S59.5 13 58 13s-2.5-1-2.5-2.5S56.5 8 58 8zm0 3c.5 0 1-.5 1-1s-.5-1-1-1-1 .5-1 1 .5 1 1 1z' fill='%23000'/%3E%3C/g%3E%3C/svg%3E")`,
                     ...cardStyle,
                   }}
                 >
+                  {isEditorMode && onUpdateField && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const updated = testimonials.items.filter((_, i) => i !== idx);
+                        onUpdateField("testimonials", "items", updated);
+                      }}
+                      className="absolute top-2 right-12 w-7 h-7 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all cursor-pointer z-30 shadow-md"
+                      title="Hapus percakapan testimoni ini"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                   {/* WhatsApp Header */}
                   <div className="bg-[#075e54] text-white py-3 px-4 flex items-center justify-between gap-2 shadow-sm shrink-0">
                     <div className="flex items-center gap-2 min-w-0">
@@ -1041,11 +1086,11 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                         className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border border-border"
                         style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                       >
-                        {t.avatar_initials}
+                        {initials}
                       </div>
                       {/* Contact Info */}
                       <div className="min-w-0 leading-tight">
-                        <h4 className="text-xs font-bold truncate"><InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></h4>
+                        <h4 className="text-xs font-bold truncate"><InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></h4>
                         <span className="text-[10px] text-emerald-100 opacity-90 block">Online</span>
                       </div>
                     </div>
@@ -1079,7 +1124,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {/* Left Message Bubble (Business Prompt) */}
                     <div className="bg-white text-gray-800 rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[85%] self-start relative border border-gray-200/50 flex flex-col gap-1">
                       <p className="text-[11px] leading-normal font-normal">
-                        Halo Kak {t.name}, bagaimana kesan Kakak setelah menggunakan layanan kami? Kami sangat menghargai feedback Kakak! 😊
+                        Halo Kak {t.name || "Pelanggan"}, bagaimana kesan Kakak setelah menggunakan layanan kami? Kami sangat menghargai feedback Kakak! 😊
                       </p>
                       <span className="text-[8px] text-gray-400 self-end mt-0.5 leading-none">11:20 AM</span>
                     </div>
@@ -1087,7 +1132,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {/* Right Message Bubble (Client Testimonial) */}
                     <div className="bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] self-end relative border border-[#c1e8ba]/40 flex flex-col gap-1">
                       <p className={`text-[11px] leading-normal font-normal ${quoteClass}`} style={quoteStyle}>
-                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       </p>
                       <div className="flex items-center gap-1 self-end mt-0.5 leading-none">
                         <span className="text-[8px] text-gray-500">11:22 AM</span>
@@ -1136,24 +1181,25 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             }
 
             // ─── 6. STANDARD CARD (Default) ───
-            const cardClasses = `rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
+            const cardClasses = `relative group rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow ${cardClass}`;
             const quoteClasses = `text-sm leading-relaxed flex-1 ${quoteClass}`;
             const nameClasses = `text-sm font-bold leading-tight ${nameClass}`;
             const roleClasses = `text-xs ${roleClass}`;
 
             return (
               <div key={idx} className={cardClasses} style={cardStyle}>
-                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                {deleteButton}
+                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                     style={{ background: t.avatar_color || accentColor, color: avatarTextColor(t.avatar_color || accentColor) }}
                   >
-                    {t.avatar_initials}
+                    {initials}
                   </div>
                   <div className="min-w-0">
-                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    {t.role && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                   </div>
                 </div>
               </div>
@@ -2654,14 +2700,15 @@ export function InlineText({
   const { t } = useI18n();
   const elementRef = useRef<HTMLElement | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const initialText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
+  const hasValue = (value !== undefined && value !== null && value !== "") || (typeof children === "string" && children !== "");
+  const currentDisplay = hasValue ? (value ?? (typeof children === "string" ? children : "")) : (placeholder ?? "");
 
   // Keep DOM in sync when value changes from outside (e.g. undo, AI regen)
   useEffect(() => {
     if (elementRef.current && !isFocused) {
-      elementRef.current.innerText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
+      elementRef.current.innerText = currentDisplay;
     }
-  }, [value, children, placeholder, isFocused]);
+  }, [currentDisplay, isFocused]);
 
   const Comp = (Component || "span") as React.ElementType;
 
@@ -2673,13 +2720,23 @@ export function InlineText({
     setIsFocused(true);
     collapseSheetForInlineEdit?.();
     onEditingStateChange?.(true);
+    if (!hasValue && placeholder && elementRef.current) {
+      elementRef.current.innerText = "";
+    }
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLElement>) => {
     setIsFocused(false);
     onEditingStateChange?.(false);
     const newText = e.currentTarget.innerText.trim();
-    if (newText !== (value || "").trim()) {
+    if (newText === "") {
+      if (hasValue) {
+        onUpdateField(section, fieldKey, "");
+      }
+      if (placeholder && elementRef.current) {
+        elementRef.current.innerText = placeholder;
+      }
+    } else if (newText !== (value || "").trim()) {
       onUpdateField(section, fieldKey, newText);
     }
   };
@@ -2691,7 +2748,7 @@ export function InlineText({
     } else if (e.key === "Escape") {
       e.preventDefault();
       if (elementRef.current) {
-        elementRef.current.innerText = value ?? (typeof children === "string" ? children : "") ?? placeholder ?? "";
+        elementRef.current.innerText = currentDisplay;
       }
       e.currentTarget.blur();
     }
@@ -2718,6 +2775,8 @@ export function InlineText({
     e.stopPropagation();
   };
 
+  const isShowingPlaceholder = !hasValue && !!placeholder && !isFocused;
+
   return (
     <Comp
       id={id}
@@ -2735,11 +2794,16 @@ export function InlineText({
         isFocused
           ? "ring-1 ring-primary/70 rounded-[2px]"
           : "hover:outline-dashed hover:outline-1 hover:outline-primary/50 hover:bg-primary/[0.03] rounded-[2px]"
-      } ${className}`}
-      style={style}
+      } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${className}`}
+      style={{
+        minWidth: style?.display === "block" || multiline ? undefined : "1.5rem",
+        minHeight: "1.25em",
+        display: style?.display || (multiline ? "block" : "inline-block"),
+        ...style,
+      }}
       title={t("dashboard.sitesEditor.inlineClickToEdit")}
     >
-      {initialText}
+      {currentDisplay}
     </Comp>
   );
 }

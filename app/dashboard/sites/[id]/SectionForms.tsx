@@ -2544,7 +2544,7 @@ export default function SectionForms({
               const current = content.testimonials?.items || [];
               updateField("testimonials", "items", [
                 ...current,
-                { quote: "", name: "", role: "", avatar_initials: "", avatar_color: "var(--primary)", company: "", logo_url: "" }
+                { quote: "Pelayanan sangat memuaskan, ramah, dan hasilnya melebihi ekspektasi!", name: "Nama Pelanggan", role: "Pelanggan", avatar_initials: "NP", avatar_color: "var(--primary)", company: "", logo_url: "" }
               ]);
             }}
             className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
