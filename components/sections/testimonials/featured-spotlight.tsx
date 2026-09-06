@@ -67,7 +67,7 @@ export default function TestimonialsFeaturedSpotlight({
             <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", margin: 0 }}>Belum ada testimoni</p>
           )}
         </div>
-        {t.items && t.items.length > 1 && (
+        {t.items && t.items.length > 1 ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
             {t.items.slice(1).map((item, idx) => (
               <div key={idx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 8%, transparent)`, borderRadius: "var(--dt-radius)", padding: "1rem", textAlign: "center" }}>
@@ -75,13 +75,27 @@ export default function TestimonialsFeaturedSpotlight({
                 <InlineText section="testimonials" fieldKey={`items.${idx + 1}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </div>
             ))}
+            {isEditorMode && onAddItem && (
+              <InlineAddTile
+                label="Tambah Testimoni"
+                variant="card"
+                className="rounded-2xl min-h-[140px] w-full"
+                style={{ borderRadius: "var(--dt-radius)" }}
+                onClick={onAddItem}
+              />
+            )}
           </div>
-        )}
-        {isEditorMode && onAddItem && (
-          <div style={{ marginTop: "1.5rem" }}>
-            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
+        ) : isEditorMode && onAddItem ? (
+          <div style={{ marginTop: "1.5rem", maxWidth: "20rem", marginInline: "auto" }}>
+            <InlineAddTile
+              label="Tambah Testimoni"
+              variant="card"
+              className="rounded-2xl min-h-[140px]"
+              style={{ borderRadius: "var(--dt-radius)" }}
+              onClick={onAddItem}
+            />
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

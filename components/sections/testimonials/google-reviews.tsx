@@ -194,12 +194,16 @@ export default function TestimonialsGoogleReviews({
               </div>
             );
           })}
+          {isEditorMode && onAddItem && (
+            <InlineAddTile
+              label="Tambah Testimoni"
+              variant="card"
+              className="rounded-2xl min-h-[220px] w-full h-full"
+              style={{ borderRadius: "var(--dt-radius-lg)" }}
+              onClick={onAddItem}
+            />
+          )}
         </div>
-        {isEditorMode && onAddItem && (
-          <div style={{ marginTop: "1.25rem" }}>
-            <InlineAddTile compact label="Tambah Testimoni" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
-          </div>
-        )}
       </div>
     </section>
   );
