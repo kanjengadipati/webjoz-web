@@ -2,6 +2,7 @@
 import React from "react";
 import { ArrowRight, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -13,9 +14,10 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -272,6 +274,14 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                     </div>
                   </div>
                 ))}
+                {isEditorMode && onAddItem && (
+                  <InlineAddTile
+                    label="Tambah Item"
+                    variant="card"
+                    className="rounded-2xl min-h-[260px]"
+                    onClick={() => onAddItem(catIdx)}
+                  />
+                )}
               </div>
             </div>
           ))}

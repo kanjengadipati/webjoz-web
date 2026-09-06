@@ -2,6 +2,7 @@
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -14,6 +15,7 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
 /**
@@ -22,7 +24,7 @@ interface CatalogVariantProps {
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
  */
-export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -223,6 +225,12 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                   </div>
                 );
               })()}
+
+              {isEditorMode && onAddItem && (
+                <div style={{ marginTop: "1rem" }}>
+                  <InlineAddTile label="Tambah Item" onClick={() => onAddItem(ci)} />
+                </div>
+              )}
 
               {/* Edge case: all items have badge — show them in featured grid only, no rest grid needed */}
             </div>

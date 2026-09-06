@@ -2,6 +2,7 @@
 import React from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -12,9 +13,10 @@ interface MenuVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
+export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -113,7 +115,7 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
 
                 return (
                   <div
-                    key={item.name}
+                    key={item.id || item.name}
                     id={`bento-item-${catIndex}-${itemIndex}`}
                     className={`relative group overflow-hidden rounded-dt border border-dt-border bg-dt-surface flex flex-col justify-end transition-all duration-300 hover:shadow-lg hover:border-dt-primary ${bentoSizeClass}`}
                   >
@@ -175,6 +177,14 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                   </div>
                 );
               })}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-3xl min-h-[260px]"
+                  onClick={() => onAddItem(catIndex)}
+                />
+              )}
             </div>
           </div>
         ))}

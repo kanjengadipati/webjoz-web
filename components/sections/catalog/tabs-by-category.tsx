@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Image as ImageIcon, X } from "lucide-react";
 import { MenuCatalogCard, InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -12,13 +13,14 @@ interface CatalogVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
 /**
  * Tabs by Category — category tabs, shows one category at a time.
  * Best for catalogs with 3+ distinct categories.
  */
-export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: CatalogVariantProps) {
+export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -196,7 +198,26 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                   onEditingStateChange={onEditingStateChange}
                 />
               ))}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-2xl"
+                  onClick={() => onAddItem(activeIdx)}
+                />
+              )}
             </div>
+          ) : isEditorMode && onAddItem ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              <InlineAddTile
+                label="Tambah Item"
+                variant="card"
+                className="rounded-2xl"
+                onClick={() => onAddItem(activeIdx)}
+              />
+            </div>
+          ) : (
+            <p className="text-center py-12 text-sm opacity-60">Tidak ada produk dalam kategori ini.</p>
           )
         )}
       </div>

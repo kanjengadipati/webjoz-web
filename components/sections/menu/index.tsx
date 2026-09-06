@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
+import { genId, InlineAddTile } from "../inline-add";
 import MenuClassic from "./classic";
 import MenuCompact from "./compact";
 import MenuCards from "./cards";
@@ -21,6 +22,7 @@ type MenuVariantProps = {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 };
 
 const variants: Record<string, ComponentType<MenuVariantProps>> = {
@@ -57,15 +59,67 @@ export default function MenuSection({
 }) {
   const variant = design_token?.layout?.section_variants?.menu ?? "grid";
   const Renderer = variants[variant] ?? MenuClassic;
+
+  const isEditor = !!isEditorMode;
+
+  const onAddItem = useCallback(
+    (catIdx: number) => {
+      if (!onUpdateField) return;
+      const categories = [...(menu?.categories ?? [])];
+      if (!categories[catIdx]) return;
+      const items = [...(categories[catIdx].items ?? [])];
+      items.push({
+        id: genId(),
+        name: "",
+        description: "",
+        price: "",
+        price_display: "",
+        price_amount: null,
+        promo_price: "",
+        promo_price_display: "",
+        promo_price_amount: null,
+        discount_label: null,
+        image_url: null,
+        is_available: true,
+        tags: [],
+        delivery_platforms: [],
+        sort_order: items.length,
+      });
+      categories[catIdx] = { ...categories[catIdx], items };
+      onUpdateField("menu", "categories", categories);
+    },
+    [menu?.categories, onUpdateField]
+  );
+
+  const onAddCategory = useCallback(() => {
+    if (!onUpdateField) return;
+    const categories = [...(menu?.categories ?? [])];
+    categories.push({
+      id: genId(),
+      name: `Kategori ${categories.length + 1}`,
+      items: [],
+      sort_order: categories.length,
+    });
+    onUpdateField("menu", "categories", categories);
+  }, [menu?.categories, onUpdateField]);
+
   return (
-    <Renderer
-      menu={menu}
-      design_token={design_token}
-      onUpdateField={onUpdateField}
-      isEditorMode={isEditorMode}
-      isSelected={isSelected}
-      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-      onEditingStateChange={onEditingStateChange}
-    />
+    <>
+      <Renderer
+        menu={menu}
+        design_token={design_token}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+        onAddItem={isEditor ? onAddItem : undefined}
+      />
+      {isEditor && (
+        <div className="max-w-xl mx-auto px-4" style={{ marginTop: "-0.5rem" }}>
+          <InlineAddTile label="Tambah Kategori" onClick={onAddCategory} />
+        </div>
+      )}
+    </>
   );
 }

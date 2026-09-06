@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import { Utensils, X } from "lucide-react";
 import { MenuCatalogCard, InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
  * Tabs by Category — each category becomes a clickable tab.
  * Best for menus with 3+ categories where scrolling per-category is too long.
  */
-export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void }) {
+export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -184,7 +185,26 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                   onEditingStateChange={onEditingStateChange}
                 />
               ))}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-2xl"
+                  onClick={() => onAddItem(activeIdx)}
+                />
+              )}
             </div>
+          ) : isEditorMode && onAddItem ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              <InlineAddTile
+                label="Tambah Item"
+                variant="card"
+                className="rounded-2xl"
+                onClick={() => onAddItem(activeIdx)}
+              />
+            </div>
+          ) : (
+            <p className="text-center py-12 text-sm opacity-60">Tidak ada menu dalam kategori ini.</p>
           )
         )}
       </div>

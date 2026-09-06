@@ -2,6 +2,7 @@
 import React from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -12,9 +13,10 @@ interface MenuVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: (catIdx: number) => void;
 }
 
-export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: MenuVariantProps) {
+export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -99,7 +101,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
 
                 return (
                   <div
-                    key={item.name}
+                    key={item.id || item.name}
                     id={`hero-item-${catIndex}-${itemIndex}`}
                     className="group flex flex-col bg-dt-surface rounded-dt overflow-hidden border border-dt-border/50 hover:shadow-xl hover:border-dt-border transition-all duration-300 h-[560px]"
                   >
@@ -147,6 +149,14 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                   </div>
                 );
               })}
+              {isEditorMode && onAddItem && (
+                <InlineAddTile
+                  label="Tambah Item"
+                  variant="card"
+                  className="rounded-2xl min-h-[160px]"
+                  onClick={() => onAddItem(catIndex)}
+                />
+              )}
             </div>
           </div>
         ))}
