@@ -2,7 +2,7 @@
 import React, { useCallback } from "react";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import { genId, InlineAddTile } from "../inline-add";
+import { genId } from "../inline-add";
 import CatalogClassic from "./classic";
 import CatalogCompact from "./compact";
 import CatalogCards from "./cards";
@@ -96,18 +96,6 @@ export default function CatalogSection({
     [catalog?.categories, onUpdateField]
   );
 
-  const onAddCategory = useCallback(() => {
-    if (!onUpdateField) return;
-    const categories = [...(catalog?.categories ?? [])];
-    categories.push({
-      id: genId(),
-      name: `Kategori ${categories.length + 1}`,
-      items: [],
-      sort_order: categories.length,
-    });
-    onUpdateField("catalog", "categories", categories);
-  }, [catalog?.categories, onUpdateField]);
-
   return (
     <>
       <Renderer
@@ -120,11 +108,6 @@ export default function CatalogSection({
         onEditingStateChange={onEditingStateChange}
         onAddItem={isEditor ? onAddItem : undefined}
       />
-      {isEditor && (
-        <div className="max-w-xl mx-auto px-4" style={{ marginTop: "-0.5rem" }}>
-          <InlineAddTile label="Tambah Kategori" onClick={onAddCategory} />
-        </div>
-      )}
     </>
   );
 }
